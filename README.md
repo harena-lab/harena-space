@@ -15,7 +15,9 @@ Front end of Harena including the Author and Player platforms.
 
 * **dccs** - Digital Content Components (DCCs) library. The authoring environment and the generated cases use web components to execute active web tasks, e.g., buttons, animations, inputs, etc. These web components follow the DCC standard and are stored in this directory.
 
-* **infra** - contains infrastructure related modules, which are shared by the Author and Player platforms -- e.g., the bus service.
+* **infra** - Contains infrastructure related modules, which are shared by the Author and Player platforms -- e.g., the bus service.
+
+* **lib** - External javascript libraries adopted by both platforms (author and player).
 
 * **player** - Kernel of the HTML cases player. This kernel is used by the `translator` module to produce the final HTML version of the cases, which have the player kernel inside them.
 
