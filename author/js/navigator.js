@@ -1,5 +1,8 @@
 /**
- * 
+ * Case Navigator
+ *
+ * Concentrates routines related to navigation throughout a case.
+ * It shows a visual map of knots and enables to visually access and edit them.
  */
 
 class Navigator {

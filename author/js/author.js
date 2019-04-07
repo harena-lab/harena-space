@@ -1,7 +1,8 @@
 /*
-function startSystem() {
-   let dm = new AuthorManager();
-}
+* Main Author Environment
+*
+* Main authoring environment, which presents the visual interface and
+* coordinates the authoring activities.
 */
 
 class AuthorManager {
