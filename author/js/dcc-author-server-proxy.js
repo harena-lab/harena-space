@@ -172,7 +172,7 @@ class DCCAuthorServer {
          }
       });
       const jsonResponse = await response.json();
-      window.messageBus.ext.publish("case/" + caseName + "/prepare/status", jsonResponse.status);
+      window.messageBus.ext.publish("case/" + caseName + "/prepare/directory", jsonResponse.directory);
    }
 
    async saveKnotHTML(topic, message) {

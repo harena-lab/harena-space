@@ -233,10 +233,10 @@ class AuthorManager {
     */
    async playCase() {
       this._messageSpace.innerHTML = "Preparing...";
-      await window.messageBus.ext.request("case/" + this._currentCaseName + "/prepare",
-                                          this._currentTemplateFamily,
-                                          "case/" + this._currentCaseName + "/prepare/status");
-
+      const dirPlay = await window.messageBus.ext.request(
+                         "case/" + this._currentCaseName + "/prepare",
+                         this._currentTemplateFamily,
+                         "case/" + this._currentCaseName + "/prepare/directory");
       this._templateSet = {};
       
       const htmlSet = Object.assign(
@@ -265,10 +265,6 @@ class AuthorManager {
                                                  format: "html",
                                                  source: finalHTML},
                                                 "knot/" + kn + "/set/status");
-            /*
-            await this._server.saveKnotHTML(this._currentCaseName,
-                                            kn + ".js", finalHTML);
-            */
          }
       }
       this._messageSpace.innerHTML = "Finalizing...";
@@ -281,7 +277,7 @@ class AuthorManager {
       this._messageSpace.innerHTML = "";
       
       delete this._templateSet;
-      window.open("../cases/" + this._currentCaseName + "/html/index.html", "_blank");
+      window.open(dirPlay.message + "/html/index.html", "_blank");
    }
    
    /*
