@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+   <link href="../../lib/quill-1-3-6/quill.snow.css" rel="stylesheet">
+   <script src="../../lib/quill-1-3-6/quill.min.js"></script>
+   <script src="../../lib/showdown-2-0-0/showdown.min.js"></script>
+   
+   <script src="../../infra/bus.js"></script>
+   <script src="../../infra/bus-server-address.js"></script>
+   <script src="../../dccs/components/dcc-base.js"></script>
+   <script src="../../dccs/components/dcc-block.js"></script>
+   <script src="../../dccs/components/dcc-trigger.js"></script>
+   
+   <script src="../translator.js"></script>
+   <script src="../item-templates.js"></script>
+   
+   <style>
+      .std-border {
+         border: 1px solid lightgray;
+         border-radius: 5px;
+         padding: 5px;
+      }
+      .translator-panel {
+         /* the main box (body) occupies all the visible area */
+         position: absolute;
+         left: 0px;
+         right: 0px;
+         top: 0px;
+         bottom: 0px;
+      
+         /* eliminate margins etc. */
+         margin: 0px;
+         padding: 0px;
+         border-width: 0px;
+      
+         display: flex;
+         flex-direction: column;
+      }
+      .editor-panel {
+         flex: 45%;
+         max-height: 45%;
+      }
+      .button-panel {
+         flex: auto;
+         max-height: 10%;
+         display: flex;
+         flex-direction: row;
+      }
+      .results-panel {
+         flex: auto;
+         max-height: 45%;
+         display: flex;
+         flex-direction: row;
+      }
+      .results-subpanel {
+         flex: 50%;
+         overflow: scroll;
+      }
+   </style>
+
+   <script>
+      function start() {
+         window.quill = new Quill('#editor', {theme: 'snow'});
+         window.messageBus.ext.subscribe("control/translate/example", translate);
+      }
+      function translate(topic, message) {
+         let mkTranslator = new Translator();
+         let compiled = mkTranslator.compileMarkdown("test", window.quill.getText());
+         document.querySelector("#object-results").innerHTML = JSON.stringify(compiled, null, 3);
+         let html = "";
+         for (let knot in compiled.knots)
+            html += "<pre>" + 
+                    mkTranslator.generateKnotHTML(compiled.knots[knot]).replace(/>/igm, "&gt;").replace(/</igm, "&lt;") +
+                    "<pre><hr>";
+         document.querySelector("#html-results").innerHTML = html;
+      }
+   </script>
+
+   <title>Translator Test</title>
+</head>
+<body onload="start()">
+
+   <div class="translator-panel">
+      <div id="editor" class="editor-panel">
+# Syncope of a Forklift Driver<br>
+Young man had a syncope while driving a forklift.<br>
+![Forklift](images/case-forklift.png)<br>
+++ Only label<br>
+++ -> Emergency room<br>
+++ Label -> Divert<br>
+
+# Get vital data (notice)<br>
+You enter the emergency room and the patient is laid on the bed, {conscious}(consciousness=yes), {oriented}(orientation), but {distressed}(suffering). {Respiratory rate= 32 mov/min}; {Heart rate= 150bpm}; {Blood pressure= 82x66mmHg}; {Oxygen saturation= 82%}.
+      </div>
+   
+      <div class="button-panel"><dcc-trigger action="control/translate/example" label="Translate"></dcc-trigger></div>
+   
+      <div class="results-panel">
+         <pre id="object-results" class="results-subpanel std-border"></pre>
+         <pre id="html-results" class="results-subpanel std-border"></pre>
+      </div>
+   </div>
+
+</body>
+</html>
