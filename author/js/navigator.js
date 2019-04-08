@@ -58,10 +58,10 @@ _createKnotEntry(id) {
 async _createMiniature(kn) {
    let htmlKnot = await this._author._generateHTML(kn);
    let iframe = document.createElement('iframe');
-   iframe.width = Navigator.standardDimensions.miniWidth;
-   iframe.height = Navigator.standardDimensions.miniHeight;
-   iframe.srcdoc = this._capsule.message.replace(/{width}/g, Navigator.standardDimensions.miniWidth)
-                                        .replace(/{height}/g, Navigator.standardDimensions.miniHeight-6)
+   iframe.width = Navigator.miniKnot.width;
+   iframe.height = Navigator.miniKnot.height;
+   iframe.srcdoc = this._capsule.message.replace(/{width}/g, Navigator.miniKnot.width)
+                                        .replace(/{height}/g, Navigator.miniKnot.height-6)
                                         .replace("{knot}", htmlKnot);
    return iframe;
 }
@@ -123,7 +123,7 @@ async mountTreeCase(author, knots) {
 
    // computing dimensions
    const baseTitle =
-      Navigator.standardDimensions.titleBase + Navigator.standardDimensions.titleDelta * maxLevel;
+      Navigator.miniKnot.titleBase + Navigator.miniKnot.titleDelta * maxLevel;
    this._computeDimension(tree, true, 0, -baseTitle, maxLevel);
    
    // set the dimensions and margins of the graph
@@ -147,7 +147,7 @@ async mountTreeCase(author, knots) {
 
    let gs = svg
       .selectAll("g")
-      .data(root.descendants().filter(function(d){return d.depth >= 1}))
+      .data(root.descendants().filter(function(d){return (d.depth >= 1 && d.depth <= 2)}))
       .enter()
       .append("g");
    
@@ -166,7 +166,7 @@ async mountTreeCase(author, knots) {
      .attr("height", function (d) { return d.data.height; });
 
    svg.selectAll("text")
-      .data(root.descendants().filter(function(d){return d.depth>=1}))
+      .data(root.descendants().filter(function(d){return d.depth>=1 && d.depth <= 2}))
       .enter()
       .append("text")
       .attr("id", function(d) {return "t_" + d.data.id})
@@ -174,7 +174,7 @@ async mountTreeCase(author, knots) {
       .attr("y", function(d){ return d.data.y + 20})
       .text(function(d){ return d.data.title; })
       .attr("font-size", function(d) {return d.data.titleSize + "px"})
-      .attr("fill", "white")
+      .attr("fill", "black")
       .attr("cursor", "pointer")
       .on("click", function(d) {window.messageBus.ext.publish("knot/" + d.data.knotid + "/selected")})
       .on("mouseover", function(d) {
@@ -197,25 +197,28 @@ async mountTreeCase(author, knots) {
       }
    }
 
-   this._drawLinks(tree, svg);
+   console.log(tree);
 
+   this._drawGroups(tree, svg);
+
+   this._drawLinks(tree, svg);
 }
 
 _computeDimension(knot, horizontal, x, y, titleLevel) {
    knot.x = x;
    knot.y = y;
-   knot.titleSize = Navigator.standardDimensions.titleBase +
-                    Navigator.standardDimensions.titleDelta * titleLevel;
+   knot.titleSize = Navigator.miniKnot.titleBase +
+                    Navigator.miniKnot.titleDelta * titleLevel;
    if (!knot.children) {
-      knot.width = Navigator.standardDimensions.miniWidth;
-      knot.height = Navigator.standardDimensions.miniHeight;
+      knot.width = Navigator.miniKnot.width;
+      knot.height = Navigator.miniKnot.height;
    } else {
       knot.width = 0;
       knot.height = 0;
-      let shiftX = x + Navigator.standardDimensions.paddingX;
-      let shiftY = y + Navigator.standardDimensions.paddingY + knot.titleSize;
+      let shiftX = x + Navigator.miniKnot.paddingX;
+      let shiftY = y + Navigator.miniKnot.paddingY + knot.titleSize;
          
-      if (knot.level != 1) {
+      if (knot.level < 1) {
          for (let k in knot.children) {
             this._computeDimension(
                knot.children[k], !horizontal, shiftX, shiftY, titleLevel - 1);
@@ -224,20 +227,20 @@ _computeDimension(knot, horizontal, x, y, titleLevel) {
                knot.height = (knot.children[k].height > knot.height)
                   ? knot.children[k].height
                   : knot.height;
-               shiftX += knot.children[k].width + Navigator.standardDimensions.marginX;
+               shiftX += knot.children[k].width + Navigator.miniKnot.marginX;
             } else {
                knot.height += knot.children[k].height;
                knot.width = (knot.children[k].width > knot.width)
                   ? knot.children[k].width
                   : knot.width;
-               shiftY += knot.children[k].height + Navigator.standardDimensions.marginY;
+               shiftY += knot.children[k].height + Navigator.miniKnot.marginY;
             }
          }
          if (horizontal)
-            knot.width += (knot.children.length - 1) * Navigator.standardDimensions.marginX;
+            knot.width += (knot.children.length - 1) * Navigator.miniKnot.marginX;
          else
-            knot.height += (knot.children.length - 1) * Navigator.standardDimensions.marginY;
-      } else {
+            knot.height += (knot.children.length - 1) * Navigator.miniKnot.marginY;
+      } else if (knot.level < 2) {
          // compute all links in this level
          for (let kn in knot.children) {
             // build link (source, target) edges
@@ -247,16 +250,10 @@ _computeDimension(knot, horizontal, x, y, titleLevel) {
                if (content[c].type == "option" || content[c].type == "divert") {
                   let target = -1;
                   for (let t = 0; t < knot.children.length && target == -1; t++)
-                     if (knot.children[t].knotid == content[c].target)
+                     if (content[c].target.indexOf(knot.children[t].knotid) > -1)
                         target = t;
-                  if (target > -1) {
+                  if (target > -1)
                      knot.children[kn].link[content[c].target] = knot.children[target];
-                     /*
-                     if (!knot.children[target].target)
-                        knot.children[target].target = {};
-                     knot.children[target].target[content[c].target] = kn;
-                     */
-                  }
                }
             }
          }
@@ -273,20 +270,8 @@ _computeDimension(knot, horizontal, x, y, titleLevel) {
                knot.children[kn].order = nextOrder;
                nextOrder++;
             }
-            /*
-            for (let t in knot.children[kn].target)
-               if (knot.children[kn].target[t].order &&
-                   knot.children[kn].target[t].order < order)
-                  order = knot.children[kn].target[t].order;
-            */
-            /*
-            for (let s in knot.children[kn].source)
-               if (knot.children[kn].source[s].order &&
-                   knot.children[kn].source[s].order < order)
-                  order = knot.children[kn].source[s].order;
-            */
             for (let s in knot.children[kn].link)
-               if (!knot.children[kn].link[s].order)
+               if (typeof knot.children[kn].link[s].order === "undefined")
                   knot.children[kn].link[s].order = order + 1;
 
             if (!sequence[order])
@@ -298,8 +283,8 @@ _computeDimension(knot, horizontal, x, y, titleLevel) {
          }
 
          // computes the block width/height
-         knot.width = (horizontal) ? Navigator.standardDimensions.marginX * (sequence.length - 1) : 0,
-         knot.height = (horizontal) ? 0 : Navigator.standardDimensions.marginY * (sequence.length - 1);
+         knot.width = (horizontal) ? Navigator.miniKnot.marginX * (sequence.length - 1) : 0,
+         knot.height = (horizontal) ? 0 : Navigator.miniKnot.marginY * (sequence.length - 1);
          for (let s in sequence) {
             for (let ss in sequence[s].subseq) {
                this._computeDimension(
@@ -315,9 +300,9 @@ _computeDimension(knot, horizontal, x, y, titleLevel) {
                }
             }
             if (horizontal)
-               sequence[s].height += Navigator.standardDimensions.marginY * (sequence[s].subseq.length - 1);
+               sequence[s].height += Navigator.miniKnot.marginY * (sequence[s].subseq.length - 1);
             else
-               sequence[s].width += Navigator.standardDimensions.marginX * (sequence[s].subseq.length - 1);
+               sequence[s].width += Navigator.miniKnot.marginX * (sequence[s].subseq.length - 1);
 
             if (horizontal) {
                knot.width += sequence[s].width;
@@ -338,30 +323,57 @@ _computeDimension(knot, horizontal, x, y, titleLevel) {
                this._computeDimension(
                   sequence[s].subseq[ss], !horizontal, shiftX, shiftY, titleLevel - 1);
                if (horizontal)
-                  shiftY += sequence[s].subseq[ss].height + Navigator.standardDimensions.marginY;
+                  shiftY += sequence[s].subseq[ss].height + Navigator.miniKnot.marginY;
                else
-                  shiftX += sequence[s].subseq[ss].width + Navigator.standardDimensions.marginX;
+                  shiftX += sequence[s].subseq[ss].width + Navigator.miniKnot.marginX;
             }
             if (horizontal)
-               shiftX += sequence[s].width + Navigator.standardDimensions.marginX;
+               shiftX += sequence[s].width + Navigator.miniKnot.marginX;
             else
-               shiftY += sequence[s].height + Navigator.standardDimensions.marginY;
+               shiftY += sequence[s].height + Navigator.miniKnot.marginY;
          }
+      } else {
+         // groups
+         knot.width = Navigator.miniKnot.width;
+         knot.height = Navigator.miniKnot.height +
+                       Navigator.microKnot.height + Navigator.microKnot.marginY;
+         if (knot.children)
+            knot.id = knot.children[0].id;
       }
    }
-   knot.width += Navigator.standardDimensions.paddingX * 2;
-   knot.height += Navigator.standardDimensions.paddingY * 2 + knot.titleSize;
+
+   knot.width += Navigator.miniKnot.paddingX * 2;
+   knot.height += Navigator.miniKnot.paddingY * 2 + knot.titleSize;
+}
+
+_drawGroups(knot, svg) {
+   if (knot.level == 2 && knot.children) {
+      for (let m = 0; m <= 3; m++)
+         svg.append("rect")
+            .attr("x", knot.x + Navigator.miniKnot.paddingX +
+                       (Navigator.microKnot.width + Navigator.microKnot.marginX) * m)
+            .attr("y", knot.y + knot.titleSize + Navigator.miniKnot.height +
+                       Navigator.microKnot.marginY)
+            .attr("width", Navigator.microKnot.width)
+            .attr("height", Navigator.microKnot.height)
+            .attr("stroke", "#444444")
+            .attr("fill", "#76a7d7")
+            .attr("stroke-width", "2");
+   } else
+      for (let kn in knot.children)
+         this._drawGroups(knot.children[kn], svg);
 }
 
 _drawLinks(knot, svg) {
    if (knot.link)
       for (let l in knot.link)
-         svg.append("line")
-            .attr("x1", knot.x + (knot.width / 2))
-            .attr("y1", knot.y + knot.height)
-            .attr("x2", knot.link[l].x + (knot.link[l].width / 2))
-            .attr("y2", knot.link[l].y)
-            .attr("style", "stroke:rgb(0,0,0);stroke-width:3");
+         if (knot.order < knot.link[l].order)
+            svg.append("line")
+               .attr("x1", knot.x + (knot.width / 2))
+               .attr("y1", knot.y + knot.height)
+               .attr("x2", knot.link[l].x + (knot.link[l].width / 2))
+               .attr("y2", knot.link[l].y)
+               .attr("style", "stroke:rgb(0,0,0);stroke-width:3");
    for (let kn in knot.children)
       this._drawLinks(knot.children[kn], svg);
 }
@@ -369,9 +381,9 @@ _drawLinks(knot, svg) {
 }
 
 (function() {
-   Navigator.standardDimensions = {
-      miniWidth: 200, // 16:9
-      miniHeight: 112,
+   Navigator.miniKnot = {
+      width: 200, // 16:9
+      height: 112,
       marginX : 20,
       marginY : 20,
       paddingX: 3,
@@ -379,4 +391,10 @@ _drawLinks(knot, svg) {
       titleBase: 10,
       titleDelta: 10
    };
+   Navigator.microKnot = {
+      width: 40,
+      height: 24,
+      marginX: 5,
+      marginY: 5
+   }
 })();
