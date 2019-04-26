@@ -1,7 +1,5 @@
 /**
- * Miniature Capsule
- *
- * Capsule of a mini running environment created to render a preview of a node inside a iframe miniature.
+ * 
  */
 
 class CapsuleManager {

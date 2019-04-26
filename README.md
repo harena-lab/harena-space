@@ -9,8 +9,6 @@ Front end of Harena including the Author and Player platforms.
 
 # Directory Map
 
-## Directory Map
-
 * **author** - Front-end of the authoring environment that runs in the client side. The `author.html` plus the `js/author.js` files are the main modules. The Javascript files of the module are in the `[js]` directory.
 
 * **dccs** - Digital Content Components (DCCs) library. The authoring environment and the generated cases use web components to execute active web tasks, e.g., buttons, animations, inputs, etc. These web components follow the DCC standard and are stored in this directory.

@@ -154,6 +154,6 @@ class MessageBus {
 (function() {
    window.messageBus = {
       int: new MessageBus(false),
-      ext: new MessageBus(true)
+      ext: new MessageBus(false)
    };
 })();
