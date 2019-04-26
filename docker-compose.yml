@@ -19,11 +19,7 @@ services:
     restart: always
     networks:
       - harena-space
-      - harena
 
 networks:
   harena-space:
     driver: bridge
-  harena:
-    external:
-      name: harena      
