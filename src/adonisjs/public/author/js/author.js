@@ -1,7 +1,8 @@
 /*
-function startSystem() {
-   let dm = new AuthorManager();
-}
+* Main Author Environment
+*
+* Main authoring environment, which presents the visual interface and
+* coordinates the authoring activities.
 */
 
 class AuthorManager {
@@ -97,7 +98,6 @@ class AuthorManager {
     * ACTION: control-load (2)
     */
    async _caseNameSelected(topic, message) {
-      console.log(topic);
       this._temporaryCase = false;
       window.messageBus.ext.unsubscribe("control/case/selected", this._caseNameSelected);
       this._caseLoad(message.selected);
@@ -125,7 +125,7 @@ class AuthorManager {
       this._compiledCase = this._translator.compileMarkdown(this._currentCaseName, caseMd.message);
       this._knots = this._compiledCase.knots;
       
-      await this._navigator.mountPlainCase(this, this._compiledCase.knots);
+      await this._navigator.mountTreeCase(this, this._compiledCase.knots);
       
       const knotIds = Object.keys(this._knots);
       let k = 0;
