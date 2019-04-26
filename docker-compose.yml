@@ -21,6 +21,6 @@ services:
       - harena
 
 networks:
-  default:
+  harena:
     external:
       name: harena
