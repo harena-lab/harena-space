@@ -8,13 +8,19 @@
 Front end of Harena including the Author and Player platforms.
 
 ### Running locally
-Install nodejs and npm []()
+Install nodejs and npm:
 ```
 # updating and installing curl
 sudo apt-get update && sudo apt-get install -y curl 
 
 # installing/updating nodejs/npm LTS
-curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash - sudo apt-get install -y nodejs npm
+curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
+sudo apt-get install -y nodejs
+```
+
+Update npm, install packages and run adonisjs:
+
+```
 sudo npm i npm
 
 # installing adonis cli
