@@ -29,8 +29,11 @@ class AuthorManager {
       this.controlEvent = this.controlEvent.bind(this);
       window.messageBus.ext.subscribe("control/#", this.controlEvent);
       
-      this.selectKnot = this.selectKnot.bind(this);
-      window.messageBus.ext.subscribe("knot/+/selected", this.selectKnot);
+      this.knotSelected = this.knotSelected.bind(this);
+      window.messageBus.ext.subscribe("knot/+/selected", this.knotSelected);
+
+      this.groupSelected = this.groupSelected.bind(this);
+      window.messageBus.ext.subscribe("group/+/selected", this.groupSelected);
 
       this._templateFamilySelected = this._templateFamilySelected.bind(this);
       this.newKnot = this.newKnot.bind(this);
@@ -74,7 +77,7 @@ class AuthorManager {
          case "control/config/edit": this.config();
                                      break;
          /*
-         case "control/knot/selected": this.selectKnot(message);
+         case "control/knot/selected": this.knotSelected(message);
                                         break;
          */
       }
@@ -307,25 +310,35 @@ class AuthorManager {
    /*
     * ACTION: knot-selected
     */
-   async selectKnot(topic, message) {
+   async knotSelected(topic, message) {
       if (this._miniPrevious)
          this._miniPrevious.classList.remove("sty-selected-knot");
       
-      const knotId = MessageBus.extractLevel(topic, 2);
+      const knotid = MessageBus.extractLevel(topic, 2);
       
-      const miniature = document.querySelector("#mini-" + knotId.replace(/\./g, "_"));
+      const miniature = document.querySelector("#mini-" + knotid.replace(/\./g, "_"));
       miniature.classList.add("sty-selected-knot");
       
       this._miniPrevious = miniature;
             
-      if (knotId != null) {
+      if (knotid != null) {
          this._checkKnotModification();
-         this._knotSelected = knotId;
+         this._knotSelected = knotid;
          this._htmlKnot = await this._generateHTML(this._knotSelected);
          this._renderKnot();
       }
     }
    
+    /*
+     * ACTION: group-selected
+     */
+    async groupSelected(topic, message) {
+      this.knotSelected(topic, message);
+      const knotid = MessageBus.extractLevel(topic, 2);
+      console.log("down tree: " + knotid);
+      this._navigator.downTree(knotid);
+    }
+
    /*
     * Check if the knot was modified to update it
     */
@@ -347,11 +360,13 @@ class AuthorManager {
    async _generateHTML(knot) {
       this._templateSet = {};
       let finalHTML = await this._generateHTMLBuffer(knot);
-      delete this._templateSet;
+      // <TODO> fix - deleting before ending
+      // delete this._templateSet;
       return finalHTML;
    }
    
    async _generateHTMLBuffer(knot) {
+      // console.log(knot);
       let templates = (this._knots[knot].categories) ?
                        this._knots[knot].categories : ["knot"];
       for (let tp in templates)
