@@ -38,6 +38,9 @@ adonis serve --dev
 ```
 Go to http://127.0.0.1:3333/author/author.html
 
+
+---
+
 # Directory Map
 
 * **author** - Front-end of the authoring environment that runs in the client side. The `author.html` plus the `js/author.js` files are the main modules. The Javascript files of the module are in the `[js]` directory.
