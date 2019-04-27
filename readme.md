@@ -1,11 +1,45 @@
-[![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/datasci4health/case-notebook/blob/master/LICENSE)
-[![Docker Automated](https://img.shields.io/docker/cloud/automated/datasci4health/case-notebook.svg?style=flat)](https://cloud.docker.com/u/datasci4health/repository/registry-1.docker.io/datasci4health/case-notebook)
-[![Docker Build](https://img.shields.io/docker/cloud/build/datasci4health/case-notebook.svg?style=flat)](https://cloud.docker.com/u/datasci4health/repository/registry-1.docker.io/datasci4health/case-notebook)
-[![Docker Pulls](https://img.shields.io/docker/pulls/datasci4health/case-notebook.svg?style=flat)](https://cloud.docker.com/u/datasci4health/repository/registry-1.docker.io/datasci4health/case-notebook)
-[![Docker Stars](https://img.shields.io/docker/stars/datasci4health/case-notebook.svg?style=flat)](https://cloud.docker.com/u/datasci4health/repository/registry-1.docker.io/datasci4health/case-notebook)
+[![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/datasci4health/harena-space/blob/master/LICENSE)
+[![Docker Automated](https://img.shields.io/docker/cloud/automated/datasci4health/harena-space.svg?style=flat)](https://cloud.docker.com/u/datasci4health/repository/registry-1.docker.io/datasci4health/harena-space)
+[![Docker Build](https://img.shields.io/docker/cloud/build/datasci4health/harena-space.svg?style=flat)](https://cloud.docker.com/u/datasci4health/repository/registry-1.docker.io/datasci4health/harena-space)
+[![Docker Pulls](https://img.shields.io/docker/pulls/datasci4health/harena-space.svg?style=flat)](https://cloud.docker.com/u/datasci4health/repository/registry-1.docker.io/datasci4health/harena-space)
+[![Docker Stars](https://img.shields.io/docker/stars/datasci4health/harena-space.svg?style=flat)](https://cloud.docker.com/u/datasci4health/repository/registry-1.docker.io/datasci4health/harena-space)
 
 # harena-space
 Front end of Harena including the Author and Player platforms.
+
+### Running locally
+Install nodejs and npm:
+```
+# updating and installing curl
+sudo apt-get update && sudo apt-get install -y curl 
+
+# installing/updating nodejs/npm LTS
+curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
+sudo apt-get install -y nodejs gcc g++
+```
+
+Update npm, install packages and run adonisjs:
+
+```
+sudo npm i npm
+
+# installing adonis cli
+sudo npm i -g @adonisjs/cli
+
+cd src/adonisjs 
+cp .env.example .env
+
+# installing npm packages
+npm install
+
+# running adonis
+adonis serve --dev
+
+```
+Go to http://127.0.0.1:3333/author/author.html
+
+
+---
 
 # Directory Map
 
