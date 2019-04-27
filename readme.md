@@ -15,7 +15,7 @@ sudo apt-get update && sudo apt-get install -y curl
 
 # installing/updating nodejs/npm LTS
 curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
-sudo apt-get install -y nodejs gcc g++
+sudo apt-get install -y nodejs npm gcc g++
 ```
 
 Update npm, install packages and run adonisjs:
