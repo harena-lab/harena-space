@@ -36,6 +36,7 @@ npm install
 adonis serve --dev
 
 ```
+Go to http://127.0.0.1:3333/author/author.html
 
 # Directory Map
 
