@@ -27,6 +27,7 @@ sudo npm i npm
 sudo npm i -g @adonisjs/cli
 
 cd src/adonisjs 
+cp .env.example .env
 
 # installing npm packages
 npm install
