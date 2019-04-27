@@ -26,7 +26,7 @@ sudo npm i npm
 # installing adonis cli
 sudo npm i -g @adonisjs/cli
 
-cd src/adonijs 
+cd src/adonisjs 
 
 # installing npm packages
 npm install
