@@ -2,58 +2,24 @@ version: '3'
 
 services:
 
-  database:
-    image: mysql:5.7
+  harena-space:
+    image: datasci4health/harena-space
     ports:
-      - "3306:3306"
-    volumes:
-      - database:/var/lib/mysql
-    environment:                                # will be  replaced to .env vars, as in ${DB_PASSWORD}
-      - MYSQL_DATABASE=jacinto-casemanager
-      - MYSQL_USER=jacinto-casemanager
-      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
-      - MYSQL_PASSWORD=jacinto
-      - MYSQL_ROOT_PASSWORD=root
-    restart: always
-
-
-  database-ui:
-    image: phpmyadmin/phpmyadmin:latest
-    links:
-      - database
-    ports:
-      - 80:80
-    environment:
-      - PMA_ARBITRARY=0                         # connection to any server 
-      - PMA_HOST=database
-      - PMA_PORT=3306
-    depends_on:
-      - database
-
-
-  jacinto-casemanager:
-    image: datasci4health/jacinto-casemanager
-    ports:
-      - "3333:3333"
+      - "3000:3333"
     environment:
       - HOST=0.0.0.0
       - PORT=3333
       - NODE_ENV=production
-      - APP_NAME=jacinto-casemanager
-      - APP_URL=http://${HOST}:${PORT}
+      - APP_NAME=harena-space
+      - APP_URL=http://0.0.0.0:3333
       - CACHE_VIEWS=false
-      - APP_KEY=Xw8Ctuhsasew77qDx4GSnUlyTY3a6x
-      - DB_CONNECTION=mysql
-      - DB_HOST=127.0.0.1
-      - DB_PORT=3306
-      - DB_DATABASE=jacinto-casemanager
-      - DB_USER=jacinto-casemanager
-      - DB_PASSWORD=jacinto
+      - APP_KEY=Xw8Ctu827gw290qDx4GSnUlyTY3a6x
       - HASH_DRIVER=bcrypt
-    depends_on:
-      - database
+      - HARENA_SPACE_SERVER=harena-space
     restart: always
+    networks:
+      - harena-space
 
-volumes:
-  database:
-    driver: "local"
+networks:
+  harena-space:
+    driver: bridge

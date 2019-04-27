@@ -1,5 +1,8 @@
 /**
- * Local component that works as a proxy to the server functionalities
+ * Server Proxy Component
+ *
+ * Component following the Digital Content Component (DCC) model responsible for acting
+ * as a proxy between the authoring environment and the server.
  */
 
 class DCCAuthorServer {
