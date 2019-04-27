@@ -30,7 +30,7 @@ class PlayerManager {
       // tracking
       this.trackTyping = this.trackTyping.bind(this);
    }
-   
+
    /*
     * Event handlers
     * **************
@@ -207,13 +207,15 @@ class PlayerManager {
     * Start the tracking record of a case
     */
    startCase() {
-      // <TODO> this._runningCase is provisory
-      const runningCase = this._server.generateRunningCase();
-      
-      // console.log("************* Running case");
-      // console.log(runningCase);
-      
-      window.messageBus.ext.defineRunningCase(runningCase);
+      if (!PlayerManager.isCapsule) {
+         // <TODO> this._runningCase is provisory
+         const runningCase = this._server.generateRunningCase();
+        
+         // console.log("************* Running case");
+         // console.log(runningCase);
+        
+         window.messageBus.ext.defineRunningCase(runningCase);
+      }
    }
    
    /*
