@@ -62,7 +62,7 @@
    <script>
       function start() {
          window.quill = new Quill('#editor', {theme: 'snow'});
-         window.messageBus.ext.subscribe("control/translate/example", translate);
+         MessageBus.ext.subscribe("control/translate/example", translate);
       }
       function translate(topic, message) {
          let mkTranslator = new Translator();

@@ -167,12 +167,11 @@ class DCCResourcePicker extends DCCBase {
    
    _showSelectList() {
       if (this._selectList != null) {
-         // let imageFiles = DCCSystem.getImageFiles();
          let options = "";
          let selected = "' selected>";
          for (var sl in this._selectList) {
             options += "<option value='" + sl + selected +
-                       sl + "</option>";
+                       this._selectList[sl].name + "</option>";
             selected = "'>";
          }
          this._listWeb.innerHTML = options;
@@ -183,11 +182,13 @@ class DCCResourcePicker extends DCCBase {
    
    _updatePreview() {
       if (this._selectList != null && this._listWeb != null)
-         this._resourcePreview.innerHTML = "<img src='" + this._selectList[this._listWeb.value] + "' class='dsty-resource'>"; 
+         this._resourcePreview.innerHTML =
+            "<img src='" + this._selectList[this._listWeb.value].icon +
+               "' class='dsty-resource'>"; 
    }
    
    _notify() {
-      window.messageBus.ext.publish("control/" + this.resource + "/selected",
+      MessageBus.ext.publish("control/" + this.resource + "/selected",
                                     {sourceType: DCCResourcePicker.elementTag,
                                      selected: this._listWeb.value});
    }

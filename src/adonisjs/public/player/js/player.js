@@ -14,17 +14,17 @@ class PlayerManager {
       this._history = [];
       
       this.controlEvent = this.controlEvent.bind(this);
-      window.messageBus.ext.subscribe("control/#", this.controlEvent);
+      MessageBus.ext.subscribe("control/#", this.controlEvent);
       this.navigateEvent = this.navigateEvent.bind(this);
-      window.messageBus.ext.subscribe("knot/+/navigate", this.navigateEvent);
+      MessageBus.ext.subscribe("knot/+/navigate", this.navigateEvent);
       
       // <TODO> temporary
       this.produceReport = this.produceReport.bind(this);
-      window.messageBus.int.subscribe("/report/get", this.produceReport);
+      MessageBus.int.subscribe("/report/get", this.produceReport);
       
       /*
       this.inputEvent = this.inputEvent.bind(this);
-      window.messageBus.ext.subscribe("input/#", this.inputEvent);
+      MessageBus.ext.subscribe("input/#", this.inputEvent);
       */
       
       // tracking
@@ -45,10 +45,10 @@ class PlayerManager {
    
    navigateEvent(topic, message) {
       this.trackTrigger(message);
-      // window.messageBus.ext.publish("checkout", message);
+      // MessageBus.ext.publish("checkout", message);
       if (this._currentKnot != null) {
-         window.messageBus.ext.publish("control/input/submit"); // <TODO> provisory
-         window.messageBus.ext.publish("knot/" + this._currentKnot + "/end");
+         MessageBus.ext.publish("control/input/submit"); // <TODO> provisory
+         MessageBus.ext.publish("knot/" + this._currentKnot + "/end");
       }
       switch (topic) {
          case "knot/</navigate": if (this._history.length > 0) {
@@ -98,11 +98,11 @@ class PlayerManager {
       this._knotScript = document.createElement("script");
       this._knotScript.src = "knots/" + knotName + ".js";
       document.head.appendChild(this._knotScript);
-      window.messageBus.ext.publish("knot/" + knotName + "/start");
+      MessageBus.ext.publish("knot/" + knotName + "/start");
    }
    
    presentKnot(knot) {
-      window.messageBus.page = new MessageBus(false);
+      MessageBus.page = new MessageBus(false);
       
       this._mainPanel.innerHTML = knot;
 
@@ -214,7 +214,7 @@ class PlayerManager {
          // console.log("************* Running case");
          // console.log(runningCase);
         
-         window.messageBus.ext.defineRunningCase(runningCase);
+         MessageBus.ext.defineRunningCase(runningCase);
       }
    }
    
@@ -228,7 +228,7 @@ class PlayerManager {
    }
    
    startTrackTyping(variable) {
-      window.messageBus.ext.subscribe("/" + variable + "/typed", this.trackTyping);
+      MessageBus.ext.subscribe("/" + variable + "/typed", this.trackTyping);
    }
    
    trackTyping(topic, message) {
@@ -258,7 +258,7 @@ class PlayerManager {
          output.users[users.ids[u]] = profile;
       }
       
-      window.messageBus.int.publish("/report", {caseobj: server.getPlayerObj(),
+      MessageBus.int.publish("/report", {caseobj: server.getPlayerObj(),
                                                 result: output});
    }   
 }

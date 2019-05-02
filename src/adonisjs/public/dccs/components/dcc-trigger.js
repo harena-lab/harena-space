@@ -90,7 +90,7 @@ class DCCTrigger extends DCCBlock {
       if (this.hasAttribute("label") || this.hasAttribute("action")) {
          const message = (this.hasAttribute("link")) ? this.link : this.label;
          const topic = (this.hasAttribute("action")) ? this.action : "knot/" + message + "/navigate";
-         window.messageBus.ext.publish(topic, message);
+         MessageBus.ext.publish(topic, message);
       }
    }
 }

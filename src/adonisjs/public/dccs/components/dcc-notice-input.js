@@ -57,7 +57,7 @@ class DCCNoticeInput extends DCCBase {
        </style>
        <div id="presentation-dcc" class="dsty-notice dsty-border-notice">
           <div id="text" class="dsty-text dsty-border">[text]</div>
-          <input id="input" class="dsty-input dsty-border"[display]></input>
+          <input id="input" class="dsty-input dsty-border"[display][itype]></input>
           <div id="submit-button" class="dsty-submit-button">[button]</div>
        </div>`;
       
@@ -71,14 +71,17 @@ class DCCNoticeInput extends DCCBase {
       
       const displayInput = (this.hasAttribute("input")) ? "" : " style='display:none'";
 
+      const displayType = (this.hasAttribute("itype")) ? " type='" + this.itype + "'" : "";
+
       // building the template
       const template = document.createElement("template");
       template.innerHTML = templateHTML
                               .replace("[width]", dialogSize.width)
                               .replace("[height]", dialogSize.height)
                               .replace("[text]", this.text)
-                              .replace("[display", displayInput)
-                              .replace("[button]", this.button);
+                              .replace("[display]", displayInput)
+                              .replace("[button]", this.button)
+                              .replace("[itype]", displayType);
       this._shadow = this.attachShadow({mode: "open"});
       this._shadow.appendChild(template.content.cloneNode(true));
       
@@ -93,7 +96,7 @@ class DCCNoticeInput extends DCCBase {
     **********/
     
     static get observedAttributes() {
-       return ["text", "input", "button"];
+       return ["text", "input", "button", "itype"];
     }
    
     get text() {
@@ -102,9 +105,8 @@ class DCCNoticeInput extends DCCBase {
     
     set text(newValue) {
        this.setAttribute("text", newValue);
-       if (this._shadow != null) {
+       if (this._shadow != null)
           this._shadow.querySelector("#text").innerHTML = newValue;
-       }
     }
 
     get input() {
@@ -123,8 +125,18 @@ class DCCNoticeInput extends DCCBase {
        this.setAttribute("button", newValue);
     }
 
+    get itype() {
+       return this.getAttribute("itype");
+    }
+    
+    set itype(newValue) {
+       this.setAttribute("itype", newValue);
+       if (this._inputField != null)
+          this._inputField.setAttribute("type", newValue);
+    }
+
    _notify() {
-      window.messageBus.ext.publish("var/" + this.input + "/set",
+      MessageBus.ext.publish("var/" + this.input + "/set",
                                     {sourceType: DCCNoticeInput.elementTag,
                                      input: this._inputField.value});
    }

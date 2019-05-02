@@ -11,9 +11,9 @@ constructor() {
    this._retracted = true;
 
    this.expandClicked = this.expandClicked.bind(this);
-   window.messageBus.ext.subscribe("control/navigator/expand", this.expandClicked);
+   MessageBus.ext.subscribe("control/navigator/expand", this.expandClicked);
    this.retractClicked = this.retractClicked.bind(this);
-   window.messageBus.ext.subscribe("control/navigator/retract", this.retractClicked);
+   MessageBus.ext.subscribe("control/navigator/retract", this.retractClicked);
 }
 
 async expandClicked(topic, message) {
@@ -67,7 +67,7 @@ async mountTreeCase(author, knots) {
    this._navigationPanel = document.querySelector("#navigation-panel");
    this._knotPanel = document.querySelector("#knot-panel");
    
-   this._capsule = await window.messageBus.ext.request("capsule/knot/get", "", "capsule/knot");
+   this._capsule = await MessageBus.ext.request("capsule/knot/get", "", "capsule/knot");
    
    this._navigationPanel.innerHTML = "";
    
@@ -171,7 +171,7 @@ async _presentTreeCase() {
       .attr("font-size", function(d) {return d.data.titleSize + "px"})
       .attr("fill", "black")
       .attr("cursor", "pointer")
-      .on("click", function(d) {window.messageBus.ext.publish("knot/" + d.data.knotid + "/selected")})
+      .on("click", function(d) {MessageBus.ext.publish("knot/" + d.data.knotid + "/selected")})
       .on("mouseover", function(d) {
          let t = document.querySelector("#t_" + d.data.id);
          t.removeChild(t.firstChild);

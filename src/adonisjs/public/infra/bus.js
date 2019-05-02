@@ -41,6 +41,7 @@ class MessageBus {
    }
    
    async publish(topic, message) {
+      console.log(topic);
       for (let l in this._listeners)
          if (this.matchTopic(l, topic))
             this._listeners[l].callback(topic, message);
@@ -89,16 +90,30 @@ class MessageBus {
    }
    
    async request(requestTopic, requestMessage, responseTopic) {
+      let rt;
+      let rm = (requestMessage) ? requestMessage : null;
+      if (responseTopic)
+         rt = responseTopic;
+      else {
+         if (rm == null)
+            rm = {};
+         else if (typeof rm != "object")
+            rm = {body: rm};
+         rm.responseStamp = MessageBus._stamp;
+         rt = requestTopic + "/response/" + MessageBus._stamp;
+         MessageBus._stamp++;
+      }
+
       let promise = new Promise((resolve, reject) => {
          const callback = function(topic, message) {
             resolve({topic: topic, message: message, callback: callback});
          };
-         this.subscribe(responseTopic, callback);
-         this.publish(requestTopic, requestMessage);
+         this.subscribe(rt, callback);
+         this.publish(requestTopic, rm);
       });
       
       let returnMessage = await promise;
-      this.unsubscribe(responseTopic, returnMessage.callback);
+      this.unsubscribe(rt, returnMessage.callback);
       
       return {topic: returnMessage.topic,
               message: returnMessage.message};
@@ -119,7 +134,8 @@ class MessageBus {
               message: returnMessage.message};
    }
 
-   /* Message analysis services */
+   /* Message analysis services
+      *************************/
    
    static _convertRegExp(filter) {
       return new RegExp(filter.replace("/", "\\/")
@@ -147,13 +163,23 @@ class MessageBus {
       }
       return label;
    }
-   
-   
+
+   /* Message building services
+      *************************/
+   static buildResponseTopic(topic, message) {
+      return topic + "/response/" + message.responseStamp;
+   }
 }
 
 (function() {
+   MessageBus._stamp = 1;
+
+   MessageBus.int = new MessageBus(false);
+   MessageBus.ext = new MessageBus(false);
+   /*
    window.messageBus = {
       int: new MessageBus(false),
       ext: new MessageBus(false)
    };
+   */
 })();

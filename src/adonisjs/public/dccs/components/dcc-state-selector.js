@@ -45,18 +45,18 @@ class DCCStateSelector extends DCCBase {
    async connectedCallback() {
       // <TODO> limited: considers only one group per page
       this.completeId = this.id;  
-      if (!this.hasAttribute("states") && window.messageBus.page.hasSubscriber("dcc/request/selector-states")) {
-         this.context = await window.messageBus.page.request("dcc/selector-context/request", this.id, "dcc/selector-context/" + this.id);
+      if (!this.hasAttribute("states") && MessageBus.page.hasSubscriber("dcc/request/selector-states")) {
+         this.context = await MessageBus.page.request("dcc/selector-context/request", this.id, "dcc/selector-context/" + this.id);
          this.completeId = this.context.message + "." + this.id;
 
-         window.messageBus.page.subscribe("dcc/selector-states/" + this.id, this.defineStates);
-         window.messageBus.page.publish("dcc/request/selector-states", this.id);
+         MessageBus.page.subscribe("dcc/selector-states/" + this.id, this.defineStates);
+         MessageBus.page.publish("dcc/request/selector-states", this.id);
          this._pendingRequests++;
       }
       
       this._checkRender();
 
-      window.messageBus.ext.publish("var/" + this.completeId + "/subinput/ready",
+      MessageBus.ext.publish("var/" + this.completeId + "/subinput/ready",
                                     {sourceType: DCCStateSelector.elementTag,
                                      content: this.innerHTML});
    }
@@ -68,7 +68,7 @@ class DCCStateSelector extends DCCBase {
    }
 
    defineStates(topic, message) {
-      window.messageBus.page.unsubscribe("dcc/selector-states/" + this.id, this.defineStates);
+      MessageBus.page.unsubscribe("dcc/selector-states/" + this.id, this.defineStates);
       this.states = message;
       this._pendingRequests--;
       this._checkRender();
@@ -80,7 +80,7 @@ class DCCStateSelector extends DCCBase {
          if (this.hasAttribute("answer"))
             this._currentState = statesArr.indexOf(this.answer);
          else if (this.hasAttribute("player")) {
-            let value = await window.messageBus.ext.request(
+            let value = await MessageBus.ext.request(
                   "var/" + this.player + "/get/sub", this.innerHTML, "var/" + this.player + "/sub");
             this._currentState = statesArr.indexOf(value.message);
          } else {
@@ -174,7 +174,7 @@ class DCCStateSelector extends DCCBase {
      if (this.states != null) {
        const statesArr = this.states.split(",");
        this._currentState = (this._currentState + 1) % statesArr.length;
-       window.messageBus.ext.publish("var/" + this.completeId + "/state_changed",
+       MessageBus.ext.publish("var/" + this.completeId + "/state_changed",
              {sourceType: DCCInput.elementTag,
               state: statesArr[this._currentState]});
      }
@@ -193,25 +193,25 @@ class DCCGroupSelector extends DCCBase {
   }
    
    connectedCallback() {
-      window.messageBus.page.subscribe("dcc/selector-context/request", this.requestContext);
-      window.messageBus.page.subscribe("dcc/request/selector-states", this.requestStates);
+      MessageBus.page.subscribe("dcc/selector-context/request", this.requestContext);
+      MessageBus.page.subscribe("dcc/request/selector-states", this.requestStates);
       
-      window.messageBus.ext.publish("var/" + this.context + "/group_input/ready",
+      MessageBus.ext.publish("var/" + this.context + "/group_input/ready",
                                     DCCGroupSelector.elementTag);
    }
 
    disconnectedCallback() {
-      window.messageBus.page.unsubscribe("dcc/selector-context/request", this.requestContext);
-      window.messageBus.page.unsubscribe("dcc/request/selector-states", this.requestStates);
+      MessageBus.page.unsubscribe("dcc/selector-context/request", this.requestContext);
+      MessageBus.page.unsubscribe("dcc/request/selector-states", this.requestStates);
    }
    
    
    requestStates(topic, message) {
-      window.messageBus.page.publish("dcc/selector-states/" + message, this.states);
+      MessageBus.page.publish("dcc/selector-states/" + message, this.states);
    }   
    
    requestContext(topic, message) {
-      window.messageBus.page.publish("dcc/selector-context/" + message, this.context);
+      MessageBus.page.publish("dcc/selector-context/" + message, this.context);
    }
    
    /*

@@ -17,7 +17,7 @@
    <script type="text/javascript" src="../components/dcc-trigger.js"></script>
    <script>
    function startListener() {
-      window.messageBus.ext.subscribe("/button", display);
+      MessageBus.ext.subscribe("/button", display);
    }
    function display(topic, message) {
       document.querySelector("#message").innerHTML = message;

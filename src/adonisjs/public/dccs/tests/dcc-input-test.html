@@ -15,7 +15,7 @@
    
    <script>
       function start() {
-         window.messageBus.ext.subscribe("var/diagnostics/changed", showResult);
+         MessageBus.ext.subscribe("var/diagnostics/changed", showResult);
       }
       function showResult(topic, message) {
          document.querySelector("#result").innerHTML =

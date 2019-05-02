@@ -15,28 +15,28 @@ class DCCTalk extends DCCBase {
    }
    
    connectedCallback() {
-      if (window.messageBus.page.hasSubscriber("dcc/request/talk-sequence")) {
-         window.messageBus.page.subscribe("dcc/talk-sequence/" + this.id, this.defineSequence);
-         window.messageBus.page.publish("dcc/request/talk-sequence", this.id);
+      if (MessageBus.page.hasSubscriber("dcc/request/talk-sequence")) {
+         MessageBus.page.subscribe("dcc/talk-sequence/" + this.id, this.defineSequence);
+         MessageBus.page.publish("dcc/request/talk-sequence", this.id);
          this._pendingRequests++;
       }
-      if (!this.hasAttribute("xstyle") && window.messageBus.page.hasSubscriber("dcc/request/xstyle")) {
-         window.messageBus.page.subscribe("dcc/xstyle/" + this.id, this.defineXstyle);
-         window.messageBus.page.publish("dcc/request/xstyle", this.id);
+      if (!this.hasAttribute("xstyle") && MessageBus.page.hasSubscriber("dcc/request/xstyle")) {
+         MessageBus.page.subscribe("dcc/xstyle/" + this.id, this.defineXstyle);
+         MessageBus.page.publish("dcc/request/xstyle", this.id);
          this._pendingRequests++;
       }
       this._checkRender();
    }
    
    defineSequence(topic, message) {
-      window.messageBus.page.unsubscribe("dcc/talk-sequence/" + this.id, this.defineSequence);
+      MessageBus.page.unsubscribe("dcc/talk-sequence/" + this.id, this.defineSequence);
       this.sequence = message;
       this._pendingRequests--;
       this._checkRender();
    }
    
    defineXstyle(topic, message) {
-      window.messageBus.page.unsubscribe("dcc/xstyle/" + this.id, this.defineXstyle);
+      MessageBus.page.unsubscribe("dcc/xstyle/" + this.id, this.defineXstyle);
       this.xstyle = message;
       this._pendingRequests--;
       this._checkRender();
@@ -147,16 +147,16 @@ class DCCDialog extends DCCBase {
    }
 
    connectedCallback() {
-      window.messageBus.page.subscribe("dcc/request/talk-sequence", this.requestSequence);
+      MessageBus.page.subscribe("dcc/request/talk-sequence", this.requestSequence);
    }
 
    disconnectedCallback() {
-      window.messageBus.page.unsubscribe("dcc/request/talk-sequence", this.requestSequence);
+      MessageBus.page.unsubscribe("dcc/request/talk-sequence", this.requestSequence);
    }
 
    requestSequence(topic, message) {
       this._sequence++;
-      window.messageBus.page.publish("dcc/talk-sequence/" + message, this._sequence);
+      MessageBus.page.publish("dcc/talk-sequence/" + message, this._sequence);
    }
 }
 

@@ -3,8 +3,8 @@
 class DCCReport extends DCCBase {
    connectedCallback() {
       this.presentReport = this.presentReport.bind(this);
-      window.messageBus.int.subscribe("/report", this.presentReport);
-      window.messageBus.int.publish("/report/get");
+      MessageBus.int.subscribe("/report", this.presentReport);
+      MessageBus.int.publish("/report/get");
       console.log("report solicitado");
    }
    

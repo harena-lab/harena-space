@@ -6,7 +6,7 @@
 
 class CapsuleManager {
    constructor() {
-      window.messageBus.page = new MessageBus(false);
+      MessageBus.page = new MessageBus(false);
    }
    
    startCapsule() {
