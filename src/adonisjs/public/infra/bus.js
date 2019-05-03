@@ -41,7 +41,6 @@ class MessageBus {
    }
    
    async publish(topic, message) {
-      console.log(topic);
       for (let l in this._listeners)
          if (this.matchTopic(l, topic))
             this._listeners[l].callback(topic, message);

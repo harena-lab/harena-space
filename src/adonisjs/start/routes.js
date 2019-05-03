@@ -15,12 +15,21 @@
 
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use("Route");
-const Env = use("Env");
 
 Route.on("/").render("welcome");
 
+/*
 let harenaManagerUrl =
    Env.get("HARENA_MANAGER_URL", "http://localhost:3000/api/v1/");
+*/
+
+const Env   = use('Env')
+
+Route.get('author/js/dcc-author-server-address.js', async ({response, view}) =>{
+    const harena_manager_url = Env.get('HARENA_MANAGER_URL', 'http://127.0.0.1:3000/api/v1');
+    response.header('Content-type', 'application/javascript');
+    return view.render('dcc-author-server-address',{ "harena_manager_url" : harena_manager_url });
+});
 
 /*
 Route.on("/author/js/dcc-author-server-address.js")
@@ -56,6 +65,8 @@ Route.get("/images/45293/doctor.png", async ({response}) => {
 });
 */
 
+/*
 Route.get("/resources/images/45293/doctor.png", async ({response}) => {
   return response.redirect("doctor.png");
 });
+*/

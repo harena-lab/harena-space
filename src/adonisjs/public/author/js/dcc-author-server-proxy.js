@@ -105,7 +105,6 @@ class DCCAuthorServer {
                                   "filter": message.filter})
       }
       const response = await fetch(DCCAuthorServer.serverAddress + "case/list", header);
-      console.log(response);
       const jsonResponse = await response.json();
       let busResponse = {};
       for (var c in jsonResponse)
@@ -186,7 +185,6 @@ class DCCAuthorServer {
           }
       }
       const response = await fetch("./knot-capsule.html", header);
-      console.log(response);
       let textResponse = await response.text();
       MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
                              textResponse);
@@ -207,31 +205,11 @@ class DCCAuthorServer {
       }
       const response = await fetch("../themes/" + templateFamily + "/" + templateName +
                                    ".html", header);
-      console.log(response);
       let textResponse = await response.text();
       MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
                              textResponse);
    }
    
-   /*
-   async loadTemplate(topic) {
-      const templateCompleteName = MessageBus.extractLevel(topic, 2);
-      const separator = templateCompleteName.indexOf("."); 
-      const templateFamily = templateCompleteName.substring(0, separator);
-      const templateName = templateCompleteName.substring(separator+1);
-      const response = await fetch(DCCAuthorServer.serverAddress + "load-template", {
-         method: "POST",
-         body: JSON.stringify({"templateFamily": templateFamily,
-                               "templateName": templateName}),
-         headers:{
-           "Content-Type": "application/json"
-         }
-      });
-      const jsonResponse = await response.json();
-      MessageBus.ext.publish("template/" + templateCompleteName, jsonResponse.template);
-   }
-   */
-
    async prepareCaseHTML(topic, templateFamily) {
       const caseName = MessageBus.extractLevel(topic, 2);
       const response = await fetch(DCCAuthorServer.serverAddress + "prepare-case-html", {

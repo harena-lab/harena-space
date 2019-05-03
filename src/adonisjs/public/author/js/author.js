@@ -57,6 +57,7 @@ class AuthorManager {
       this._userid = null;
       let errorMessage = "";
       while (this._userid == null) {
+         /*
          let userEmailN = new DCCNoticeInput();
          userEmailN.text = errorMessage + "<h3>Signin</h3><h4>inform your email:</h4>";
          userEmailN.input = "informed_email";
@@ -71,11 +72,10 @@ class AuthorManager {
          this._knotPanel.appendChild(userPassN);
          let userPass = await MessageBus.ext.waitMessage("var/" + userPassN.input + "/set");
          this._knotPanel.removeChild(userPassN);
+         */
 
-         /*
          let userEmail = {message: {input: "jacinto@example.com"}};
          let userPass = {message: {input: "jacinto"}};
-         */
 
          let loginReturn = await MessageBus.ext.request("data/user/login",
                                                         {email: userEmail.message.input,
@@ -163,10 +163,10 @@ class AuthorManager {
    async _caseLoad(caseId) {
       this._currentCaseId = caseId;
       const caseMd = await MessageBus.ext.request("case/" + this._currentCaseId + "/get");
-      
+
       this._compiledCase = this._translator.compileMarkdown(this._currentCaseId, caseMd.message);
       this._knots = this._compiledCase.knots;
-      
+
       await this._navigator.mountTreeCase(this, this._compiledCase.knots);
       
       const knotIds = Object.keys(this._knots);
@@ -374,7 +374,6 @@ class AuthorManager {
     async groupSelected(topic, message) {
       this.knotSelected(topic, message);
       const knotid = MessageBus.extractLevel(topic, 2);
-      console.log("down tree: " + knotid);
       this._navigator.downTree(knotid);
     }
 
@@ -405,7 +404,6 @@ class AuthorManager {
    }
    
    async _generateHTMLBuffer(knot) {
-      // console.log(knot);
       let templates = (this._knots[knot].categories) ?
                        this._knots[knot].categories : ["knot"];
       for (let tp in templates)
