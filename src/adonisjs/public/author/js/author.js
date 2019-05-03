@@ -57,7 +57,6 @@ class AuthorManager {
       this._userid = null;
       let errorMessage = "";
       while (this._userid == null) {
-         /*
          let userEmailN = new DCCNoticeInput();
          userEmailN.text = errorMessage + "<h3>Signin</h3><h4>inform your email:</h4>";
          userEmailN.input = "informed_email";
@@ -72,9 +71,11 @@ class AuthorManager {
          this._knotPanel.appendChild(userPassN);
          let userPass = await MessageBus.ext.waitMessage("var/" + userPassN.input + "/set");
          this._knotPanel.removeChild(userPassN);
-         */
+
+         /*
          let userEmail = {message: {input: "jacinto@example.com"}};
          let userPass = {message: {input: "jacinto"}};
+         */
 
          let loginReturn = await MessageBus.ext.request("data/user/login",
                                                         {email: userEmail.message.input,
@@ -429,8 +430,7 @@ class AuthorManager {
    
    async _loadTemplate(templateFamily, templateName) {
       const templateObj = await MessageBus.ext.request(
-            "template/" + templateFamily + "." + templateName + "/get", "",
-            "template/" + templateFamily + "." + templateName);
+            "template/" + templateFamily + "." + templateName + "/get");
       return templateObj.message;
    }
    

@@ -67,7 +67,7 @@ async mountTreeCase(author, knots) {
    this._navigationPanel = document.querySelector("#navigation-panel");
    this._knotPanel = document.querySelector("#knot-panel");
    
-   this._capsule = await MessageBus.ext.request("capsule/knot/get", "", "capsule/knot");
+   this._capsule = await MessageBus.ext.request("capsule/knot/get");
    
    this._navigationPanel.innerHTML = "";
    

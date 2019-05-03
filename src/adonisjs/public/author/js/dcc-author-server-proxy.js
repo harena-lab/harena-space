@@ -176,17 +176,44 @@ class DCCAuthorServer {
       MessageBus.ext.publish("case/" + oldName + "/rename/status", jsonResponse.status);
    }
 
-   async loadKnotCapsule() {
-      const response = await fetch(DCCAuthorServer.serverAddress + "load-capsule", {
-         method: "POST",
-         headers:{
-           "Content-Type": "application/json"
-         }
-      });
-      const jsonResponse = await response.json();
-      MessageBus.ext.publish("capsule/knot", jsonResponse.capsule);
+   async loadKnotCapsule(topic, message) {
+      var header = {
+         "async": true,
+         "crossDomain": true,
+         "method": "GET",
+         "headers": {
+            "Content-Type": "text/html",
+          }
+      }
+      const response = await fetch("./knot-capsule.html", header);
+      console.log(response);
+      let textResponse = await response.text();
+      MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
+                             textResponse);
    }
-
+   
+   async loadTemplate(topic, message) {
+      const templateCompleteName = MessageBus.extractLevel(topic, 2);
+      const separator = templateCompleteName.indexOf("."); 
+      const templateFamily = templateCompleteName.substring(0, separator);
+      const templateName = templateCompleteName.substring(separator+1);
+      var header = {
+         "async": true,
+         "crossDomain": true,
+         "method": "GET",
+         "headers": {
+            "Content-Type": "text/html",
+          }
+      }
+      const response = await fetch("../themes/" + templateFamily + "/" + templateName +
+                                   ".html", header);
+      console.log(response);
+      let textResponse = await response.text();
+      MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
+                             textResponse);
+   }
+   
+   /*
    async loadTemplate(topic) {
       const templateCompleteName = MessageBus.extractLevel(topic, 2);
       const separator = templateCompleteName.indexOf("."); 
@@ -203,6 +230,7 @@ class DCCAuthorServer {
       const jsonResponse = await response.json();
       MessageBus.ext.publish("template/" + templateCompleteName, jsonResponse.template);
    }
+   */
 
    async prepareCaseHTML(topic, templateFamily) {
       const caseName = MessageBus.extractLevel(topic, 2);

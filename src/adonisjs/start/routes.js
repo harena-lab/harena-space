@@ -15,8 +15,24 @@
 
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use("Route");
+const Env = use("Env");
 
 Route.on("/").render("welcome");
+
+let harenaManagerUrl =
+   Env.get("HARENA_MANAGER_URL", "http://localhost:3000/api/v1/");
+
+/*
+Route.on("/author/js/dcc-author-server-address.js")
+     .render("dcc-author-server-address", {harena_manager_url: harenaManagerUrl});
+*/
+
+/*
+Route.on("/", async ({response, view}) => {
+   return response.header("Content-type", "application/javascript").send(
+      view.render("dcc-author-server-address", {harena_manager_url: harenaManagerUrl}));
+});
+*/
 
 /*
 Route.get("/themes", ({view}) => {
@@ -24,13 +40,13 @@ Route.get("/themes", ({view}) => {
 });
 */
 
+/*
 const fs = use("fs");
 const Helpers = use("Helpers");
 const readFile = Helpers.promisify(fs.readFile);
 
-/*
 Route.get("/themes", async ({response}) => {
-  return await readFile("resources/themes/classic/knot.html")
+  return await readFile("resources/themes/classic/knot.html");
 });
 */
 

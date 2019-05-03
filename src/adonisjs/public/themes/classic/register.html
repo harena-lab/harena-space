@@ -1,0 +1,32 @@
+<div class="panel-left-pict">
+   <div class="panel-left-pict-image">
+      <img  src="images/entrance.jpg">
+   </div>
+
+   <div class="panel-left-pict-text">
+      <h1>Registration</h1>
+      
+      <div id="registration-form">
+        <p>User id (e-mail): <input type="text" id="idInput"></input></p>
+        <p>Name: <input type="text" id="nameInput"></input></p>
+        <p>Age: <input type="text" id="ageInput"></input></p>
+        <div class="central-buttons">
+           <dcc-trigger action="control/register" label="Register"></dcc-trigger>
+        </div>
+      </div>
+
+      <div id="signed-user"  style="display:none">
+        <div class="central-buttons">
+           <dcc-trigger link="<<" label="Proceed"></dcc-trigger>
+        </div>
+      </div>
+
+      <div id="invalid-id" style="display:none">
+        <p class="alert-message">This id already exists.</p>
+      </div>
+
+      <div id="answer-all" style="display:none">
+        <p class="alert-message">Please, answer all questions.</p>
+      </div>
+   </div>
+</div>
