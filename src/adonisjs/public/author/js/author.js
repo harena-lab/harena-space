@@ -35,11 +35,6 @@ class AuthorManager {
       this.groupSelected = this.groupSelected.bind(this);
       MessageBus.ext.subscribe("group/+/selected", this.groupSelected);
 
-      this._themeFamilySelected = this._themeFamilySelected.bind(this);
-      // this.newKnot = this.newKnot.bind(this);
-      // this._caseSelected = this._caseSelected.bind(this);
-      
-      this._temporaryCase = true;
       this._caseModified = false;
 
       window.onbeforeunload = function() {
@@ -55,7 +50,7 @@ class AuthorManager {
 
       await this.signin();
 
-      MessageBus.ext.publish("control/case/new");
+      this.caseLoadSelect();
    }
 
    async signin() {
@@ -63,18 +58,18 @@ class AuthorManager {
       this._userid = null;
       let errorMessage = "";
       while (this._userid == null) {
-         /*
          const userEmail =
             await DCCNoticeInput.displayNotice(errorMessage +
                                          "<h3>Signin</h3><h4>inform your email:</h4>",
-                                         "informed_email");
+                                         "input");
          const userPass =
             await DCCNoticeInput.displayNotice("<h3>Signin</h3><h4>inform your password:</h4>",
-                                         "informed_pass", "password");
-         */
+                                         "password");
 
+         /*
          let userEmail = "jacinto@example.com";
          let userPass = "jacinto";
+         */
 
          let loginReturn = await MessageBus.ext.request("data/user/login",
                                                         {email: userEmail,
@@ -88,14 +83,7 @@ class AuthorManager {
    }
    
    /*
-    * `control/case/load`
-    * `control/case/save`
-    * `control/case/play`
-    * `control/knot/edit`
-    * `control/config/edit`
-
-    * `knot/<knot>/selected`
-
+    * Redirects control/<entity>/<operation> messages
     */
    controlEvent(topic, message) {
       switch (topic) {
@@ -122,36 +110,22 @@ class AuthorManager {
    async caseLoadSelect() {
       const saved = await this.saveChangedCase();
 
-      /*
-      this._resourcePicker = new DCCResourcePicker();
-      this._resourcePicker.resource = "case";
-      
-      MessageBus.ext.subscribe("control/case/selected", this._caseSelected);
-      */
-      
       const cases = await MessageBus.ext.request("data/case/*/list",
                                                  {filterBy: "user",
                                                   filter: this._userid});
-      
+      const caseId = await DCCNoticeInput.displayNotice(
+         "Select a case to load or start a new case.",
+         "list", "Select", "New", cases.message);
       /*
-      this._resourcePicker.addSelectList(cases.message);
-      this._knotPanel.appendChild(this._resourcePicker);
-      */
-
-      const caseId = await DCCResourcePicker.displayPicker("case", true, cases.message);
-
       if (this._temporaryCase && saved == "No")
          console.log("deleting..." + this._currentCaseId);
+      */
 
-   //}
-
-   // async _caseSelected(topic, message) {
-      
-      // MessageBus.ext.unsubscribe("control/case/selected", this._caseSelected);
-      this._caseLoad(caseId);
-      // this._knotPanel.removeChild(this._resourcePicker);
-
-      this._temporaryCase = false;
+      console.log("Selected: " + caseId);
+      if (caseId == "New")
+         this.caseNew();
+      else
+         this._caseLoad(caseId);
    }
    
    async saveChangedCase() {
@@ -160,12 +134,10 @@ class AuthorManager {
       if (this._caseModified) {
          decision = await DCCNoticeInput.displayNotice(
             "There are unsaved modifications in the case. Do you want to save?",
-            null, null, "Yes", "No");
+            "message", "Yes", "No");
          if (decision == "Yes")
             await this.caseSave();
       }
-
-      console.log(decision);
 
       return decision;
    }
@@ -193,7 +165,6 @@ class AuthorManager {
       this._currentCaseId = caseId;
       const caseObj = await MessageBus.ext.request(
          "data/case/" + this._currentCaseId + "/get");
-
       this._currentCaseName = caseObj.message.name;
 
       this._compiledCase = this._translator.compileMarkdown(this._currentCaseId,
@@ -213,31 +184,44 @@ class AuthorManager {
    }
    
    /*
+    * ACTION: control-save
+    */
+   async caseSave() {
+      if (this._currentCaseId != null && this._compiledCase != null) {
+         if (this._temporaryCase) {
+            const caseName =
+               await DCCNoticeInput.displayNotice("Inform a name for your case:",
+                                                  "input");
+            this._currentCaseName = caseName;
+            this._temporaryCase = false;
+         }
+
+         let md =this._translator.assembleMarkdown(this._compiledCase);
+         const status = await MessageBus.ext.request("data/case/" + this._currentCaseId + "/set",
+                                                     {name: this._currentCaseName,
+                                                      format: "markdown",
+                                                      source: md});
+         
+         console.log("Case saved! Status: " + status.message);
+
+         this._messageSpace.innerHTML = "Saved";
+         setTimeout(this._clearMessage, 2000);
+         let promise = new Promise((resolve, reject) => {
+            setTimeout(() => resolve("done!"), 2000);
+         });
+         let result = await promise;
+         this._messageSpace.innerHTML = "";
+      }
+   }
+
+   /*
     * ACTION: control/knot/new
     */
    async knotNew() {
-      /*
-      this._resourcePicker = new DCCResourcePicker();
-      this._resourcePicker.resource = "template";
-      
-      MessageBus.ext.subscribe("control/template/selected", this.newKnot);
-      */
-      
       const templates = await MessageBus.ext.request("data/template/*/list");
-
-      /*
-      this._resourcePicker.addSelectList(templates.message);
-      this._knotPanel.appendChild(this._resourcePicker);
-      */
-
-      const template = await DCCResourcePicker.displayPicker(
-         "template", true, templates.message);
-   // }
-
-   // async newKnot(topic, message) {
-      // MessageBus.ext.unsubscribe("control/template/selected", this.newKnot);
-      // this._knotPanel.removeChild(this._resourcePicker);
-      
+      const template = await DCCNoticeInput.displayNotice(
+         "Select a template for your knot.",
+         "list", "Select", "Cancel", templates.message);
       const knotId = "Knot_" + this._knotGenerateCounter;
       let newKnot = {type: "knot",
                      title: "Knot " + this._knotGenerateCounter,
@@ -265,65 +249,6 @@ class AuthorManager {
       }
    }
    
-   /*
-    * ACTION: control-save
-    */
-   async caseSave() {
-      if (this._currentCaseId != null && this._compiledCase != null) {
-         if (this._temporaryCase) {
-            const caseName =
-               await DCCNoticeInput.displayNotice("Inform a name for your case:",
-                                                  "informed_case_name");
-            this._currentCaseName = caseName;
-
-            /*
-            const noticeInput = new DCCNoticeInput();
-            noticeInput.text = "Inform a name for your case:";
-            noticeInput.input = "informed_case_name";
-            this._knotPanel.appendChild(noticeInput);
-            */
-            
-            /*
-            let status = "start";
-            let caseName = null;
-            while (status != "ok") {
-               caseName = await MessageBus.ext.waitMessage("var/" + noticeInput.input + "/set");
-               let statusMess = await MessageBus.ext.request("case/_temporary/rename",
-                                                                    {newName: caseName.message.input},
-                                                                     "case/_temporary/rename/status");
-               status = statusMess.message;
-               if (status != "ok")
-                  noticeInput.text =
-                     "<span style='color: red'>The selected name already exists</span><br>Inform a name for your case:";
-            }
-            */
-            /*
-            const caseName = await MessageBus.ext.waitMessage("var/" + noticeInput.input + "/set");
-            this._currentCaseName = caseName.message.input;
-            this._knotPanel.removeChild(noticeInput);
-            */
-
-            this._temporaryCase = false;
-         }
-
-         let md =this._translator.assembleMarkdown(this._compiledCase);
-         const status = await MessageBus.ext.request("data/case/" + this._currentCaseId + "/set",
-                                                     {name: this._currentCaseName,
-                                                      format: "markdown",
-                                                      source: md});
-         
-         console.log("Case saved! Status: " + status.message);
-
-         this._messageSpace.innerHTML = "Saved";
-         setTimeout(this._clearMessage, 2000);
-         let promise = new Promise((resolve, reject) => {
-            setTimeout(() => resolve("done!"), 2000);
-         });
-         let result = await promise;
-         this._messageSpace.innerHTML = "";
-      }
-   }
-
    /*
     * ACTION: control-play
     */
@@ -377,32 +302,13 @@ class AuthorManager {
    }
    
    /*
-    * ACTION: config (1)
+    * ACTION: config
     */
    async config() {
-      /*
-      this._resourcePicker = new DCCResourcePicker();
-      this._resourcePicker.resource = "theme_family";
-      
-      MessageBus.ext.subscribe("control/theme_family/selected", this._themeFamilySelected);
-      */
-      
-      const families = await MessageBus.ext.request("data/theme_family/*/list", "", "theme_family/*");
-      
-      this._resourcePicker.addSelectList(families.message);
-      document.querySelector("#knot-panel").appendChild(this._resourcePicker);
-
-      const template = await DCCResourcePicker.displayPicker(
-         "template", true, templates.message);
-   }
-
-   /*
-    * ACTION: config (2)
-    */
-   async _themeFamilySelected(topic, message) {
-      MessageBus.ext.unsubscribe("control/theme_family/selected", this._themeFamilySelected);
-      this._currentThemeFamily = message.selected;
-      document.querySelector("#knot-panel").removeChild(this._resourcePicker);
+      const families = await MessageBus.ext.request("data/theme_family/*/list");
+      this._currentThemeFamily = await DCCNoticeInput.displayNotice(
+         "Select a theme to be applied.",
+         "list", "Select", "Cancel", families.message);
    }
    
    /*
