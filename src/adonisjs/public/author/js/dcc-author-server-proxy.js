@@ -9,27 +9,28 @@ class DCCAuthorServer {
    constructor() {
       this.userLogin = this.userLogin.bind(this);
       MessageBus.ext.subscribe("data/user/login", this.userLogin);
-
-      this.templateFamiliesList = this.templateFamiliesList.bind(this);
-      MessageBus.ext.subscribe("template_family/*/get", this.templateFamiliesList);
-      
       this.casesList = this.casesList.bind(this);
       MessageBus.ext.subscribe("data/case/*/list", this.casesList);
+      this.loadCase = this.loadCase.bind(this);
+      MessageBus.ext.subscribe("data/case/+/get", this.loadCase);
+      this.loadModule = this.loadModule.bind(this);
+      MessageBus.ext.subscribe("data/module/+/get", this.loadModule);
+      this.loadTheme = this.loadTheme.bind(this);
+      MessageBus.ext.subscribe("data/theme/+/get", this.loadTheme);
+      this.loadTemplate = this.loadTemplate.bind(this);
+      MessageBus.ext.subscribe("data/template/+/get", this.loadTemplate);
+      this.saveCase = this.saveCase.bind(this);
+      MessageBus.ext.subscribe("data/case/+/set", this.saveCase);
+      this.newCase = this.newCase.bind(this);
+      MessageBus.ext.subscribe("data/case//new", this.newCase);
+
+      this.themeFamiliesList = this.themeFamiliesList.bind(this);
+      MessageBus.ext.subscribe("data/theme_family/*/list", this.themeFamiliesList);
       
       this.modelsList = this.modelsList.bind(this);
-      MessageBus.ext.subscribe("model/*/get", this.modelsList);
-      this.newCase = this.newCase.bind(this);
-      MessageBus.ext.subscribe("case/_temporary/new", this.newCase);
-      this.loadCase = this.loadCase.bind(this);
-      MessageBus.ext.subscribe("case/+/get", this.loadCase);
-      this.saveCase = this.saveCase.bind(this);
-      MessageBus.ext.subscribe("case/+/set", this.saveCase);
-      this.renameCase = this.renameCase.bind(this);
-      MessageBus.ext.subscribe("case/+/rename", this.renameCase);
-      this.loadKnotCapsule = this.loadKnotCapsule.bind(this);
-      MessageBus.ext.subscribe("capsule/knot/get", this.loadKnotCapsule);
-      this.loadTemplate = this.loadTemplate.bind(this);
-      MessageBus.ext.subscribe("template/+/get", this.loadTemplate);
+      MessageBus.ext.subscribe("data/template/*/get", this.modelsList);
+      // this.renameCase = this.renameCase.bind(this);
+      // MessageBus.ext.subscribe("case/+/rename", this.renameCase);
       this.prepareCaseHTML = this.prepareCaseHTML.bind(this);
       MessageBus.ext.subscribe("case/+/prepare", this.prepareCaseHTML);
       this.saveKnotHTML = this.saveKnotHTML.bind(this);
@@ -51,6 +52,8 @@ class DCCAuthorServer {
           "body": JSON.stringify({"email": message.email,
                                   "password": message.password})
       }
+      console.log(header);
+
       const response = await fetch(DCCAuthorServer.serverAddress + "user/login", header);
       const jsonResponse = await response.json();
       const busResponse = {
@@ -62,19 +65,19 @@ class DCCAuthorServer {
                              busResponse);
    }
    
-   async templateFamiliesList() {
-      const response = await fetch(DCCAuthorServer.serverAddress + "template-families-list", {
+   async themeFamiliesList() {
+      const response = await fetch(DCCAuthorServer.serverAddress + "theme-families-list", {
          method: "POST",
          headers:{
            "Content-Type": "application/json"
          }
       });
       const jsonResponse = await response.json();
-      const families = jsonResponse.templateFamiliesList;
+      const families = jsonResponse.themeFamiliesList;
       let finalFamiliesList = {};
       for (var f in families)
          finalFamiliesList[families[f]] = "icons/mono-slide.svg";
-      MessageBus.ext.publish("template_family/*", finalFamiliesList);
+      MessageBus.ext.publish("theme_family/*", finalFamiliesList);
    }
 
    async modelsList() {
@@ -116,7 +119,23 @@ class DCCAuthorServer {
                              busResponse);
    }
    
-   async newCase() {
+   async newCase(topic, message) {
+      var header = {
+         "async": true,
+         "crossDomain": true,
+         "method": "POST",
+         "headers": {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + this._token
+          }
+      };
+      const response =
+         await fetch(DCCAuthorServer.serverAddress + "case/new", header);
+      const jsonResponse = await response.json();
+      MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
+                             jsonResponse.id);
+
+      /*
       const response = await fetch(DCCAuthorServer.serverAddress + "new-case", {
          method: "POST",
          headers:{
@@ -125,10 +144,11 @@ class DCCAuthorServer {
       });
       const jsonResponse = await response.json();
       MessageBus.ext.publish("case/" + jsonResponse.caseName + "/set/status", "ok");
+      */
    }
 
    async loadCase(topic, message) {
-      const caseId = MessageBus.extractLevel(topic, 2);
+      const caseId = MessageBus.extractLevel(topic, 3);
       var header = {
          "async": true,
          "crossDomain": true,
@@ -137,17 +157,36 @@ class DCCAuthorServer {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + this._token
           }
-      }
+      };
       const response =
          await fetch(DCCAuthorServer.serverAddress + "case/" + caseId, header);
       const jsonResponse = await response.json();
       MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-                             jsonResponse.markdown);
+                             {name: jsonResponse.name,
+                              source: jsonResponse.source});
    }
 
    async saveCase(topic, message) {
       if (message.format == "markdown") {
-         const caseName = MessageBus.extractLevel(topic, 2);
+         const caseId = MessageBus.extractLevel(topic, 3);
+         var header = {
+            "async": true,
+            "crossDomain": true,
+            "method": "PUT",
+            "headers": {
+               "Content-Type": "application/json",
+               "Authorization": "Bearer " + this._token
+             },
+             "body": JSON.stringify({name: message.name,
+                                     source: message.source})
+         };
+         const response =
+            await fetch(DCCAuthorServer.serverAddress + "case/" + caseId, header);
+         const jsonResponse = await response.json();
+         MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
+                             jsonResponse.source);
+
+         /*
          const response = await fetch(DCCAuthorServer.serverAddress + "save-case", {
             method: "POST",
             body: JSON.stringify({"caseName": caseName,
@@ -158,9 +197,11 @@ class DCCAuthorServer {
          });
          const jsonResponse = await response.json();
          MessageBus.ext.publish("case/" + caseName + "/version", jsonResponse.versionFile);
+         */
       }
    }
 
+   /*
    async renameCase(topic, message) {
       const oldName = MessageBus.extractLevel(topic, 2);
       const response = await fetch(DCCAuthorServer.serverAddress + "rename-case", {
@@ -174,8 +215,10 @@ class DCCAuthorServer {
       const jsonResponse = await response.json();
       MessageBus.ext.publish("case/" + oldName + "/rename/status", jsonResponse.status);
    }
+   */
 
-   async loadKnotCapsule(topic, message) {
+   async loadModule(topic, message) {
+      const moduleName = MessageBus.extractLevel(topic, 3);
       var header = {
          "async": true,
          "crossDomain": true,
@@ -184,14 +227,34 @@ class DCCAuthorServer {
             "Content-Type": "text/html",
           }
       }
-      const response = await fetch("./knot-capsule.html", header);
+      const response = await fetch("../modules/" + moduleName + ".html", header);
       let textResponse = await response.text();
       MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
                              textResponse);
    }
    
+   async loadTheme(topic, message) {
+      const themeCompleteName = MessageBus.extractLevel(topic, 3);
+      const separator = themeCompleteName.indexOf("."); 
+      const themeFamily = themeCompleteName.substring(0, separator);
+      const themeName = themeCompleteName.substring(separator+1);
+      var header = {
+         "async": true,
+         "crossDomain": true,
+         "method": "GET",
+         "headers": {
+            "Content-Type": "text/html",
+          }
+      }
+      const response = await fetch("../themes/" + themeFamily + "/" + themeName +
+                                   ".html", header);
+      let textResponse = await response.text();
+      MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
+                             textResponse);
+   }
+
    async loadTemplate(topic, message) {
-      const templateCompleteName = MessageBus.extractLevel(topic, 2);
+      const templateCompleteName = MessageBus.extractLevel(topic, 3);
       const separator = templateCompleteName.indexOf("."); 
       const templateFamily = templateCompleteName.substring(0, separator);
       const templateName = templateCompleteName.substring(separator+1);
@@ -200,21 +263,21 @@ class DCCAuthorServer {
          "crossDomain": true,
          "method": "GET",
          "headers": {
-            "Content-Type": "text/html",
+            "Content-Type": "text/plain",
           }
       }
-      const response = await fetch("../themes/" + templateFamily + "/" + templateName +
-                                   ".html", header);
+      const response = await fetch("../templates/" + templateFamily + "/" + templateName +
+                                   ".md", header);
       let textResponse = await response.text();
       MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
                              textResponse);
    }
    
-   async prepareCaseHTML(topic, templateFamily) {
+   async prepareCaseHTML(topic, themeFamily) {
       const caseName = MessageBus.extractLevel(topic, 2);
       const response = await fetch(DCCAuthorServer.serverAddress + "prepare-case-html", {
          method: "POST",
-         body: JSON.stringify({"templateFamily": templateFamily,
+         body: JSON.stringify({"themeFamily": themeFamily,
                                "caseName": caseName}),
          headers:{
            "Content-Type": "application/json"

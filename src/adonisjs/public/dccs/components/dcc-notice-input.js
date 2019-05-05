@@ -1,8 +1,19 @@
 /* Notice Input DCC
   *****************/
 class DCCNoticeInput extends DCCBase {
-   constructor() {
+   constructor(text, input, itype, button, buttonb) {
       super();
+
+      if (text)
+        this.text = text;
+      if (input)
+        this.input = input;
+      if (itype)
+        this.itype = itype;
+      if (button)
+        this.button = button;
+      if (buttonb)
+        this.buttonb = buttonb;
    }
    
    connectedCallback() {
@@ -57,8 +68,9 @@ class DCCNoticeInput extends DCCBase {
        </style>
        <div id="presentation-dcc" class="dsty-notice dsty-border-notice">
           <div id="text" class="dsty-text dsty-border">[text]</div>
-          <input id="input" class="dsty-input dsty-border"[display][itype]></input>
-          <div id="submit-button" class="dsty-submit-button">[button]</div>
+          <input id="input" class="dsty-input dsty-border"[display-input][itype]></input>
+          <div id="submit-button-a" class="dsty-submit-button">[button-a]</div>
+          <div id="submit-button-b" class="dsty-submit-button"[display-buttonb]>[button-b]</div>
        </div>`;
       
       const dialogSize = {
@@ -68,8 +80,10 @@ class DCCNoticeInput extends DCCBase {
       
       if (!this.hasAttribute("button"))
          this.button = (this.hasAttribute("input")) ? "Submit" : "Ok";
+      const labelButtonB = (this.hasAttribute("buttonb")) ? this.buttonb : "";
       
       const displayInput = (this.hasAttribute("input")) ? "" : " style='display:none'";
+      const displayButtonB = (this.hasAttribute("buttonb")) ? "" : " style='display:none'";
 
       const displayType = (this.hasAttribute("itype")) ? " type='" + this.itype + "'" : "";
 
@@ -79,24 +93,25 @@ class DCCNoticeInput extends DCCBase {
                               .replace("[width]", dialogSize.width)
                               .replace("[height]", dialogSize.height)
                               .replace("[text]", this.text)
-                              .replace("[display]", displayInput)
-                              .replace("[button]", this.button)
+                              .replace("[display-input]", displayInput)
+                              .replace("[display-buttonb]", displayButtonB)
+                              .replace("[button-a]", this.button)
+                              .replace("[button-b]", labelButtonB)
                               .replace("[itype]", displayType);
       this._shadow = this.attachShadow({mode: "open"});
       this._shadow.appendChild(template.content.cloneNode(true));
       
       this._inputField = this._shadow.querySelector("#input");
       
-      const submitButton = this._shadow.querySelector("#submit-button");
-      this._notify = this._notify.bind(this);
-      submitButton.addEventListener("click", this._notify);
+      this._submitButtonA = this._shadow.querySelector("#submit-button-a");
+      this._submitButtonB = this._shadow.querySelector("#submit-button-b");
    }
    
    /* Properties
     **********/
     
     static get observedAttributes() {
-       return ["text", "input", "button", "itype"];
+       return ["text", "input", "button", "buttonb", "itype"];
     }
    
     get text() {
@@ -125,6 +140,14 @@ class DCCNoticeInput extends DCCBase {
        this.setAttribute("button", newValue);
     }
 
+    get buttonb() {
+       return this.getAttribute("buttonb");
+    }
+    
+    set buttonb(newValue) {
+       this.setAttribute("buttonb", newValue);
+    }
+
     get itype() {
        return this.getAttribute("itype");
     }
@@ -135,15 +158,51 @@ class DCCNoticeInput extends DCCBase {
           this._inputField.setAttribute("type", newValue);
     }
 
-   _notify() {
+    async presentNotice() {
+       document.body.appendChild(this);
+
+       let promise = new Promise((resolve, reject) => {
+          const callback = function(button) { resolve(button); };
+          this._submitButtonA.onclick = function(e) {
+             callback(this.button);
+          };
+          this._submitButtonB.onclick = function(e) {
+             callback(this.buttonb);
+          };
+       });
+
+       const buttonClicked = await promise;
+       document.body.removeChild(this);
+
+       return (this.hasAttribute("input"))
+                 ? this._inputField.value
+                 : buttonClicked;
+   }
+
+   /*
+   _notifyA() {
       MessageBus.ext.publish("var/" + this.input + "/set",
                                     {sourceType: DCCNoticeInput.elementTag,
                                      input: this._inputField.value});
+   }
+
+   _notifyB() {
+      MessageBus.ext.publish("var/" + this.input + "/set",
+                                    {sourceType: DCCNoticeInput.elementTag,
+                                     input: this._inputField.value});
+   }
+   */
+
+   static async displayNotice(text, input, itype, button, buttonb) {
+      const noticeDialog = new DCCNoticeInput(text, input, itype, button, buttonb);
+      const value = await noticeDialog.presentNotice();
+      return value;
    }
 }
 
 (function() {
    DCCNoticeInput.editableCode = false;
    DCCNoticeInput.elementTag = "dcc-notice-input";
+   DCCNoticeInput.dialogCount = 1;
    customElements.define(DCCNoticeInput.elementTag, DCCNoticeInput);
 })();
