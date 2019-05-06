@@ -1,11 +1,13 @@
 const storePrefix = "casenote_";
 
 class PlayerManager {
+   /*
    static instance() {
       if (!PlayerManager._instance)
          PlayerManager._instance = new PlayerManager();
       return PlayerManager._instance;
    }
+   */
    
    constructor() {
       this._server = new DCCPlayerServer();
@@ -89,15 +91,19 @@ class PlayerManager {
    
    startPlayer() {
       this._mainPanel = document.querySelector("#main-panel");
+
+      this._userid = await Basic.service.signin();
       
-      this.loadKnot("entry");
+      // this.loadKnot("entry");
    }
    
    loadKnot(knotName) {
       this._currentKnot = knotName;
+      /*
       this._knotScript = document.createElement("script");
       this._knotScript.src = "knots/" + knotName + ".js";
       document.head.appendChild(this._knotScript);
+      */
       MessageBus.ext.publish("knot/" + knotName + "/start");
    }
    
@@ -114,9 +120,7 @@ class PlayerManager {
    }
    
    presentNote(knot) {
-      const dimensions = Utils.tools.screenDimensions();
-      // const coord = 
-      //    Utils.tools.centralize(dimensions.width * .7, dimensions.height * .7);
+      const dimensions = Basic.service.screenDimensions();
       
       let div = document.createElement("div");
       
@@ -141,6 +145,7 @@ class PlayerManager {
     * ***************************
     */
    
+   /*
    startGame() {
       this._history = [];
       
@@ -202,6 +207,7 @@ class PlayerManager {
       } else
           document.querySelector("#invalid-id").style.display = "initial";
    }
+   */
    
    /*
     * Start the tracking record of a case
@@ -262,3 +268,7 @@ class PlayerManager {
                                                 result: output});
    }   
 }
+
+(function() {
+   PlayerManager.player = new PlayerManager();
+})();

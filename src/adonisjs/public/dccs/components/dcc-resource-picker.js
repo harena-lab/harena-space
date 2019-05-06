@@ -1,5 +1,6 @@
 /* Resource Selector DCC
   *******************/
+/*
 class DCCResourcePicker extends DCCBase {
    constructor(resource, text, preview, selectList, buttonb) {
       super();
@@ -136,8 +137,7 @@ class DCCResourcePicker extends DCCBase {
       this._showSelectList();
    }
    
-   /* Properties
-    **********/
+   // Properties
     
     static get observedAttributes() {
        return ["text", "resource", "preview", "buttonb"];
@@ -241,3 +241,4 @@ class DCCResourcePicker extends DCCBase {
    DCCResourcePicker.selectLabel = "Select";
    customElements.define(DCCResourcePicker.elementTag, DCCResourcePicker);
 })();
+*/

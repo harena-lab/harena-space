@@ -15,11 +15,13 @@ class AuthorManager {
       this._compiledCase = null;
       this._knots = null;
       
-      this._navigator = new Navigator();
+      this._navigator = new Navigator(this._translator);
       
-      this._server = new DCCAuthorServer();
+      // this._server = new DCCAuthorServer();
+      // new DCCCommonServer();
+      // new DCCAuthorServer();
       
-      this._currentThemeFamily = "jacinto";
+      // this._currentThemeFamily = "jacinto";
       this._currentCaseId = null;
       this._knotSelected = null;
       this._htmlKnot = null;
@@ -48,40 +50,11 @@ class AuthorManager {
       this._knotPanel = document.querySelector("#knot-panel");
       this._messageSpace = document.querySelector("#message-space");
 
-      await this.signin();
+      this._userid = await Basic.service.signin();
 
       this.caseLoadSelect();
    }
 
-   async signin() {
-      let status = "start";
-      this._userid = null;
-      let errorMessage = "";
-      while (this._userid == null) {
-         const userEmail =
-            await DCCNoticeInput.displayNotice(errorMessage +
-                                         "<h3>Signin</h3><h4>inform your email:</h4>",
-                                         "input");
-         const userPass =
-            await DCCNoticeInput.displayNotice("<h3>Signin</h3><h4>inform your password:</h4>",
-                                         "password");
-
-         /*
-         let userEmail = "jacinto@example.com";
-         let userPass = "jacinto";
-         */
-
-         let loginReturn = await MessageBus.ext.request("data/user/login",
-                                                        {email: userEmail,
-                                                         password: userPass});
-
-         this._userid = loginReturn.message.userid;
-         if (this._userId == null)
-            errorMessage =
-               "<span style='color: red'>Invalid user and/or password.</span>";
-      }
-   }
-   
    /*
     * Redirects control/<entity>/<operation> messages
     */
@@ -232,7 +205,8 @@ class AuthorManager {
       this._knots[knotId] = newKnot;
       this._translator.extractKnotAnnotations(this._knots[knotId]);
       this._translator.compileKnotMarkdown(this._knots, knotId);
-      this._htmlKnot = await this._generateHTML(knotId);
+      // this._htmlKnot = await this._generateHTML(knotId);
+      this._htmlKnot = await this._translator.generateHTML(this._knots[knotId]);
       await this._navigator.mountPlainCase(this, this._compiledCase.knots);
       MessageBus.ext.publish("knot/" + this._knotSelected + "/selected");
    }
@@ -243,7 +217,9 @@ class AuthorManager {
    async knotEdit() {
       if (this._knotSelected != null) {
          if (this._checkKnotModification())
-            this._htmlKnot = await this._generateHTML(this._knotSelected);
+            this._htmlKnot = await this._translator.generateHTML(
+               this._knots[this._knotSelected]);
+            // this._htmlKnot = await this._generateHTML(this._knotSelected);
          this._renderSlide = !this._renderSlide;
          this._renderKnot();
       }
@@ -253,12 +229,15 @@ class AuthorManager {
     * ACTION: control-play
     */
    async casePlay() {
+      /*
       this._messageSpace.innerHTML = "Preparing...";
       const dirPlay = await MessageBus.ext.request(
                          "case/" + this._currentCaseId + "/prepare",
-                         this._currentThemeFamily,
+                         this._translator.currentThemeFamily,
                          "case/" + this._currentCaseId + "/prepare/directory");
-      this._themeSet = {};
+      */
+      
+      this._translator.newThemeSet();
       
       const htmlSet = Object.assign(
                          {"entry": {render: true},
@@ -274,9 +253,12 @@ class AuthorManager {
          if (htmlSet[kn].render) {
             let finalHTML = "";
             if (processing > 4)
-               finalHTML = await this._generateHTMLBuffer(kn);
+               finalHTML = await this._translator.generateHTMLBuffer(
+                                                     this._knots[kn]);
+               // finalHTML = await this._generateHTMLBuffer(kn);
             else 
-               finalHTML = await this._loadTheme(this._currentThemeFamily, kn);
+               finalHTML = await this._translator.loadTheme(kn);
+               // finalHTML = await this._loadTheme(this._currentThemeFamily, kn);
             finalHTML = (htmlSet[kn].categories && htmlSet[kn].categories.indexOf("note") >= 0)
                ? AuthorManager.jsonNote.replace("{knot}", finalHTML)
                : AuthorManager.jsonKnot.replace("{knot}", finalHTML);
@@ -297,7 +279,7 @@ class AuthorManager {
       
       this._messageSpace.innerHTML = "";
       
-      delete this._themeSet;
+      this._translator.deleteThemeSet();
       window.open(dirPlay.message + "/html/index.html", "_blank");
    }
    
@@ -306,7 +288,7 @@ class AuthorManager {
     */
    async config() {
       const families = await MessageBus.ext.request("data/theme_family/*/list");
-      this._currentThemeFamily = await DCCNoticeInput.displayNotice(
+      this._translator.currentThemeFamily = await DCCNoticeInput.displayNotice(
          "Select a theme to be applied.",
          "list", "Select", "Cancel", families.message);
    }
@@ -328,7 +310,9 @@ class AuthorManager {
       if (knotid != null) {
          this._checkKnotModification();
          this._knotSelected = knotid;
-         this._htmlKnot = await this._generateHTML(this._knotSelected);
+         // this._htmlKnot = await this._generateHTML(this._knotSelected);
+         this._htmlKnot = await this._translator.generateHTML(
+                                   this._knots[this._knotSelected]);
          this._renderKnot();
       }
     }
@@ -362,17 +346,25 @@ class AuthorManager {
       return modified;
    }
    
+   /*
    async _generateHTML(knot) {
-      this._themeSet = {};
+      this._translator.newThemeSet();
       let finalHTML = await this._generateHTMLBuffer(knot);
-      // <TODO> fix - deleting before ending
-      // delete this._themeSet;
+      this._translator.deleteThemeSet();
       return finalHTML;
+   }
+
+   _newThemeSet() {
+      this._themeSet = {};
+   }
+
+   _deleteThemeSet() {
+      delete this._themeSet;
    }
    
    async _generateHTMLBuffer(knot) {
-      let themes = (this._knots[knot].categories) ?
-                       this._knots[knot].categories : ["knot"];
+      let themes = (this._knots[knot].categories)
+                   ? this._knots[knot].categories : ["knot"];
       for (let tp in themes)
          if (!this._themeSet[themes[tp]]) {
             const templ = await
@@ -398,6 +390,7 @@ class AuthorManager {
             "data/theme/" + themeFamily + "." + themeName + "/get");
       return themeObj.message;
    }
+   */
    
    _renderKnot() {
       if (this._renderSlide) {
@@ -418,8 +411,8 @@ class AuthorManager {
 }
 
 (function() {
-   AuthorManager.jsonKnot = "(function() { PlayerManager.instance().presentKnot(`{knot}`) })();";
-   AuthorManager.jsonNote = "(function() { PlayerManager.instance().presentNote(`{knot}`) })();";
+   AuthorManager.jsonKnot = "(function() { PlayerManager.player.presentKnot(`{knot}`) })();";
+   AuthorManager.jsonNote = "(function() { PlayerManager.player.presentNote(`{knot}`) })();";
    
    AuthorManager.author = new AuthorManager();
 })();

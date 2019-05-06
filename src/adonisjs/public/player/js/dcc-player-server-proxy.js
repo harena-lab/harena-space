@@ -15,6 +15,18 @@ class DCCPlayerServer {
    getStartKnot() {
       return DCCPlayerServer.playerObj.start;
    }
+
+   loadKnot(knotName) {
+      if (DCCPlayerServer.localEnv) {
+         this._knotScript = document.createElement("script");
+         this._knotScript.src = "knots/" + knotName + ".js";
+         document.head.appendChild(this._knotScript);
+      } else {
+         
+      }
+   }
+
+   
    
    /*
     * Running Case services

@@ -7,7 +7,9 @@
 
 class Navigator {
 
-constructor() {
+constructor(translator) {
+   this._translator = translator;
+
    this._retracted = true;
 
    this.expandClicked = this.expandClicked.bind(this);
@@ -227,7 +229,10 @@ async _presentTreeCase() {
          t.removeChild(t.firstChild);
          t.innerHTML = d.data.title});
    
-   this._drawMiniatures(this._tree, svg);
+   this._translator.newThemeSet();
+   await this._drawMiniatures(this._tree, svg);
+   // <TODO> synchronization problem - improve
+   // this._translator.deleteThemeSet();
    this._drawGroups(this._tree, svg);
    this._drawLinks(this._tree, svg);
 }
@@ -396,13 +401,14 @@ async _createMiniature(knot, krender) {
                            knot.knotid + "/selected' " +
                            "xstyle='sty-navigation-knot-cover' label = ''>";
 
-   let htmlKnot = await this._author._generateHTML(krender.knotid);
+   let htmlKnot = await this._translator.generateHTMLBuffer(this._knots[krender.knotid]);
    let iframe = document.createElement('iframe');
    iframe.width = Navigator.miniKnot[this._retracted].width;
    iframe.height = Navigator.miniKnot[this._retracted].height;
-   iframe.srcdoc = this._capsule.message.replace(/{width}/g, Navigator.miniKnot[this._retracted].width)
-                                        .replace(/{height}/g, Navigator.miniKnot[this._retracted].height-6)
-                                        .replace("{knot}", htmlKnot);
+   iframe.srcdoc = this._capsule.message
+      .replace(/{width}/g, Navigator.miniKnot[this._retracted].width)
+      .replace(/{height}/g, Navigator.miniKnot[this._retracted].height-6)
+      .replace("{knot}", htmlKnot);
    miniature.appendChild(iframe);
 
    return miniature;

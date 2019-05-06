@@ -10,7 +10,7 @@ class CapsuleManager {
    }
    
    startCapsule() {
-      PlayerManager.instance()._mainPanel = document.querySelector("#main-panel");
+      PlayerManager.player._mainPanel = document.querySelector("#main-panel");
    }
 }
 

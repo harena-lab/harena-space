@@ -241,7 +241,6 @@ class DCCNoticeInput extends DCCBase {
        });
 
        let buttonClicked = await promise;
-       console.log("Clicked: " + buttonClicked.button);
        document.body.removeChild(this);
 
        let result = this._labelButtonA;
