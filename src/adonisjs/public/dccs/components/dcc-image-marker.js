@@ -29,18 +29,18 @@ class DCCImageMarker extends DCCBase {
        // <TODO> limited: considers only one group per page
        /*
        this.completeId = this.id;  
-       if (!this.hasAttribute("states") && window.messageBus.page.hasSubscriber("dcc/marker-states/request")) {
-          this.context = await window.messageBus.page.request("dcc/marker-context/request", this.id, "dcc/marker-context/" + this.id);
+       if (!this.hasAttribute("states") && MessageBus.page.hasSubscriber("dcc/marker-states/request")) {
+          this.context = await MessageBus.page.request("dcc/marker-context/request", this.id, "dcc/marker-context/" + this.id);
           this.completeId = this.context.message + "." + this.id;
 
-          window.messageBus.page.subscribe("dcc/marker-states/" + this.id, this.defineStates);
-          window.messageBus.page.publish("dcc/marker-states/request", this.id);
+          MessageBus.page.subscribe("dcc/marker-states/" + this.id, this.defineStates);
+          MessageBus.page.publish("dcc/marker-states/request", this.id);
           this._pendingRequests++;
        }
        
        this._checkRender();
 
-       window.messageBus.ext.publish("var/" + this.completeId + "/subinput/ready",
+       MessageBus.ext.publish("var/" + this.completeId + "/subinput/ready",
                                      {sourceType: DCCStateSelector.elementTag,
                                       content: this.innerHTML});
                                       */
@@ -56,7 +56,7 @@ class DCCImageMarker extends DCCBase {
     }
 
     defineStates(topic, message) {
-       window.messageBus.page.unsubscribe("dcc/marker-states/" + this.id, this.defineStates);
+       MessageBus.page.unsubscribe("dcc/marker-states/" + this.id, this.defineStates);
        this.states = message;
        this._pendingRequests--;
        this._checkRender();
@@ -119,7 +119,7 @@ class DCCImageMarker extends DCCBase {
     /* Rendering */
 
     _renderInterface() {
-       window.messageBus.page.publish("dcc/marker-spot/set",
+       MessageBus.page.publish("dcc/marker-spot/set",
              {label: this.label, 
               coords: this.coords,
               handler: this.markerSpot});
@@ -160,7 +160,7 @@ class DCCImageMarker extends DCCBase {
       if (this.states != null) {
         const statesArr = this.states.split(",");
         this._currentState = (this._currentState + 1) % statesArr.length;
-        window.messageBus.ext.publish("var/" + this.completeId + "/state_changed",
+        MessageBus.ext.publish("var/" + this.completeId + "/state_changed",
               {sourceType: DCCInput.elementTag,
                state: statesArr[this._currentState]});
       }
@@ -207,27 +207,27 @@ class DCCGroupMarker extends DCCBase {
       this._propY = this._image.clientHeight / this._imageCanvas.height;
       */
       
-      window.messageBus.page.subscribe("dcc/marker-context/request", this.requestContext);
-      window.messageBus.page.subscribe("dcc/marker-states/request", this.requestStates);
-      window.messageBus.page.subscribe("dcc/marker-spot/set", this.setMarkerSpot);
+      MessageBus.page.subscribe("dcc/marker-context/request", this.requestContext);
+      MessageBus.page.subscribe("dcc/marker-states/request", this.requestStates);
+      MessageBus.page.subscribe("dcc/marker-spot/set", this.setMarkerSpot);
       
-      window.messageBus.ext.publish("var/" + this.context + "/group_input/ready",
+      MessageBus.ext.publish("var/" + this.context + "/group_input/ready",
             DCCGroupSelector.elementTag);
    }
 
    disconnectedCallback() {
-      window.messageBus.page.unsubscribe("dcc/marker-context/request", this.requestContext);
-      window.messageBus.page.unsubscribe("dcc/marker-states/request", this.requestStates);
-      window.messageBus.page.unsubscribe("dcc/marker-spot/set", this.setMarkerSpot);
+      MessageBus.page.unsubscribe("dcc/marker-context/request", this.requestContext);
+      MessageBus.page.unsubscribe("dcc/marker-states/request", this.requestStates);
+      MessageBus.page.unsubscribe("dcc/marker-spot/set", this.setMarkerSpot);
    }
    
    
    requestStates(topic, message) {
-      window.messageBus.page.publish("dcc/marker-states/" + message, this.states);
+      MessageBus.page.publish("dcc/marker-states/" + message, this.states);
    }   
    
    requestContext(topic, message) {
-      window.messageBus.page.publish("dcc/marker-context/" + message, this.context);
+      MessageBus.page.publish("dcc/marker-context/" + message, this.context);
    }
    
    /*

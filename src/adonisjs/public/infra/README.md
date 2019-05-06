@@ -59,9 +59,9 @@ All the internal paths are mapped to the external paths prefixing the path by: `
            message: `{<template_family id>: <template_family icon>}`
 
 ### Entity: `template`
-* `template/<template_family id>.<template id>/get` - Loads and returns the HTML of the template.
+* `data/theme/<template_family id>.<template id>/get` - Loads and returns the HTML of the template.
 
-  response topic: `template/<template_family id>.<template id>`
+  response topic: `data/theme/<template_family id>.<template id>`
            message: `<template HTML>`
 
 

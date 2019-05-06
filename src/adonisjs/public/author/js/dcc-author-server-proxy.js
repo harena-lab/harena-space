@@ -7,51 +7,51 @@
 
 class DCCAuthorServer {
    constructor() {
-      this.templateFamiliesList = this.templateFamiliesList.bind(this);
-      window.messageBus.ext.subscribe("template_family/*/get", this.templateFamiliesList);
       this.casesList = this.casesList.bind(this);
-      window.messageBus.ext.subscribe("case/*/get", this.casesList);
-      this.modelsList = this.modelsList.bind(this);
-      window.messageBus.ext.subscribe("model/*/get", this.modelsList);
-      this.newCase = this.newCase.bind(this);
-      window.messageBus.ext.subscribe("case/_temporary/new", this.newCase);
-      this.loadCase = this.loadCase.bind(this);
-      window.messageBus.ext.subscribe("case/+/get", this.loadCase);
-      this.saveCase = this.saveCase.bind(this);
-      window.messageBus.ext.subscribe("case/+/set", this.saveCase);
-      this.renameCase = this.renameCase.bind(this);
-      window.messageBus.ext.subscribe("case/+/rename", this.renameCase);
-      this.loadKnotCapsule = this.loadKnotCapsule.bind(this);
-      window.messageBus.ext.subscribe("capsule/knot/get", this.loadKnotCapsule);
+      MessageBus.ext.subscribe("data/case/*/list", this.casesList);
+      this.loadModule = this.loadModule.bind(this);
+      MessageBus.ext.subscribe("data/module/+/get", this.loadModule);
       this.loadTemplate = this.loadTemplate.bind(this);
-      window.messageBus.ext.subscribe("template/+/get", this.loadTemplate);
+      MessageBus.ext.subscribe("data/template/+/get", this.loadTemplate);
+      this.saveCase = this.saveCase.bind(this);
+      MessageBus.ext.subscribe("data/case/+/set", this.saveCase);
+      this.newCase = this.newCase.bind(this);
+      MessageBus.ext.subscribe("data/case//new", this.newCase);
+
+      this.themeFamiliesList = this.themeFamiliesList.bind(this);
+      MessageBus.ext.subscribe("data/theme_family/*/list", this.themeFamiliesList);
+      
+      this.modelsList = this.modelsList.bind(this);
+      MessageBus.ext.subscribe("data/template/*/get", this.modelsList);
+      // this.renameCase = this.renameCase.bind(this);
+      // MessageBus.ext.subscribe("case/+/rename", this.renameCase);
       this.prepareCaseHTML = this.prepareCaseHTML.bind(this);
-      window.messageBus.ext.subscribe("case/+/prepare", this.prepareCaseHTML);
+      MessageBus.ext.subscribe("case/+/prepare", this.prepareCaseHTML);
       this.saveKnotHTML = this.saveKnotHTML.bind(this);
-      window.messageBus.ext.subscribe("knot/+/set", this.saveKnotHTML);
+      MessageBus.ext.subscribe("knot/+/set", this.saveKnotHTML);
       this.saveCaseObject = this.saveCaseObject.bind(this);
-      window.messageBus.ext.subscribe("case/+/set", this.saveCaseObject);
+      MessageBus.ext.subscribe("case/+/set", this.saveCaseObject);
    }
    
    // wrapper of the services
-   
-   async templateFamiliesList() {
-      const response = await fetch(DCCAuthorServer.serverAddress + "template-families-list", {
+
+   async themeFamiliesList() {
+      const response = await fetch(DCCCommonServer.serverAddress + "theme-families-list", {
          method: "POST",
          headers:{
            "Content-Type": "application/json"
          }
       });
       const jsonResponse = await response.json();
-      const families = jsonResponse.templateFamiliesList;
+      const families = jsonResponse.themeFamiliesList;
       let finalFamiliesList = {};
       for (var f in families)
          finalFamiliesList[families[f]] = "icons/mono-slide.svg";
-      window.messageBus.ext.publish("template_family/*", finalFamiliesList);
+      MessageBus.ext.publish("theme_family/*", finalFamiliesList);
    }
 
    async modelsList() {
-      const response = await fetch(DCCAuthorServer.serverAddress + "models-list", {
+      const response = await fetch(DCCCommonServer.serverAddress + "models-list", {
          method: "POST",
          headers:{
            "Content-Type": "application/json"
@@ -62,54 +62,83 @@ class DCCAuthorServer {
       let finalModelsList = {};
       for (var f in models)
          finalModelsList[models[f]] = "icons/mono-slide.svg";
-      window.messageBus.ext.publish("model/*", finalModelsList);
+      MessageBus.ext.publish("model/*", finalModelsList);
    }
 
-   async casesList() {
-      const response = await fetch(DCCAuthorServer.serverAddress + "cases-list", {
-         method: "POST",
-         headers:{
-           "Content-Type": "application/json"
-         }
-      });
+   async casesList(topic, message) {
+      var header = {
+         "async": true,
+         "crossDomain": true,
+         "method": "POST",
+         "headers": {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + DCCCommonServer.instance.token
+          },
+          "body": JSON.stringify({"filterBy": "user",
+                                  "filter": message.filter})
+      }
+      const response = await fetch(DCCCommonServer.serverAddress + "case/list", header);
       const jsonResponse = await response.json();
-      const cases = jsonResponse.casesList;
-      let finalCasesList = {};
-      for (var c in cases)
-         finalCasesList[cases[c]] = "icons/mono-slide.svg";
-      window.messageBus.ext.publish("case/*", finalCasesList);
+      let busResponse = {};
+      for (var c in jsonResponse)
+         busResponse[jsonResponse[c].id] = {
+            name: jsonResponse[c].name,
+            icon: "icons/mono-slide.svg"
+         };
+      MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
+                             busResponse);
    }
    
-   async newCase() {
-      const response = await fetch(DCCAuthorServer.serverAddress + "new-case", {
+   async newCase(topic, message) {
+      var header = {
+         "async": true,
+         "crossDomain": true,
+         "method": "POST",
+         "headers": {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + DCCCommonServer.instance.token
+          }
+      };
+      const response =
+         await fetch(DCCCommonServer.serverAddress + "case/new", header);
+      const jsonResponse = await response.json();
+      MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
+                             jsonResponse.id);
+
+      /*
+      const response = await fetch(DCCCommonServer.serverAddress + "new-case", {
          method: "POST",
          headers:{
            "Content-Type": "application/json"
          }
       });
       const jsonResponse = await response.json();
-      window.messageBus.ext.publish("case/" + jsonResponse.caseName + "/set/status", "ok");
-   }
-
-   async loadCase(topic) {
-      const caseName = MessageBus.extractLevel(topic, 2);
-      if (caseName != "*") {
-         const response = await fetch(DCCAuthorServer.serverAddress + "load-case", {
-            method: "POST",
-            body: JSON.stringify({"caseName": caseName}),
-            headers:{
-              "Content-Type": "application/json"
-            }
-         });
-         const jsonResponse = await response.json();
-         window.messageBus.ext.publish("case/" + caseName, jsonResponse.caseMd);
-      }
+      MessageBus.ext.publish("case/" + jsonResponse.caseName + "/set/status", "ok");
+      */
    }
 
    async saveCase(topic, message) {
       if (message.format == "markdown") {
-         const caseName = MessageBus.extractLevel(topic, 2);
-         const response = await fetch(DCCAuthorServer.serverAddress + "save-case", {
+         const caseId = MessageBus.extractLevel(topic, 3);
+         var header = {
+            "async": true,
+            "crossDomain": true,
+            "method": "PUT",
+            "headers": {
+               "Content-Type": "application/json",
+               "Authorization": "Bearer " + DCCCommonServer.instance.token
+             },
+             "body": JSON.stringify({name: message.name,
+                                     source: message.source})
+         };
+         const response =
+            await fetch(DCCCommonServer.serverAddress + "case/" + caseId, header);
+         const jsonResponse = await response.json();
+         MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
+                             jsonResponse.source);
+
+         /*
+         const response = await fetch(DCCCommonServer.serverAddress + "save-case", {
             method: "POST",
             body: JSON.stringify({"caseName": caseName,
                                   "caseText": message.source}),
@@ -118,13 +147,15 @@ class DCCAuthorServer {
             }
          });
          const jsonResponse = await response.json();
-         window.messageBus.ext.publish("case/" + caseName + "/version", jsonResponse.versionFile);
+         MessageBus.ext.publish("case/" + caseName + "/version", jsonResponse.versionFile);
+         */
       }
    }
 
+   /*
    async renameCase(topic, message) {
       const oldName = MessageBus.extractLevel(topic, 2);
-      const response = await fetch(DCCAuthorServer.serverAddress + "rename-case", {
+      const response = await fetch(DCCCommonServer.serverAddress + "rename-case", {
          method: "POST",
          body: JSON.stringify({"oldName": oldName,
                                "newName": message.newName}),
@@ -133,55 +164,64 @@ class DCCAuthorServer {
          }
       });
       const jsonResponse = await response.json();
-      window.messageBus.ext.publish("case/" + oldName + "/rename/status", jsonResponse.status);
+      MessageBus.ext.publish("case/" + oldName + "/rename/status", jsonResponse.status);
    }
+   */
 
-   async loadKnotCapsule() {
-      const response = await fetch(DCCAuthorServer.serverAddress + "load-capsule", {
-         method: "POST",
-         headers:{
-           "Content-Type": "application/json"
-         }
-      });
-      const jsonResponse = await response.json();
-      window.messageBus.ext.publish("capsule/knot", jsonResponse.capsule);
+   async loadModule(topic, message) {
+      const moduleName = MessageBus.extractLevel(topic, 3);
+      var header = {
+         "async": true,
+         "crossDomain": true,
+         "method": "GET",
+         "headers": {
+            "Content-Type": "text/html",
+          }
+      }
+      const response = await fetch("../modules/" + moduleName + ".html", header);
+      let textResponse = await response.text();
+      MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
+                             textResponse);
    }
-
-   async loadTemplate(topic) {
-      const templateCompleteName = MessageBus.extractLevel(topic, 2);
+   
+   async loadTemplate(topic, message) {
+      const templateCompleteName = MessageBus.extractLevel(topic, 3);
       const separator = templateCompleteName.indexOf("."); 
       const templateFamily = templateCompleteName.substring(0, separator);
       const templateName = templateCompleteName.substring(separator+1);
-      const response = await fetch(DCCAuthorServer.serverAddress + "load-template", {
-         method: "POST",
-         body: JSON.stringify({"templateFamily": templateFamily,
-                               "templateName": templateName}),
-         headers:{
-           "Content-Type": "application/json"
-         }
-      });
-      const jsonResponse = await response.json();
-      window.messageBus.ext.publish("template/" + templateCompleteName, jsonResponse.template);
+      var header = {
+         "async": true,
+         "crossDomain": true,
+         "method": "GET",
+         "headers": {
+            "Content-Type": "text/plain",
+          }
+      }
+      const response = await fetch("../templates/" + templateFamily + "/" + templateName +
+                                   ".md", header);
+      let textResponse = await response.text();
+      MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
+                             textResponse);
    }
-
-   async prepareCaseHTML(topic, templateFamily) {
+   
+   async prepareCaseHTML(topic, themeFamily) {
       const caseName = MessageBus.extractLevel(topic, 2);
-      const response = await fetch(DCCAuthorServer.serverAddress + "prepare-case-html", {
+      const response = await fetch(DCCCommonServer.serverAddress + "prepare-case-html", {
          method: "POST",
-         body: JSON.stringify({"templateFamily": templateFamily,
+         body: JSON.stringify({"themeFamily": themeFamily,
                                "caseName": caseName}),
          headers:{
            "Content-Type": "application/json"
          }
       });
       const jsonResponse = await response.json();
-      window.messageBus.ext.publish("case/" + caseName + "/prepare/directory", jsonResponse.directory);
+      MessageBus.ext.publish("case/" + caseName + "/prepare/directory", jsonResponse.directory);
    }
 
    async saveKnotHTML(topic, message) {
       const knotId = MessageBus.extractLevel(topic, 2);
       
-      const response = await fetch(DCCAuthorServer.serverAddress + "save-knot-html", {
+      const response = await fetch(DCCCommonServer.serverAddress + "save-knot-html", {
          method: "POST",
          body: JSON.stringify({"caseName": message.caseId,
                                "knotFile": knotId + ".js",
@@ -191,7 +231,7 @@ class DCCAuthorServer {
          }
       });
       const jsonResponse = await response.json();
-      window.messageBus.ext.publish("knot/" + knotId + "/set/status", jsonResponse.status);
+      MessageBus.ext.publish("knot/" + knotId + "/set/status", jsonResponse.status);
    }
 
    async saveCaseObject(topic, message) {
@@ -199,7 +239,7 @@ class DCCAuthorServer {
          const caseId = MessageBus.extractLevel(topic, 2);
          
          // <TODO> change the name of the service
-         const response = await fetch(DCCAuthorServer.serverAddress + "save-case-script", {
+         const response = await fetch(DCCCommonServer.serverAddress + "save-case-script", {
             method: "POST",
             body: JSON.stringify({"caseName": caseId,
                                   "scriptFile": "case.js",
@@ -209,7 +249,11 @@ class DCCAuthorServer {
             }
          });
          const jsonResponse = await response.json();
-         window.messageBus.ext.publish("case/" + caseId + "/set/status", jsonResponse.status);
+         MessageBus.ext.publish("case/" + caseId + "/set/status", jsonResponse.status);
       }
    }
 }
+
+(function() {
+   DCCAuthorServer.instance = new DCCAuthorServer();
+})();

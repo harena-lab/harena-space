@@ -2,3 +2,5 @@
 author/images/
 
 author/js/dcc-author-server-address\.js
+
+package-lock\.json

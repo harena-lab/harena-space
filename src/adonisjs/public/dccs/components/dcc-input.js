@@ -6,7 +6,6 @@
 class DCCInput extends DCCBlock {
    constructor() {
       super();
-      // this.submitInput = this.submitInput.bind(this);
       this.inputTyped = this.inputTyped.bind(this);
       this.inputChanged = this.inputChanged.bind(this);
    }
@@ -14,7 +13,7 @@ class DCCInput extends DCCBlock {
    connectedCallback() {
       super.connectedCallback();
       
-      window.messageBus.ext.publish("var/" + this.variable + "/input/ready", DCCInput.elementTag);
+      MessageBus.ext.publish("var/" + this.variable + "/input/ready", DCCInput.elementTag);
    }
    
    /*
@@ -22,7 +21,7 @@ class DCCInput extends DCCBlock {
     */
    
    static get observedAttributes() {
-      return DCCBlock.observedAttributes.concat(["variable", "rows", "vocabulary"]);
+      return DCCBlock.observedAttributes.concat(["variable", "itype", "rows", "vocabulary"]);
    }
 
    get variable() {
@@ -33,6 +32,14 @@ class DCCInput extends DCCBlock {
       this.setAttribute("variable", newValue);
    }
    
+   get itype() {
+      return this.getAttribute("itype");
+   }
+   
+   set itype(newValue) {
+      this.setAttribute("itype", newValue);
+   }
+
    get rows() {
       return this.getAttribute("rows");
    }
@@ -48,17 +55,17 @@ class DCCInput extends DCCBlock {
    set vocabulary(newValue) {
       this.setAttribute("vocabulary", newValue);
    }
-   
+
    /* Event handling */
    
    inputTyped() {
-      window.messageBus.ext.publish("var/" + this.variable + "/typed",
+      MessageBus.ext.publish("var/" + this.variable + "/typed",
                                     {sourceType: DCCInput.elementTag,
                                      value: this._inputVariable.value});
    }
 
    inputChanged() {
-      window.messageBus.ext.publish("var/" + this.variable + "/changed",
+      MessageBus.ext.publish("var/" + this.variable + "/changed",
                                     {sourceType: DCCInput.elementTag,
                                      value: this._inputVariable.value});
    }
@@ -82,7 +89,10 @@ class DCCInput extends DCCBlock {
       if (this.hasAttribute("rows") && this.rows > 1)
          elements = DCCInput.templateElements.area.replace("[rows]", this.rows)
                                                   .replace("[variable]", this.variable)
-                                                  .replace("[render]", render);
+                                                  .replace("[render]", render)
+                                                  .replace("[itype]",
+                                                      (this.hasAttribute("itype")) ?
+                                                         " type='" + this.itype + "'" : "");
       else
          elements = DCCInput.templateElements.text.replace("[variable]", this.variable)
                                                   .replace("[render]", render);
@@ -94,7 +104,7 @@ class DCCInput extends DCCBlock {
 (function() {
    // <TODO> temporary (size = 50)
    DCCInput.templateElements = {
-      text: "<input type='text' id='[variable]' class='[render]' size='28'></input>",
+      text: "<input type='text' id='[variable]' class='[render]' size='28' [itype]></input>",
       area: "<textarea rows='[rows]' id='[variable]' class='[render]' size='28'></text-area>"
    };
 

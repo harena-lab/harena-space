@@ -1,8 +1,19 @@
 /* Notice Input DCC
   *****************/
 class DCCNoticeInput extends DCCBase {
-   constructor() {
+   constructor(text, itype, buttona, buttonb, selectList) {
       super();
+
+      if (text)
+        this.text = text;
+      if (itype)
+        this.itype = itype;
+      if (buttona)
+        this.buttona = buttona;
+      if (buttonb)
+        this.buttonb = buttonb;
+      if (selectList)
+         this._selectList = selectList;
    }
    
    connectedCallback() {
@@ -33,16 +44,43 @@ class DCCNoticeInput extends DCCBase {
                flex-direction: column;
             }
             .dsty-text {
-               flex: 100px;
-               min-height: 50px;
+               flex: 25px;
+               min-height: 25px;
                max-height: 300px;
+               margin: 5px;
             }
             .dsty-input {
                flex: 50px;
                min-height: 30px;
                max-height: 50px;
+               padding-left: 5px;
             }
-            .dsty-submit-button {
+            .dsty-selection-block {
+               flex: 200px;
+               max-height: 300px;
+               display: flex;
+               flex-direction: row;
+            }
+            .dsty-resource-list {
+               flex: 50%;
+            }
+            .dsty-resource-preview {
+               flex: 50%;
+            }
+            .dsty-resource {
+               object-fit: contain;
+               max-width: 100%;
+               max-height: 100%;
+            }
+            .dsty-button-block {
+               flex: 50px;
+               min-height: 30px;
+               max-height: 50px;
+               margin-left: auto;
+               margin-right: auto;
+               margin-bottom: 5px;
+            }
+            .dsty-button {
                background-color: #383f4f;
                color: #e0e9ce;
                padding: 14px 25px;
@@ -50,50 +88,79 @@ class DCCNoticeInput extends DCCBase {
                text-decoration: none;
                display: inline-block;
             }
-            .dsty-submit-button:hover {
+            .dsty-button:hover {
                color: white;
                cursor: pointer;
             }
        </style>
        <div id="presentation-dcc" class="dsty-notice dsty-border-notice">
-          <div id="text" class="dsty-text dsty-border">[text]</div>
-          <input id="input" class="dsty-input dsty-border"[display]></input>
-          <div id="submit-button" class="dsty-submit-button">[button]</div>
+          <div id="text" class="dsty-text">[text]</div>
+          <div class="dsty-selection-block"[display-list]>
+             <select id="resource-list" size="10" class="dsty-resource-list dsty-border">
+             </select>
+             <div id="resource-preview" class="dsty-resource-preview dsty-border">
+             </div>
+          </div>
+          <input id="input" class="dsty-input dsty-border"[display-input][itype]></input>
+          <div class="dsty-button-block">
+             <div id="submit-button-a" class="dsty-button">[button-a]</div>
+             <div id="submit-button-b" class="dsty-button"[display-buttonb]>[button-b]</div>
+          </div>
        </div>`;
       
-      const dialogSize = {
-         width: 400,
-         height: 250
-      };
+      this._type = (this.hasAttribute("itype"))
+         ? this.itype : DCCNoticeInput.standardType;
+
+      this._labelButtonA = "";
+      if (this.hasAttribute("buttona") && this.buttona)
+         this._labelButtonA = this.buttona;
+      else
+         this._labelButtonA = DCCNoticeInput.standardButtonA[this._type];
+
+      this._labelButtonB = (this.hasAttribute("buttonb"))
+                           ? this.buttonb : DCCNoticeInput.standardButtonB;
       
-      if (!this.hasAttribute("button"))
-         this.button = (this.hasAttribute("input")) ? "Submit" : "Ok";
-      
-      const displayInput = (this.hasAttribute("input")) ? "" : " style='display:none'";
+      const displayInput = (this._type == "input" || this._type == "password")
+                           ? "" : " style='display:none'";
+      const displayList = (this._type == "list")
+                           ? "" : " style='display:none'";
+      const displayButtonB = (this.hasAttribute("buttonb")) ? "" : " style='display:none'";
+
+      const displayType = (this._type == "password") ? " type='password'" : "";
 
       // building the template
       const template = document.createElement("template");
       template.innerHTML = templateHTML
-                              .replace("[width]", dialogSize.width)
-                              .replace("[height]", dialogSize.height)
+                              .replace("[width]", DCCNoticeInput.dialogSize[this._type][0])
+                              .replace("[height]", DCCNoticeInput.dialogSize[this._type][1])
                               .replace("[text]", this.text)
-                              .replace("[display", displayInput)
-                              .replace("[button]", this.button);
+                              .replace("[display-input]", displayInput)
+                              .replace("[display-list]", displayList)
+                              .replace("[display-buttonb]", displayButtonB)
+                              .replace("[button-a]", this._labelButtonA)
+                              .replace("[button-b]", this._labelButtonB)
+                              .replace("[itype]", displayType);
       this._shadow = this.attachShadow({mode: "open"});
       this._shadow.appendChild(template.content.cloneNode(true));
       
       this._inputField = this._shadow.querySelector("#input");
       
-      const submitButton = this._shadow.querySelector("#submit-button");
-      this._notify = this._notify.bind(this);
-      submitButton.addEventListener("click", this._notify);
+      this._submitButtonA = this._shadow.querySelector("#submit-button-a");
+      this._submitButtonB = this._shadow.querySelector("#submit-button-b");
+
+      if (this._type == "list") {
+         this._resourcePreview = this._shadow.querySelector("#resource-preview");
+         this._updatePreview = this._updatePreview.bind(this);
+         this._listWeb = this._shadow.querySelector("#resource-list");
+         this._showSelectList();
+      }
    }
    
    /* Properties
     **********/
     
     static get observedAttributes() {
-       return ["text", "input", "button"];
+       return ["text", "buttona", "buttonb", "itype"];
     }
    
     get text() {
@@ -102,36 +169,117 @@ class DCCNoticeInput extends DCCBase {
     
     set text(newValue) {
        this.setAttribute("text", newValue);
-       if (this._shadow != null) {
+       if (this._shadow != null)
           this._shadow.querySelector("#text").innerHTML = newValue;
-       }
     }
 
-    get input() {
-       return this.getAttribute("input");
+    get buttona() {
+       return this.getAttribute("buttona");
     }
     
-    set input(newValue) {
-       this.setAttribute("input", newValue);
+    set buttona(newValue) {
+       this.setAttribute("buttona", newValue);
     }
 
-    get button() {
-       return this.getAttribute("button");
+    get buttonb() {
+       return this.getAttribute("buttonb");
     }
     
-    set button(newValue) {
-       this.setAttribute("button", newValue);
+    set buttonb(newValue) {
+       this.setAttribute("buttonb", newValue);
     }
 
-   _notify() {
-      window.messageBus.ext.publish("var/" + this.input + "/set",
-                                    {sourceType: DCCNoticeInput.elementTag,
-                                     input: this._inputField.value});
+    get itype() {
+       return this.getAttribute("itype");
+    }
+    
+    set itype(newValue) {
+       this.setAttribute("itype", newValue);
+       if (this._inputField != null)
+          this._inputField.setAttribute("type", newValue);
+    }
+
+   addSelectList(selectList) {
+      this._selectList = selectList;
+      if (this._listWeb != null)
+         this._showSelectList();
+   }
+   
+   _showSelectList() {
+      if (this._selectList != null) {
+         let options = "";
+         let selected = "' selected>";
+         for (var sl in this._selectList) {
+            options += "<option value='" + sl + selected +
+                       this._selectList[sl].name + "</option>";
+            selected = "'>";
+         }
+         this._listWeb.innerHTML = options;
+         this._listWeb.addEventListener("change", this._updatePreview);
+      }
+      this._updatePreview();
+   }
+   
+   _updatePreview() {
+      if (this._selectList != null && this._listWeb != null)
+         this._resourcePreview.innerHTML =
+            "<img src='" + this._selectList[this._listWeb.value].icon +
+               "' class='dsty-resource'>"; 
+   }
+
+   async presentNotice() {
+       document.body.appendChild(this);
+
+       let promise = new Promise((resolve, reject) => {
+          const callback = function(button) { resolve({button: button}); };
+          this._submitButtonA.onclick = function(e) {
+             callback("A");
+          };
+          this._submitButtonB.onclick = function(e) {
+             callback("B");
+          };
+       });
+
+       let buttonClicked = await promise;
+       document.body.removeChild(this);
+
+       let result = this._labelButtonA;
+       if (buttonClicked.button == "B")
+          result = this._labelButtonB;
+       else
+          switch (this._type) {
+             case "input":
+             case "password": result = this._inputField.value;
+                              break;
+             case "list": result = this._listWeb.value;
+          }
+
+       return result;
+   }
+
+   static async displayNotice(text, itype, buttona, buttonb, selectList) {
+      const noticeDialog = new DCCNoticeInput(text, itype, buttona, buttonb, selectList);
+      const result = await noticeDialog.presentNotice();
+      return result;
    }
 }
 
 (function() {
    DCCNoticeInput.editableCode = false;
    DCCNoticeInput.elementTag = "dcc-notice-input";
+   DCCNoticeInput.standardType = "message";
+   DCCNoticeInput.standardButtonA = {
+      message: "Ok",
+      input: "Submit",
+      password: "Submit",
+      list: "Select"
+   };
+   DCCNoticeInput.dialogSize = {
+      message: [400, 200],
+      input: [400, 250],
+      password: [400, 250],
+      list: [400, 300]
+   };
+   DCCNoticeInput.standardButtonB = "Cancel";
    customElements.define(DCCNoticeInput.elementTag, DCCNoticeInput);
 })();

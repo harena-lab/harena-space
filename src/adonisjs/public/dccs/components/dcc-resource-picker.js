@@ -1,10 +1,22 @@
 /* Resource Selector DCC
   *******************/
+/*
 class DCCResourcePicker extends DCCBase {
-   constructor() {
+   constructor(resource, text, preview, selectList, buttonb) {
       super();
       
-      this._selectList = null;
+      if (resource)
+         this.resource = resource;
+      if (text)
+         this.text = text;
+      if (preview)
+         this.preview = preview;
+      if (selectList)
+         this._selectList = selectList;
+      else
+         this._selectList = null;
+      if (buttonb)
+         this.buttonb = buttonb;
       this._listWeb = null;
    }
    
@@ -36,27 +48,40 @@ class DCCResourcePicker extends DCCBase {
                overflow: hidden;
                display: flex;
                background: white;
+               flex-direction: column;
             }
-            @media (orientation: landscape) {
-               .dsty-selector {
-                  flex-direction: row;
-               }
-            }
-            @media (orientation: portrait) {
-               .dsty-selector {
-                  flex-direction: column;
-               }
+            .dsty-text {
+               flex: 25px;
+               min-height: 25px;
+               max-height: 50px;
+               margin: 5px;
             }
             .dsty-selection-block {
                flex: 200px;
                max-height: 300px;
                display: flex;
-               flex-direction: column;
+               flex-direction: row;
             }
             .dsty-resource-list {
                flex: 50%;
             }
-            .dsty-select-button {
+            .dsty-resource-preview {
+               flex: 50%;
+            }
+            .dsty-resource {
+               object-fit: contain;
+               max-width: 100%;
+               max-height: 100%;
+            }
+            .dsty-button-block {
+               flex: 50px;
+               min-height: 30px;
+               max-height: 50px;
+               margin-left: auto;
+               margin-right: auto;
+               margin-bottom: 5px;
+            }
+            .dsty-button {
                background-color: #383f4f;
                color: #e0e9ce;
                padding: 14px 25px;
@@ -64,26 +89,22 @@ class DCCResourcePicker extends DCCBase {
                text-decoration: none;
                display: inline-block;
             }
-            .dsty-select-button:hover {
+            .dsty-button:hover {
                color: white;
                cursor: pointer;
             }
-            .dsty-resource-preview {
-               flex: 200px;
-            }
-            .dsty-resource {
-               object-fit: contain;
-               max-width: 100%;
-               max-height: 100%;
-            }
        </style>
        <div id="presentation-dcc" class="dsty-selector dsty-border-selector">
+          <div id="text" class="dsty-text">[text]</div>
           <div class="dsty-selection-block">
              <select id="resource-list" size="10" class="dsty-resource-list dsty-border">
              </select>
-             <div id="select-button" class="dsty-select-button">Select</div>
+             <div id="resource-preview" class="dsty-resource-preview dsty-border">
+             </div>
           </div>
-          <div id="resource-preview" class="dsty-resource-preview dsty-border">
+          <div class="dsty-button-block">
+             <div id="submit-button-a" class="dsty-button">[button-a]</div>
+             <div id="submit-button-b" class="dsty-button">[button-b]</div>
           </div>
        </div>`;
       
@@ -92,61 +113,44 @@ class DCCResourcePicker extends DCCBase {
          height: 300
       };
       
-      // const dialogPos = Utils.tools.centralize(dialogSize.width, dialogSize.height); 
-     
-      /*
-      let screen = {
-         left: (window.screenLeft != undefined) ? window.screenLeft : window.screenX,
-         top: (window.screenTop != undefined) ? window.screenTop : window.screenY,
-         width: (window.innerWidth)
-                   ? window.innerWidth
-                   : (document.documentElement.clientWidth)
-                      ? document.documentElement.clientWidth
-                      : screen.width,
-         height: (window.innerHeight)
-                    ? window.innerHeight
-                    : (document.documentElement.clientHeight)
-                       ? document.documentElement.clientHeight
-                       : screen.height
-      };
-
-      let systemZoom = screen.width / window.screen.availWidth;
-      
-      dialog.left = ((screen.width - dialog.width) / 2) / systemZoom + screen.left;
-      dialog.top = ((screen.height - dialog.height) / 2) / systemZoom + screen.top;
-      */
-      
       // building the template
+      const labelButtonB = (this.hasAttribute("buttonb"))
+         ? this.buttonb : "Cancel";
+
       const template = document.createElement("template");
       template.innerHTML = templateHTML
                               .replace("[width]", dialogSize.width)
-                              .replace("[height]", dialogSize.height);
+                              .replace("[height]", dialogSize.height)
+                              .replace("[text]", this.text)
+                              .replace("[button-a]", DCCResourcePicker.selectLabel)
+                              .replace("[button-b]", labelButtonB);
       let shadow = this.attachShadow({mode: "open"});
       shadow.appendChild(template.content.cloneNode(true));
       
       this._resourcePreview = shadow.querySelector("#resource-preview");
       
-      let selectButton = shadow.querySelector("#select-button");
-      this._notify = this._notify.bind(this);
-      selectButton.addEventListener("click", this._notify);
+      this._submitButtonA = shadow.querySelector("#submit-button-a");
+      this._submitButtonB = shadow.querySelector("#submit-button-b");
       
       this._updatePreview = this._updatePreview.bind(this);
       this._listWeb = shadow.querySelector("#resource-list");
       this._showSelectList();
    }
    
-   /* Properties
-    **********/
+   // Properties
     
     static get observedAttributes() {
-       return ["preview", "resource"];
+       return ["text", "resource", "preview", "buttonb"];
     }
-   
-    get preview() {
-       let returnValue = this.hasAttribute("preview") && this.getAttribute("preview") != false;
-       return returnValue;
+
+    set text(newValue) {
+       this.setAttribute("text", newValue);
     }
     
+    get text() {
+       return this.getAttribute("text");
+    }
+   
     set resource(newValue) {
        this.setAttribute("resource", newValue);
     }
@@ -155,11 +159,24 @@ class DCCResourcePicker extends DCCBase {
        return this.getAttribute("resource");
     }
     
+    get preview() {
+       let returnValue = this.hasAttribute("preview") && this.getAttribute("preview") != false;
+       return returnValue;
+    }
+    
     set preview(newValue) {
        this.setAttribute("preview", newValue);
     }
 
-    addSelectList(selectList) {
+    set buttonb(newValue) {
+       this.setAttribute("buttonb", newValue);
+    }
+    
+    get buttonb() {
+       return this.getAttribute("buttonb");
+    }
+
+   addSelectList(selectList) {
       this._selectList = selectList;
       if (this._listWeb != null)
          this._showSelectList();
@@ -167,12 +184,11 @@ class DCCResourcePicker extends DCCBase {
    
    _showSelectList() {
       if (this._selectList != null) {
-         // let imageFiles = DCCSystem.getImageFiles();
          let options = "";
          let selected = "' selected>";
          for (var sl in this._selectList) {
             options += "<option value='" + sl + selected +
-                       sl + "</option>";
+                       this._selectList[sl].name + "</option>";
             selected = "'>";
          }
          this._listWeb.innerHTML = options;
@@ -183,18 +199,46 @@ class DCCResourcePicker extends DCCBase {
    
    _updatePreview() {
       if (this._selectList != null && this._listWeb != null)
-         this._resourcePreview.innerHTML = "<img src='" + this._selectList[this._listWeb.value] + "' class='dsty-resource'>"; 
+         this._resourcePreview.innerHTML =
+            "<img src='" + this._selectList[this._listWeb.value].icon +
+               "' class='dsty-resource'>"; 
    }
    
-   _notify() {
-      window.messageBus.ext.publish("control/" + this.resource + "/selected",
-                                    {sourceType: DCCResourcePicker.elementTag,
-                                     selected: this._listWeb.value});
+   async presentNotice() {
+      document.body.appendChild(this);
+
+      let promise = new Promise((resolve, reject) => {
+         const callback = function(button) { resolve(button); };
+         this._submitButtonA.onclick = function(e) {
+            callback(DCCResourcePicker.selectLabel);
+         };
+         this._submitButtonB.onclick = function(e) {
+            callback(this.buttonb);
+         };
+      });
+
+      const buttonClicked = await promise;
+      document.body.removeChild(this);
+
+      console.log(buttonClicked);
+
+      return (buttonClicked == DCCResourcePicker.selectLabel)
+             ? this._listWeb.value
+             : buttonClicked;
+   }
+
+   static async displayPicker(resource, text, preview, selectList, buttonb) {
+      const noticeDialog = new DCCResourcePicker(
+         resource, text, preview, selectList, buttonb);
+      const value = await noticeDialog.presentNotice();
+      return value;
    }
 }
 
 (function() {
    DCCResourcePicker.editableCode = false;
    DCCResourcePicker.elementTag = "dcc-resource-picker";
+   DCCResourcePicker.selectLabel = "Select";
    customElements.define(DCCResourcePicker.elementTag, DCCResourcePicker);
 })();
+*/

@@ -7,7 +7,7 @@
 
 class AuthorManager {
    constructor() {
-      window.messageBus.page = new MessageBus(false);
+      MessageBus.page = new MessageBus(false);
       
       this._knotGenerateCounter = 2;
       
@@ -15,119 +15,137 @@ class AuthorManager {
       this._compiledCase = null;
       this._knots = null;
       
-      this._navigator = new Navigator();
+      this._navigator = new Navigator(this._translator);
       
-      this._server = new DCCAuthorServer();
+      // this._server = new DCCAuthorServer();
+      // new DCCCommonServer();
+      // new DCCAuthorServer();
       
-      this._currentTemplateFamily = "jacinto";
-      this._currentCaseName = null;
+      // this._currentThemeFamily = "jacinto";
+      this._currentCaseId = null;
       this._knotSelected = null;
       this._htmlKnot = null;
       this._renderSlide = true;
       this._editor = null;
       
       this.controlEvent = this.controlEvent.bind(this);
-      window.messageBus.ext.subscribe("control/#", this.controlEvent);
+      MessageBus.ext.subscribe("control/#", this.controlEvent);
       
       this.knotSelected = this.knotSelected.bind(this);
-      window.messageBus.ext.subscribe("knot/+/selected", this.knotSelected);
+      MessageBus.ext.subscribe("knot/+/selected", this.knotSelected);
 
       this.groupSelected = this.groupSelected.bind(this);
-      window.messageBus.ext.subscribe("group/+/selected", this.groupSelected);
+      MessageBus.ext.subscribe("group/+/selected", this.groupSelected);
 
-      this._templateFamilySelected = this._templateFamilySelected.bind(this);
-      this.newKnot = this.newKnot.bind(this);
-      this._caseNameSelected = this._caseNameSelected.bind(this);
-      
-      this._temporaryCase = true;
+      this._caseModified = false;
+
+      window.onbeforeunload = function() {
+         return (this._caseModified)
+            ? "If you leave this page you will lose your unsaved changes." : null;
+      }
    }
    
-   start() {
+   async start() {
       this._navigationPanel = document.querySelector("#navigation-panel");
       this._knotPanel = document.querySelector("#knot-panel");
       this._messageSpace = document.querySelector("#message-space");
-      
-      window.messageBus.ext.publish("control/case/new", "");
+
+      this._userid = await Basic.service.signin();
+
+      this.caseLoadSelect();
    }
-   
+
    /*
-    * `control/case/load`
-    * `control/case/save`
-    * `control/case/play`
-    * `control/knot/edit`
-    * `control/config/edit`
-
-    * `knot/<knot>/selected`
-
+    * Redirects control/<entity>/<operation> messages
     */
    controlEvent(topic, message) {
       switch (topic) {
-         case "control/case/new":  this.newCase();
+         case "control/case/new":  this.caseNew();
                                    break;
-         case "control/case/load": this.selectCase();
+         case "control/case/load": this.caseLoadSelect();
                                    break;
-         case "control/case/save": this.saveCase();
+         case "control/case/save": this.caseSave();
                                    break;
-         case "control/knot/new":  this.modelLoad();
+         case "control/knot/new":  this.knotNew();
                                    break;
-         case "control/knot/edit": this.editKnot();
+         case "control/knot/edit": this.knotEdit();
                                    break;
-         case "control/case/play": this.playCase();
+         case "control/case/play": this.casePlay();
                                    break;
          case "control/config/edit": this.config();
                                      break;
-         /*
-         case "control/knot/selected": this.knotSelected(message);
-                                        break;
-         */
       }
    }
    
    /*
     * ACTION: control-load (1)
     */
-   async selectCase() {
-      this._resourcePicker = new DCCResourcePicker();
-      this._resourcePicker.resource = "case";
-      
-      window.messageBus.ext.subscribe("control/case/selected", this._caseNameSelected);
-      
-      const cases = await window.messageBus.ext.request("case/*/get", "", "case/*");
-      this._resourcePicker.addSelectList(cases.message);
-      this._knotPanel.appendChild(this._resourcePicker);
+   async caseLoadSelect() {
+      const saved = await this.saveChangedCase();
+
+      const cases = await MessageBus.ext.request("data/case/*/list",
+                                                 {filterBy: "user",
+                                                  filter: this._userid});
+      const caseId = await DCCNoticeInput.displayNotice(
+         "Select a case to load or start a new case.",
+         "list", "Select", "New", cases.message);
+      /*
+      if (this._temporaryCase && saved == "No")
+         console.log("deleting..." + this._currentCaseId);
+      */
+
+      console.log("Selected: " + caseId);
+      if (caseId == "New")
+         this.caseNew();
+      else
+         this._caseLoad(caseId);
+   }
+   
+   async saveChangedCase() {
+      let decision = "No";
+
+      if (this._caseModified) {
+         decision = await DCCNoticeInput.displayNotice(
+            "There are unsaved modifications in the case. Do you want to save?",
+            "message", "Yes", "No");
+         if (decision == "Yes")
+            await this.caseSave();
+      }
+
+      return decision;
+   }
+
+   /*
+    * ACTION: control-new
+    */
+   async caseNew() {
+      this._temporaryCase = true;
+      const caseId = await MessageBus.ext.request("data/case//new");
+
+      const blankMd =
+         await MessageBus.ext.request("data/template/basic.blank/get");
+
+      const status = await MessageBus.ext.request("data/case/" + caseId.message + "/set",
+                                                  {format: "markdown", source: blankMd.message});
+
+      this._caseLoad(caseId.message);
    }
 
    /*
     * ACTION: control-load (2)
     */
-   async _caseNameSelected(topic, message) {
-      this._temporaryCase = false;
-      window.messageBus.ext.unsubscribe("control/case/selected", this._caseNameSelected);
-      this._caseLoad(message.selected);
-      this._knotPanel.removeChild(this._resourcePicker);
-   }
-   
-   /*
-    * ACTION: control-new
-    */
-   async newCase() {
-      this._temporaryCase = true;
-      const caseName = await window.messageBus.ext.request("case/_temporary/new", "",
-                                                           "case/_temporary/set/status");
-      this._caseLoad("_temporary");
-   }
+   async _caseLoad(caseId) {
+      this._currentCaseId = caseId;
+      const caseObj = await MessageBus.ext.request(
+         "data/case/" + this._currentCaseId + "/get");
+      this._currentCaseName = caseObj.message.name;
 
-   /*
-    * ACTION: control-load (3)
-    */
-   async _caseLoad(caseName) {
-      this._currentCaseName = caseName;
-      const caseMd = await window.messageBus.ext.request("case/" + this._currentCaseName + "/get", "",
-                                                         "case/" + this._currentCaseName);
-      
-      this._compiledCase = this._translator.compileMarkdown(this._currentCaseName, caseMd.message);
+      this._compiledCase = this._translator.compileMarkdown(this._currentCaseId,
+                                                            caseObj.message.source);
       this._knots = this._compiledCase.knots;
-      
+
+      console.log(this._compiledCase);
+
       await this._navigator.mountTreeCase(this, this._compiledCase.knots);
       
       const knotIds = Object.keys(this._knots);
@@ -135,91 +153,29 @@ class AuthorManager {
       while (k < knotIds.length && !this._knots[knotIds[k]].render)
          k++;
       
-      window.messageBus.ext.publish("knot/" + knotIds[k] + "/selected");
-   }
-   
-   /*
-    * ACTION: control/knot/new (1)
-    */
-   async modelLoad() {
-      this._resourcePicker = new DCCResourcePicker();
-      this._resourcePicker.resource = "model";
-      
-      window.messageBus.ext.subscribe("control/model/selected", this.newKnot);
-      
-      const models = await window.messageBus.ext.request("model/*/get", "", "model/*");
-      this._resourcePicker.addSelectList(models.message);
-      this._knotPanel.appendChild(this._resourcePicker);
-   }
-
-   /*
-    * ACTION: control/knot/new (2)
-    */
-   async newKnot(topic, message) {
-      window.messageBus.ext.unsubscribe("control/model/selected", this.newKnot);
-      this._knotPanel.removeChild(this._resourcePicker);
-      
-      const knotId = "Knot_" + this._knotGenerateCounter;
-      let newKnot = {type: "knot",
-                     title: "Knot " + this._knotGenerateCounter,
-                     level: 1,
-                     render: true,
-                     _source: "# Knot " + this._knotGenerateCounter + "\n\n"};
-      this._knotGenerateCounter++;
-      this._knots[knotId] = newKnot;
-      this._translator.extractKnotAnnotations(this._knots[knotId]);
-      this._translator.compileKnotMarkdown(this._knots, knotId);
-      this._htmlKnot = await this._generateHTML(knotId);
-      await this._navigator.mountPlainCase(this, this._compiledCase.knots);
-      window.messageBus.ext.publish("knot/" + this._knotSelected + "/selected");
-   }
-   
-   /*
-    * ACTION: control-edit
-    */
-   async editKnot() {
-      if (this._knotSelected != null) {
-         if (this._checkKnotModification())
-            this._htmlKnot = await this._generateHTML(this._knotSelected);
-         this._renderSlide = !this._renderSlide;
-         this._renderKnot();
-      }
+      MessageBus.ext.publish("knot/" + knotIds[k] + "/selected");
    }
    
    /*
     * ACTION: control-save
     */
-   async saveCase() {
-      if (this._currentCaseName != null && this._compiledCase != null) {
-         let md =this._translator.assembleMarkdown(this._compiledCase);
-         const versionFile = await window.messageBus.ext.request("case/" + this._currentCaseName + "/set",
-                                                                 {format: "markdown", source: md},
-                                                                 "case/" + this._currentCaseName + "/version");
-         
-         console.log("Case saved! Previous version: " + versionFile.message);
-
+   async caseSave() {
+      if (this._currentCaseId != null && this._compiledCase != null) {
          if (this._temporaryCase) {
-            const noticeInput = new DCCNoticeInput();
-            noticeInput.text = "Inform a name for your case:";
-            noticeInput.input = "informed_case_name";
-            this._knotPanel.appendChild(noticeInput);
-            
-            let status = "start";
-            let caseName = null;
-            while (status != "ok") {
-               caseName = await window.messageBus.ext.waitMessage("var/" + noticeInput.input + "/set");
-               let statusMess = await window.messageBus.ext.request("case/_temporary/rename",
-                                                                    {newName: caseName.message.input},
-                                                                     "case/_temporary/rename/status");
-               status = statusMess.message;
-               if (status != "ok")
-                  noticeInput.text =
-                     "<span style='color: red'>The selected name already exists</span><br>Inform a name for your case:";
-            }
-            this._currentCaseName = caseName.message.input;
-            this._knotPanel.removeChild(noticeInput);
+            const caseName =
+               await DCCNoticeInput.displayNotice("Inform a name for your case:",
+                                                  "input");
+            this._currentCaseName = caseName;
             this._temporaryCase = false;
          }
+
+         let md =this._translator.assembleMarkdown(this._compiledCase);
+         const status = await MessageBus.ext.request("data/case/" + this._currentCaseId + "/set",
+                                                     {name: this._currentCaseName,
+                                                      format: "markdown",
+                                                      source: md});
+         
+         console.log("Case saved! Status: " + status.message);
 
          this._messageSpace.innerHTML = "Saved";
          setTimeout(this._clearMessage, 2000);
@@ -232,15 +188,56 @@ class AuthorManager {
    }
 
    /*
+    * ACTION: control/knot/new
+    */
+   async knotNew() {
+      const templates = await MessageBus.ext.request("data/template/*/list");
+      const template = await DCCNoticeInput.displayNotice(
+         "Select a template for your knot.",
+         "list", "Select", "Cancel", templates.message);
+      const knotId = "Knot_" + this._knotGenerateCounter;
+      let newKnot = {type: "knot",
+                     title: "Knot " + this._knotGenerateCounter,
+                     level: 1,
+                     render: true,
+                     _source: "# Knot " + this._knotGenerateCounter + "\n\n"};
+      this._knotGenerateCounter++;
+      this._knots[knotId] = newKnot;
+      this._translator.extractKnotAnnotations(this._knots[knotId]);
+      this._translator.compileKnotMarkdown(this._knots, knotId);
+      // this._htmlKnot = await this._generateHTML(knotId);
+      this._htmlKnot = await this._translator.generateHTML(this._knots[knotId]);
+      await this._navigator.mountPlainCase(this, this._compiledCase.knots);
+      MessageBus.ext.publish("knot/" + this._knotSelected + "/selected");
+   }
+   
+   /*
+    * ACTION: control-edit
+    */
+   async knotEdit() {
+      if (this._knotSelected != null) {
+         if (this._checkKnotModification())
+            this._htmlKnot = await this._translator.generateHTML(
+               this._knots[this._knotSelected]);
+            // this._htmlKnot = await this._generateHTML(this._knotSelected);
+         this._renderSlide = !this._renderSlide;
+         this._renderKnot();
+      }
+   }
+   
+   /*
     * ACTION: control-play
     */
-   async playCase() {
+   async casePlay() {
+      /*
       this._messageSpace.innerHTML = "Preparing...";
-      const dirPlay = await window.messageBus.ext.request(
-                         "case/" + this._currentCaseName + "/prepare",
-                         this._currentTemplateFamily,
-                         "case/" + this._currentCaseName + "/prepare/directory");
-      this._templateSet = {};
+      const dirPlay = await MessageBus.ext.request(
+                         "case/" + this._currentCaseId + "/prepare",
+                         this._translator.currentThemeFamily,
+                         "case/" + this._currentCaseId + "/prepare/directory");
+      */
+      
+      this._translator.newThemeSet();
       
       const htmlSet = Object.assign(
                          {"entry": {render: true},
@@ -256,15 +253,18 @@ class AuthorManager {
          if (htmlSet[kn].render) {
             let finalHTML = "";
             if (processing > 4)
-               finalHTML = await this._generateHTMLBuffer(kn);
+               finalHTML = await this._translator.generateHTMLBuffer(
+                                                     this._knots[kn]);
+               // finalHTML = await this._generateHTMLBuffer(kn);
             else 
-               finalHTML = await this._loadTemplate(this._currentTemplateFamily, kn);
+               finalHTML = await this._translator.loadTheme(kn);
+               // finalHTML = await this._loadTheme(this._currentThemeFamily, kn);
             finalHTML = (htmlSet[kn].categories && htmlSet[kn].categories.indexOf("note") >= 0)
                ? AuthorManager.jsonNote.replace("{knot}", finalHTML)
                : AuthorManager.jsonKnot.replace("{knot}", finalHTML);
             
-            await window.messageBus.ext.request("knot/" + kn + "/set",
-                                                {caseId: this._currentCaseName,
+            await MessageBus.ext.request("knot/" + kn + "/set",
+                                                {caseId: this._currentCaseId,
                                                  format: "html",
                                                  source: finalHTML},
                                                 "knot/" + kn + "/set/status");
@@ -273,38 +273,24 @@ class AuthorManager {
       this._messageSpace.innerHTML = "Finalizing...";
       
       let caseJSON = this._translator.generateCompiledJSON(this._compiledCase);
-      await window.messageBus.ext.request("case/" + this._currentCaseName + "/set",
+      await MessageBus.ext.request("case/" + this._currentCaseId + "/set",
                                           {format: "json", source: caseJSON},
-                                          "case/" + this._currentCaseName + "/set/status");
+                                          "case/" + this._currentCaseId + "/set/status");
       
       this._messageSpace.innerHTML = "";
       
-      delete this._templateSet;
+      this._translator.deleteThemeSet();
       window.open(dirPlay.message + "/html/index.html", "_blank");
    }
    
    /*
-    * ACTION: config (1)
+    * ACTION: config
     */
    async config() {
-      this._resourcePicker = new DCCResourcePicker();
-      this._resourcePicker.resource = "template_family";
-      
-      window.messageBus.ext.subscribe("control/template_family/selected", this._templateFamilySelected);
-      
-      const families = await window.messageBus.ext.request("template_family/*/get", "", "template_family/*");
-      
-      this._resourcePicker.addSelectList(families.message);
-      document.querySelector("#knot-panel").appendChild(this._resourcePicker);
-   }
-
-   /*
-    * ACTION: config (2)
-    */
-   async _templateFamilySelected(topic, message) {
-      window.messageBus.ext.unsubscribe("control/template_family/selected", this._templateFamilySelected);
-      this._currentTemplateFamily = message.selected;
-      document.querySelector("#knot-panel").removeChild(this._resourcePicker);
+      const families = await MessageBus.ext.request("data/theme_family/*/list");
+      this._translator.currentThemeFamily = await DCCNoticeInput.displayNotice(
+         "Select a theme to be applied.",
+         "list", "Select", "Cancel", families.message);
    }
    
    /*
@@ -324,7 +310,9 @@ class AuthorManager {
       if (knotid != null) {
          this._checkKnotModification();
          this._knotSelected = knotid;
-         this._htmlKnot = await this._generateHTML(this._knotSelected);
+         // this._htmlKnot = await this._generateHTML(this._knotSelected);
+         this._htmlKnot = await this._translator.generateHTML(
+                                   this._knots[this._knotSelected]);
          this._renderKnot();
       }
     }
@@ -335,7 +323,6 @@ class AuthorManager {
     async groupSelected(topic, message) {
       this.knotSelected(topic, message);
       const knotid = MessageBus.extractLevel(topic, 2);
-      console.log("down tree: " + knotid);
       this._navigator.downTree(knotid);
     }
 
@@ -354,47 +341,56 @@ class AuthorManager {
             this._translator.compileKnotMarkdown(this._knots, this._knotSelected);
          }
       }
+      if (!this._caseModified)
+        this._caseModified = modified;
       return modified;
    }
    
+   /*
    async _generateHTML(knot) {
-      this._templateSet = {};
+      this._translator.newThemeSet();
       let finalHTML = await this._generateHTMLBuffer(knot);
-      // <TODO> fix - deleting before ending
-      // delete this._templateSet;
+      this._translator.deleteThemeSet();
       return finalHTML;
+   }
+
+   _newThemeSet() {
+      this._themeSet = {};
+   }
+
+   _deleteThemeSet() {
+      delete this._themeSet;
    }
    
    async _generateHTMLBuffer(knot) {
-      // console.log(knot);
-      let templates = (this._knots[knot].categories) ?
-                       this._knots[knot].categories : ["knot"];
-      for (let tp in templates)
-         if (!this._templateSet[templates[tp]]) {
+      let themes = (this._knots[knot].categories)
+                   ? this._knots[knot].categories : ["knot"];
+      for (let tp in themes)
+         if (!this._themeSet[themes[tp]]) {
             const templ = await
-                    this._loadTemplate(this._currentTemplateFamily, templates[tp]);
+                    this._loadTheme(this._currentThemeFamily, themes[tp]);
             if (templ != "")
-               this._templateSet[templates[tp]] = templ;
+               this._themeSet[themes[tp]] = templ;
             else {
-               if (!this._templateSet["knot"])
-                  this._templateSet["knot"] = await
-                     this._loadTemplate(this._currentTemplateFamily, "knot");
-               this._templateSet[templates[tp]] = this._templateSet["knot"];
+               if (!this._themeSet["knot"])
+                  this._themeSet["knot"] = await
+                     this._loadTheme(this._currentThemeFamily, "knot");
+               this._themeSet[themes[tp]] = this._themeSet["knot"];
             }
          }
       let finalHTML = this._translator.generateKnotHTML(this._knots[knot]);
-      for (let tp = templates.length-1; tp >= 0; tp--)
-         finalHTML = this._templateSet[templates[tp]].replace("{knot}", finalHTML);
+      for (let tp = themes.length-1; tp >= 0; tp--)
+         finalHTML = this._themeSet[themes[tp]].replace("{knot}", finalHTML);
       
       return finalHTML;
    }
    
-   async _loadTemplate(templateFamily, templateName) {
-      const templateObj = await window.messageBus.ext.request(
-            "template/" + templateFamily + "." + templateName + "/get", "",
-            "template/" + templateFamily + "." + templateName);
-      return templateObj.message;
+   async _loadTheme(themeFamily, themeName) {
+      const themeObj = await MessageBus.ext.request(
+            "data/theme/" + themeFamily + "." + themeName + "/get");
+      return themeObj.message;
    }
+   */
    
    _renderKnot() {
       if (this._renderSlide) {
@@ -415,8 +411,8 @@ class AuthorManager {
 }
 
 (function() {
-   AuthorManager.jsonKnot = "(function() { PlayerManager.instance().presentKnot(`{knot}`) })();";
-   AuthorManager.jsonNote = "(function() { PlayerManager.instance().presentNote(`{knot}`) })();";
+   AuthorManager.jsonKnot = "(function() { PlayerManager.player.presentKnot(`{knot}`) })();";
+   AuthorManager.jsonNote = "(function() { PlayerManager.player.presentNote(`{knot}`) })();";
    
    AuthorManager.author = new AuthorManager();
 })();

@@ -94,6 +94,13 @@ body {
    height: 100%;
 }
 
+.sty-tree-button {
+   width: 48px;
+   height: 48px;
+   margin-left: auto;
+   margin-right: auto;
+}
+
 .sty-navigation-knot {
    position: relative;
    max-width: 100%;

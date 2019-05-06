@@ -6,10 +6,20 @@
 class Translator {
    
    constructor() {
+      this._currentThemeFamily = "jacinto";
+
       this._markdownTranslator = new showdown.Converter();
       
       this._annotationMdToObj = this._annotationMdToObj.bind(this);
       this._textObjToHTML = this._textObjToHTML.bind(this);
+   }
+
+   get currentThemeFamily() {
+      return this._currentThemeFamily;
+   }
+   
+   set currentThemeFamily(newValue) {
+      this._currentThemeFamily = newValue;
    }
 
    /*
@@ -261,6 +271,54 @@ class Translator {
       obj.seq = this._objSequence;
       return obj;
    }
+
+   /*
+    *
+    */
+   async generateHTML(knot) {
+      this.newThemeSet();
+      let finalHTML = await this.generateHTMLBuffer(knot);
+      this.deleteThemeSet();
+      return finalHTML;
+   }
+
+   newThemeSet() {
+      this._themeSet = {};
+   }
+
+   deleteThemeSet() {
+      delete this._themeSet;
+   }
+   
+   async generateHTMLBuffer(knot) {
+      let themes = (knot.categories)
+                   ? knot.categories : ["knot"];
+      for (let tp in themes)
+         if (!this._themeSet[themes[tp]]) {
+            const templ = await
+                    this.loadTheme(themes[tp]);
+            if (templ != "")
+               this._themeSet[themes[tp]] = templ;
+            else {
+               if (!this._themeSet["knot"])
+                  this._themeSet["knot"] = await
+                     this._loadTheme("knot");
+               this._themeSet[themes[tp]] = this._themeSet["knot"];
+            }
+         }
+      let finalHTML = this.generateKnotHTML(knot);
+      for (let tp = themes.length-1; tp >= 0; tp--)
+         finalHTML = this._themeSet[themes[tp]].replace("{knot}", finalHTML);
+      
+      return finalHTML;
+   }
+
+   async loadTheme(themeName) {
+      const themeObj = await MessageBus.ext.request(
+            "data/theme/" + this._currentThemeFamily + "." + themeName + "/get");
+      return themeObj.message;
+   }
+
 
    /*
     * Generate HTML in a single knot
@@ -880,7 +938,7 @@ class Translator {
 }
 
 (function() {
-   Translator.marksKnotTitle = /((?:^[ \t]*(?:#+)[ \t]*(?:\w[\w \t]*)(?:\((?:\w[\w \t,]*)\))?[ \t]*#*[ \t]*$)|(?:^[ \t]*(?:\w[\w \t]*)(?:\((?:\w[\w \t,]*)\))?[ \t]*[\f\n\r](?:==+|--+)$))/igm;
+   Translator.marksKnotTitle = /((?:^[ \t]*(?:#+)[ \t]*(?:\w[\w \t]*)(?:\((?:\w[\w \t,]*)\))?[ \t]*#*[ \t]*$)|(?:^[ \t]*(?:\w[\w \t]*)(?:\((?:\w[\w \t,]*)\))?[ \t]*[\f\n\r][\n\r]?(?:==+|--+)$))/igm;
 
    Translator.marksAnnotation = {
      // knot   : /^[ \t]*==*[ \t]*(\w[\w \t]*)(?:\(([\w \t]*)\))?[ \t]*=*[ \t]*[\f\n\r]/im,
@@ -892,7 +950,7 @@ class Translator {
    Translator.marksAnnotationInside = /([\w \t\+\-\*"]+)(?:[=\:]([\w \t%]*)(?:\/([\w \t%]*))?)?/im;
 
    Translator.marks = {
-      knot   : /(?:^[ \t]*(#+)[ \t]*(\w[\w \t]*)(?:\((\w[\w \t,]*)\))?[ \t]*#*[ \t]*$)|(?:^[ \t]*(\w[\w \t]*)(?:\((\w[\w \t,]*)\))?[ \t]*[\f\n\r](==+|--+)$)/im,
+      knot   : /(?:^[ \t]*(#+)[ \t]*(\w[\w \t]*)(?:\((\w[\w \t,]*)\))?[ \t]*#*[ \t]*$)|(?:^[ \t]*(\w[\w \t]*)(?:\((\w[\w \t,]*)\))?[ \t]*[\f\n\r][\n\r]?(==+|--+)$)/im,
       option : /^[ \t]*([\+\*])[ \t]*([^\(&> \t][^\(&>\n\r\f]*)?(?:\(([\w \t-]+)\)[ \t]*)?(?:-(?:(?:&gt;)|>)[ \t]*(\w[\w. \t]*))$/im,
       divert : /-(?:(?:&gt;)|>) *(\w[\w. ]*)/im,
       talk   : /^[ \t]*:[ \t]*(\w[\w \t]*):[ \t]*([^\n\r\f]+)$/im,

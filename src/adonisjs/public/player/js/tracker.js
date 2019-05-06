@@ -9,20 +9,20 @@ class Tracker {
       this._groupInput = null;
       
       this.inputReady = this.inputReady.bind(this);
-      window.messageBus.ext.subscribe("var/+/input/ready", this.inputReady);
+      MessageBus.ext.subscribe("var/+/input/ready", this.inputReady);
       this.groupinputReady = this.groupinputReady.bind(this);
-      window.messageBus.ext.subscribe("var/+/group_input/ready", this.groupinputReady);
+      MessageBus.ext.subscribe("var/+/group_input/ready", this.groupinputReady);
       this.subinputReady = this.subinputReady.bind(this);
-      window.messageBus.ext.subscribe("var/+/subinput/ready", this.subinputReady);
+      MessageBus.ext.subscribe("var/+/subinput/ready", this.subinputReady);
       this.inputTyped = this.inputTyped.bind(this);
-      window.messageBus.ext.subscribe("var/+/typed", this.inputTyped);
+      MessageBus.ext.subscribe("var/+/typed", this.inputTyped);
       this.inputChanged = this.inputChanged.bind(this);
-      window.messageBus.ext.subscribe("var/+/changed", this.inputChanged);
+      MessageBus.ext.subscribe("var/+/changed", this.inputChanged);
       this.stateChanged = this.stateChanged.bind(this);
-      window.messageBus.ext.subscribe("var/+/state_changed", this.stateChanged);
+      MessageBus.ext.subscribe("var/+/state_changed", this.stateChanged);
       
       this.submitVariables = this.submitVariables.bind(this);
-      window.messageBus.ext.subscribe("control/input/submit", this.submitVariables);
+      MessageBus.ext.subscribe("control/input/submit", this.submitVariables);
    }
    
    inputReady(topic, message) {
@@ -69,7 +69,7 @@ class Tracker {
    
    submitVariables(topic, message) {
       for (let v in this._variables)
-         window.messageBus.ext.publish("var/" + v + "/set", this._variables[v]);
+         MessageBus.ext.publish("var/" + v + "/set", this._variables[v]);
       // console.log("variavel: " + v + " -- " + this._variables[v]);
       // this._server.recordInput(v, this._variables[v]);
    }

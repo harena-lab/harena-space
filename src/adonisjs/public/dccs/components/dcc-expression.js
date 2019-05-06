@@ -6,7 +6,7 @@ class DCCExpression extends DCCBase {
    }
    
    async connectedCallback() {
-     const result = await window.messageBus.ext.request("var/" + this.expression + "/get", "",
+     const result = await MessageBus.ext.request("var/" + this.expression + "/get", "",
                                                         "var/" + this.expression);
      
      let template = document.createElement("template");

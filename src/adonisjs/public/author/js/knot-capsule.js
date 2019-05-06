@@ -6,11 +6,11 @@
 
 class CapsuleManager {
    constructor() {
-      window.messageBus.page = new MessageBus(false);
+      MessageBus.page = new MessageBus(false);
    }
    
    startCapsule() {
-      PlayerManager.instance()._mainPanel = document.querySelector("#main-panel");
+      PlayerManager.player._mainPanel = document.querySelector("#main-panel");
    }
 }
 

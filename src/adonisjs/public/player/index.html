@@ -9,7 +9,7 @@
    <link rel="stylesheet" href="css/templates.css">
    <link rel="stylesheet" href="css/templates-classic.css">
 
-   <script src="js/utils.js"></script>
+   <script src="js/basic.js"></script>
    <script src="js/bus.js"></script>
    <script src="js/bus-server-address.js"></script>
    <script src="js/tracker.js"></script>
@@ -23,7 +23,6 @@
    <script src="js/dccs/editable/dcc-character-editable.js"></script>
    <script src="js/dccs/dcc-lively-dialog.js"></script>
    <script src="js/dccs/editable/dcc-lively-dialog-editable.js"></script>
-   <script src="js/dccs/dcc-resource-picker.js"></script>
    <script src="js/dccs/dcc-state-selector.js"></script>
    <script src="js/dccs/dcc-image-marker.js"></script>
    <script src="js/dccs/dcc-styler.js"></script>
@@ -32,10 +31,11 @@
    <script src="js/dccs/dcc-report.js"></script>
    
    <script src="js/dcc-player-server-proxy.js"></script>
+   <script src="js/dcc-plyer-server-address.js"></script>
    <script src="js/player.js"></script>
    <script src="js/case.js"></script>
 </head>
-<body onload="PlayerManager.instance().startPlayer()">
+<body onload="PlayerManager.player.startPlayer()">
    <div id="main-panel" class="sty-main-panel">
       
    </div>

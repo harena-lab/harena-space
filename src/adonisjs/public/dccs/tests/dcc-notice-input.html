@@ -15,7 +15,7 @@
    
    <script>
       function prepareInput() {
-         window.messageBus.ext.subscribe("var/name/set", showInput);
+         MessageBus.ext.subscribe("var/name/set", showInput);
       }
       
       function showInput(topic, message) {

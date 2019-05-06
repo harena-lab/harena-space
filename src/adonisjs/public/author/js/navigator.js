@@ -7,13 +7,17 @@
 
 class Navigator {
 
-constructor() {
+constructor(translator) {
+   this._translator = translator;
+
    this._retracted = true;
 
    this.expandClicked = this.expandClicked.bind(this);
-   window.messageBus.ext.subscribe("control/navigator/expand", this.expandClicked);
+   MessageBus.ext.subscribe("control/navigator/expand", this.expandClicked);
    this.retractClicked = this.retractClicked.bind(this);
-   window.messageBus.ext.subscribe("control/navigator/retract", this.retractClicked);
+   MessageBus.ext.subscribe("control/navigator/retract", this.retractClicked);
+   this.upTree = this.upTree.bind(this);
+   MessageBus.ext.subscribe("control/group/up", this.upTree);
 }
 
 async expandClicked(topic, message) {
@@ -36,7 +40,6 @@ async retractClicked(topic, message) {
 
 async downTree(knotid) {
    const newRoot = this._searchTree(this._tree, knotid);
-   console.log(newRoot);
    if (newRoot != null) {
       this._treeStack.push(this._tree);
       this._tree = {level: newRoot.level - 1, children: [newRoot]};
@@ -45,9 +48,13 @@ async downTree(knotid) {
    }
 }
 
+async upTree() {
+   this._tree = this._treeStack.pop();
+   this._innerTree = this._tree.level;
+   this._presentTreeCase();
+}
+
 _searchTree(current, knotid) {
-   // console.log("current: " + current.knotid + "; id: " + knotid);
-   // console.log(current);
    let result = null;
    if (current.knotid == knotid)
       result = current;
@@ -67,7 +74,7 @@ async mountTreeCase(author, knots) {
    this._navigationPanel = document.querySelector("#navigation-panel");
    this._knotPanel = document.querySelector("#knot-panel");
    
-   this._capsule = await window.messageBus.ext.request("capsule/knot/get", "", "capsule/knot");
+   this._capsule = await MessageBus.ext.request("data/module/capsule/get");
    
    this._navigationPanel.innerHTML = "";
    
@@ -79,26 +86,58 @@ async mountTreeCase(author, knots) {
    this._maxLevel = 0;
    for (let k in this._knots) {
       // <TODO> transfer the pointer of the node?
-      let newKnot = {id: k.replace(/\./g, "_"),
-                     knotid: k,
-                     title: this._knots[k].title,
-                     level: this._knots[k].level,
-                     render: this._knots[k].render};
-      if (previousKnot == null || newKnot.level == previousKnot.level)
-         current.children.push(newKnot);
-      else if (newKnot.level > previousKnot.level) {
-         previousKnot.children = [newKnot];
-         levelStack.push(current);
-         current = previousKnot;
-      } else {
-         let newLevel = previousKnot.level;
-         while (levelStack.length > 0 && newKnot.level < newLevel) {
-            current = levelStack.pop();
-            newLevel = current.level;
+      if (!this._knots[k].categories ||
+          this._knots[k].categories.indexOf("note") == -1) {
+         let newKnot = {id: k.replace(/\./g, "_"),
+                        knotid: k,
+                        title: this._knots[k].title,
+                        level: this._knots[k].level,
+                        render: this._knots[k].render,
+                        note: false};
+
+         // transform notes in children
+         if (newKnot.render) {
+            let content = this._knots[k].content;
+            for (let c in content) {
+               if (content[c].type == "option" || content[c].type == "divert") {
+                  const noteKnot = this._knots[content[c].target];
+                  if (noteKnot && noteKnot.categories &&
+                      noteKnot.categories.indexOf("note") > -1) {
+                     let newNoteKnot = {
+                        id: content[c].target.replace(/\./g, "_"),
+                        knotid: content[c].target,
+                        title: noteKnot.title,
+                        level: newKnot.level + 1,
+                        render: noteKnot.render,
+                        note: true
+                     };
+                     if (!newKnot.children)
+                        newKnot.children = [newNoteKnot];
+                     else
+                        newKnot.children.push(newNoteKnot);
+                     this._maxLevel = (newNoteKnot.level > this._maxLevel)
+                         ? newNoteKnot.level : this._maxLevel;
+                  }
+               }
+            }            
          }
-         current.children.push(newKnot);
+
+         if (previousKnot == null || newKnot.level == previousKnot.level)
+            current.children.push(newKnot);
+         else if (newKnot.level > previousKnot.level) {
+            previousKnot.children = [newKnot];
+            levelStack.push(current);
+            current = previousKnot;
+         } else {
+            let newLevel = previousKnot.level;
+            while (levelStack.length > 0 && newKnot.level < newLevel) {
+               current = levelStack.pop();
+               newLevel = current.level;
+            }
+            current.children.push(newKnot);
+         }
+         previousKnot = newKnot;
       }
-      previousKnot = newKnot;
       this._maxLevel = (this._knots[k].level > this._maxLevel)
                          ? this._knots[k].level : this._maxLevel;
    }
@@ -123,9 +162,18 @@ async _presentTreeCase() {
        height = this._tree.height;
    
    // append the svg object to the body of the page
-   this._navigationPanel.innerHTML =
+   let navTree =
       "<div id='navigation-tree' style='width:" +
       this._tree.width + " height:" + this._tree.height + "'></div>";
+
+   if (this._treeStack.length > 0)
+      navTree =
+         "<dcc-trigger action='control/group/up' label='Up' " +
+           "image='icons/icon-back.svg' xstyle='sty-tree-button'></dcc-trigger>" +
+         navTree;
+
+   this._navigationPanel.innerHTML = navTree;
+
    let svg = d3.select("#navigation-tree")
      .append("svg")
        .attr("width", width + margin.left + margin.right)
@@ -171,7 +219,7 @@ async _presentTreeCase() {
       .attr("font-size", function(d) {return d.data.titleSize + "px"})
       .attr("fill", "black")
       .attr("cursor", "pointer")
-      .on("click", function(d) {window.messageBus.ext.publish("knot/" + d.data.knotid + "/selected")})
+      .on("click", function(d) {MessageBus.ext.publish("knot/" + d.data.knotid + "/selected")})
       .on("mouseover", function(d) {
          let t = document.querySelector("#t_" + d.data.id);
          t.removeChild(t.firstChild);
@@ -181,8 +229,10 @@ async _presentTreeCase() {
          t.removeChild(t.firstChild);
          t.innerHTML = d.data.title});
    
-   
-   this._drawMiniatures(this._tree, svg);
+   this._translator.newThemeSet();
+   await this._drawMiniatures(this._tree, svg);
+   // <TODO> synchronization problem - improve
+   // this._translator.deleteThemeSet();
    this._drawGroups(this._tree, svg);
    this._drawLinks(this._tree, svg);
 }
@@ -241,8 +291,8 @@ _computeDimension(knot, horizontal, x, y, titleLevel) {
             }
          }
 
-         let sequence = [];
          // order to define the topology
+         let sequence = [];
          let order = 0,
              nextOrder = 0;
          for (let kn in knot.children) {
@@ -330,7 +380,7 @@ _computeDimension(knot, horizontal, x, y, titleLevel) {
 }
 
 async _drawMiniatures(knot) {
-   if (knot.render || (knot.level - this._innerTree == 2 && knot.children)) {
+   if (!knot.children || (knot.level - this._innerTree == 2 && knot.children)) {
       let id = "#mini-" + knot.id.replace(/\./g, "_");
       let fo = document.querySelector(id);
       if (fo != null) {
@@ -347,17 +397,18 @@ async _createMiniature(knot, krender) {
    let miniature = document.createElement("div");
    miniature.classList.add("sty-navigation-knot");
    miniature.innerHTML = "<dcc-trigger action='" +
-                           ((!knot.render) ? "group/" : "knot/") +
+                           ((knot.children) ? "group/" : "knot/") +
                            knot.knotid + "/selected' " +
                            "xstyle='sty-navigation-knot-cover' label = ''>";
 
-   let htmlKnot = await this._author._generateHTML(krender.knotid);
+   let htmlKnot = await this._translator.generateHTMLBuffer(this._knots[krender.knotid]);
    let iframe = document.createElement('iframe');
    iframe.width = Navigator.miniKnot[this._retracted].width;
    iframe.height = Navigator.miniKnot[this._retracted].height;
-   iframe.srcdoc = this._capsule.message.replace(/{width}/g, Navigator.miniKnot[this._retracted].width)
-                                        .replace(/{height}/g, Navigator.miniKnot[this._retracted].height-6)
-                                        .replace("{knot}", htmlKnot);
+   iframe.srcdoc = this._capsule.message
+      .replace(/{width}/g, Navigator.miniKnot[this._retracted].width)
+      .replace(/{height}/g, Navigator.miniKnot[this._retracted].height-6)
+      .replace("{knot}", htmlKnot);
    miniature.appendChild(iframe);
 
    return miniature;
