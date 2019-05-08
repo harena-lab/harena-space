@@ -7,8 +7,6 @@
 
 class DCCAuthorServer {
    constructor() {
-      this.casesList = this.casesList.bind(this);
-      MessageBus.ext.subscribe("data/case/*/list", this.casesList);
       this.loadModule = this.loadModule.bind(this);
       MessageBus.ext.subscribe("data/module/+/get", this.loadModule);
       this.loadTemplate = this.loadTemplate.bind(this);
@@ -65,30 +63,6 @@ class DCCAuthorServer {
       MessageBus.ext.publish("model/*", finalModelsList);
    }
 
-   async casesList(topic, message) {
-      var header = {
-         "async": true,
-         "crossDomain": true,
-         "method": "POST",
-         "headers": {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + DCCCommonServer.instance.token
-          },
-          "body": JSON.stringify({"filterBy": "user",
-                                  "filter": message.filter})
-      }
-      const response = await fetch(DCCCommonServer.serverAddress + "case/list", header);
-      const jsonResponse = await response.json();
-      let busResponse = {};
-      for (var c in jsonResponse)
-         busResponse[jsonResponse[c].id] = {
-            name: jsonResponse[c].name,
-            icon: "icons/mono-slide.svg"
-         };
-      MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-                             busResponse);
-   }
-   
    async newCase(topic, message) {
       var header = {
          "async": true,
