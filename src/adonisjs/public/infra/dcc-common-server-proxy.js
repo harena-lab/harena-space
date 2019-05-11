@@ -36,7 +36,7 @@ class DCCCommonServer {
                                   "password": message.password})
       }
 
-      const response = await fetch(DCCCommonServer.serverAddress + "user/login", header);
+      const response = await fetch(DCCCommonServer.managerAddressAPI + "user/login", header);
       const jsonResponse = await response.json();
       const busResponse = {
          userid: jsonResponse.id,
@@ -59,7 +59,7 @@ class DCCCommonServer {
           "body": JSON.stringify({"filterBy": "user",
                                   "filter": message.filter})
       }
-      const response = await fetch(DCCCommonServer.serverAddress + "case/list", header);
+      const response = await fetch(DCCCommonServer.managerAddressAPI + "case/list", header);
       const jsonResponse = await response.json();
       let busResponse = {};
       for (var c in jsonResponse)
@@ -83,7 +83,7 @@ class DCCCommonServer {
           }
       };
       const response =
-         await fetch(DCCCommonServer.serverAddress + "case/" + caseId, header);
+         await fetch(DCCCommonServer.managerAddressAPI + "case/" + caseId, header);
       const jsonResponse = await response.json();
       MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
                              {name: jsonResponse.name,

@@ -8,6 +8,8 @@ class Translator {
    constructor() {
       this._currentThemeFamily = "jacinto";
 
+      this._serverImage = DCCCommonServer.managerAddressAPI + "artifacts/";
+
       this._markdownTranslator = new showdown.Converter();
       
       this._annotationMdToObj = this._annotationMdToObj.bind(this);
@@ -169,12 +171,12 @@ class Translator {
    compileKnotMarkdown(knotSet, knotId) {
       const mdToObj = {
             knot   : this._knotMdToObj,
+            image  : this._imageMdToObj,
             option : this._optionMdToObj,
             divert : this._divertMdToObj,
             talk     : this._talkMdToObj,
             talkopen : this._talkopenMdToObj,
             talkclose: this._talkcloseMdToObj,
-            // image  : this.image,
             input  : this._inputMdToObj,
             selctxopen  : this._selctxopenMdToObj,
             selctxclose : this._selctxcloseMdToObj,
@@ -325,14 +327,13 @@ class Translator {
     */
    generateKnotHTML(knotObj) {
       const objToHTML = {
-            // knot   : 
             text   : this._textObjToHTML,
+            image  : this._imageObjToHTML,
             option : this._optionObjToHTML,
             divert : this._divertObjToHTML,
             talk        : this._talkObjToHTML,
             "talk-open" : this._talkopenObjToHTML,
             "talk-close": this._talkcloseObjToHTML,
-            // image  : this.image,
             input  : this._inputObjToHTML,
             "context-open"  : this._selctxopenObjToHTML,
             "context-close" : this._selctxcloseObjToHTML,
@@ -467,6 +468,49 @@ class Translator {
    }
    
    /*
+    * Text Obj to HTML
+    * Output: [content]
+    */
+   _textObjToHTML(obj) {
+      // return this._markdownTranslator.makeHtml(obj.content);
+      return obj.content;
+   }
+
+   /*
+    * Image Md to Obj
+    * Input: !\[alt-text\]([path] "[title]")
+    * Output:
+    * {
+    *    type:  "image"
+    *    alt:   <alt text>
+    *    path:  <image path>
+    *    title: <image title>
+    * }
+    */
+   _imageMdToObj(matchArray) {
+      let image = {
+         type: "image",
+         alt:  matchArray[1].trim(),
+         path: matchArray[2].trim()
+      };
+      if (matchArray[3] != null)
+         image.title = matchArray[3].trim();
+      return image;
+   }
+   
+   /*
+    * Image Obj to HTML
+    * Output: <img src="[server][path]" alt="[title]">
+    */
+   _imageObjToHTML(obj) {
+      return Translator.htmlTemplates.image
+         .replace("[server]", this._serverImage)
+         .replace("[path]", obj.path)
+         .replace("[alt]", (obj.title)
+            ? " alt='" + obj.title + "'" : "");
+   }
+
+   /*
     * Context Open Md to Obj
     * Input: {{ [context] #[evaluation]: [option-1], ..., [option-n]
     * Expression: \{\{([\w \t\+\-\*"=\:%\/]+)(?:#([\w \t\+\-\*"=\%\/]+):([\w \t\+\-\*"=\%\/,]+))?[\f\n\r]
@@ -481,7 +525,7 @@ class Translator {
    _contextOpenMdToObj(matchArray) {
       let context = {
          type: "context",
-         context: matchArray[1].trim(),
+         context: matchArray[1].trim()
       };
       
       if (matchArray[2] != null) {
@@ -571,15 +615,6 @@ class Translator {
    _annotationObjToHTML(obj) {
       return Translator.htmlTemplates.annotation.replace("[natural]", obj.natural.complete);
    }   
-   
-   /*
-    * Text Obj to HTML
-    * Output: [content]
-    */
-   _textObjToHTML(obj) {
-      // return this._markdownTranslator.makeHtml(obj.content);
-      return obj.content;
-   }
    
    /*
     * Option Md to Obj
@@ -951,12 +986,13 @@ class Translator {
 
    Translator.marks = {
       knot   : /(?:^[ \t]*(#+)[ \t]*(\w[\w \t]*)(?:\((\w[\w \t,]*)\))?[ \t]*#*[ \t]*$)|(?:^[ \t]*(\w[\w \t]*)(?:\((\w[\w \t,]*)\))?[ \t]*[\f\n\r][\n\r]?(==+|--+)$)/im,
+      image  : /!\[([\w \t]*)\]\(([\w:.\/\?&#\-]+)[ \t]*(?:"([\w ]*)")?\)/im,
+      // image  : /<img src="([\w:.\/\?&#\-]+)" (?:alt="([\w ]+)")?>/im,
       option : /^[ \t]*([\+\*])[ \t]*([^\(&> \t][^\(&>\n\r\f]*)?(?:\(([\w \t-]+)\)[ \t]*)?(?:-(?:(?:&gt;)|>)[ \t]*(\w[\w. \t]*))$/im,
       divert : /-(?:(?:&gt;)|>) *(\w[\w. ]*)/im,
       talk   : /^[ \t]*:[ \t]*(\w[\w \t]*):[ \t]*([^\n\r\f]+)$/im,
       talkopen: /^[ \t]*:[ \t]*(\w[\w \t]*):[ \t]*$/im,
       talkclose: /[ \t]*:[ \t]*:[ \t]*$/im,
-      // image  : /<img src="([\w:.\/\?&#\-]+)" (?:alt="([\w ]+)")?>/im,
       input  : /\{[ \t]*\?(\d+)?([\w \t]*)(?:\:([\w \t]+))?(?:#([\w \t\+\-\*"=\%\/,]+)(?:;([\w \t\+\-\*"=\%\/,]+))?)?\}/im,
       selctxopen : Translator.marksAnnotation.ctxopen,
       selctxclose: Translator.marksAnnotation.ctxclose,

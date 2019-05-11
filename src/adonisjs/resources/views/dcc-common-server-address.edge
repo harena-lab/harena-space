@@ -4,5 +4,8 @@
 */
 
 (function() {
-  DCCCommonServer.serverAddress = "{{harena_manager_url}}";
+  DCCCommonServer.managerAddress = "{{harena_manager_url}}/";
+  DCCCommonServer.managerAddressAPI = DCCCommonServer.managerAddress +
+                                      "api/{{harena_manager_api_version}}/";
+  DCCCommonServer.loggerAddress = "{{harena_logger_url}}/";
 })();

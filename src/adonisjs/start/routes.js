@@ -25,11 +25,24 @@ let harenaManagerUrl =
 
 const Env   = use('Env')
 
+Route.get("infra/dcc-common-server-address.js", async ({response, view}) =>{
+    const harena_manager_url = Env.get("HARENA_MANAGER_URL", "http://127.0.0.1:3000");
+    const harena_manager_api_version = Env.get("API_VERSION", "v1");
+    const harena_logger_url = Env.get("HARENA_LOGGER_URL", "http://35.247.224.186/harena/logger/latest");
+    response.header("Content-type", "application/javascript");
+    return view.render("dcc-common-server-address",
+       {"harena_manager_url": harena_manager_url,
+        "harena_manager_api_version": harena_manager_api_version,
+        "harena_logger_url": harena_logger_url});
+});
+
+/*
 Route.get('infra/dcc-common-server-address.js', async ({response, view}) =>{
     const harena_manager_url = Env.get('HARENA_MANAGER_URL', 'http://127.0.0.1:3000/api/v1');
     response.header('Content-type', 'application/javascript');
     return view.render('dcc-common-server-address',{ "harena_manager_url" : harena_manager_url });
 });
+*/
 
 /*
 Route.on("/author/js/dcc-author-server-address.js")
