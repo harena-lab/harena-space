@@ -56,7 +56,7 @@ class MessageBus {
             extTopic = this._runningCase.runningId + "/" + topic;
          }
          
-         const response = await fetch(MessageBus.serverAddress + "/message", {
+         const response = await fetch(DCCCommonServer.loggerAddressAPI + "message", {
             method: "POST",
             body: JSON.stringify({"topic": extTopic,
                                   "payload": extMessage
@@ -174,7 +174,7 @@ class MessageBus {
    MessageBus._stamp = 1;
 
    MessageBus.int = new MessageBus(false);
-   MessageBus.ext = new MessageBus(false);
+   MessageBus.ext = new MessageBus(true);
    /*
    window.messageBus = {
       int: new MessageBus(false),
