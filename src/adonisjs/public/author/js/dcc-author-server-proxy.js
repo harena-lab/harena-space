@@ -87,7 +87,7 @@ class DCCAuthorServer {
          await fetch(DCCCommonServer.managerAddressAPI + "case/new", header);
       const jsonResponse = await response.json();
       MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-                             jsonResponse.id);
+                             jsonResponse.uuid);
 
       /*
       const response = await fetch(DCCCommonServer.managerAddressAPI + "new-case", {

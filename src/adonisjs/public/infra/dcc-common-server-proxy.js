@@ -63,7 +63,7 @@ class DCCCommonServer {
       const jsonResponse = await response.json();
       let busResponse = {};
       for (var c in jsonResponse)
-         busResponse[jsonResponse[c].id] = {
+         busResponse[jsonResponse[c].uuid] = {
             name: jsonResponse[c].name,
             icon: "../resources/icons/mono-slide.svg"
          };
