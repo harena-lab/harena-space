@@ -113,6 +113,28 @@ Markdown text that does not match to any expression.
 }
 ```
 
+## Image
+### Markdown to Object
+* Sentence: `!\[alt-text\]([path] "[title]")`
+* Expression: `!\[([\w \t]*)\]\(([\w:.\/\?&#\-]+)[ \t]*(?:"([\w ]*)")?\)`
+  * Group #1: alt text
+  * Group #2: image path
+  * Group #3: image title
+![Image Expression](expressions/image.png)
+* Object:
+```
+{
+    type:  "image"
+    alt:   <alt text>
+    path:  <image path>
+    title: <image title>
+}
+```
+### Object to HTML
+```
+<img src="[server][path]" alt="[title]">
+```
+
 ## Option
 ### Markdown to Object
 * Sentence: `+ [label] ([rule]) -> [target]` or `* [label] ([rule]) -> [target]`
