@@ -3,10 +3,12 @@ version: '3'
 services:
 
   harena-space:
-    image: datasci4health/harena-space
+    # image: datasci4health/harena-space
+    build: ./
     ports:
       - "10010:10010"
     environment:
+      - ENV_SILENT=true            
       - HOST=0.0.0.0
       - PORT=10010
       - NODE_ENV=production
