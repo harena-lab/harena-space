@@ -9,4 +9,4 @@ COPY ./src/adonisjs .
 
 RUN npm install
 
-CMD [ "adonis", "serve"]
+CMD [ "npm", "start"]
