@@ -3,8 +3,7 @@ version: '3'
 services:
 
   harena-space:
-    # image: datasci4health/harena-space
-    build: ./
+    image: datasci4health/harena-space:v1
     ports:
       - "10010:10010"
     environment:
