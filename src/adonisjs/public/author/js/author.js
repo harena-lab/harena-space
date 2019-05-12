@@ -89,12 +89,7 @@ class AuthorManager {
       const caseId = await DCCNoticeInput.displayNotice(
          "Select a case to load or start a new case.",
          "list", "Select", "New", cases.message);
-      /*
-      if (this._temporaryCase && saved == "No")
-         console.log("deleting..." + this._currentCaseId);
-      */
 
-      console.log("Selected: " + caseId);
       if (caseId == "New")
          this.caseNew();
       else
@@ -122,11 +117,14 @@ class AuthorManager {
       this._temporaryCase = true;
       const caseId = await MessageBus.ext.request("data/case//new");
 
-      const blankMd =
-         await MessageBus.ext.request("data/template/basic.blank/get");
+      await this._themeSelect();
+      let template = await this._templateSelect();
+
+      const templateMd =
+         await MessageBus.ext.request("data/template/" + template.replace("/", ".") + "/get");
 
       const status = await MessageBus.ext.request("data/case/" + caseId.message + "/set",
-                                                  {format: "markdown", source: blankMd.message});
+                                                  {format: "markdown", source: templateMd.message});
 
       this._caseLoad(caseId.message);
    }
@@ -191,10 +189,6 @@ class AuthorManager {
     * ACTION: control/knot/new
     */
    async knotNew() {
-      const templates = await MessageBus.ext.request("data/template/*/list");
-      const template = await DCCNoticeInput.displayNotice(
-         "Select a template for your knot.",
-         "list", "Select", "Cancel", templates.message);
       const knotId = "Knot_" + this._knotGenerateCounter;
       let newKnot = {type: "knot",
                      title: "Knot " + this._knotGenerateCounter,
@@ -209,6 +203,14 @@ class AuthorManager {
       this._htmlKnot = await this._translator.generateHTML(this._knots[knotId]);
       await this._navigator.mountPlainCase(this, this._compiledCase.knots);
       MessageBus.ext.publish("knot/" + this._knotSelected + "/selected");
+   }
+
+   async _templateSelect() {
+      const templateList = await MessageBus.ext.request("data/template/*/list");
+      const template = await DCCNoticeInput.displayNotice(
+         "Select a template for your knot.",
+         "list", "Select", "Cancel", templateList.message);
+      return template;
    }
    
    /*
@@ -229,14 +231,6 @@ class AuthorManager {
     * ACTION: control-play
     */
    async casePlay() {
-      /*
-      this._messageSpace.innerHTML = "Preparing...";
-      const dirPlay = await MessageBus.ext.request(
-                         "case/" + this._currentCaseId + "/prepare",
-                         this._translator.currentThemeFamily,
-                         "case/" + this._currentCaseId + "/prepare/directory");
-      */
-      
       this._translator.newThemeSet();
       
       const htmlSet = Object.assign(
@@ -287,6 +281,11 @@ class AuthorManager {
     * ACTION: config
     */
    async config() {
+      this._themeSelect();
+   }
+   
+
+   async _themeSelect() {
       const families = await MessageBus.ext.request("data/theme_family/*/list");
       this._translator.currentThemeFamily = await DCCNoticeInput.displayNotice(
          "Select a theme to be applied.",

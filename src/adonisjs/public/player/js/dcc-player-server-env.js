@@ -1,3 +1,3 @@
 (function() {
-   DCCPlayerServer.storePrefix = "casenote_";
+   DCCPlayerServer.localEnv = false;
 })();

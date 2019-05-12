@@ -8,13 +8,17 @@ class DCCPlayerServer {
     * *************
     */
 
+   /*
    getCaseId() {
       return DCCPlayerServer.playerObj.id;
    }
+   */
    
+   /*
    getStartKnot() {
       return DCCPlayerServer.playerObj.start;
    }
+   */
 
    loadKnot(knotName) {
       if (DCCPlayerServer.localEnv) {
@@ -25,7 +29,6 @@ class DCCPlayerServer {
          
       }
    }
-
    
    
    /*
@@ -33,25 +36,24 @@ class DCCPlayerServer {
     * *********************
     */
    
-   generateRunningCase() {
-      const caseid = this.getCaseId();
-      const profile = this.getCurrentProfile();
+   generateRunningCase(userid, caseid) {
+      // const profile = this.getCurrentProfile();
 
       const currentDateTime = new Date();
       const caseuid = this.generateUID();
-      const casekey = profile.id + "#" + caseid + "#" + caseuid;
-      profile.cases.push(casekey);
-      this.setProfile(profile);
-      this.setRunningCasekey(casekey);
+      // const casekey = profile.id + "#" + caseid + "#" + caseuid;
+      // profile.cases.push(casekey);
+      // this.setProfile(profile);
+      // this.setRunningCasekey(casekey);
 
       const casetrack = {
-        userid : profile.id,
+        userid : userid,
         caseid : caseid,
         start  : currentDateTime.toJSON(),
         inputs : {},
         route : []
       };
-      this.setCaseInstance(casekey, casetrack);
+      // this.setCaseInstance(casekey, casetrack);
       
       return {runningId: caseuid, track: casetrack};
    }

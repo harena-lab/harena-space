@@ -1,0 +1,13 @@
+{"Classic":
+   {"description": "Minimal theme without extra format.",
+    "path": "classic",
+    "icon": "mono-slide.svg"},
+ "Jacinto":
+   {"description": "The standard theme for the Jacinto cases.",
+    "path": "jacinto",
+    "icon": "mono-slide.svg"},
+ "Zombie":
+   {"description": "The standard theme for the Zombie Health cases.",
+    "path": "zombie",
+    "icon": "mono-slide.svg"}
+}

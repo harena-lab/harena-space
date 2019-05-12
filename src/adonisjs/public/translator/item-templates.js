@@ -1,5 +1,7 @@
 (function() {
 Translator.htmlTemplates = {
+image:
+`<img src='[server][path]'[alt]>`,
 option:
 `<dcc-trigger id='dcc[seq]' type='[subtype]' link='[link]' label='[display]' [image][location]></dcc-trigger>`,
 divert:

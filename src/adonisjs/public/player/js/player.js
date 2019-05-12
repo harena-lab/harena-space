@@ -12,8 +12,8 @@ class PlayerManager {
    constructor() {
       this._server = new DCCPlayerServer();
       this._tracker = new Tracker();
-      this._state = new PlayState();
       this._history = [];
+      this._translator = new Translator();
       
       this.controlEvent = this.controlEvent.bind(this);
       MessageBus.ext.subscribe("control/#", this.controlEvent);
@@ -56,17 +56,20 @@ class PlayerManager {
          case "knot/</navigate": if (this._history.length > 0) {
                                            this._history.pop();
                                            const last = this._history[this._history.length - 1]; 
-                                           this.loadKnot(last);
+                                           this.knotLoad(last);
                                         }
                                         break;
          case "knot/<</navigate": this.startCase();
-                                  const startKnot = this._server.getStartKnot();
+                                  // const startKnot = this._server.getStartKnot();
+                                  const startKnot = (DCCPlayerServer.localEnv)
+                                     ? DCCPlayerServer.playerObj.start
+                                     : this._compiledCase.start;
                                   this._history.push(startKnot);
-                                  this.loadKnot(startKnot);
+                                  this.knotLoad(startKnot);
                                   break;
          default: if (MessageBus.matchFilter(topic, "knot/+/navigate")) {
                      this._history.push(message);
-                     this.loadKnot(message);
+                     this.knotLoad(message);
                   }
                   break;
       }
@@ -89,21 +92,55 @@ class PlayerManager {
    } 
    */  
    
-   startPlayer() {
+   async startPlayer(caseid) {
       this._mainPanel = document.querySelector("#main-panel");
 
       this._userid = await Basic.service.signin();
+
+      if (DCCPlayerServer.localEnv)
+         this._currentCaseId = DCCPlayerServer.playerObj.id;
+      else {
+         if (!caseid) {
+            const cases = await MessageBus.ext.request(
+               "data/case/*/list",
+               {filterBy: "user", filter: this._userid});
+            caseid = await DCCNoticeInput.displayNotice(
+               "Select a case to load or start a new case.",
+               "list", "Select", "New", cases.message);
+         }
+         await this._caseLoad(caseid);
+      }
       
-      // this.loadKnot("entry");
+      MessageBus.ext.publish("knot/<</navigate");
+      // this.knotLoad("entry");
+   }
+
+   async _caseLoad(caseid) {
+      this._currentCaseId = caseid;
+      const caseObj = await MessageBus.ext.request(
+         "data/case/" + this._currentCaseId + "/get");
+      this._currentCaseName = caseObj.message.name;
+
+      this._compiledCase =
+         this._translator.compileMarkdown(this._currentCaseId,
+                                          caseObj.message.source);
+      this._knots = this._compiledCase.knots;
    }
    
-   loadKnot(knotName) {
+   async knotLoad(knotName) {
       this._currentKnot = knotName;
       /*
       this._knotScript = document.createElement("script");
       this._knotScript.src = "knots/" + knotName + ".js";
       document.head.appendChild(this._knotScript);
       */
+      if (!DCCPlayerServer.localEnv) {
+         console.log(knotName);
+         console.log(this._knots);
+         const knot = await this._translator.generateHTML(
+            this._knots[knotName]);
+         this.presentKnot(knot);
+      }
       MessageBus.ext.publish("knot/" + knotName + "/start");
    }
    
@@ -112,7 +149,8 @@ class PlayerManager {
       
       this._mainPanel.innerHTML = knot;
 
-      document.head.removeChild(this._knotScript);
+      if (DCCPlayerServer.localEnv)
+         document.head.removeChild(this._knotScript);
       
       // <TODO> Improve the strategy
       if (this._currentKnot == "entry")
@@ -215,7 +253,9 @@ class PlayerManager {
    startCase() {
       if (!PlayerManager.isCapsule) {
          // <TODO> this._runningCase is provisory
-         const runningCase = this._server.generateRunningCase();
+         const runningCase =
+            this._server.generateRunningCase(this._userid,
+                                             this._currentCaseId);
         
          // console.log("************* Running case");
          // console.log(runningCase);
