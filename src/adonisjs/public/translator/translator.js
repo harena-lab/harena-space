@@ -8,8 +8,6 @@ class Translator {
    constructor() {
       this._currentThemeFamily = "jacinto";
 
-      this._serverImage = DCCCommonServer.managerAddressAPI + "artifacts/";
-
       this._markdownTranslator = new showdown.Converter();
       
       this._annotationMdToObj = this._annotationMdToObj.bind(this);
@@ -504,7 +502,7 @@ class Translator {
     */
    _imageObjToHTML(obj) {
       return Translator.htmlTemplates.image
-         .replace("[server]", this._serverImage)
+         .replace("[server]", DCCCommonServer.managerAddress + "artifacts/")
          .replace("[path]", obj.path)
          .replace("[alt]", (obj.title)
             ? " alt='" + obj.title + "'" : "");
