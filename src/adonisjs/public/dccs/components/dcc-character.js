@@ -154,8 +154,12 @@ class DCCCharacter extends DCCBase {
       let extension = this.image.lastIndexOf(".");
       let icon = this.image.substring(0, extension) + "-icon" + this.image.substring(extension);
       
-      return "<div class='dsty-image-box dsty-border'><img id='char-image' class='dsty-image' src='" + this.image + "'></div>" +
-             "<div class='dsty-icon-box dsty-border'><img id='char-icon'class='dsty-icon' src='" + icon + "'></div>";
+      return "<div class='dsty-image-box dsty-border'>" +
+                "<img id='char-image' class='dsty-image' src='" +
+                   Basic.service.imageResolver(this.image) + "'></div>" +
+             "<div class='dsty-icon-box dsty-border'>" +
+                "<img id='char-icon'class='dsty-icon' src='" +
+                   Basic.service.imageResolver(icon) + "'></div>";
    }
    
    /* Editable Component */

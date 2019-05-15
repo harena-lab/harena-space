@@ -287,7 +287,8 @@ class Translator {
    }
 
    deleteThemeSet() {
-      delete this._themeSet;
+      // <TODO> there is some synchronization problem - it is deleting before finishing
+      // delete this._themeSet;
    }
    
    async generateHTMLBuffer(knot) {
@@ -498,12 +499,11 @@ class Translator {
    
    /*
     * Image Obj to HTML
-    * Output: <img src="[server][path]" alt="[title]">
+    * Output: <img src="[path]" alt="[title]">
     */
    _imageObjToHTML(obj) {
       return Translator.htmlTemplates.image
-         .replace("[server]", DCCCommonServer.managerAddress + "artifacts/")
-         .replace("[path]", obj.path)
+         .replace("[path]", Basic.service.imageResolver(obj.path))
          .replace("[alt]", (obj.title)
             ? " alt='" + obj.title + "'" : "");
    }

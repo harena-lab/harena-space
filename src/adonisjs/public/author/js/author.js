@@ -22,6 +22,7 @@ class AuthorManager {
       // new DCCAuthorServer();
       
       // this._currentThemeFamily = "jacinto";
+      this._themeSVG = true;
       this._currentCaseId = null;
       this._knotSelected = null;
       this._htmlKnot = null;
@@ -65,6 +66,8 @@ class AuthorManager {
          case "control/case/load": this.caseLoadSelect();
                                    break;
          case "control/case/save": this.caseSave();
+                                   break;
+         case "control/case/edit": this.caseEdit();
                                    break;
          case "control/knot/new":  this.knotNew();
                                    break;
@@ -115,16 +118,24 @@ class AuthorManager {
     */
    async caseNew() {
       this._temporaryCase = true;
-      const caseId = await MessageBus.ext.request("data/case//new");
-
+      
       await this._themeSelect();
       let template = await this._templateSelect();
 
       const templateMd =
          await MessageBus.ext.request("data/template/" + template.replace("/", ".") + "/get");
 
+      const caseId = await MessageBus.ext.request("data/case//new",
+                                                  {format: "markdown",
+                                                   name: "Untitled",
+                                                   source: templateMd.message});
+
+      /*
       const status = await MessageBus.ext.request("data/case/" + caseId.message + "/set",
-                                                  {format: "markdown", source: templateMd.message});
+                                                  {format: "markdown",
+                                                   name: "Untitled",
+                                                   source: templateMd.message});
+      */
 
       this._caseLoad(caseId.message);
    }
@@ -186,6 +197,21 @@ class AuthorManager {
    }
 
    /*
+    * ACTION: control/case/edit
+    */
+   async caseEdit() {
+       let md = this._translator.assembleMarkdown(this._compiledCase);
+       this._knotPanel.innerHTML = "<div id='editor-space'></div>";
+       this._editor = new Quill("#editor-space", {
+          theme: "snow",
+          formats: {
+             font: "Courier New"
+          }
+       });
+       this._editor.insertText(0, md);
+   }
+
+   /*
     * ACTION: control/knot/new
     */
    async knotNew() {
@@ -221,7 +247,6 @@ class AuthorManager {
          if (this._checkKnotModification())
             this._htmlKnot = await this._translator.generateHTML(
                this._knots[this._knotSelected]);
-            // this._htmlKnot = await this._generateHTML(this._knotSelected);
          this._renderSlide = !this._renderSlide;
          this._renderKnot();
       }
@@ -290,6 +315,7 @@ class AuthorManager {
       this._translator.currentThemeFamily = await DCCNoticeInput.displayNotice(
          "Select a theme to be applied.",
          "list", "Select", "Cancel", families.message);
+      this._themeSVG = families.message[this._translator.currentThemeFamily].svg;
    }
    
    /*

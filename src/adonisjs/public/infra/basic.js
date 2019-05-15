@@ -59,6 +59,10 @@ class Basic {
          top: ((dimensions.height - height) / 2) / dimensions.zoom + dimensions.top
       }
    }
+
+   imageResolver(relativePath) {
+      return DCCCommonServer.managerAddress + "artifacts/" + relativePath;
+   }
 }
 
 (function() {

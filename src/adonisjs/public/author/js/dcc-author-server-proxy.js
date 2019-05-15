@@ -81,24 +81,15 @@ class DCCAuthorServer {
          "headers": {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + DCCCommonServer.instance.token
-          }
+          },
+          "body": JSON.stringify({name: message.name,
+                                  source: message.source})
       };
       const response =
-         await fetch(DCCCommonServer.managerAddressAPI + "case/new", header);
+         await fetch(DCCCommonServer.managerAddressAPI + "case", header);
       const jsonResponse = await response.json();
       MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
                              jsonResponse.uuid);
-
-      /*
-      const response = await fetch(DCCCommonServer.managerAddressAPI + "new-case", {
-         method: "POST",
-         headers:{
-           "Content-Type": "application/json"
-         }
-      });
-      const jsonResponse = await response.json();
-      MessageBus.ext.publish("case/" + jsonResponse.caseName + "/set/status", "ok");
-      */
    }
 
    async saveCase(topic, message) {
