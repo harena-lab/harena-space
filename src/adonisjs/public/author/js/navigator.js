@@ -408,6 +408,8 @@ async _createMiniature(knot, krender) {
    iframe.srcdoc = this._capsule.message
       .replace(/{width}/g, Navigator.miniKnot[this._retracted].width)
       .replace(/{height}/g, Navigator.miniKnot[this._retracted].height-6)
+      .replace(/{scale}/g, (this._author._themeSVG)
+         ? "" : ";transform-origin:top left;transform:scale(0.1)")
       .replace("{knot}", htmlKnot);
    miniature.appendChild(iframe);
 
