@@ -60,8 +60,11 @@ class Basic {
       }
    }
 
-   imageResolver(relativePath) {
-      return DCCCommonServer.managerAddress + "artifacts/" + relativePath;
+   imageResolver(path) {
+      let result = path;
+      if (!(path.startsWith("http://") || path.startsWith("https://")))
+         result = DCCCommonServer.managerAddress + "artifacts/" + path;
+      return result;
    }
 }
 

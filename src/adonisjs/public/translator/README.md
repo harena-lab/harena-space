@@ -112,6 +112,11 @@ Markdown text that does not match to any expression.
    content: <unprocessed content in markdown>
 }
 ```
+### Object to HTML
+```
+<unprocessed content in markdown>
+```
+This content is further converted to HTML by the compiler.
 
 ## Image
 ### Markdown to Object
@@ -148,7 +153,7 @@ Markdown text that does not match to any expression.
 ```
 {
    type: "option"
-   subtype: "++" or "**"
+   subtype: "+" or "*"
    label: <label to be displayed -- if there is no explicit label, the target is the label>
    rule:  <rule of the trigger -- determine its position in the knot>
    target: <resolved target -- if there is not an explicit target, the label is the target>
@@ -159,6 +164,28 @@ Markdown text that does not match to any expression.
 ```
 <dcc-trigger id='dcc[seq]' type='[subtype]' link='[link].html' label='[display]' [image][location]></dcc-trigger>
 ```
+
+## Field
+### Markdown to Object
+* Sentence: `+ [field]: [value]` or `* [field]: [value]`
+* Expression: `^[ \t]*(?:[\+\*])[ \t]*([\w.\/\?&#\-][\w.\/\?&#\- \t]*):[ \t]*([^\n\r\f]+)$`
+  * Group #1: field
+  * Group #2: value
+![Option Expression](expressions/field.png)
+* Object:
+```
+{
+   type: "field"
+   presentation: <unprocessed content in markdown>
+   field: <label of the field>
+   value: <value of the field>
+}
+```
+### Object to HTML
+```
+<unprocessed content in markdown>
+```
+This content is further converted to HTML by the compiler.
 
 ## Divert
 ### Markdown to Object

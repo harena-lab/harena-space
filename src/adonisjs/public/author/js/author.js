@@ -12,6 +12,8 @@ class AuthorManager {
       this._knotGenerateCounter = 2;
       
       this._translator = new Translator();
+      this._translator.authoringRender = true;
+
       this._compiledCase = null;
       this._knots = null;
       
@@ -27,6 +29,7 @@ class AuthorManager {
       this._knotSelected = null;
       this._htmlKnot = null;
       this._renderSlide = true;
+      this._renderCase = true;
       this._editor = null;
       
       this.controlEvent = this.controlEvent.bind(this);
@@ -67,12 +70,14 @@ class AuthorManager {
                                    break;
          case "control/case/save": this.caseSave();
                                    break;
-         case "control/case/edit": this.caseEdit();
-                                   break;
+         case "control/case/markdown": this.caseMarkdown();
+                                       break;
          case "control/knot/new":  this.knotNew();
                                    break;
          case "control/knot/edit": this.knotEdit();
                                    break;
+         case "control/knot/markdown": this.knotMarkdown();
+                                       break;
          case "control/case/play": this.casePlay();
                                    break;
          case "control/config/edit": this.config();
@@ -148,9 +153,12 @@ class AuthorManager {
       const caseObj = await MessageBus.ext.request(
          "data/case/" + this._currentCaseId + "/get");
       this._currentCaseName = caseObj.message.name;
-
+      await this._compileShow(caseObj.message.source);
+   }
+      
+   async _compileShow(caseSource) {
       this._compiledCase = this._translator.compileMarkdown(this._currentCaseId,
-                                                            caseObj.message.source);
+                                                            caseSource);
       this._knots = this._compiledCase.knots;
 
       console.log(this._compiledCase);
@@ -199,16 +207,30 @@ class AuthorManager {
    /*
     * ACTION: control/case/edit
     */
-   async caseEdit() {
-       let md = this._translator.assembleMarkdown(this._compiledCase);
-       this._knotPanel.innerHTML = "<div id='editor-space'></div>";
-       this._editor = new Quill("#editor-space", {
-          theme: "snow",
-          formats: {
-             font: "Courier New"
-          }
-       });
-       this._editor.insertText(0, md);
+   async caseMarkdown() {
+      if (this._renderCase) {
+         this._originalMd = this._translator.assembleMarkdown(this._compiledCase);
+         this._knotPanel.innerHTML = "<div id='editor-space'></div>";
+         this._editor = new Quill("#editor-space", {
+            theme: "snow",
+            formats: {
+               font: "Courier New"
+            }
+         });
+         this._editor.insertText(0, this._originalMd);
+      } else {
+         if (this._editor != null) {
+            let editorText = this._editor.getText();
+            editorText = editorText.substring(0, editorText.length - 1);
+            if (!this._originalMd || this._originalMd != editorText) {
+               this._compileShow(editorText);
+               delete this._originalMd;
+            } else
+               this._renderKnot();
+         } else
+            this._renderKnot();
+      }
+      this._renderCase = !this._renderCase;
    }
 
    /*
@@ -242,7 +264,7 @@ class AuthorManager {
    /*
     * ACTION: control-edit
     */
-   async knotEdit() {
+   async knotMarkdown() {
       if (this._knotSelected != null) {
          if (this._checkKnotModification())
             this._htmlKnot = await this._translator.generateHTML(
@@ -351,6 +373,14 @@ class AuthorManager {
       this._navigator.downTree(knotid);
     }
 
+    knotEdit(topic, message) {
+       let dccs = document.querySelectorAll("*");
+       for (let d = 0; d < dccs.length; d++)
+          if (dccs[d].tagName.toLowerCase().startsWith("dcc-") &&
+              typeof dccs[d].editDCC === "function")
+             dccs[d].editDCC();
+    }
+
    /*
     * Check if the knot was modified to update it
     */
@@ -371,60 +401,10 @@ class AuthorManager {
       return modified;
    }
    
-   /*
-   async _generateHTML(knot) {
-      this._translator.newThemeSet();
-      let finalHTML = await this._generateHTMLBuffer(knot);
-      this._translator.deleteThemeSet();
-      return finalHTML;
-   }
-
-   _newThemeSet() {
-      this._themeSet = {};
-   }
-
-   _deleteThemeSet() {
-      delete this._themeSet;
-   }
-   
-   async _generateHTMLBuffer(knot) {
-      let themes = (this._knots[knot].categories)
-                   ? this._knots[knot].categories : ["knot"];
-      for (let tp in themes)
-         if (!this._themeSet[themes[tp]]) {
-            const templ = await
-                    this._loadTheme(this._currentThemeFamily, themes[tp]);
-            if (templ != "")
-               this._themeSet[themes[tp]] = templ;
-            else {
-               if (!this._themeSet["knot"])
-                  this._themeSet["knot"] = await
-                     this._loadTheme(this._currentThemeFamily, "knot");
-               this._themeSet[themes[tp]] = this._themeSet["knot"];
-            }
-         }
-      let finalHTML = this._translator.generateKnotHTML(this._knots[knot]);
-      for (let tp = themes.length-1; tp >= 0; tp--)
-         finalHTML = this._themeSet[themes[tp]].replace("{knot}", finalHTML);
-      
-      return finalHTML;
-   }
-   
-   async _loadTheme(themeFamily, themeName) {
-      const themeObj = await MessageBus.ext.request(
-            "data/theme/" + themeFamily + "." + themeName + "/get");
-      return themeObj.message;
-   }
-   */
-   
    _renderKnot() {
       if (this._renderSlide) {
          this._knotPanel.innerHTML = this._htmlKnot;
          
-         let dccs = document.querySelectorAll("*");
-         for (let d = 0; d < dccs.length; d++)
-            if (dccs[d].tagName.toLowerCase().startsWith("dcc-lively-talk"))
-               dccs[d].editDCC();
       } else {
          this._knotPanel.innerHTML = "<div id='editor-space'></div>";
          this._editor = new Quill('#editor-space', {

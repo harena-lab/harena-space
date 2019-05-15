@@ -41,4 +41,9 @@ selctxclose:
 selector:
 `<dcc-state-selector id='dcc[seq]'[answer]>[expression]</dcc-state-selector>`
 };
+
+Translator.htmlTemplatesEditable = {
+image:
+`<dcc-image image='[path]'[alt]></dcc-image>`
+};
 })();
