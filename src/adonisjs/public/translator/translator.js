@@ -6,12 +6,15 @@
 class Translator {
    
    constructor() {
+      this.authoringRender = false;
+
       this._currentThemeFamily = "jacinto";
 
       this._markdownTranslator = new showdown.Converter();
       
       this._annotationMdToObj = this._annotationMdToObj.bind(this);
-      this._textObjToHTML = this._textObjToHTML.bind(this);
+      this._imageObjToHTML = this._imageObjToHTML.bind(this);
+      // this._textObjToHTML = this._textObjToHTML.bind(this);
    }
 
    get currentThemeFamily() {
@@ -20,6 +23,14 @@ class Translator {
    
    set currentThemeFamily(newValue) {
       this._currentThemeFamily = newValue;
+   }
+
+   get authoringRender() {
+      return this._authoringRender;
+   }
+   
+   set authoringRender(newValue) {
+      this._authoringRender = newValue;
    }
 
    /*
@@ -32,10 +43,12 @@ class Translator {
          this.extractKnotAnnotations(compiledCase.knots[kn]);
          this.compileKnotMarkdown(compiledCase.knots, kn);
       }
-      
+
+      this._extractCaseMetadata(compiledCase);
+
       return compiledCase;
    }
-      
+
    /*
     * Index all knots to guide references
     */
@@ -171,6 +184,7 @@ class Translator {
             knot   : this._knotMdToObj,
             image  : this._imageMdToObj,
             option : this._optionMdToObj,
+            field  : this._fieldMdToObj,
             divert : this._divertMdToObj,
             talk     : this._talkMdToObj,
             talkopen : this._talkopenMdToObj,
@@ -263,6 +277,21 @@ class Translator {
       delete knot._preparedSource;
    }
    
+
+   _extractCaseMetadata(compiledCase) {
+      if (compiledCase.knots.Case) {
+         const content = compiledCase.knots.Case.content;
+         for (let c in content)
+            if (content[c].type == "field")
+               switch (content[c].field) {
+                  case "theme": compiledCase.theme = content[c].value;
+                                this.currentThemeFamily = content[c].value;
+                                break;
+                  case "name" : compiledCase.name = content[c].value; break;
+               }
+      }
+   }
+
    /*
     * Produce a sequential stamp to uniquely identify each recognized object
     */
@@ -316,7 +345,7 @@ class Translator {
 
    async loadTheme(themeName) {
       const themeObj = await MessageBus.ext.request(
-            "data/theme/" + this._currentThemeFamily + "." + themeName + "/get");
+            "data/theme/" + this.currentThemeFamily + "." + themeName + "/get");
       return themeObj.message;
    }
 
@@ -329,6 +358,7 @@ class Translator {
             text   : this._textObjToHTML,
             image  : this._imageObjToHTML,
             option : this._optionObjToHTML,
+            field  : this._fieldObjToHTML,
             divert : this._divertObjToHTML,
             talk        : this._talkObjToHTML,
             "talk-open" : this._talkopenObjToHTML,
@@ -347,6 +377,7 @@ class Translator {
          // produces a pretext with object slots to process markdown
          for (let kc in knotObj.content)
             preDoc += (knotObj.content[kc].type == "text" ||
+                       knotObj.content[kc].type == "field" ||
                        knotObj.content[kc].type == "context-open" ||
                        knotObj.content[kc].type == "context-close") 
                ? objToHTML[knotObj.content[kc].type](knotObj.content[kc])
@@ -502,10 +533,18 @@ class Translator {
     * Output: <img src="[path]" alt="[title]">
     */
    _imageObjToHTML(obj) {
-      return Translator.htmlTemplates.image
-         .replace("[path]", Basic.service.imageResolver(obj.path))
-         .replace("[alt]", (obj.title)
-            ? " alt='" + obj.title + "'" : "");
+      let result;
+      if (this.authoringRender)
+         result = Translator.htmlTemplatesEditable.image
+            .replace("[path]", Basic.service.imageResolver(obj.path))
+            .replace("[alt]", (obj.title)
+               ? " alt='" + obj.title + "'" : "");
+      else
+         result = Translator.htmlTemplates.image
+            .replace("[path]", Basic.service.imageResolver(obj.path))
+            .replace("[alt]", (obj.title)
+               ? " alt='" + obj.title + "'" : "");
+      return result;
    }
 
    /*
@@ -620,7 +659,7 @@ class Translator {
     * Output:
     * {
     *    type: "option"
-    *    subtype: "++" or "**" #1
+    *    subtype: "+" or "*" #1
     *    label: <label to be displayed -- if there is not an explicit divert, the label is the divert> #2
     *    rule:  <rule of the trigger -- determine its position in the knot> #3
     *    target: <target node to divert> #4
@@ -675,6 +714,35 @@ class Translator {
                                             .replace("[location]", location);
    }
    
+   /*
+    * Field Md to Obj
+    * Input: * [field]: [value]
+    * Output:
+    * {
+    *    type: "field"
+    *    presentation: <unprocessed content in markdown> #0
+    *    field: <label of the field> #1
+    *    value: <value of the field> #2
+    * }
+    */
+   _fieldMdToObj(matchArray) {
+      return {
+         type: "field",
+         presentation: matchArray[0],
+         field: matchArray[1].trim(),
+         value: matchArray[2].trim()
+      };
+   }
+
+   /*
+    * Field Obj to HTML
+    * Output:
+    *   [raw content in markdown]
+    */
+   _fieldObjToHTML(obj) {
+      return obj.presentation;
+   }
+
    /*
     * Divert Md to Obj
     * Input: -> [target]
@@ -987,6 +1055,7 @@ class Translator {
       image  : /!\[([\w \t]*)\]\(([\w:.\/\?&#\-]+)[ \t]*(?:"([\w ]*)")?\)/im,
       // image  : /<img src="([\w:.\/\?&#\-]+)" (?:alt="([\w ]+)")?>/im,
       option : /^[ \t]*([\+\*])[ \t]*([^\(&> \t][^\(&>\n\r\f]*)?(?:\(([\w \t-]+)\)[ \t]*)?(?:-(?:(?:&gt;)|>)[ \t]*(\w[\w. \t]*))$/im,
+      field  : /^[ \t]*(?:[\+\*])[ \t]*([\w.\/\?&#\-][\w.\/\?&#\- \t]*):[ \t]*([^\n\r\f]+)$/im,
       divert : /-(?:(?:&gt;)|>) *(\w[\w. ]*)/im,
       talk   : /^[ \t]*:[ \t]*(\w[\w \t]*):[ \t]*([^\n\r\f]+)$/im,
       talkopen: /^[ \t]*:[ \t]*(\w[\w \t]*):[ \t]*$/im,
