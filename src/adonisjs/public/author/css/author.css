@@ -131,3 +131,13 @@ body {
    overflow: hiddden;
    height: 100%;
 }
+
+.sty-editor {
+   width: 100%;
+   height: 100%;
+}
+
+.ql-editor {
+   font-family: "Courier New";
+   font-size: 14pt;
+}
