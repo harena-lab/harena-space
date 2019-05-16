@@ -1,4 +1,11 @@
-{"Picture Up-Left":
+{"Starting Minimal":
+   {"description": "Starting template for the minimal layout.",
+    "path": "basic/starting_minimal",
+    "icon": "basic/images/picture_up_left.png",
+    "scope": "case"},
+ "Picture Up-Left":
    {"description": "Template with a picture in the up-left corner.",
-    "path": "basic/picture_up_left"}
+    "path": "basic/picture_up_left",
+    "icon": "basic/images/picture_up_left.png",
+    "scope": "knot"}
 }

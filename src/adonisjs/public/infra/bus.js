@@ -138,8 +138,8 @@ class MessageBus {
    
    static _convertRegExp(filter) {
       return new RegExp(filter.replace("/", "\\/")
-                              .replace("+", "[\\w -\.\*<>]+")
-                              .replace("#", "[\\w\\/ -\.\*<>]+"));
+                              .replace("+", "[^\/]+")  // "[\\w -\.\*<>]+"
+                              .replace("#", ".+"));  // "[\\w\\/ -\.\*<>]+"
    }
    
    static matchFilter(topic, filter) {

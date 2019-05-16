@@ -19,18 +19,18 @@ class AuthorManager {
       
       this._navigator = new Navigator(this._translator);
       
-      // this._server = new DCCAuthorServer();
-      // new DCCCommonServer();
-      // new DCCAuthorServer();
-      
-      // this._currentThemeFamily = "jacinto";
+      this._currentThemeCSS = null;
+      this.currentThemeFamily = "minimal";
       this._themeSVG = true;
       this._currentCaseId = null;
       this._knotSelected = null;
       this._htmlKnot = null;
-      this._renderSlide = true;
-      this._renderCase = true;
+      // this._renderSlide = true;
+      // this._renderCase = true;
       this._editor = null;
+
+      // (1) render slide; (2) edit knot; (3) edit case
+      this._renderState = 1;
       
       this.controlEvent = this.controlEvent.bind(this);
       MessageBus.ext.subscribe("control/#", this.controlEvent);
@@ -49,6 +49,31 @@ class AuthorManager {
       }
    }
    
+   /*
+    * Properties
+    */
+
+   get currentThemeFamily() {
+      return this._currentThemeFamily;
+   }
+   
+   set currentThemeFamily(newValue) {
+      this._translator.currentThemeFamily = newValue;
+      this._currentThemeFamily = newValue;
+
+      this._currentThemeCSS =
+         Basic.service.replaceStyle(document, this._currentThemeCSS, newValue);
+   }
+
+   requestCurrentThemeFamily(topic, message) {
+      MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
+                             this.currentThemeFamily);
+   }
+
+   /*
+    *
+    */
+
    async start() {
       this._navigationPanel = document.querySelector("#navigation-panel");
       this._knotPanel = document.querySelector("#knot-panel");
@@ -82,6 +107,9 @@ class AuthorManager {
                                    break;
          case "control/config/edit": this.config();
                                      break;
+         case "control/_current_theme_name/get" :
+             this.requestCurrentThemeFamily(topic, message);
+             break;
       }
    }
    
@@ -125,7 +153,7 @@ class AuthorManager {
       this._temporaryCase = true;
       
       await this._themeSelect();
-      let template = await this._templateSelect();
+      let template = await this._templateSelect("case");
 
       const templateMd =
          await MessageBus.ext.request("data/template/" + template.replace("/", ".") + "/get");
@@ -153,16 +181,20 @@ class AuthorManager {
       const caseObj = await MessageBus.ext.request(
          "data/case/" + this._currentCaseId + "/get");
       this._currentCaseName = caseObj.message.name;
-      await this._compileShow(caseObj.message.source);
+      await this._compile(caseObj.message.source);
+      this._showCase();
    }
       
-   async _compileShow(caseSource) {
+   async _compile(caseSource) {
       this._compiledCase = this._translator.compileMarkdown(this._currentCaseId,
                                                             caseSource);
       this._knots = this._compiledCase.knots;
+      this.currentThemeFamily = this._compiledCase.theme;
 
       console.log(this._compiledCase);
+   }
 
+   async _showCase() {
       await this._navigator.mountTreeCase(this, this._compiledCase.knots);
       
       const knotIds = Object.keys(this._knots);
@@ -178,6 +210,8 @@ class AuthorManager {
     */
    async caseSave() {
       if (this._currentCaseId != null && this._compiledCase != null) {
+         this._checkKnotModification(this._renderState);
+
          if (this._temporaryCase) {
             const caseName =
                await DCCNoticeInput.displayNotice("Inform a name for your case:",
@@ -208,7 +242,8 @@ class AuthorManager {
     * ACTION: control/case/edit
     */
    async caseMarkdown() {
-      if (this._renderCase) {
+      const nextState = (this._renderState != 3) ? 3 : 1;
+      if (this._renderState != 3) {
          this._originalMd = this._translator.assembleMarkdown(this._compiledCase);
          this._knotPanel.innerHTML = "<div id='editor-space'></div>";
          this._editor = new Quill("#editor-space", {
@@ -219,6 +254,10 @@ class AuthorManager {
          });
          this._editor.insertText(0, this._originalMd);
       } else {
+         this._checkKnotModification(nextState);
+         this._renderState = nextState;
+         this._renderKnot();
+         /*
          if (this._editor != null) {
             let editorText = this._editor.getText();
             editorText = editorText.substring(0, editorText.length - 1);
@@ -229,8 +268,67 @@ class AuthorManager {
                this._renderKnot();
          } else
             this._renderKnot();
+         */
       }
-      this._renderCase = !this._renderCase;
+      this._renderState = nextState;
+   }
+
+      /*
+    * Check if the knot was modified to update it
+    */
+   _checkKnotModification(nextState) {
+      // (1) render slide; (2) edit knot; (3) edit case
+      let modified = false;
+      if (this._renderState == 2) {
+         if (this._editor != null) {
+            const editorText = this._retrieveEditorText();
+            if (this._knots[this._knotSelected]._source != editorText) {
+               modified = true;
+               this._knots[this._knotSelected]._source = editorText;
+               this._translator.extractKnotAnnotations(this._knots[this._knotSelected]);
+               this._translator.compileKnotMarkdown(this._knots, this._knotSelected);
+            }
+         }
+      } else if (this._renderState == 3) {
+         if (this._editor != null) {
+            const editorText = this._retrieveEditorText();
+            if (!this._originalMd || this._originalMd != editorText) {
+               modified = true;
+               if (nextState != 3)
+                  delete this._originalMd;
+               this._compile(editorText);
+               if (nextState == 3)
+                  this._renderState = 1;
+               this._showCase();
+            }
+         }
+      }
+
+      if (!this._caseModified)
+        this._caseModified = modified;
+      return modified;
+
+      /*
+      let modified = false;
+      if (!this._renderSlide && this._editor != null) {
+         let editorText = this._editor.getText();
+         editorText = editorText.substring(0, editorText.length - 1);
+         if (this._knots[this._knotSelected]._source != editorText) {
+            modified = true;
+            this._knots[this._knotSelected]._source = editorText;
+            this._translator.extractKnotAnnotations(this._knots[this._knotSelected]);
+            this._translator.compileKnotMarkdown(this._knots, this._knotSelected);
+         }
+      }
+      if (!this._caseModified)
+        this._caseModified = modified;
+      return modified;
+      */
+   }
+   
+   _retrieveEditorText() {
+      const editorText = this._editor.getText();
+      return editorText.substring(0, editorText.length - 1);
    }
 
    /*
@@ -253,8 +351,9 @@ class AuthorManager {
       MessageBus.ext.publish("knot/" + this._knotSelected + "/selected");
    }
 
-   async _templateSelect() {
-      const templateList = await MessageBus.ext.request("data/template/*/list");
+   async _templateSelect(scope) {
+      const templateList = await MessageBus.ext.request("data/template/*/list",
+                                                        {scope: "case"});
       const template = await DCCNoticeInput.displayNotice(
          "Select a template for your knot.",
          "list", "Select", "Cancel", templateList.message);
@@ -266,10 +365,12 @@ class AuthorManager {
     */
    async knotMarkdown() {
       if (this._knotSelected != null) {
-         if (this._checkKnotModification())
+         const nextState = (this._renderState != 2) ? 2 : 1;
+         if (this._checkKnotModification(nextState))
             this._htmlKnot = await this._translator.generateHTML(
                this._knots[this._knotSelected]);
-         this._renderSlide = !this._renderSlide;
+         // this._renderSlide = !this._renderSlide;
+         this._renderState = nextState;
          this._renderKnot();
       }
    }
@@ -334,7 +435,7 @@ class AuthorManager {
 
    async _themeSelect() {
       const families = await MessageBus.ext.request("data/theme_family/*/list");
-      this._translator.currentThemeFamily = await DCCNoticeInput.displayNotice(
+      this.currentThemeFamily = await DCCNoticeInput.displayNotice(
          "Select a theme to be applied.",
          "list", "Select", "Cancel", families.message);
       this._themeSVG = families.message[this._translator.currentThemeFamily].svg;
@@ -348,14 +449,15 @@ class AuthorManager {
          this._miniPrevious.classList.remove("sty-selected-knot");
       
       const knotid = MessageBus.extractLevel(topic, 2);
-      
+
       const miniature = document.querySelector("#mini-" + knotid.replace(/\./g, "_"));
+
       miniature.classList.add("sty-selected-knot");
       
       this._miniPrevious = miniature;
             
       if (knotid != null) {
-         this._checkKnotModification();
+         this._checkKnotModification(this._renderState);
          this._knotSelected = knotid;
          // this._htmlKnot = await this._generateHTML(this._knotSelected);
          this._htmlKnot = await this._translator.generateHTML(
@@ -381,30 +483,9 @@ class AuthorManager {
              dccs[d].editDCC();
     }
 
-   /*
-    * Check if the knot was modified to update it
-    */
-   _checkKnotModification() {
-      let modified = false;
-      if (!this._renderSlide && this._editor != null) {
-         let editorText = this._editor.getText();
-         editorText = editorText.substring(0, editorText.length - 1);
-         if (this._knots[this._knotSelected]._source != editorText) {
-            modified = true;
-            this._knots[this._knotSelected]._source = editorText;
-            this._translator.extractKnotAnnotations(this._knots[this._knotSelected]);
-            this._translator.compileKnotMarkdown(this._knots, this._knotSelected);
-         }
-      }
-      if (!this._caseModified)
-        this._caseModified = modified;
-      return modified;
-   }
-   
    _renderKnot() {
-      if (this._renderSlide) {
+      if (this._renderState == 1) {
          this._knotPanel.innerHTML = this._htmlKnot;
-         
       } else {
          this._knotPanel.innerHTML = "<div id='editor-space'></div>";
          this._editor = new Quill('#editor-space', {

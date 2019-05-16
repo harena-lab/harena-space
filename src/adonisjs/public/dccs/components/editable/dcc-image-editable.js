@@ -12,7 +12,7 @@ function editableDCCImage() {
    DCCImage.prototype._editDCC = function() {
       this._editImage = this._editImage.bind(this);
       this._presentation.addEventListener("click", this._editImage);
-      charImage.style.cursor = "pointer";
+      this._presentation.style.cursor = "pointer";
    };
 
 }

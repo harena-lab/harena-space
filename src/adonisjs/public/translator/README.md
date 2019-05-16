@@ -26,7 +26,7 @@ or
 [title] ([category],..,[category])
 =====
 ```             
-* Expression: `(?:^[ \t]*(#+)[ \t]*(\w[\w \t]*)(?:\((\w[\w \t,]*)\))?[ \t]*#*[ \t]*$)|(?:^[ \t]*(\w[\w \t]*)(?:\((\w[\w \t,]*)\))?[ \t]*[\f\n\r](==+|--+)$)`
+* Expression: `(?:^[ \t]*(#+)[ \t]*([^\( \t\n\r\f][^\(\n\r\f]*)(?:\((\w[\w \t,]*)\))?[ \t]*#*[ \t]*$)|(?:^[ \t]*([^\( \t\n\r\f][^\(\n\r\f]*)(?:\((\w[\w \t,]*)\))?[ \t]*[\f\n\r][\n\r]?(==+|--+)$)`
   * Group #1 or Group #6: level of the knot (acordding to the number of # or the underline type === or ---)
   * Group #2 or Group #4: title
   * Group #3 or Group #5: [categories]
@@ -143,7 +143,7 @@ This content is further converted to HTML by the compiler.
 ## Option
 ### Markdown to Object
 * Sentence: `+ [label] ([rule]) -> [target]` or `* [label] ([rule]) -> [target]`
-* Expression: `^[ \t]*([\+\*])[ \t]*([^\(&> \t][^\(&>\n\r\f]*)?(?:\(([\w \t-]+)\)[ \t]*)?(?:-(?:(?:&gt;)|>)[ \t]*(\w[\w. \t]*))$`
+* Expression: `^[ \t]*([\+\*])[ \t]*([^\(&> \t][^\(&>\n\r\f]*)?(?:\(([\w \t-]+)\)[ \t]*)?(?:-(?:(?:&gt;)|>)[ \t]*(.*))$`
   * Group #1: subtype
   * Group #2: label
   * Group #3: rule

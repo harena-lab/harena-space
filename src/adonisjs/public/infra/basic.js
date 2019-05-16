@@ -62,9 +62,29 @@ class Basic {
 
    imageResolver(path) {
       let result = path;
-      if (!(path.startsWith("http://") || path.startsWith("https://")))
+      if (!(path.startsWith("http://") || path.startsWith("https://") ||
+            path.startsWith("/")))
          result = DCCCommonServer.managerAddress + "artifacts/" + path;
       return result;
+   }
+
+   themeStyleResolver(theme) {
+      return "/themes/" + theme + "/css/theme.css";
+   }
+
+   replaceStyle(targetDocument, oldCSS, newTheme) {
+      console.log("replacing to " + newTheme);
+
+      if (oldCSS)
+         targetDocument.head.removeChild(oldCSS);
+
+      let newCSS = document.createElement("link");
+      newCSS.setAttribute("rel", "stylesheet");
+      newCSS.setAttribute("type", "text/css");
+      newCSS.setAttribute("href", this.themeStyleResolver(newTheme));
+      targetDocument.head.appendChild(newCSS);
+
+      return newCSS;
    }
 }
 
