@@ -145,6 +145,7 @@ class PlayerManager {
    
    async knotLoad(knotName) {
       this._currentKnot = knotName;
+      // <TODO> Local Environment - Future
       /*
       this._knotScript = document.createElement("script");
       this._knotScript.src = "knots/" + knotName + ".js";
@@ -155,7 +156,11 @@ class PlayerManager {
          console.log(this._knots);
          const knot = await this._translator.generateHTML(
             this._knots[knotName]);
-         this.presentKnot(knot);
+         if (this._knots[knotName].categories &&
+             this._knots[knotName].categories.indexOf("note") > -1)
+            this.presentNote(knot);
+         else
+            this.presentKnot(knot);
       }
       MessageBus.ext.publish("knot/" + knotName + "/start");
    }
@@ -165,8 +170,11 @@ class PlayerManager {
       
       this._mainPanel.innerHTML = knot;
 
+      // <TODO> Local Environment - Future
+      /*
       if (DCCPlayerServer.localEnv)
          document.head.removeChild(this._knotScript);
+      */
       
       // <TODO> Improve the strategy
       if (this._currentKnot == "entry")

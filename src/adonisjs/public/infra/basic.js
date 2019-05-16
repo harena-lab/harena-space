@@ -62,8 +62,9 @@ class Basic {
 
    imageResolver(path) {
       let result = path;
+      // <TODO> improve
       if (!(path.startsWith("http://") || path.startsWith("https://") ||
-            path.startsWith("/")))
+            path.startsWith("/") || path.startsWith("../")))
          result = DCCCommonServer.managerAddress + "artifacts/" + path;
       return result;
    }
