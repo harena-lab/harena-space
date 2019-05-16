@@ -65,10 +65,11 @@ class DCCAuthorServer {
       let jsonResponse = await response.json();
       let busResponse = {};
       for (var t in jsonResponse)
-         busResponse[jsonResponse[t].path] = {
-            name: t,
-            icon: "../templates/" + jsonResponse[t].path + ".png"
-         };
+         if (jsonResponse[t].scope == message.scope)
+            busResponse[jsonResponse[t].path] = {
+               name: t,
+               icon: "/templates/" + jsonResponse[t].icon
+            };
       MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
                              busResponse);
    }

@@ -1,8 +1,13 @@
 /* Image DCC
   **********/
 class DCCImage extends DCCBase {
-   connectedCallback() {
-      const templateHTML = "<div id='presentation-dcc'><img src='" + this.image + "'" +
+   async connectedCallback() {
+      const theme = await MessageBus.ext.request("control/_current_theme_name/get");
+
+      const templateHTML =  "<style>@import '" +
+                               Basic.service.themeStyleResolver(theme.message) +
+                            "'</style>" +
+                            "<div id='presentation-dcc'><img src='" + this.image + "'" +
                               ((this.hasAttribute("alt"))
                                  ? " alt='" + this.alt + "'>"
                                  : "></div>");

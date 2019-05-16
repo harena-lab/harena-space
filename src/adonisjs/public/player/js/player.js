@@ -14,6 +14,9 @@ class PlayerManager {
       this._tracker = new Tracker();
       this._history = [];
       this._translator = new Translator();
+
+      this._currentThemeCSS = null;
+      this.currentThemeFamily = "minimal";
       
       this.controlEvent = this.controlEvent.bind(this);
       MessageBus.ext.subscribe("control/#", this.controlEvent);
@@ -31,6 +34,18 @@ class PlayerManager {
       
       // tracking
       this.trackTyping = this.trackTyping.bind(this);
+   }
+
+   get currentThemeFamily() {
+      return this._currentThemeFamily;
+   }
+   
+   set currentThemeFamily(newValue) {
+      this._translator.currentThemeFamily = newValue;
+      this._currentThemeFamily = newValue;
+
+      this._currentThemeCSS =
+         Basic.service.replaceStyle(document, this._currentThemeCSS, newValue);
    }
 
    /*
@@ -125,6 +140,7 @@ class PlayerManager {
          this._translator.compileMarkdown(this._currentCaseId,
                                           caseObj.message.source);
       this._knots = this._compiledCase.knots;
+      this.currentThemeFamily = this._compiledCase.theme;
    }
    
    async knotLoad(knotName) {

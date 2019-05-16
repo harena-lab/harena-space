@@ -1,5 +1,10 @@
-{"Classic":
+{"Minimal":
    {"description": "Minimal theme without extra format.",
+    "path": "minimal",
+    "icon": "mono-slide.svg",
+    "svg" : "false"},
+ "Classic":
+   {"description": "Will be the classic basic format.",
     "path": "classic",
     "icon": "mono-slide.svg",
     "svg" : "false"},

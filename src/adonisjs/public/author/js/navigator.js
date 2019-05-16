@@ -402,7 +402,7 @@ async _createMiniature(knot, krender) {
                            "xstyle='sty-navigation-knot-cover' label = ''>";
 
    let htmlKnot = await this._translator.generateHTMLBuffer(this._knots[krender.knotid]);
-   let iframe = document.createElement('iframe');
+   let iframe = document.createElement("iframe");
    iframe.width = Navigator.miniKnot[this._retracted].width;
    iframe.height = Navigator.miniKnot[this._retracted].height;
    iframe.srcdoc = this._capsule.message
@@ -412,6 +412,10 @@ async _createMiniature(knot, krender) {
          ? "" : ";transform-origin:top left;transform:scale(0.1)")
       .replace("{knot}", htmlKnot);
    miniature.appendChild(iframe);
+   /*
+   let idoc = (iframe.contentWindow || iframe.contentDocument);
+   Basic.service.replaceStyle(idoc.document, null, this._author.currentThemeFamily);
+   */
 
    return miniature;
 }
