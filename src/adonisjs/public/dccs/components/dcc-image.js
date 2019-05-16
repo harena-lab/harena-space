@@ -1,7 +1,8 @@
 /* Image DCC
   **********/
 class DCCImage extends DCCBase {
-   async connectedCallback() {
+   connectedCallback() {
+      /*
       const theme = await MessageBus.ext.request("control/_current_theme_name/get");
 
       const templateHTML =  "<style>@import '" +
@@ -17,8 +18,14 @@ class DCCImage extends DCCBase {
       template.innerHTML = templateHTML;
       let shadow = this.attachShadow({mode: "open"});
       shadow.appendChild(template.content.cloneNode(true));
-      
       this._presentation = shadow.querySelector("#presentation-dcc");
+      */
+      
+      this.innerHTML = "<div id='presentation-dcc'><img src='" + this.image + "'" +
+                        ((this.hasAttribute("alt"))
+                           ? " alt='" + this.alt + "'>"
+                           : "></div>");
+      this._presentation = this.querySelector("#presentation-dcc");
    }
    
    /* Properties

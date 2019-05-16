@@ -245,7 +245,9 @@ class AuthorManager {
       const nextState = (this._renderState != 3) ? 3 : 1;
       if (this._renderState != 3) {
          this._originalMd = this._translator.assembleMarkdown(this._compiledCase);
-         this._knotPanel.innerHTML = "<div id='editor-space'></div>";
+         this._presentEditor(this._originalMd);
+         /*
+         this._knotPanel.innerHTML = "<div id='editor-space' class='sty-editor'></div>";
          this._editor = new Quill("#editor-space", {
             theme: "snow",
             formats: {
@@ -253,6 +255,7 @@ class AuthorManager {
             }
          });
          this._editor.insertText(0, this._originalMd);
+         */
       } else {
          this._checkKnotModification(nextState);
          this._renderState = nextState;
@@ -273,7 +276,20 @@ class AuthorManager {
       this._renderState = nextState;
    }
 
-      /*
+   _presentEditor(source) {
+      this._knotPanel.innerHTML = "<div id='editor-space' class='sty-editor'></div>";
+      this._editor = new Quill("#editor-space", {
+         //theme: "snow"
+         /*
+         formats: {
+            font: "Courier New"
+         }
+         */
+      });
+      this._editor.insertText(0, source);
+   }
+
+   /*
     * Check if the knot was modified to update it
     */
    _checkKnotModification(nextState) {
@@ -487,11 +503,14 @@ class AuthorManager {
       if (this._renderState == 1) {
          this._knotPanel.innerHTML = this._htmlKnot;
       } else {
+         /*
          this._knotPanel.innerHTML = "<div id='editor-space'></div>";
          this._editor = new Quill('#editor-space', {
             theme: 'snow'
           });
          this._editor.insertText(0, this._knots[this._knotSelected]._source);
+         */
+         this._presentEditor(this._knots[this._knotSelected]._source);
       }
    }
 }
