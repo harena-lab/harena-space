@@ -7,6 +7,14 @@ class MessageBus {
       this._externalized = externalized;
       this._listeners = [];
    }
+
+   get externalized() {
+      return this._externalized;
+   }
+   
+   set externalized(newValue) {
+      this._externalized = newValue;
+   }
    
    // <TODO> provisory
    defineRunningCase(runningCase) {
@@ -46,7 +54,7 @@ class MessageBus {
             this._listeners[l].callback(topic, message);
       
       if (this._externalized) {
-         let extMessage = message;
+         let extMessage = (message != null) ? message : {};
          if (typeof message != "object")
             extMessage = {content: message};
          let extTopic = topic;
@@ -174,7 +182,7 @@ class MessageBus {
    MessageBus._stamp = 1;
 
    MessageBus.int = new MessageBus(false);
-   MessageBus.ext = new MessageBus(true);
+   MessageBus.ext = new MessageBus(false);
    /*
    window.messageBus = {
       int: new MessageBus(false),

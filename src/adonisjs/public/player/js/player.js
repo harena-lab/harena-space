@@ -10,10 +10,14 @@ class PlayerManager {
    */
    
    constructor() {
+      // <TODO> provisory
+      MessageBus.ext.externalized = true;
+
       this._server = new DCCPlayerServer();
       this._tracker = new Tracker();
       this._history = [];
       this._translator = new Translator();
+      this._state = new PlayState();
 
       this._currentThemeCSS = null;
       this.currentThemeFamily = "minimal";
@@ -152,8 +156,8 @@ class PlayerManager {
       document.head.appendChild(this._knotScript);
       */
       if (!DCCPlayerServer.localEnv) {
-         console.log(knotName);
-         console.log(this._knots);
+         // console.log(knotName);
+         // console.log(this._knots);
          const knot = await this._translator.generateHTML(
             this._knots[knotName]);
          if (this._knots[knotName].categories &&

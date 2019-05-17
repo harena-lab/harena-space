@@ -286,10 +286,30 @@ Speech is implicitly considered between `<dcc-talk>[speech]</dcc-talk>`.
 ```
 ### Object to HTML
 ```
-<[input-type] [input-parameters] class='userInput' id='[variable]'
-   oninput="followInput('[variable]','[vocabulary]')">
-</[input-type]>
-<span id='[variable]_result'></span>
+<dcc-input id='dcc[seq]' variable='[variable]'[rows][vocabulary]> 
+</dcc-input>
+```
+
+## Expression
+### Markdown to Object
+* Sentence: `~ [variable] +|-|*|/|= [number]`
+* Expression: `~[ \t]*(\w+)?[ \t]*([\+-=])[ \t]*(\d+(?:\.\d+)?)`
+  * Group #1: variable
+  * Group #2: operator
+  * Group #3: value
+![Expression Expression](expressions/expression.png)
+* Object:
+```
+{
+   type: "expression"
+   variable: <variable name>
+   operator: +|-|*|/|=
+   value: <value>
+}
+```
+### Object to HTML
+```
+<dcc-compute expression='[expression]'></dcc-compute>
 ```
 
 ## Selector Context

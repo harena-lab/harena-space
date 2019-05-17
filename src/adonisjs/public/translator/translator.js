@@ -187,7 +187,8 @@ class Translator {
             talk     : this._talkMdToObj,
             talkopen : this._talkopenMdToObj,
             talkclose: this._talkcloseMdToObj,
-            input  : this._inputMdToObj,
+            input    : this._inputMdToObj,
+            compute  : this._computeMdToObj,
             selctxopen  : this._selctxopenMdToObj,
             selctxclose : this._selctxcloseMdToObj,
             selector    : this._selectorMdToObj
@@ -361,7 +362,8 @@ class Translator {
             talk        : this._talkObjToHTML,
             "talk-open" : this._talkopenObjToHTML,
             "talk-close": this._talkcloseObjToHTML,
-            input  : this._inputObjToHTML,
+            input   : this._inputObjToHTML,
+            compute : this._computeObjToHTML,
             "context-open"  : this._selctxopenObjToHTML,
             "context-close" : this._selctxcloseObjToHTML,
             selector   : this._selectorObjToHTML,
@@ -916,6 +918,45 @@ class Translator {
    }
 
    /*
+    * Expression Md to Obj
+    * Input: ~ [variable] +|-|*|/|= [number]
+    * Output:
+    * {
+    *    type: "compute"
+    *    variable: <variable name>
+    *    operator: +|-|*|/|=
+    *    value: <value>
+    * }
+    */
+   _computeMdToObj(matchArray) {
+      let sentence = {
+         type: "compute",
+         operator: matchArray[2],
+         value: matchArray[3].trim()
+      };
+      
+      if (matchArray[1] != null)
+         sentence.variable = matchArray[1].trim();
+      
+      return sentence;
+   }
+   
+   /*
+    * Expression Obj to HTML
+    * Output:
+    *   <dcc-compute sentence='[sentence]'></dcc-compute>
+    */
+   _computeObjToHTML(obj) {
+      const variable = (obj.variable != null)
+               ? obj.variable : Translator.defaultVariable;
+
+      const sentence = variable + obj.operator + obj.value;
+
+      return Translator.htmlTemplates.compute
+                .replace("[sentence]", sentence);
+   }
+
+   /*
     * Selector Context Open Md to Obj
     * Input: {{ [context] #[evaluation]: [option-1], ..., [option-n]
     * Output:
@@ -1060,6 +1101,7 @@ class Translator {
       talkopen: /^[ \t]*:[ \t]*(\w[\w \t]*):[ \t]*$/im,
       talkclose: /[ \t]*:[ \t]*:[ \t]*$/im,
       input  : /\{[ \t]*\?(\d+)?([\w \t]*)(?:\:([\w \t]+))?(?:#([\w \t\+\-\*"=\%\/,]+)(?:;([\w \t\+\-\*"=\%\/,]+))?)?\}/im,
+      compute: /~[ \t]*(\w+)?[ \t]*([+\-*/=])[ \t]*(\d+(?:\.\d+)?)/im,
       selctxopen : Translator.marksAnnotation.ctxopen,
       selctxclose: Translator.marksAnnotation.ctxclose,
       selector   : Translator.marksAnnotation.annotation
@@ -1073,4 +1115,6 @@ class Translator {
       open:  /<p>(<dcc-group-selector(?:[\w \t\+\-\*"'=\%\/,]*)?>)<\/p>/igm,
       close: /<p>(<\/dcc-group-selector>)<\/p>/igm
    };
+
+   Translator.defaultVariable = "points";
 })();
