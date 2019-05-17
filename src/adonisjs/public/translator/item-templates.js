@@ -24,6 +24,8 @@ talkclose:
 input:
 `<dcc-input id='dcc[seq]' variable='[variable]'[rows][vocabulary]> 
 </dcc-input>`,
+compute:
+`<dcc-compute sentence='[sentence]'></dcc-compute>`,
 domain:
 `[natural]`,
 selctxopen:

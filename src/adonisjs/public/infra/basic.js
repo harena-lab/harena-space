@@ -74,8 +74,6 @@ class Basic {
    }
 
    replaceStyle(targetDocument, oldCSS, newTheme) {
-      console.log("replacing to " + newTheme);
-
       if (oldCSS)
          targetDocument.head.removeChild(oldCSS);
 

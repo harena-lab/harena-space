@@ -6,15 +6,35 @@ class DCCExpression extends DCCBase {
    }
    
    async connectedCallback() {
-     const result = await MessageBus.ext.request("var/" + this.expression + "/get", "",
-                                                        "var/" + this.expression);
-     
-     let template = document.createElement("template");
-     template.innerHTML = 
-        DCCExpression.templateElements.replace("[result]", result.message);
-     
-     this._shadow = this.attachShadow({mode: "open"});
-     this._shadow.appendChild(template.content.cloneNode(true));
+      /*
+      let template = document.createElement("template");
+      template.innerHTML = 
+         DCCExpression.templateElements.replace("[result]", result.message);
+
+      this._shadow = this.attachShadow({mode: "open"});
+      this._shadow.appendChild(template.content.cloneNode(true));
+
+      this._presentation = this._shadow.querySelector("#presentation-dcc");
+      */
+
+      /*
+      this.innerHTML =
+          DCCExpression.templateElements.replace("[result]", result.message);
+      */
+
+      // <TODO> provisory solution due to message ordering
+      this._updated = false
+
+      if (this.active) {
+         this.variableUpdated = this.variableUpdated.bind(this);
+         MessageBus.ext.subscribe("var/" + this.expression + "/set", this.variableUpdated);
+      }
+
+      const result = await MessageBus.ext.request("var/" + this.expression + "/get");
+
+      // <TODO> provisory solution due to message ordering
+      if (!this._updated)
+        this.innerHTML = result.message;
    }
 
    /*
@@ -22,7 +42,7 @@ class DCCExpression extends DCCBase {
     */
    
    static get observedAttributes() {
-      return ["expression"];
+      return ["expression", "active"];
    }
 
    get expression() {
@@ -32,11 +52,33 @@ class DCCExpression extends DCCBase {
    set expression(newValue) {
       this.setAttribute("expression", newValue);
    }
+
+   // defines if the displey is activelly updated
+   get active() {
+      return this.hasAttribute("active");
+   }
+
+   set active(isActive) {
+      if (isActive) {
+         this.setAttribute("active", "");
+      } else {
+         this.removeAttribute("active");
+      }
+   }
+
+   variableUpdated(topic, message) {
+      // <TODO> provisory solution due to message ordering
+      this._updated = true;
+
+      this.innerHTML = message;
+   }
 }
 
 (function() {
+   /*
    DCCExpression.templateElements = 
-   `<span id="presentation-dcc">[result]</span>`;
+      "<span id='presentation-dcc'>[result]</span>";
+   */
      
    DCCExpression.elementTag = "dcc-expression";
    customElements.define(DCCExpression.elementTag, DCCExpression);
