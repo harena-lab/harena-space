@@ -70,7 +70,7 @@ class Basic {
    }
 
    themeStyleResolver(theme) {
-      return "/themes/" + theme + "/css/theme.css";
+      return "../themes/" + theme + "/css/theme.css";
    }
 
    replaceStyle(targetDocument, oldCSS, newTheme) {
