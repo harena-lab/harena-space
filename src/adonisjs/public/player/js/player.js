@@ -38,6 +38,9 @@ class PlayerManager {
       
       // tracking
       this.trackTyping = this.trackTyping.bind(this);
+
+      // <TODO> provisory
+      this._nextKnot = 1;
    }
 
    get currentThemeFamily() {
@@ -86,6 +89,10 @@ class PlayerManager {
                                   this._history.push(startKnot);
                                   this.knotLoad(startKnot);
                                   break;
+         case "knot/>/navigate": this._nextKnot++;
+                                 this._history.push(this._nextKnot.toString());
+                                 this.knotLoad(this._nextKnot.toString());
+                                 break;
          default: if (MessageBus.matchFilter(topic, "knot/+/navigate")) {
                      this._history.push(message);
                      this.knotLoad(message);
