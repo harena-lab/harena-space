@@ -55,9 +55,9 @@ class DCCCommonServer {
          "headers": {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + DCCCommonServer.instance.token
-          },
+          }/*
           "body": JSON.stringify({"filterBy": "user",
-                                  "filter": message.filter})
+                                  "filter": message.filter})*/
       }
       const response = await fetch(DCCCommonServer.managerAddressAPI + "case/list", header);
       const jsonResponse = await response.json();
