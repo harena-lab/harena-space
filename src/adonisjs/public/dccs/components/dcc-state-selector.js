@@ -18,16 +18,6 @@ class DCCStateSelector extends DCCBase {
      this._presentationState = this.querySelector("#presentation-state");
      */
      
-     let template = document.createElement("template");
-     template.innerHTML = DCCStateSelector.templateElements;
-     
-     this._shadow = this.attachShadow({mode: "open"});
-     this._shadow.appendChild(template.content.cloneNode(true));
-     
-     this._presentation = this._shadow.querySelector("#presentation-dcc");
-     this._presentationState = this._shadow.querySelector("#presentation-state");
-
-     
      this._showState = this._showState.bind(this);
      this._hideState = this._hideState.bind(this);
      this._changeState = this._changeState.bind(this);
@@ -43,6 +33,28 @@ class DCCStateSelector extends DCCBase {
    }
    
    async connectedCallback() {
+      const theme = await MessageBus.ext.request("control/_current_theme_name/get");
+
+      DCCStateSelector.templateElements =
+      "<style> @import '" +
+         Basic.service.themeStyleResolver(theme.message, "dcc-state-selector.css") +
+      "' </style>" +
+      `<span id="presentation-dcc">
+         <span id="presentation-text"><slot></slot></span>
+         <span id="presentation-state"></span>
+      </span>`;
+
+      let template = document.createElement("template");
+      template.innerHTML = DCCStateSelector.templateElements;
+
+      // Basic.service.replaceStyle(template, null, newValue, "dcc-state-selector.css");
+     
+      this._shadow = this.attachShadow({mode: "open"});
+      this._shadow.appendChild(template.content.cloneNode(true));
+     
+      this._presentation = this._shadow.querySelector("#presentation-dcc");
+      this._presentationState = this._shadow.querySelector("#presentation-state");
+     
       // <TODO> limited: considers only one group per page
       this.completeId = this.id;  
       if (!this.hasAttribute("states") && MessageBus.page.hasSubscriber("dcc/request/selector-states")) {
@@ -247,8 +259,9 @@ class DCCGroupSelector extends DCCBase {
    }
 }
 
-(function() {
+(async function() {
 
+/*
 DCCStateSelector.templateElements = 
 `<style>
    @import "css/dcc-state-selector.css"
@@ -257,6 +270,7 @@ DCCStateSelector.templateElements =
    <span id="presentation-text"><slot></slot></span>
    <span id="presentation-state"></span>
 </span>`;
+*/
   
 DCCStateSelector.elementTag = "dcc-state-selector";
 customElements.define(DCCStateSelector.elementTag, DCCStateSelector);

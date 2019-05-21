@@ -69,18 +69,20 @@ class Basic {
       return result;
    }
 
-   themeStyleResolver(theme) {
-      return "../themes/" + theme + "/css/theme.css";
+   themeStyleResolver(theme, cssFile) {
+      return "../themes/" + theme + "/css/" + cssFile;
    }
 
-   replaceStyle(targetDocument, oldCSS, newTheme) {
+   replaceStyle(targetDocument, oldCSS, newTheme, cssFile) {
       if (oldCSS)
          targetDocument.head.removeChild(oldCSS);
+
+      const cssF = (cssFile) ? cssFile : "theme.css";
 
       let newCSS = document.createElement("link");
       newCSS.setAttribute("rel", "stylesheet");
       newCSS.setAttribute("type", "text/css");
-      newCSS.setAttribute("href", this.themeStyleResolver(newTheme));
+      newCSS.setAttribute("href", this.themeStyleResolver(newTheme, cssF));
       targetDocument.head.appendChild(newCSS);
 
       return newCSS;

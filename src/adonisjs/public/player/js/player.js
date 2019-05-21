@@ -43,6 +43,10 @@ class PlayerManager {
       this._nextKnot = 1;
    }
 
+   /* <TODO>
+      A commom code for shared functionalities between player and author
+      ******/
+
    get currentThemeFamily() {
       return this._currentThemeFamily;
    }
@@ -55,6 +59,11 @@ class PlayerManager {
          Basic.service.replaceStyle(document, this._currentThemeCSS, newValue);
    }
 
+   requestCurrentThemeFamily(topic, message) {
+      MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
+                             this.currentThemeFamily);
+   }
+
    /*
     * Event handlers
     * **************
@@ -64,6 +73,9 @@ class PlayerManager {
       switch (topic) {
          case "control/register": this.register(); break;
          case "control/signin":   this.signIn(); break;
+         case "control/_current_theme_name/get" :
+             this.requestCurrentThemeFamily(topic, message);
+             break;
       }
    }
    
