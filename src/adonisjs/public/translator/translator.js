@@ -390,9 +390,16 @@ class Translator {
          // converts to HTML
          html = this._markdownTranslator.makeHtml(preDoc);
 
+         console.log("================");
+
+         console.log(html);
+
+         console.log("================");
+
          // inserts Markdown DCCs in authoring mode
-         html = html.replace(/<A>(\d+)%/igm, "<dcc-markdown id='$1'>")
-                    .replace(/<\/A>/igm, "</dcc-markdown>");
+         html = html.replace(/<p><dcc-markdown id='dcc(\d+)'><\/p>/igm,
+                             "<dcc-markdown id='dcc$1'>")
+                    .replace(/<p><\/dcc-markdown><\/p>/igm, "</dcc-markdown>");
 
          console.log(html);
 
@@ -515,7 +522,9 @@ class Translator {
       // return this._markdownTranslator.makeHtml(obj.content);
       let result = obj.content;
       if (this.authoringRender)
-         result = "<A>" + obj.seq + "%" + obj.content + "</A>";
+         result = Translator.htmlTemplatesEditable.text
+                    .replace("[seq]", obj.seq)
+                    .replace("[content]", obj.content);
       return result;
    }
 

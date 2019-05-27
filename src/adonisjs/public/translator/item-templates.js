@@ -45,6 +45,18 @@ selector:
 };
 
 Translator.htmlTemplatesEditable = {
+text:
+`
+
+
+<dcc-markdown id='dcc[seq]'>
+
+[content]
+
+</dcc-markdown>
+
+
+`,
 image:
 `<dcc-image image='[path]'[alt]></dcc-image>`
 };
