@@ -11,6 +11,7 @@ class Translator {
       this._markdownTranslator = new showdown.Converter();
       
       this._annotationMdToObj = this._annotationMdToObj.bind(this);
+      this._textObjToHTML = this._textObjToHTML.bind(this);
       this._imageObjToHTML = this._imageObjToHTML.bind(this);
       // this._textObjToHTML = this._textObjToHTML.bind(this);
    }
@@ -383,8 +384,17 @@ class Translator {
                ? objToHTML[knotObj.content[kc].type](knotObj.content[kc])
                : "@@" + knotObj.content[kc].seq + "@@";
                
+         
+         console.log(preDoc);
+
          // converts to HTML
          html = this._markdownTranslator.makeHtml(preDoc);
+
+         // inserts Markdown DCCs in authoring mode
+         html = html.replace(/<A>(\d+)%/igm, "<dcc-markdown id='$1'>")
+                    .replace(/<\/A>/igm, "</dcc-markdown>");
+
+         console.log(html);
 
          // replaces the marks
          let current = 0;
@@ -503,7 +513,10 @@ class Translator {
     */
    _textObjToHTML(obj) {
       // return this._markdownTranslator.makeHtml(obj.content);
-      return obj.content;
+      let result = obj.content;
+      if (this.authoringRender)
+         result = "<A>" + obj.seq + "%" + obj.content + "</A>";
+      return result;
    }
 
    /*

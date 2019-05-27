@@ -25,8 +25,6 @@ class AuthorManager {
       this._currentCaseId = null;
       this._knotSelected = null;
       this._htmlKnot = null;
-      // this._renderSlide = true;
-      // this._renderCase = true;
       this._editor = null;
 
       // (1) render slide; (2) edit knot; (3) edit case
@@ -70,6 +68,15 @@ class AuthorManager {
                              this.currentThemeFamily);
    }
 
+   get currentCaseId() {
+      return this._currentCaseId;
+   }
+
+   requestCurrentCaseId(topic, message) {
+      MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
+                             this.currentCaseId);
+   }
+
    /*
     *
     */
@@ -107,9 +114,11 @@ class AuthorManager {
                                    break;
          case "control/config/edit": this.config();
                                      break;
-         case "control/_current_theme_name/get" :
-             this.requestCurrentThemeFamily(topic, message);
-             break;
+         case "control/_current_theme_name/get":
+            this.requestCurrentThemeFamily(topic, message);
+            break;
+         case "control/_current_case_id/get":
+            this.requestCurrentCaseId(topic, message);
       }
    }
    
@@ -162,14 +171,6 @@ class AuthorManager {
                                                   {format: "markdown",
                                                    name: "Untitled",
                                                    source: templateMd.message});
-
-      /*
-      const status = await MessageBus.ext.request("data/case/" + caseId.message + "/set",
-                                                  {format: "markdown",
-                                                   name: "Untitled",
-                                                   source: templateMd.message});
-      */
-
       this._caseLoad(caseId.message);
    }
 
@@ -246,32 +247,10 @@ class AuthorManager {
       if (this._renderState != 3) {
          this._originalMd = this._translator.assembleMarkdown(this._compiledCase);
          this._presentEditor(this._originalMd);
-         /*
-         this._knotPanel.innerHTML = "<div id='editor-space' class='sty-editor'></div>";
-         this._editor = new Quill("#editor-space", {
-            theme: "snow",
-            formats: {
-               font: "Courier New"
-            }
-         });
-         this._editor.insertText(0, this._originalMd);
-         */
       } else {
          this._checkKnotModification(nextState);
          this._renderState = nextState;
          this._renderKnot();
-         /*
-         if (this._editor != null) {
-            let editorText = this._editor.getText();
-            editorText = editorText.substring(0, editorText.length - 1);
-            if (!this._originalMd || this._originalMd != editorText) {
-               this._compileShow(editorText);
-               delete this._originalMd;
-            } else
-               this._renderKnot();
-         } else
-            this._renderKnot();
-         */
       }
       this._renderState = nextState;
    }
@@ -279,12 +258,6 @@ class AuthorManager {
    _presentEditor(source) {
       this._knotPanel.innerHTML = "<div id='editor-space' class='sty-editor'></div>";
       this._editor = new Quill("#editor-space", {
-         //theme: "snow"
-         /*
-         formats: {
-            font: "Courier New"
-         }
-         */
       });
       this._editor.insertText(0, source);
    }
@@ -323,23 +296,6 @@ class AuthorManager {
       if (!this._caseModified)
         this._caseModified = modified;
       return modified;
-
-      /*
-      let modified = false;
-      if (!this._renderSlide && this._editor != null) {
-         let editorText = this._editor.getText();
-         editorText = editorText.substring(0, editorText.length - 1);
-         if (this._knots[this._knotSelected]._source != editorText) {
-            modified = true;
-            this._knots[this._knotSelected]._source = editorText;
-            this._translator.extractKnotAnnotations(this._knots[this._knotSelected]);
-            this._translator.compileKnotMarkdown(this._knots, this._knotSelected);
-         }
-      }
-      if (!this._caseModified)
-        this._caseModified = modified;
-      return modified;
-      */
    }
    
    _retrieveEditorText() {
@@ -361,7 +317,6 @@ class AuthorManager {
       this._knots[knotId] = newKnot;
       this._translator.extractKnotAnnotations(this._knots[knotId]);
       this._translator.compileKnotMarkdown(this._knots, knotId);
-      // this._htmlKnot = await this._generateHTML(knotId);
       this._htmlKnot = await this._translator.generateHTML(this._knots[knotId]);
       await this._navigator.mountPlainCase(this, this._compiledCase.knots);
       MessageBus.ext.publish("knot/" + this._knotSelected + "/selected");
@@ -385,7 +340,6 @@ class AuthorManager {
          if (this._checkKnotModification(nextState))
             this._htmlKnot = await this._translator.generateHTML(
                this._knots[this._knotSelected]);
-         // this._renderSlide = !this._renderSlide;
          this._renderState = nextState;
          this._renderKnot();
       }
@@ -502,16 +456,8 @@ class AuthorManager {
    _renderKnot() {
       if (this._renderState == 1) {
          this._knotPanel.innerHTML = this._htmlKnot;
-      } else {
-         /*
-         this._knotPanel.innerHTML = "<div id='editor-space'></div>";
-         this._editor = new Quill('#editor-space', {
-            theme: 'snow'
-          });
-         this._editor.insertText(0, this._knots[this._knotSelected]._source);
-         */
+      } else
          this._presentEditor(this._knots[this._knotSelected]._source);
-      }
    }
 }
 

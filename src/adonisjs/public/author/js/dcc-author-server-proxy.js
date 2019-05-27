@@ -21,12 +21,17 @@ class DCCAuthorServer {
       
       this.templatesList = this.templatesList.bind(this);
       MessageBus.ext.subscribe("data/template/*/list", this.templatesList);
+      this.uploadArtifact = this.uploadArtifact.bind(this);
+      MessageBus.ext.subscribe("data/asset//new", this.uploadArtifact);
+      
+      /*
       this.prepareCaseHTML = this.prepareCaseHTML.bind(this);
       MessageBus.ext.subscribe("case/+/prepare", this.prepareCaseHTML);
       this.saveKnotHTML = this.saveKnotHTML.bind(this);
       MessageBus.ext.subscribe("knot/+/set", this.saveKnotHTML);
       this.saveCaseObject = this.saveCaseObject.bind(this);
       MessageBus.ext.subscribe("case/+/set", this.saveCaseObject);
+      */
    }
    
    // wrapper of the services
@@ -112,37 +117,8 @@ class DCCAuthorServer {
          const jsonResponse = await response.json();
          MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
                              jsonResponse.source);
-
-         /*
-         const response = await fetch(DCCCommonServer.managerAddressAPI + "save-case", {
-            method: "POST",
-            body: JSON.stringify({"caseName": caseName,
-                                  "caseText": message.source}),
-            headers:{
-              "Content-Type": "application/json"
-            }
-         });
-         const jsonResponse = await response.json();
-         MessageBus.ext.publish("case/" + caseName + "/version", jsonResponse.versionFile);
-         */
       }
    }
-
-   /*
-   async renameCase(topic, message) {
-      const oldName = MessageBus.extractLevel(topic, 2);
-      const response = await fetch(DCCCommonServer.managerAddressAPI + "rename-case", {
-         method: "POST",
-         body: JSON.stringify({"oldName": oldName,
-                               "newName": message.newName}),
-         headers:{
-           "Content-Type": "application/json"
-         }
-      });
-      const jsonResponse = await response.json();
-      MessageBus.ext.publish("case/" + oldName + "/rename/status", jsonResponse.status);
-   }
-   */
 
    async loadModule(topic, message) {
       const moduleName = MessageBus.extractLevel(topic, 3);
@@ -176,7 +152,30 @@ class DCCAuthorServer {
       MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
                              textResponse);
    }
-   
+
+   async uploadArtifact(topic, message) {
+      var header = {
+         "async": true,
+         "crossDomain": true,
+         "method": "POST",
+         "headers": {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + DCCCommonServer.instance.token
+          },
+          "body": JSON.stringify({file: message.file,
+                                  case_uuid: message.caseid})
+      };
+      console.log("file: " + message.file);
+      console.log("caseid: " + message.caseid);
+      console.log(header);
+      const response =
+         await fetch(DCCCommonServer.managerAddressAPI + "artifact", header);
+      const jsonResponse = await response.json();
+      MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
+                             jsonResponse.filename);
+   }
+
+   /*
    async prepareCaseHTML(topic, themeFamily) {
       const caseName = MessageBus.extractLevel(topic, 2);
       const response = await fetch(DCCCommonServer.managerAddressAPI + "prepare-case-html", {
@@ -225,6 +224,7 @@ class DCCAuthorServer {
          MessageBus.ext.publish("case/" + caseId + "/set/status", jsonResponse.status);
       }
    }
+   */
 }
 
 (function() {

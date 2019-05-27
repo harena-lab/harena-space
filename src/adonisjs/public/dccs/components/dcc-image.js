@@ -2,30 +2,15 @@
   **********/
 class DCCImage extends DCCBase {
    connectedCallback() {
-      /*
-      const theme = await MessageBus.ext.request("control/_current_theme_name/get");
-
-      const templateHTML =  "<style>@import '" +
-                               Basic.service.themeStyleResolver(theme.message) +
-                            "'</style>" +
-                            "<div id='presentation-dcc'><img src='" + this.image + "'" +
-                              ((this.hasAttribute("alt"))
-                                 ? " alt='" + this.alt + "'>"
-                                 : "></div>");
-
-      // building the template
-      const template = document.createElement("template");
-      template.innerHTML = templateHTML;
-      let shadow = this.attachShadow({mode: "open"});
-      shadow.appendChild(template.content.cloneNode(true));
-      this._presentation = shadow.querySelector("#presentation-dcc");
-      */
-      
-      this.innerHTML = "<div id='presentation-dcc'><img src='" + this.image + "'" +
-                        ((this.hasAttribute("alt"))
-                           ? " alt='" + this.alt + "'>"
-                           : "></div>");
+      this.innerHTML = "<div id='presentation-dcc'>" + this._imageHTML() + "</div>";
       this._presentation = this.querySelector("#presentation-dcc");
+   }
+
+   _imageHTML() {
+      return "<img src='" + this.image + "'" +
+                ((this.hasAttribute("alt"))
+                   ? " alt='" + this.alt + "'>"
+                   : ">");
    }
    
    /* Properties
