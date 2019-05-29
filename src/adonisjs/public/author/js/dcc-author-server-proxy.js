@@ -162,7 +162,6 @@ class DCCAuthorServer {
          "crossDomain": true,
          "method": "POST",
          "headers": {
-            "Content-Type": "application/x-www-form-urlencoded",
             "Accept": "application/json",
             "cache-control": "no-cache",
             "Authorization": "Bearer " + DCCCommonServer.instance.token
