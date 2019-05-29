@@ -154,23 +154,31 @@ class DCCAuthorServer {
    }
 
    async uploadArtifact(topic, message) {
+      var data = new FormData();
+      data.append("file", message.file);
+      data.append("case_uuid", message.caseid);
       var header = {
          "async": true,
          "crossDomain": true,
          "method": "POST",
          "headers": {
-            "Content-Type": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json",
+            "cache-control": "no-cache",
             "Authorization": "Bearer " + DCCCommonServer.instance.token
           },
-          "body": JSON.stringify({file: message.file,
-                                  case_uuid: message.caseid})
+          "processData": false,
+          "contentType": false,
+          "mimeType": "multipart/form-data",
+          "body": data
       };
-      console.log("file: " + message.file);
-      console.log("caseid: " + message.caseid);
+      // console.log("file: " + message.file);
+      // console.log("caseid: " + message.caseid);
       console.log(header);
       const response =
          await fetch(DCCCommonServer.managerAddressAPI + "artifact", header);
       const jsonResponse = await response.json();
+      console.log(jsonResponse);
       MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
                              jsonResponse.filename);
    }

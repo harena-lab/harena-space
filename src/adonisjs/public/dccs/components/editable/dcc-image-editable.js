@@ -1,7 +1,7 @@
 /* Image DCC Editable
  ********************/
 function editableDCCImage() {
-   DCCImage.prototype._editImage = function() {
+   DCCImage.prototype._editImage = async function() {
       this._presentation.removeEventListener("click", this._editImage);
       const templateHTML =
       `<style>
@@ -45,8 +45,26 @@ function editableDCCImage() {
          <input type="file" id="selImage" name="selImage" class="styd-selector"
                 accept="image/png, image/jpeg, image/svg">
       </div>`;
+
+      /*
+       <div id="presentation-editable-dcc" class="styd-notice styd-border-notice">
+         <form method="POST" action="[server]artifact" enctype="multipart/form-data">
+            <label for="file">Choose a picture:</label>
+            <input type="file" id="file" name="file" class="styd-selector"
+                   accept="image/png, image/jpeg, image/svg">
+            <input type="hidden" id="case_uuid" name="case_uuid" value="[caseid]">
+            <input type="hidden" id="headers[Authorization]" value="Bearer [token]">
+            <button type="submit">Send</button>
+         </form>
+      </div>
+      */
+
       const template = document.createElement("template");
-      template.innerHTML = templateHTML;
+      const caseid = await MessageBus.ext.request("control/_current_case_id/get");
+      template.innerHTML = templateHTML
+                              .replace("[server]", DCCCommonServer.managerAddressAPI)
+                              .replace("[caseid", caseid)
+                              .replace("[token]", DCCCommonServer.instance.token);
       this._imageDialog = template.content.cloneNode(true);
       this.appendChild(this._imageDialog);
       this._presentationEditable = this.querySelector("#presentation-editable-dcc");
@@ -69,8 +87,9 @@ function editableDCCImage() {
       const caseId = await MessageBus.ext.request("control/_current_case_id/get");
       console.log(caseId.message);
       const fileId = await MessageBus.ext.request("data/asset//new",
-                                                  {file: "/home/santanche/git/case-notebook/notebook/cases/case001-development/images/case-forklift.png",
+                                                  {file: this._selImage.files[0],
                                                    caseid: caseId.message});
+      // "/home/santanche/git/case-notebook/notebook/cases/case001-development/images/case-forklift.png"
       console.log(fileId);
    }
 }
