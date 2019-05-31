@@ -79,7 +79,7 @@ class Tracker {
        //  /^\/var\/(\w+)\//.exec(topic);
       if (v != null) {
          this._variables[v] = value;
-         console.log("update variable " + v + " with " + value);
+         // console.log("update variable " + v + " with " + value);
       }
    }
 }

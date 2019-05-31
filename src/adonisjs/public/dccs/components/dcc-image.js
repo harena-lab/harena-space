@@ -7,9 +7,9 @@ class DCCImage extends DCCBase {
    }
 
    _imageHTML() {
-      return "<img src='" + this.image + "'" +
-                ((this.hasAttribute("alt"))
-                   ? " alt='" + this.alt + "'>"
+      return "<img src='" + Basic.service.imageResolver(this.image) + "'" +
+                ((this.hasAttribute("title"))
+                   ? " alt='" + this.title + "'>"
                    : ">");
    }
    
@@ -17,9 +17,17 @@ class DCCImage extends DCCBase {
       **********/
    
    static get observedAttributes() {
-      return ["image", "alt"];
+      return ["id", "image", "alternative", "title"];
    }
 
+   get id() {
+      return this.getAttribute("id");
+   }
+   
+   set id(newValue) {
+      this.setAttribute("id", newValue);
+   }
+   
    get image() {
       return this.getAttribute("image");
    }
@@ -28,12 +36,20 @@ class DCCImage extends DCCBase {
       this.setAttribute("image", newValue);
    }
    
-   get alt() {
-      return this.getAttribute("alt");
+   get alternative() {
+      return this.getAttribute("alternative");
    }
    
-   set alt(newValue) {
-      this.setAttribute("alt", newValue);
+   set alternative(newValue) {
+      this.setAttribute("alternative", newValue);
+   }
+
+   get title() {
+      return this.getAttribute("title");
+   }
+   
+   set title(newValue) {
+      this.setAttribute("title", newValue);
    }
 
    /* Editable Component */

@@ -86,10 +86,30 @@ function editableDCCImage() {
       this.removeChild(this._presentationEditable);
       const caseId = await MessageBus.ext.request("control/_current_case_id/get");
       console.log(caseId.message);
-      const fileId = await MessageBus.ext.request("data/asset//new",
+      const asset = await MessageBus.ext.request("data/asset//new",
                                                   {file: this._selImage.files[0],
                                                    caseid: caseId.message});
       // "/home/santanche/git/case-notebook/notebook/cases/case001-development/images/case-forklift.png"
-      console.log(fileId);
+      // console.log(fileId);
+      this.image = asset.message;
+      let imageObj = {
+         type: "image",
+         elementid: this.id,
+         alternative: this.alternative,
+         path: this.image,
+         markdown: this.toMarkdown()
+      };
+      if (this.hasAttribute("title"))
+         imageObj.title = this.title;
+      MessageBus.ext.publish("control/knot/update", imageObj);
+   }
+
+   // !{alt-text}({path}{title})
+   DCCImage.prototype.toMarkdown = function() {
+      return Translator.markdownTemplates.image
+                .replace("{alternative}", this.alternative)
+                .replace("{path}", this.image)
+                .replace("{title}",
+                   (this.hasAttribute("title")) ? '"' + this.title + '"' : "");
    }
 }

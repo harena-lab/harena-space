@@ -82,6 +82,8 @@ class DCCBlock extends DCCBase {
    }
    
    set image(newValue) {
+     if (this._imageElement)
+        this._imageElement.src = newValue;
      this.setAttribute("image", newValue);
    }
 

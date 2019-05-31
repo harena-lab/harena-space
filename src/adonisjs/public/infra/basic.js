@@ -3,6 +3,18 @@
  */
 
 class Basic {
+   contructor() {
+      this._author = null;
+   }
+
+   get author() {
+      return this._author;
+   }
+   
+   set author(newValue) {
+      this._author = newValue;
+   }
+
    async signin() {
       let status = "start";
       let userid = null;
@@ -65,7 +77,9 @@ class Basic {
       // <TODO> improve
       if (!(path.startsWith("http://") || path.startsWith("https://") ||
             path.startsWith("/") || path.startsWith("../")))
-         result = DCCCommonServer.managerAddress + "artifacts/" + path;
+         result = DCCCommonServer.managerAddress + "artifacts/cases/" +
+                  ((this.author != null) ? this.author.currentCaseId + "/" : "") +
+                  path;
       return result;
    }
 

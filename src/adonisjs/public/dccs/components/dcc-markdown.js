@@ -7,6 +7,21 @@ class DCCMarkdown extends DCCBase {
       this._presentation = this.querySelector("#presentation-dcc");
    }
 
+   /* Properties
+      **********/
+   
+   static get observedAttributes() {
+      return ["id"];
+   }
+
+   get id() {
+      return this.getAttribute("id");
+   }
+   
+   set id(newValue) {
+      this.setAttribute("id", newValue);
+   }
+
    /* Editable Component */
    editDCC() {
       if (!DCCImage.editableCode) {

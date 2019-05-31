@@ -58,6 +58,11 @@ text:
 
 `,
 image:
-`<dcc-image image='[path]'[alt]></dcc-image>`
+`<dcc-image id='dcc[seq]' image='[path]' alternative='[alternative]'[title]></dcc-image>`
+};
+
+Translator.markdownTemplates = {
+image:
+`![{alternative}]({path}{title})`
 };
 })();

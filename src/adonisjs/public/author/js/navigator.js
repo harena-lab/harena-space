@@ -219,7 +219,7 @@ async _presentTreeCase() {
       .attr("font-size", function(d) {return d.data.titleSize + "px"})
       .attr("fill", "black")
       .attr("cursor", "pointer")
-      .on("click", function(d) {MessageBus.ext.publish("knot/" + d.data.knotid + "/selected")})
+      .on("click", function(d) {MessageBus.ext.publish("control/knot/" + d.data.knotid + "/selected")})
       .on("mouseover", function(d) {
          let t = document.querySelector("#t_" + d.data.id);
          t.removeChild(t.firstChild);
@@ -396,7 +396,7 @@ async _drawMiniatures(knot) {
 async _createMiniature(knot, krender) {
    let miniature = document.createElement("div");
    miniature.classList.add("sty-navigation-knot");
-   miniature.innerHTML = "<dcc-trigger action='" +
+   miniature.innerHTML = "<dcc-trigger action='control/" +
                            ((knot.children) ? "group/" : "knot/") +
                            knot.knotid + "/selected' " +
                            "xstyle='sty-navigation-knot-cover' label = ''>";
@@ -408,9 +408,10 @@ async _createMiniature(knot, krender) {
    iframe.srcdoc = this._capsule.message
       .replace(/{width}/g, Navigator.miniKnot[this._retracted].width)
       .replace(/{height}/g, Navigator.miniKnot[this._retracted].height-6)
-      .replace(/{scale}/g, (this._author._themeSVG)
-         ? "" : ";transform-origin:top left;transform:scale(0.1)")
+      .replace(/{scale}/g, "")
       .replace("{knot}", htmlKnot);
+      // .replace(/{scale}/g, (this._author._themeSVG)
+      //   ? "" : ";transform-origin:top left;transform:scale(0.1)")
    miniature.appendChild(iframe);
    /*
    let idoc = (iframe.contentWindow || iframe.contentDocument);

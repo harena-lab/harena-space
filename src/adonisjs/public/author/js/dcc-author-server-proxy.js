@@ -173,11 +173,11 @@ class DCCAuthorServer {
       };
       // console.log("file: " + message.file);
       // console.log("caseid: " + message.caseid);
-      console.log(header);
+      // console.log(header);
       const response =
          await fetch(DCCCommonServer.managerAddressAPI + "artifact", header);
       const jsonResponse = await response.json();
-      console.log(jsonResponse);
+      // console.log(jsonResponse);
       MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
                              jsonResponse.filename);
    }
