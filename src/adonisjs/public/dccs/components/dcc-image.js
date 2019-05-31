@@ -2,39 +2,32 @@
   **********/
 class DCCImage extends DCCBase {
    connectedCallback() {
-      /*
-      const theme = await MessageBus.ext.request("control/_current_theme_name/get");
-
-      const templateHTML =  "<style>@import '" +
-                               Basic.service.themeStyleResolver(theme.message) +
-                            "'</style>" +
-                            "<div id='presentation-dcc'><img src='" + this.image + "'" +
-                              ((this.hasAttribute("alt"))
-                                 ? " alt='" + this.alt + "'>"
-                                 : "></div>");
-
-      // building the template
-      const template = document.createElement("template");
-      template.innerHTML = templateHTML;
-      let shadow = this.attachShadow({mode: "open"});
-      shadow.appendChild(template.content.cloneNode(true));
-      this._presentation = shadow.querySelector("#presentation-dcc");
-      */
-      
-      this.innerHTML = "<div id='presentation-dcc'><img src='" + this.image + "'" +
-                        ((this.hasAttribute("alt"))
-                           ? " alt='" + this.alt + "'>"
-                           : "></div>");
+      this.innerHTML = "<div id='presentation-dcc'>" + this._imageHTML() + "</div>";
       this._presentation = this.querySelector("#presentation-dcc");
+   }
+
+   _imageHTML() {
+      return "<img src='" + Basic.service.imageResolver(this.image) + "'" +
+                ((this.hasAttribute("title"))
+                   ? " alt='" + this.title + "'>"
+                   : ">");
    }
    
    /* Properties
       **********/
    
    static get observedAttributes() {
-      return ["image", "alt"];
+      return ["id", "image", "alternative", "title"];
    }
 
+   get id() {
+      return this.getAttribute("id");
+   }
+   
+   set id(newValue) {
+      this.setAttribute("id", newValue);
+   }
+   
    get image() {
       return this.getAttribute("image");
    }
@@ -43,12 +36,20 @@ class DCCImage extends DCCBase {
       this.setAttribute("image", newValue);
    }
    
-   get alt() {
-      return this.getAttribute("alt");
+   get alternative() {
+      return this.getAttribute("alternative");
    }
    
-   set alt(newValue) {
-      this.setAttribute("alt", newValue);
+   set alternative(newValue) {
+      this.setAttribute("alternative", newValue);
+   }
+
+   get title() {
+      return this.getAttribute("title");
+   }
+   
+   set title(newValue) {
+      this.setAttribute("title", newValue);
    }
 
    /* Editable Component */

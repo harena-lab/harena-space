@@ -52,6 +52,10 @@ class DCCTrigger extends DCCBlock {
    
    _renderInterface() {
       let presentation = super._renderInterface();
+
+      // <TODO> provisory
+      if (this.hasAttribute("image"))
+         this._imageElement = presentation.querySelector("#pres-image-dcc");
       
       presentation.style.cursor = "pointer";
       presentation.addEventListener("click", this._computeTrigger);
@@ -126,7 +130,7 @@ class DCCTrigger extends DCCBlock {
    `<span id='presentation-dcc' class='[render]' [link]>[label]</span>`,
    image:
    `<span id='presentation-dcc' [link] style='cursor:pointer'>
-      <img width='100%' height='100%' class='[render]' src='[image]' title='[label]'>
+      <img id='pres-image-dcc' width='100%' height='100%' class='[render]' src='[image]' title='[label]'>
    </span>`
    };
 

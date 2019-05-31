@@ -3,11 +3,24 @@
  */
 
 class Basic {
+   contructor() {
+      this._author = null;
+   }
+
+   get author() {
+      return this._author;
+   }
+   
+   set author(newValue) {
+      this._author = newValue;
+   }
+
    async signin() {
       let status = "start";
       let userid = null;
       let errorMessage = "";
       while (userid == null) {
+         /*
          const userEmail =
             await DCCNoticeInput.displayNotice(errorMessage +
                                          "<h3>Signin</h3><h4>inform your email:</h4>",
@@ -15,11 +28,10 @@ class Basic {
          const userPass =
             await DCCNoticeInput.displayNotice("<h3>Signin</h3><h4>inform your password:</h4>",
                                          "password");
+         */
 
-         /*
          let userEmail = "jacinto@example.com";
          let userPass = "jacinto";
-         */
 
          let loginReturn = await MessageBus.ext.request("data/user/login",
                                                         {email: userEmail,
@@ -65,7 +77,9 @@ class Basic {
       // <TODO> improve
       if (!(path.startsWith("http://") || path.startsWith("https://") ||
             path.startsWith("/") || path.startsWith("../")))
-         result = DCCCommonServer.managerAddress + "artifacts/" + path;
+         result = DCCCommonServer.managerAddress + "artifacts/cases/" +
+                  ((this.author != null) ? this.author.currentCaseId + "/" : "") +
+                  path;
       return result;
    }
 

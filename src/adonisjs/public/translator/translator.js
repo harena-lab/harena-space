@@ -11,9 +11,14 @@ class Translator {
       this._markdownTranslator = new showdown.Converter();
       
       this._annotationMdToObj = this._annotationMdToObj.bind(this);
+      this._textObjToHTML = this._textObjToHTML.bind(this);
       this._imageObjToHTML = this._imageObjToHTML.bind(this);
       // this._textObjToHTML = this._textObjToHTML.bind(this);
    }
+
+   /*
+    * Properties
+    */
 
    get currentThemeFamily() {
       return this._currentThemeFamily;
@@ -29,6 +34,13 @@ class Translator {
    
    set authoringRender(newValue) {
       this._authoringRender = newValue;
+   }
+
+   /*
+    * Proxy of Markdown functions
+    */
+   htmlToMarkdown(html) {
+      return this._markdownTranslator.makeMarkdown(html);
    }
 
    /*
@@ -106,11 +118,11 @@ class Translator {
       
       knot.annotations = [];
       let currentSet = knot.annotations;
-      let maintainContext = false;
+      // let maintainContext = false;
 
       let mdfocus = knot._source;
       
-      let newSource = "";
+      // let newSource = "";
       let matchStart;
       do {
          // look for the next nearest expression match
@@ -126,8 +138,8 @@ class Translator {
          
          if (matchStart > -1) {
             // add a segment that does not match to any expression
-            if (matchStart > 0)
-               newSource += mdfocus.substring(0, matchStart);
+            // if (matchStart > 0)
+            //    newSource += mdfocus.substring(0, matchStart);
             
             // translate the expression to an object
             let matchSize = mdfocus.match(Translator.marksAnnotation[selected])[0].length;
@@ -141,24 +153,29 @@ class Translator {
                   currentSet.push(transObj);
                   currentSet = [];
                   transObj.annotations = currentSet;
+                  /*
                   if (toTranslate.indexOf("#") > -1) {
                      newSource += toTranslate;
                      maintainContext = true;
                   }
+                  */
                   break;
                case "ctxclose":
-                  // currentSet = knotSet;
                   currentSet = knot.annotations;
+                  /*
                   if (maintainContext)
                      newSource += toTranslate;
                   maintainContext = false;
+                  */
                   break;
                case "annotation":
                   currentSet.push(transObj);
+                  /*
                   if (toTranslate.indexOf("#") > -1)
                      newSource += toTranslate;
                   else
                      newSource += transObj.natural.complete;
+                  */
                   break;
             }
             
@@ -168,10 +185,13 @@ class Translator {
                mdfocus = mdfocus.substring(matchStart + matchSize);
          }
       } while (matchStart > -1);
+      /*
       if (mdfocus.length > 0)
          newSource += mdfocus;
+      */
       
-      knot._preparedSource = newSource;
+      // source without annotations to be compiled in the next step
+      // knot._preparedSource = newSource;
    }
    
    /*
@@ -189,10 +209,11 @@ class Translator {
             talkclose: this._talkcloseMdToObj,
             input    : this._inputMdToObj,
             compute  : this._computeMdToObj,
+            // <TODO> provisory: annotation recognition is duplicated to support code generation
+            annotation  : this._annotationMdToObj,
             selctxopen  : this._selctxopenMdToObj,
             selctxclose : this._selctxcloseMdToObj,
             selector    : this._selectorMdToObj
-            // annotation : this.annotationMdToObj
             // score  : this.translateScore
       };
       
@@ -201,7 +222,7 @@ class Translator {
       if (knot.categories)
          delete knot.categories;
       
-      let mdfocus = knot._preparedSource;
+      let mdfocus = knot._source;
       knot.content = [];
       let compiledKnot = knot.content;
       
@@ -222,18 +243,22 @@ class Translator {
 
          if (matchStart > -1) {
             // add a segment that does not match to any expression as type="text"
-            if (matchStart > 0)
-               compiledKnot.push(this._stampObject(
-                  this._textMdToObj(mdfocus.substring(0, matchStart))));
+            if (matchStart > 0) {
+               const submark = mdfocus.substring(0, matchStart);
+               compiledKnot.push(this._initializeObject(
+                  this._textMdToObj(submark), submark));
+            }
             
             // translate the expression to an object
             let matchSize = mdfocus.match(Translator.marks[selected])[0].length;
             let toTranslate = mdfocus.substr(matchStart, matchSize);
-            let transObj = this._stampObject( 
-               mdToObj[selected](Translator.marks[selected].exec(toTranslate)));
+            let transObj = this._initializeObject( 
+               mdToObj[selected](
+                  Translator.marks[selected].exec(toTranslate)), toTranslate);
             
             // attach to a knot array (if it is a knot) or an array inside a knot
             if (selected == "knot") {
+               knot._sorceHead = toTranslate;
                if (transObj.categories)
                   knot.categories = transObj.categories;
             } else
@@ -247,7 +272,8 @@ class Translator {
          }
       } while (matchStart > -1);
       if (mdfocus.length > 0)
-         compiledKnot.push(this._stampObject(this._textMdToObj(mdfocus)));
+         compiledKnot.push(
+            this._initializeObject(this._textMdToObj(mdfocus), mdfocus));
       
       // giving context to links and variables
       for (let c in compiledKnot) {
@@ -256,10 +282,6 @@ class Translator {
          else if (compiledKnot[c].type == "context-open")
             compiledKnot[c].context = knotId + "." + compiledKnot[c].context;
          else if (compiledKnot[c].type == "option" || compiledKnot[c].type == "divert") {
-            /*
-            let target = (compiledKnot[c].target != null)
-                            ? compiledKnot[c].target : compiledKnot[c].label;
-            */
             let target = compiledKnot[c].target.replace(/ /g, "_");
             let prefix = knotId;
             let lastDot = prefix.lastIndexOf(".");
@@ -273,13 +295,13 @@ class Translator {
          }  
       }
       
-      delete knot._preparedSource;
+      // delete knot._preparedSource;
    }
    
 
    _extractCaseMetadata(compiledCase) {
-      if (compiledCase.knots.Case) {
-         const content = compiledCase.knots.Case.content;
+      if (compiledCase.knots._Case_) {
+         const content = compiledCase.knots._Case_.content;
          for (let c in content)
             if (content[c].type == "field")
                switch (content[c].field) {
@@ -294,7 +316,9 @@ class Translator {
    /*
     * Produce a sequential stamp to uniquely identify each recognized object
     */
-   _stampObject(obj) {
+   _initializeObject(obj, submark) {
+      obj._source = submark;
+      obj._modified = false;
       this._objSequence++;
       obj.seq = this._objSequence;
       return obj;
@@ -383,8 +407,24 @@ class Translator {
                ? objToHTML[knotObj.content[kc].type](knotObj.content[kc])
                : "@@" + knotObj.content[kc].seq + "@@";
                
+         
+         // console.log(preDoc);
+
          // converts to HTML
          html = this._markdownTranslator.makeHtml(preDoc);
+
+         // console.log("================");
+
+         // console.log(html);
+
+         // console.log("================");
+
+         // inserts Markdown DCCs in authoring mode
+         html = html.replace(/<p><dcc-markdown id='dcc(\d+)'><\/p>/igm,
+                             "<dcc-markdown id='dcc$1'>")
+                    .replace(/<p><\/dcc-markdown><\/p>/igm, "</dcc-markdown>");
+
+         // console.log(html);
 
          // replaces the marks
          let current = 0;
@@ -419,8 +459,15 @@ class Translator {
     */
    assembleMarkdown(compiledCase) {
       let md = "";
+      /*
       for (let kn in compiledCase.knots)
          md += compiledCase.knots[kn]._source;
+      */
+      for (let kn in compiledCase.knots) {
+         md += compiledCase.knots[kn]._sorceHead;
+         for (let ct in compiledCase.knots[kn].content)
+            md += compiledCase.knots[kn].content[ct]._source;
+      }
       return md;
    }
    
@@ -503,7 +550,16 @@ class Translator {
     */
    _textObjToHTML(obj) {
       // return this._markdownTranslator.makeHtml(obj.content);
-      return obj.content;
+      let result = obj.content;
+      if (this.authoringRender)
+         result = Translator.htmlTemplatesEditable.text
+                    .replace("[seq]", obj.seq)
+                    .replace("[content]", obj.content);
+      return result;
+   }
+
+   textUpdate(obj, update) {
+      obj.content = update.content;
    }
 
    /*
@@ -512,7 +568,7 @@ class Translator {
     * Output:
     * {
     *    type:  "image"
-    *    alt:   <alt text>
+    *    alternative:   <alt text>
     *    path:  <image path>
     *    title: <image title>
     * }
@@ -520,7 +576,7 @@ class Translator {
    _imageMdToObj(matchArray) {
       let image = {
          type: "image",
-         alt:  matchArray[1].trim(),
+         alternative:  matchArray[1].trim(),
          path: matchArray[2].trim()
       };
       if (matchArray[3] != null)
@@ -536,15 +592,24 @@ class Translator {
       let result;
       if (this.authoringRender)
          result = Translator.htmlTemplatesEditable.image
-            .replace("[path]", Basic.service.imageResolver(obj.path))
-            .replace("[alt]", (obj.title)
-               ? " alt='" + obj.title + "'" : "");
+            .replace("[seq]", obj.seq)
+            .replace("[path]", obj.path)
+            .replace("[alternative]", obj.alternative)
+            .replace("[title]", (obj.title)
+               ? " title='" + obj.title + "'" : "");
       else
          result = Translator.htmlTemplates.image
             .replace("[path]", Basic.service.imageResolver(obj.path))
             .replace("[alt]", (obj.title)
                ? " alt='" + obj.title + "'" : "");
       return result;
+   }
+
+   imageUpdate(obj, update) {
+      obj.alternative = update.alternative;
+      obj.path = update.path;
+      if (update.title)
+         obj.title = update.title;
    }
 
    /*
@@ -650,7 +715,7 @@ class Translator {
     * Output: [natural]
     */
    _annotationObjToHTML(obj) {
-      return Translator.htmlTemplates.annotation.replace("[natural]", obj.natural.complete);
+      return obj.natural.complete;
    }   
    
    /*
@@ -1102,6 +1167,7 @@ class Translator {
       talkclose: /[ \t]*:[ \t]*:[ \t]*$/im,
       input  : /\{[ \t]*\?(\d+)?([\w \t]*)(?:\:([\w \t]+))?(?:#([\w \t\+\-\*"=\%\/,]+)(?:;([\w \t\+\-\*"=\%\/,]+))?)?\}/im,
       compute: /~[ \t]*(\w+)?[ \t]*([+\-*/=])[ \t]*(\d+(?:\.\d+)?)/im,
+      annotation : /\{([\w \t\+\-\*"=\:%\/]+)(?:\(([\w \t\+\-\*"=\:%\/]+)\)[ \t]*)?\}/im,
       selctxopen : Translator.marksAnnotation.ctxopen,
       selctxclose: Translator.marksAnnotation.ctxclose,
       selector   : Translator.marksAnnotation.annotation
@@ -1117,4 +1183,6 @@ class Translator {
    };
 
    Translator.defaultVariable = "points";
+
+   Translator.instance = new Translator();
 })();

@@ -113,6 +113,12 @@ body {
    
 }
 
+.sty-editable-asset:hover {
+   border: 5px;
+   border-color: black;
+   cursor: pointer;
+}
+
 .sty-navigation-knot-cover {
    position: absolute;
    left: 0px;

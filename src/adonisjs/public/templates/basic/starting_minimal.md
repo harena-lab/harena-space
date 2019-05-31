@@ -5,7 +5,7 @@ Knot (picture_up_left)
 
 Text of the scene.
 
-Case
-====
+_Case_
+======
 
 * theme: minimal

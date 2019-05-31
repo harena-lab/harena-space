@@ -16,7 +16,6 @@ class PlayerManager {
       this._server = new DCCPlayerServer();
       this._tracker = new Tracker();
       this._history = [];
-      this._translator = new Translator();
       this._state = new PlayState();
 
       this._currentThemeCSS = null;
@@ -52,7 +51,7 @@ class PlayerManager {
    }
    
    set currentThemeFamily(newValue) {
-      this._translator.currentThemeFamily = newValue;
+      Translator.instance.currentThemeFamily = newValue;
       this._currentThemeFamily = newValue;
 
       this._currentThemeCSS =
@@ -160,7 +159,7 @@ class PlayerManager {
       this._currentCaseName = caseObj.message.name;
 
       this._compiledCase =
-         this._translator.compileMarkdown(this._currentCaseId,
+         Translator.instance.compileMarkdown(this._currentCaseId,
                                           caseObj.message.source);
       this._knots = this._compiledCase.knots;
       this.currentThemeFamily = this._compiledCase.theme;
@@ -177,7 +176,7 @@ class PlayerManager {
       if (!DCCPlayerServer.localEnv) {
          // console.log(knotName);
          // console.log(this._knots);
-         const knot = await this._translator.generateHTML(
+         const knot = await Translator.instance.generateHTML(
             this._knots[knotName]);
          if (this._knots[knotName].categories &&
              this._knots[knotName].categories.indexOf("note") > -1)
