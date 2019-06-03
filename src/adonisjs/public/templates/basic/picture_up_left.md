@@ -1,4 +1,4 @@
-# Knot (picture_up_left)
+# _Knot_Name_ (picture_up_left)
 
 ![Landscape](../templates/basic/images/landscape.svg)
 

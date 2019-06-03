@@ -258,7 +258,7 @@ class Translator {
             
             // attach to a knot array (if it is a knot) or an array inside a knot
             if (selected == "knot") {
-               knot._sorceHead = toTranslate;
+               knot._sourceHead = toTranslate;
                if (transObj.categories)
                   knot.categories = transObj.categories;
             } else
@@ -464,9 +464,13 @@ class Translator {
          md += compiledCase.knots[kn]._source;
       */
       for (let kn in compiledCase.knots) {
-         md += compiledCase.knots[kn]._sorceHead;
-         for (let ct in compiledCase.knots[kn].content)
-            md += compiledCase.knots[kn].content[ct]._source;
+         if (compiledCase.knots[kn].toCompile)
+            md += compiledCase.knots[kn]._source;
+         else {
+            md += compiledCase.knots[kn]._sourceHead;
+            for (let ct in compiledCase.knots[kn].content)
+               md += compiledCase.knots[kn].content[ct]._source;
+         }
       }
       return md;
    }

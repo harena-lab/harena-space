@@ -100,7 +100,6 @@ class DCCTrigger extends DCCBlock {
 }
 
 (function() {
-
    DCCTrigger.templateStyle = 
    `<style>
       .regular-style {

@@ -200,7 +200,7 @@ class AuthorManager {
       
    async _compile(caseSource) {
       this._compiledCase = Translator.instance.compileMarkdown(this._currentCaseId,
-                                                            caseSource);
+                                                               caseSource);
       this._knots = this._compiledCase.knots;
       this.currentThemeFamily = this._compiledCase.theme;
 
@@ -470,19 +470,32 @@ class AuthorManager {
 
       let markdown = await MessageBus.ext.request("data/template/" +
                            template.replace("/", ".") + "/get");
+      
+      while (this._knots["Knot_" + this._knotGenerateCounter])
+         this._knotGenerateCounter++;
       const knotId = "Knot_" + this._knotGenerateCounter;
+      const knotMd = "Knot " + this._knotGenerateCounter;
       this._knotGenerateCounter++;
-      markdown = markdown.message.replace("{knotid}", knotId);
+
+      markdown = markdown.message.replace("_Knot_Name_", knotMd) + "\n";
 
       let newKnotSet = {};
       for (let k in this._knots) {
-         newKnotSet[k] = this._knots[k];
          if (k == this._knotSelected)
             newKnotSet[knotId] = {
+               toCompile: true,
                _source: markdown
             };
+         newKnotSet[k] = this._knots[k];
       }
+
+      // <TODO> duplicated reference - improve it
+      this._compiledCase.knots = newKnotSet;
       this._knots = newKnotSet;
+
+      const md =Translator.instance.assembleMarkdown(this._compiledCase);
+      this._compile(md);
+
       this._knotSelected = knotId;
 
       /*
@@ -494,10 +507,10 @@ class AuthorManager {
       this._knots[knotId] = newKnot;
       */
 
-      Translator.instance.extractKnotAnnotations(this._knots[knotId]);
-      Translator.instance.compileKnotMarkdown(this._knots, knotId);
+      // Translator.instance.extractKnotAnnotations(this._knots[knotId]);
+      // Translator.instance.compileKnotMarkdown(this._knots, knotId);
       this._htmlKnot = await Translator.instance.generateHTML(this._knots[knotId]);
-      this._showCase();
+      await this._showCase();
       // await this._navigator.mountPlainCase(this, this._compiledCase.knots);
       MessageBus.ext.publish("control/knot/" + this._knotSelected + "/selected");
    }

@@ -50,12 +50,16 @@ class DCCStyler extends DCCBase {
    }
    
    requestXstyle(topic, message) {
-      MessageBus.page.publish("dcc/xstyle/" + message, this.xstyle);
+      // MessageBus.page.publish("dcc/xstyle/" + message, this.xstyle);
+      MessageBus.page.publish(MessageBus.buildResponseTopic(topic, message),
+                              this.xstyle);
    }
    
    requestLocation(topic, message) {
-      MessageBus.page.publish("dcc/location/" + message,
-            (this._locationSet.length > 0) ? this._locationSet.shift() : "");
+      // MessageBus.page.publish("dcc/location/" + message,
+      //       (this._locationSet.length > 0) ? this._locationSet.shift() : "");
+      MessageBus.page.publish(MessageBus.buildResponseTopic(topic, message),
+         (this._locationSet.length > 0) ? this._locationSet.shift() : "");
    }
 }
       
