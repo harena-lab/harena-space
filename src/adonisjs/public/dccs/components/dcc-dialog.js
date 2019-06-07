@@ -6,49 +6,24 @@
 class DCCTalk extends DCCBase {
    constructor() {
       super();
-      
-      this._pendingRequests = 0;
-      
-      this.defineSequence = this.defineSequence.bind(this);
-      this.defineXstyle = this.defineXstyle.bind(this);
       this._renderInterface = this._renderInterface.bind(this);
    }
    
-   connectedCallback() {
+   async connectedCallback() {
       if (MessageBus.page.hasSubscriber("dcc/request/talk-sequence")) {
-         MessageBus.page.subscribe("dcc/talk-sequence/" + this.id, this.defineSequence);
-         MessageBus.page.publish("dcc/request/talk-sequence", this.id);
-         this._pendingRequests++;
+         let sequencem = await MessageBus.page.request("dcc/request/talk-sequence");
+         this.sequence = sequencem.message;
       }
+      
       if (!this.hasAttribute("xstyle") && MessageBus.page.hasSubscriber("dcc/request/xstyle")) {
-         MessageBus.page.subscribe("dcc/xstyle/" + this.id, this.defineXstyle);
-         MessageBus.page.publish("dcc/request/xstyle", this.id);
-         this._pendingRequests++;
+         let stylem = await MessageBus.page.request("dcc/request/xstyle");
+         this.xstyle = stylem.message;
       }
-      this._checkRender();
-   }
-   
-   defineSequence(topic, message) {
-      MessageBus.page.unsubscribe("dcc/talk-sequence/" + this.id, this.defineSequence);
-      this.sequence = message;
-      this._pendingRequests--;
-      this._checkRender();
-   }
-   
-   defineXstyle(topic, message) {
-      MessageBus.page.unsubscribe("dcc/xstyle/" + this.id, this.defineXstyle);
-      this.xstyle = message;
-      this._pendingRequests--;
-      this._checkRender();
-   }
 
-   _checkRender() {
-      if (this._pendingRequests == 0) {
-         if (document.readyState === "complete")
-            this._renderInterface();
-         else
-            window.addEventListener("load", this._renderInterface);
-      }
+      if (document.readyState === "complete")
+         this._renderInterface();
+      else
+         window.addEventListener("load", this._renderInterface);
    }
    
    /*
@@ -156,7 +131,9 @@ class DCCDialog extends DCCBase {
 
    requestSequence(topic, message) {
       this._sequence++;
-      MessageBus.page.publish("dcc/talk-sequence/" + message, this._sequence);
+      // MessageBus.page.publish("dcc/talk-sequence/" + message, this._sequence);
+      MessageBus.page.publish(MessageBus.buildResponseTopic(topic, message),
+                              this._sequence);
    }
 }
 

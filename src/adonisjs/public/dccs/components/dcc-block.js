@@ -10,14 +10,34 @@ class DCCBlock extends DCCBase {
    constructor() {
      super();
      
+     /*
      this._pendingRequests = 0;
      
      this.defineXstyle = this.defineXstyle.bind(this);
      this.defineLocation = this.defineLocation.bind(this);
+     */
+
      this._renderInterface = this._renderInterface.bind(this);
    }
    
-   connectedCallback() {
+   async connectedCallback() {
+      if (!this.hasAttribute("xstyle") && MessageBus.page.hasSubscriber("dcc/request/xstyle")) {
+         let stylem = await MessageBus.page.request("dcc/request/xstyle");
+         this.xstyle = stylem.message;
+      }
+
+      if (!this.hasAttribute("location") &&
+          MessageBus.page.hasSubscriber("dcc/request/location")) {
+         let locationm = await MessageBus.page.request("dcc/request/location");
+         this.location = locationm.message;
+      }
+
+      if (document.readyState === "complete")
+         this._renderInterface();
+      else
+         window.addEventListener("load", this._renderInterface);
+
+      /*
       if (!this.hasAttribute("xstyle") && MessageBus.page.hasSubscriber("dcc/request/xstyle")) {
          MessageBus.page.subscribe("dcc/xstyle/" + this.id, this.defineXstyle);
          MessageBus.page.publish("dcc/request/xstyle", this.id);
@@ -29,9 +49,12 @@ class DCCBlock extends DCCBase {
          MessageBus.page.publish("dcc/request/location", this.id);
          this._pendingRequests++;
       }
+
       this._checkRender();
+      */
    }
 
+   /*
    defineXstyle(topic, message) {
       MessageBus.page.unsubscribe("dcc/xstyle/" + this.id, this.defineXstyle);
       this.xstyle = message;
@@ -54,6 +77,7 @@ class DCCBlock extends DCCBase {
             window.addEventListener("load", this._renderInterface);
       }
    }
+   */
    
    /* Attribute Handling */
 

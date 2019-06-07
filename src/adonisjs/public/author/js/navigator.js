@@ -21,21 +21,15 @@ constructor(translator) {
 }
 
 async expandClicked(topic, message) {
-   document.querySelector("#navigation-block").style.flex = "80%";
-   this._knotPanel.style.flex = "20%";
+   Panels.s.setupWideNavigator();
    this._retracted = false;
    this._presentTreeCase();
-   document.querySelector("#button-expand").style.display = "none";
-   document.querySelector("#button-retract").style.display = "initial";
 }
 
 async retractClicked(topic, message) {
-   document.querySelector("#navigation-block").style.flex = "20%";
-   this._knotPanel.style.flex = "80%";
+   Panels.s.setupRegularNavigator();
    this._retracted = true;
    this._presentTreeCase();
-   document.querySelector("#button-expand").style.display = "initial";
-   document.querySelector("#button-retract").style.display = "none";
 }
 
 async downTree(knotid) {

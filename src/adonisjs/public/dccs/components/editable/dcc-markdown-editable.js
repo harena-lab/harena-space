@@ -1,5 +1,6 @@
 /* Image DCC Editable
  ********************/
+/*
 function editableDCCMarkdown() {
    DCCMarkdown.prototype._editDCC = function() {
       this._presentation.contentEditable = true;
@@ -18,3 +19,4 @@ function editableDCCMarkdown() {
       MessageBus.ext.publish("control/knot/update", textObj);
    };
 }
+*/

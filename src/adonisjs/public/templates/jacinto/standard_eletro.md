@@ -48,7 +48,7 @@ Supervisor explanation.
 
 * Back to the case -> Cycle 1.Begin
 
-### Letter (expansion)
+### More Supervisor (expansion)
 
 * template: standard_supervisor
 
@@ -102,7 +102,7 @@ What is your main diagnostic hypothesis?
 
 ## More information (decision_exam)
 
-![EKG Description](/templates/jacinto/images/ekg-template.svg)
+![EKG Description](../templates/jacinto/images/ekg-template.svg)
 
 * EKG Analysis
 
@@ -114,7 +114,7 @@ What is your main diagnostic hypothesis?
 
 ## EKG Analysis (note,marker_exam)
 
-![EKG Description](/templates/jacinto/images/ekg-template.svg)
+![EKG Description](../templates/jacinto/images/ekg-template.svg)
 
 * Return -> Order EKG
 
@@ -132,7 +132,7 @@ Supervisor explanation.
 
 ## Check hypothesis (marker_exam)
 
-![EKG Description](/templates/jacinto/images/ekg-template.svg)
+![EKG Description](../templates/jacinto/images/ekg-template.svg)
 
 * Submit -> Review hypothesis
 

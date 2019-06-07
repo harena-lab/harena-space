@@ -5,6 +5,10 @@ body {
     font-size: 14pt;
 }
 
+div {
+   box-sizing: border-box;
+}
+
 .std-border {
    border: 1px solid gray;
    border-radius: 5px;
@@ -57,7 +61,7 @@ body {
    width: 100%;
    height: 90%;
    max-height: 90%;
-   flex: auto;
+   flex: 90%;
    display: flex;
 }
 
@@ -110,7 +114,6 @@ body {
    border: 3px solid black;
    border-radius: 5px;
    margin: 10px;
-   
 }
 
 .sty-editable-asset:hover {

@@ -59,6 +59,9 @@ class DCCTrigger extends DCCBlock {
       
       presentation.style.cursor = "pointer";
       presentation.addEventListener("click", this._computeTrigger);
+
+      // <TODO> provisory
+      this._presentation = presentation;
    }
    
    /* Rendering */
@@ -72,6 +75,9 @@ class DCCTrigger extends DCCBlock {
          presentation.innerHTML = this.label;
       else
          presentation.title = this.label;
+
+      // <TODO> provisory
+      this._presentation = presentation;
    }
    
    _generateTemplate(render) {
@@ -97,10 +103,21 @@ class DCCTrigger extends DCCBlock {
          MessageBus.ext.publish(topic, message);
       }
    }
+
+   /* Editable Component */
+   editDCC() {
+      this.editProperties = this.editProperties.bind(this);
+      this._presentation.style.cursor = "pointer";
+      this._presentation.addEventListener("click", this.editProperties);
+   }
+   
+   editProperties() {
+      this._presentation.classList.add("styp-field-highlight");
+      MessageBus.ext.publish("control/element/" + this.id + "/edit");
+   }   
 }
 
 (function() {
-
    DCCTrigger.templateStyle = 
    `<style>
       .regular-style {

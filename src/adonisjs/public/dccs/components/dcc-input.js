@@ -105,7 +105,7 @@ class DCCInput extends DCCBlock {
    // <TODO> temporary (size = 50)
    DCCInput.templateElements = {
       text: "<input type='text' id='[variable]' class='[render]' size='28' [itype]></input>",
-      area: "<textarea rows='[rows]' id='[variable]' class='[render]' size='28'></text-area>"
+      area: "<textarea rows='[rows]' id='[variable]' class='[render]' size='28'></textarea>"
    };
 
    DCCInput.elementTag = "dcc-input";

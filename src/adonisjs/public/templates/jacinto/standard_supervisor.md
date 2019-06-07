@@ -1,4 +1,4 @@
-### {knotid} (detailed)
+### _Knot_Name_ (detailed)
 :SUPERVISOR Harry:
 Supervisor explanation.
 ::
