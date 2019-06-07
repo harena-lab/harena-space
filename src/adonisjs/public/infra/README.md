@@ -40,6 +40,12 @@ General protocol: `control/<entity>/<action>`.
 
 Most of the control actions trigger the final action, for example, the `control/case/load` control action is the start of the process to trigger the `case/<case id>/load` action.
 
+Levels of detail:
+* `case`
+* `knot`
+* `element`
+
+
 * `control/case/load`
 * `control/case/selected`
 

@@ -63,6 +63,8 @@ image:
 
 Translator.markdownTemplates = {
 image:
-`![{alternative}]({path}{title})`
+`![{alternative}]({path}{title})`,
+option:
+`* {label}{rule}-> {target}`
 };
 })();

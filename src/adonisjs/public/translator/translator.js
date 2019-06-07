@@ -474,6 +474,21 @@ class Translator {
       }
       return md;
    }
+
+   /*
+    * Updates the markdown of an element according to its object representation
+    */
+   updateElementMarkdown(element) {
+      // switch instead array to avoid binds
+      switch (element.type) {
+         case "text": element._source = this._textObjToMd(element);
+                       break;
+         case "image": element._source = this._imageObjToMd(element);
+                       break;
+         case "option": element._source = this._optionObjToMd(element);
+                        break;
+      }      
+   }
    
    /*
     * Adjusts the HTML generated to avoid trapping the constext selector tag in a paragraph
@@ -562,9 +577,15 @@ class Translator {
       return result;
    }
 
+   _textObjToMd(obj) {
+      return obj.markdown;
+   }
+
+   /*
    textUpdate(obj, update) {
       obj.content = update.content;
    }
+   */
 
    /*
     * Image Md to Obj
@@ -609,12 +630,22 @@ class Translator {
       return result;
    }
 
+   _imageObjToMd(obj) {
+      return Translator.markdownTemplates.image
+                .replace("{alternative}", obj.alternative)
+                .replace("{path}", obj.path)
+                .replace("{title}",
+                   (obj.title) ? '"' + obj.title + '"' : "");
+   }
+
+   /*
    imageUpdate(obj, update) {
       obj.alternative = update.alternative;
       obj.path = update.path;
       if (update.title)
          obj.title = update.title;
    }
+   */
 
    /*
     * Context Open Md to Obj
@@ -757,7 +788,7 @@ class Translator {
       
       return option;
    }
-   
+
    /*
     * Option Obj to HTML
     * Output:
@@ -781,6 +812,13 @@ class Translator {
                                             .replace("[display]", obj.label)
                                             .replace("[image]", optionalImage)
                                             .replace("[location]", location);
+   }
+   
+   _optionObjToMd(obj) {
+      return Translator.markdownTemplates.option
+                .replace("{label}", obj.label + " ")
+                .replace("{rule}", (obj.rule) ? "(" + obj.rule + ") " : "")
+                .replace("{target}", obj.target);
    }
    
    /*

@@ -24,15 +24,32 @@ class DCCMarkdown extends DCCBase {
 
    /* Editable Component */
    editDCC() {
+      /*
       if (!DCCImage.editableCode) {
         editableDCCMarkdown();
         DCCMarkdown.editableCode = true;
       }
       this._editDCC();
+      */
+      this.editProperties = this.editProperties.bind(this);
+      this._presentation.style.cursor = "pointer";
+      this._presentation.addEventListener("click", this.editProperties);
+   }
+
+   editProperties() {
+      this._presentation.classList.add("styp-field-highlight");
+      MessageBus.ext.publish("control/element/" + this.id + "/edit");
+      this._presentation.contentEditable = true;
+      this.textChanged = this.textChanged.bind(this);
+      this._presentation.addEventListener("blur", this.textChanged);
+   }
+
+   textChanged() {
+
    }
 }
 
 (function() {
-   DCCMarkdown.editableCode = false;
+   // DCCMarkdown.editableCode = false;
    customElements.define("dcc-markdown", DCCMarkdown);
 })();

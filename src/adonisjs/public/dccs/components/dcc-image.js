@@ -2,17 +2,14 @@
   **********/
 class DCCImage extends DCCBase {
    connectedCallback() {
-      this.innerHTML = "<div id='presentation-dcc'>" + this._imageHTML() + "</div>";
+      this.innerHTML = "<img id='presentation-dcc' src='" +
+                         Basic.service.imageResolver(this.image) + "'" +
+                         ((this.hasAttribute("title"))
+                            ? " alt='" + this.title + "'>"
+                            : ">");
       this._presentation = this.querySelector("#presentation-dcc");
    }
 
-   _imageHTML() {
-      return "<img src='" + Basic.service.imageResolver(this.image) + "'" +
-                ((this.hasAttribute("title"))
-                   ? " alt='" + this.title + "'>"
-                   : ">");
-   }
-   
    /* Properties
       **********/
    
@@ -54,19 +51,31 @@ class DCCImage extends DCCBase {
 
    /* Editable Component */
    editDCC() {
+      /*
       if (!DCCImage.editableCode) {
         editableDCCImage();
         DCCImage.editableCode = true;
       }
       this._editDCC();
+      */
+      this.editProperties = this.editProperties.bind(this);
+      this._presentation.style.cursor = "pointer";
+      this._presentation.addEventListener("click", this.editProperties);
    }
    
-   editImage() {
-      this._editImage();
+   editProperties() {
+      // this._editImage();
+      /*
+      this._presentation.style.borderStyle = "dashed";
+      this._presentation.style.borderWidth = "5px";
+      this._presentation.style.borderColor = "blue";
+      */
+      this._presentation.classList.add("styp-field-highlight");
+      MessageBus.ext.publish("control/element/" + this.id + "/edit");
    }
 }
 
 (function() {
-   DCCImage.editableCode = false;
+   // DCCImage.editableCode = false;
    customElements.define("dcc-image", DCCImage);
 })();

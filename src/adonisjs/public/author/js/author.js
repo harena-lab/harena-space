@@ -87,6 +87,10 @@ class AuthorManager {
     */
 
    async start() {
+      // build singletons
+      Panels.start();
+      Properties.start(this);
+
       this._navigationPanel = document.querySelector("#navigation-panel");
       this._knotPanel = document.querySelector("#knot-panel");
       this._messageSpace = document.querySelector("#message-space");
@@ -104,6 +108,8 @@ class AuthorManager {
          this.knotSelected(topic, message);
       else if (MessageBus.matchFilter(topic, "control/group/+/selected"))
          this.groupSelected(topic, message);
+      else if (MessageBus.matchFilter(topic, "control/element/+/edit"))
+         this.elementEdit(topic);
       else switch (topic) {
          case "control/case/new":  this.caseNew();
                                    break;
@@ -325,22 +331,145 @@ class AuthorManager {
    }
    
    /*
-    * ACTION: control-edit
+    * ACTION: knot-selected
     */
-   async knotMarkdown() {
-      if (this._knotSelected != null) {
-         const nextState = (this._renderState != 2) ? 2 : 1;
-         if (this._checkKnotModification(nextState))
+   async knotSelected(topic, message) {
+      if (this._miniPrevious)
+         this._miniPrevious.classList.remove("sty-selected-knot");
+      
+      const knotid = MessageBus.extractLevel(topic, 3);
+
+      const miniatureF = document.querySelector("#mini-" + knotid.replace(/\./g, "_"));
+      console.log(miniatureF);
+      console.log(miniatureF.getElementsByTagName("div"));
+      let miniature = miniatureF.getElementsByTagName("div")[0];
+
+      miniature.classList.add("sty-selected-knot");
+      
+      this._miniPrevious = miniature;
+            
+      if (knotid != null) {
+         if (this._knots[knotid].categories &&
+             this._knots[knotid].categories.indexOf("expansion") > -1) {
+            this._knotSelected = knotid;
+            this.knotNew();
+         } else {
+            this._checkKnotModification(this._renderState);
+            this._knotSelected = knotid;
+            // this._htmlKnot = await this._generateHTML(this._knotSelected);
             this._htmlKnot = await Translator.instance.generateHTML(
-               this._knots[this._knotSelected]);
-         this._renderState = nextState;
-         this._renderKnot();
+                                     this._knots[this._knotSelected]);
+            this._renderKnot();
+         }
       }
+    }
+   
+    /*
+     * ACTION: group-selected
+     */
+    async groupSelected(topic, message) {
+      this.knotSelected(topic, message);
+      const knotid = MessageBus.extractLevel(topic, 3);
+      this._navigator.downTree(knotid);
+    }
+
+    /*
+    * ACTION: control/knot/new
+    */
+    async knotNew() {
+      let template = await this._templateSelect("knot");
+
+      let markdown = await MessageBus.ext.request("data/template/" +
+                           template.replace("/", ".") + "/get");
+      
+      while (this._knots["Knot_" + this._knotGenerateCounter])
+         this._knotGenerateCounter++;
+      const knotId = "Knot_" + this._knotGenerateCounter;
+      const knotMd = "Knot " + this._knotGenerateCounter;
+      this._knotGenerateCounter++;
+
+      markdown = markdown.message.replace("_Knot_Name_", knotMd) + "\n";
+
+      let newKnotSet = {};
+      for (let k in this._knots) {
+         if (k == this._knotSelected)
+            newKnotSet[knotId] = {
+               toCompile: true,
+               _source: markdown
+            };
+         newKnotSet[k] = this._knots[k];
+      }
+
+      // <TODO> duplicated reference - improve it
+      this._compiledCase.knots = newKnotSet;
+      this._knots = newKnotSet;
+
+      const md =Translator.instance.assembleMarkdown(this._compiledCase);
+      this._compile(md);
+
+      this._knotSelected = knotId;
+
+      /*
+      let newKnot = {type: "knot",
+                     title: "Knot " + this._knotGenerateCounter,
+                     level: 1,
+                     render: true,
+                     _source: "# Knot " + this._knotGenerateCounter + "\n\n"};
+      this._knots[knotId] = newKnot;
+      */
+
+      // Translator.instance.extractKnotAnnotations(this._knots[knotId]);
+      // Translator.instance.compileKnotMarkdown(this._knots, knotId);
+      this._htmlKnot = await Translator.instance.generateHTML(this._knots[knotId]);
+      await this._showCase();
+      // await this._navigator.mountPlainCase(this, this._compiledCase.knots);
+      MessageBus.ext.publish("control/knot/" + this._knotSelected + "/selected");
+    }
+
+    knotEdit(topic, message) {
+       Panels.s.setupProperties();
+       if (!this._editingKnot) {
+          document.querySelector("#trigger-knot-edit").image =
+             "icons/icon-edit-knot-selected.svg";
+          this._activateEditDCCs();
+       }
+       else {
+          document.querySelector("#trigger-knot-edit").image =
+             "icons/icon-edit-knot.svg";
+          this._renderKnot();
+      }
+      this._editingKnot = !this._editingKnot;
+    }
+
+   _renderKnot() {
+      if (this._renderState == 1) {
+         this._knotPanel.innerHTML = this._htmlKnot;
+      } else
+         this._presentEditor(this._knots[this._knotSelected]._source);
    }
 
-   async knotUpdate(message) {
+   _activateEditDCCs() {
+      let dccs = document.querySelectorAll("*");
+      for (let d = 0; d < dccs.length; d++)
+         if (dccs[d].tagName.toLowerCase().startsWith("dcc-") &&
+             typeof dccs[d].editDCC === "function")
+            dccs[d].editDCC();
+   }
+
+   elementEdit(topic) {
+      const elSeq = parseInt(MessageBus.extractLevel(topic, 3).substring(3));
+      let el = -1;
+      for (el = 0; el < this._knots[this._knotSelected].content.length &&
+                   this._knots[this._knotSelected].content[el].seq != elSeq; el++)
+        /* nothing */;
+      if (el != -1)
+         Properties.s.editProperties(this._knots[this._knotSelected].content[el]);
+   }
+   
+   async knotUpdate() {
       // console.log(message);
       if (this._knotSelected != null) {
+         /*
          let updated = false;
          for (let el = 0; el < this._knots[this._knotSelected].content.length &&
                           !updated; el++) {
@@ -357,14 +486,32 @@ class AuthorManager {
               // console.log(element);
             }
          }
+         */
          this._htmlKnot = await Translator.instance.generateHTML(
             this._knots[this._knotSelected]);
          this._renderKnot();
+         this._activateEditDCCs();
+         /*
          document.querySelector("#trigger-knot-edit").image =
              "icons/icon-edit-knot.svg";
+         */
       }
    }
-   
+
+   /*
+    * ACTION: control-edit
+    */
+   async knotMarkdown() {
+      if (this._knotSelected != null) {
+         const nextState = (this._renderState != 2) ? 2 : 1;
+         if (this._checkKnotModification(nextState))
+            this._htmlKnot = await Translator.instance.generateHTML(
+               this._knots[this._knotSelected]);
+         this._renderState = nextState;
+         this._renderKnot();
+      }
+   }
+
    /*
     * ACTION: control-play
     */
@@ -431,123 +578,6 @@ class AuthorManager {
       this._themeSVG = families.message[Translator.instance.currentThemeFamily].svg;
    }
    
-   /*
-    * ACTION: knot-selected
-    */
-   async knotSelected(topic, message) {
-      if (this._miniPrevious)
-         this._miniPrevious.classList.remove("sty-selected-knot");
-      
-      const knotid = MessageBus.extractLevel(topic, 3);
-
-      const miniature = document.querySelector("#mini-" + knotid.replace(/\./g, "_"));
-
-      miniature.classList.add("sty-selected-knot");
-      
-      this._miniPrevious = miniature;
-            
-      if (knotid != null) {
-         if (this._knots[knotid].categories &&
-             this._knots[knotid].categories.indexOf("expansion") > -1) {
-            this._knotSelected = knotid;
-            this.knotNew();
-         } else {
-            this._checkKnotModification(this._renderState);
-            this._knotSelected = knotid;
-            // this._htmlKnot = await this._generateHTML(this._knotSelected);
-            this._htmlKnot = await Translator.instance.generateHTML(
-                                     this._knots[this._knotSelected]);
-            this._renderKnot();
-         }
-      }
-    }
-   
-   /*
-    * ACTION: control/knot/new
-    */
-   async knotNew() {
-      let template = await this._templateSelect("knot");
-
-      let markdown = await MessageBus.ext.request("data/template/" +
-                           template.replace("/", ".") + "/get");
-      
-      while (this._knots["Knot_" + this._knotGenerateCounter])
-         this._knotGenerateCounter++;
-      const knotId = "Knot_" + this._knotGenerateCounter;
-      const knotMd = "Knot " + this._knotGenerateCounter;
-      this._knotGenerateCounter++;
-
-      markdown = markdown.message.replace("_Knot_Name_", knotMd) + "\n";
-
-      let newKnotSet = {};
-      for (let k in this._knots) {
-         if (k == this._knotSelected)
-            newKnotSet[knotId] = {
-               toCompile: true,
-               _source: markdown
-            };
-         newKnotSet[k] = this._knots[k];
-      }
-
-      // <TODO> duplicated reference - improve it
-      this._compiledCase.knots = newKnotSet;
-      this._knots = newKnotSet;
-
-      const md =Translator.instance.assembleMarkdown(this._compiledCase);
-      this._compile(md);
-
-      this._knotSelected = knotId;
-
-      /*
-      let newKnot = {type: "knot",
-                     title: "Knot " + this._knotGenerateCounter,
-                     level: 1,
-                     render: true,
-                     _source: "# Knot " + this._knotGenerateCounter + "\n\n"};
-      this._knots[knotId] = newKnot;
-      */
-
-      // Translator.instance.extractKnotAnnotations(this._knots[knotId]);
-      // Translator.instance.compileKnotMarkdown(this._knots, knotId);
-      this._htmlKnot = await Translator.instance.generateHTML(this._knots[knotId]);
-      await this._showCase();
-      // await this._navigator.mountPlainCase(this, this._compiledCase.knots);
-      MessageBus.ext.publish("control/knot/" + this._knotSelected + "/selected");
-   }
-
-    /*
-     * ACTION: group-selected
-     */
-    async groupSelected(topic, message) {
-      this.knotSelected(topic, message);
-      const knotid = MessageBus.extractLevel(topic, 3);
-      this._navigator.downTree(knotid);
-    }
-
-    knotEdit(topic, message) {
-       if (!this._editingKnot) {
-          document.querySelector("#trigger-knot-edit").image =
-             "icons/icon-edit-knot-selected.svg";
-          let dccs = document.querySelectorAll("*");
-          for (let d = 0; d < dccs.length; d++)
-             if (dccs[d].tagName.toLowerCase().startsWith("dcc-") &&
-                 typeof dccs[d].editDCC === "function")
-                dccs[d].editDCC();
-       }
-       else {
-          document.querySelector("#trigger-knot-edit").image =
-             "icons/icon-edit-knot.svg";
-          this._renderKnot();
-      }
-      this._editingKnot = !this._editingKnot;
-    }
-
-   _renderKnot() {
-      if (this._renderState == 1) {
-         this._knotPanel.innerHTML = this._htmlKnot;
-      } else
-         this._presentEditor(this._knots[this._knotSelected]._source);
-   }
 }
 
 (function() {
