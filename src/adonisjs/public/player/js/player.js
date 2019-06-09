@@ -13,6 +13,8 @@ class PlayerManager {
       // <TODO> provisory
       MessageBus.ext.externalized = true;
 
+      Basic.service.host = this;
+
       this._server = new DCCPlayerServer();
       this._tracker = new Tracker();
       this._history = [];
@@ -61,6 +63,10 @@ class PlayerManager {
    requestCurrentThemeFamily(topic, message) {
       MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
                              this.currentThemeFamily);
+   }
+
+   get currentCaseId() {
+      return this._currentCaseId;
    }
 
    /*

@@ -9,7 +9,7 @@ class AuthorManager {
    constructor() {
       MessageBus.page = new MessageBus(false);
 
-      Basic.service.author = this;
+      Basic.service.host = this;
       
       this._knotGenerateCounter = 2;
       
@@ -35,6 +35,8 @@ class AuthorManager {
       
       this.controlEvent = this.controlEvent.bind(this);
       MessageBus.ext.subscribe("control/#", this.controlEvent);
+
+      // this._elementEdit = this._elementEdit.bind(this);
       
       /*
       this.knotSelected = this.knotSelected.bind(this);
@@ -77,10 +79,12 @@ class AuthorManager {
       return this._currentCaseId;
    }
 
+   /*
    requestCurrentCaseId(topic, message) {
       MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
                              this.currentCaseId);
    }
+   */
 
    /*
     *
@@ -132,9 +136,11 @@ class AuthorManager {
          case "control/_current_theme_name/get":
             this.requestCurrentThemeFamily(topic, message);
             break;
+         /*
          case "control/_current_case_id/get":
             this.requestCurrentCaseId(topic, message);
             break;
+         */
          case "control/knot/update": this.knotUpdate(message);
                                      break;
       }
@@ -340,8 +346,6 @@ class AuthorManager {
       const knotid = MessageBus.extractLevel(topic, 3);
 
       const miniatureF = document.querySelector("#mini-" + knotid.replace(/\./g, "_"));
-      console.log(miniatureF);
-      console.log(miniatureF.getElementsByTagName("div"));
       let miniature = miniatureF.getElementsByTagName("div")[0];
 
       miniature.classList.add("sty-selected-knot");
@@ -360,6 +364,9 @@ class AuthorManager {
             this._htmlKnot = await Translator.instance.generateHTML(
                                      this._knots[this._knotSelected]);
             this._renderKnot();
+            Properties.s.editKnotProperties(this._knots[this._knotSelected],
+                                            this._knotSelected);
+            this._activateEditDCCs();
          }
       }
     }
@@ -404,7 +411,7 @@ class AuthorManager {
       this._compiledCase.knots = newKnotSet;
       this._knots = newKnotSet;
 
-      const md =Translator.instance.assembleMarkdown(this._compiledCase);
+      const md = Translator.instance.assembleMarkdown(this._compiledCase);
       this._compile(md);
 
       this._knotSelected = knotId;
@@ -420,14 +427,17 @@ class AuthorManager {
 
       // Translator.instance.extractKnotAnnotations(this._knots[knotId]);
       // Translator.instance.compileKnotMarkdown(this._knots, knotId);
+      // console.log(knotId);
+      // console.log(this._knots[knotId]);
       this._htmlKnot = await Translator.instance.generateHTML(this._knots[knotId]);
       await this._showCase();
       // await this._navigator.mountPlainCase(this, this._compiledCase.knots);
       MessageBus.ext.publish("control/knot/" + this._knotSelected + "/selected");
     }
 
+    /*
     knotEdit(topic, message) {
-       Panels.s.setupProperties();
+       // Panels.s.setupProperties();
        if (!this._editingKnot) {
           document.querySelector("#trigger-knot-edit").image =
              "icons/icon-edit-knot-selected.svg";
@@ -440,6 +450,7 @@ class AuthorManager {
       }
       this._editingKnot = !this._editingKnot;
     }
+    */
 
    _renderKnot() {
       if (this._renderState == 1) {
@@ -449,21 +460,52 @@ class AuthorManager {
    }
 
    _activateEditDCCs() {
-      let dccs = document.querySelectorAll("*");
-      for (let d = 0; d < dccs.length; d++)
-         if (dccs[d].tagName.toLowerCase().startsWith("dcc-") &&
-             typeof dccs[d].editDCC === "function")
-            dccs[d].editDCC();
+      let elements = this._knotPanel.querySelectorAll("*");
+      this._editableDCCs = {};
+      for (let e = 0; e < elements.length; e++)
+         if (elements[e].tagName.toLowerCase().startsWith("dcc-") &&
+             elements[e].presentation) {
+            const presentation = elements[e].presentation;
+            this._editableDCCs[elements[e].id] = presentation;
+            presentation.style.cursor = "pointer"
+            presentation.addEventListener("click",
+               function(){
+                  MessageBus.ext.publish("control/element/" + elements[e].id + "/edit")
+               }
+            );
+            
+            // elements[e].activateEditDCC();
+         }
    }
 
    elementEdit(topic) {
-      const elSeq = parseInt(MessageBus.extractLevel(topic, 3).substring(3));
+      const dccId = MessageBus.extractLevel(topic, 3);
+
+      if (this._previousEditedDCC) {
+         if (this._previousBorderStyle) {
+            console.log(this._previousBorderStyle);
+            this._previousEditedDCC.style.border =
+               this._previousBorderStyle;
+            delete this._previousBorderStyle;
+          } else
+            this._previousEditedDCC.style.border = null;
+      }
+
+      let presentation = this._editableDCCs[dccId];
+      if (presentation.style.border)
+         this._previousBorderStyle = presentation.style.border;
+      presentation.style.border = "5px dashed blue";
+
+      this._previousEditedDCC = presentation;
+
+      const elSeq = parseInt(dccId.substring(3));
       let el = -1;
       for (el = 0; el < this._knots[this._knotSelected].content.length &&
                    this._knots[this._knotSelected].content[el].seq != elSeq; el++)
         /* nothing */;
       if (el != -1)
-         Properties.s.editProperties(this._knots[this._knotSelected].content[el]);
+         Properties.s.editElementProperties(
+            this._knots[this._knotSelected].content[el]);
    }
    
    async knotUpdate() {
@@ -490,12 +532,46 @@ class AuthorManager {
          this._htmlKnot = await Translator.instance.generateHTML(
             this._knots[this._knotSelected]);
          this._renderKnot();
+         // Properties.s.editKnotProperties(this._knots[this._knotSelected],
+         //                                 this._knotSelected);
          this._activateEditDCCs();
          /*
          document.querySelector("#trigger-knot-edit").image =
              "icons/icon-edit-knot.svg";
          */
       }
+   }
+
+   knotRename(previousTitle, newTitle) {
+      const last = this._knotSelected.lastIndexOf(".");
+      const newIndex = this._knotSelected.substring(0, last) +
+                       newTitle.replace(/ /g, "_");
+
+      let newKnotSet = {};
+      for (let k in this._knots) {
+         if (k == this._knotSelected)
+            newKnotSet[newIndex] = this._knots[k];
+         else
+            newKnotSet[k] = this._knots[k];
+      }
+
+      // <TODO> duplicated reference - improve it
+      this._compiledCase.knots = newKnotSet;
+      this._knots = newKnotSet;
+
+      const md =Translator.instance.assembleMarkdown(this._compiledCase);
+      this._compile(md);
+      this._showCase();
+
+      /*
+      let mini =document.querySelector("#t_" + previousTitle.replace(/ /g, "_"));
+      mini.setAttribute("id", "#t_" + newTitle.replace(/ /g, "_"));
+      mini.removeChild(mini.firstChild);
+      // let element = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      mini.appendChild(document.createTextNode(newTitle));
+      */
+
+      this._knotSelected = newIndex;
    }
 
    /*

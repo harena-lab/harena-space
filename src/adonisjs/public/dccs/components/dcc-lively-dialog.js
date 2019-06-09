@@ -206,12 +206,12 @@ class DCCLivelyTalk extends DCCBase {
    }
    
    /* Editable Component */
-   editDCC() {
+   activateEditDCC() {
       if (!DCCLivelyTalk.editableCode) {
         editableDCCLivelyTalk();
         DCCLivelyTalk.editableCode = true;
       }
-      this._editDCC();
+      this._activateEditDCC();
    }
 }
 

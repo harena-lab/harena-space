@@ -94,12 +94,12 @@ async mountTreeCase(author, knots) {
             let content = this._knots[k].content;
             for (let c in content) {
                if (content[c].type == "option" || content[c].type == "divert") {
-                  const noteKnot = this._knots[content[c].target];
+                  const noteKnot = this._knots[content[c].contextTarget];
                   if (noteKnot && noteKnot.categories &&
                       noteKnot.categories.indexOf("note") > -1) {
                      let newNoteKnot = {
-                        id: content[c].target.replace(/\./g, "_"),
-                        knotid: content[c].target,
+                        id: content[c].contextTarget.replace(/\./g, "_"),
+                        knotid: content[c].contextTarget,
                         title: noteKnot.title,
                         level: newKnot.level + 1,
                         render: noteKnot.render,
@@ -124,7 +124,7 @@ async mountTreeCase(author, knots) {
             current = previousKnot;
          } else {
             let newLevel = previousKnot.level;
-            while (levelStack.length > 0 && newKnot.level < newLevel) {
+            while (levelStack.length > 0 && newKnot.level <= newLevel) {
                current = levelStack.pop();
                newLevel = current.level;
             }
@@ -140,7 +140,7 @@ async mountTreeCase(author, knots) {
    this._innerTree = 0;
 
    this._treeStack = [];
-   this._presentTreeCase();
+   await this._presentTreeCase();
 }
 
 async _presentTreeCase() {
@@ -149,6 +149,7 @@ async _presentTreeCase() {
       Navigator.miniKnot[this._retracted].titleBase +
       Navigator.miniKnot[this._retracted].titleDelta * this._maxLevel;
    this._computeDimension(this._tree, true, 0, -baseTitle, this._maxLevel);
+   console.log(this._tree);
    
    // set the dimensions and margins of the graph
    let margin = {top: 10, right: 0, bottom: 10, left: 0},
@@ -224,8 +225,10 @@ async _presentTreeCase() {
          t.innerHTML = d.data.title});
    
    this._translator.newThemeSet();
+   this._translator.authoringRender = false;
    await this._drawMiniatures(this._tree, svg);
-   // <TODO> synchronization problem - improve
+   this._translator.authoringRender = true;
+   // <TODO> temporary - synchronization problems
    // this._translator.deleteThemeSet();
    this._drawGroups(this._tree, svg);
    this._drawLinks(this._tree, svg);
@@ -277,10 +280,10 @@ _computeDimension(knot, horizontal, x, y, titleLevel) {
                if (content[c].type == "option" || content[c].type == "divert") {
                   let target = -1;
                   for (let t = 0; t < knot.children.length && target == -1; t++)
-                     if (content[c].target.indexOf(knot.children[t].knotid) > -1)
+                     if (content[c].contextTarget.indexOf(knot.children[t].knotid) > -1)
                         target = t;
                   if (target > -1)
-                     knot.children[kn].link[content[c].target] = knot.children[target];
+                     knot.children[kn].link[content[c].contextTarget] = knot.children[target];
                }
             }
          }
@@ -384,7 +387,7 @@ async _drawMiniatures(knot) {
       }
    } else if (knot.children)
       for (let kn in knot.children)
-         this._drawMiniatures(knot.children[kn]);
+         await this._drawMiniatures(knot.children[kn]);
 }
 
 async _createMiniature(knot, krender) {

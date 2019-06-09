@@ -291,7 +291,7 @@ class Translator {
                   target = prefix + "." + target;
                lastDot = prefix.lastIndexOf(".");
             }
-            compiledKnot[c].target = target;
+            compiledKnot[c].contextTarget = target;
          }  
       }
       
@@ -359,7 +359,7 @@ class Translator {
                this._themeSet[themes[tp]] = this._themeSet["knot"];
             }
          }
-      let finalHTML = this.generateKnotHTML(knot);
+      let finalHTML = await this.generateKnotHTML(knot);
       for (let tp = themes.length-1; tp >= 0; tp--)
          finalHTML = this._themeSet[themes[tp]].replace("{knot}", finalHTML);
       
@@ -376,7 +376,7 @@ class Translator {
    /*
     * Generate HTML in a single knot
     */
-   generateKnotHTML(knotObj) {
+   async generateKnotHTML(knotObj) {
       const objToHTML = {
             text   : this._textObjToHTML,
             image  : this._imageObjToHTML,
@@ -481,8 +481,11 @@ class Translator {
    updateElementMarkdown(element) {
       // switch instead array to avoid binds
       switch (element.type) {
+         case "knot": element._sourceHead = this._knotObjToMd(element);
+                      element._sorce = element._sourceHead + "\n\n";
+                      break;
          case "text": element._source = this._textObjToMd(element);
-                       break;
+                      break;
          case "image": element._source = this._imageObjToMd(element);
                        break;
          case "option": element._source = this._optionObjToMd(element);
@@ -523,11 +526,15 @@ class Translator {
          knot.title = matchArray[4].trim();
       
       if (matchArray[3] != null)
-         knot.categories = matchArray[3].trim().split(",");
+         knot.categories = matchArray[3].split(",");
       else if (matchArray[5] != null)
-         knot.categories = matchArray[5].trim().split(",");
+         knot.categories = matchArray[5].split(",");
+      if (knot.categories)
+         for (let c in knot.categories)
+            knot.categories[c] = knot.categories[c].trim();
       
-      if (knot.categories != null)
+      // moves special categories to the beggining of the list
+      if (knot.categories != null) {
          for (let sc in Translator.specialCategories) {
             let cat = knot.categories.indexOf(Translator.specialCategories[sc]);
             if (cat >= 0) {
@@ -536,6 +543,7 @@ class Translator {
                knot.categories.unshift(category);
             }
          }
+      }
       
       if (matchArray[1] != null)
          knot.level = matchArray[1].trim().length;
@@ -561,6 +569,24 @@ class Translator {
          type: "text",
          content: markdown
       };
+   }
+
+   /* Output:
+    * {
+    *    type: "knot"
+    *    title: <title of the knot> #2 or #4
+    *    categories: [<set of categories>]  #3 or #5
+    *    level: <level of the knot> #1 or #6
+    *    content: [<sub-nodes>] - generated in further routines
+    * }
+    */
+   _knotObjToMd(obj) {
+      return Translator.markdownTemplates.knot
+                .replace("[level]", "#".repeat(obj.level))
+                .replace("[title]", obj.title)
+                .replace("[categories]",
+                   (obj.categories)
+                      ? " (" + obj.categories.join(",") + ")" : ""); 
    }
    
    /*
@@ -773,18 +799,22 @@ class Translator {
       
       if (matchArray[2] != null)
          option.label = matchArray[2].trim();
+      /*
       else {
          option.label = matchArray[4].trim();
          const lastDot = option.label.lastIndexOf(".");
          if (lastDot > -1)
             option.label = option.label.substr(lastDot + 1);
       }
+      */
       if (matchArray[3] != null)
          option.rule = matchArray[3].trim();
       if (matchArray[4] != null)
          option.target = matchArray[4].trim();
+      /*
       else
          option.target = matchArray[2].trim();
+      */
       
       return option;
    }
@@ -805,11 +835,21 @@ class Translator {
          " image='images/" + display.toLowerCase().replace(/ /igm, "-") + ".svg'" : 
          "";
       */
-      
+
+      let label;
+      if (obj.label)
+         label = obj.label;
+      else {
+         label = obj.target;
+         const lastDot = label.lastIndexOf(".");
+         if (lastDot > -1)
+            label = label.substr(lastDot + 1);
+      }
+     
       return Translator.htmlTemplates.option.replace("[seq]", obj.seq)
                                             .replace("[subtype]", obj.subtype)
-                                            .replace("[link]", obj.target)
-                                            .replace("[display]", obj.label)
+                                            .replace("[link]", obj.contextTarget)
+                                            .replace("[display]", label)
                                             .replace("[image]", optionalImage)
                                             .replace("[location]", location);
    }
@@ -1201,7 +1241,7 @@ class Translator {
       knot   : /(?:^[ \t]*(#+)[ \t]*([^\( \t\n\r\f][^\(\n\r\f]*)(?:\((\w[\w \t,]*)\))?[ \t]*#*[ \t]*$)|(?:^[ \t]*([^\( \t\n\r\f][^\(\n\r\f]*)(?:\((\w[\w \t,]*)\))?[ \t]*[\f\n\r][\n\r]?(==+|--+)$)/im,
       image  : /!\[([\w \t]*)\]\(([\w:.\/\?&#\-]+)[ \t]*(?:"([\w ]*)")?\)/im,
       // image  : /<img src="([\w:.\/\?&#\-]+)" (?:alt="([\w ]+)")?>/im,
-      option : /^[ \t]*([\+\*])[ \t]*([^\(&> \t][^\(&>\n\r\f]*)?(?:\(([\w \t-]+)\)[ \t]*)?(?:-(?:(?:&gt;)|>)[ \t]*(.*))$/im,
+      option : /^[ \t]*([\+\*])[ \t]*([^\(&> \t][^\(&>\n\r\f]*)?(?:\(([\w \t-]+)\)[ \t]*)?(?:-(?:(?:&gt;)|>)[ \t]*(.+))$/im,
       field  : /^[ \t]*(?:[\+\*])[ \t]*([\w.\/\?&#\-][\w.\/\?&#\- \t]*):[ \t]*([^\n\r\f]+)$/im,
       divert : /-(?:(?:&gt;)|>) *(\w[\w. ]*)/im,
       talk   : /^[ \t]*:[ \t]*(\w[\w \t]*):[ \t]*([^\n\r\f]+)$/im,
@@ -1217,7 +1257,7 @@ class Translator {
       // score  : /^(?:<p>)?[ \t]*~[ \t]*([\+\-=\*\\%]?)[ \t]*(\w*)?[ \t]*(\w+)[ \t]*(?:<\/p>)?/im
    };
    
-   Translator.specialCategories = ["start", "note"];
+   // Translator.specialCategories = ["start", "note"];
    
    Translator.contextHTML = {
       open:  /<p>(<dcc-group-selector(?:[\w \t\+\-\*"'=\%\/,]*)?>)<\/p>/igm,

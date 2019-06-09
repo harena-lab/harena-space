@@ -4,15 +4,15 @@
 
 class Basic {
    contructor() {
-      this._author = null;
+      this._host = null;
    }
 
-   get author() {
-      return this._author;
+   get host() {
+      return this._host;
    }
    
-   set author(newValue) {
-      this._author = newValue;
+   set host(newValue) {
+      this._host = newValue;
    }
 
    async signin() {
@@ -78,7 +78,7 @@ class Basic {
       if (!(path.startsWith("http://") || path.startsWith("https://") ||
             path.startsWith("/") || path.startsWith("../")))
          result = DCCCommonServer.managerAddress + "artifacts/cases/" +
-                  ((this.author != null) ? this.author.currentCaseId + "/" : "") +
+                  ((this.host != null) ? this.host.currentCaseId + "/" : "") +
                   path;
       return result;
    }

@@ -1,6 +1,6 @@
 /* Image DCC
   **********/
-class DCCImage extends DCCBase {
+class DCCImage extends DCCVisual {
    connectedCallback() {
       this.innerHTML = "<img id='presentation-dcc' src='" +
                          Basic.service.imageResolver(this.image) + "'" +
@@ -50,29 +50,29 @@ class DCCImage extends DCCBase {
    }
 
    /* Editable Component */
-   editDCC() {
-      /*
+   /*
+   activateEditDCC() {
       if (!DCCImage.editableCode) {
         editableDCCImage();
         DCCImage.editableCode = true;
       }
-      this._editDCC();
-      */
+      this._activateEditDCC();
+
       this.editProperties = this.editProperties.bind(this);
       this._presentation.style.cursor = "pointer";
       this._presentation.addEventListener("click", this.editProperties);
    }
-   
+
    editProperties() {
       // this._editImage();
-      /*
       this._presentation.style.borderStyle = "dashed";
       this._presentation.style.borderWidth = "5px";
       this._presentation.style.borderColor = "blue";
-      */
+
       this._presentation.classList.add("styp-field-highlight");
       MessageBus.ext.publish("control/element/" + this.id + "/edit");
    }
+   */
 }
 
 (function() {

@@ -143,7 +143,7 @@ This content is further converted to HTML by the compiler.
 ## Option
 ### Markdown to Object
 * Sentence: `+ [label] ([rule]) -> [target]` or `* [label] ([rule]) -> [target]`
-* Expression: `^[ \t]*([\+\*])[ \t]*([^\(&> \t][^\(&>\n\r\f]*)?(?:\(([\w \t-]+)\)[ \t]*)?(?:-(?:(?:&gt;)|>)[ \t]*(.*))$`
+* Expression: `^[ \t]*([\+\*])[ \t]*([^\(&> \t][^\(&>\n\r\f]*)?(?:\(([\w \t-]+)\)[ \t]*)?(?:-(?:(?:&gt;)|>)[ \t]*(.+))$`
   * Group #1: subtype
   * Group #2: label
   * Group #3: rule

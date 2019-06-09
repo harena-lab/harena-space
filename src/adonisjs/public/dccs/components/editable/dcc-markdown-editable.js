@@ -2,7 +2,7 @@
  ********************/
 /*
 function editableDCCMarkdown() {
-   DCCMarkdown.prototype._editDCC = function() {
+   DCCMarkdown.prototype._activateEditDCC = function() {
       this._presentation.contentEditable = true;
       this._textChanged = this._textChanged.bind(this);
       this._presentation.addEventListener("blur", this._textChanged);
