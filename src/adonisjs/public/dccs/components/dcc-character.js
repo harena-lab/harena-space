@@ -163,12 +163,12 @@ class DCCCharacter extends DCCBase {
    }
    
    /* Editable Component */
-   editDCC() {
+   activateEditDCC() {
       if (!DCCCharacter.editableCode) {
         editableDCCCharacter();
         DCCCharacter.editableCode = true;
       }
-      this._editDCC();
+      this._activateEditDCC();
    }
    
    editImage() {

@@ -1,5 +1,7 @@
 /**
  * Styler DCC
+ *
+ * <TODO> There is no scope control and it is creating problems to other DCCs
  */
 class DCCStyler extends DCCBase {
    constructor() {

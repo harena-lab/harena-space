@@ -1,6 +1,6 @@
 /* Markdown DCC
   *************/
-class DCCMarkdown extends DCCBase {
+class DCCMarkdown extends DCCVisual {
    connectedCallback() {
       this._content = this.innerHTML;
       this.innerHTML = "<div id='presentation-dcc'>" + this._content + "</div>";
@@ -23,14 +23,14 @@ class DCCMarkdown extends DCCBase {
    }
 
    /* Editable Component */
-   editDCC() {
-      /*
+   /*
+   activateEditDCC() {
+
       if (!DCCImage.editableCode) {
         editableDCCMarkdown();
         DCCMarkdown.editableCode = true;
       }
-      this._editDCC();
-      */
+      this._activateEditDCC();
       this.editProperties = this.editProperties.bind(this);
       this._presentation.style.cursor = "pointer";
       this._presentation.addEventListener("click", this.editProperties);
@@ -47,6 +47,7 @@ class DCCMarkdown extends DCCBase {
    textChanged() {
 
    }
+   */
 }
 
 (function() {

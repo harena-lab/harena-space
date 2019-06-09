@@ -76,28 +76,38 @@ class DCCInput extends DCCBlock {
       return DCCInput.elementTag;
    }
    
-   _injectDCC(presentation, render) {
-      presentation.innerHTML = this._generateTemplate(render);
+   // _injectDCC(presentation, render) {
+   _renderInterface() {
+      // === pre presentation setup
+      let html;
+      if (this.hasAttribute("rows") && this.rows > 1)
+         html = DCCInput.templateElements.area.replace("[rows]", this.rows)
+                                              .replace("[variable]", this.variable)
+                                              .replace("[render]", this._renderStyle())
+                                              .replace("[itype]",
+                                                       (this.hasAttribute("itype")) ?
+                                                          " type='" + this.itype + "'" : "");
+      else
+         html = DCCInput.templateElements.text.replace("[variable]", this.variable)
+                                              .replace("[render]", this._renderStyle());
+     
+      // === presentation setup (DCC Block)
+      this._applyRender(html, "innerHTML");
+      // let presentation = super._renderInterface();
+
+      // === post presentation setup
+      // presentation.innerHTML = this._generateTemplate(render);
       const selector = "#" + this.variable.replace(/\./g, "\\.");
-      this._inputVariable = presentation.querySelector(selector);
+      this._inputVariable = this._presentation.querySelector(selector);
       this._inputVariable.addEventListener("input", this.inputTyped);
       this._inputVariable.addEventListener("change", this.inputChanged);
    }
    
-   _generateTemplate(render) {
-      let elements = null;
-      if (this.hasAttribute("rows") && this.rows > 1)
-         elements = DCCInput.templateElements.area.replace("[rows]", this.rows)
-                                                  .replace("[variable]", this.variable)
-                                                  .replace("[render]", render)
-                                                  .replace("[itype]",
-                                                      (this.hasAttribute("itype")) ?
-                                                         " type='" + this.itype + "'" : "");
-      else
-         elements = DCCInput.templateElements.text.replace("[variable]", this.variable)
-                                                  .replace("[render]", render);
-     
-      return elements;
+   _renderEmbeddedInterface(render, presentation) {
+      return this._renderCompleteInterface(render, presentation);
+   }
+
+   _renderCompleteInterface(render, presentation) {
    }
 }
 

@@ -62,6 +62,8 @@ image:
 };
 
 Translator.markdownTemplates = {
+knot:
+`[level] [title][categories]`,
 image:
 `![{alternative}]({path}{title})`,
 option:

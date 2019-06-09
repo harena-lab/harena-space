@@ -6,27 +6,24 @@
  *   * "out"  -> apply an style externally defined with the name "trigger-button-template"
 **************************************************************************/
 
-class DCCBlock extends DCCBase {
+class DCCBlock extends DCCVisual {
    constructor() {
      super();
      
-     /*
-     this._pendingRequests = 0;
-     
-     this.defineXstyle = this.defineXstyle.bind(this);
-     this.defineLocation = this.defineLocation.bind(this);
-     */
-
      this._renderInterface = this._renderInterface.bind(this);
    }
    
    async connectedCallback() {
-      if (!this.hasAttribute("xstyle") && MessageBus.page.hasSubscriber("dcc/request/xstyle")) {
-         let stylem = await MessageBus.page.request("dcc/request/xstyle");
-         this.xstyle = stylem.message;
+      if (!this.hasAttribute("xstyle")) {
+         this.xstyle = "in";
+         if (MessageBus.page.hasSubscriber("dcc/request/xstyle")) {
+            let stylem = await MessageBus.page.request("dcc/request/xstyle");
+            this.xstyle = stylem.message;
+         }
       }
 
-      if (!this.hasAttribute("location") &&
+      if (this.xstyle.startsWith("out") &&
+          !this.hasAttribute("location") &&
           MessageBus.page.hasSubscriber("dcc/request/location")) {
          let locationm = await MessageBus.page.request("dcc/request/location");
          this.location = locationm.message;
@@ -36,49 +33,8 @@ class DCCBlock extends DCCBase {
          this._renderInterface();
       else
          window.addEventListener("load", this._renderInterface);
-
-      /*
-      if (!this.hasAttribute("xstyle") && MessageBus.page.hasSubscriber("dcc/request/xstyle")) {
-         MessageBus.page.subscribe("dcc/xstyle/" + this.id, this.defineXstyle);
-         MessageBus.page.publish("dcc/request/xstyle", this.id);
-         this._pendingRequests++;
-      }
-      if (!this.hasAttribute("location") &&
-          MessageBus.page.hasSubscriber("dcc/request/location")) {
-         MessageBus.page.subscribe("dcc/location/" + this.id, this.defineLocation);
-         MessageBus.page.publish("dcc/request/location", this.id);
-         this._pendingRequests++;
-      }
-
-      this._checkRender();
-      */
    }
 
-   /*
-   defineXstyle(topic, message) {
-      MessageBus.page.unsubscribe("dcc/xstyle/" + this.id, this.defineXstyle);
-      this.xstyle = message;
-      this._pendingRequests--;
-      this._checkRender();
-   }
-   
-   defineLocation(topic, message) {
-      MessageBus.page.unsubscribe("dcc/location/" + this.id, this.defineLocation);
-      this.location = message;
-      this._pendingRequests--;
-      this._checkRender();
-   }
-   
-   _checkRender() {
-      if (this._pendingRequests == 0) {
-         if (document.readyState === "complete")
-            this._renderInterface();
-         else
-            window.addEventListener("load", this._renderInterface);
-      }
-   }
-   */
-   
    /* Attribute Handling */
 
    static get observedAttributes() {
@@ -133,33 +89,47 @@ class DCCBlock extends DCCBase {
       return DCCBlock.elementTag;
    }
    
-   _renderInterface() {
-      let presentation = null;
-      if (!this.hasAttribute("xstyle"))
-         this.xstyle = "in";
-
+   /*
+    * Computes the render style according to the context
+    *    none - no style will be applied
+    *    in - gets an internal style defined in the DCC
+    *    out... - gets an external style defined by the theme
+    *    <style> - any other case is considered a style defined in xstyle
+    */
+   _renderStyle() {
       let render;
       switch (this.xstyle) {
+         // no style
+         case "none": render = "";
+                      break;
+         // default styles defined by the DCC
          case "in"  : if (this.hasAttribute("image"))
                          render = "image-style"
                       else
                          render = "regular-style"
                       break;
-         case "none": render = "";
-                      break;
+         // styles defined by the theme
          case "out-image":
          case "out":  render = this.elementTag() + "-template";
                       break;
+         // style defined directly in the attribute xstyle
          default:     render = this.xstyle;
       }
 
-      // console.log("* id: " + this.id);
-      // console.log("* location: " + this.location);
-      // console.log("* xstyle: " + this.xstyle);
+      return render;
+   }
+
+   _applyRender(html, outTarget) {
       if (this.xstyle.startsWith("out") &&
           this.hasAttribute("location") && this.location != "#in") {
-         presentation = document.querySelector("#" + this.location);
-         this._injectDCC(presentation, render);
+         /*
+          * embedded interface
+          */
+         this._presentation = document.querySelector("#" + this.location);
+         this._presentation[outTarget] = html;
+
+         // this._renderEmbeddedInterface(render, presentation);
+         // this._injectDCC(presentation, render);
          let wrapper = document.querySelector("#" + this.location + "-wrapper");
          if (wrapper != null) {
             if (wrapper.style.display)  // html
@@ -168,25 +138,44 @@ class DCCBlock extends DCCBase {
                delete wrapper.removeAttribute("visibility");
          }
       } else {
+         /*
+          * complete interface
+          */
          let template = document.createElement("template");
-         template.innerHTML = this._generateTemplate(render);
+         template.innerHTML = html;
+         // this._renderCompleteInterface(render, template);
+         // template.innerHTML = this._generateTemplate(render);
          
          let host = this;
          if (this.xstyle == "in" || this.xstyle == "none")
             host = this.attachShadow({mode: "open"});
          host.appendChild(template.content.cloneNode(true));
-         presentation = host.querySelector("#presentation-dcc");
+         this._presentation = host.querySelector("#presentation-dcc");
       }
-      return presentation;
+   }
+
+   /* Editable Component */
+   /*
+   activateEditDCC() {
+      this.startEditDCC = this.startEditDCC.bind(this);
+      this._presentation.style.cursor = "pointer";
+      this._presentation.addEventListener("click", this.startEditDCC);
    }
    
-   /*
-   _computeTrigger() {
-      if (this.hasAttribute("label") || this.hasAttribute("action")) {
-         let eventLabel = (this.hasAttribute("action")) ? this.action : "navigate/trigger";
-         let message = (this.hasAttribute("link")) ? this.link : this.label;
-         MessageBus.ext.publish(eventLabel, message);
-      }
+   startEditDCC() {
+      if (this._presentation.style.border)
+         this._previousBorderStyle = this._presentation.style.border;
+      this._presentation.style.border = "5px dashed blue";
+
+      MessageBus.ext.publish("control/element/" + this.id + "/edit");
+   }
+
+   endEditDCC() {
+      if (this._previousBorderStyle) {
+         this._presentation.style.border = this._previousBorderStyle;
+         delete this._previousBorderStyle;
+      } else
+         delete this._presentation.style.border;
    }
    */
 }

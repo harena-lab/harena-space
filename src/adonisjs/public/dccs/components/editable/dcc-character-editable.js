@@ -36,7 +36,7 @@ function editableDCCCharacter() {
       charIcon.style.cursor = "pointer";
    }
    
-   DCCCharacter.prototype._editDCC = function() {
+   DCCCharacter.prototype._activateEditDCC = function() {
       let recordName = this._presentation.querySelector("#record-name");
       recordName.contentEditable = true;
       let recordRole = this._presentation.querySelector("#record-role");

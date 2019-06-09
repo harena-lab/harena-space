@@ -50,7 +50,7 @@ function editableDCCImage() {
       this._selImage.addEventListener("change", this._imageSelected);
    };
    
-   DCCImage.prototype._editDCC = function() {
+   DCCImage.prototype._activateEditDCC = function() {
       this._presentation.innerHTML =
          "<div class='sty-editable-asset'>" + this._imageHTML() + "</div>";
       this._editImage = this._editImage.bind(this);

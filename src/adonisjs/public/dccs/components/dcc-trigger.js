@@ -51,17 +51,33 @@ class DCCTrigger extends DCCBlock {
    /* Rendering */
    
    _renderInterface() {
-      let presentation = super._renderInterface();
+      // === pre presentation setup
+      let html;
+      if (this.xstyle.startsWith("out"))
+         html = this.label;
+      else {
+         html = DCCTrigger.templateStyle;
+         if (this.hasAttribute("image"))
+            html += DCCTrigger.templateElements.image
+                          .replace("[render]", this._renderStyle())
+                          .replace("[label]", this.label)
+                          .replace("[image]", this.image);
+         else
+            html += DCCTrigger.templateElements.regular
+                          .replace("[render]", this._renderStyle())
+                          .replace("[label]", this.label);
+      }
 
+      // === presentation setup (DCC Block)
+      this._applyRender(html, (this.xstyle == "out-image") ? "title" : "innerHTML");
+
+      // === post presentation setup
       // <TODO> provisory
       if (this.hasAttribute("image"))
-         this._imageElement = presentation.querySelector("#pres-image-dcc");
+         this._imageElement = this._presentation.querySelector("#pres-image-dcc");
       
-      presentation.style.cursor = "pointer";
-      presentation.addEventListener("click", this._computeTrigger);
-
-      // <TODO> provisory
-      this._presentation = presentation;
+      this._presentation.style.cursor = "pointer";
+      this._presentation.addEventListener("click", this._computeTrigger);
    }
    
    /* Rendering */
@@ -70,6 +86,7 @@ class DCCTrigger extends DCCBlock {
       return DCCTrigger.elementTag;
    }
 
+   /*
    _injectDCC(presentation, render) {
       if (this.xstyle == "out")
          presentation.innerHTML = this.label;
@@ -80,7 +97,14 @@ class DCCTrigger extends DCCBlock {
       this._presentation = presentation;
    }
    
-   _generateTemplate(render) {
+   _renderEmbeddedInterface(render, presentation) {
+      if (this.xstyle == "out")  // text only
+         presentation["innerHTML"] = this.label;
+      else  // image (out-image)
+         presentation["title"] = this.label;
+   }
+
+   _renderCompleteInterface(render, presentation) {
       let linkWeb = "";
       let elements = null;
       if (this.hasAttribute("image"))
@@ -93,8 +117,9 @@ class DCCTrigger extends DCCBlock {
                                                .replace("[link]", linkWeb)
                                                .replace("[label]", this.label);
       
-      return DCCTrigger.templateStyle + elements;
+      presentation.innerHTML = DCCTrigger.templateStyle + elements;
    }
+   */
    
    _computeTrigger() {
       if (this.hasAttribute("label") || this.hasAttribute("action")) {
@@ -103,18 +128,6 @@ class DCCTrigger extends DCCBlock {
          MessageBus.ext.publish(topic, message);
       }
    }
-
-   /* Editable Component */
-   editDCC() {
-      this.editProperties = this.editProperties.bind(this);
-      this._presentation.style.cursor = "pointer";
-      this._presentation.addEventListener("click", this.editProperties);
-   }
-   
-   editProperties() {
-      this._presentation.classList.add("styp-field-highlight");
-      MessageBus.ext.publish("control/element/" + this.id + "/edit");
-   }   
 }
 
 (function() {
@@ -144,9 +157,9 @@ class DCCTrigger extends DCCBlock {
       
    DCCTrigger.templateElements = {
    regular:
-   `<span id='presentation-dcc' class='[render]' [link]>[label]</span>`,
+   `<span id='presentation-dcc' class='[render]'>[label]</span>`,
    image:
-   `<span id='presentation-dcc' [link] style='cursor:pointer'>
+   `<span id='presentation-dcc' style='cursor:pointer'>
       <img id='pres-image-dcc' width='100%' height='100%' class='[render]' src='[image]' title='[label]'>
    </span>`
    };
