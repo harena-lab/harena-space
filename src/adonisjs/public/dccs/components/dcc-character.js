@@ -1,6 +1,6 @@
 /* Character DCC
   **************/
-class DCCCharacter extends DCCBase {
+class DCCCharacter extends DCCVisual {
    connectedCallback() {
       let templateHTML = 
          `<style>
@@ -109,13 +109,16 @@ class DCCCharacter extends DCCBase {
       
       this._presentation = shadow.querySelector("#presentation-dcc");
       this._recordImages = shadow.querySelector("#record-images");
+
+      super.connectedCallback();
    }
    
    /* Properties
       **********/
    
    static get observedAttributes() {
-      return ["image", "character", "role", "description"];
+      return DCCVisual.observedAttributes.concat(
+         ["image", "character", "role", "description"]);
    }
 
    get image() {

@@ -5,21 +5,14 @@ class DCCMarkdown extends DCCVisual {
       this._content = this.innerHTML;
       this.innerHTML = "<div id='presentation-dcc'>" + this._content + "</div>";
       this._presentation = this.querySelector("#presentation-dcc");
+      super.connectedCallback();
    }
 
    /* Properties
       **********/
    
    static get observedAttributes() {
-      return ["id"];
-   }
-
-   get id() {
-      return this.getAttribute("id");
-   }
-   
-   set id(newValue) {
-      this.setAttribute("id", newValue);
+      return DCCVisual.observedAttributes();
    }
 
    /* Editable Component */

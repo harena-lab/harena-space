@@ -21,7 +21,8 @@ class DCCInput extends DCCBlock {
     */
    
    static get observedAttributes() {
-      return DCCBlock.observedAttributes.concat(["variable", "itype", "rows", "vocabulary"]);
+      return DCCBlock.observedAttributes.concat(
+         ["variable", "itype", "rows", "vocabulary"]);
    }
 
    get variable() {
@@ -103,12 +104,14 @@ class DCCInput extends DCCBlock {
       this._inputVariable.addEventListener("change", this.inputChanged);
    }
    
+   /*
    _renderEmbeddedInterface(render, presentation) {
       return this._renderCompleteInterface(render, presentation);
    }
 
    _renderCompleteInterface(render, presentation) {
    }
+   */
 }
 
 (function() {

@@ -112,7 +112,7 @@ class AuthorManager {
          this.knotSelected(topic, message);
       else if (MessageBus.matchFilter(topic, "control/group/+/selected"))
          this.groupSelected(topic, message);
-      else if (MessageBus.matchFilter(topic, "control/element/+/edit"))
+      else if (MessageBus.matchFilter(topic, "control/element/+/selected"))
          this.elementEdit(topic);
       else switch (topic) {
          case "control/case/new":  this.caseNew();
@@ -454,6 +454,7 @@ class AuthorManager {
 
    _renderKnot() {
       if (this._renderState == 1) {
+         console.log(this._htmlKnot);
          this._knotPanel.innerHTML = this._htmlKnot;
       } else
          this._presentEditor(this._knots[this._knotSelected]._source);
@@ -462,20 +463,27 @@ class AuthorManager {
    _activateEditDCCs() {
       let elements = this._knotPanel.querySelectorAll("*");
       this._editableDCCs = {};
-      for (let e = 0; e < elements.length; e++)
+      for (let e = 0; e < elements.length; e++) {
+         // console.log("=== dcc: " + elements[e].tagName);
+         // console.log("=== dcc: " + elements[e].presentation);
          if (elements[e].tagName.toLowerCase().startsWith("dcc-") &&
-             elements[e].presentation) {
-            const presentation = elements[e].presentation;
-            this._editableDCCs[elements[e].id] = presentation;
+             elements[e].presentation) // {
+            this._editableDCCs[elements[e].id] = elements[e].presentation;
+            // const presentation = elements[e].presentation;
+            // this._editableDCCs[elements[e].id] = presentation;
+            /*
             presentation.style.cursor = "pointer"
             presentation.addEventListener("click",
                function(){
                   MessageBus.ext.publish("control/element/" + elements[e].id + "/edit")
                }
             );
+            */
+            // console.log(presentation);
             
             // elements[e].activateEditDCC();
-         }
+         //}
+       }
    }
 
    elementEdit(topic) {

@@ -149,7 +149,7 @@ async _presentTreeCase() {
       Navigator.miniKnot[this._retracted].titleBase +
       Navigator.miniKnot[this._retracted].titleDelta * this._maxLevel;
    this._computeDimension(this._tree, true, 0, -baseTitle, this._maxLevel);
-   console.log(this._tree);
+   // console.log(this._tree);
    
    // set the dimensions and margins of the graph
    let margin = {top: 10, right: 0, bottom: 10, left: 0},

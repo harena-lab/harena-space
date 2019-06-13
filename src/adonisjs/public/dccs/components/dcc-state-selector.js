@@ -1,6 +1,6 @@
 /* State Selector DCC
  ********************/
-class DCCStateSelector extends DCCBase {
+class DCCStateSelector extends DCCVisual {
    constructor() {
      super();
      
@@ -71,6 +71,7 @@ class DCCStateSelector extends DCCBase {
       MessageBus.ext.publish("var/" + this.completeId + "/subinput/ready",
                                     {sourceType: DCCStateSelector.elementTag,
                                      content: this.innerHTML});
+      super.connectedCallback();
    }
    
    disconnectedCallback() {
@@ -110,16 +111,9 @@ class DCCStateSelector extends DCCBase {
     */
    
    static get observedAttributes() {
-      return ["id", "states", "colors", "answer", "player"];
+      return DCCVisual.observedAttributes.concat(
+         ["states", "colors", "answer", "player"]);
     }
-
-   get id() {
-      return this.getAttribute("id");
-    }
-
-   set id(newValue) {
-      this.setAttribute("id", newValue);
-   }
 
    get states() {
      return this.getAttribute("states");

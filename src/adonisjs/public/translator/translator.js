@@ -11,8 +11,10 @@ class Translator {
       this._markdownTranslator = new showdown.Converter();
       
       this._annotationMdToObj = this._annotationMdToObj.bind(this);
+      /*
       this._textObjToHTML = this._textObjToHTML.bind(this);
       this._imageObjToHTML = this._imageObjToHTML.bind(this);
+      */
       // this._textObjToHTML = this._textObjToHTML.bind(this);
    }
 
@@ -34,6 +36,10 @@ class Translator {
    
    set authoringRender(newValue) {
       this._authoringRender = newValue;
+   }
+
+   get authorAttr() {
+      return (this.authoringRender) ? " author" : "";
    }
 
    /*
@@ -377,6 +383,7 @@ class Translator {
     * Generate HTML in a single knot
     */
    async generateKnotHTML(knotObj) {
+      /*
       const objToHTML = {
             text   : this._textObjToHTML,
             image  : this._imageObjToHTML,
@@ -394,6 +401,7 @@ class Translator {
             annotation : this._annotationObjToHTML
             // score  : this.translateScore
       };
+      */
 
       let preDoc = "";
       let html = "";
@@ -404,7 +412,7 @@ class Translator {
                        knotObj.content[kc].type == "field" ||
                        knotObj.content[kc].type == "context-open" ||
                        knotObj.content[kc].type == "context-close") 
-               ? objToHTML[knotObj.content[kc].type](knotObj.content[kc])
+               ? this.objToHTML(knotObj.content[kc])
                : "@@" + knotObj.content[kc].seq + "@@";
                
          
@@ -420,8 +428,8 @@ class Translator {
          // console.log("================");
 
          // inserts Markdown DCCs in authoring mode
-         html = html.replace(/<p><dcc-markdown id='dcc(\d+)'><\/p>/igm,
-                             "<dcc-markdown id='dcc$1'>")
+         html = html.replace(/<p><dcc-markdown id='dcc(\d+)'( author)?><\/p>/igm,
+                             "<dcc-markdown id='dcc$1'$2>")
                     .replace(/<p><\/dcc-markdown><\/p>/igm, "</dcc-markdown>");
 
          // console.log(html);
@@ -438,13 +446,35 @@ class Translator {
                console.log("Error in finding seq.");
             else
                html = html.substring(0, next) +
-                      objToHTML[knotObj.content[current].type](knotObj.content[current]) +
+                      this.objToHTML(knotObj.content[current]) +
                       html.substring(end+2);
             next = html.indexOf("@@");
          }
          
          html = html.replace(Translator.contextHTML.open, this._contextSelectorHTMLAdjust);
          html = html.replace(Translator.contextHTML.close, this._contextSelectorHTMLAdjust);
+      }
+      return html;
+   }
+
+   objToHTML(obj) {
+      let html;
+      switch(obj.type) {
+         case "text"   : html = this._textObjToHTML(obj); break;
+         case "image"  : html = this._imageObjToHTML(obj); break;
+         case "option" : html = this._optionObjToHTML(obj); break;
+         case "field"  : html = this._fieldObjToHTML(obj); break;
+         case "divert" : html = this._divertObjToHTML(obj); break;
+         case "talk"        : html = this._talkObjToHTML(obj); break;
+         case "talk-open" : html = this._talkopenObjToHTML(obj); break;
+         case "talk-close": html = this._talkcloseObjToHTML(obj); break;
+         case "input"   : html = this._inputObjToHTML(obj); break;
+         case "compute" : html = this._computeObjToHTML(obj); break;
+         case "context-open"  : html = this._selctxopenObjToHTML(obj); break;
+         case "context-close" : html = this._selctxcloseObjToHTML(obj); break;
+         case "selector"   : html = this._selectorObjToHTML(obj); break;
+         case "annotation" : html = this._annotationObjToHTML(obj); break;
+         // score  : this.translateScore
       }
       return html;
    }
@@ -599,6 +629,7 @@ class Translator {
       if (this.authoringRender)
          result = Translator.htmlTemplatesEditable.text
                     .replace("[seq]", obj.seq)
+                    .replace("[author]", this.authorAttr)
                     .replace("[content]", obj.content);
       return result;
    }
@@ -644,6 +675,7 @@ class Translator {
       if (this.authoringRender)
          result = Translator.htmlTemplatesEditable.image
             .replace("[seq]", obj.seq)
+            .replace("[author]", this.authorAttr)
             .replace("[path]", obj.path)
             .replace("[alternative]", obj.alternative)
             .replace("[title]", (obj.title)
@@ -847,6 +879,7 @@ class Translator {
       }
      
       return Translator.htmlTemplates.option.replace("[seq]", obj.seq)
+                                            .replace("[author]", this.authorAttr)
                                             .replace("[subtype]", obj.subtype)
                                             .replace("[link]", obj.contextTarget)
                                             .replace("[display]", label)
@@ -920,6 +953,7 @@ class Translator {
     */
    _divertObjToHTML(obj) {
       return Translator.htmlTemplates.divert.replace("[seq]", obj.seq)
+                                            .replace("[author]", this.authorAttr)
                                             .replace("[link]", obj.target)
                                             .replace("[display]", obj.label);
    }
@@ -954,6 +988,7 @@ class Translator {
       
       
       return Translator.htmlTemplates.talk.replace("[seq]", obj.seq)
+                                          .replace("[author]", this.authorAttr)
                                           .replace("[character]", obj.character)
                                           .replace("[speech]", obj.speech);
    }   
@@ -981,6 +1016,7 @@ class Translator {
     */
    _talkopenObjToHTML(obj) {
       return Translator.htmlTemplates.talkopen.replace("[seq]", obj.seq)
+                                              .replace("[author]", this.authorAttr)
                                               .replace("[character]", obj.character);
    }  
    
@@ -1059,6 +1095,7 @@ class Translator {
       const vocabulary = (obj.vocabulary) ? " vocabulary='" + obj.vocabulary + "'" : "";
       
       return Translator.htmlTemplates.input.replace("[seq]", obj.seq)
+                                           .replace("[author]", this.authorAttr)
                                            .replace("[variable]", obj.variable)
                                            .replace("[rows]", rows)
                                            .replace("[vocabulary]", vocabulary);
@@ -1145,6 +1182,7 @@ class Translator {
       let colors = (obj.colors != null) ? " colors='" + obj.colors + "'" : "";
       
       return Translator.htmlTemplates.selctxopen.replace("[seq]", obj.seq)
+                                                .replace("[author]", this.authorAttr)
                                                 .replace("[context]", obj.context)
                                                 .replace("[evaluation]", evaluation)
                                                 .replace("[states]", states)
@@ -1219,6 +1257,7 @@ class Translator {
       } 
       
       return Translator.htmlTemplates.selector.replace("[seq]", obj.seq)
+                                              .replace("[author]", this.authorAttr)
                                               .replace("[expression]", obj.expression)
                                               .replace("[answer]", answer);            
    }

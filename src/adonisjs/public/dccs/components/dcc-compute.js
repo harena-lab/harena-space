@@ -36,7 +36,7 @@ class DCCCompute extends DCCBase {
     */
    
    static get observedAttributes() {
-      return ["sentence"];
+      return DCCBase.observedAttributes.concat(["sentence"]);
    }
 
    get sentence() {

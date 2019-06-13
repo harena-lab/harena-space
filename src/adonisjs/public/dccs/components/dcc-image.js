@@ -8,23 +8,17 @@ class DCCImage extends DCCVisual {
                             ? " alt='" + this.title + "'>"
                             : ">");
       this._presentation = this.querySelector("#presentation-dcc");
+      super.connectedCallback();
    }
 
    /* Properties
       **********/
    
    static get observedAttributes() {
-      return ["id", "image", "alternative", "title"];
+      return DCCVisual.observedAttributes.concat(
+         ["image", "alternative", "title"]);
    }
 
-   get id() {
-      return this.getAttribute("id");
-   }
-   
-   set id(newValue) {
-      this.setAttribute("id", newValue);
-   }
-   
    get image() {
       return this.getAttribute("image");
    }

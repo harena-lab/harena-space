@@ -32,7 +32,8 @@ class DCCStyler extends DCCBase {
     */
    
    static get observedAttributes() {
-      return ["xstyle", "locations"];
+      return DCCBase.observedAttributes.concat(
+         ["xstyle", "locations"]);
    }
 
    get xstyle() {
