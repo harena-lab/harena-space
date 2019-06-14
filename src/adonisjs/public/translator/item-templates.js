@@ -12,7 +12,7 @@ talk:
 talkopen:
 `
 
-<dcc-talk id='dcc[seq]'[author] character='[character]'>
+<dcc-talk id='dcc[seq]'[author] character='[character]'[image][alt]>
 
 `,
 talkclose:
@@ -68,5 +68,24 @@ image:
 `![{alternative}]({path}{title})`,
 option:
 `* {label}{rule}-> {target}`
+};
+
+Translator.objTemplates = {
+text: {
+   type: "text",
+   content: "Type your text here"
+},
+image: {
+   type: "image",
+   alternative: "Image",
+   path: "../templates/basic/images/landscape.svg",
+   title: "Image"
+},
+option: {
+   type: "option",
+   subtype: "*",
+   label: "Button",
+   target: "Target"
+}
 };
 })();

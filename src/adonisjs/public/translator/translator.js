@@ -465,7 +465,7 @@ class Translator {
          case "option" : html = this._optionObjToHTML(obj); break;
          case "field"  : html = this._fieldObjToHTML(obj); break;
          case "divert" : html = this._divertObjToHTML(obj); break;
-         case "talk"        : html = this._talkObjToHTML(obj); break;
+         case "talk"   : html = this._talkObjToHTML(obj); break;
          case "talk-open" : html = this._talkopenObjToHTML(obj); break;
          case "talk-close": html = this._talkcloseObjToHTML(obj); break;
          case "input"   : html = this._inputObjToHTML(obj); break;
@@ -512,7 +512,7 @@ class Translator {
       // switch instead array to avoid binds
       switch (element.type) {
          case "knot": element._sourceHead = this._knotObjToMd(element);
-                      element._sorce = element._sourceHead + "\n\n";
+                      element._sorce = element._sourceHead;
                       break;
          case "text": element._source = this._textObjToMd(element);
                       break;
@@ -520,7 +520,8 @@ class Translator {
                        break;
          case "option": element._source = this._optionObjToMd(element);
                         break;
-      }      
+      }
+      element._source += "\n\n";
    }
    
    /*
@@ -985,8 +986,6 @@ class Translator {
    _talkObjToHTML(obj) {
       // let charImg = "images/" + obj.character.toLowerCase()
       //                              .replace(/ /igm, "_") + "-icon.png";
-      
-      
       return Translator.htmlTemplates.talk.replace("[seq]", obj.seq)
                                           .replace("[author]", this.authorAttr)
                                           .replace("[character]", obj.character)
@@ -1003,10 +1002,19 @@ class Translator {
      * }
     */
    _talkopenMdToObj(matchArray) {
-      return {
+      let result = {
          type: "talk-open",
          character: matchArray[1].trim()
       };
+      if (matchArray[2] != null) {
+         result.image = {
+            alternative:  matchArray[2].trim(),
+            path: matchArray[3].trim()
+         };
+         if (matchArray[4] != null)
+            result.image.title = matchArray[4].trim();
+      }
+      return result;
    }   
 
    /*
@@ -1015,9 +1023,15 @@ class Translator {
     * <dcc-talk id='dcc[seq]' character='[character]'>
     */
    _talkopenObjToHTML(obj) {
-      return Translator.htmlTemplates.talkopen.replace("[seq]", obj.seq)
-                                              .replace("[author]", this.authorAttr)
-                                              .replace("[character]", obj.character);
+      return Translator.htmlTemplates.talkopen
+         .replace("[seq]", obj.seq)
+         .replace("[author]", this.authorAttr)
+         .replace("[character]", obj.character)
+         .replace("[image]",
+            (obj.image) ? " image='" + obj.image.path + "' alt='" : "")
+         .replace("[alt]",
+            (obj.image && obj.image.title)
+               ? " alt='" + obj.title + "'" : "");
    }  
    
    /*
@@ -1284,7 +1298,7 @@ class Translator {
       field  : /^[ \t]*(?:[\+\*])[ \t]*([\w.\/\?&#\-][\w.\/\?&#\- \t]*):[ \t]*([^\n\r\f]+)$/im,
       divert : /-(?:(?:&gt;)|>) *(\w[\w. ]*)/im,
       talk   : /^[ \t]*:[ \t]*(\w[\w \t]*):[ \t]*([^\n\r\f]+)$/im,
-      talkopen: /^[ \t]*:[ \t]*(\w[\w \t]*):[ \t]*$/im,
+      talkopen: /^[ \t]*:[ \t]*(\w[\w \t]*):[ \t]*(?:[\f\n\r][\n\r]?!\[([\w \t]*)\]\(([\w:.\/\?&#\-]+)[ \t]*(?:"([\w ]*)")?\))?[ \t]*$/im,
       talkclose: /[ \t]*:[ \t]*:[ \t]*$/im,
       input  : /\{[ \t]*\?(\d+)?([\w \t]*)(?:\:([\w \t]+))?(?:#([\w \t\+\-\*"=\%\/,]+)(?:;([\w \t\+\-\*"=\%\/,]+))?)?\}/im,
       compute: /~[ \t]*(\w+)?[ \t]*([+\-*/=])[ \t]*(\d+(?:\.\d+)?)/im,

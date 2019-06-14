@@ -10,6 +10,10 @@ class DCCTalk extends DCCVisual {
    }
    
    async connectedCallback() {
+      this._speech = (this.hasAttribute("speech")) ? this.speech : this.innerHTML;
+      console.log("=== speech ===");
+      console.log(this._speech);
+
       if (MessageBus.page.hasSubscriber("dcc/request/talk-sequence")) {
          let sequencem = await MessageBus.page.request("dcc/request/talk-sequence");
          this.sequence = sequencem.message;
@@ -83,20 +87,18 @@ class DCCTalk extends DCCVisual {
             image.setAttributeNS("http://www.w3.org/1999/xlink", "href",
                   "images/" + this.character.replace(/ /igm, "_").toLowerCase() + ".png");
          
-         if (this.hasAttribute("speech")) {
-            let speech = this._injectTalkElement("#talk-speech");
-            if (speech != null)
-              speech.innerHTML = this.speech;
-         }
+         this._presentation = this._injectTalkElement("#talk-speech");
+         if (this._presentation != null)
+            this._presentation.innerHTML = this._speech;
       } else {
          let charImg = "images/" + this.character.toLowerCase()
                         .replace(/ /igm, "_") + ".png";
          let template = document.createElement("template");
          
-         const speech = (this.hasAttribute("speech")) ? this.speech : "";
+         // const speech = (this.hasAttribute("speech")) ? this.speech : "";
          template.innerHTML = DCCTalk.templateElements.replace("[image]",charImg)
                                                       .replace("[character]", this.character)
-                                                      .replace("[speech]", speech);
+                                                      .replace("[speech]", this._speech);
          this._shadow = this.attachShadow({mode: "open"});
          this._shadow.appendChild(template.content.cloneNode(true));
          this._presentation = this._shadow.querySelector("#presentation-dcc");
