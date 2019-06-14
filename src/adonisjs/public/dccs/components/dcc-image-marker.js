@@ -1,6 +1,6 @@
 /* Image Marker DCC
  ******************/
-class DCCImageMarker extends DCCBase {
+class DCCImageMarker extends DCCVisual {
    constructor() {
       super();
       
@@ -46,6 +46,7 @@ class DCCImageMarker extends DCCBase {
                                       */
        
        this._renderInterface();
+       super.connectedCallback();
     }
     
     /*
@@ -73,16 +74,9 @@ class DCCImageMarker extends DCCBase {
      */
     
     static get observedAttributes() {
-       return ["id", "label", "states", "colors"];
+       return DCCVisual.observedAttributes.concat(
+          ["label", "states", "colors"]);
      }
-
-    get id() {
-       return this.getAttribute("id");
-     }
-
-    set id(newValue) {
-       this.setAttribute("id", newValue);
-    }
 
     get label() {
        return this.getAttribute("label");

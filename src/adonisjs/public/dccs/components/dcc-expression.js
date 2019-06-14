@@ -1,6 +1,6 @@
 /* Expression DCC
  ****************/
-class DCCExpression extends DCCBase {
+class DCCExpression extends DCCVisual {
    constructor() {
      super();
    }
@@ -35,6 +35,8 @@ class DCCExpression extends DCCBase {
       // <TODO> provisory solution due to message ordering
       if (!this._updated)
         this.innerHTML = result.message;
+
+      super.connectedCallback();
    }
 
    /*
@@ -42,7 +44,8 @@ class DCCExpression extends DCCBase {
     */
    
    static get observedAttributes() {
-      return ["expression", "active"];
+      return DCCVisual.observedAttributes.concat(
+         ["expression", "active"]);
    }
 
    get expression() {

@@ -1,6 +1,6 @@
 /* Lively Talk DCC
  *****************/
-class DCCLivelyTalk extends DCCBase {
+class DCCLivelyTalk extends DCCVisual {
    constructor() {
      super();
 
@@ -11,7 +11,8 @@ class DCCLivelyTalk extends DCCBase {
    }
 
    static get observedAttributes() {
-    return ["duration", "delay", "direction", "character", "bubble", "speech"];
+    return DCCVisual.observedAttributes.concat(
+       ["duration", "delay", "direction", "character", "bubble", "speech"]);
    }
 
    connectedCallback() {
@@ -24,6 +25,7 @@ class DCCLivelyTalk extends DCCBase {
          let eventReady = new CustomEvent("talk-ready", {detail: this});
          this._dialog.dispatchEvent(eventReady);         
       }
+      super.connectedCallback();
    }
       
    _scheduleAnimation(event) {
@@ -230,7 +232,7 @@ class DCCLivelyDialog extends DCCBase {
    /* Attribute Handling */
 
    static get observedAttributes() {
-      return ["rate", "duration"];
+      return DCCBase.observedAttributes.concat(["rate", "duration"]);
    }
 
    connectedCallback() {

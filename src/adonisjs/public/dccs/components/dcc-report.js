@@ -1,11 +1,12 @@
 /* Report DCC
   ***********/
-class DCCReport extends DCCBase {
+class DCCReport extends DCCVisual {
    connectedCallback() {
       this.presentReport = this.presentReport.bind(this);
       MessageBus.int.subscribe("/report", this.presentReport);
       MessageBus.int.publish("/report/get");
       console.log("report solicitado");
+      super.connectedCallback();
    }
    
    presentReport(topic, message) {
@@ -140,7 +141,8 @@ class DCCReport extends DCCBase {
       **********/
    
    static get observedAttributes() {
-      return ["image", "character", "role", "description"];
+      return DCCVisual.observedAttributes.concat(
+         ["image", "character", "role", "description"]);
    }
 
    get image() {

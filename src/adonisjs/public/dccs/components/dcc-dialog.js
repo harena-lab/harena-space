@@ -3,7 +3,7 @@
  * 
  * xstyle = out -> in the outer space it first looks for the specific name and then for the generic "character" name
  */
-class DCCTalk extends DCCBase {
+class DCCTalk extends DCCVisual {
    constructor() {
       super();
       this._renderInterface = this._renderInterface.bind(this);
@@ -24,6 +24,8 @@ class DCCTalk extends DCCBase {
          this._renderInterface();
       else
          window.addEventListener("load", this._renderInterface);
+
+      super.connectedCallback();
    }
    
    /*
@@ -31,7 +33,8 @@ class DCCTalk extends DCCBase {
     */
    
    static get observedAttributes() {
-      return ["sequence", "character", "speech", "xstyle"];
+      return DCCVisual.observedAttributes.concat(
+         ["sequence", "character", "speech", "xstyle"]);
    }
 
    get sequence() {

@@ -38,17 +38,10 @@ class DCCBlock extends DCCVisual {
    /* Attribute Handling */
 
    static get observedAttributes() {
-     return ["id", "label", "image", "location", "xstyle"];
+      return DCCVisual.observedAttributes.concat(
+         ["label", "image", "location", "xstyle"]);
    }
 
-   get id() {
-      return this.getAttribute("id");
-   }
-   
-   set id(newValue) {
-      this.setAttribute("id", newValue);
-   }
-   
    get label() {
       return this.getAttribute("label");
    }
@@ -152,6 +145,7 @@ class DCCBlock extends DCCVisual {
          host.appendChild(template.content.cloneNode(true));
          this._presentation = host.querySelector("#presentation-dcc");
       }
+      this.checkActivateAuthor();
    }
 
    /* Editable Component */

@@ -1,6 +1,6 @@
 /* Notice Input DCC
   *****************/
-class DCCNoticeInput extends DCCBase {
+class DCCNoticeInput extends DCCVisual {
    constructor(text, itype, buttona, buttonb, selectList) {
       super();
 
@@ -154,13 +154,15 @@ class DCCNoticeInput extends DCCBase {
          this._listWeb = this._shadow.querySelector("#resource-list");
          this._showSelectList();
       }
+      super.connectedCallback();
    }
    
    /* Properties
     **********/
     
     static get observedAttributes() {
-       return ["text", "buttona", "buttonb", "itype"];
+       return DCCVisual.observedAttributes.concat(
+          ["text", "buttona", "buttonb", "itype"]);
     }
    
     get text() {

@@ -77,7 +77,8 @@ class DCCTrigger extends DCCBlock {
          this._imageElement = this._presentation.querySelector("#pres-image-dcc");
       
       this._presentation.style.cursor = "pointer";
-      this._presentation.addEventListener("click", this._computeTrigger);
+      if (!this.author)
+         this._presentation.addEventListener("click", this._computeTrigger);
    }
    
    /* Rendering */
