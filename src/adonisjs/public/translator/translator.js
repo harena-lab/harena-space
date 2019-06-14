@@ -636,7 +636,7 @@ class Translator {
    }
 
    _textObjToMd(obj) {
-      return obj.markdown;
+      return obj.content;
    }
 
    /*
