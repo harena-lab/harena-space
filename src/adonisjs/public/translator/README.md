@@ -130,7 +130,7 @@ This content is further converted to HTML by the compiler.
 ```
 {
     type:  "image"
-    alt:   <alt text>
+    alternative:   <alt text>
     path:  <image path>
     title: <image title>
 }
@@ -230,15 +230,27 @@ This content is further converted to HTML by the compiler.
 
 ## Talk Open
 ### Markdown to Object
-* Sentence: `:[character]:`
-* Expression: `^[ \t]*:[ \t]*(\w[\w \t]*):[ \t]*$`
+* Sentence:
+```
+:[character]:
+!\[alt-text\]([path] "[title]")
+```
+* Expression: `^[ \t]*:[ \t]*(\w[\w \t]*):[ \t]*(?:[\f\n\r][\n\r]?!\[([\w \t]*)\]\(([\w:.\/\?&#\-]+)[ \t]*(?:"([\w ]*)")?\))?[ \t]*$`
   * Group #1: character
+  * Group #1: character image - alt text
+  * Group #2: character image - path
+  * Group #3: character image - title
 ![talk Expression](expressions/talk-open.png)
 * Object:
 ```
 {
    type: "talk-open"
    character: <identification of the character>
+   image: {
+      alternative: <alt text>
+      path:  <image path>
+      title: <image title>
+   }
 }
 ```
 ### Object to HTML
