@@ -36,16 +36,6 @@ class AuthorManager {
       this.controlEvent = this.controlEvent.bind(this);
       MessageBus.ext.subscribe("control/#", this.controlEvent);
 
-      // this._elementEdit = this._elementEdit.bind(this);
-      
-      /*
-      this.knotSelected = this.knotSelected.bind(this);
-      MessageBus.ext.subscribe("knot/+/selected", this.knotSelected);
-
-      this.groupSelected = this.groupSelected.bind(this);
-      MessageBus.ext.subscribe("group/+/selected", this.groupSelected);
-      */
-
       this._caseModified = false;
 
       window.onbeforeunload = function() {
@@ -78,13 +68,6 @@ class AuthorManager {
    get currentCaseId() {
       return this._currentCaseId;
    }
-
-   /*
-   requestCurrentCaseId(topic, message) {
-      MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-                             this.currentCaseId);
-   }
-   */
 
    /*
     *
@@ -125,14 +108,22 @@ class AuthorManager {
                                    break;
          case "control/case/markdown": this.caseMarkdown();
                                        break;
+         case "control/case/play": this.casePlay();
+                                   break;
          case "control/knot/new":  this.knotNew();
                                    break;
          case "control/knot/edit": this.knotEdit();
                                    break;
          case "control/knot/markdown": this.knotMarkdown();
                                        break;
-         case "control/case/play": this.casePlay();
-                                   break;
+         case "control/element/selected/down":
+            this.elementSelectedMove("next");
+            break;
+         case "control/element/selected/up":
+            this.elementSelectedMove("previous");
+            break;
+         case "control/element/selected/delete": this.elementSelectedDelete();
+                                             break;
          case "control/config/edit": this.config();
                                      break;
          case "control/_current_theme_name/get":
@@ -362,7 +353,6 @@ class AuthorManager {
          } else {
             this._checkKnotModification(this._renderState);
             this._knotSelected = knotid;
-            // this._htmlKnot = await this._generateHTML(this._knotSelected);
             this._htmlKnot = await Translator.instance.generateHTML(
                                      this._knots[this._knotSelected]);
             this._renderKnot();
@@ -371,8 +361,9 @@ class AuthorManager {
             this._collectEditableDCCs();
          }
       }
+      delete this._elementSelected;
     }
-   
+
     /*
      * ACTION: group-selected
      */
@@ -418,41 +409,10 @@ class AuthorManager {
 
       this._knotSelected = knotId;
 
-      /*
-      let newKnot = {type: "knot",
-                     title: "Knot " + this._knotGenerateCounter,
-                     level: 1,
-                     render: true,
-                     _source: "# Knot " + this._knotGenerateCounter + "\n\n"};
-      this._knots[knotId] = newKnot;
-      */
-
-      // Translator.instance.extractKnotAnnotations(this._knots[knotId]);
-      // Translator.instance.compileKnotMarkdown(this._knots, knotId);
-      // console.log(knotId);
-      // console.log(this._knots[knotId]);
       this._htmlKnot = await Translator.instance.generateHTML(this._knots[knotId]);
       await this._showCase();
-      // await this._navigator.mountPlainCase(this, this._compiledCase.knots);
       MessageBus.ext.publish("control/knot/" + this._knotSelected + "/selected");
     }
-
-    /*
-    knotEdit(topic, message) {
-       // Panels.s.setupProperties();
-       if (!this._editingKnot) {
-          document.querySelector("#trigger-knot-edit").image =
-             "icons/icon-edit-knot-selected.svg";
-          this._activateEditDCCs();
-       }
-       else {
-          document.querySelector("#trigger-knot-edit").image =
-             "icons/icon-edit-knot.svg";
-          this._renderKnot();
-      }
-      this._editingKnot = !this._editingKnot;
-    }
-    */
 
    _renderKnot() {
       if (this._renderState == 1)
@@ -467,20 +427,6 @@ class AuthorManager {
       for (let e = 0; e < elements.length; e++)
          if (elements[e].tagName.toLowerCase().startsWith("dcc-")) // {
             this._editableDCCs[elements[e].id] = elements[e];
-            // const presentation = elements[e].presentation;
-            // this._editableDCCs[elements[e].id] = presentation;
-            /*
-            presentation.style.cursor = "pointer"
-            presentation.addEventListener("click",
-               function(){
-                  MessageBus.ext.publish("control/element/" + elements[e].id + "/edit")
-               }
-            );
-            */
-            // console.log(presentation);
-            
-            // elements[e].activateEditDCC();
-         //}
    }
 
    elementSelected(topic) {
@@ -508,9 +454,11 @@ class AuthorManager {
       for (el = 0; el < this._knots[this._knotSelected].content.length &&
                    this._knots[this._knotSelected].content[el].seq != elSeq; el++)
         /* nothing */;
-      if (el != -1)
+      if (el != -1) {
+         this._elementSelected = el;
          Properties.s.editElementProperties(
             this._knots[this._knotSelected].content[el]);
+       }
    }
 
    elementNew(topic) {
@@ -523,37 +471,54 @@ class AuthorManager {
       MessageBus.ext.publish("control/knot/update");
    }
 
-   async knotUpdate() {
-      // console.log(message);
-      if (this._knotSelected != null) {
-         /*
-         let updated = false;
-         for (let el = 0; el < this._knots[this._knotSelected].content.length &&
-                          !updated; el++) {
-            let element = this._knots[this._knotSelected].content[el];
-            if ("dcc" + element.seq == message.elementid) {
-              updated = true;
-              element._source = message.markdown;
-              switch (element.type) {
-                 case "text" : Translator.instance.textUpdate(element, message);
-                               break;
-                 case "image": Translator.instance.imageUpdate(element, message);
-                               break;
-              }
-              // console.log(element);
-            }
+   elementSelectedMove(position) {
+      if (this._elementSelected && this._elementSelected > 0) {
+         let contentSel = this._knots[this._knotSelected].content;
+         const elSel = this._elementSelected;
+
+         // finding the next nonblank node
+         let pos;
+         if (position = "previous") {
+            pos = (contentSel[elSel-1].type == "text" &&
+               Basic.service.isBlank(contentSel[elSel-1].content)) ? elSel-2 : elSel-1;
+            if (pos > 0 && contentSel[pos-1] != "text")
+               contentSel[pos]._source = "\n\n" + contentSel[pos]._source;
          }
-         */
+         else {
+            pos = (contentSel[elSel+1].type == "text" &&
+               Basic.service.isBlank(contentSel[elSel+1].content)) ? elSel+2 : elSel+1;
+            if (pos < contentSel.length-1 && contentSel[pos+1] != "text")
+               contentSel[pos]._source += "\n\n";
+         }
+
+         // exchanging sequence ids
+         const elSeq = contentSel[elSel].seq;
+         contentSel[elSel].seq = contentSel[pos].seq;
+         contentSel[pos].seq = elSeq;
+
+         // swapping nodes
+         const element = contentSel[elSel];
+         contentSel[elSel] = contentSel[pos];
+         contentSel[pos] = element;
+
+         this.knotUpdate();
+      }
+   }
+
+   elementSelectedDelete() {
+      if (this._elementSelected && this._elementSelected > 0) {
+         this._knots[this._knotSelected].content
+            .splice(this._elementSelected, 1);
+         this.knotUpdate();
+      }
+   }
+
+   async knotUpdate() {
+      if (this._knotSelected != null) {
          this._htmlKnot = await Translator.instance.generateHTML(
             this._knots[this._knotSelected]);
          this._renderKnot();
-         // Properties.s.editKnotProperties(this._knots[this._knotSelected],
-         //                                 this._knotSelected);
          this._collectEditableDCCs();
-         /*
-         document.querySelector("#trigger-knot-edit").image =
-             "icons/icon-edit-knot.svg";
-         */
       }
    }
 

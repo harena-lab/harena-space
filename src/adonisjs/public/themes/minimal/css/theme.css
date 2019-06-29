@@ -16,7 +16,7 @@ body {
 /* picture-up-left
  *****************/
 
-.styt-pul-main {
+.styt-pul-main, .styt-pur-main {
    width: 98%;
    height: 100%;
    font-size: 3vh;
@@ -24,13 +24,21 @@ body {
    margin-right: 1%;
 }
 
-.styt-pul-main img {
+.styt-pul-main img, .styt-pur-main img {
    width: 50%;
    height: 50%;
    object-fit: contain;
+   margin-top: 10px;
+}
+
+.styt-pul-main img {
    float: left;
    margin-right: 10px;
-   margin-bottom: 10px;
+}
+
+.styt-pur-main img {
+   float: right;
+   margin-left: 10px;
 }
 
 /* note

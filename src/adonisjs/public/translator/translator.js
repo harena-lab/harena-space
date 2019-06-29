@@ -204,25 +204,6 @@ class Translator {
     * Compiles a single knot to an object representation
     */
    compileKnotMarkdown(knotSet, knotId) {
-      const mdToObj = {
-            knot   : this._knotMdToObj,
-            image  : this._imageMdToObj,
-            option : this._optionMdToObj,
-            field  : this._fieldMdToObj,
-            divert : this._divertMdToObj,
-            talk     : this._talkMdToObj,
-            talkopen : this._talkopenMdToObj,
-            talkclose: this._talkcloseMdToObj,
-            input    : this._inputMdToObj,
-            compute  : this._computeMdToObj,
-            // <TODO> provisory: annotation recognition is duplicated to support code generation
-            annotation  : this._annotationMdToObj,
-            selctxopen  : this._selctxopenMdToObj,
-            selctxclose : this._selctxcloseMdToObj,
-            selector    : this._selectorMdToObj
-            // score  : this.translateScore
-      };
-      
       let knot = knotSet[knotId];
       
       if (knot.categories)
@@ -240,10 +221,13 @@ class Translator {
          matchStart = -1;
          let selected = "";
          for (let mk in Translator.marks) {
-            let pos = mdfocus.search(Translator.marks[mk]);
-            if (pos > -1 && (matchStart == -1 || pos < matchStart)) {
-               selected = mk;
-               matchStart = pos;
+            if (!((mk == "annotation" || mk == "selector") &&
+                  this.authoringRender)) {
+               let pos = mdfocus.search(Translator.marks[mk]);
+               if (pos > -1 && (matchStart == -1 || pos < matchStart)) {
+                  selected = mk;
+                  matchStart = pos;
+               }
             }
          }
 
@@ -259,7 +243,7 @@ class Translator {
             let matchSize = mdfocus.match(Translator.marks[selected])[0].length;
             let toTranslate = mdfocus.substr(matchStart, matchSize);
             let transObj = this._initializeObject( 
-               mdToObj[selected](
+               this.mdToObj(selected,
                   Translator.marks[selected].exec(toTranslate)), toTranslate);
             
             // attach to a knot array (if it is a knot) or an array inside a knot
@@ -303,7 +287,28 @@ class Translator {
       
       // delete knot._preparedSource;
    }
-   
+
+   mdToObj(mdType, match) {
+      let obj;
+      switch(mdType) {
+         case "knot"   : obj = this._knotMdToObj(match); break;
+         case "image"  : obj = this._imageMdToObj(match); break;
+         case "option" : obj = this._optionMdToObj(match); break;
+         case "field"  : obj = this._fieldMdToObj(match); break;
+         case "divert" : obj = this._divertMdToObj(match); break;
+         case "talk"     : obj = this._talkMdToObj(match); break;
+         case "talkopen" : obj = this._talkopenMdToObj(match); break;
+         case "talkclose": obj = this._talkcloseMdToObj(match); break;
+         case "input"    : obj = this._inputMdToObj(match); break;
+         case "compute"  : obj = this._computeMdToObj(match); break;
+         // <TODO> provisory: annotation recognition is duplicated to support code generation
+         case "annotation"  : obj = this._annotationMdToObj(match); break;
+         case "selctxopen"  : obj = this._selctxopenMdToObj(match); break;
+         case "selctxclose" : obj = this._selctxcloseMdToObj(match); break;
+         case "selector"    : obj = this._selectorMdToObj(match); break;
+      };
+      return obj;
+   }
 
    _extractCaseMetadata(compiledCase) {
       if (compiledCase.knots._Case_) {
@@ -383,26 +388,6 @@ class Translator {
     * Generate HTML in a single knot
     */
    async generateKnotHTML(knotObj) {
-      /*
-      const objToHTML = {
-            text   : this._textObjToHTML,
-            image  : this._imageObjToHTML,
-            option : this._optionObjToHTML,
-            field  : this._fieldObjToHTML,
-            divert : this._divertObjToHTML,
-            talk        : this._talkObjToHTML,
-            "talk-open" : this._talkopenObjToHTML,
-            "talk-close": this._talkcloseObjToHTML,
-            input   : this._inputObjToHTML,
-            compute : this._computeObjToHTML,
-            "context-open"  : this._selctxopenObjToHTML,
-            "context-close" : this._selctxcloseObjToHTML,
-            selector   : this._selectorObjToHTML,
-            annotation : this._annotationObjToHTML
-            // score  : this.translateScore
-      };
-      */
-
       let preDoc = "";
       let html = "";
       if (knotObj != null && knotObj.content != null) {
@@ -411,28 +396,20 @@ class Translator {
             preDoc += (knotObj.content[kc].type == "text" ||
                        knotObj.content[kc].type == "field" ||
                        knotObj.content[kc].type == "context-open" ||
-                       knotObj.content[kc].type == "context-close") 
+                       knotObj.content[kc].type == "context-close" ||
+                       (knotObj.content[kc].type == "selector" &&
+                        this.authoringRender)) 
                ? this.objToHTML(knotObj.content[kc])
                : "@@" + knotObj.content[kc].seq + "@@";
                
          
-         // console.log(preDoc);
-
          // converts to HTML
          html = this._markdownTranslator.makeHtml(preDoc);
-
-         // console.log("================");
-
-         // console.log(html);
-
-         // console.log("================");
 
          // inserts Markdown DCCs in authoring mode
          html = html.replace(/<p><dcc-markdown id='dcc(\d+)'( author)?><\/p>/igm,
                              "<dcc-markdown id='dcc$1'$2>")
                     .replace(/<p><\/dcc-markdown><\/p>/igm, "</dcc-markdown>");
-
-         // console.log(html);
 
          // replaces the marks
          let current = 0;
@@ -1268,12 +1245,17 @@ class Translator {
             answer = " answer='" + obj.value + "'";
          else
             answer = " player='" + obj.present + "'";
-      } 
-      
-      return Translator.htmlTemplates.selector.replace("[seq]", obj.seq)
-                                              .replace("[author]", this.authorAttr)
-                                              .replace("[expression]", obj.expression)
-                                              .replace("[answer]", answer);            
+      }
+
+      let result = obj.expression;
+      if (!this.authoringRender)
+         result = Translator.htmlTemplates.selector
+                     .replace("[seq]", obj.seq)
+                     .replace("[author]", this.authorAttr)
+                     .replace("[expression]", obj.expression)
+                     .replace("[answer]", answer);
+
+      return result;
    }
 }
 
@@ -1285,7 +1267,7 @@ class Translator {
      // knot   : /^[ \t]*==*[ \t]*(\w[\w \t]*)(?:\(([\w \t]*)\))?[ \t]*=*[ \t]*[\f\n\r]/im,
      ctxopen : /\{\{([\w \t\+\-\*\."=\:%\/]+)(?:#([\w \t\+\-\*\."=\%\/]+):([\w \t\+\-\*"=\%\/,]+)(?:;([\w \t#,]+))?)?[\f\n\r]/im,
      ctxclose: /\}\}/im,
-     annotation: /\{([\w \t\+\-\*"=\:%\/]+)(?:\(([\w \t\+\-\*"=\:%\/]+)\)[ \t]*)?(?:#([\w \t\+\-\*"=\:%\/]+))?\}/im
+     annotation: /\{([^\(\}#]+)(?:\(([^\)]+)\)[ \t]*)?(?:#([^\}]+))?\}/im
    };
    
    Translator.marksAnnotationInside = /([\w \t\+\-\*"]+)(?:[=\:]([\w \t%]*)(?:\/([\w \t%]*))?)?/im;

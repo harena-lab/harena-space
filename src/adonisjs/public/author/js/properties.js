@@ -13,6 +13,8 @@ class Properties {
       this._author = author;
 
       this._propertiesPanel = document.querySelector("#properties-panel");
+      this._propertiesButtons = document.querySelector("#properties-buttons");
+
       this.applyProperties = this.applyProperties.bind(this);
       MessageBus.ext.subscribe("properties/apply", this.applyProperties);
    }
@@ -48,7 +50,13 @@ class Properties {
                     .replace(/\[value\]/igm, value);
          seq++;
       }
-      this._propertiesPanel.innerHTML = html + Properties.buttonApply;
+      this._propertiesPanel.innerHTML = html;
+      this._propertiesButtons.style.display = "flex";
+   }
+
+   clearProperties() {
+      this._propertiesPanel.innerHTML = "";
+      this._propertiesButtons.style.display = "none";
    }
 
    async applyProperties() {
@@ -148,11 +156,12 @@ image:
 };
 
 // <TODO> xstyle is provisory due to xstyle scope problems
+/*
 Properties.buttonApply =
 `<div class="control-button">
    <dcc-trigger xstyle="in" action="properties/apply" label="Apply" image="icons/icon-check.svg">
    </dcc-trigger>
 </div>`;
-
+*/
 
 })();

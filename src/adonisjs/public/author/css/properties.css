@@ -10,9 +10,18 @@
    flex-direction: column;
 }
 
+.styp-properties-block {
+   flex: 95%;
+   width: auto;
+   height: 95%;
+   overflow: hidden;
+   display: flex;
+   flex-direction: column;
+}
+
 .styp-properties-panel {
    flex: 95%;
-   width: 100%;
+   width: auto;
    height: 95%;
    overflow: scroll;
    display: flex;

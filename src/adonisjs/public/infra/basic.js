@@ -15,6 +15,10 @@ class Basic {
       this._host = newValue;
    }
 
+   isBlank(str) {
+      return (!str || /^\s*$/.test(str));
+   }
+
    async signin() {
       let status = "start";
       let userid = null;

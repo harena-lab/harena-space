@@ -137,7 +137,7 @@ div {
 .sty-knot-panel {
    flex: 55%;
    min-width: 20%;
-   overflow: hiddden;
+   overflow: scroll;
    height: 100%;
 }
 
