@@ -15,11 +15,16 @@ class Basic {
       this._host = newValue;
    }
 
+   isBlank(str) {
+      return (!str || /^\s*$/.test(str));
+   }
+
    async signin() {
       let status = "start";
       let userid = null;
       let errorMessage = "";
       while (userid == null) {
+         /*
          const userEmail =
             await DCCNoticeInput.displayNotice(errorMessage +
                                          "<h3>Signin</h3><h4>inform your email:</h4>",
@@ -27,6 +32,9 @@ class Basic {
          const userPass =
             await DCCNoticeInput.displayNotice("<h3>Signin</h3><h4>inform your password:</h4>",
                                          "password");
+         */
+         const userEmail = "jacinto@example.com";
+         const userPass = "jacinto";
 
          let loginReturn = await MessageBus.ext.request("data/user/login",
                                                         {email: userEmail,

@@ -58,8 +58,8 @@
          <div class="control-button"><dcc-trigger action="control/case/load" label="Load" image="icons/icon-load.svg"></dcc-trigger></div>
          <div class="control-button"><dcc-trigger action="control/case/save" label="Save" image="icons/icon-save.svg"></dcc-trigger></div>
          <div class="control-button"><dcc-trigger action="control/knot/new" label="New Knot" image="icons/icon-new-knot.svg"></dcc-trigger></div>
-         <!-- <div class="control-button"><dcc-trigger id="trigger-knot-edit" action="control/knot/edit" label="Edit Knot" image="icons/icon-edit-knot.svg"></dcc-trigger></div> -->
-         <div class="control-button"><dcc-trigger action="control/knot/markdown" label="Edit Knot Markdown" image="icons/icon-edit-knot-markdown.svg"></dcc-trigger></div>
+         <!-- <div class="control-button"><dcc-trigger id="trigger-knot-edit" action="control/knot/edit" label="Edit Knot" image="icons/icon-edit-knot.svg"></dcc-trigger></div>
+         <div class="control-button"><dcc-trigger action="control/knot/markdown" label="Edit Knot Markdown" image="icons/icon-edit-knot-markdown.svg"></dcc-trigger></div> -->
          <div class="control-button"><dcc-trigger action="control/case/markdown" label="Edit Case Markdown" image="icons/icon-edit-case-markdown.svg"></dcc-trigger></div>
          <div class="control-button"><dcc-trigger action="control/case/play" label="Play" image="icons/icon-play.svg"></dcc-trigger></div>
          <div class="control-button"><dcc-trigger action="control/config/edit" label="Config" image="icons/icon-config.svg"></dcc-trigger></div>
@@ -80,7 +80,15 @@
                <div class="control-button"><dcc-trigger action="control/element/image/new" label="Text" image="icons/icon-dcc-image.svg"></dcc-trigger></div>
                <div class="control-button"><dcc-trigger action="control/element/option/new" label="Text" image="icons/icon-dcc-trigger.svg"></dcc-trigger></div>
             </div>
-            <div id="properties-panel" class="styp-properties-panel std-border"></div>
+            <div id="properties-block" class="styp-properties-block std-border">
+               <div id="properties-panel" class="styp-properties-panel"></div>
+               <div id="properties-buttons" class="sty-control-panel std-border" style="display:none">
+                  <div class="control-button"><dcc-trigger xstyle="in" action="properties/apply" label="Apply" image="icons/icon-check.svg"></dcc-trigger></div>
+                  <div class="control-button"><dcc-trigger xstyle="in" action="control/element/selected/up" label="Element Up" image="icons/icon-move-up.svg"></dcc-trigger></div>
+                  <div class="control-button"><dcc-trigger xstyle="in" action="control/element/selected/down" label="Element Down" image="icons/icon-move-down.svg"></dcc-trigger></div>
+                  <div class="control-button"><dcc-trigger xstyle="in" action="control/element/selected/delete" label="Delete Element" image="icons/icon-delete.svg"></dcc-trigger></div>
+               </div>
+            </div>
          </div>
       </div>
    </div>

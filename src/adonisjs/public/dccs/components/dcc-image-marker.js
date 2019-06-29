@@ -171,6 +171,9 @@ class DCCGroupMarker extends DCCBase {
      this.requestContext = this.requestContext.bind(this); 
      this.requestStates = this.requestStates.bind(this);
      this.setMarkerSpot = this.setMarkerSpot.bind(this);
+
+     this.spotOver = this.spotOver.bind(this);
+     this.spotOut = this.spotOut.bind(this);
    }
    
    connectedCallback() {
@@ -267,16 +270,18 @@ class DCCGroupMarker extends DCCBase {
    /* Event handling */
    setMarkerSpot(topic, message) {
       let rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-      let coordsArr = message.coords.split(",");
-      let x1 = parseInt(coordsArr[0]),
-          y1 = parseInt(coordsArr[1]),
-          x2 = parseInt(coordsArr[2]),
-          y2 = parseInt(coordsArr[3]);
-      rect.setAttributeNS(null, 'x', x1);
-      rect.setAttributeNS(null, 'y', y1);
-      rect.setAttributeNS(null, 'width', x2-x1);
-      rect.setAttributeNS(null, 'height', y2-y1);
-      rect.addEventListener("mouseover", message.handler);
+      const coordsArr = message.coords.split(",");
+      this._spotX = parseInt(coordsArr[0]);
+      this._spotY = parseInt(coordsArr[1]),
+      this._spotWidth = parseInt(coordsArr[2]),
+      this._spotHeight = parseInt(coordsArr[3]);
+      rect.setAttributeNS(null, 'x', this._spotX);
+      rect.setAttributeNS(null, 'y', this._spotY);
+      rect.setAttributeNS(null, 'width', this._spotWidth);
+      rect.setAttributeNS(null, 'height', this._spotHeight);
+      rect.setAttributeNS(null, "style",
+        "opacity:0.2;fill:#0000ff;stroke-width:0.89027536");
+      rect.addEventListener("click", this._spotOver);
       this._imageG.appendChild(rect);
 
       /*
@@ -299,6 +304,22 @@ class DCCGroupMarker extends DCCBase {
       this._canvas.stroke();
       */
    }
+
+   spotOver() {
+      let image = document.createElementNS("http://www.w3.org/2000/svg", "image");
+      rect.setAttributeNS(null, 'x', this._spotX);
+      rect.setAttributeNS(null, 'y', this._spotY);
+      rect.setAttributeNS(null, 'width', this._spotWidth*2);
+      rect.setAttributeNS(null, 'height', this._spotHeight*2);
+      rect.setAttributeNS(null, "style",
+        "opacity:0.2;fill:#0000ff;stroke-width:0.89027536");
+      rect.addEventListener("click", message.handler);
+      this._imageG.appendChild(rect);
+   }
+
+   spotOut() {
+
+   }
 }
 
 (function() {
@@ -307,25 +328,30 @@ DCCImageMarker.elementTag = "dcc-image-marker";
 customElements.define(DCCImageMarker.elementTag, DCCImageMarker);
 
 DCCGroupMarker.templateElements =
-  `<svg width="1600" height="1000">
-   <g id="imageG">
+  `<svg width="1305px" height="831px" viewBox="0 0 1305 831">
+   <style>
+      rect { cursor: pointer; } /* specific elements */
+   </style>
+   <g id="imageG" preserveAspectRatio="xMidYMid">
     <image
-       y="0"
        x="0"
+       y="0"
+       width="1305"
+       height="831"
        id="image4598"
-       xlink:href="[image]"
-       preserveAspectRatio="xMidYMid"
-       height="1000"
-       width="1600" />
-    <rect
-       id="rect10"
-       width="1600"
-       height="1000"
-       x="0"
-       y="0"
-       style="opacity:0.08399999;fill:#0000ff;stroke-width:0.89027536" />
+       xlink:href="[image]"/>
   </g>
   </svg>`;
+
+/*
+    <rect
+       id="rect10"
+       x="0"
+       y="0"
+       width="1305"
+       height="831"
+       style="opacity:0.08399999;fill:#0000ff;stroke-width:0.89027536" />
+*/
 
 /*
 DCCGroupMarker.templateElements =

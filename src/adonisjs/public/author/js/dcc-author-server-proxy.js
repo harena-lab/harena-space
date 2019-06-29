@@ -15,6 +15,8 @@ class DCCAuthorServer {
       MessageBus.ext.subscribe("data/case/+/set", this.saveCase);
       this.newCase = this.newCase.bind(this);
       MessageBus.ext.subscribe("data/case//new", this.newCase);
+      this.deleteCase = this.deleteCase.bind(this);
+      MessageBus.ext.subscribe("data/case/+/delete", this.deleteCase);
 
       this.themeFamiliesList = this.themeFamiliesList.bind(this);
       MessageBus.ext.subscribe("data/theme_family/*/list", this.themeFamiliesList);
@@ -116,8 +118,26 @@ class DCCAuthorServer {
             await fetch(DCCCommonServer.managerAddressAPI + "case/" + caseId, header);
          const jsonResponse = await response.json();
          MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-                             jsonResponse.source);
+                                jsonResponse.source);
       }
+   }
+
+   async deleteCase(topic, message) {
+      const caseId = MessageBus.extractLevel(topic, 3);
+      var header = {
+         "async": true,
+         "crossDomain": true,
+         "method": "DELETE",
+         "headers": {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + this._token
+          }
+      };
+      const response =
+         await fetch(DCCCommonServer.managerAddressAPI + "case/" + caseId, header);
+      const jsonResponse = await response.json();
+      MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
+                             jsonResponse);
    }
 
    async loadModule(topic, message) {
