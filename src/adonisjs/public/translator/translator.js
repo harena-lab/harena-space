@@ -791,7 +791,7 @@ class Translator {
    
    /*
     * Option Md to Obj
-    * Input: + [label] ([rule]) -> [target] or * [label] ([rule]) -> [target]
+    * Input: + [label] ([rule]) -> [target] or * [label] ([rule]) -> [target]([parameter])
     * Output:
     * {
     *    type: "option"
@@ -799,6 +799,7 @@ class Translator {
     *    label: <label to be displayed -- if there is not an explicit divert, the label is the divert> #2
     *    rule:  <rule of the trigger -- determine its position in the knot> #3
     *    target: <target node to divert> #4
+    *    parameter: <parameter for the target knot> #5
     * }
     */
    _optionMdToObj(matchArray) {
@@ -821,10 +822,8 @@ class Translator {
          option.rule = matchArray[3].trim();
       if (matchArray[4] != null)
          option.target = matchArray[4].trim();
-      /*
-      else
-         option.target = matchArray[2].trim();
-      */
+      if (matchArray[5] != null)
+         option.parameter = matchArray[5].trim();
       
       return option;
    }
@@ -856,13 +855,16 @@ class Translator {
             label = label.substr(lastDot + 1);
       }
      
-      return Translator.htmlTemplates.option.replace("[seq]", obj.seq)
-                                            .replace("[author]", this.authorAttr)
-                                            .replace("[subtype]", obj.subtype)
-                                            .replace("[link]", obj.contextTarget)
-                                            .replace("[display]", label)
-                                            .replace("[image]", optionalImage)
-                                            .replace("[location]", location);
+      return Translator.htmlTemplates.option
+         .replace("[seq]", obj.seq)
+         .replace("[author]", this.authorAttr)
+         .replace("[subtype]", obj.subtype)
+         .replace("[link]", obj.contextTarget)
+         .replace("[display]", label)
+         .replace("[parameter]",
+            (obj.parameter == null) ? "" : " parameter='" + obj.parameter + "'")
+         .replace("[image]", optionalImage)
+         .replace("[location]", location);
    }
    
    _optionObjToMd(obj) {
@@ -1276,7 +1278,7 @@ class Translator {
       knot   : /(?:^[ \t]*(#+)[ \t]*([^\( \t\n\r\f][^\(\n\r\f]*)(?:\((\w[\w \t,]*)\))?[ \t]*#*[ \t]*$)|(?:^[ \t]*([^\( \t\n\r\f][^\(\n\r\f]*)(?:\((\w[\w \t,]*)\))?[ \t]*[\f\n\r][\n\r]?(==+|--+)$)/im,
       image  : /!\[([\w \t]*)\]\(([\w:.\/\?&#\-]+)[ \t]*(?:"([\w ]*)")?\)/im,
       // image  : /<img src="([\w:.\/\?&#\-]+)" (?:alt="([\w ]+)")?>/im,
-      option : /^[ \t]*([\+\*])[ \t]*([^\(&> \t][^\(&>\n\r\f]*)?(?:\(([\w \t-]+)\)[ \t]*)?(?:-(?:(?:&gt;)|>)[ \t]*(.+))$/im,
+      option : /^[ \t]*([\+\*])[ \t]*([^\(&> \t][^\(&>\n\r\f]*)?(?:\(([\w \t-]+)\)[ \t]*)?(?:-(?:(?:&gt;)|>)[ \t]*([^\(\n\r\f]+)(?:\(([^\)\n\r\f]+)\))?)$/im,
       field  : /^[ \t]*(?:[\+\*])[ \t]*([\w.\/\?&#\-][\w.\/\?&#\- \t]*):[ \t]*([^\n\r\f]+)$/im,
       divert : /-(?:(?:&gt;)|>) *(\w[\w. ]*)/im,
       talk   : /^[ \t]*:[ \t]*(\w[\w \t]*):[ \t]*([^\n\r\f]+)$/im,
