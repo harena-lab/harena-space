@@ -184,7 +184,7 @@ class MessageBus {
    MessageBus._stamp = 1;
 
    MessageBus.int = new MessageBus(false);
-   MessageBus.ext = new MessageBus(false);
+   MessageBus.ext = new MessageBus(true);
    /*
    window.messageBus = {
       int: new MessageBus(false),
