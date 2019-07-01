@@ -21,7 +21,7 @@ class DCCTrigger extends DCCBlock {
    /* Attribute Handling */
 
    static get observedAttributes() {
-     return DCCBlock.observedAttributes.concat(["type", "link", "action"]);
+     return DCCBlock.observedAttributes.concat(["type", "link", "action", "parameter"]);
    }
 
    get type() {
@@ -48,6 +48,14 @@ class DCCTrigger extends DCCBlock {
       this.setAttribute("action", newValue);
    }
   
+   get parameter() {
+      return this.getAttribute("parameter");
+   }
+   
+   set parameter(newValue) {
+      this.setAttribute("parameter", newValue);
+   }
+   
    /* Rendering */
    
    _renderInterface() {
@@ -124,8 +132,18 @@ class DCCTrigger extends DCCBlock {
    
    _computeTrigger() {
       if (this.hasAttribute("label") || this.hasAttribute("action")) {
-         const message = (this.hasAttribute("link")) ? this.link : this.label;
-         const topic = (this.hasAttribute("action")) ? this.action : "knot/" + message + "/navigate";
+         let message = (this.hasAttribute("link")) ? this.link : this.label;
+         // <TODO> Provisory - it is better to have the same format
+         //        for all messages
+         if (!this.hasAttribute("action")) {
+            message = {target: message};
+            if (this.hasAttribute("parameter"))
+               message.parameter = this.parameter;
+         }
+         console.log("=== message ===");
+         console.log(message);
+         const topic = (this.hasAttribute("action"))
+            ? this.action : "knot/" + message + "/navigate";
          MessageBus.ext.publish(topic, message);
       }
    }

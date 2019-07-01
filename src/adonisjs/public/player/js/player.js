@@ -85,7 +85,12 @@ class PlayerManager {
    }
    
    navigateEvent(topic, message) {
-      this.trackTrigger(message);
+      let target = MessageBus.extractLevel(topic, 2);
+      // <TODO> Provisory - all messages will have the same format in the future
+      if (message)
+         target = (typeof message === "string") ? message : message.target;
+      this.trackTrigger(target);
+
       // MessageBus.ext.publish("checkout", message);
       if (this._currentKnot != null) {
          MessageBus.ext.publish("control/input/submit"); // <TODO> provisory
@@ -111,8 +116,11 @@ class PlayerManager {
                                  this.knotLoad(this._nextKnot.toString());
                                  break;
          default: if (MessageBus.matchFilter(topic, "knot/+/navigate")) {
-                     this._history.push(message);
-                     this.knotLoad(message);
+                     this._history.push(target);
+                     if (message.parameter)
+                        this.knotLoad(target, message.parameter);
+                     else
+                        this.knotLoad(target);
                   }
                   break;
       }
@@ -171,7 +179,7 @@ class PlayerManager {
       this.currentThemeFamily = this._compiledCase.theme;
    }
    
-   async knotLoad(knotName) {
+   async knotLoad(knotName, parameter) {
       this._currentKnot = knotName;
       // <TODO> Local Environment - Future
       /*
@@ -182,8 +190,12 @@ class PlayerManager {
       if (!DCCPlayerServer.localEnv) {
          // console.log(knotName);
          // console.log(this._knots);
-         const knot = await Translator.instance.generateHTML(
+         let knot = await Translator.instance.generateHTML(
             this._knots[knotName]);
+         if (parameter &&
+             (knot.indexOf("<>") > -1 || knot.indexOf("&lt;&gt;") > -1))
+            knot = knot.replace("<>", parameter)
+                       .replace("&lt;&gt;", parameter);
          if (this._knots[knotName].categories &&
              this._knots[knotName].categories.indexOf("note") > -1)
             this.presentNote(knot);
