@@ -10,6 +10,7 @@ class DCCTrigger extends DCCBlock {
    constructor() {
      super();
      this._computeTrigger = this._computeTrigger.bind(this);
+     this._active = true;
    }
    
    connectedCallback() {
@@ -131,7 +132,10 @@ class DCCTrigger extends DCCBlock {
    */
    
    _computeTrigger() {
-      if (this.hasAttribute("label") || this.hasAttribute("action")) {
+      if (this._active &&
+          (this.hasAttribute("label") || this.hasAttribute("action"))) {
+         if (this.hasAttribute("link"))
+            this._active = false;
          let message = (this.hasAttribute("link")) ? this.link : this.label;
          // <TODO> Provisory - it is better to have the same format
          //        for all messages
@@ -140,8 +144,6 @@ class DCCTrigger extends DCCBlock {
             if (this.hasAttribute("parameter"))
                message.parameter = this.parameter;
          }
-         console.log("=== message ===");
-         console.log(message);
          const topic = (this.hasAttribute("action"))
             ? this.action : "knot/" + message + "/navigate";
          MessageBus.ext.publish(topic, message);

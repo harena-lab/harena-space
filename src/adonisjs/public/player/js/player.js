@@ -17,7 +17,7 @@ class PlayerManager {
 
       this._server = new DCCPlayerServer();
       this._tracker = new Tracker();
-      this._history = [];
+      // this._history = [];
       this._state = new PlayState();
 
       this._currentThemeCSS = null;
@@ -41,7 +41,7 @@ class PlayerManager {
       this.trackTyping = this.trackTyping.bind(this);
 
       // <TODO> provisory
-      this._nextKnot = 1;
+      // this._nextKnot = 1;
    }
 
    /* <TODO>
@@ -97,26 +97,30 @@ class PlayerManager {
          MessageBus.ext.publish("knot/" + this._currentKnot + "/end");
       }
       switch (topic) {
-         case "knot/</navigate": if (this._history.length > 0) {
-                                           this._history.pop();
-                                           const last = this._history[this._history.length - 1]; 
-                                           this.knotLoad(last);
-                                        }
-                                        break;
+         case "knot/</navigate": if (this._state.historyHasPrevious())
+                                    this.knotLoad(this._state.historyPrevious());
+                                    // this._history.pop();
+                                    // const last = this._history[this._history.length - 1]; 
+                                    // this.knotLoad(last);
+                                 break;
          case "knot/<</navigate": this.startCase();
                                   // const startKnot = this._server.getStartKnot();
                                   const startKnot = (DCCPlayerServer.localEnv)
                                      ? DCCPlayerServer.playerObj.start
                                      : this._compiledCase.start;
-                                  this._history.push(startKnot);
+                                  // this._history.push(startKnot);
+                                  this._state.historyRecord(startKnot);
                                   this.knotLoad(startKnot);
                                   break;
-         case "knot/>/navigate": this._nextKnot++;
-                                 this._history.push(this._nextKnot.toString());
-                                 this.knotLoad(this._nextKnot.toString());
+         case "knot/>/navigate": const nextKnot = this._state.nextKnot();
+                                 // this._nextKnot++;
+                                 // this._history.push(this._nextKnot.toString());
+                                 this._state.historyRecord(nextKnot);
+                                 this.knotLoad(nextKnot);
                                  break;
          default: if (MessageBus.matchFilter(topic, "knot/+/navigate")) {
-                     this._history.push(target);
+                     this._state.historyRecord(target);
+                     // this._history.push(target);
                      if (message.parameter)
                         this.knotLoad(target, message.parameter);
                      else
@@ -146,24 +150,44 @@ class PlayerManager {
    async startPlayer(caseid) {
       this._mainPanel = document.querySelector("#main-panel");
 
-      this._userid = await Basic.service.signin();
-
-      if (DCCPlayerServer.localEnv)
-         this._currentCaseId = DCCPlayerServer.playerObj.id;
-      else {
-         if (!caseid) {
-            const cases = await MessageBus.ext.request(
-               "data/case/*/list",
-               {filterBy: "user", filter: this._userid});
-            caseid = await DCCNoticeInput.displayNotice(
-               "Select a case to load or start a new case.",
-               "list", "Select", "New", cases.message);
+      let resume = false;
+      if (this._state.pendingPlayCheck()) {
+         const decision = await DCCNoticeInput.displayNotice(
+            "You have an unfinished case. Do you want to continue?",
+            "message", "Yes", "No");
+         if (decision == "Yes") {
+            resume = true;
+            this._state.pendingPlayRestore();
+            console.log("=== current ===");
+            console.log(this._state.currentCaseGet());
+            DCCCommonServer.instance.token = this._state.tokenGet();
+            await this._caseLoad(
+               this._state.currentCaseGet());
+            this.knotLoad(this._state.historyCurrent());
          }
-         await this._caseLoad(caseid);
+      } 
+
+      if (!resume) {
+        this._userid = await Basic.service.signin(this._state);
+
+        if (DCCPlayerServer.localEnv)
+           this._currentCaseId = DCCPlayerServer.playerObj.id;
+        else {
+           if (!caseid) {
+              const cases = await MessageBus.ext.request(
+                 "data/case/*/list",
+                 {filterBy: "user", filter: this._userid});
+              caseid = await DCCNoticeInput.displayNotice(
+                 "Select a case to load.",
+                 "list", "Select", "Cancel", cases.message);
+           }
+           this._state.currentCaseSet(caseid);
+           await this._caseLoad(caseid);
+        }
+        
+        MessageBus.ext.publish("knot/<</navigate");
+        // this.knotLoad("entry");
       }
-      
-      MessageBus.ext.publish("knot/<</navigate");
-      // this.knotLoad("entry");
    }
 
    async _caseLoad(caseid) {

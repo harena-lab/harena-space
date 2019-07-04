@@ -10,7 +10,10 @@
 class PlayState {
    constructor() {
       this._state = {
-        variables: {}
+         variables: {},
+         history: [],
+         nextKnot: 1,
+         completed: false
       };
       
       this.variableGet = this.variableGet.bind(this);
@@ -20,17 +23,66 @@ class PlayState {
       this.variableSubGet = this.variableSubGet.bind(this);
       MessageBus.ext.subscribe("var/+/get/sub", this.variableSubGet);
    }
+
+   /*
+    * State Storage
+    */
+   _stateStore() {
+      localStorage.setItem(PlayState.storeId, JSON.stringify(this._state));
+   }
+
+   _stateRetrieve() {
+      const state = JSON.parse(localStorage.getItem(PlayState.storeId));
+      console.log(state);
+      return state;
+   }
+
+   sessionRecord(userid, token) {
+      this._state.userid = userid;
+      this._state.token = token;
+      this._stateStore();
+   }
+
+   pendingPlayCheck() {
+      const state = localStorage.getItem(PlayState.storeId);
+      return (state != null && !state.completed);
+   }
+
+   pendingPlayRestore() {
+      let currentKnot = null;
+      this._state = this._stateRetrieve();
+      console.log("== after ===");
+      console.log(this._state);
+      if (this._state.history.length > 0)
+         currentKnot = this._state.history[this._state.history.length-1];
+      return currentKnot;
+   }
+
+   currentCaseSet(caseid) {
+      this._state.caseid = caseid;
+      this._stateStore();
+   }
+
+   currentCaseGet() {
+      return this._state.caseid;
+   }
+
+   tokenGet() {
+      return this._state.token;
+   }
+
+   /*
+    * Scenario Variables
+    */
    
    variableGet(topic, message) {
       const id = MessageBus.extractLevel(topic, 2);
       if (id != null)
          MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
                                 this._state.variables[id]);
-      // MessageBus.ext.publish("var/" + id, this._state.variables[id]);
    }
    
    variableSubGet(topic, message) {
-      // console.log("sub solicitado: " + topic + ";" + value);
       const id = MessageBus.extractLevel(topic, 2);
       if (id != null) {
          let result = null;
@@ -38,8 +90,6 @@ class PlayState {
             for (let v in this._state.variables[id])
                if (this._state.variables[id][v].content == message)
                   result = this._state.variables[id][v].state;
-         // console.log("-- sub resultado: " + result);
-         // MessageBus.ext.publish("var/" + id + "/sub", result);
          MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
                                 result);
       }
@@ -49,8 +99,49 @@ class PlayState {
       const id = MessageBus.extractLevel(topic, 2);
       if (id != null)
          this._state.variables[id] = value;
-      // console.log("Variables updated:");
-      // console.log(this._state);
-      // console.log("variable set " + id + " with " + value);
+      this._stateStore();
+   }
+
+   /*
+    * Navigation History
+    */
+
+   historyHasPrevious() {
+      return (this._state.history.length > 1);
+   }
+
+   historyCurrent() {
+      let current = null;
+      if (this._state.history.length > 0)
+         current = this._state.history[this._state.history.length-1];
+      return current;
+   }
+
+   historyPrevious() {
+      let previous = null;
+      if (this.historyHasPrevious()) {
+         this._state.history.pop();
+         previous = this._state.history[this._state.history.length-1];
+         this._stateStore();
+      }
+      return previous;
+   }
+
+   historyRecord(knot) {
+      this._state.history.push(knot);
+      this._stateStore();
+   }
+
+   /*
+    * Next Knot Control (provisory)
+    */
+   nextKnot() {
+      this._state.nextKnot++;
+      this._stateStore();
+      return this._state.nextKnot.toString();
    }
 }
+
+(function() {
+   PlayState.storeId = "harena-state";
+})();

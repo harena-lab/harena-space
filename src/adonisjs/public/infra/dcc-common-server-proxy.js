@@ -18,6 +18,10 @@ class DCCCommonServer {
    get token() {
       return this._token;
    }
+
+   set token(newToken) {
+      this._token = newToken;
+   }
    
    /*
     * Wrappers of the services

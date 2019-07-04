@@ -19,11 +19,12 @@ class Basic {
       return (!str || /^\s*$/.test(str));
    }
 
-   async signin() {
+   async signin(state) {
       let status = "start";
       let userid = null;
       let errorMessage = "";
       while (userid == null) {
+         /*
          const userEmail =
             await DCCNoticeInput.displayNotice(errorMessage +
                                          "<h3>Signin</h3><h4>inform your email:</h4>",
@@ -31,15 +32,23 @@ class Basic {
          const userPass =
             await DCCNoticeInput.displayNotice("<h3>Signin</h3><h4>inform your password:</h4>",
                                          "password");
+         */
+
+         const userEmail = "jacinto@example.com";
+         const userPass = "jacinto";
 
          let loginReturn = await MessageBus.ext.request("data/user/login",
                                                         {email: userEmail,
                                                          password: userPass});
 
          userid = loginReturn.message.userid;
-         if (this._userId == null)
+         if (userid == null)
             errorMessage =
                "<span style='color: red'>Invalid user and/or password.</span>";
+         else {
+            if (state)
+              state.sessionRecord(userid, loginReturn.message.token);
+         }
       }
       return userid;
    }
