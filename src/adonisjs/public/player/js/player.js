@@ -121,10 +121,13 @@ class PlayerManager {
          default: if (MessageBus.matchFilter(topic, "knot/+/navigate")) {
                      this._state.historyRecord(target);
                      // this._history.push(target);
-                     if (message.parameter)
+                     if (message.parameter) {
+                        this._state.parameter = message.parameter;
                         this.knotLoad(target, message.parameter);
-                     else
+                     } else {
+                        this._state.parameter = null;
                         this.knotLoad(target);
+                     }
                   }
                   break;
       }
@@ -159,11 +162,14 @@ class PlayerManager {
             resume = true;
             this._state.pendingPlayRestore();
             console.log("=== current ===");
-            console.log(this._state.currentCaseGet());
-            DCCCommonServer.instance.token = this._state.tokenGet();
-            await this._caseLoad(
-               this._state.currentCaseGet());
-            this.knotLoad(this._state.historyCurrent());
+            console.log(this._state.currentCase);
+            DCCCommonServer.instance.token = this._state.token;
+            await this._caseLoad(this._state.currentCase);
+            const current = this._state.historyCurrent();
+            if (this._state.parameter == null)
+               this.knotLoad(current);
+            else
+               this.knotLoad(current, this._state.parameter);
          }
       } 
 
@@ -181,7 +187,7 @@ class PlayerManager {
                  "Select a case to load.",
                  "list", "Select", "Cancel", cases.message);
            }
-           this._state.currentCaseSet(caseid);
+           this._state.currentCase = caseid;
            await this._caseLoad(caseid);
         }
         
@@ -246,6 +252,10 @@ class PlayerManager {
    }
    
    presentNote(knot) {
+      // <TODO> provisory
+      if (!MessageBus.page)
+         MessageBus.page = new MessageBus(false);
+
       const dimensions = Basic.service.screenDimensions();
       
       let div = document.createElement("div");

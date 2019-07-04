@@ -12,6 +12,7 @@ class PlayState {
       this._state = {
          variables: {},
          history: [],
+         parameter: null,
          nextKnot: 1,
          completed: false
       };
@@ -58,6 +59,34 @@ class PlayState {
       return currentKnot;
    }
 
+   /*
+    * Properties
+    */
+
+   get currentCase() {
+      return this._state.caseid;
+   }
+   
+   set currentCase(caseid) {
+      this._state.caseid = caseid;
+      this._stateStore();
+   }
+
+   get token() {
+      return this._state.token;
+   }
+
+   get parameter() {
+      return this._state.parameter;
+   }
+   
+   set parameter(newValue) {
+      this._state.parameter = newValue;
+      this._stateStore();
+   }
+
+
+   /*
    currentCaseSet(caseid) {
       this._state.caseid = caseid;
       this._stateStore();
@@ -70,6 +99,7 @@ class PlayState {
    tokenGet() {
       return this._state.token;
    }
+   */
 
    /*
     * Scenario Variables
