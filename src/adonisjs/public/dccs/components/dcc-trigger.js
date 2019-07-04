@@ -134,7 +134,8 @@ class DCCTrigger extends DCCBlock {
    _computeTrigger() {
       if (this._active &&
           (this.hasAttribute("label") || this.hasAttribute("action"))) {
-         if (this.hasAttribute("link"))
+         if (this.hasAttribute("link") ||
+             (this.hasAttribute("action") && this.action.endsWith("/navigate")))
             this._active = false;
          let message = (this.hasAttribute("link")) ? this.link : this.label;
          // <TODO> Provisory - it is better to have the same format
