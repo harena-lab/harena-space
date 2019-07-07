@@ -319,7 +319,8 @@ class Translator {
                   case "theme": compiledCase.theme = content[c].value;
                                 // this.currentThemeFamily = content[c].value;
                                 break;
-                  case "name" : compiledCase.name = content[c].value; break;
+                  case "name" : compiledCase.name = content[c].value;
+                                break;
                }
       }
    }
