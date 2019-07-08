@@ -212,7 +212,8 @@ class DCCNoticeInput extends DCCVisual {
          let options = "";
          let selected = "' selected>";
          for (var sl in this._selectList) {
-            options += "<option value='" + sl + selected +
+            options += "<option value='" + this._selectList[sl].id +
+                       selected +
                        this._selectList[sl].name + "</option>";
             selected = "'>";
          }
@@ -223,10 +224,14 @@ class DCCNoticeInput extends DCCVisual {
    }
    
    _updatePreview() {
-      if (this._selectList != null && this._listWeb != null)
+      if (this._selectList != null && this._listWeb != null) {
+         const selected =
+            this._selectList.find(function(s){return s.id == this;},
+                                  this._listWeb.value);
          this._resourcePreview.innerHTML =
-            "<img src='" + this._selectList[this._listWeb.value].icon +
-               "' class='dsty-resource'>"; 
+            "<img src='" + selected.icon +
+               "' class='dsty-resource'>";
+      }
    }
 
    async presentNotice() {

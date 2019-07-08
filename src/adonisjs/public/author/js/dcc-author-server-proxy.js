@@ -49,12 +49,21 @@ class DCCAuthorServer {
       }
       const response = await fetch("../themes/themes.json", header);
       let jsonResponse = await response.json();
+      /*
       let busResponse = {};
       for (var t in jsonResponse)
          busResponse[jsonResponse[t].path] = {
             name: t,
             icon: "../themes/" + jsonResponse[t].path + "/images/" + jsonResponse[t].icon
          };
+      */
+      let busResponse = [];
+      for (var t in jsonResponse)
+         busResponse.push({
+            id:   jsonResponse[t].path,
+            name: t,
+            icon: "../themes/" + jsonResponse[t].path + "/images/" + jsonResponse[t].icon
+         });
       MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
                              busResponse);
    }
@@ -70,6 +79,7 @@ class DCCAuthorServer {
       }
       const response = await fetch("../templates/templates.json", header);
       let jsonResponse = await response.json();
+      /*
       let busResponse = {};
       for (var t in jsonResponse)
          if (jsonResponse[t].scope == message.scope)
@@ -77,6 +87,15 @@ class DCCAuthorServer {
                name: t,
                icon: "/templates/" + jsonResponse[t].icon
             };
+      */
+      let busResponse = [];
+      for (var t in jsonResponse)
+         if (jsonResponse[t].scope == message.scope)
+            busResponse.push({
+               id:   jsonResponse[t].path,
+               name: t,
+               icon: "/templates/" + jsonResponse[t].icon
+            });
       MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
                              busResponse);
    }
