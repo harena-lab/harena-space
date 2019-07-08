@@ -65,6 +65,7 @@ class DCCCommonServer {
       }
       const response = await fetch(DCCCommonServer.managerAddressAPI + "case/list", header);
       const jsonResponse = await response.json();
+      /*
       let busResponse = {};
       for (var c in jsonResponse)
          busResponse[jsonResponse[c].uuid] = {
@@ -72,6 +73,15 @@ class DCCCommonServer {
             icon: "../resources/icons/mono-slide.svg",
             svg : jsonResponse[c].svg
          };
+      */
+      let busResponse = [];
+      for (var c in jsonResponse)
+         busResponse.push({
+            id:   jsonResponse[c].uuid,
+            name: jsonResponse[c].name,
+            icon: "../resources/icons/mono-slide.svg",
+            svg : jsonResponse[c].svg
+         });
       MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
                              busResponse);
    }

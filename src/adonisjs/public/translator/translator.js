@@ -11,11 +11,6 @@ class Translator {
       this._markdownTranslator = new showdown.Converter();
       
       this._annotationMdToObj = this._annotationMdToObj.bind(this);
-      /*
-      this._textObjToHTML = this._textObjToHTML.bind(this);
-      this._imageObjToHTML = this._imageObjToHTML.bind(this);
-      */
-      // this._textObjToHTML = this._textObjToHTML.bind(this);
    }
 
    /*
@@ -319,7 +314,7 @@ class Translator {
                   case "theme": compiledCase.theme = content[c].value;
                                 // this.currentThemeFamily = content[c].value;
                                 break;
-                  case "name" : compiledCase.name = content[c].value;
+                  case "title": compiledCase.name = content[c].value;
                                 break;
                }
       }

@@ -148,6 +148,10 @@ class AuthorManager {
       const cases = await MessageBus.ext.request("data/case/*/list",
                                                  {filterBy: "user",
                                                   filter: this._userid});
+
+      cases.message.sort(
+            (a, b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : -1);
+
       const caseId = await DCCNoticeInput.displayNotice(
          "Select a case to load or start a new case.",
          "list", "Select", "New", cases.message);
@@ -208,6 +212,8 @@ class AuthorManager {
                                                                caseSource);
       this._knots = this._compiledCase.knots;
       this.currentThemeFamily = this._compiledCase.theme;
+      if (this._compiledCase.name)
+         this._currentCaseName = this._compiledCase.name;
 
       console.log(this._compiledCase);
    }
@@ -631,7 +637,10 @@ class AuthorManager {
       this.currentThemeFamily = await DCCNoticeInput.displayNotice(
          "Select a theme to be applied.",
          "list", "Select", "Cancel", families.message);
-      this._themeSVG = families.message[Translator.instance.currentThemeFamily].svg;
+      const themeObj = families.message.find(function(s){return s.id == this;},
+                                             Translator.instance.currentThemeFamily);
+      this._themeSVG = themeObj.svg; 
+      // this._themeSVG = families.message[Translator.instance.currentThemeFamily].svg;
    }
    
 }
