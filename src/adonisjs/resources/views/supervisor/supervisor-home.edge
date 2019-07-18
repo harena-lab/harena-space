@@ -33,32 +33,53 @@
 
 <body>
 
+  <!--#include file="menu.html" -->
+  <div w3-include-html="menu.html"></div>
 
   <!-- Create a container to place page content -->
   <main role="main" class="container">
 
+    <!-- Create breadcrumbs -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page">Home</li>
+      </ol>
+    </nav>
+    <!-- End of breadcrumbs -->
+
     <!-- Page title and description -->
-    <h1>Hello supervisor</h1>
-    <p class="lead">Login to create and edit your cases!</p>
+    <h1>Hello supervisor!</h1>
+    <p class="lead">Welcome back.</p>
     <!-- End of page title and description -->
 
-    <div class="row">
-      <div class="col-md-4">
-        <form>
-          <div class="form-group">
-            <label for="exampleInputEmail1">Email address</label>
-            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
-            <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+    <h1>What would you like to do today?</h1>
+    <div class="card-deck">
+      <div class="card">
+        <a href="create1.html">
+          <div class="card-body">
+            <h5 class="card-title">CREATE</h5>
+            <p class="card-text">Create a new case.</p>
           </div>
-          <div class="form-group">
-            <label for="exampleInputPassword1">Password</label>
-            <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+        </a>
+      </div>
+      <div class="card">
+        <a href="caseslist1.html">
+          <div class="card-body">
+            <h5 class="card-title">CASES LIST</h5>
+            <p class="card-text">See the published cases list. You also can edit them.</p>
           </div>
-          <a class="btn btn-primary" href="supervisor-home.html" role="button">Login</a>
-        </form>
+        </a>
+      </div>
+      <div class="card">
+        <a href="drafts1.html">
+          <div class="card-body">
+            <h5 class="card-title">DRAFTS</h5>
+            <p class="card-text">Continue editing a case.</p>
+          </div>
+        </a>
       </div>
     </div>
-    
+
   </main>
   <!-- end of div /.container -->
 

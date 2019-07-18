@@ -16,15 +16,25 @@
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use("Route");
 
-Route.on("/").render("welcome");
+Route.on("/").render("index");
 
 Route.get('/home', ({ view }) => {
    return view.render('home')
  })
 
- Route.get('/login', ({ view }) => {
-   return view.render('login')
- })
+Route.get('/supervisor-home', ({ view }) => {
+   return view.render('supervisor/supervisor-home')
+})
+
+Route.get('/login', ({ view }) => {
+   return view.render('login/login')
+})
+
+// Those routes should be only accessible
+// when you are not logged in
+Route.group(() => {
+   Route.post('performlogin', 'AuthController.login').as('performlogin')
+})
 
 /*
 let harenaManagerUrl =

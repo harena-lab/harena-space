@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    {{ style('style') }}
+
+    @!section('extracss')
+
+    <title>
+        @!section('title')
+    </title>
+</head>
+<body>
+    <header>
+        <a href="/" id="logo">JobPostr</a>
+        <nav>
+            <ul>
+                <li><a href="/">Jobs</a></li>
+                <li><a href="/login">Login</a></li>
+                <li><a href="/signup">Signup</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        @!section('content')
+    </div>
+</body>
+</html>
