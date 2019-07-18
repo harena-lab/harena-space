@@ -8,7 +8,7 @@ class AuthController {
 
         console.log(request.all())
         
-        axios.get('https://localhost:10020/')
+        axios.get('HARENA_MANAGER_URL')
         .then((res) => {
             console.log('acertou')
             // console.log(`statusCode: ${res.statusCode}`)

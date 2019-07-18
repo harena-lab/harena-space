@@ -9,6 +9,4 @@ COPY src/adonisjs ./
 
 RUN npm install
 
-RUN npm install axios
-
 CMD [ "npm", "start"]
