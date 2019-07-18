@@ -7,6 +7,21 @@
 # Harena Space
 Web-based client platform that includes: authoring environment, player engine and the Versum narrative scripting language translator.
 
+## Table of Contents 
+
+* [Table of Contents](#table-of-contents)
+* [Getting Started](#getting-started)
+  * [Running as Docker containers](#running-as-docker-containers)
+<!-- * [System Requirements](#system-requirements)
+  * [For running as Docker containers](#for-running-as-linuxwindows-docker-containers)
+  * [For running locally](#for-running-locally)
+* [Configuration](#configuration)
+  * [Virtualenvs: AdonisJS](#virtualenvs-adonisjs)
+  * [Virtualenvs: Database](#virtualenvs-database)
+* [Contributing](#contributing)
+  * [Project organization](#project-organization)
+  * [Branch organization (future CI/CD)](#branch-organization-future-cicd)-->
+
 ## Getting Started
 
 ### Running as Docker containers
