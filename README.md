@@ -9,7 +9,6 @@ Web-based client platform that includes: authoring environment, player engine an
 
 ## Table of Contents 
 
-* [Table of Contents](#table-of-contents)
 * [Getting Started](#getting-started)
   * [Running as Docker containers](#running-as-docker-containers)
   * [Running locally](#running-locally)
