@@ -4,8 +4,20 @@
 [![Docker Pulls](https://img.shields.io/docker/pulls/datasci4health/harena-space.svg?style=flat)](https://cloud.docker.com/u/datasci4health/repository/registry-1.docker.io/datasci4health/harena-space)
 [![Docker Stars](https://img.shields.io/docker/stars/datasci4health/harena-space.svg?style=flat)](https://cloud.docker.com/u/datasci4health/repository/registry-1.docker.io/datasci4health/harena-space)
 
-# harena-space
+# Harena Space
 Web-based client platform that includes: authoring environment, player engine and the Versum narrative scripting language translator.
+
+## Getting Started
+
+### Running as Docker containers
+
+Get the image from docker hub:
+
+```docker pull datasci4health/harena-space```
+
+Then, run the command to start the docker container:
+
+```docker-compose up```
 
 ### Running locally
 Install nodejs and npm:
