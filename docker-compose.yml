@@ -3,14 +3,14 @@ version: '3'
 services:
 
   harena-space:
-    image: datasci4health/harena-space:v1
+    image: harena-space:latest
     ports:
       - "10010:10010"
     environment:
       - ENV_SILENT=true            
       - HOST=0.0.0.0
       - PORT=10010
-      - NODE_ENV=production
+      - NODE_ENV=debug
       - APP_NAME=harena-space
       - APP_URL=http://0.0.0.0:10010
       - CACHE_VIEWS=false
@@ -25,6 +25,8 @@ services:
     restart: always
     networks:
       - harena-space
+    volumes:
+      - ./src/adonisjs/:/app
 
 networks:
   harena-space:

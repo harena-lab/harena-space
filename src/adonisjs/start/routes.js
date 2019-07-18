@@ -18,6 +18,14 @@ const Route = use("Route");
 
 Route.on("/").render("welcome");
 
+Route.get('/home', ({ view }) => {
+   return view.render('home')
+ })
+
+ Route.get('/login', ({ view }) => {
+   return view.render('login')
+ })
+
 /*
 let harenaManagerUrl =
    Env.get("HARENA_MANAGER_URL", "http://localhost:3000/api/v1/");
