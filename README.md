@@ -15,7 +15,8 @@ Get the image from docker hub:
 
 ```docker pull datasci4health/harena-space```
 
-Then, run the command to start the docker container:
+
+Then, at the root of project folder ```harena-space/```, run the command to start the docker container:
 
 ```docker-compose up```
 
