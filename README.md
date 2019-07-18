@@ -12,6 +12,8 @@ Web-based client platform that includes: authoring environment, player engine an
 * [Table of Contents](#table-of-contents)
 * [Getting Started](#getting-started)
   * [Running as Docker containers](#running-as-docker-containers)
+  * [Running locally](#running-locally)
+
 <!-- * [System Requirements](#system-requirements)
   * [For running as Docker containers](#for-running-as-linuxwindows-docker-containers)
   * [For running locally](#for-running-locally)
@@ -26,14 +28,12 @@ Web-based client platform that includes: authoring environment, player engine an
 
 ### Running as Docker containers
 
-Get the image from docker hub:
+At the root of project folder ```harena-space/```, run the command to start the docker container:
 
-```docker pull datasci4health/harena-space```
-
-
-Then, at the root of project folder ```harena-space/```, run the command to start the docker container:
-
-```docker-compose up```
+```bash
+docker-compose up
+```
+After starting the container, got to http://localhost:10010/author to see the authoring environment.
 
 ### Running locally
 Install nodejs and npm:
