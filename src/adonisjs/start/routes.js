@@ -26,15 +26,12 @@ Route.get('/supervisor-home', ({ view }) => {
    return view.render('supervisor/supervisor-home')
 })
 
-Route.get('/login', ({ view }) => {
-   return view.render('login/login')
-})
-
 // Those routes should be only accessible
 // when you are not logged in
 Route.group(() => {
-   Route.post('performlogin', 'AuthController.login').as('performlogin')
-})
+   Route.get('', 'AuthController.create')
+   Route.post('', 'AuthController.login')
+}).prefix('/login').middleware(['guest'])
 
 /*
 let harenaManagerUrl =

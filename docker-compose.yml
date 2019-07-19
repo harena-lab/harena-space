@@ -21,7 +21,7 @@ services:
       - HARENA_MANAGER_URL=http://localhost:10020
       - HARENA_MANAGER_API_VERSION=v1
       - HARENA_LOGGER_URL=http://localhost:10030
-      - HARENA_LOGGER_API_VERSION=v1        
+      - HARENA_LOGGER_API_VERSION=v1
     restart: always
     networks:
       - harena-space
