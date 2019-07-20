@@ -2,8 +2,6 @@
 
 const axios = require('axios')
 
-const Env   = use("Env");
-
 class AuthController {
     create ({ view }) {
         /**
@@ -18,24 +16,31 @@ class AuthController {
     async login({ request, auth, response }) {
         let { email, password } = request.all();
 
-        console.log({ email, password } )
+        console.log({ email, password } );
+        console.log();
 
-        axios.post("http://172.17.0.1:10020/api/v1/user/login", { email, password })
+        URL = 'harena-manager://harena-manager:10020/api/v1/user/login'
+
+        axios.post(URL, { email, password })
         .then((res) => {
             console.log('acertou')
-            console.log(res)
+            console.log(response);
+            console.log(res.status + ' - ' + response.statusText);
+            // console.log(response.statusText);
+            // console.log(response.headers);
+            // console.log(response.config);
             // console.log(`statusCode: ${res.statusCode}`)
-            // return response.redirect('/')
-            // return res
+            // return response.redirect('/author')
+            return
         })
         .catch((error) => {
             console.log('falhou')
 
             console.error(error.message)
-            return response.status(error.status).redirect('login')
+            return
         })
 
-        // return response.redirect('/')
+        return response.redirect('/')
     }
 }
 
