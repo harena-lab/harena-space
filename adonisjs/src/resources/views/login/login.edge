@@ -1,0 +1,46 @@
+@layout('layout.login')
+
+@section('content')
+  @set('title', 'Backend Jacintos Game')
+  
+  <h1>Hello supervisor</h1>
+  <p class="lead">Login to create and edit your cases!</p>
+
+  <div class="row">
+    <div class="col-md-4">
+      <form id="login_form" action="/login" method="POST">
+        {{ csrfField() }}
+
+        <div class="form-group">
+
+        {{-- Username Field --}}
+        <div class="form-group">
+          
+          @!component('components.label', { text: 'Email address', related: 'email' })
+          @!component('components.input', 
+          { name: 'email', 
+            value: old('exampleInputEmail1'), 
+            required: true, 
+            class1: 'form-control',
+            id: 'exampleInputEmail1',
+            type: 'email',
+            describedby: 'emailHelp',
+            placeholder: 'Enter email' })
+          <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+        </div>
+
+        {{-- Password Field --}}
+        <div class="form-group">
+          @!component('components.label', text = 'Password', related = 'password')
+          @!component('components.input', 
+            name = 'password', 
+            type = 'password', 
+            required = true, 
+            placeholder = 'Password', 
+            id = 'exampleInputPassword1')
+        </div>
+        <button class="btn btn-primary" type="submit">Login</a>
+      </form>
+    </div>
+  </div>
+@endsection
