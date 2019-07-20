@@ -4,10 +4,81 @@
 [![Docker Pulls](https://img.shields.io/docker/pulls/datasci4health/harena-space.svg?style=flat)](https://cloud.docker.com/u/datasci4health/repository/registry-1.docker.io/datasci4health/harena-space)
 [![Docker Stars](https://img.shields.io/docker/stars/datasci4health/harena-space.svg?style=flat)](https://cloud.docker.com/u/datasci4health/repository/registry-1.docker.io/datasci4health/harena-space)
 
-# harena-space
+# Harena Space
 Web-based client platform that includes: authoring environment, player engine and the Versum narrative scripting language translator.
 
-### Running locally
+## Table of Contents 
+
+* [Getting Started](#getting-started)
+  * [Option 1: Access our instance running at cloud](#access-our-instance-running-at-cloud)
+  * [Option 2: Running as Docker containers](#running-as-docker-containers)
+  * [Option 3: Running locally](#running-locally)
+
+<!-- * [System Requirements](#system-requirements)
+  * [For running as Docker containers](#for-running-as-linuxwindows-docker-containers)
+  * [For running locally](#for-running-locally)
+* [Configuration](#configuration)
+  * [Virtualenvs: AdonisJS](#virtualenvs-adonisjs)
+  * [Virtualenvs: Database](#virtualenvs-database)
+* [Contributing](#contributing)
+  * [Project organization](#project-organization)
+  * [Branch organization (future CI/CD)](#branch-organization-future-cicd)-->
+
+## Getting Started
+
+### Option 1: Access our instance running at cloud
+
+The link below starts the authoring environment running in our cloud
+
+* http://cloud.lis.ic.unicamp.br/case-notebook/v1/web/author/author.html
+
+### Option 2: Running as Docker containers
+
+#### For developers
+
+If you want to contribute to harena-space, we provide a Docker container to develop environments. 
+This is the recomended way of run the harena-manager code, since it guarantees the default configuration of the development environment, dispensing a manual configuration.
+
+Clone the repository and get into it:
+
+```bash
+git clone https://github.com/datasci4health/harena-space.git
+cd harena-manager
+```
+
+Then, checkout to development branch and get the latest code version:
+
+```bash
+git checkout -b development
+git pull origin development
+```
+
+Then, run the command to start the docker<sup>1</sup> container:
+
+```bash
+docker-compose up
+```
+<sub><sup>1</sup>Make sure you have [docker](https://docs.docker.com/install/) and [docker-compose command](https://docs.docker.com/compose/install/) already installed on your system.</sub>
+
+After starting the container, go to http://localhost:10010/author to see the authoring environment.
+
+If you want to get the command line of the container, then run the command:
+
+```bash
+docker exec -it adonisjs_harena-space_1 bash
+```
+
+#### Just run the docker container
+
+If you do not want get the code, just run the docker container, then :
+
+```bash
+sudo docker-compose --url https://github.com/datasci4health/case-notebook/blob/master/docker-compose.yml up
+```
+
+After starting the container, go to http://localhost:10010/author to see the authoring environment.
+
+### Option 3: Running locally
 Install nodejs and npm:
 ```
 # updating and installing curl
@@ -54,29 +125,3 @@ Go to http://127.0.0.1:3333/author/author.html
 * **player** - Kernel of the HTML cases player. This kernel is used by the `translator` module to produce the final HTML version of the cases, which have the player kernel inside them.
 
 * **translator** - Translates the markdown document of a case to the final case executed in the player using HTML, CSS, and Javascript. In the process, it produces an intermediary object representation of the case.
-
-# Getting Started
-
-## Option 1: Access an instance running at our cloud
-
-The link below starts the authoring environment running in our cloud
-
-* http://cloud.lis.ic.unicamp.br/case-notebook/v1/web/author/author.html
-
-
-## Option 2: Run a local instance as a Docker container
-
-Make sure you have [Docker](https://docs.docker.com/install/#supported-platforms) and [docker-compose](https://docs.docker.com/compose/install/#install-compose) installed, then start the container directly:
-
-```bash
-sudo docker run -it -p 80:80 -p 8888:8888 datasci4health/case-notebook 
-```
-
-Or via docker-compose:
-
-
-```bash
-sudo docker-compose --url https://github.com/datasci4health/case-notebook/blob/master/docker-compose.yml up
-```
-
-After starting the container, got to http://localhost/author/author.html to see the authoring environment.
