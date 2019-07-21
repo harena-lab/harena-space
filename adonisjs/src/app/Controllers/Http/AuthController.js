@@ -23,16 +23,8 @@ class AuthController {
 
         await axios.post(URL, { email, password })
         .then((res) => {
-
-
-
-            console.log(res.data);
+           console.log(res.data);
             console.log(res.status + ' - ' + res.statusText);
-            // console.log(response.statusText);
-            // console.log(response.headers);
-            // console.log(response.config);
-            // console.log(`statusCode: ${res.statusCode}`)
-            // return response.redirect('/author')
             return response.redirect("/")
         })
         .catch((error) => {
