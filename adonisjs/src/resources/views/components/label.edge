@@ -1,3 +1,9 @@
-<label class="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2" for="{{ related }}">
+<label 
+	 
+	for="{{ related }}"
+	@if(id)
+    		id="{{ id }}"
+  	@endif
+>
   {{ text }}
 </label>

@@ -16,15 +16,7 @@
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use("Route");
 
-Route.on("/").render("index");
-
-Route.get('/home', ({ view }) => {
-   return view.render('home')
- })
-
-Route.get('/supervisor-home', ({ view }) => {
-   return view.render('supervisor/supervisor-home')
-})
+Route.on("/").render("home");
 
 // Those routes should be only accessible
 // when you are not logged in
