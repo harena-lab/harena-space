@@ -13,7 +13,7 @@ class AuthController {
     }
 
 
-    async login({ request, auth, response }) {
+    async login({ request, auth, response, session }) {
         let { email, password } = request.all();
 
         console.log({ email, password } );
@@ -21,26 +21,27 @@ class AuthController {
 
         URL = 'harena-manager://harena-manager:10020/api/v1/user/login'
 
-        axios.post(URL, { email, password })
+        await axios.post(URL, { email, password })
         .then((res) => {
-            console.log('acertou')
-            console.log(response);
-            console.log(res.status + ' - ' + response.statusText);
+
+
+
+            console.log(res.data);
+            console.log(res.status + ' - ' + res.statusText);
             // console.log(response.statusText);
             // console.log(response.headers);
             // console.log(response.config);
             // console.log(`statusCode: ${res.statusCode}`)
             // return response.redirect('/author')
-            return
+            return response.redirect("/")
         })
         .catch((error) => {
-            console.log('falhou')
+            session.flashExcept(['password'])
+            session.flash({ error: 'We cannot find any account with these credentials.' })
 
             console.error(error.message)
-            return
+            return response.redirect("/login")
         })
-
-        return response.redirect('/')
     }
 }
 
