@@ -34,6 +34,7 @@ services:
 
   harena-manager:
     image: faguim/harena-manager:latest
+    container_name: harena-manager
     ports:
       - "10020:10020"
     volumes:
