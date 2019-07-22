@@ -6,8 +6,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
-    "test": "node ace test",
-    "startWatchInspect": "nodemon --inspect --trace-warnings server.js"
+    "test": "node ace test"
   },
   "keywords": [
     "adonisjs",

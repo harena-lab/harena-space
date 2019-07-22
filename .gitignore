@@ -7,3 +7,6 @@ package-lock\.json
 .env
 
 .idea
+
+# Dependency directories
+node_modules/
