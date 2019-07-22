@@ -37,8 +37,10 @@ services:
     container_name: harena-manager
     ports:
       - "10020:10020"
-    volumes:
-      - ../../harena-manager/adonisjs/src/:/app
+    
+# Uncomment if you have cloned harena-manager repository to the same folder where cloned harena-space. These lines allow change the harena-manager-code running on container
+#    volumes:
+#      - ../../harena-manager/adonisjs/src/:/app 
     environment:
       - ENV_SILENT=false
       - HOST=0.0.0.0
