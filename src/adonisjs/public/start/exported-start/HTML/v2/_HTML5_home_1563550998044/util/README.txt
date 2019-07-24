@@ -1,2 +1,0 @@
-A tela inicial é a home, a partir do botão de cadastro, ela se liga com a tela experimente 1, a tela de cadastro, essa se liga com a tela experimente 1-1 que se liga com a experimente 1-2, as telas de foto, e essas se ligam com as experimente 1_20, 1_21, 1_22, escolha de casos e por fim, elas se ligam com os casos.
-A partir do botão de login, a tela inicial se liga com a já tenho cadastro e essa com a já tenho cadastro 1, as telas de cadastro, então elas se ligam com a experimente 1-3 e essa com a 1-4, de escolha de casos e por fim, essas se ligam com os casos.
