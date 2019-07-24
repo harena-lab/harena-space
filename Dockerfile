@@ -7,7 +7,6 @@ RUN npm i -g @adonisjs/cli
 
 COPY ./src/adonisjs .
 
-RUN cp .env.example .env
 RUN npm install
 
 CMD [ "npm", "start"]
