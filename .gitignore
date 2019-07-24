@@ -2,11 +2,3 @@ dcc-author-server-address.js
 
 
 package-lock\.json
-
-# dotenv environment variables file
-.env
-
-.idea
-
-# Dependency directories
-node_modules/
