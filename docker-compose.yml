@@ -4,7 +4,7 @@ services:
 
   harena-space:
     container_name: harena-space
-    image: datasci4health/harena-space:v1
+    image: faguim/harena-space:latest
     ports:
       - "10010:10010"
     environment:
@@ -31,7 +31,7 @@ services:
       - harena-space
 
   harena-manager:
-    image: datasci4health/harena-manager:v1
+    image: faguim/harena-manager:latest
     container_name: harena-manager
     ports:
       - "10020:10020"
