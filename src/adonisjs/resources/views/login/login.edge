@@ -2,6 +2,7 @@
 
 @section('content')
   @set('title', 'Backend Jacintos Game')
+
   <div id="que_bom_que_voltou__ek1" >
 		Que bom que voltou!
   </div>
@@ -12,6 +13,7 @@
   
 	<form id="login_form" action="/login" method="POST">
         	{{ csrfField() }}
+
 		@!component('components.label', { text: 'Seu e-mail', related: 'email', id:"seu_e_mail_ek2" })
   		@!component('components.input', 
           	{ name: 'email', 
@@ -39,6 +41,7 @@
 		<div id="estou_pronto_para_o_desafio_" >
 			Estou pronto para o desafio!
 		</div> 
+sadasdasdasdas
 	</form>
 
 

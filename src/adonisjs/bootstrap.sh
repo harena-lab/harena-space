@@ -1,3 +1,3 @@
-#!/bin/sh
+#!/bin/bash
 
 adonis serve --dev --debug

@@ -49,8 +49,8 @@ cd harena-manager
 Then, checkout to development branch and get the latest code version:
 
 ```bash
-git checkout -b development
-git pull origin development
+git checkout feature/49
+git pull
 ```
 
 Then, run the command to start the docker<sup>1</sup> container:
@@ -65,7 +65,7 @@ After starting the container, go to http://localhost:10010/author to see the aut
 If you want to get the command line of the container, then run the command:
 
 ```bash
-docker exec -it adonisjs_harena-space_1 bash
+docker exec -it harenaspace_harena-space_1 bash
 ```
 
 #### Just run the docker container

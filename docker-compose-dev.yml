@@ -2,7 +2,12 @@ version: '3'
 
 services:
 
-  harena-space:
-    
-    volumes:
-      - ./src/adonijs:/app
+#  This not work yet
+#  harena-space:
+#    volumes:
+#      - ./src/adonisjs:/app
+
+#  harena-manager:
+#    volumes:
+#      - ../harena-manager/src/adonisjs:/app
+#    command: "bash -c \"npm install\" "
