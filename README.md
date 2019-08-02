@@ -43,10 +43,10 @@ Clone the repository and get into it:
 
 ```bash
 git clone https://github.com/datasci4health/harena-space.git
-cd harena-manager
+cd harena-space
 ```
 
-Then, checkout to development branch and get the latest code version:
+Then, change the branch and get its latest code version:
 
 ```bash
 git checkout feature/49
