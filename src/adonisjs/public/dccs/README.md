@@ -2,7 +2,7 @@
 
 # Digital Content Component Playground
 
-Learn and try to instantiate and customize Digital Content Components (DCCs) at [DCC Playground](http://datasci4health.github.io/harena-space//src/adonisjs/public/dccs/playground/).
+Learn and try to instantiate and customize Digital Content Components (DCCs) at [DCC Playground](http://datasci4health.github.io/harena-space/src/adonisjs/public/dccs/playground/).
 
 ## Examples to try in the playground
 

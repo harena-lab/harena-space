@@ -13,8 +13,8 @@ Web-based client platform that includes: authoring environment, player engine an
   * [Option 1: Access our instance running at cloud](#option-1-access-our-instance-running-at-cloud)
   * [Option 2: Running as Docker containers](#option-2-running-as-docker-containers)
   * [Option 3: Running locally](#option-3-running-locally)
-* [Directory Map](#directory-map)
 * [Digital Content Component Playground](#digital-content-component-playground)
+* [Directory Map](#directory-map)
 
 <!-- * [System Requirements](#system-requirements)
   * [For running as Docker containers](#for-running-as-linuxwindows-docker-containers)
@@ -116,7 +116,7 @@ Go to http://127.0.0.1:3333/author/author.html
 
 # Digital Content Component Playground
 
-Learn and try to instantiate and customize Digital Content Components (DCCs) at [DCC Playground](http://datasci4health.github.io/harena-space//src/adonisjs/public/dccs/playground/).
+Learn and try to instantiate and customize Digital Content Components (DCCs) at [DCC Playground](http://datasci4health.github.io/harena-space/src/adonisjs/public/dccs/playground/).
 
 
 # Directory Map
