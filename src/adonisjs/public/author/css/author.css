@@ -1,20 +1,5 @@
 @charset "UTF-8";
 
-body {
-    font-family: "Trebuchet MS", Helvetica, sans-serif;
-    font-size: 14pt;
-}
-
-div {
-   box-sizing: border-box;
-}
-
-.std-border {
-   border: 1px solid gray;
-   border-radius: 5px;
-   margin: 5px;
-}
-
 .sty-main-panel {
    /* the main box (body) occupies all the visible area */
    position: absolute;

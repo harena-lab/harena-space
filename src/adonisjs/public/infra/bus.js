@@ -185,10 +185,4 @@ class MessageBus {
 
    MessageBus.int = new MessageBus(false);
    MessageBus.ext = new MessageBus(true);
-   /*
-   window.messageBus = {
-      int: new MessageBus(false),
-      ext: new MessageBus(false)
-   };
-   */
 })();
