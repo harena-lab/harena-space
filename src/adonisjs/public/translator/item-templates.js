@@ -3,9 +3,9 @@ Translator.htmlTemplates = {
 image:
 `<img src='[path]'[alt]>`,
 option:
-`<dcc-trigger id='dcc[seq]'[author] type='[subtype]' link='[link]' label='[display]'[parameter][image][location]></dcc-trigger>`,
+`<dcc-trigger id='dcc[seq]'[author] type='[subtype]' action='[target]' label='[display]'[parameter][image][location]></dcc-trigger>`,
 divert:
-`<dcc-trigger id='dcc[seq]'[author] type='+' link='[link]' label='[display]'></dcc-trigger>`,
+`<dcc-trigger id='dcc[seq]'[author] type='+' action='[target]' label='[display]'></dcc-trigger>`,
 talk:
 `<dcc-talk id='dcc[seq]'[author] character='[character]' speech='[speech]'>
 </dcc-talk>`,

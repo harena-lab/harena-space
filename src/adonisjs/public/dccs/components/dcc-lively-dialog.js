@@ -8,6 +8,8 @@ class DCCLivelyTalk extends DCCVisual {
      this._imageWeb = null;
 
      this._scheduleAnimation = this._scheduleAnimation.bind(this);
+
+     this.notify = this.notify.bind(this);     
    }
 
    static get observedAttributes() {
@@ -197,14 +199,23 @@ class DCCLivelyTalk extends DCCVisual {
      return this.getAttribute("speech");
    }
 
-    set speech(newSpeech) {
-     this.setAttribute("speech", newSpeech);
+   set speech(newSpeech) {
+      this.setAttribute("speech", newSpeech);
+      if (this._presentation != null) {
+         let speechText = this._presentation.querySelector("#dcc-talk-text");
+         if (speechText != null)
+            speechText.innerHTML = newSpeech;
+      }
    }
 
    _imageLoaded() {
       this._presentation.classList.add("dcc-direction");
       this._presentation.classList.add("dcc-entrance");
       this._presentation.classList.remove("dcc-hidden");
+   }
+
+   notify(topic, message) {
+      this.speech = message.parameter;
    }
    
    /* Editable Component */

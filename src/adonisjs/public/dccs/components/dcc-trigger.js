@@ -96,57 +96,34 @@ class DCCTrigger extends DCCBlock {
       return DCCTrigger.elementTag;
    }
 
-   /*
-   _injectDCC(presentation, render) {
-      if (this.xstyle == "out")
-         presentation.innerHTML = this.label;
-      else
-         presentation.title = this.label;
-
-      // <TODO> provisory
-      this._presentation = presentation;
-   }
-   
-   _renderEmbeddedInterface(render, presentation) {
-      if (this.xstyle == "out")  // text only
-         presentation["innerHTML"] = this.label;
-      else  // image (out-image)
-         presentation["title"] = this.label;
-   }
-
-   _renderCompleteInterface(render, presentation) {
-      let linkWeb = "";
-      let elements = null;
-      if (this.hasAttribute("image"))
-         elements = DCCTrigger.templateElements.image.replace("[render]", render)
-                                                     .replace("[link]", linkWeb)
-                                                     .replace("[label]", this.label)
-                                                     .replace("[image]", this.image);
-      else
-         elements = DCCTrigger.templateElements.regular.replace("[render]", render)
-                                               .replace("[link]", linkWeb)
-                                               .replace("[label]", this.label);
-      
-      presentation.innerHTML = DCCTrigger.templateStyle + elements;
-   }
-   */
-   
    _computeTrigger() {
       if (this._active &&
           (this.hasAttribute("label") || this.hasAttribute("action"))) {
+         /*
          if (this.hasAttribute("link") ||
              (this.hasAttribute("action") && this.action.endsWith("/navigate")))
             this._active = false;
+         */
+         if (this.hasAttribute("action") && this.action.endsWith("/navigate"))
+            this._active = false;
+
+         /*
          let message = (this.hasAttribute("link")) ? this.link : this.label;
-         // <TODO> Provisory - it is better to have the same format
-         //        for all messages
          if (!this.hasAttribute("action")) {
             message = {target: message};
             if (this.hasAttribute("parameter"))
                message.parameter = this.parameter;
          }
          const topic = (this.hasAttribute("action"))
-            ? this.action : "knot/" + message + "/navigate";
+            ? this.action : "knot/" + message.target + "/navigate";
+         */
+
+         const topic = (this.hasAttribute("action"))
+            ? this.action : "trigger/" + this.label + "/clicked";
+         let message = {};
+         if (this.hasAttribute("parameter"))
+            message.parameter = this.parameter;
+
          MessageBus.ext.publish(topic, message);
       }
    }

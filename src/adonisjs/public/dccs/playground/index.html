@@ -21,6 +21,7 @@
   <script src="../../infra/bus.js"></script>
   <script src="../../infra/dcc-common-server-proxy.js"></script>
 
+   <script src="../../dccs/subscribe-dcc.js"></script>
    <script src="../../dccs/components/dcc-base.js"></script>
    <script src="../../dccs/components/dcc-visual.js"></script>
    <script src="../../dccs/components/dcc-markdown.js"></script>
@@ -56,16 +57,19 @@
 
   <script>
       function start() {
-         /*
-         window.quill = new Quill("#editor",
-            {theme: "snow",
-             modules: { toolbar: false }
-            });
-         */
+         document.querySelector("#json-message").value = "";
          MessageBus.ext.subscribe("control/render/example", render);
+         MessageBus.ext.subscribe("#", showJson);
       }
       function render(topic, message) {
          document.querySelector("#render-panel").innerHTML = document.querySelector("#editor").value;
+      }
+      function showJson(topic, message) {
+         if (topic != "control/render/example")
+           document.querySelector("#json-message").value =
+              document.querySelector("#json-message").value +
+              "topic: " + topic + "\n" +
+              "message: " + JSON.stringify(message) + "\n\n";
       }
   </script>
 
@@ -74,7 +78,7 @@
 <body onload="start()">
    <script>
       MessageBus.page = new MessageBus(false);
-      MessageBus.ext.externalized = false;
+      // MessageBus.ext.externalized = false;
    </script>
 
   <main role="main">
@@ -105,10 +109,11 @@
     <div class="container-fluid h-75">
       <div class="row h-100">
         <div class="col-6 h-100">
-          <div class="std-panel h-100">
+          <div class="row std-panel h-50">
             <textarea id="editor" class="w-100 h-100"></textarea>
-            <!-- <div id="editor" class="editor-panel"> 
-            </div> -->
+          </div>
+          <div class="row std-panel h-50">
+            <textarea id="json-message" class="w-100 h-100"></textarea>
           </div>
         </div>
 
