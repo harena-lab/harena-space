@@ -827,7 +827,7 @@ class Translator {
    /*
     * Option Obj to HTML
     * Output:
-    *   <dcc-trigger id='dcc[seq]'  type='[subtype]' link='[link].html' label='[display]' [image] [location]></dcc-trigger>
+    *   <dcc-trigger id='dcc[seq]'  type='[subtype]' action='[target]' label='[display]' [image] [location]></dcc-trigger>
     */
    _optionObjToHTML(obj) {
       // const display = (obj.label != null) ? obj.label : obj.target;
@@ -855,7 +855,7 @@ class Translator {
          .replace("[seq]", obj.seq)
          .replace("[author]", this.authorAttr)
          .replace("[subtype]", obj.subtype)
-         .replace("[link]", obj.contextTarget)
+         .replace("[target]", obj.contextTarget)
          .replace("[display]", label)
          .replace("[parameter]",
             (obj.parameter == null) ? "" : " parameter='" + obj.parameter + "'")
@@ -925,12 +925,12 @@ class Translator {
    /*
     * Divert Obj to HTML
     * Output:
-    *   <dcc-trigger id='dcc[seq]' link='[link].html' label='[display]'></dcc-trigger>
+    *   <dcc-trigger id='dcc[seq]' action='[target]' label='[display]'></dcc-trigger>
     */
    _divertObjToHTML(obj) {
       return Translator.htmlTemplates.divert.replace("[seq]", obj.seq)
                                             .replace("[author]", this.authorAttr)
-                                            .replace("[link]", obj.target)
+                                            .replace("[target]", obj.target)
                                             .replace("[display]", obj.label);
    }
 

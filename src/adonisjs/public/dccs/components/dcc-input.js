@@ -1,7 +1,6 @@
 /**
  * Input DCC
- */
-
+ ***********/
 
 class DCCInput extends DCCBlock {
    constructor() {
@@ -103,15 +102,6 @@ class DCCInput extends DCCBlock {
       this._inputVariable.addEventListener("input", this.inputTyped);
       this._inputVariable.addEventListener("change", this.inputChanged);
    }
-   
-   /*
-   _renderEmbeddedInterface(render, presentation) {
-      return this._renderCompleteInterface(render, presentation);
-   }
-
-   _renderCompleteInterface(render, presentation) {
-   }
-   */
 }
 
 (function() {

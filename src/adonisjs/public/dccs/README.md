@@ -7,13 +7,16 @@ Learn and try to instantiate and customize Digital Content Components (DCCs) at 
 ## Examples to try in the playground
 
 ### `Trigger DCC`
+
 ~~~html
-<dcc-trigger action="button/on" label="On"></dcc-trigger>
+<dcc-trigger label="On" action="button/on/clicked" parameter="message to you"></dcc-trigger>
 
 <div style="width: 100px">
-   <dcc-trigger link="#" label="Check" image="icons/icon-check.svg"></dcc-trigger>
+   <dcc-trigger label="Check" image="icons/icon-check.svg"></dcc-trigger>
 </div>
 ~~~
+
+### `Lively Talk DCC`
 
 ~~~html
 <dcc-lively-talk duration="2s" character="nurse" speech="Doctor, please you have to evaluate a man">
@@ -22,6 +25,19 @@ Learn and try to instantiate and customize Digital Content Components (DCCs) at 
 <dcc-lively-talk duration="2s" delay="2s" direction="right"
          character="doctor"
          speech="Ok.">
+</dcc-lively-talk>
+~~~
+
+### `Connecting two components`
+
+~~~html
+<dcc-trigger label="Message" action="send/message" parameter="Hello man!">
+</dcc-trigger>
+
+<dcc-lively-talk id="doctor" duration="0s"
+         character="doctor"
+         speech="...">
+  <subscribe-dcc message="send/message"></subscribe>
 </dcc-lively-talk>
 ~~~
 

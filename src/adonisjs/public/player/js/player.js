@@ -86,9 +86,10 @@ class PlayerManager {
    
    navigateEvent(topic, message) {
       let target = MessageBus.extractLevel(topic, 2);
-      // <TODO> Provisory - all messages will have the same format in the future
+      /*     
       if (message)
          target = (typeof message === "string") ? message : message.target;
+      */
       this.trackTrigger(target);
 
       // MessageBus.ext.publish("checkout", message);

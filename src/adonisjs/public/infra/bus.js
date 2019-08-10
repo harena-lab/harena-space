@@ -25,7 +25,7 @@ class MessageBus {
       let status = true;
       
       // Topic Filter: transform wildcards in regular expressions
-      if (topic.indexOf("+") > 0 || topic.indexOf("#") > 0) {
+      if (topic.indexOf("+") > -1 || topic.indexOf("#") > -1) {
          const reTopic = MessageBus._convertRegExp(topic);
          this._listeners.push({topic: topic,
                                regexp: reTopic,
@@ -56,26 +56,36 @@ class MessageBus {
             this._listeners[l].callback(topic, message);
       
       if (this._externalized) {
-         let extMessage = (message != null) ? message : {};
-         if (typeof message != "object")
-            extMessage = {content: message};
-         let extTopic = topic;
-         if (this._runningCase != null) {
-            extMessage.track = {userid:  this._runningCase.track.userid,
-                                caseid:  this._runningCase.track.caseid};
-            extTopic = this._runningCase.runningId + "/" + topic;
-         }
-         
-         const response = await fetch(DCCCommonServer.loggerAddressAPI + "message", {
-            method: "POST",
-            body: JSON.stringify({"topic": extTopic,
-                                  "payload": extMessage
-                                 }),
-            headers:{
-              "Content-Type": "application/json"
+         if (DCCCommonServer.loggerAddressAPI) {
+            let extMessage = (message != null) ? message : {};
+            if (typeof message != "object")
+               extMessage = {content: message};
+            let extTopic = topic;
+            if (this._runningCase != null) {
+               extMessage.track = {userid:  this._runningCase.track.userid,
+                                   caseid:  this._runningCase.track.caseid};
+               extTopic = this._runningCase.runningId + "/" + topic;
             }
-          });
-          const status = await response.json();
+            
+            const response = await fetch(DCCCommonServer.loggerAddressAPI + "message", {
+               method: "POST",
+               body: JSON.stringify({"topic": extTopic,
+                                     "payload": extMessage
+                                    }),
+               headers:{
+                 "Content-Type": "application/json"
+               }
+             });
+             const status = await response.json();
+          }
+
+          parent.postMessage({topic: topic, message: message}, "*");
+
+          /*
+          if (parent.IPython != null)
+             parent.IPython.notebook.kernel.execute(
+                'Component.notify("' + topic + '", "' + message + '")');
+         */
       }
    }
    
