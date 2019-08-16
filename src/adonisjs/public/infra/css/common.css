@@ -18,7 +18,14 @@ div {
 nav.navbar {
   margin-bottom: 1rem;
 }
-
+.container-padding{
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+  padding-bottom: 15px;
+}
 .std-border, .std-panel, .navbar-light {
    border: .1rem solid #707070;
    border-radius: .25rem;
