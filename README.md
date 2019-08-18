@@ -132,4 +132,3 @@ Learn and try to instantiate and customize Digital Content Components (DCCs) at 
 * **player** - Kernel of the HTML cases player. This kernel is used by the `translator` module to produce the final HTML version of the cases, which have the player kernel inside them.
 
 * **translator** - Translates the markdown document of a case to the final case executed in the player using HTML, CSS, and Javascript. In the process, it produces an intermediary object representation of the case.
-
