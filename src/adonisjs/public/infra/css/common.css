@@ -20,10 +20,10 @@ nav.navbar {
 }
 .container-padding{
   width: 100%;
+  margin-left: 15px;
+  margin-right: 15px;
   padding-right: 15px;
   padding-left: 15px;
-  margin-right: auto;
-  margin-left: auto;
   padding-bottom: 15px;
 }
 .std-border, .std-panel, .navbar-light {
