@@ -21,6 +21,15 @@ nav.navbar {
 .hidden-overflow{
   overflow: hidden;
 }
+.index-boot-padding{
+  padding-left:15px;
+  padding-right: 15px;
+  padding-bottom: 15px;
+}
+.scroll-y{
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
 
 .container-padding{
   width: 100%;
