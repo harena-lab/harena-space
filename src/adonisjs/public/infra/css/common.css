@@ -18,13 +18,17 @@ div {
 nav.navbar {
   margin-bottom: 1rem;
 }
+.hidden-overflow{
+  overflow: hidden;
+}
+
 .container-padding{
   width: 100%;
-  padding-right: 15px;
-  padding-left: 15px;
-  margin-right: auto;
-  margin-left: auto;
-  padding-bottom: 15px;
+  margin-left: 15px;
+  margin-right: 15px;
+  margin-right: 15px;
+  margin-left: 15px;
+  margin-bottom: 15px;
 }
 .std-border, .std-panel, .navbar-light {
    border: .1rem solid #707070;
@@ -119,4 +123,11 @@ nav.navbar {
 
 .custom-switch {
    font-size: 10pt;
+}
+
+/* <TODO> Align with Bootstrap */
+.panel-label {
+   color: #ffffff;
+   background-color: #a6a6a6;
+   padding-left: .5rem;
 }

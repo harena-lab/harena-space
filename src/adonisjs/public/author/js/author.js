@@ -44,9 +44,9 @@ class AuthorManager {
       }
    }
    
-   /*
-    * Properties
-    */
+   /* <TODO>
+      A commom code for shared functionalities between player and author
+      ******/
 
    get currentThemeFamily() {
       return this._currentThemeFamily;
@@ -280,7 +280,11 @@ class AuthorManager {
 
    _presentEditor(source) {
       this._knotPanel.innerHTML = "<div id='editor-space' class='sty-editor'></div>";
-      this._editor = new Quill("#editor-space", {
+      this._editor = new Quill("#editor-space", {});
+      this._editor.clipboard.addMatcher(Node.TEXT_NODE, function(node, delta) {
+         console.log("=== clipboard:");
+         console.log(node.data);
+         return new Delta().insert(node.data);
       });
       this._editor.insertText(0, source);
    }
@@ -440,7 +444,6 @@ class AuthorManager {
 
       if (this._previousEditedDCC) {
          if (this._previousBorderStyle) {
-            console.log(this._previousBorderStyle);
             this._previousEditedDCC.style.border =
                this._previousBorderStyle;
             delete this._previousBorderStyle;
@@ -485,16 +488,26 @@ class AuthorManager {
          // finding the next nonblank node
          let pos;
          if (position = "previous") {
+            /*
             pos = (contentSel[elSel-1].type == "text" &&
                Basic.service.isBlank(contentSel[elSel-1].content)) ? elSel-2 : elSel-1;
+            */
+            pos = (contentSel[elSel-1].type == "linefeed") ? elSel-2 : elSel-1;
+            /*
             if (pos > 0 && contentSel[pos-1] != "text")
                contentSel[pos]._source = "\n\n" + contentSel[pos]._source;
+            */
          }
          else {
+            /*
             pos = (contentSel[elSel+1].type == "text" &&
                Basic.service.isBlank(contentSel[elSel+1].content)) ? elSel+2 : elSel+1;
+            */
+            pos = (contentSel[elSel+1].type == "linefeed") ? elSel+2 : elSel+1;
+            /*
             if (pos < contentSel.length-1 && contentSel[pos+1] != "text")
                contentSel[pos]._source += "\n\n";
+            */
          }
 
          // exchanging sequence ids
@@ -508,6 +521,8 @@ class AuthorManager {
          contentSel[pos] = element;
 
          this.knotUpdate();
+
+         console.log(this._knots);
       }
    }
 

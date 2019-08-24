@@ -59,26 +59,26 @@ class DCCTrigger extends DCCBlock {
    
    /* Rendering */
    
-   _renderInterface() {
+   async _renderInterface() {
       // === pre presentation setup
       let html;
       if (this.xstyle.startsWith("out"))
          html = this.label;
       else {
-         html = DCCTrigger.templateStyle;
+         // html = DCCTrigger.templateStyle;
          if (this.hasAttribute("image"))
-            html += DCCTrigger.templateElements.image
+            html = DCCTrigger.templateElements.image
                           .replace("[render]", this._renderStyle())
                           .replace("[label]", this.label)
                           .replace("[image]", this.image);
          else
-            html += DCCTrigger.templateElements.regular
+            html = DCCTrigger.templateElements.regular
                           .replace("[render]", this._renderStyle())
                           .replace("[label]", this.label);
       }
 
       // === presentation setup (DCC Block)
-      this._applyRender(html, (this.xstyle == "out-image") ? "title" : "innerHTML");
+      await this._applyRender(html, (this.xstyle == "out-image") ? "title" : "innerHTML");
 
       // === post presentation setup
       // <TODO> provisory
@@ -130,6 +130,7 @@ class DCCTrigger extends DCCBlock {
 }
 
 (function() {
+   /*
    DCCTrigger.templateStyle = 
    `<style>
       .regular-style {
@@ -153,6 +154,7 @@ class DCCTrigger extends DCCBlock {
          cursor: pointer;
       }
    </style>`;
+   */
       
    DCCTrigger.templateElements = {
    regular:

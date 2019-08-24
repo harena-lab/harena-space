@@ -1,5 +1,6 @@
 /* Character DCC Editable
  ************************/
+/*
 function editableDCCCharacter() {
    DCCCharacter.prototype._imageSelected = function(event) {
       this.image = event.detail;
@@ -49,3 +50,4 @@ function editableDCCCharacter() {
    };
 
 }
+*/

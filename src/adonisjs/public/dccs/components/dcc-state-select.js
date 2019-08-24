@@ -1,6 +1,6 @@
 /* State Selector DCC
  ********************/
-class DCCStateSelector extends DCCVisual {
+class DCCStateSelect extends DCCVisual {
    constructor() {
      super();
      
@@ -12,7 +12,7 @@ class DCCStateSelector extends DCCVisual {
      // Without shadow - not working
      /*
      const text = this.innerHTML;
-     this.innerHTML = DCCStateSelector.templateElements;
+     this.innerHTML = DCCStateSelect.templateElements;
      this.querySelector("#presentation-text").innerHTML = text;
      this._presentation = this.querySelector("#presentation-dcc");
      this._presentationState = this.querySelector("#presentation-state");
@@ -35,9 +35,9 @@ class DCCStateSelector extends DCCVisual {
    async connectedCallback() {
       const theme = await MessageBus.ext.request("control/_current_theme_name/get");
 
-      DCCStateSelector.templateElements =
+      DCCStateSelect.templateElements =
       "<style> @import '" +
-         Basic.service.themeStyleResolver(theme.message, "dcc-state-selector.css") +
+         Basic.service.themeStyleResolver(theme.message, "dcc-state-select.css") +
       "' </style>" +
       `<span id="presentation-dcc">
          <span id="presentation-text"><slot></slot></span>
@@ -45,9 +45,9 @@ class DCCStateSelector extends DCCVisual {
       </span>`;
 
       let template = document.createElement("template");
-      template.innerHTML = DCCStateSelector.templateElements;
+      template.innerHTML = DCCStateSelect.templateElements;
 
-      // Basic.service.replaceStyle(template, null, newValue, "dcc-state-selector.css");
+      // Basic.service.replaceStyle(template, null, newValue, "dcc-state-select.css");
      
       this._shadow = this.attachShadow({mode: "open"});
       this._shadow.appendChild(template.content.cloneNode(true));
@@ -69,7 +69,7 @@ class DCCStateSelector extends DCCVisual {
       this._checkRender();
 
       MessageBus.ext.publish("var/" + this.completeId + "/subinput/ready",
-                                    {sourceType: DCCStateSelector.elementTag,
+                                    {sourceType: DCCStateSelect.elementTag,
                                      content: this.innerHTML});
       super.connectedCallback();
    }
@@ -159,8 +159,8 @@ class DCCStateSelector extends DCCVisual {
              this._presentationState.innerHTML = "";
        }
        this._presentation.className =
-          DCCStateSelector.elementTag + "-template " +
-          DCCStateSelector.elementTag + "-" + this._currentState + "-template";
+          DCCStateSelect.elementTag + "-template " +
+          DCCStateSelect.elementTag + "-" + this._currentState + "-template";
      }
    }
    
@@ -191,7 +191,7 @@ class DCCStateSelector extends DCCVisual {
 
 /* Group Selector DCC
  ********************/
-class DCCGroupSelector extends DCCBase {
+class DCCGroupSelect extends DCCBase {
    constructor() {
      super();
      this.requestContext = this.requestContext.bind(this); 
@@ -203,7 +203,7 @@ class DCCGroupSelector extends DCCBase {
       MessageBus.page.subscribe("dcc/request/selector-states", this.requestStates);
       
       MessageBus.ext.publish("var/" + this.context + "/group_input/ready",
-                                    DCCGroupSelector.elementTag);
+                                    DCCGroupSelect.elementTag);
    }
 
    disconnectedCallback() {
@@ -256,9 +256,9 @@ class DCCGroupSelector extends DCCBase {
 (async function() {
 
 /*
-DCCStateSelector.templateElements = 
+DCCStateSelect.templateElements = 
 `<style>
-   @import "css/dcc-state-selector.css"
+   @import "css/dcc-state-select.css"
 </style>
 <span id="presentation-dcc">
    <span id="presentation-text"><slot></slot></span>
@@ -266,10 +266,10 @@ DCCStateSelector.templateElements =
 </span>`;
 */
   
-DCCStateSelector.elementTag = "dcc-state-selector";
-customElements.define(DCCStateSelector.elementTag, DCCStateSelector);
+DCCStateSelect.elementTag = "dcc-state-select";
+customElements.define(DCCStateSelect.elementTag, DCCStateSelect);
 
-DCCGroupSelector.elementTag = "dcc-group-selector";
-customElements.define(DCCGroupSelector.elementTag, DCCGroupSelector);
+DCCGroupSelect.elementTag = "dcc-group-select";
+customElements.define(DCCGroupSelect.elementTag, DCCGroupSelect);
 
 })();

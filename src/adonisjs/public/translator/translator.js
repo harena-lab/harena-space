@@ -72,7 +72,7 @@ class Translator {
       let knotCtx = [];
       let knotBlocks = markdown.split(Translator.marksKnotTitle);
       for (var kb = 1; kb < knotBlocks.length; kb += 2) {
-         let transObj = this._knotMdToObj(knotBlocks[kb].match(Translator.marks.knot));
+         let transObj = this._knotMdToObj(knotBlocks[kb].match(Translator.element.knot.mark));
          transObj.render = true;
          let label = transObj.title;
          // console.log("Label: " + label);
@@ -215,10 +215,10 @@ class Translator {
          // look for the next nearest expression match
          matchStart = -1;
          let selected = "";
-         for (let mk in Translator.marks) {
+         for (let mk in Translator.element) {
             if (!((mk == "annotation" || mk == "selector") &&
                   this.authoringRender)) {
-               let pos = mdfocus.search(Translator.marks[mk]);
+               let pos = mdfocus.search(Translator.element[mk].mark);
                if (pos > -1 && (matchStart == -1 || pos < matchStart)) {
                   selected = mk;
                   matchStart = pos;
@@ -235,11 +235,11 @@ class Translator {
             }
             
             // translate the expression to an object
-            let matchSize = mdfocus.match(Translator.marks[selected])[0].length;
+            let matchSize = mdfocus.match(Translator.element[selected].mark)[0].length;
             let toTranslate = mdfocus.substr(matchStart, matchSize);
             let transObj = this._initializeObject( 
                this.mdToObj(selected,
-                  Translator.marks[selected].exec(toTranslate)), toTranslate);
+                  Translator.element[selected].mark.exec(toTranslate)), toTranslate);
             
             // attach to a knot array (if it is a knot) or an array inside a knot
             if (selected == "knot") {
@@ -259,7 +259,7 @@ class Translator {
       if (mdfocus.length > 0)
          compiledKnot.push(
             this._initializeObject(this._textMdToObj(mdfocus), mdfocus));
-      
+
       // giving context to links and variables
       for (let c in compiledKnot) {
          if (compiledKnot[c].type == "input")
@@ -277,7 +277,49 @@ class Translator {
                lastDot = prefix.lastIndexOf(".");
             }
             compiledKnot[c].contextTarget = target;
-         }  
+         }
+      }
+
+      // adjusting the interpretation of line feeds
+      // merging subordinate fields
+      for (let c = 0; c < compiledKnot.length; c++) {
+         if (compiledKnot[c].type == "linefeed") {
+            if (c > 0 && compiledKnot[c-1].type == "text" &&
+                c < compiledKnot.length-1 && compiledKnot[c+1].type == "text") {
+               compiledKnot[c-1].content += compiledKnot[c].content +
+                                            compiledKnot[c+1].content;
+               compiledKnot[c-1]._source += compiledKnot[c]._source +
+                                            compiledKnot[c+1]._source;
+               compiledKnot.splice(c, 2);
+               c--;
+            } else if (c == 0 || compiledKnot[c-1].type != "text" &&
+                       Translator.element[compiledKnot[c-1].type].line) {
+               if (compiledKnot[c].content.length > 1) {
+                  compiledKnot[c].content = compiledKnot[c].content.substring(1);
+                  compiledKnot[c]._source = compiledKnot[c]._source.substring(1);
+               } else {
+                  compiledKnot.splice(c, 1);
+                  c--;
+               }
+            }
+         } else if (c > 0 && compiledKnot[c].type == "field" &&
+                    compiledKnot[c].subordinate &&
+                    Translator.element[compiledKnot[c-1].type].hassub) {
+            if (compiledKnot[c].field.indexOf("answers") > -1) {
+               if (!compiledKnot[c-1].answers)
+                  compiledKnot[c-1].answers = {};
+               let answerType = compiledKnot[c].field.replace("answers", "").trim();
+               if (answerType.length == 0)
+                  answerType = "untyped";
+               compiledKnot[c-1].answers[answerType] = {answers: compiledKnot[c].value};
+               if (compiledKnot[c].target)
+                  compiledKnot[c-1].answers[answerType].target = compiledKnot[c].target;
+            } else
+               compiledKnot[c-1][compiledKnot[c].field] = compiledKnot[c].value;
+            compiledKnot.splice(c, 1);
+            c--;
+         }
+         compiledKnot[c].seq = c + 1;
       }
       
       // delete knot._preparedSource;
@@ -301,6 +343,7 @@ class Translator {
          case "selctxopen"  : obj = this._selctxopenMdToObj(match); break;
          case "selctxclose" : obj = this._selctxcloseMdToObj(match); break;
          case "selector"    : obj = this._selectorMdToObj(match); break;
+         case "linefeed"    : obj = this._linefeedMdToObj(match); break;
       };
       return obj;
    }
@@ -447,6 +490,7 @@ class Translator {
          case "context-close" : html = this._selctxcloseObjToHTML(obj); break;
          case "selector"   : html = this._selectorObjToHTML(obj); break;
          case "annotation" : html = this._annotationObjToHTML(obj); break;
+         case "linefeed"   : html = this._linefeedObjToHTML(obj); break;
          // score  : this.translateScore
       }
       return html;
@@ -468,11 +512,16 @@ class Translator {
       */
       for (let kn in compiledCase.knots) {
          if (compiledCase.knots[kn].toCompile)
-            md += compiledCase.knots[kn]._source;
+            md += compiledCase.knots[kn]._source +
+                  ((compiledCase.knots[kn].type != "text" &&
+                     Translator.element[compiledCase.knots[kn].type].line) ? "\n" : "");
          else {
-            md += compiledCase.knots[kn]._sourceHead;
-            for (let ct in compiledCase.knots[kn].content)
-               md += compiledCase.knots[kn].content[ct]._source;
+            md += compiledCase.knots[kn]._sourceHead + "\n";
+            for (let ct in compiledCase.knots[kn].content) {
+               md += compiledCase.knots[kn].content[ct]._source +
+                     ((compiledCase.knots[kn].content[ct].type != "text" &&
+                        Translator.element[compiledCase.knots[kn].content[ct].type].line) ? "\n" : "");
+            }
          }
       }
       return md;
@@ -494,7 +543,7 @@ class Translator {
          case "option": element._source = this._optionObjToMd(element);
                         break;
       }
-      element._source += "\n\n";
+      // element._source += "\n\n";
    }
    
    /*
@@ -560,21 +609,6 @@ class Translator {
       return knot;
    }
    
-   /*
-    * Text Md to Obj
-    * Output:
-    * {
-    *    type: "text"
-    *    content: <unprocessed content in markdown>
-    * }
-    */
-   _textMdToObj(markdown) {
-      return {
-         type: "text",
-         content: markdown
-      };
-   }
-
    /* Output:
     * {
     *    type: "knot"
@@ -593,6 +627,21 @@ class Translator {
                       ? " (" + obj.categories.join(",") + ")" : ""); 
    }
    
+   /*
+    * Text Md to Obj
+    * Output:
+    * {
+    *    type: "text"
+    *    content: <unprocessed content in markdown>
+    * }
+    */
+   _textMdToObj(markdown) {
+      return {
+         type: "text",
+         content: markdown
+      };
+   }
+
    /*
     * Text Obj to HTML
     * Output: [content]
@@ -617,6 +666,30 @@ class Translator {
       obj.content = update.content;
    }
    */
+
+   /*
+    * Line feed Md to Obj
+    * Input: \f or \r or \n
+    * Output:
+    * {
+    *    type: "linefeed"
+    *    content: <line feeds>
+    * }
+    */
+   _linefeedMdToObj(matchArray) {
+      return {
+         type: "linefeed",
+         content: matchArray[0]
+      };
+   }
+
+   /*
+    * Line feed Obj to HTML
+    * Output: line feeds converted to <br>
+    */
+   _linefeedObjToHTML(obj) {
+      return obj.content.replace(/[\f\n\r]/im, "<br>");
+   }
 
    /*
     * Image Md to Obj
@@ -872,22 +945,38 @@ class Translator {
    
    /*
     * Field Md to Obj
-    * Input: * [field]: [value]
+    * Input: * [field]: [value] -> [target]
     * Output:
     * {
     *    type: "field"
     *    presentation: <unprocessed content in markdown> #0
-    *    field: <label of the field> #1
-    *    value: <value of the field> #2
+    *    subordinate: subordination according to spaces preceeding #1
+    *    field: <label of the field> #2
+    *    value: <value of the field> #3
+    *    target: <target triggered when the state/value is achieved> #4
     * }
     */
    _fieldMdToObj(matchArray) {
-      return {
+      let field = {
          type: "field",
          presentation: matchArray[0],
-         field: matchArray[1].trim(),
-         value: matchArray[2].trim()
+         subordinate:
+            (matchArray[1][0] === "\t" || matchArray[1].length > 1) ? true : false,
+         field: matchArray[2].trim(),
+         value: matchArray[3].trim()
       };
+      let fset = false;
+      for (let fs in Translator.fieldSet)
+         if (field.field.indexOf(Translator.fieldSet[fs]) > -1)
+            fset = true;
+      if (fset) {
+         field.value = field.value.split(",");
+         for (let fv in field.value)
+            field.value[fv] = field.value[fv].trim();
+      }
+      if (matchArray[4] != null)
+         field.target = matchArray[4].trim();
+      return field;
    }
 
    /*
@@ -1034,23 +1123,20 @@ class Translator {
    
    /*
     * Input Md to Obj
-    * Input: {?[rows] [variable] : [vocabulary] # [write answer], ..., [write answer]; [wrong answer], ..., [wrong answer]}
+    * Input: ? [variable]
     * Output:
     * {
     *    type: "input"
-    *    variable: <variable that will receive the input> #2
-    *    rows: <number of rows for the input> #1
-    *    vocabulary: <the vocabulary to interpret the input> #3
-    *    right: [<set of right answers>] #4
-    *    wrong: [<set of wrong answers>] #5
+    *    variable: <variable that will receive the input> #1
     * }
     */
    _inputMdToObj(matchArray) {
-      let input = {
-             type: "input",
-             variable: matchArray[2].trim().replace(/ /igm, "_")
+      return {
+         type: "input",
+         variable: matchArray[1].trim().replace(/ /igm, "_")
       };
       
+      /*
       if (matchArray[1] != null)
          input.rows = parseInt(matchArray[1]);
       
@@ -1072,22 +1158,23 @@ class Translator {
       }
             
       return input;
+      */
    }
    
    /*
     * Input Obj to HTML
-    * Output: <dcc-input id='dcc[seq]' variable='[variable]' rows='[rows]' [vocabulary]> 
+    * Output: <dcc-input id='dcc[seq]' variable='[variable]' rows='[rows]' [vocabularies]> 
     *         </dcc-input>
     */
    _inputObjToHTML(obj) {
       const rows = (obj.rows) ? " rows='" + obj.rows + "'" : "";
-      const vocabulary = (obj.vocabulary) ? " vocabulary='" + obj.vocabulary + "'" : "";
+      const vocabularies = (obj.vocabularies) ? " vocabularies='" + obj.vocabularies + "'" : "";
       
       return Translator.htmlTemplates.input.replace("[seq]", obj.seq)
                                            .replace("[author]", this.authorAttr)
                                            .replace("[variable]", obj.variable)
                                            .replace("[rows]", rows)
-                                           .replace("[vocabulary]", vocabulary);
+                                           .replace("[vocabularies]", vocabularies);
    }
 
    /*
@@ -1163,7 +1250,7 @@ class Translator {
    
    /*
     * Selector Context Open Obj to HTML
-    * Output: <dcc-group-selector id='dcc[seq]' context='[context]' evaluation='[evaluation]' states='[options]' colors='[colors]'>
+    * Output: <dcc-group-select id='dcc[seq]' context='[context]' evaluation='[evaluation]' states='[options]' colors='[colors]'>
     */
    _selctxopenObjToHTML(obj) {
       let evaluation = (obj.evaluation != null) ? " evaluation='" + obj.evaluation + "'" : "";
@@ -1193,7 +1280,7 @@ class Translator {
    
    /*
     * Selector Context Close Obj to HTML
-    * Output: </dcc-group-selector>
+    * Output: </dcc-group-select>
     */
    _selctxcloseObjToHTML(obj) {
       // console.log("3. last context: " + this._lastSelectorContext);
@@ -1234,7 +1321,7 @@ class Translator {
    
    /*
     * Selector Obj to HTML
-    * Output: <dcc-state-selector id='dcc[seq]'>[expression]</dcc-state-selector>
+    * Output: <dcc-state-select id='dcc[seq]'>[expression]</dcc-state-select>
     */
    _selectorObjToHTML(obj) {
       let answer="";
@@ -1255,6 +1342,7 @@ class Translator {
 
       return result;
    }
+
 }
 
 (function() {
@@ -1270,31 +1358,81 @@ class Translator {
    
    Translator.marksAnnotationInside = /([\w \t\+\-\*"]+)(?:[=\:]([\w \t%]*)(?:\/([\w \t%]*))?)?/im;
 
-   Translator.marks = {
-      knot   : /(?:^[ \t]*(#+)[ \t]*([^\( \t\n\r\f][^\(\n\r\f]*)(?:\((\w[\w \t,]*)\))?[ \t]*#*[ \t]*$)|(?:^[ \t]*([^\( \t\n\r\f][^\(\n\r\f]*)(?:\((\w[\w \t,]*)\))?[ \t]*[\f\n\r][\n\r]?(==+|--+)$)/im,
-      image  : /!\[([\w \t]*)\]\(([\w:.\/\?&#\-]+)[ \t]*(?:"([\w ]*)")?\)/im,
+   Translator.element = {
+      knot: {
+         mark: /(?:^[ \t]*(#+)[ \t]*([^\( \t\n\r\f][^\(\n\r\f]*)(?:\((\w[\w \t,]*)\))?[ \t]*#*[ \t]*$)|(?:^[ \t]*([^\( \t\n\r\f][^\(\n\r\f]*)(?:\((\w[\w \t,]*)\))?[ \t]*[\f\n\r][\n\r]?(==+|--+)$)/im,
+         line: true,
+         hassub: true },
+      image: {
+         mark: /!\[([\w \t]*)\]\(([\w:.\/\?&#\-]+)[ \t]*(?:"([\w ]*)")?\)/im,
+         line: false,
+         hassub: false },
       // image  : /<img src="([\w:.\/\?&#\-]+)" (?:alt="([\w ]+)")?>/im,
-      option : /^[ \t]*([\+\*])[ \t]*([^\(&> \t][^\(&>\n\r\f]*)?(?:\(([\w \t-]+)\)[ \t]*)?(?:-(?:(?:&gt;)|>)[ \t]*([^\(\n\r\f]+)(?:\(([^\)\n\r\f]+)\))?)$/im,
-      field  : /^[ \t]*(?:[\+\*])[ \t]*([\w.\/\?&#\-][\w.\/\?&#\- \t]*):[ \t]*([^\n\r\f]+)$/im,
-      divert : /-(?:(?:&gt;)|>) *(\w[\w. ]*)/im,
-      talk   : /^[ \t]*:[ \t]*(\w[\w \t]*):[ \t]*([^\n\r\f]+)$/im,
-      talkopen: /^[ \t]*:[ \t]*(\w[\w \t]*):[ \t]*(?:[\f\n\r][\n\r]?!\[([\w \t]*)\]\(([\w:.\/\?&#\-]+)[ \t]*(?:"([\w ]*)")?\))?[ \t]*$/im,
-      talkclose: /[ \t]*:[ \t]*:[ \t]*$/im,
-      input  : /\{[ \t]*\?(\d+)?([\w \t]*)(?:\:([\w \t]+))?(?:#([\w \t\+\-\*"=\%\/,]+)(?:;([\w \t\+\-\*"=\%\/,]+))?)?\}/im,
-      compute: /~[ \t]*(\w+)?[ \t]*([+\-*/=])[ \t]*(\d+(?:\.\d+)?)/im,
-      annotation : /\{([\w \t\+\-\*"=\:%\/]+)(?:\(([\w \t\+\-\*"=\:%\/]+)\)[ \t]*)?\}/im,
-      selctxopen : Translator.marksAnnotation.ctxopen,
-      selctxclose: Translator.marksAnnotation.ctxclose,
-      selector   : Translator.marksAnnotation.annotation
+      field: {
+         // mark: /^([ \t]*)(?:[\+\*])[ \t]*([\w.\/\?&#\-][\w.\/\?&#\- \t]*):[ \t]*([^\n\r\f]+)$/im,
+         mark: /([ \t]*)(?:[\+\*])[ \t]*([\w.\/\?&#\-][\w.\/\?&#\- \t]*):[ \t]*([^&>\n\r\f]+)(?:-(?:(?:&gt;)|>)[ \t]*([^\(\n\r\f]+))?$/im,
+         line: true,
+         hassub: false },
+      option: {
+         mark: /^[ \t]*([\+\*])[ \t]*([^\(&> \t][^\(&>\n\r\f]*)?(?:\(([\w \t-]+)\)[ \t]*)?(?:-(?:(?:&gt;)|>)[ \t]*([^\(\n\r\f]+)(?:\(([^\)\n\r\f]+)\))?)$/im,
+         line: true,
+         hassub: false },
+      divert: {
+         mark: /-(?:(?:&gt;)|>) *(\w[\w. ]*)/im,
+         line: false,
+         hassub: false },
+      talk: {
+         mark: /^[ \t]*:[ \t]*(\w[\w \t]*):[ \t]*([^\n\r\f]+)$/im,
+         line: true,
+         hassub: true },
+      talkopen: {
+         mark: /^[ \t]*:[ \t]*(\w[\w \t]*):[ \t]*(?:[\f\n\r][\n\r]?!\[([\w \t]*)\]\(([\w:.\/\?&#\-]+)[ \t]*(?:"([\w ]*)")?\))?[ \t]*$/im,
+         line: true,
+         hassub: false },
+      talkclose: {
+         mark: /[ \t]*:[ \t]*:[ \t]*$/im,
+         line: true,
+         hassub: false },
+      input: {
+         // mark: /\{[ \t]*\?(\d+)?([\w \t]*)(?:\:([\w \t]+))?(?:#([\w \t\+\-\*"=\%\/,]+)(?:;([\w \t\+\-\*"=\%\/,]+))?)?\}/im,
+         mark: /^\?[ \t]+([\w \t]+)$/im,
+         line: true,
+         hassub: true },
+      compute: {
+         mark: /~[ \t]*(\w+)?[ \t]*([+\-*/=])[ \t]*(\d+(?:\.\d+)?)/im,
+         line: false,
+         hassub: false },
+      annotation: {
+         mark: /\{([\w \t\+\-\*"=\:%\/]+)(?:\(([\w \t\+\-\*"=\:%\/]+)\)[ \t]*)?\}/im,
+         line: false,
+         hassub: false },
+      selctxopen: {
+         mark: Translator.marksAnnotation.ctxopen,
+         line: true,
+         hassub: false },
+      selctxclose: {
+         mark: Translator.marksAnnotation.ctxclose,
+         line: false,
+         hassub: false },
+      selector: {
+         mark: Translator.marksAnnotation.annotation,
+         line: false,
+         hassub: false },
+      linefeed: {
+         mark: /[\f\n\r]+/im,
+         line: false,
+         hassub: false }
       // annotation : 
       // score  : /^(?:<p>)?[ \t]*~[ \t]*([\+\-=\*\\%]?)[ \t]*(\w*)?[ \t]*(\w+)[ \t]*(?:<\/p>)?/im
    };
+
+   Translator.fieldSet = ["vocabularies", "answers", "states", "labels"];
    
    // Translator.specialCategories = ["start", "note"];
    
    Translator.contextHTML = {
-      open:  /<p>(<dcc-group-selector(?:[\w \t\+\-\*"'=\%\/,]*)?>)<\/p>/igm,
-      close: /<p>(<\/dcc-group-selector>)<\/p>/igm
+      open:  /<p>(<dcc-group-select(?:[\w \t\+\-\*"'=\%\/,]*)?>)<\/p>/igm,
+      close: /<p>(<\/dcc-group-select>)<\/p>/igm
    };
 
    Translator.defaultVariable = "points";
