@@ -4,19 +4,47 @@
 
 Learn and try to instantiate and customize Digital Content Components (DCCs) at [DCC Playground](http://datasci4health.github.io/harena-space/src/adonisjs/public/dccs/playground/).
 
-## Examples to try in the playground
+# Syntax and Examples to try in the playground
 
-### `Trigger DCC`
+## Trigger DCC (`dcc-trigger`)
+
+### Syntax
 
 ~~~html
-<dcc-trigger label="On" action="button/on/clicked" parameter="message to you"></dcc-trigger>
+<dcc-trigger id="id" label="label" image="image" action="action" parameter="parameter">
+</dcc-trigger>
+~~~
 
+* `id` - unique id of the trigger;
+* `label`:
+  * textual button - textual label showed in the button;
+  * image trigger - the title of the image;
+* `image` (optional) - when the trigger is an image, it is the path of the image file;
+* `action` (optional) - the topic of the message sent by the trigger to activate an action; when the action is not specified, the topic is built from the label ("trigger/<label>/clicked");
+* `parameter` (optional) - the message body the accompanies the topic.
+
+### Examples
+
+Textual button trigger that sends the following message when clicked:
+* topic - `button/on/clicked`
+* message body - `"message to you"`
+
+~~~html
+<dcc-trigger label="On" action="button/on/clicked" parameter="message to you">
+</dcc-trigger>
+~~~
+
+Image trigger with title `Check` and whose image is located in `icons/icon-check.svg`. Since the image ocupies all available area, a div surrounding it delimites the size to `100px`.
+
+When clicked, the trigger will send a message with the topic: `trigger/Check/clicked`.
+
+~~~html
 <div style="width: 100px">
    <dcc-trigger label="Check" image="icons/icon-check.svg"></dcc-trigger>
 </div>
 ~~~
 
-### `Lively Talk DCC`
+### Lively Talk DCC (`dcc-lively-talk`)
 
 ~~~html
 <dcc-lively-talk duration="2s" character="nurse" speech="Doctor, please you have to evaluate a man!">

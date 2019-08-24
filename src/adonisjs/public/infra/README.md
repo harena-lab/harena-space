@@ -161,11 +161,11 @@ Operations:
   * `none` - no style defined;
   * `out` - style defined externally.
 
-### Entity: `dcc-state-selector`
+### Entity: `dcc-state-select`
 
 Operations:
-* `get states` \[`/dcc-state-selector/get/states`\] - Requests for an upper level DCC (e.g., an aggregattor DCC) or a group coordinator DCC the set of possible states present in the selector.
+* `get states` \[`/dcc-state-select/get/states`\] - Requests for an upper level DCC (e.g., an aggregattor DCC) or a group coordinator DCC the set of possible states present in the selector.
  
-  return: \[`/dcc-state-selector/states`\] - List of states separated by commas.
+  return: \[`/dcc-state-select/states`\] - List of states separated by commas.
 
 

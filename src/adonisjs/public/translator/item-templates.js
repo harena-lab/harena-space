@@ -22,7 +22,7 @@ talkclose:
 
 `,
 input:
-`<dcc-input id='dcc[seq]'[author] variable='[variable]'[rows][vocabulary]> 
+`<dcc-input id='dcc[seq]'[author] variable='[variable]'[rows][vocabularies]> 
 </dcc-input>`,
 compute:
 `<dcc-compute sentence='[sentence]'></dcc-compute>`,
@@ -31,17 +31,17 @@ domain:
 selctxopen:
 `
 
-<dcc-group-selector id='dcc[seq]'[author] context='[context]' [evaluation][states][colors]>
+<dcc-group-select id='dcc[seq]'[author] context='[context]' [evaluation][states][colors]>
 
 `,
 selctxclose:
 `
 
-</dcc-group-selector>
+</dcc-group-select>
 
 `,
 selector:
-`<dcc-state-selector id='dcc[seq]'[author][answer]>[expression]</dcc-state-selector>`
+`<dcc-state-select id='dcc[seq]'[author][answer]>[expression]</dcc-state-select>`
 };
 
 Translator.htmlTemplatesEditable = {

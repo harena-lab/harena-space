@@ -5,7 +5,12 @@
 class Basic {
    contructor() {
       this._host = null;
+      this._rootPath = "../";
    }
+
+   /*
+    * Properties
+    */
 
    get host() {
       return this._host;
@@ -13,6 +18,14 @@ class Basic {
    
    set host(newValue) {
       this._host = newValue;
+   }
+
+   get rootPath() {
+      return this._rootPath;
+   }
+   
+   set rootPath(newValue) {
+      this._rootPath = newValue;
    }
 
    isBlank(str) {
@@ -24,6 +37,7 @@ class Basic {
       let userid = null;
       let errorMessage = "";
       while (userid == null) {
+         /*
          const userEmail =
             await DCCNoticeInput.displayNotice(errorMessage +
                                          "<h3>Signin</h3><h4>inform your email:</h4>",
@@ -31,6 +45,10 @@ class Basic {
          const userPass =
             await DCCNoticeInput.displayNotice("<h3>Signin</h3><h4>inform your password:</h4>",
                                          "password");
+         */
+
+         const userEmail = "jacinto@example.com";
+         const userPass = "jacinto";
 
          let loginReturn = await MessageBus.ext.request("data/user/login",
                                                         {email: userEmail,
@@ -87,7 +105,11 @@ class Basic {
    }
 
    themeStyleResolver(theme, cssFile) {
-      return "../themes/" + theme + "/css/" + cssFile;
+      return this._rootPath + "themes/" + theme + "/css/" + cssFile;
+   }
+
+   dccStyleResolver(cssFile) {
+      return this._rootPath + "dccs/css/" + cssFile;
    }
 
    replaceStyle(targetDocument, oldCSS, newTheme, cssFile) {

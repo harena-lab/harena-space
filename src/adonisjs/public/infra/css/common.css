@@ -124,3 +124,10 @@ nav.navbar {
 .custom-switch {
    font-size: 10pt;
 }
+
+/* <TODO> Align with Bootstrap */
+.panel-label {
+   color: #ffffff;
+   background-color: #a6a6a6;
+   padding-left: .5rem;
+}
