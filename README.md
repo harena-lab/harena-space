@@ -114,7 +114,9 @@ Go to http://127.0.0.1:3333/author/author.html
 
 ---
 
-# Digital Content Component Playground
+# Digital Content Component Reference and Playground
+
+Digital Content Components [Reference and Examples](http://datasci4health.github.io/harena-space/src/adonisjs/public/dccs/).
 
 Learn and try to instantiate and customize Digital Content Components (DCCs) at the [DCC Playground](http://datasci4health.github.io/harena-space/src/adonisjs/public/dccs/playground/).
 
