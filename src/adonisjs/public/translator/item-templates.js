@@ -7,9 +7,7 @@ option:
 divert:
 `<dcc-trigger id='dcc[seq]'[author] type='+' action='[target]' label='[display]'></dcc-trigger>`,
 talk:
-`<dcc-talk id='dcc[seq]'[author] character='[character]'[image]>
-[speech]
-</dcc-talk>`,
+`<dcc-talk id='dcc[seq]'[author] character='[character]'>[speech]</dcc-talk>`,
 /*
 "talk-open":
 `

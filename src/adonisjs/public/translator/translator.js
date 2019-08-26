@@ -922,12 +922,9 @@ class Translator {
     * Divert Md to Obj
     */
    _divertMdToObj(matchArray) {
-      const target = matchArray[1].trim();
-      let label = target;
-      const lastDot = label.lastIndexOf(".");
-      if (lastDot > -1)
-         label = label.substr(lastDot + 1);
-      
+      console.log(matchArray[0]);
+      const label  = (matchArray[1]) ? matchArray[1].trim() : matchArray[2].trim();
+      const target = (matchArray[3]) ? matchArray[3].trim() : matchArray[4].trim();
       return {
          type: "divert",
          label: label,
@@ -951,7 +948,7 @@ class Translator {
    _talkMdToObj(matchArray) {
       let talk = {
          type: "talk",
-         character: matchArray[1].trim(),
+         character: matchArray[1].trim()
       };
       if (matchArray[2] != null)
          talk.speech = matchArray[2].trim();
@@ -1242,7 +1239,7 @@ class Translator {
          subfield: true,
          subimage: true },
       image: {
-         mark: /([ \t]*)!\[([\w \t]*)\]\(([\w:.\/\?&#\-]+)[ \t]*(?:"([\w ]*)")?\)/im,
+         mark: /([ \t]*)!\[([\w \t]*)\]\(([\w:.\/\?&#\-~]+)[ \t]*(?:"([\w ]*)")?\)/im,
          inline: true },
       field: {
          mark: /^([ \t]*)(?:[\+\*])[ \t]*([\w.\/\?&#\-][\w.\/\?&#\- \t]*):[ \t]*([^&>\n\r\f]+)(?:-(?:(?:&gt;)|>)[ \t]*([^\(\n\r\f]+))?$/im,
@@ -1253,7 +1250,7 @@ class Translator {
          mark: /^[ \t]*([\+\*])[ \t]*([^\(&> \t][^\(&>\n\r\f]*)?(?:\(([\w \t-]+)\)[ \t]*)?(?:-(?:(?:&gt;)|>)[ \t]*([^\(\n\r\f]+)(?:\(([^\)\n\r\f]+)\))?)$/im,
          line: true },
       divert: {
-         mark: /-(?:(?:&gt;)|>) *(\w[\w. ]*)/im,
+         mark: /(?:(\w+)|"([^"]+)")(?:[ \t])*-(?:(?:&gt;)|>)[ \t]*(?:(\w[\w.]*)|"([^"]*)")/im,
          inline: true },
       talk: {
          mark: /@(\w[\w \t]*)(?::[ \t]*([^\n\r\f]+))?/im,

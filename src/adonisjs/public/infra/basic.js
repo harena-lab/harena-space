@@ -47,6 +47,7 @@ class Basic {
    }
    
    set currentThemeFamily(newValue) {
+      console.log("current: " + newValue);
       // Translator.instance.currentThemeFamily = newValue;
       this._currentThemeFamily = newValue;
    }

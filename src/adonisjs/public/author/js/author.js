@@ -282,14 +282,21 @@ class AuthorManager {
    }
 
    _presentEditor(source) {
-      this._knotPanel.innerHTML = "<div id='editor-space' class='sty-editor'></div>";
-      this._editor = new Quill("#editor-space", {});
+      this._knotPanel.innerHTML = "<div class='sty-editor'>" +
+                                     "<textarea class='sty-editor' id='editor-space'></textarea>" +
+                                  "</div>";
+      this._editor = document.querySelector("#editor-space");
+      this._editor.value = source;
+      // this._editor = new Quill("#editor-space", {});
+      /*
       this._editor.clipboard.addMatcher(Node.TEXT_NODE, function(node, delta) {
          console.log("=== clipboard:");
          console.log(node.data);
          return new Delta().insert(node.data);
       });
-      this._editor.insertText(0, source);
+      */
+      // this._editor.insertText(0, source);
+
    }
 
    /*
