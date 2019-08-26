@@ -18,6 +18,10 @@ div {
 nav.navbar {
   margin-bottom: 1rem;
 }
+.no-spacing{
+  padding: 0px;
+  margin: 0px;
+}
 .hidden-overflow{
   overflow: hidden;
 }
@@ -148,4 +152,3 @@ nav.navbar {
    background-color: #a6a6a6;
    padding-left: .5rem;
 }
-
