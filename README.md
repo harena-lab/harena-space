@@ -114,7 +114,15 @@ Go to http://127.0.0.1:3333/author/author.html
 
 ---
 
-# Digital Content Component Reference and Playground
+# References and Playgrounds
+
+## Versum Translator
+
+Versum [Syntax  and Object Representation](https://github.com/datasci4health/harena-docs/blob/master/versum/syntax.md).
+
+Learn how the Versum translator works and its correspondent output in  Versum Object Representation as well as HTML in the [Translator Playground](https://ds4h.org/harena-space/src/adonisjs/public/translator/playground/).
+
+## Digital Content Components
 
 Digital Content Components [Reference and Examples](http://datasci4health.github.io/harena-space/src/adonisjs/public/dccs/).
 
@@ -123,7 +131,7 @@ Learn and try to instantiate and customize Digital Content Components (DCCs) at 
 
 # Directory Map
 
-* **author** - Front-end of the authoring environment that runs in the client side. The `author.html` plus the `js/author.js` files are the main modules. The Javascript files of the module are in the `[js]` directory.
+* **author** - Front-end of the authoring environment that runs in the client side. The `author.html` plus the `js/index.js` files are the main modules. The Javascript files of the module are in the `[js]` directory.
 
 * **dccs** - Digital Content Components (DCCs) library. The authoring environment and the generated cases use web components to execute active web tasks, e.g., buttons, animations, inputs, etc. These web components follow the DCC standard and are stored in this directory.
 

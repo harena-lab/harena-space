@@ -87,7 +87,7 @@ class Properties {
                      const asset = await
                         MessageBus.ext.request("data/asset//new",
                              {file: field.files[0],
-                              caseid: this._author.currentCaseId});
+                              caseid: Basic.service.currentCaseId});
                      this._objProperties[p] = asset.message;
                   }
                   break;

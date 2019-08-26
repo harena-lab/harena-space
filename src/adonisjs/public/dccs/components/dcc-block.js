@@ -15,7 +15,7 @@ class DCCBlock extends DCCVisual {
    
    async connectedCallback() {
       if (!this.hasAttribute("xstyle")) {
-         this.xstyle = "in";
+         this.xstyle = "theme";
          if (MessageBus.page.hasSubscriber("dcc/request/xstyle")) {
             let stylem = await MessageBus.page.request("dcc/request/xstyle");
             this.xstyle = stylem.message;
@@ -85,7 +85,7 @@ class DCCBlock extends DCCVisual {
    /*
     * Computes the render style according to the context
     *    none - no style will be applied
-    *    in - gets an imported style defined by the DCC
+    *    in - gets an imported style defined by the DCC (system theme)
     *    theme - gets an imported style defined by the theme
     *    out... - gets an external style defined by the theme
     *    <style> - any other case is considered a style defined in xstyle
@@ -141,15 +141,13 @@ class DCCBlock extends DCCVisual {
           */
          if (this.xstyle == "in")
             html = "<style>@import '" +
-                      Basic.service.dccStyleResolver(this.elementTag() + ".css") +
+                      Basic.service.systemStyleResolver(this.elementTag() + ".css") +
                    "' </style>" + html;
 
-         else if (this.xstyle == "theme") {
-            const theme = await MessageBus.ext.request("control/_current_theme_name/get");
+         else if (this.xstyle == "theme")
             html = "<style>@import '" +
-                      Basic.service.themeStyleResolver(theme.message, this.elementTag() + ".css") +
+                      Basic.service.themeStyleResolver(this.elementTag() + ".css") +
                    "' </style>" + html;
-         }
 
          let template = document.createElement("template");
          template.innerHTML = html;

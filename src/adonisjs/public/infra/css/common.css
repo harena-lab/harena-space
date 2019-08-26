@@ -43,6 +43,11 @@ nav.navbar {
    margin: .5rem;
 }
 
+.std-monospace {
+   font-family: monospace;
+   font-size: 10pt;
+}
+
 .navbar-light {
    padding-top: 0;
    padding-bottom: 0;
@@ -131,3 +136,4 @@ nav.navbar {
    background-color: #a6a6a6;
    padding-left: .5rem;
 }
+

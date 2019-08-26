@@ -1,9 +1,9 @@
 /*
-* Main Author Environment
-*
-* Main authoring environment, which presents the visual interface and
-* coordinates the authoring activities.
-*/
+ * Main Author Environment
+ *
+ * Main authoring environment, which presents the visual interface and
+ * coordinates the authoring activities.
+ */
 
 class AuthorManager {
    constructor() {
@@ -21,10 +21,10 @@ class AuthorManager {
       
       this._navigator = new Navigator(Translator.instance);
       
-      this._currentThemeCSS = null;
-      this.currentThemeFamily = "minimal";
+      // this._currentThemeCSS = null;
+      // this.currentThemeFamily = "minimal";
       this._themeSVG = true;
-      this._currentCaseId = null;
+      // this._currentCaseId = null;
       this._knotSelected = null;
       this._htmlKnot = null;
       this._editor = null;
@@ -48,6 +48,7 @@ class AuthorManager {
       A commom code for shared functionalities between player and author
       ******/
 
+   /*
    get currentThemeFamily() {
       return this._currentThemeFamily;
    }
@@ -68,6 +69,7 @@ class AuthorManager {
    get currentCaseId() {
       return this._currentCaseId;
    }
+   */
 
    /*
     *
@@ -126,10 +128,10 @@ class AuthorManager {
                                              break;
          case "control/config/edit": this.config();
                                      break;
+         /*
          case "control/_current_theme_name/get":
             this.requestCurrentThemeFamily(topic, message);
             break;
-         /*
          case "control/_current_case_id/get":
             this.requestCurrentCaseId(topic, message);
             break;
@@ -199,19 +201,19 @@ class AuthorManager {
     * ACTION: control-load (2)
     */
    async _caseLoad(caseId) {
-      this._currentCaseId = caseId;
+      Basic.service.currentCaseId = caseId;
       const caseObj = await MessageBus.ext.request(
-         "data/case/" + this._currentCaseId + "/get");
+         "data/case/" + Basic.service.currentCaseId + "/get");
       this._currentCaseName = caseObj.message.name;
       await this._compile(caseObj.message.source);
       this._showCase();
    }
       
    async _compile(caseSource) {
-      this._compiledCase = Translator.instance.compileMarkdown(this._currentCaseId,
+      this._compiledCase = Translator.instance.compileMarkdown(Basic.service.currentCaseId,
                                                                caseSource);
       this._knots = this._compiledCase.knots;
-      this.currentThemeFamily = this._compiledCase.theme;
+      Basic.service.currentThemeFamily = this._compiledCase.theme;
       if (this._compiledCase.name)
          this._currentCaseName = this._compiledCase.name;
 
@@ -233,7 +235,7 @@ class AuthorManager {
     * ACTION: control-save
     */
    async caseSave() {
-      if (this._currentCaseId != null && this._compiledCase != null) {
+      if (Basic.service.currentCaseId != null && this._compiledCase != null) {
          this._checkKnotModification(this._renderState);
 
          if (this._temporaryCase) {
@@ -245,10 +247,11 @@ class AuthorManager {
          }
 
          let md =Translator.instance.assembleMarkdown(this._compiledCase);
-         const status = await MessageBus.ext.request("data/case/" + this._currentCaseId + "/set",
-                                                     {name: this._currentCaseName,
-                                                      format: "markdown",
-                                                      source: md});
+         const status = await MessageBus.ext.request(
+            "data/case/" + Basic.service.currentCaseId + "/set",
+            {name: this._currentCaseName,
+             format: "markdown",
+             source: md});
          
          console.log("Case saved! Status: " + status.message);
 
@@ -620,7 +623,7 @@ class AuthorManager {
                : AuthorManager.jsonKnot.replace("{knot}", finalHTML);
             
             await MessageBus.ext.request("knot/" + kn + "/set",
-                                                {caseId: this._currentCaseId,
+                                                {caseId: Basic.service.currentCaseId,
                                                  format: "html",
                                                  source: finalHTML},
                                                 "knot/" + kn + "/set/status");
@@ -629,9 +632,9 @@ class AuthorManager {
       this._messageSpace.innerHTML = "Finalizing...";
       
       let caseJSON = Translator.instance.generateCompiledJSON(this._compiledCase);
-      await MessageBus.ext.request("case/" + this._currentCaseId + "/set",
+      await MessageBus.ext.request("case/" + Basic.service.currentCaseId + "/set",
                                           {format: "json", source: caseJSON},
-                                          "case/" + this._currentCaseId + "/set/status");
+                                          "case/" + Basic.service.currentCaseId + "/set/status");
       
       this._messageSpace.innerHTML = "";
       
@@ -649,11 +652,11 @@ class AuthorManager {
 
    async _themeSelect() {
       const families = await MessageBus.ext.request("data/theme_family/*/list");
-      this.currentThemeFamily = await DCCNoticeInput.displayNotice(
+      Basic.service.currentThemeFamily = await DCCNoticeInput.displayNotice(
          "Select a theme to be applied.",
          "list", "Select", "Cancel", families.message);
       const themeObj = families.message.find(function(s){return s.id == this;},
-                                             Translator.instance.currentThemeFamily);
+                                             Basic.service.currentThemeFamily);
       this._themeSVG = themeObj.svg; 
       // this._themeSVG = families.message[Translator.instance.currentThemeFamily].svg;
    }
