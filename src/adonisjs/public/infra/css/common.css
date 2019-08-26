@@ -18,6 +18,16 @@ div {
 nav.navbar {
   margin-bottom: 1rem;
 }
+.grey-text{
+  color: rgb(120,120,120);
+}
+.modal-border{
+  border-style: solid;
+  border-color: rgb(180,180,180);
+  border-radius: 7px;
+  margin-bottom: 8px;
+  padding: 13px;
+}
 .no-spacing{
   padding: 0px;
   margin: 0px;
