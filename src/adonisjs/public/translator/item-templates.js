@@ -7,41 +7,49 @@ option:
 divert:
 `<dcc-trigger id='dcc[seq]'[author] type='+' action='[target]' label='[display]'></dcc-trigger>`,
 talk:
-`<dcc-talk id='dcc[seq]'[author] character='[character]' speech='[speech]'>
+`<dcc-talk id='dcc[seq]'[author] character='[character]'[image]>
+[speech]
 </dcc-talk>`,
-talkopen:
+/*
+"talk-open":
 `
 
 <dcc-talk id='dcc[seq]'[author] character='[character]'[image][alt]>
 
 `,
-talkclose:
+"talk-close":
 `
 
 </dcc-talk>
 
 `,
+*/
 input:
-`<dcc-input id='dcc[seq]'[author] variable='[variable]'[rows][vocabulary]> 
-</dcc-input>`,
+`<dcc-input id='dcc[seq]'[author] variable='[variable]'[rows][vocabularies]></dcc-input>`,
+output:
+`<dcc-expression id='dcc[seq]'[author] expression='[variable]'[variant]></dcc-expression>`,
 compute:
 `<dcc-compute sentence='[sentence]'></dcc-compute>`,
 domain:
 `[natural]`,
+"input-group-select":
+`<dcc-group-select id='dcc[seq]'[author] variable='[variable]'[states][labels]></dcc-group-select>`,
+/*
 selctxopen:
 `
 
-<dcc-group-selector id='dcc[seq]'[author] context='[context]' [evaluation][states][colors]>
+<dcc-group-select id='dcc[seq]'[author] context='[context]'[input]>
 
 `,
 selctxclose:
 `
 
-</dcc-group-selector>
+</dcc-group-select>
 
 `,
-selector:
-`<dcc-state-selector id='dcc[seq]'[author][answer]>[expression]</dcc-state-selector>`
+*/
+select:
+`<dcc-state-select id='dcc[seq]'[author]>[expression]</dcc-state-select>`
 };
 
 Translator.htmlTemplatesEditable = {

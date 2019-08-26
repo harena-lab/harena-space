@@ -21,7 +21,7 @@ class DCCInput extends DCCBlock {
    
    static get observedAttributes() {
       return DCCBlock.observedAttributes.concat(
-         ["variable", "itype", "rows", "vocabulary"]);
+         ["variable", "itype", "rows", "vocabularies"]);
    }
 
    get variable() {
@@ -48,12 +48,12 @@ class DCCInput extends DCCBlock {
       this.setAttribute("rows", newValue);
    }
    
-   get vocabulary() {
-      return this.getAttribute("vocabulary");
+   get vocabularies() {
+      return this.getAttribute("vocabularies");
    }
    
-   set vocabulary(newValue) {
-      this.setAttribute("vocabulary", newValue);
+   set vocabularies(newValue) {
+      this.setAttribute("vocabularies", newValue);
    }
 
    /* Event handling */
@@ -77,7 +77,7 @@ class DCCInput extends DCCBlock {
    }
    
    // _injectDCC(presentation, render) {
-   _renderInterface() {
+   async _renderInterface() {
       // === pre presentation setup
       let html;
       if (this.hasAttribute("rows") && this.rows > 1)

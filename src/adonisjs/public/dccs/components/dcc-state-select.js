@@ -1,6 +1,6 @@
-/* State Selector DCC
+/* State Select DCC
  ********************/
-class DCCStateSelector extends DCCVisual {
+class DCCStateSelect extends DCCVisual {
    constructor() {
      super();
      
@@ -12,7 +12,7 @@ class DCCStateSelector extends DCCVisual {
      // Without shadow - not working
      /*
      const text = this.innerHTML;
-     this.innerHTML = DCCStateSelector.templateElements;
+     this.innerHTML = DCCStateSelect.templateElements;
      this.querySelector("#presentation-text").innerHTML = text;
      this._presentation = this.querySelector("#presentation-dcc");
      this._presentationState = this.querySelector("#presentation-state");
@@ -33,11 +33,11 @@ class DCCStateSelector extends DCCVisual {
    }
    
    async connectedCallback() {
-      const theme = await MessageBus.ext.request("control/_current_theme_name/get");
+      // const theme = await MessageBus.ext.request("control/_current_theme_name/get");
 
-      DCCStateSelector.templateElements =
+      DCCStateSelect.templateElements =
       "<style> @import '" +
-         Basic.service.themeStyleResolver(theme.message, "dcc-state-selector.css") +
+         Basic.service.themeStyleResolver("dcc-state-select.css") +
       "' </style>" +
       `<span id="presentation-dcc">
          <span id="presentation-text"><slot></slot></span>
@@ -45,9 +45,9 @@ class DCCStateSelector extends DCCVisual {
       </span>`;
 
       let template = document.createElement("template");
-      template.innerHTML = DCCStateSelector.templateElements;
+      template.innerHTML = DCCStateSelect.templateElements;
 
-      // Basic.service.replaceStyle(template, null, newValue, "dcc-state-selector.css");
+      // Basic.service.replaceStyle(template, null, newValue, "dcc-state-select.css");
      
       this._shadow = this.attachShadow({mode: "open"});
       this._shadow.appendChild(template.content.cloneNode(true));
@@ -57,19 +57,20 @@ class DCCStateSelector extends DCCVisual {
      
       // <TODO> limited: considers only one group per page
       this.completeId = this.id;  
-      if (!this.hasAttribute("states") && MessageBus.page.hasSubscriber("dcc/request/selector-states")) {
-         this.context = await MessageBus.page.request("dcc/selector-context/request", this.id, "dcc/selector-context/" + this.id);
-         this.completeId = this.context.message + "." + this.id;
+      if (!this.hasAttribute("states") && MessageBus.page.hasSubscriber("dcc/request/select-states")) {
+         const variableMess = await MessageBus.page.request("dcc/select-variable/request", this.id, "dcc/select-variable/" + this.id);
+         this.variable = variableMess.message;
+         this.completeId = this.variable + "." + this.id;
 
-         MessageBus.page.subscribe("dcc/selector-states/" + this.id, this.defineStates);
-         MessageBus.page.publish("dcc/request/selector-states", this.id);
+         MessageBus.page.subscribe("dcc/select-states/" + this.id, this.defineStates);
+         MessageBus.page.publish("dcc/request/select-states", this.id);
          this._pendingRequests++;
       }
       
       this._checkRender();
 
       MessageBus.ext.publish("var/" + this.completeId + "/subinput/ready",
-                                    {sourceType: DCCStateSelector.elementTag,
+                                    {sourceType: DCCStateSelect.elementTag,
                                      content: this.innerHTML});
       super.connectedCallback();
    }
@@ -81,39 +82,29 @@ class DCCStateSelector extends DCCVisual {
    }
 
    defineStates(topic, message) {
-      MessageBus.page.unsubscribe("dcc/selector-states/" + this.id, this.defineStates);
+      MessageBus.page.unsubscribe("dcc/select-states/" + this.id, this.defineStates);
       this.states = message;
       this._pendingRequests--;
       this._checkRender();
-   }
-   
-   async _checkRender() {
-      if (this._pendingRequests == 0) {
-         const statesArr = this.states.split(",");
-         if (this.hasAttribute("answer"))
-            this._currentState = statesArr.indexOf(this.answer);
-         else if (this.hasAttribute("player")) {
-            let value = await MessageBus.ext.request(
-                  "var/" + this.player + "/get/sub", this.innerHTML, "var/" + this.player + "/sub");
-            this._currentState = statesArr.indexOf(value.message);
-         } else {
-            this._presentation.addEventListener("mouseover", this._showState);
-            this._presentation.addEventListener("mouseout", this._hideState);
-            this._presentation.addEventListener("click", this._changeState);
-         }
-
-         this._renderInterface();
-      }
    }
    
    /*
     * Property handling
     */
    
+   // <TODO> remove "answer" and "player"?
    static get observedAttributes() {
       return DCCVisual.observedAttributes.concat(
-         ["states", "colors", "answer", "player"]);
-    }
+         ["variable", "states", "colors", "answer", "player"]);
+   }
+
+   get variable() {
+     return this.getAttribute("variable");
+   }
+
+   set variable(newValue) {
+     this.setAttribute("variable", newValue);
+   }
 
    get states() {
      return this.getAttribute("states");
@@ -149,6 +140,25 @@ class DCCStateSelector extends DCCVisual {
    
    /* Rendering */
 
+   async _checkRender() {
+      if (this._pendingRequests == 0) {
+         const statesArr = this.states.split(",");
+         if (this.hasAttribute("answer"))
+            this._currentState = statesArr.indexOf(this.answer);
+         else if (this.hasAttribute("player")) {
+            let value = await MessageBus.ext.request(
+                  "var/" + this.player + "/get/sub", this.innerHTML, "var/" + this.player + "/sub");
+            this._currentState = statesArr.indexOf(value.message);
+         } else {
+            this._presentation.addEventListener("mouseover", this._showState);
+            this._presentation.addEventListener("mouseout", this._hideState);
+            this._presentation.addEventListener("click", this._changeState);
+         }
+
+         this._renderInterface();
+      }
+   }
+   
    _renderInterface() {
      if (this._presentation != null) {
        if (this._presentationState != null) {
@@ -159,8 +169,8 @@ class DCCStateSelector extends DCCVisual {
              this._presentationState.innerHTML = "";
        }
        this._presentation.className =
-          DCCStateSelector.elementTag + "-template " +
-          DCCStateSelector.elementTag + "-" + this._currentState + "-template";
+          DCCStateSelect.elementTag + "-template " +
+          DCCStateSelect.elementTag + "-" + this._currentState + "-template";
      }
    }
    
@@ -189,35 +199,35 @@ class DCCStateSelector extends DCCVisual {
    
 }
 
-/* Group Selector DCC
+/* Group Select DCC
  ********************/
-class DCCGroupSelector extends DCCBase {
+class DCCGroupSelect extends DCCBase {
    constructor() {
      super();
-     this.requestContext = this.requestContext.bind(this); 
+     this.requestVariable = this.requestVariable.bind(this); 
      this.requestStates = this.requestStates.bind(this);
   }
    
    connectedCallback() {
-      MessageBus.page.subscribe("dcc/selector-context/request", this.requestContext);
-      MessageBus.page.subscribe("dcc/request/selector-states", this.requestStates);
+      MessageBus.page.subscribe("dcc/select-variable/request", this.requestVariable);
+      MessageBus.page.subscribe("dcc/request/select-states", this.requestStates);
       
-      MessageBus.ext.publish("var/" + this.context + "/group_input/ready",
-                                    DCCGroupSelector.elementTag);
+      MessageBus.ext.publish("var/" + this.variable + "/group_input/ready",
+                                    DCCGroupSelect.elementTag);
    }
 
    disconnectedCallback() {
-      MessageBus.page.unsubscribe("dcc/selector-context/request", this.requestContext);
-      MessageBus.page.unsubscribe("dcc/request/selector-states", this.requestStates);
+      MessageBus.page.unsubscribe("dcc/select-variable/request", this.requestVariable);
+      MessageBus.page.unsubscribe("dcc/request/select-states", this.requestStates);
    }
    
    
    requestStates(topic, message) {
-      MessageBus.page.publish("dcc/selector-states/" + message, this.states);
+      MessageBus.page.publish("dcc/select-states/" + message, this.states);
    }   
    
-   requestContext(topic, message) {
-      MessageBus.page.publish("dcc/selector-context/" + message, this.context);
+   requestVariable(topic, message) {
+      MessageBus.page.publish("dcc/select-variable/" + message, this.variable);
    }
    
    /*
@@ -225,15 +235,15 @@ class DCCGroupSelector extends DCCBase {
     */
 
    static get observedAttributes() {
-    return ["context", "states", "colors"];
+    return ["variable", "states", "labels", "colors"];
    }
 
-   get context() {
-      return this.getAttribute("context");
+   get variable() {
+      return this.getAttribute("variable");
     }
 
-   set context(newValue) {
-      this.setAttribute("context", newValue);
+   set variable(newValue) {
+      this.setAttribute("variable", newValue);
    }
 
    get states() {
@@ -242,6 +252,14 @@ class DCCGroupSelector extends DCCBase {
 
     set states(newStates) {
      this.setAttribute("states", newStates);
+   }
+
+   get labels() {
+     return this.getAttribute("labels");
+   }
+
+    set labels(newStates) {
+     this.setAttribute("labels", newStates);
    }
 
    get colors() {
@@ -256,9 +274,9 @@ class DCCGroupSelector extends DCCBase {
 (async function() {
 
 /*
-DCCStateSelector.templateElements = 
+DCCStateSelect.templateElements = 
 `<style>
-   @import "css/dcc-state-selector.css"
+   @import "css/dcc-state-select.css"
 </style>
 <span id="presentation-dcc">
    <span id="presentation-text"><slot></slot></span>
@@ -266,10 +284,10 @@ DCCStateSelector.templateElements =
 </span>`;
 */
   
-DCCStateSelector.elementTag = "dcc-state-selector";
-customElements.define(DCCStateSelector.elementTag, DCCStateSelector);
+DCCStateSelect.elementTag = "dcc-state-select";
+customElements.define(DCCStateSelect.elementTag, DCCStateSelect);
 
-DCCGroupSelector.elementTag = "dcc-group-selector";
-customElements.define(DCCGroupSelector.elementTag, DCCGroupSelector);
+DCCGroupSelect.elementTag = "dcc-group-select";
+customElements.define(DCCGroupSelect.elementTag, DCCGroupSelect);
 
 })();

@@ -22,7 +22,9 @@ The following best practices have been adopted in the Harena project and must be
 In the subscription process, it is possible to specify a specific Topic Name or a Topic Filter, which works as a regular expression representing a set of possible Topic Names.
 
 Wildcards are represented by the special `#` and/or `+` characters, appearing inside a Topic Name in the subscription process. They enable the subscription of a set of topics, since they generically represent one or more Topic Levels, according to the following rules:
+
 ### Multilevel Wildcard `#`
+
 The wildcard `#` can be used only in two positions in the Topic Filter:
 * alone (the filter is only a `#`) - matches any Topic Name with any number of levels;
 * end of the Topic Name (always preceded by a `/ `) -  matches any number of Topic Levels with the prefix specified before the wildcard.
@@ -33,7 +35,9 @@ Only a single Topic Level can be matched by the wildcard  `+`, which represents 
 * beginning of the Topic Filter, always followed by a slash;
 * end of the Topic Filter, always preceded by a slash;
 * middle of the Topic Filter, always between two slashes.
+
 # Message Paths in the Bus
+
 ## Control Actions
 
 General protocol: `control/<entity>/<action>`.
@@ -161,11 +165,11 @@ Operations:
   * `none` - no style defined;
   * `out` - style defined externally.
 
-### Entity: `dcc-state-selector`
+### Entity: `dcc-state-select`
 
 Operations:
-* `get states` \[`/dcc-state-selector/get/states`\] - Requests for an upper level DCC (e.g., an aggregattor DCC) or a group coordinator DCC the set of possible states present in the selector.
+* `get states` \[`/dcc-state-select/get/states`\] - Requests for an upper level DCC (e.g., an aggregattor DCC) or a group coordinator DCC the set of possible states present in the selector.
  
-  return: \[`/dcc-state-selector/states`\] - List of states separated by commas.
+  return: \[`/dcc-state-select/states`\] - List of states separated by commas.
 
 

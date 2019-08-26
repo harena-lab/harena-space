@@ -3,9 +3,24 @@
  */
 
 class Basic {
-   contructor() {
+   constructor() {
       this._host = null;
+      this._rootPath = "../";
+
+      // initial values of shared states
+      this.currentThemeFamily = Basic.standardThemeFamily;
+      this.currentCaseId = null;
+
+      /*
+      this.requestCurrentThemeFamily = this.requestCurrentThemeFamily.bind(this);
+      MessageBus.ext.subscribe("control/_current_theme_name/get",
+                               this.requestCurrentThemeFamily);
+      */
    }
+
+   /*
+    * Properties
+    */
 
    get host() {
       return this._host;
@@ -13,6 +28,42 @@ class Basic {
    
    set host(newValue) {
       this._host = newValue;
+   }
+
+   get rootPath() {
+      return this._rootPath;
+   }
+   
+   set rootPath(newValue) {
+      this._rootPath = newValue;
+   }
+
+   /*
+    * States shared by author, player, and other environments
+    */
+
+   get currentThemeFamily() {
+      return this._currentThemeFamily;
+   }
+   
+   set currentThemeFamily(newValue) {
+      // Translator.instance.currentThemeFamily = newValue;
+      this._currentThemeFamily = newValue;
+   }
+
+   /*
+   requestCurrentThemeFamily(topic, message) {
+      MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
+                             this.currentThemeFamily);
+   }
+   */
+
+   set currentCaseId(newValue) {
+      this._currentCaseId = newValue;
+   }
+
+   get currentCaseId() {
+      return this._currentCaseId;
    }
 
    isBlank(str) {
@@ -24,6 +75,7 @@ class Basic {
       let userid = null;
       let errorMessage = "";
       while (userid == null) {
+         /*
          const userEmail =
             await DCCNoticeInput.displayNotice(errorMessage +
                                          "<h3>Signin</h3><h4>inform your email:</h4>",
@@ -31,6 +83,10 @@ class Basic {
          const userPass =
             await DCCNoticeInput.displayNotice("<h3>Signin</h3><h4>inform your password:</h4>",
                                          "password");
+         */
+
+         const userEmail = "jacinto@example.com";
+         const userPass = "jacinto";
 
          let loginReturn = await MessageBus.ext.request("data/user/login",
                                                         {email: userEmail,
@@ -81,15 +137,22 @@ class Basic {
       if (!(path.startsWith("http://") || path.startsWith("https://") ||
             path.startsWith("/") || path.startsWith("../")))
          result = DCCCommonServer.managerAddress + "artifacts/cases/" +
-                  ((this.host != null) ? this.host.currentCaseId + "/" : "") +
+                  ((this.host != null) ? this.currentCaseId + "/" : "") +
                   path;
       return result;
    }
 
-   themeStyleResolver(theme, cssFile) {
-      return "../themes/" + theme + "/css/" + cssFile;
+   themeStyleResolver(cssFile) {
+      return this._rootPath + "themes/" + this.currentThemeFamily +
+             "/css/" + cssFile;
    }
 
+   systemStyleResolver(cssFile) {
+      return this._rootPath + "themes/" + Basic.systemThemeFamily +
+             "/css/" + cssFile;
+   }
+
+   // <TODO> Not used (remove?)
    replaceStyle(targetDocument, oldCSS, newTheme, cssFile) {
       if (oldCSS)
          targetDocument.head.removeChild(oldCSS);
@@ -107,5 +170,8 @@ class Basic {
 }
 
 (function() {
+   Basic.standardThemeFamily = "minimal";
+   Basic.systemThemeFamily = "system";
+
    Basic.service = new Basic();
 })();

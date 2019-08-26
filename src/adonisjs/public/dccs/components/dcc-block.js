@@ -15,7 +15,7 @@ class DCCBlock extends DCCVisual {
    
    async connectedCallback() {
       if (!this.hasAttribute("xstyle")) {
-         this.xstyle = "in";
+         this.xstyle = "theme";
          if (MessageBus.page.hasSubscriber("dcc/request/xstyle")) {
             let stylem = await MessageBus.page.request("dcc/request/xstyle");
             this.xstyle = stylem.message;
@@ -85,7 +85,8 @@ class DCCBlock extends DCCVisual {
    /*
     * Computes the render style according to the context
     *    none - no style will be applied
-    *    in - gets an internal style defined in the DCC
+    *    in - gets an imported style defined by the DCC (system theme)
+    *    theme - gets an imported style defined by the theme
     *    out... - gets an external style defined by the theme
     *    <style> - any other case is considered a style defined in xstyle
     */
@@ -95,12 +96,13 @@ class DCCBlock extends DCCVisual {
          // no style
          case "none": render = "";
                       break;
-         // default styles defined by the DCC
-         case "in"  : if (this.hasAttribute("image"))
-                         render = "image-style"
-                      else
-                         render = "regular-style"
-                      break;
+         // styles imported by the DCC
+         case "in"  : 
+         case "theme": if (this.hasAttribute("image"))
+                          render = this.elementTag() + "-image-template";
+                       else
+                          render = this.elementTag() + "-template";
+                       break;
          // styles defined by the theme
          case "out-image":
          case "out":  render = this.elementTag() + "-template";
@@ -112,7 +114,10 @@ class DCCBlock extends DCCVisual {
       return render;
    }
 
-   _applyRender(html, outTarget) {
+   /*
+    * Finds the outer target interface or creates an internal interface
+    */
+   async _applyRender(html, outTarget) {
       if (this.xstyle.startsWith("out") &&
           this.hasAttribute("location") && this.location != "#in") {
          /*
@@ -134,44 +139,28 @@ class DCCBlock extends DCCVisual {
          /*
           * complete interface
           */
+         if (this.xstyle == "in")
+            html = "<style>@import '" +
+                      Basic.service.systemStyleResolver(this.elementTag() + ".css") +
+                   "' </style>" + html;
+
+         else if (this.xstyle == "theme")
+            html = "<style>@import '" +
+                      Basic.service.themeStyleResolver(this.elementTag() + ".css") +
+                   "' </style>" + html;
+
          let template = document.createElement("template");
          template.innerHTML = html;
-         // this._renderCompleteInterface(render, template);
-         // template.innerHTML = this._generateTemplate(render);
          
          let host = this;
-         if (this.xstyle == "in" || this.xstyle == "none")
+         if (this.xstyle == "in" || this.xstyle == "theme" ||
+             this.xstyle == "none")
             host = this.attachShadow({mode: "open"});
          host.appendChild(template.content.cloneNode(true));
          this._presentation = host.querySelector("#presentation-dcc");
       }
       this.checkActivateAuthor();
    }
-
-   /* Editable Component */
-   /*
-   activateEditDCC() {
-      this.startEditDCC = this.startEditDCC.bind(this);
-      this._presentation.style.cursor = "pointer";
-      this._presentation.addEventListener("click", this.startEditDCC);
-   }
-   
-   startEditDCC() {
-      if (this._presentation.style.border)
-         this._previousBorderStyle = this._presentation.style.border;
-      this._presentation.style.border = "5px dashed blue";
-
-      MessageBus.ext.publish("control/element/" + this.id + "/edit");
-   }
-
-   endEditDCC() {
-      if (this._previousBorderStyle) {
-         this._presentation.style.border = this._previousBorderStyle;
-         delete this._previousBorderStyle;
-      } else
-         delete this._presentation.style.border;
-   }
-   */
 }
 
 (function() {
