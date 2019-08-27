@@ -8,12 +8,12 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="100%"
-   height="100%"
+   width="1920"
+   height="1080"
    viewBox="0 0 1920 1080"
    version="1.1"
    id="svg5604"
-   sodipodi:docname="start.svg"
+   sodipodi:docname="Cycle 1 - 1. Begin.svg"
    inkscape:version="0.92.4 (f8dce91, 2019-08-02)">
   <metadata
      id="metadata5608">
@@ -23,6 +23,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -41,7 +42,7 @@
      showgrid="false"
      inkscape:zoom="0.375"
      inkscape:cx="855.3226"
-     inkscape:cy="686.76309"
+     inkscape:cy="473.42976"
      inkscape:window-x="70"
      inkscape:window-y="27"
      inkscape:window-maximized="1"
@@ -87,7 +88,7 @@
       }
 
       .cls-16, .cls-17, .cls-27, .cls-30, .cls-32, .cls-8 {
-        font-family:Tahoma, Geneva, sans-serif;
+        font-family: SegoeUI, Segoe UI;
       }
 
       .cls-9 {
@@ -159,7 +160,7 @@
       }
 
       .cls-28, .cls-31, .cls-34 {
-        font-family:Tahoma, Geneva, sans-serif;
+        font-family: SegoeUI-Bold, Segoe UI;
         font-weight: 700;
       }
 
@@ -296,15 +297,15 @@
      height="1080"
      width="1920"
      class="cls-14" />
-  <rect id="Retângulo_151" data-name="Retângulo 151" width="1632" height="854" rx="20" transform="translate(144 160)" style="fill:#004270"/>
   <image
-     xlink:href="images/supervisor.png"
-     y="381"
-     x="1227"
-     width="545"
-     height="632"
-     id="role-1-image"
-     data-name="role-1-image" />
+     sodipodi:absref="/home/santanche/git/harena-space/src/adonisjs/public/themes/jacinto/svgs/room-background.png"
+     xlink:href="room-background.png"
+     y="161"
+     x="144"
+     id="bg_proposta_6_1"
+     data-name="bg proposta 6 1"
+     width="1632"
+     height="853" />
   <g
      id="g5265"
      class="cls-40">
@@ -399,7 +400,7 @@
          class="cls-3" />
     </g>
     <text
-       style="font-size:16px;font-family:Tahoma, Geneva, sans-serif;fill:#707070"
+       style="font-size:16px;font-family:SegoeUI, 'Segoe UI';fill:#707070"
        transform="translate(1543,31)"
        class="cls-8"
        id="Fulano">
@@ -497,19 +498,21 @@
      x="374"
      y="876"
      style="fill:#ba2027" />
-  <foreignObject
-     data-name="Action 1"
-     x="380"
-     y="893"
-     width="180"
-     height="30">
-    <div
-       id="action-1"
-       class="cls-16"
-       style="font-size:16px;font-family:Tahoma, Geneva, sans-serif;color:#ffffff;text-align:center;width:100%">
-        action 1
-     </div>
-  </foreignObject>
+  <text
+     id="action-1"
+     data-name="Generate hypothesis"
+     class="cls-16"
+     style="font-size:16.77063179px;font-family:SegoeUI, 'Segoe UI';fill:#ffffff;stroke-width:0.93170178"
+     x="415.88278"
+     y="848.28265"
+     transform="scale(0.93170178,1.0733048)"
+     inkscape:label="#action-1">
+    <tspan
+       x="415.88278"
+       y="848.28265"
+       id="tspan5295"
+       style="stroke-width:0.93170178">Generate hypothesis</tspan>
+  </text>
   <rect
      id="Retângulo_37"
      data-name="Retângulo 37"
@@ -520,19 +523,20 @@
      x="580"
      y="876"
      style="fill:#ba2027" />
-  <foreignObject
-     data-name="Action 2"
-     x="584"
-     y="893"
-     width="180"
-     height="30">
-    <div
-       id="action-2"
-       class="cls-16"
-       style="font-size:16px;font-family:Tahoma, Geneva, sans-serif;color:#ffffff;text-align:center;width:100%">
-        action 2
-     </div>
-  </foreignObject>
+  <text
+     id="action-2"
+     data-name="More information"
+     class="cls-16"
+     style="font-size:17.31248665px;font-family:SegoeUI, 'Segoe UI';fill:#ffffff;stroke-width:0.96180481"
+     x="627.49634"
+     y="877.36841"
+     transform="scale(0.9618048,1.039712)">
+    <tspan
+       x="627.49634"
+       y="877.36841"
+       id="tspan5300"
+       style="stroke-width:0.96180481">More information</tspan>
+  </text>
   <rect
      id="Retângulo_38"
      data-name="Retângulo 38"
@@ -543,31 +547,33 @@
      x="786"
      y="876"
      style="fill:#ba2027" />
-  <foreignObject
-     data-name="Action 3"
-     x="791"
-     y="893"
-     width="180"
-     height="30">
-    <div
-       id="action-3"
-       class="cls-16"
-       style="font-size:16px;font-family:Tahoma, Geneva, sans-serif;color:#ffffff;text-align:center;width:100%">
-        action 3
-     </div>
-  </foreignObject>
-  <foreignObject
-     data-name="role-3-text"
-     x="390"
-     y="820"
-     width="570"
-     height="50">
-    <div
-       id="role-3-text"
-       class="cls-17"
-       style="font-size:28px;font-family:Tahoma, Geneva, sans-serif;color:#346e93ff">
-    </div>
-  </foreignObject>
+  <text
+     id="action-3"
+     data-name="Call the supervisor"
+     class="cls-16"
+     style="font-size:16.95846176px;font-family:SegoeUI, 'Segoe UI';fill:#ffffff;stroke-width:0.94213676"
+     x="855.11462"
+     y="857.78333"
+     transform="scale(0.94213678,1.061417)">
+    <tspan
+       x="855.11462"
+       y="857.78333"
+       id="tspan5305"
+       style="stroke-width:0.94213676">Call the supervisor</tspan>
+  </text>
+  <text
+     style="font-size:28px;font-family:SegoeUI, 'Segoe UI';fill:#346e93"
+     class="cls-17"
+     data-name="What do you want to do?"
+     id="role-3-text"
+     x="392"
+     y="814"
+     inkscape:label="#role-3-text">
+    <tspan
+       id="tspan5309"
+       y="844"
+       x="392">What do you want to do?</tspan>
+  </text>
   <g
      transform="translate(-12312,63)"
      data-name="Grupo 367"
@@ -1692,7 +1698,7 @@
      data-name="Retângulo 89"
      id="Retângulo_89" />
   <text
-     style="font-size:16px;font-family:Tahoma, Geneva, sans-serif;fill:#545454"
+     style="font-size:16px;font-family:SegoeUI, 'Segoe UI';fill:#545454"
      class="cls-27"
      data-name="Challenge progress"
      id="Challenge_progress"
@@ -1704,7 +1710,7 @@
        x="144">Challenge progress</tspan>
   </text>
   <text
-     style="font-size:16px;font-family:Tahoma, Geneva, sans-serif;fill:#545454"
+     style="font-size:16px;font-family:SegoeUI, 'Segoe UI';fill:#545454"
      class="cls-27"
      data-name="Sua pontuação total"
      id="Sua_pontuação_total"
@@ -1716,7 +1722,7 @@
        x="453">Sua pontuação total</tspan>
   </text>
   <text
-     style="font-size:16px;font-family:Tahoma, Geneva, sans-serif;fill:#545454"
+     style="font-size:16px;font-family:SegoeUI, 'Segoe UI';fill:#545454"
      class="cls-27"
      data-name="&quot;Categoria de médico&quot;"
      id="_Categoria_de_médico_"
@@ -1728,7 +1734,7 @@
        x="659">&quot;Categoria de médico&quot;</tspan>
   </text>
   <text
-     style="font-weight:700;font-size:16px;font-family:Tahoma, Geneva, sans-serif;fill:#545454"
+     style="font-weight:700;font-size:16px;font-family:SegoeUI-Bold, 'Segoe UI';fill:#545454"
      class="cls-28"
      data-name="120.895 pontos"
      id="_120.895_pontos"
@@ -1739,8 +1745,33 @@
        y="130"
        x="453">120.895 pontos</tspan>
   </text>
+  <g
+     style="fill:#ffffff;stroke:#707070"
+     transform="translate(350,438)"
+     class="cls-1"
+     data-name="Retângulo 150"
+     id="Retângulo_150">
+    <rect
+       style="stroke:none"
+       y="0"
+       x="0"
+       id="rect5527"
+       rx="18"
+       height="175"
+       width="808"
+       class="cls-38" />
+    <rect
+       style="fill:none"
+       id="rect5529"
+       rx="17.5"
+       height="174"
+       width="807"
+       y="0.5"
+       x="0.5"
+       class="cls-3" />
+  </g>
   <text
-     style="font-weight:700;font-size:16px;font-family:Tahoma, Geneva, sans-serif;fill:#545454"
+     style="font-weight:700;font-size:16px;font-family:SegoeUI-Bold, 'Segoe UI';fill:#545454"
      class="cls-28"
      data-name="Médico empolgado"
      id="Médico_empolgado"
@@ -1751,33 +1782,89 @@
        y="130"
        x="659">Médico empolgado</tspan>
   </text>
-  <foreignObject
-     data-name="role-2-text"
-     x="370"
-     y="480"
-     width="775"
-     height="120">
-    <div
-       id="role-2-text"
-       class="cls-15"
-       style="font-size:18px;font-family:Tahoma, Geneva, sans-serif;color:#2e2e2eff">
-    </div>
-  </foreignObject>
-  <foreignObject
-     data-name="text"
-     x="370"
-     y="660"
-     width="775"
-     height="100">
-    <div
-       id="text"
-       class="cls-15"
-       style="font-size:18px;font-family:Tahoma, Geneva, sans-serif;color:#2e2e2eff">
-      <dcc-styler xstyle="out">
-        {knot}
-      </dcc-styler>
-    </div>
-  </foreignObject>
+  <g
+     style="fill:none;stroke:#004270"
+     transform="translate(350,657)"
+     class="cls-29"
+     data-name="Retângulo 39"
+     id="Retângulo_39">
+    <rect
+       style="stroke:none"
+       y="0"
+       x="0"
+       id="rect5535"
+       rx="12"
+       height="114"
+       width="808"
+       class="cls-38" />
+    <rect
+       style="fill:none"
+       id="rect5537"
+       rx="11.5"
+       height="113"
+       width="807"
+       y="0.5"
+       x="0.5"
+       class="cls-3" />
+  </g>
+  <text
+     style="font-size:18.84484482px;font-family:SegoeUI, 'Segoe UI';fill:#2e2e2e;stroke-width:0.94224226"
+     class="cls-30"
+     data-name="Doctor, I am feeling chest pain since yesterday. The pain is continuous and is located just in the middle of my chest, worsening when I breathe and when I lay down on my bed. I suffer from arterial hypertension and smoke 20 cigarettes every day. My father "
+     id="role-2-text"
+     x="394.75989"
+     y="454.16077"
+     transform="scale(0.94224228,1.0612982)">
+    <tspan
+       id="tspan5540"
+       y="474.89011"
+       x="394.75989"
+       style="stroke-width:0.94224226">Doctor, I am feeling chest pain since yesterday. The pain is continuous and is located</tspan>
+    <tspan
+       id="tspan5542"
+       y="500.33066"
+       x="394.75989"
+       style="stroke-width:0.94224226">just in the middle of my chest, worsening when I breathe and when I lay down on my</tspan>
+    <tspan
+       id="tspan5544"
+       y="525.77118"
+       x="394.75989"
+       style="stroke-width:0.94224226">bed. I suffer from arterial hypertension and smoke 20 cigarettes every day. My father</tspan>
+    <tspan
+       id="tspan5546"
+       y="551.21173"
+       x="394.75989"
+       style="stroke-width:0.94224226">had a “heart attack” at my age and I am very worried about it.</tspan>
+  </text>
+  <text
+     style="font-weight:700;font-size:17.57526016px;font-family:SegoeUI-Bold, 'Segoe UI';fill:#2e2e2e;stroke-width:0.97640336"
+     class="cls-31"
+     data-name="PHYSICAL EXAMINATION  Cardiac and pulmonary auscultation are normal; chest pain does not worse with palpation of the thorax; there is no jugular stasis nor lower limb edema."
+     id="text"
+     x="381.04373"
+     y="659.07227"
+     transform="scale(0.97640335,1.0241669)">
+    <tspan
+       id="tspan5549"
+       y="677.6239"
+       x="381.04373"
+       style="stroke-width:0.97640336">PHYSICAL EXAMINATION</tspan>
+    <tspan
+       style="font-weight:400;font-size:19.52806664px;font-family:SegoeUI, 'Segoe UI';stroke-width:0.97640336"
+       id="tspan5555"
+       class="cls-32">
+      <tspan
+         id="tspan5551"
+         y="703.98682"
+         x="381.04373"
+         style="stroke-width:0.97640336">Cardiac and pulmonary auscultation are normal; chest pain does not worse with</tspan>
+      <tspan
+         id="tspan5553"
+         y="730.34973"
+         x="381.04373"
+         style="stroke-width:0.97640336">palpation of the thorax; there is no jugular stasis nor lower limb edema.</tspan>
+    </tspan>
+  </text>
   <path
      style="fill:#0d4a71;stroke:none"
      inkscape:connector-curvature="0"
@@ -1791,54 +1878,187 @@
      d="m 1442.5,930 c -2.9034,0 -5.7188,0.56816 -8.3682,1.68875 -2.5599,1.08278 -4.8594,2.63328 -6.8346,4.60845 -1.9752,1.97516 -3.5257,4.27469 -4.6084,6.83463 -1.1206,2.64937 -1.6888,5.46481 -1.6888,8.36817 0,2.90336 0.5682,5.7188 1.6888,8.36817 1.0827,2.55994 2.6332,4.85947 4.6084,6.83463 1.9752,1.97517 4.2747,3.52567 6.8346,4.60845 2.6494,1.12058 5.4648,1.68875 8.3682,1.68875 h 165 c 2.9034,0 5.7188,-0.56817 8.3682,-1.68875 2.5599,-1.08278 4.8595,-2.63328 6.8346,-4.60845 1.9752,-1.97516 3.5257,-4.27469 4.6085,-6.83463 1.1205,-2.64937 1.6887,-5.46481 1.6887,-8.36817 0,-2.90336 -0.5682,-5.7188 -1.6887,-8.36817 -1.0828,-2.55994 -2.6333,-4.85947 -4.6085,-6.83463 -1.9751,-1.97517 -4.2747,-3.52567 -6.8346,-4.60845 C 1613.2188,930.56816 1610.4034,930 1607.5,930 h -165 m 0,-2 h 165 c 12.9787,0 23.5,10.5213 23.5,23.5 0,12.9787 -10.5213,23.5 -23.5,23.5 h -165 c -12.9787,0 -23.5,-10.5213 -23.5,-23.5 0,-12.9787 10.5213,-23.5 23.5,-23.5 z"
      class="cls-39" />
   <text
-     id="background-alternative"
-     data-name="background-alternative"
+     id="knot"
+     data-name="Emergency room"
      class="cls-34"
-     style="font-weight:700;font-size:18.53296852px;font-family:Tahoma, Geneva, sans-serif;fill:#ffffff;stroke-width:0.92664838"
+     style="font-weight:700;font-size:18.53296852px;font-family:SegoeUI-Bold, 'Segoe UI';fill:#ffffff;stroke-width:0.92664838"
      x="1559.6633"
      y="887.72913"
      transform="scale(0.92664838,1.079158)"
-     inkscape:label="#background-alternative">
+     inkscape:label="#knot">
     <tspan
        x="1559.6633"
        y="887.72913"
        id="tspan5563"
-       style="stroke-width:0.92664838">{background-alternative}</tspan>
+       style="stroke-width:0.92664838">Emergency room</tspan>
   </text>
-  <foreignObject
-     data-name="role-2"
-     x="380"
-     y="430"
-     width="130"
-     height="30">
-    <div
-       id="role-2"
-       class="cls-34"
-       style="font-weight:700;font-size:20px;font-family:Tahoma, Geneva, sans-serif;text-align:center;color:#ffffff">
-    </div>
-  </foreignObject>
-  <foreignObject
-     data-name="role-1-text"
-     x="370"
-     y="290"
-     width="775"
-     height="90">
-    <div
-       id="role-1-text"
-       class="cls-15"
-       style="font-size:18px;font-family:Tahoma, Geneva, sans-serif;color:#2e2e2eff">
-    </div>
-  </foreignObject>
-  <foreignObject
-     data-name="role-1"
-     x="380"
-     y="248"
-     width="120"
-     height="30">
-    <div
-       id="role-1"
-       class="cls-34"
-       style="font-weight:700;font-size:20px;font-family:Tahoma, Geneva, sans-serif;text-align:center;color:#ffffff">
-    </div>
-  </foreignObject>
+  <g
+     style="fill:#ffffff;stroke:#707070"
+     transform="translate(350,254)"
+     class="cls-1"
+     data-name="Retângulo 149"
+     id="Retângulo_149">
+    <rect
+       style="stroke:none"
+       y="0"
+       x="0"
+       id="rect5567"
+       rx="18"
+       height="139"
+       width="808"
+       class="cls-38" />
+    <rect
+       style="fill:none"
+       id="rect5569"
+       rx="17.5"
+       height="138"
+       width="807"
+       y="0.5"
+       x="0.5"
+       class="cls-3" />
+  </g>
+  <g
+     id="Retângulo_40"
+     data-name="Retângulo 40"
+     class="cls-35"
+     transform="translate(372,415.5)"
+     style="fill:#0d4a71;stroke:#ffffff;stroke-width:2px">
+    <rect
+       class="cls-38"
+       width="150"
+       height="47"
+       rx="23.5"
+       id="rect5572"
+       x="0"
+       y="0"
+       style="stroke:none" />
+    <rect
+       class="cls-3"
+       x="1"
+       y="1"
+       width="148"
+       height="45"
+       rx="22.5"
+       id="rect5574"
+       style="fill:none" />
+  </g>
+  <text
+     id="role-2"
+     class="cls-34"
+     style="font-weight:700;font-size:20px;font-family:SegoeUI-Bold, 'Segoe UI';fill:#ffffff"
+     x="400.19336"
+     y="446.29004">
+    <tspan
+       x="400.19336"
+       y="446.29004"
+       id="tspan5577">PATIENT</tspan>
+  </text>
+  <text
+     style="font-size:18.97192192px;font-family:SegoeUI, 'Segoe UI';fill:#2e2e2e;stroke-width:0.94859612"
+     class="cls-30"
+     data-name="Doctor, we have a man, 51 years old, who entered the emergency department reporting chest pain. His vital signs are: ABP 144x92 mmHG; HR 78 bpm; RR 21 rpm; Temperature 37 ºC; O2 Sat 98%.  "
+     id="role-1-text"
+     x="391.09811"
+     y="276.04147"
+     inkscape:label="#role-1-text"
+     transform="scale(0.94859609,1.0541895)">
+    <tspan
+       id="tspan5581"
+       y="296.91058"
+       x="391.09811"
+       style="stroke-width:0.94859612">Doctor, we have a man, 51 years old, who entered the emergency department</tspan>
+    <tspan
+       id="tspan5583"
+       y="322.52267"
+       x="391.09811"
+       style="stroke-width:0.94859612">reporting chest pain. His vital signs are: ABP 144x92 mmHG; HR 78 bpm; RR 21 rpm;</tspan>
+    <tspan
+       id="tspan5585"
+       y="348.13477"
+       x="391.09811"
+       style="stroke-width:0.94859612">Temperature 37 ºC; O2 Sat 98%.</tspan>
+  </text>
+  <g
+     id="Retângulo_40-2"
+     data-name="Retângulo 40"
+     class="cls-35"
+     transform="translate(371,236)"
+     style="fill:#0d4a71;stroke:#ffffff;stroke-width:2px">
+    <rect
+       class="cls-38"
+       width="141"
+       height="47"
+       rx="23.5"
+       id="rect5588"
+       x="0"
+       y="0"
+       style="stroke:none" />
+    <rect
+       class="cls-3"
+       x="1"
+       y="1"
+       width="139"
+       height="45"
+       rx="22.5"
+       id="rect5590"
+       style="fill:none" />
+  </g>
+  <text
+     id="role-1"
+     class="cls-34"
+     style="font-weight:700;font-size:20px;font-family:SegoeUI-Bold, 'Segoe UI';fill:#ffffff"
+     x="403.07715"
+     y="266.78027"
+     inkscape:label="#role-1">
+    <tspan
+       x="403.07715"
+       y="266.78027"
+       id="tspan5593">NURSE</tspan>
+  </text>
+  <g
+     transform="translate(4.976,-26)"
+     data-name="Grupo 566"
+     id="Grupo_566">
+    <line
+       style="fill:none;stroke:#ffffff;stroke-width:2px"
+       y2="0"
+       y1="0"
+       x1="0"
+       transform="translate(1109.5,418.5)"
+       x2="19.024"
+       class="cls-36"
+       data-name="Linha 12"
+       id="Linha_12" />
+    <path
+       style="fill:none;stroke:#707070"
+       inkscape:connector-curvature="0"
+       transform="rotate(180,564.802,220.1675)"
+       d="M 0,22.052 20.568,0 v 22.052"
+       class="cls-37"
+       data-name="Caminho 404"
+       id="Caminho_404" />
+  </g>
+  <g
+     transform="translate(4.976,194)"
+     data-name="Grupo 567"
+     id="Grupo_567">
+    <line
+       style="fill:none;stroke:#ffffff;stroke-width:2px"
+       y2="0"
+       y1="0"
+       x1="0"
+       transform="translate(1109.5,418.5)"
+       x2="19.024"
+       class="cls-36"
+       data-name="Linha 12"
+       id="Linha_12-2" />
+    <path
+       style="fill:none;stroke:#707070"
+       inkscape:connector-curvature="0"
+       transform="rotate(180,564.802,220.1675)"
+       d="M 0,22.052 20.568,0 v 22.052"
+       class="cls-37"
+       data-name="Caminho 404"
+       id="Caminho_404-2" />
+  </g>
 </svg>

@@ -25,8 +25,9 @@ class DCCBlock extends DCCVisual {
       if (this.xstyle.startsWith("out") &&
           !this.hasAttribute("location") &&
           MessageBus.page.hasSubscriber("dcc/request/location")) {
-         let locationm = await MessageBus.page.request("dcc/request/location");
-         this.location = locationm.message;
+         let locationM = await MessageBus.page.request("dcc/request/location",
+                                                       this.externalLocationType());
+         this.location = this.externalLocationType() + "-" + locationM.message;
       }
 
       if (document.readyState === "complete")
@@ -82,6 +83,10 @@ class DCCBlock extends DCCVisual {
       return DCCBlock.elementTag;
    }
    
+   externalLocationType() {
+      return "role";
+   }
+
    /*
     * Computes the render style according to the context
     *    none - no style will be applied
@@ -117,14 +122,22 @@ class DCCBlock extends DCCVisual {
    /*
     * Finds the outer target interface or creates an internal interface
     */
-   async _applyRender(html, outTarget) {
+   async _applyRender(html, outTarget, sufix) {
       if (this.xstyle.startsWith("out") &&
           this.hasAttribute("location") && this.location != "#in") {
          /*
           * embedded interface
           */
-         this._presentation = document.querySelector("#" + this.location);
-         this._presentation[outTarget] = html;
+         this._presentation = document.querySelector("#" + this.location +
+                                                     ((sufix) ? sufix : ""));
+         if (this._presentation != null) {
+            if (sufix == "-image" && this.hasAttribute("image"))
+               // <TODO> image works for SVG but not for HTML
+               this._presentation[outTarget].setAttributeNS("http://www.w3.org/1999/xlink", "href",
+                                                            this.image);
+            else
+               this._presentation[outTarget] = html;
+         }
 
          // this._renderEmbeddedInterface(render, presentation);
          // this._injectDCC(presentation, render);
@@ -143,7 +156,6 @@ class DCCBlock extends DCCVisual {
             html = "<style>@import '" +
                       Basic.service.systemStyleResolver(this.elementTag() + ".css") +
                    "' </style>" + html;
-
          else if (this.xstyle == "theme")
             html = "<style>@import '" +
                       Basic.service.themeStyleResolver(this.elementTag() + ".css") +
@@ -167,5 +179,4 @@ class DCCBlock extends DCCVisual {
    DCCBlock.elementTag = "dcc-block";
 
    customElements.define(DCCBlock.elementTag, DCCBlock);
-
 })();

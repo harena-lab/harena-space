@@ -336,8 +336,11 @@ class AuthorManager {
    }
    
    _retrieveEditorText() {
+      return this._editor.value;
+      /*
       const editorText = this._editor.getText();
       return editorText.substring(0, editorText.length - 1);
+      */
    }
 
    async _templateSelect(scope) {

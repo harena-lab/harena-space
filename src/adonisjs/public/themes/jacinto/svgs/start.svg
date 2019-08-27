@@ -296,15 +296,15 @@
      height="1080"
      width="1920"
      class="cls-14" />
-  <rect id="Retângulo_151" data-name="Retângulo 151" width="1632" height="854" rx="20" transform="translate(144 160)" style="fill:#004270"/>
   <image
-     xlink:href="images/supervisor.png"
-     y="381"
-     x="1227"
-     width="545"
-     height="632"
-     id="role-1-image"
-     data-name="role-1-image" />
+     sodipodi:absref="{background-path}"
+     xlink:href="{background-path}"
+     y="161"
+     x="144"
+     id="background-path"
+     data-name="background-path"
+     width="1632"
+     height="853" />
   <g
      id="g5265"
      class="cls-40">
@@ -1739,6 +1739,31 @@
        y="130"
        x="453">120.895 pontos</tspan>
   </text>
+  <g
+     style="fill:#ffffff;stroke:#707070"
+     transform="translate(350,438)"
+     class="cls-1"
+     data-name="Retângulo 150"
+     id="Retângulo_150">
+    <rect
+       style="stroke:none"
+       y="0"
+       x="0"
+       id="rect5527"
+       rx="18"
+       height="175"
+       width="808"
+       class="cls-38" />
+    <rect
+       style="fill:none"
+       id="rect5529"
+       rx="17.5"
+       height="174"
+       width="807"
+       y="0.5"
+       x="0.5"
+       class="cls-3" />
+  </g>
   <text
      style="font-weight:700;font-size:16px;font-family:Tahoma, Geneva, sans-serif;fill:#545454"
      class="cls-28"
@@ -1751,6 +1776,31 @@
        y="130"
        x="659">Médico empolgado</tspan>
   </text>
+  <g
+     style="fill:none;stroke:#004270"
+     transform="translate(350,657)"
+     class="cls-29"
+     data-name="Retângulo 39"
+     id="Retângulo_39">
+    <rect
+       style="stroke:none"
+       y="0"
+       x="0"
+       id="rect5535"
+       rx="12"
+       height="114"
+       width="808"
+       class="cls-38" />
+    <rect
+       style="fill:none"
+       id="rect5537"
+       rx="11.5"
+       height="113"
+       width="807"
+       y="0.5"
+       x="0.5"
+       class="cls-3" />
+  </g>
   <foreignObject
      data-name="role-2-text"
      x="370"
@@ -1805,6 +1855,56 @@
        id="tspan5563"
        style="stroke-width:0.92664838">{background-alternative}</tspan>
   </text>
+  <g
+     style="fill:#ffffff;stroke:#707070"
+     transform="translate(350,254)"
+     class="cls-1"
+     data-name="Retângulo 149"
+     id="Retângulo_149">
+    <rect
+       style="stroke:none"
+       y="0"
+       x="0"
+       id="rect5567"
+       rx="18"
+       height="139"
+       width="808"
+       class="cls-38" />
+    <rect
+       style="fill:none"
+       id="rect5569"
+       rx="17.5"
+       height="138"
+       width="807"
+       y="0.5"
+       x="0.5"
+       class="cls-3" />
+  </g>
+  <g
+     id="Retângulo_40"
+     data-name="Retângulo 40"
+     class="cls-35"
+     transform="translate(372,415.5)"
+     style="fill:#0d4a71;stroke:#ffffff;stroke-width:2px">
+    <rect
+       class="cls-38"
+       width="150"
+       height="47"
+       rx="23.5"
+       id="rect5572"
+       x="0"
+       y="0"
+       style="stroke:none" />
+    <rect
+       class="cls-3"
+       x="1"
+       y="1"
+       width="148"
+       height="45"
+       rx="22.5"
+       id="rect5574"
+       style="fill:none" />
+  </g>
   <foreignObject
      data-name="role-2"
      x="380"
@@ -1829,6 +1929,31 @@
        style="font-size:18px;font-family:Tahoma, Geneva, sans-serif;color:#2e2e2eff">
     </div>
   </foreignObject>
+  <g
+     id="Retângulo_40-2"
+     data-name="Retângulo 40"
+     class="cls-35"
+     transform="translate(371,236)"
+     style="fill:#0d4a71;stroke:#ffffff;stroke-width:2px">
+    <rect
+       class="cls-38"
+       width="141"
+       height="47"
+       rx="23.5"
+       id="rect5588"
+       x="0"
+       y="0"
+       style="stroke:none" />
+    <rect
+       class="cls-3"
+       x="1"
+       y="1"
+       width="139"
+       height="45"
+       rx="22.5"
+       id="rect5590"
+       style="fill:none" />
+  </g>
   <foreignObject
      data-name="role-1"
      x="380"
@@ -1841,4 +1966,50 @@
        style="font-weight:700;font-size:20px;font-family:Tahoma, Geneva, sans-serif;text-align:center;color:#ffffff">
     </div>
   </foreignObject>
+  <g
+     transform="translate(4.976,-26)"
+     data-name="Grupo 566"
+     id="Grupo_566">
+    <line
+       style="fill:none;stroke:#ffffff;stroke-width:2px"
+       y2="0"
+       y1="0"
+       x1="0"
+       transform="translate(1109.5,418.5)"
+       x2="19.024"
+       class="cls-36"
+       data-name="Linha 12"
+       id="Linha_12" />
+    <path
+       style="fill:none;stroke:#707070"
+       inkscape:connector-curvature="0"
+       transform="rotate(180,564.802,220.1675)"
+       d="M 0,22.052 20.568,0 v 22.052"
+       class="cls-37"
+       data-name="Caminho 404"
+       id="Caminho_404" />
+  </g>
+  <g
+     transform="translate(4.976,194)"
+     data-name="Grupo 567"
+     id="Grupo_567">
+    <line
+       style="fill:none;stroke:#ffffff;stroke-width:2px"
+       y2="0"
+       y1="0"
+       x1="0"
+       transform="translate(1109.5,418.5)"
+       x2="19.024"
+       class="cls-36"
+       data-name="Linha 12"
+       id="Linha_12-2" />
+    <path
+       style="fill:none;stroke:#707070"
+       inkscape:connector-curvature="0"
+       transform="rotate(180,564.802,220.1675)"
+       d="M 0,22.052 20.568,0 v 22.052"
+       class="cls-37"
+       data-name="Caminho 404"
+       id="Caminho_404-2" />
+  </g>
 </svg>

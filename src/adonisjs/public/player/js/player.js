@@ -166,8 +166,6 @@ class PlayerManager {
          if (decision == "Yes") {
             resume = true;
             this._state.pendingPlayRestore();
-            console.log("=== current ===");
-            console.log(this._state.currentCase);
             DCCCommonServer.instance.token = this._state.token;
             await this._caseLoad(this._state.currentCase);
             const current = this._state.historyCurrent();
@@ -223,8 +221,6 @@ class PlayerManager {
       document.head.appendChild(this._knotScript);
       */
       if (!DCCPlayerServer.localEnv) {
-         // console.log(knotName);
-         // console.log(this._knots);
          let knot = await Translator.instance.generateHTML(
             this._knots[knotName]);
          if (parameter &&
@@ -275,8 +271,6 @@ class PlayerManager {
       div.style.height = (dimensions.height * .7) + "px";
       
       div.innerHTML = knot;
-      
-      // console.log(div);
       
       this._mainPanel.appendChild(div);
    }
@@ -360,9 +354,6 @@ class PlayerManager {
             this._server.generateRunningCase(this._userid,
                                              Basic.service.currentCaseId);
         
-         // console.log("************* Running case");
-         // console.log(runningCase);
-        
          MessageBus.ext.defineRunningCase(runningCase);
       }
    }
@@ -387,7 +378,6 @@ class PlayerManager {
    // <TODO> provisory
    
    produceReport(topic, message) {
-      console.log("report...");
       const server = this._server;
       
       let output = {

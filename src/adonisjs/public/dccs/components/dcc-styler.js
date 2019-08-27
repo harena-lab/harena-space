@@ -6,7 +6,7 @@
 class DCCStyler extends DCCBase {
    constructor() {
       super();
-      this._locationSet = [];
+      this._locationSet = {};
       this.requestXstyle = this.requestXstyle.bind(this);
       this.requestLocation = this.requestLocation.bind(this);
    }
@@ -16,10 +16,14 @@ class DCCStyler extends DCCBase {
          MessageBus.page.subscribe("dcc/request/xstyle", this.requestXstyle);
       }
       
+      MessageBus.page.subscribe("dcc/request/location", this.requestLocation);
+
+      /*
       if (this.hasAttribute("locations")) {
          this._locationSet = this.locations.split(";");
          MessageBus.page.subscribe("dcc/request/location", this.requestLocation);
       }
+      */
    }
 
    disconnectedCallback() {
@@ -33,7 +37,7 @@ class DCCStyler extends DCCBase {
    
    static get observedAttributes() {
       return DCCBase.observedAttributes.concat(
-         ["xstyle", "locations"]);
+         ["xstyle"]);
    }
 
    get xstyle() {
@@ -44,6 +48,7 @@ class DCCStyler extends DCCBase {
       this.setAttribute("xstyle", newValue);
    }
    
+   /*
    get locations() {
       return this.getAttribute("locations");
    }
@@ -51,6 +56,7 @@ class DCCStyler extends DCCBase {
    set locations(newValue) {
       this.setAttribute("locations", newValue);
    }
+   */
    
    requestXstyle(topic, message) {
       // MessageBus.page.publish("dcc/xstyle/" + message, this.xstyle);
@@ -58,11 +64,19 @@ class DCCStyler extends DCCBase {
                               this.xstyle);
    }
    
+   /*
+    * Manages counting of location by type: role, action etc.
+    */
    requestLocation(topic, message) {
-      // MessageBus.page.publish("dcc/location/" + message,
-      //       (this._locationSet.length > 0) ? this._locationSet.shift() : "");
-      MessageBus.page.publish(MessageBus.buildResponseTopic(topic, message),
-         (this._locationSet.length > 0) ? this._locationSet.shift() : "");
+      let counter = 1;
+      if (this._locationSet[message.body] === undefined)
+         this._locationSet[message.body] = 1;
+      else {
+         this._locationSet[message.body]++;
+         counter = this._locationSet[message.body];
+      }
+      MessageBus.page.publish(
+         MessageBus.buildResponseTopic(topic, message), counter);
    }
 }
       

@@ -3,7 +3,7 @@
  * 
  * xstyle = out -> in the outer space it first looks for the specific name and then for the generic "character" name
  */
-class DCCTalk extends DCCVisual {
+class DCCTalk extends DCCBlock {
    constructor() {
       super();
       this._renderInterface = this._renderInterface.bind(this);
@@ -11,9 +11,11 @@ class DCCTalk extends DCCVisual {
    
    async connectedCallback() {
       this._speech = (this.hasAttribute("speech")) ? this.speech : this.innerHTML;
-      console.log("=== speech ===");
-      console.log(this._speech);
+      this.innerHTML = "";
 
+      super.connectedCallback();
+
+      /*
       if (MessageBus.page.hasSubscriber("dcc/request/talk-sequence")) {
          let sequencem = await MessageBus.page.request("dcc/request/talk-sequence");
          this.sequence = sequencem.message;
@@ -28,8 +30,7 @@ class DCCTalk extends DCCVisual {
          this._renderInterface();
       else
          window.addEventListener("load", this._renderInterface);
-
-      super.connectedCallback();
+      */
    }
    
    /*
@@ -75,36 +76,61 @@ class DCCTalk extends DCCVisual {
   
    /* Rendering */
    
-   _renderInterface() {
-      if (this.hasAttribute("xstyle") && this.xstyle == "out") {
+   async _renderInterface() {
+      if (this.hasAttribute("xstyle") && this.xstyle.startsWith("out")) {
+         await this._applyRender(this.character,
+                                 (this.xstyle == "out-image") ? "title" : "innerHTML",
+                                 "");
+         /*
          let character = this._injectTalkElement("#talk-character");
          if (character != null)
             character.innerHTML = this.character;
+         */
             
+         await this._applyRender(this.character, "image", "-image");
          // <TODO> works for SVG but not for HTML
+         /*
          let image = this._injectTalkElement("#talk-image");
          if (image != null)
             image.setAttributeNS("http://www.w3.org/1999/xlink", "href",
                   "images/" + this.character.replace(/ /igm, "_").toLowerCase() + ".png");
+         */
          
+         await this._applyRender((this._speech) ? this._speech : "",
+                                 (this.xstyle == "out-image") ? "title" : "innerHTML",
+                                 "-text");
+         /*
          this._presentation = this._injectTalkElement("#talk-speech");
          if (this._presentation != null)
-            this._presentation.innerHTML = this._speech;
+            this._presentation.innerHTML = (this._speech) ? this._speech : "";
+         */
       } else {
+         let html = (this.hasAttribute("image"))
+            ? DCCTalk.templateElements.image.replace("[image]", this.image) : "";
+         html = html.replace("[alternative]",
+            (this.hasAttribute("title")) ? " alt='" + this.title + "'" : "");
+         html += DCCTalk.templateElements.text
+            .replace("[character]", this.character)
+            .replace("[speech]", ((this._speech) ? this._speech : ""));
+         await this._applyRender(html, "innerHTML");
+         /*
          let charImg = "images/" + this.character.toLowerCase()
                         .replace(/ /igm, "_") + ".png";
          let template = document.createElement("template");
          
          // const speech = (this.hasAttribute("speech")) ? this.speech : "";
-         template.innerHTML = DCCTalk.templateElements.replace("[image]",charImg)
-                                                      .replace("[character]", this.character)
-                                                      .replace("[speech]", this._speech);
+         template.innerHTML = DCCTalk.templateElements
+            .replace("[image]",charImg)
+            .replace("[character]", this.character)
+            .replace("[speech]", ((this._speech) ? this._speech : ""));
          this._shadow = this.attachShadow({mode: "open"});
          this._shadow.appendChild(template.content.cloneNode(true));
          this._presentation = this._shadow.querySelector("#presentation-dcc");
+         */
       }
    }
    
+   /*
    _injectTalkElement(prefix) {
       const charLabel = this.character.replace(/ /igm, "_").toLowerCase();
       
@@ -117,8 +143,23 @@ class DCCTalk extends DCCVisual {
       
       return target;
    }
+   */
+
+   /* Rendering */
+
+   elementTag() {
+      return DCCTalk.elementTag;
+   }
+
+   externalLocationType() {
+      return "role";
+   }
 }
 
+/*
+ * <TODO> Its task was absorbed by dcc-styler.
+ */
+/*
 class DCCDialog extends DCCBase {
    constructor() {
       super();
@@ -141,6 +182,7 @@ class DCCDialog extends DCCBase {
                               this._sequence);
    }
 }
+*/
 
 (function() {
    DCCTalk.templateStyle = 
@@ -168,12 +210,15 @@ class DCCDialog extends DCCBase {
       <div id="presentation-dcc" class="dcc-talk-style"></div>
       </div>`;
          
-   DCCTalk.templateElements =
-   `<div><img id='dcc-talk-character' src='[image]' title='[character]' width='100px'></div>
-    <div><div id='dcc-talk-text' class='dcc-speech'>[speech]</div></div>`;
+   DCCTalk.templateElements = {
+      image: "<div><img id='dcc-talk-character' src='[image]'[alternative] width='100px'></div>",
+      text:  "<div><div id='dcc-talk-text' class='dcc-speech'>[speech]</div></div>"
+   };
    
-   DCCDialog.editableCode = false;
-   customElements.define("dcc-dialog", DCCDialog);
-   DCCTalk.editableCode = false;
-   customElements.define("dcc-talk", DCCTalk);
+   // DCCDialog.editableCode = false;
+   // customElements.define("dcc-dialog", DCCDialog);
+   // DCCTalk.editableCode = false;
+
+   DCCTalk.elementTag = "dcc-talk";
+   customElements.define(DCCTalk.elementTag, DCCTalk);
 })();

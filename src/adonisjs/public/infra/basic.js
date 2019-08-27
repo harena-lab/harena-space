@@ -47,7 +47,6 @@ class Basic {
    }
    
    set currentThemeFamily(newValue) {
-      console.log("current: " + newValue);
       // Translator.instance.currentThemeFamily = newValue;
       this._currentThemeFamily = newValue;
    }
@@ -135,7 +134,11 @@ class Basic {
    imageResolver(path) {
       let result = path;
       // <TODO> improve
-      if (!(path.startsWith("http://") || path.startsWith("https://") ||
+      if (path.startsWith("theme/"))
+         result = this._rootPath +
+                  "themes/" + this.currentThemeFamily +
+                  "/images/" + path.substring(6);
+      else if (!(path.startsWith("http://") || path.startsWith("https://") ||
             path.startsWith("/") || path.startsWith("../")))
          result = DCCCommonServer.managerAddress + "artifacts/cases/" +
                   ((this.host != null) ? this.currentCaseId + "/" : "") +
