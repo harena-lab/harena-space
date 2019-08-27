@@ -14,8 +14,10 @@ class DCCTrigger extends DCCBlock {
    }
    
    connectedCallback() {
-      if (this.type == "+" && !this.hasAttribute("location"))
+      if (this.type == "+" && !this.hasAttribute("location")) {
          this.location = "#in";
+         this.xstyle = "theme";
+      }
       super.connectedCallback();
    }
    
@@ -96,6 +98,10 @@ class DCCTrigger extends DCCBlock {
       return DCCTrigger.elementTag;
    }
 
+   externalLocationType() {
+      return "action";
+   }
+
    _computeTrigger() {
       if (this._active &&
           (this.hasAttribute("label") || this.hasAttribute("action"))) {
@@ -130,32 +136,6 @@ class DCCTrigger extends DCCBlock {
 }
 
 (function() {
-   /*
-   DCCTrigger.templateStyle = 
-   `<style>
-      .regular-style {
-         border: 1px solid lightgray;
-         border-radius: 5px;
-         margin: 5px;
-         color: #1d1d1b;   
-         padding: 14px 25px;
-         text-align: center;
-         text-decoration: none;
-         display: inline-block;
-      }
-      .regular-style:hover {
-         color: black;
-         font-weight: bold;
-         cursor: pointer;
-      }
-      .image-style {
-         max-width: 100%;
-         max-height: 100%;
-         cursor: pointer;
-      }
-   </style>`;
-   */
-      
    DCCTrigger.templateElements = {
    regular:
    `<span id='presentation-dcc' class='[render]'>[label]</span>`,

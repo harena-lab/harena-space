@@ -76,6 +76,10 @@ class DCCInput extends DCCBlock {
       return DCCInput.elementTag;
    }
    
+   externalLocationType() {
+      return "input";
+   }
+
    // _injectDCC(presentation, render) {
    async _renderInterface() {
       // === pre presentation setup

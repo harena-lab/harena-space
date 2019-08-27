@@ -20,8 +20,8 @@ class PlayerManager {
       // this._history = [];
       this._state = new PlayState();
 
-      this._currentThemeCSS = null;
-      this.currentThemeFamily = "minimal";
+      // this._currentThemeCSS = null;
+      // this.currentThemeFamily = "minimal";
       
       this.controlEvent = this.controlEvent.bind(this);
       MessageBus.ext.subscribe("control/#", this.controlEvent);
@@ -48,6 +48,7 @@ class PlayerManager {
       A commom code for shared functionalities between player and author
       ******/
 
+   /*
    get currentThemeFamily() {
       return this._currentThemeFamily;
    }
@@ -68,6 +69,7 @@ class PlayerManager {
    get currentCaseId() {
       return this._currentCaseId;
    }
+   */
 
    /*
     * Event handlers
@@ -78,9 +80,11 @@ class PlayerManager {
       switch (topic) {
          case "control/register": this.register(); break;
          case "control/signin":   this.signIn(); break;
+         /*
          case "control/_current_theme_name/get" :
              this.requestCurrentThemeFamily(topic, message);
              break;
+         */
       }
    }
    
@@ -162,8 +166,6 @@ class PlayerManager {
          if (decision == "Yes") {
             resume = true;
             this._state.pendingPlayRestore();
-            console.log("=== current ===");
-            console.log(this._state.currentCase);
             DCCCommonServer.instance.token = this._state.token;
             await this._caseLoad(this._state.currentCase);
             const current = this._state.historyCurrent();
@@ -178,7 +180,7 @@ class PlayerManager {
         this._userid = await Basic.service.signin(this._state);
 
         if (DCCPlayerServer.localEnv)
-           this._currentCaseId = DCCPlayerServer.playerObj.id;
+           Basic.service.currentCaseId = DCCPlayerServer.playerObj.id;
         else {
            if (!caseid) {
               const cases = await MessageBus.ext.request(
@@ -198,16 +200,16 @@ class PlayerManager {
    }
 
    async _caseLoad(caseid) {
-      this._currentCaseId = caseid;
+      Basic.service.currentCaseId = caseid;
       const caseObj = await MessageBus.ext.request(
-         "data/case/" + this._currentCaseId + "/get");
+         "data/case/" + Basic.service.currentCaseId + "/get");
       this._currentCaseName = caseObj.message.name;
 
       this._compiledCase =
-         Translator.instance.compileMarkdown(this._currentCaseId,
+         Translator.instance.compileMarkdown(Basic.service.currentCaseId,
                                           caseObj.message.source);
       this._knots = this._compiledCase.knots;
-      this.currentThemeFamily = this._compiledCase.theme;
+      Basic.service.currentThemeFamily = this._compiledCase.theme;
    }
    
    async knotLoad(knotName, parameter) {
@@ -219,8 +221,6 @@ class PlayerManager {
       document.head.appendChild(this._knotScript);
       */
       if (!DCCPlayerServer.localEnv) {
-         // console.log(knotName);
-         // console.log(this._knots);
          let knot = await Translator.instance.generateHTML(
             this._knots[knotName]);
          if (parameter &&
@@ -271,8 +271,6 @@ class PlayerManager {
       div.style.height = (dimensions.height * .7) + "px";
       
       div.innerHTML = knot;
-      
-      // console.log(div);
       
       this._mainPanel.appendChild(div);
    }
@@ -354,10 +352,7 @@ class PlayerManager {
          // <TODO> this._runningCase is provisory
          const runningCase =
             this._server.generateRunningCase(this._userid,
-                                             this._currentCaseId);
-        
-         // console.log("************* Running case");
-         // console.log(runningCase);
+                                             Basic.service.currentCaseId);
         
          MessageBus.ext.defineRunningCase(runningCase);
       }
@@ -383,7 +378,6 @@ class PlayerManager {
    // <TODO> provisory
    
    produceReport(topic, message) {
-      console.log("report...");
       const server = this._server;
       
       let output = {

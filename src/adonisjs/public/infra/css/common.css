@@ -18,17 +18,43 @@ div {
 nav.navbar {
   margin-bottom: 1rem;
 }
+.grey-text{
+  color: rgb(120,120,120);
+}
+.modal-border{
+  border-style: solid;
+  border-color: rgb(180,180,180);
+  border-radius: 7px;
+  margin-bottom: 8px;
+  padding: 13px;
+}
+.no-spacing{
+  padding: 0px;
+  margin: 0px;
+}
 .hidden-overflow{
   overflow: hidden;
+}
+.index-boot-padding{
+  padding-left:15px;
+  padding-right: 15px;
+  padding-bottom: 15px;
+}
+.scroll-y{
+  overflow-x: hidden;
+  overflow-y: scroll;
 }
 
 .container-padding{
   width: 100%;
   margin-left: 15px;
   margin-right: 15px;
-  margin-right: 15px;
-  margin-left: 15px;
   margin-bottom: 15px;
+}
+.parent-dcc-margin{
+  margin-left: 15px;
+  margin-right: 15px;
+  margin-bottom:15px;
 }
 .std-border, .std-panel, .navbar-light {
    border: .1rem solid #707070;
@@ -41,6 +67,11 @@ nav.navbar {
 
 .std-border {
    margin: .5rem;
+}
+
+.std-monospace {
+   font-family: monospace;
+   font-size: 10pt;
 }
 
 .navbar-light {

@@ -15,7 +15,7 @@ class DCCBlock extends DCCVisual {
    
    async connectedCallback() {
       if (!this.hasAttribute("xstyle")) {
-         this.xstyle = "in";
+         this.xstyle = "theme";
          if (MessageBus.page.hasSubscriber("dcc/request/xstyle")) {
             let stylem = await MessageBus.page.request("dcc/request/xstyle");
             this.xstyle = stylem.message;
@@ -25,8 +25,9 @@ class DCCBlock extends DCCVisual {
       if (this.xstyle.startsWith("out") &&
           !this.hasAttribute("location") &&
           MessageBus.page.hasSubscriber("dcc/request/location")) {
-         let locationm = await MessageBus.page.request("dcc/request/location");
-         this.location = locationm.message;
+         let locationM = await MessageBus.page.request("dcc/request/location",
+                                                       this.externalLocationType());
+         this.location = this.externalLocationType() + "-" + locationM.message;
       }
 
       if (document.readyState === "complete")
@@ -82,10 +83,14 @@ class DCCBlock extends DCCVisual {
       return DCCBlock.elementTag;
    }
    
+   externalLocationType() {
+      return "role";
+   }
+
    /*
     * Computes the render style according to the context
     *    none - no style will be applied
-    *    in - gets an imported style defined by the DCC
+    *    in - gets an imported style defined by the DCC (system theme)
     *    theme - gets an imported style defined by the theme
     *    out... - gets an external style defined by the theme
     *    <style> - any other case is considered a style defined in xstyle
@@ -117,14 +122,22 @@ class DCCBlock extends DCCVisual {
    /*
     * Finds the outer target interface or creates an internal interface
     */
-   async _applyRender(html, outTarget) {
+   async _applyRender(html, outTarget, sufix) {
       if (this.xstyle.startsWith("out") &&
           this.hasAttribute("location") && this.location != "#in") {
          /*
           * embedded interface
           */
-         this._presentation = document.querySelector("#" + this.location);
-         this._presentation[outTarget] = html;
+         this._presentation = document.querySelector("#" + this.location +
+                                                     ((sufix) ? sufix : ""));
+         if (this._presentation != null) {
+            if (sufix == "-image" && this.hasAttribute("image"))
+               // <TODO> image works for SVG but not for HTML
+               this._presentation[outTarget].setAttributeNS("http://www.w3.org/1999/xlink", "href",
+                                                            this.image);
+            else
+               this._presentation[outTarget] = html;
+         }
 
          // this._renderEmbeddedInterface(render, presentation);
          // this._injectDCC(presentation, render);
@@ -141,15 +154,12 @@ class DCCBlock extends DCCVisual {
           */
          if (this.xstyle == "in")
             html = "<style>@import '" +
-                      Basic.service.dccStyleResolver(this.elementTag() + ".css") +
+                      Basic.service.systemStyleResolver(this.elementTag() + ".css") +
                    "' </style>" + html;
-
-         else if (this.xstyle == "theme") {
-            const theme = await MessageBus.ext.request("control/_current_theme_name/get");
+         else if (this.xstyle == "theme")
             html = "<style>@import '" +
-                      Basic.service.themeStyleResolver(theme.message, this.elementTag() + ".css") +
+                      Basic.service.themeStyleResolver(this.elementTag() + ".css") +
                    "' </style>" + html;
-         }
 
          let template = document.createElement("template");
          template.innerHTML = html;
@@ -169,5 +179,4 @@ class DCCBlock extends DCCVisual {
    DCCBlock.elementTag = "dcc-block";
 
    customElements.define(DCCBlock.elementTag, DCCBlock);
-
 })();
