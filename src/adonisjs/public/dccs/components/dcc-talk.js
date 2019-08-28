@@ -87,7 +87,8 @@ class DCCTalk extends DCCBlock {
             character.innerHTML = this.character;
          */
             
-         await this._applyRender(this.character, "image", "-image");
+         if (this.image)
+            await this._applyRender(this.image, "image", "-image");
          // <TODO> works for SVG but not for HTML
          /*
          let image = this._injectTalkElement("#talk-image");
@@ -96,9 +97,10 @@ class DCCTalk extends DCCBlock {
                   "images/" + this.character.replace(/ /igm, "_").toLowerCase() + ".png");
          */
          
-         await this._applyRender((this._speech) ? this._speech : "",
-                                 (this.xstyle == "out-image") ? "title" : "innerHTML",
-                                 "-text");
+         if (this._speech)
+            await this._applyRender(this._speech,
+                                    (this.xstyle == "out-image") ? "title" : "innerHTML",
+                                    "-text");
          /*
          this._presentation = this._injectTalkElement("#talk-speech");
          if (this._presentation != null)

@@ -59,6 +59,8 @@ class Translator {
 
       this._extractCaseMetadata(compiledCase);
 
+      this._replicateImages(compiledCase);
+
       return compiledCase;
    }
 
@@ -303,10 +305,9 @@ class Translator {
          if (compiledKnot[c].type == "linefeed") {
             if (c > 0 && compiledKnot[c-1].type == "text" &&
                 c < compiledKnot.length-1 && compiledKnot[c+1].type == "text") {
-
-               compiledKnot[c-1].content += compiledKnot[c].content + "\n" +
+               compiledKnot[c-1].content += compiledKnot[c].content +
                                             compiledKnot[c+1].content;
-               compiledKnot[c-1]._source += compiledKnot[c]._source + "\n" +
+               compiledKnot[c-1]._source += compiledKnot[c]._source +
                                             compiledKnot[c+1]._source;
                compiledKnot.splice(c, 2);
                c--;
@@ -385,6 +386,19 @@ class Translator {
     */
    _compileCompose(compiledKnot) {
 
+   }
+
+   /*
+    * Replicates background and character images
+    */
+   _replicateImages(compiledCase) {
+      let lastBackground = null;
+      let knots = compiledCase.knots;
+      for (let k in knots)
+         if (knots[k].background)
+            lastBackground = knots[k].background;
+         else if (lastBackground != null)
+            knots[k].background = lastBackground;
    }
 
    mdToObj(mdType, match) {
@@ -987,10 +1001,10 @@ class Translator {
           alternative = "",
           title = "";
       if (obj.image) {
-         path = " image='" + talk.image.path + "'";
-         alternative = " alternative='" + talk.image.alternative + "'";
+         path = " image='" + Basic.service.imageResolver(obj.image.path) + "'";
+         alternative = " alternative='" + obj.image.alternative + "'";
          if (obj.image.title)
-            title = " title='" + talk.image.title + "'";
+            title = " title='" + obj.image.title + "'";
       }
       return Translator.htmlTemplates.talk
          .replace("[seq]", obj.seq)
