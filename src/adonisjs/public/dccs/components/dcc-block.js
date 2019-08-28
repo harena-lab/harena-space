@@ -133,8 +133,7 @@ class DCCBlock extends DCCVisual {
          if (this._presentation != null) {
             if (sufix == "-image" && this.hasAttribute("image"))
                // <TODO> image works for SVG but not for HTML
-               this._presentation[outTarget].setAttributeNS("http://www.w3.org/1999/xlink", "href",
-                                                            this.image);
+               this._presentation.setAttributeNS("http://www.w3.org/1999/xlink", "href", html);
             else
                this._presentation[outTarget] = html;
          }

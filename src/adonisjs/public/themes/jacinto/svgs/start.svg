@@ -297,7 +297,6 @@
      width="1920"
      class="cls-14" />
   <image
-     sodipodi:absref="{background-path}"
      xlink:href="{background-path}"
      y="161"
      x="144"
@@ -1840,21 +1839,19 @@
      id="path5560"
      d="m 1442.5,930 c -2.9034,0 -5.7188,0.56816 -8.3682,1.68875 -2.5599,1.08278 -4.8594,2.63328 -6.8346,4.60845 -1.9752,1.97516 -3.5257,4.27469 -4.6084,6.83463 -1.1206,2.64937 -1.6888,5.46481 -1.6888,8.36817 0,2.90336 0.5682,5.7188 1.6888,8.36817 1.0827,2.55994 2.6332,4.85947 4.6084,6.83463 1.9752,1.97517 4.2747,3.52567 6.8346,4.60845 2.6494,1.12058 5.4648,1.68875 8.3682,1.68875 h 165 c 2.9034,0 5.7188,-0.56817 8.3682,-1.68875 2.5599,-1.08278 4.8595,-2.63328 6.8346,-4.60845 1.9752,-1.97516 3.5257,-4.27469 4.6085,-6.83463 1.1205,-2.64937 1.6887,-5.46481 1.6887,-8.36817 0,-2.90336 -0.5682,-5.7188 -1.6887,-8.36817 -1.0828,-2.55994 -2.6333,-4.85947 -4.6085,-6.83463 -1.9751,-1.97517 -4.2747,-3.52567 -6.8346,-4.60845 C 1613.2188,930.56816 1610.4034,930 1607.5,930 h -165 m 0,-2 h 165 c 12.9787,0 23.5,10.5213 23.5,23.5 0,12.9787 -10.5213,23.5 -23.5,23.5 h -165 c -12.9787,0 -23.5,-10.5213 -23.5,-23.5 0,-12.9787 10.5213,-23.5 23.5,-23.5 z"
      class="cls-39" />
-  <text
-     id="background-alternative"
+  <foreignObject
      data-name="background-alternative"
-     class="cls-34"
-     style="font-weight:700;font-size:18.53296852px;font-family:Tahoma, Geneva, sans-serif;fill:#ffffff;stroke-width:0.92664838"
-     x="1559.6633"
-     y="887.72913"
-     transform="scale(0.92664838,1.079158)"
-     inkscape:label="#background-alternative">
-    <tspan
-       x="1559.6633"
-       y="887.72913"
-       id="tspan5563"
-       style="stroke-width:0.92664838">{background-alternative}</tspan>
-  </text>
+     x="1425"
+     y="940"
+     width="200"
+     height="90">
+    <div
+       id="background-alternative"
+       class="cls-15"
+       style="font-weight:700;font-size:18px;font-family:Tahoma, Geneva, sans-serif;color:#ffffff;stroke-width:0.93;text-align:center">
+    {background-alternative}
+    </div>
+  </foreignObject>
   <g
      style="fill:#ffffff;stroke:#707070"
      transform="translate(350,254)"
