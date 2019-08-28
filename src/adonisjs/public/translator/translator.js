@@ -393,12 +393,24 @@ class Translator {
     */
    _replicateImages(compiledCase) {
       let lastBackground = null;
+      let entityImage = {};
       let knots = compiledCase.knots;
-      for (let k in knots)
+      for (let k in knots) {
          if (knots[k].background)
             lastBackground = knots[k].background;
          else if (lastBackground != null)
             knots[k].background = lastBackground;
+         for (let c in knots[k].content) {
+            if (knots[k].content[c].type == "talk") {
+               if (knots[k].content[c].image)
+                  entityImage[knots[k].content[c].character] =
+                     knots[k].content[c].image;
+               else if (entityImage[knots[k].content[c].character])
+                  knots[k].content[c].image =
+                     entityImage[knots[k].content[c].character];
+            }
+         }
+      }
    }
 
    mdToObj(mdType, match) {

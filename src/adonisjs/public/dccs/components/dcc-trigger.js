@@ -87,11 +87,13 @@ class DCCTrigger extends DCCBlock {
       if (this.hasAttribute("image"))
          this._imageElement = this._presentation.querySelector("#pres-image-dcc");
       
-      let wrapper = document.querySelector("#" + this.location + "-wrapper");
-      if (wrapper != null) {
-         wrapper.style.cursor = "pointer";
-         if (!this.author)
-            wrapper.addEventListener("click", this._computeTrigger);
+      if (this.location[0] != "#") {
+         let wrapper = document.querySelector("#" + this.location + "-wrapper");
+         if (wrapper != null) {
+            wrapper.style.cursor = "pointer";
+            if (!this.author)
+               wrapper.addEventListener("click", this._computeTrigger);
+         }
       }
 
       if (this._presentation != null) {
