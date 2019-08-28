@@ -3,18 +3,11 @@
 /* Trigger DCC */
 
 .dcc-trigger-template {
-   border: 1px solid lightgray;
-   border-radius: 5px;
-   margin: 5px;
-   color: #1d1d1b;   
-   padding: 14px 25px;
-   text-align: center;
-   text-decoration: none;
-   display: inline-block;
+   text-decoration: underline;
+   color: red;
+   display: block;
 }
 .dcc-trigger-template:hover {
-   color: black;
-   font-weight: bold;
    cursor: pointer;
 }
 .dcc-trigger-image-template {
