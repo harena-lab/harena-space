@@ -199,8 +199,8 @@ class DCCGroupMarker extends DCCBase {
       rect.setAttributeNS(null, 'height', coords.height);
       rect.setAttributeNS(null, "style",
         (this.hasAttribute("states"))
-           ? "opacity:0.2;fill:black;stroke-width:2"
-           : "opacity:0.2;fill:#0000ff;stroke-width:2");
+           ? "opacity:0.4;fill:black;stroke-width:2"
+           : "opacity:0.4;fill:#0000ff;stroke-width:2");
       this._imageG.appendChild(rect);
       return rect;
    }
@@ -214,7 +214,7 @@ class DCCGroupMarker extends DCCBase {
 
    _spotSelectedState(message) {
       const color = ["black", "green", "blue", "yellow", "red"];
-      message.rect.setAttributeNS(null, "style", "opacity:0.2;fill:" + color[message.state] +
+      message.rect.setAttributeNS(null, "style", "opacity:0.4;fill:" + color[message.state] +
                                                  ";stroke-width:0.89027536");
    }
 
@@ -231,7 +231,7 @@ class DCCGroupMarker extends DCCBase {
       } else {
          for (let s in this._spots)
             this._spots[s].rect.setAttributeNS(null, "style",
-               "opacity:0.2;fill:#0000ff;stroke-width:0.89027536");
+               "opacity:0.4;fill:#0000ff;stroke-width:0.89027536");
          while (this._clipC.firstChild)
             this._clipC.removeChild(this._clipC.firstChild);
          this._clipS.removeChild(this._clipS.firstChild);
@@ -319,7 +319,7 @@ DCCGroupMarker.templateFull =
          preserveAspectRatio="xMinYMin meet"
          xlink:href="[image]"/>
       <rect x="0" y="0" width="1000" height="1000"
-            style="opacity:0.2;fill:#00ffff"/>
+            style="opacity:0.4;fill:#00ffff"/>
       <image
          id="imageC"
          x="0"

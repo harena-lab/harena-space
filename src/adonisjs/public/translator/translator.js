@@ -1124,6 +1124,15 @@ class Translator {
       let input = "";
 
       if (obj.subtype == "group select") {
+         // <TODO> weak strategy -- improve
+         // indicates how related selects will behave
+         this._inputSelectShow = null;
+         if (obj.show)
+            if (obj.show == "answer")
+               this._inputSelectShow = "#answer";
+            else
+               this._inputSelectShow = obj.variable;
+
          const states = (obj.states) ? " states='" + obj.states + "'" : "";
          const labels = (obj.labels) ? " labels='" + obj.labels + "'" : "";
          input = Translator.htmlTemplates["input-group-select"]
@@ -1227,9 +1236,7 @@ class Translator {
       let input = (obj.input != null) ? " input='" + obj.input + "'" : "";
       // let states = (obj.options != null) ? " states='" + obj.options + "'" : "";
       // let colors = (obj.colors != null) ? " colors='" + obj.colors + "'" : "";
-      // <TODO> weak strategy -- improve
-      this._inputSelectShow = (obj.show) ? obj.show : "input";
-      
+
       return Translator.htmlTemplates.selctxopen.replace("[seq]", obj.seq)
                                                 .replace("[author]", this.authorAttr)
                                                 .replace("[context]", obj.context)
@@ -1285,7 +1292,7 @@ class Translator {
    _selectObjToHTML(obj) {
       let answer="";
       if (this._inputSelectShow) {
-         if (this._inputSelectShow == "answer")
+         if (this._inputSelectShow == "#answer")
             answer = " answer='" + obj.value + "'";
          else
             answer = " player='" + this._inputSelectShow + "'";
