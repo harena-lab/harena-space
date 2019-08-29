@@ -34,7 +34,6 @@ class PlayState {
 
    _stateRetrieve() {
       const state = JSON.parse(localStorage.getItem(PlayState.storeId));
-      console.log(state);
       return state;
    }
 
@@ -52,8 +51,6 @@ class PlayState {
    pendingPlayRestore() {
       let currentKnot = null;
       this._state = this._stateRetrieve();
-      console.log("== after ===");
-      console.log(this._state);
       if (this._state.history.length > 0)
          currentKnot = this._state.history[this._state.history.length-1];
       return currentKnot;
@@ -106,7 +103,6 @@ class PlayState {
     */
    
    variableGet(topic, message) {
-      console.log(this._state);
       const id = MessageBus.extractLevel(topic, 2);
       if (id != null)
          MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
@@ -114,12 +110,15 @@ class PlayState {
    }
    
    variableSubGet(topic, message) {
-      const id = MessageBus.extractLevel(topic, 2);
-      if (id != null) {
+      const completeId = MessageBus.extractLevel(topic, 2);
+      if (completeId != null) {
          let result = null;
+         let id = completeId;
+         while (this._state.variables[id] === undefined && id.indexOf(".") > -1)
+            id = id.substring(id.indexOf(".")+1);
          if (this._state.variables[id])
             for (let v in this._state.variables[id])
-               if (this._state.variables[id][v].content == message)
+               if (this._state.variables[id][v].content == message.body)
                   result = this._state.variables[id][v].state;
          MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
                                 result);

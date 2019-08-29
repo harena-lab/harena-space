@@ -56,7 +56,7 @@ class DCCStateSelect extends DCCVisual {
       this._presentationState = this._shadow.querySelector("#presentation-state");
      
       // <TODO> limited: considers only one group per page
-      this.completeId = this.id;  
+      this.completeId = this.id; 
       if (!this.hasAttribute("states") && MessageBus.page.hasSubscriber("dcc/request/select-states")) {
          const variableMess = await MessageBus.page.request("dcc/select-variable/request", this.id, "dcc/select-variable/" + this.id);
          this.variable = variableMess.message;
@@ -141,14 +141,13 @@ class DCCStateSelect extends DCCVisual {
    /* Rendering */
 
    async _checkRender() {
-      if (this._pendingRequests == 0) {
+      if (this._pendingRequests >= 0 && this.states != null) {
          const statesArr = this.states.split(",");
          if (this.hasAttribute("answer"))
             this._currentState = statesArr.indexOf(this.answer);
          else if (this.hasAttribute("player")) {
-            console.log("player:" + this.player);
             let value = await MessageBus.ext.request(
-                  "var/" + this.player + "/get/sub", this.innerHTML, "var/" + this.player + "/sub");
+                  "var/" + this.player + "/get/sub", this.innerHTML);
             this._currentState = statesArr.indexOf(value.message);
          } else {
             this._presentation.addEventListener("mouseover", this._showState);

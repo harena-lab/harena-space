@@ -277,11 +277,18 @@ class Translator {
     */ 
    _compileContext(knotSet, knotId, compiledKnot) {
       for (let c in compiledKnot) {
-         if (compiledKnot[c].type == "input")
+         if (compiledKnot[c].type == "input" && compiledKnot[c].variable.indexOf(".") == -1)
             compiledKnot[c].variable = knotId + "." + compiledKnot[c].variable;
-         else if (compiledKnot[c].type == "context-open")
+            // <TODO> can be interesting this link in the future
+            // compiledKnot[c].variable = this._findContext(knotSet, knotId, compiledKnot[c].variable);
+         else if (compiledKnot[c].type == "context-open" && compiledKnot[c].input.indexOf(".") == -1)
             compiledKnot[c].input = knotId + "." + compiledKnot[c].input;
-         else if (compiledKnot[c].type == "option" || compiledKnot[c].type == "divert") {
+             // <TODO> can be interesting this link in the future
+            // compiledKnot[c].input = this._findContext(knotSet, knotId, compiledKnot[c].input);
+         else if (compiledKnot[c].type == "option" || compiledKnot[c].type == "divert")
+            compiledKnot[c].contextTarget = this._findContext(knotSet, knotId, compiledKnot[c].target);
+         /*
+         {
             let target = compiledKnot[c].target.replace(/ /g, "_");
             let prefix = knotId;
             let lastDot = prefix.lastIndexOf(".");
@@ -292,8 +299,21 @@ class Translator {
                lastDot = prefix.lastIndexOf(".");
             }
             compiledKnot[c].contextTarget = target;
-         }
+         }*/
       }
+   }
+
+   _findContext(knotSet, knotId, originalTarget) {
+      let target = originalTarget.replace(/ /g, "_");
+      let prefix = knotId + ".";
+      let lastDot = prefix.lastIndexOf(".");
+      while (lastDot > -1) {
+         prefix = prefix.substring(0, lastDot);
+         if (knotSet[prefix + "." + target])
+            target = prefix + "." + target;
+         lastDot = prefix.lastIndexOf(".");
+      }
+      return target;
    }
 
    /*
@@ -1352,7 +1372,7 @@ class Translator {
          mark: /@(?:(\w+)|"([\w \t]*)")/im,
          inline: true },
       input: {
-         mark: /^\?[ \t]+([\w \t]+)$/im,
+         mark: /^\?[ \t]+([\w \t.]+)$/im,
          line: true,
          subfield: true,
          subimage: true,
