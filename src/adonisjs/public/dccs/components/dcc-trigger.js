@@ -87,7 +87,7 @@ class DCCTrigger extends DCCBlock {
       if (this.hasAttribute("image"))
          this._imageElement = this._presentation.querySelector("#pres-image-dcc");
       
-      if (this.location[0] != "#") {
+      if (this.location && this.location[0] != "#") {
          let wrapper = document.querySelector("#" + this.location + "-wrapper");
          if (wrapper != null) {
             wrapper.style.cursor = "pointer";
