@@ -87,13 +87,13 @@ class DCCInput extends DCCBlock {
       if (this.hasAttribute("rows") && this.rows > 1)
          html = DCCInput.templateElements.area.replace("[rows]", this.rows)
                                               .replace("[variable]", this.variable)
+                                              .replace("[render]", this._renderStyle());
+      else
+         html = DCCInput.templateElements.text.replace("[variable]", this.variable)
                                               .replace("[render]", this._renderStyle())
                                               .replace("[itype]",
                                                        (this.hasAttribute("itype")) ?
                                                           " type='" + this.itype + "'" : "");
-      else
-         html = DCCInput.templateElements.text.replace("[variable]", this.variable)
-                                              .replace("[render]", this._renderStyle());
      
       // === presentation setup (DCC Block)
       this._applyRender(html, "innerHTML");
@@ -110,8 +110,9 @@ class DCCInput extends DCCBlock {
 
 (function() {
    // <TODO> temporary (size = 50)
+   // <TODO> transfer the definition of font to CSS
    DCCInput.templateElements = {
-      text: "<input type='text' id='[variable]' class='[render]' size='28' [itype]></input>",
+      text: "<input type='text' id='[variable]' class='[render]' size='50' [itype] style='font-size:30pt; border-color:darkgray'></input>",
       area: "<textarea rows='[rows]' id='[variable]' class='[render]' size='28'></textarea>"
    };
 

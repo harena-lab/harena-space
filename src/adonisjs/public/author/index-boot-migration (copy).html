@@ -60,7 +60,7 @@
   <script src="js/author.js"></script>
 </head>
 
-<body onload="AuthorManager.author.start()">
+<body>
   <!-- Create a section to place page content -->
   <main role="main">
     <div class="d-flex flex-column vh-100 vw-100 scroll-y index-boot-padding">
@@ -87,7 +87,7 @@
       <!-- Toolbar -->
       <div class="container-fluid no-spacing">
         <nav class="navbar navbar-light">
-          <div class="col-6">
+          <div class="col-8">
 
               <dcc-trigger action="control/case/load" label="LOAD" xstyle="in"></dcc-trigger>
               <dcc-trigger action="control/knot/new" label="NEW KNOT" xstyle="in"> </dcc-trigger>
@@ -114,18 +114,62 @@
       </div>
       <!-- End of toolbar -->
 
-      <div class="d-flex flex-column no-gutters">
+      <div class="d-flex flex-column">
         <div class="row">
-          <div class="col-sm-6">
+          <div class="col-sm-3">
+            <div class="card text-center std-panel">
 
-         <div id="navigation-block" class="sty-navigation-block std-border">
-            <div id="navigation-panel" class="sty-navigation-panel"></div>
-            <div id="navigator-expansion" class="sty-navigation-expansion">
-               <dcc-trigger id="button-expand-nav" action="control/navigator/expand" label="Expand" image="icons/icon-expand.svg"></dcc-trigger>
-               <dcc-trigger id="button-retract-nav" action="control/navigator/retract" label="Retract" image="icons/icon-retract.svg" style="display:none"></dcc-trigger>
+              <h6 class="card-header">START</h6>
+              <div class="card-body">
+                <div class="container">
+                  <div class="row">
+                    <div class="col">
+                      <a href="#"><p class="card p-3">Introduction</p></a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <h6 class="card-header">CYCLE 1</h6>
+              <div class="card-body ">
+                <div class="container ">
+                  <div class="row">
+                    <div class="col">
+                      <a href="#"><p class="card p-3 ">Introduction</p></a>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col">
+                      <p class="card p-3">Introduction</p>
+                    </div>
+                    <div class="col">
+                      <p class="card p-3">Introduction</p>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col">
+                      <p class="card p-3">Introduction</p>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col">
+                      <p class="card p-3">Introduction</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <h6 class="card-header">CYCLE 2</h6>
+              <div class="card-body">
+                <p class="card">Introduction</p>
+              </div>
+
+              <h6 class="card-header">FINAL</h6>
+              <div class="card-body">
+                <p class="card">Introduction</p>
+              </div>
+
             </div>
-         </div>
-
             <div class="container">
               <div class="row">
                 <div class="col">
@@ -144,32 +188,16 @@
 
           </div>
 
-          <div class="col-sm-6" id="previewimages">
-            <div class="sticky-top">
-               <div id="knot-panel" class="sty-knot-panel std-border"></div>
-             </div>
+          <div class="col" id="previewimages">
+            <div class="card sticky-top">
+              <img src="images/bg.png">
+              <img src="images/character1.png">
+              <p>Imagens. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+              <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+              <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+            </div>
           </div>
-
-        <!--
-         <div id="elements-block" class="styp-elements-block">
-            <div id="elements-panel" class="sty-control-panel std-border">
-               <div class="control-button"><dcc-trigger action="control/element/text/new" label="Text" image="icons/icon-dcc-text.svg"></dcc-trigger></div>
-               <div class="control-button"><dcc-trigger action="control/element/image/new" label="Text" image="icons/icon-dcc-image.svg"></dcc-trigger></div>
-               <div class="control-button"><dcc-trigger action="control/element/option/new" label="Text" image="icons/icon-dcc-trigger.svg"></dcc-trigger></div>
-            </div>
-            <div id="properties-block" class="styp-properties-block std-border">
-               <div id="properties-panel" class="styp-properties-panel"></div>
-               <div id="properties-buttons" class="sty-control-panel std-border" style="display:none">
-                  <div class="control-button"><dcc-trigger xstyle="in" action="properties/apply" label="Apply" image="icons/icon-check.svg"></dcc-trigger></div>
-                  <div class="control-button"><dcc-trigger xstyle="in" action="control/element/selected/up" label="Element Up" image="icons/icon-move-up.svg"></dcc-trigger></div>
-                  <div class="control-button"><dcc-trigger xstyle="in" action="control/element/selected/down" label="Element Down" image="icons/icon-move-down.svg"></dcc-trigger></div>
-                  <div class="control-button"><dcc-trigger xstyle="in" action="control/element/selected/delete" label="Delete Element" image="icons/icon-delete.svg"></dcc-trigger></div>
-               </div>
-            </div>
-         </div>
-
         </div>
-      -->
       </div>
 
     </div>

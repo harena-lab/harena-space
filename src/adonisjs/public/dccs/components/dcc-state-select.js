@@ -146,6 +146,7 @@ class DCCStateSelect extends DCCVisual {
          if (this.hasAttribute("answer"))
             this._currentState = statesArr.indexOf(this.answer);
          else if (this.hasAttribute("player")) {
+            console.log("player:" + this.player);
             let value = await MessageBus.ext.request(
                   "var/" + this.player + "/get/sub", this.innerHTML, "var/" + this.player + "/sub");
             this._currentState = statesArr.indexOf(value.message);

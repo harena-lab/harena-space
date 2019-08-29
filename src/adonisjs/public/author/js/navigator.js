@@ -81,7 +81,8 @@ async mountTreeCase(author, knots) {
    for (let k in this._knots) {
       // <TODO> transfer the pointer of the node?
       if (!this._knots[k].categories ||
-          this._knots[k].categories.indexOf("note") == -1) {
+          (this._knots[k].categories.indexOf("note") == -1 &&
+           this._knots[k].categories.indexOf("notice") == -1)) {
          let newKnot = {id: k.replace(/\./g, "_"),
                         knotid: k,
                         title: this._knots[k].title,
@@ -96,7 +97,8 @@ async mountTreeCase(author, knots) {
                if (content[c].type == "option" || content[c].type == "divert") {
                   const noteKnot = this._knots[content[c].contextTarget];
                   if (noteKnot && noteKnot.categories &&
-                      noteKnot.categories.indexOf("note") > -1) {
+                      (noteKnot.categories.indexOf("note") > -1 ||
+                       noteKnot.categories.indexOf("notice") > -1)) {
                      let newNoteKnot = {
                         id: content[c].contextTarget.replace(/\./g, "_"),
                         knotid: content[c].contextTarget,
