@@ -49,7 +49,7 @@ selctxclose:
 `,
 */
 select:
-`<dcc-state-select id='dcc[seq]'[author]>[expression]</dcc-state-select>`
+`<dcc-state-select id='dcc[seq]'[author][answer]>[expression]</dcc-state-select>`
 };
 
 Translator.htmlTemplatesEditable = {
