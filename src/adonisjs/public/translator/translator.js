@@ -1227,6 +1227,8 @@ class Translator {
       let input = (obj.input != null) ? " input='" + obj.input + "'" : "";
       // let states = (obj.options != null) ? " states='" + obj.options + "'" : "";
       // let colors = (obj.colors != null) ? " colors='" + obj.colors + "'" : "";
+      // <TODO> weak strategy -- improve
+      this._inputSelectShow = (obj.show) ? obj.show : "input";
       
       return Translator.htmlTemplates.selctxopen.replace("[seq]", obj.seq)
                                                 .replace("[author]", this.authorAttr)
@@ -1268,7 +1270,7 @@ class Translator {
       // <TODO> weak strategy -- improve
       /*
       if (this._currentInputContext) {
-         if (this._lastSelectContext == "answers")
+         if (this._lastSelectContext == "answer")
             select.present = "answer";
          else if (this._lastSelectContext == "player")
             select.present = this._lastSelectEvaluation;
@@ -1281,23 +1283,21 @@ class Translator {
     * Select Obj to HTML
     */
    _selectObjToHTML(obj) {
-      /*
       let answer="";
-      if (obj.present) {
-         if (obj.present == "answer")
+      if (this._inputSelectShow) {
+         if (this._inputSelectShow == "answer")
             answer = " answer='" + obj.value + "'";
          else
-            answer = " player='" + obj.present + "'";
+            answer = " player='" + this._inputSelectShow + "'";
       }
-      */
 
       let result = obj.expression;
       if (!this.authoringRender)
          result = Translator.htmlTemplates.select
                      .replace("[seq]", obj.seq)
                      .replace("[author]", this.authorAttr)
-                     .replace("[expression]", obj.expression);
-                     // .replace("[answer]", answer);
+                     .replace("[expression]", obj.expression)
+                     .replace("[answer]", answer);
 
       return result;
    }

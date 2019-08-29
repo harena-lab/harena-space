@@ -106,6 +106,7 @@ class PlayState {
     */
    
    variableGet(topic, message) {
+      console.log(this._state);
       const id = MessageBus.extractLevel(topic, 2);
       if (id != null)
          MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),

@@ -9,65 +9,19 @@ class DCCImageMarker extends DCCVisual {
       this._currentState = 0;
       this._stateVisible = false;
       
-      /*
-      this._showState = this._showState.bind(this);
-      this._hideState = this._hideState.bind(this);
-      this._changeState = this._changeState.bind(this);
-      this.defineStates = this.defineStates.bind(this);
-      */
-      
       this.markerSpot = this.markerSpot.bind(this);
     }
     
     async connectedCallback() {
-       /*
-       this._presentation.addEventListener("mouseover", this._showState);
-       this._presentation.addEventListener("mouseout", this._hideState);
-       this._presentation.addEventListener("click", this._changeState);
-       */
-       
-       // <TODO> limited: considers only one group per page
-       /*
-       this.completeId = this.id;  
-       if (!this.hasAttribute("states") && MessageBus.page.hasSubscriber("dcc/marker-states/request")) {
-          this.context = await MessageBus.page.request("dcc/marker-context/request", this.id, "dcc/marker-context/" + this.id);
-          this.completeId = this.context.message + "." + this.id;
+       const coordsArr = this.coords.split(",");
+       this._coords = {x: parseInt(coordsArr[0]),
+                       y: parseInt(coordsArr[1]),
+                       width: parseInt(coordsArr[2]),
+                       height: parseInt(coordsArr[3])};
 
-          MessageBus.page.subscribe("dcc/marker-states/" + this.id, this.defineStates);
-          MessageBus.page.publish("dcc/marker-states/request", this.id);
-          this._pendingRequests++;
-       }
-       
-       this._checkRender();
-
-       MessageBus.ext.publish("var/" + this.completeId + "/subinput/ready",
-                                     {sourceType: DCCStateSelector.elementTag,
-                                      content: this.innerHTML});
-                                      */
-       
        this._renderInterface();
        super.connectedCallback();
     }
-    
-    /*
-    disconnectedCallback() {
-       this._presentation.removeEventListener('mouseover', this._showState);
-       this._presentation.removeEventListener('mouseout', this._hideState);
-       this._presentation.removeEventListener('click', this._changeState);
-    }
-
-    defineStates(topic, message) {
-       MessageBus.page.unsubscribe("dcc/marker-states/" + this.id, this.defineStates);
-       this.states = message;
-       this._pendingRequests--;
-       this._checkRender();
-    }
-    
-    _checkRender() {
-       if (this._pendingRequests == 0)
-          this._renderInterface();
-    }
-    */
     
     /*
      * Property handling
@@ -75,7 +29,7 @@ class DCCImageMarker extends DCCVisual {
     
     static get observedAttributes() {
        return DCCVisual.observedAttributes.concat(
-          ["label", "states", "colors"]);
+          ["label", "coords"]);
      }
 
     get label() {
@@ -94,122 +48,79 @@ class DCCImageMarker extends DCCVisual {
        this.setAttribute("coords", newValue);
     }
 
-    get states() {
-      return this.getAttribute("states");
-    }
-
-     set states(newStates) {
-      this.setAttribute("states", newStates);
-    }
-
-    get colors() {
-      return this.getAttribute("colors");
-    }
-
-    set colors(newColors) {
-      this.setAttribute("colors", newColors);
-    }
-    
     /* Rendering */
 
-    _renderInterface() {
-       MessageBus.page.publish("dcc/marker-spot/set",
+    async _renderInterface() {
+       const r = await MessageBus.page.request("dcc/marker-spot/set",
              {label: this.label, 
-              coords: this.coords,
+              coords: this._coords,
               handler: this.markerSpot});
-       /*
-      if (this._presentation != null) {
-        if (this._presentationState != null) {
-           if (this._stateVisible && this.states != null) {
-              const statesArr = this.states.split(",");
-              this._presentationState.innerHTML = "[" + statesArr[this._currentState] + "]";
-           } else
-              this._presentationState.innerHTML = "";
-        }
-        this._presentation.className =
-           DCCStateSelector.elementTag + "-template " +
-           DCCStateSelector.elementTag + "-" + this._currentState + "-template";
-      }
-      */
+       this._rect = r.message;
+       this._state = 0;
     }
     
-    /* Event handling */
-       
-    markerSpot() {
-       console.log("***** Spot *****");
-    }
-    
-    /*
-    _showState() {
-      this._stateVisible = true;
-      this._renderInterface();
-    }
-    
-    _hideState() {
-      this._stateVisible = false;
-      this._renderInterface();
-    }
-    
-    _changeState() {
-      if (this.states != null) {
-        const statesArr = this.states.split(",");
-        this._currentState = (this._currentState + 1) % statesArr.length;
-        MessageBus.ext.publish("var/" + this.completeId + "/state_changed",
-              {sourceType: DCCInput.elementTag,
-               state: statesArr[this._currentState]});
-      }
-      this._renderInterface();
-    }
-    */
+   /* Event handling */
+   markerSpot() {
+      this._state = (this._state + 1) % 5;
+      MessageBus.page.publish("dcc/marker-spot/selected",
+            {label: this.label,
+             coords: this._coords,
+             rect: this._rect,
+             state: this._state});
+   }
 }
 
 /* Group Marker DCC
  ******************/
 class DCCGroupMarker extends DCCBase {
    constructor() {
-     super();
-     this.requestContext = this.requestContext.bind(this); 
-     this.requestStates = this.requestStates.bind(this);
-     this.setMarkerSpot = this.setMarkerSpot.bind(this);
+      super();
+      this.requestContext = this.requestContext.bind(this); 
+      this.requestStates = this.requestStates.bind(this);
+      this.setMarkerSpot = this.setMarkerSpot.bind(this);
+      this.spotSelected = this.spotSelected.bind(this);
 
-     this.spotOver = this.spotOver.bind(this);
-     this.spotOut = this.spotOut.bind(this);
+      this.imageClicked = this.imageClicked.bind(this);
+      this.mouseMoved = this.mouseMoved.bind(this);
+
+      this._spots = [];
+
+      this._selection = false;
    }
    
    connectedCallback() {
-      const templateHTML = DCCGroupMarker.templateElements.replace("[image]", this.image);
+      const templateHTML = DCCGroupMarker.templateFull.replace(/\[image\]/igm, this.image);
 
       // building the template
       let template = document.createElement("template");
       template.innerHTML = templateHTML;
-      let shadow = this.attachShadow({mode: "open"});
-      shadow.appendChild(template.content.cloneNode(true));
+      this._svg = this.attachShadow({mode: "open"});
+      this._svg.appendChild(template.content.cloneNode(true));
       
-      this._imageG = shadow.querySelector("#imageG");
-      
-      /*
-      this._image = shadow.querySelector("#image-src");
-      this._imageMap = shadow.querySelector("#image-map");
-      this._imageCanvas = shadow.querySelector("#image-canvas");
-      this._canvas = this._imageCanvas.getContext("2d")
-      */
+      this._clipC = this._svg.querySelector("#clip-spotC");
+      this._clipS = this._svg.querySelector("#clip-spotS");
+      this._imageG = this._svg.querySelector("#imageG");
+      this._imageC = this._svg.querySelector("#imageC");
+      this._imageS = this._svg.querySelector("#imageS");
+      this._scale = this._svg.querySelector("#clip-scale");
+      this._clabel = this._svg.querySelector("#clips-label");
 
-      /*
-      console.log("image width: " + this._image.clientWidth);
-      console.log("image height: " + this._image.clientHeight);
-      console.log("canvas width: " + this._imageCanvas.width);
-      console.log("canvas height: " + this._imageCanvas.height);
-      
-      this._propX = this._image.clientWidth / this._imageCanvas.width;
-      this._propY = this._image.clientHeight / this._imageCanvas.height;
-      */
+      this._imageCoord = this._imageG.getBoundingClientRect();
+      // console.log(this._imageCoord);
       
       MessageBus.page.subscribe("dcc/marker-context/request", this.requestContext);
       MessageBus.page.subscribe("dcc/marker-states/request", this.requestStates);
       MessageBus.page.subscribe("dcc/marker-spot/set", this.setMarkerSpot);
+      MessageBus.page.subscribe("dcc/marker-spot/selected", this.spotSelected);
       
       MessageBus.ext.publish("var/" + this.context + "/group_input/ready",
-            DCCGroupSelector.elementTag);
+            DCCGroupMarker.elementTag);
+
+      if (this.hasAttribute("edit")) {
+         this._editState = 0;
+         this._imageG.addEventListener("click", this.imageClicked, false);
+         this._imageG.addEventListener("mousemove", this.mouseMoved, false);
+      }
    }
 
    disconnectedCallback() {
@@ -232,7 +143,7 @@ class DCCGroupMarker extends DCCBase {
     */
 
    static get observedAttributes() {
-    return ["image", "context", "states", "colors"];
+      return ["image", "context", "states", "edit"];
    }
 
    get image() {
@@ -252,73 +163,121 @@ class DCCGroupMarker extends DCCBase {
    }
 
    get states() {
-     return this.getAttribute("states");
+      return this.getAttribute("states");
+    }
+
+   set states(newValue) {
+      this.setAttribute("states", newValue);
    }
 
-    set states(newStates) {
-     this.setAttribute("states", newStates);
+   get edit() {
+      return this.hasAttribute('hidden');
    }
 
-   get colors() {
-     return this.getAttribute("colors");
-   }
-
-   set colors(newColors) {
-     this.setAttribute("colors", newColors);
+   set edit(isEdit) {
+      if (isEdit) {
+         this.setAttribute("edit", "");
+      } else {
+         this.removeAttribute("edit");
+      }
    }
    
    /* Event handling */
    setMarkerSpot(topic, message) {
+      message.rect = this._makeSpot(message.coords);
+      this._spots.push(message);
+      message.rect.addEventListener("click", message.handler);
+      MessageBus.page.publish(MessageBus.buildResponseTopic(topic, message),
+                              message.rect);
+   }
+
+   _makeSpot(coords) {
       let rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-      const coordsArr = message.coords.split(",");
-      this._spotX = parseInt(coordsArr[0]);
-      this._spotY = parseInt(coordsArr[1]),
-      this._spotWidth = parseInt(coordsArr[2]),
-      this._spotHeight = parseInt(coordsArr[3]);
-      rect.setAttributeNS(null, 'x', this._spotX);
-      rect.setAttributeNS(null, 'y', this._spotY);
-      rect.setAttributeNS(null, 'width', this._spotWidth);
-      rect.setAttributeNS(null, 'height', this._spotHeight);
+      rect.setAttributeNS(null, 'x', coords.x);
+      rect.setAttributeNS(null, 'y', coords.y);
+      rect.setAttributeNS(null, 'width', coords.width);
+      rect.setAttributeNS(null, 'height', coords.height);
       rect.setAttributeNS(null, "style",
-        "opacity:0.2;fill:#0000ff;stroke-width:0.89027536");
-      rect.addEventListener("click", this._spotOver);
+        (this.hasAttribute("states"))
+           ? "opacity:0.2;fill:black;stroke-width:2"
+           : "opacity:0.2;fill:#0000ff;stroke-width:2");
       this._imageG.appendChild(rect);
-
-      /*
-      let area = document.createElement("area");
-      area.alt = message.label;
-      area.title = message.label;
-      area.coords = message.coords;
-      area.shape = "rect";
-      area.addEventListener("mouseover", message.handler);
-      this._imageMap.appendChild(area);
-      
-      console.log(area.coords);
-      
-      let coordsArr = message.coords.split(",");
-      let x1 = parseInt(coordsArr[0]),
-          y1 = parseInt(coordsArr[1]),
-          x2 = parseInt(coordsArr[2]),
-          y2 = parseInt(coordsArr[3]);
-      this._canvas.rect(x1, y1, x2-x1, y2-y1);
-      this._canvas.stroke();
-      */
+      return rect;
    }
 
-   spotOver() {
-      let image = document.createElementNS("http://www.w3.org/2000/svg", "image");
-      rect.setAttributeNS(null, 'x', this._spotX);
-      rect.setAttributeNS(null, 'y', this._spotY);
-      rect.setAttributeNS(null, 'width', this._spotWidth*2);
-      rect.setAttributeNS(null, 'height', this._spotHeight*2);
-      rect.setAttributeNS(null, "style",
-        "opacity:0.2;fill:#0000ff;stroke-width:0.89027536");
-      rect.addEventListener("click", message.handler);
-      this._imageG.appendChild(rect);
+   spotSelected(topic, message) {
+      if (this.hasAttribute("states"))
+         this._spotSelectedState(message);
+      else
+         this._spotSelectedHighlight(message);
    }
 
-   spotOut() {
+   _spotSelectedState(message) {
+      const color = ["black", "green", "blue", "yellow", "red"];
+      message.rect.setAttributeNS(null, "style", "opacity:0.2;fill:" + color[message.state] +
+                                                 ";stroke-width:0.89027536");
+   }
 
+   _spotSelectedHighlight(message) {
+      if (!this._selection) {
+         for (let s in this._spots) {
+            this._spots[s].rect.setAttributeNS(null, "style",
+               "opacity:0;fill:#0000ff;stroke-width:0.89027536");
+            if (this._spots[s].label == message.label)
+               this._zoomSpot(this._spots[s].coords, this._imageC, this._clipC, "C", false);
+         }
+         this._zoomSpot(message.coords, this._imageS, this._clipS, "S", true);
+         this._clabel.innerHTML = message.label;
+      } else {
+         for (let s in this._spots)
+            this._spots[s].rect.setAttributeNS(null, "style",
+               "opacity:0.2;fill:#0000ff;stroke-width:0.89027536");
+         while (this._clipC.firstChild)
+            this._clipC.removeChild(this._clipC.firstChild);
+         this._clipS.removeChild(this._clipS.firstChild);
+         this._clabel.innerHTML = "";
+         this._imageC.removeAttributeNS(null, "clip-path");
+         this._imageS.removeAttributeNS(null, "clip-path");
+         this._scale.removeAttributeNS(null, "transform");
+      }
+      this._selection = !this._selection;
+   }
+
+   _zoomSpot(c, image, clip, clipL, zoom) {
+      let rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+      rect.setAttributeNS(null, 'x', c.x);
+      rect.setAttributeNS(null, 'y', c.y);
+      rect.setAttributeNS(null, 'width', c.width);
+      rect.setAttributeNS(null, 'height', c.height);
+      clip.appendChild(rect);
+      image.setAttributeNS(null, "clip-path", "url(#clip-spot" + clipL + ")");
+      if (zoom)
+         this._scale.setAttributeNS(null, "transform", "translate(" +
+            ((-c.x-(c.width/2))*2) + " " + ((-c.y-(c.height/2))*2) + ") scale(3 3)");
+   }
+
+   imageClicked(event) {
+      if (this._editState == 0) {
+         this._editState = 1;
+         this._newX = event.clientX - this._imageCoord.x;
+         this._newY = event.clientY - this._imageCoord.y;
+         this._newSpot = this._makeSpot({x: this._newX, y: this._newY, width: 1, height: 1});
+      } else {
+         this._editState = 0;
+         const dcc = "<dcc-image-marker coords='" + this._newX + "," + this._newY + "," +
+                     (event.clientX - this._imageCoord.x - this._newX)+ "," +
+                     (event.clientY - this._imageCoord.y - this._newY) +
+                     "'></dcc-image-marker>";
+         console.log(dcc);
+         alert(dcc);
+      }
+   }
+
+   mouseMoved(event) {
+      if (this._editState == 1) {
+         this._newSpot.setAttributeNS(null, 'width', event.clientX - this._imageCoord.x - this._newX);
+         this._newSpot.setAttributeNS(null, 'height', event.clientY - this._imageCoord.y - this._newY);
+      }
    }
 }
 
@@ -327,61 +286,61 @@ class DCCGroupMarker extends DCCBase {
 DCCImageMarker.elementTag = "dcc-image-marker";
 customElements.define(DCCImageMarker.elementTag, DCCImageMarker);
 
-DCCGroupMarker.templateElements =
-  `<svg width="1305px" height="831px" viewBox="0 0 1305 831">
+DCCGroupMarker.templateFull =
+  `<svg width="100%" height="700">
+   <defs>
+      <clipPath id="clip-spotC">
+      </clipPath>
+      <clipPath id="clip-spotS">
+      </clipPath>
+   </defs>
    <style>
       rect { cursor: pointer; } /* specific elements */
    </style>
-   <g id="imageG" preserveAspectRatio="xMidYMid">
-    <image
-       x="0"
-       y="0"
-       width="1305"
-       height="831"
-       id="image4598"
-       xlink:href="[image]"/>
-  </g>
+   <rect x="0" y="1000" width="1000" height="30"
+         style="fill:#000000"/>
+   <foreignObject
+      x="0"
+      y="0"
+      width="1000"
+      height="30">
+      <div
+        id="clips-label"
+        style="font-size:24px;font-family:Tahoma, Geneva, sans-serif;color:#000000;text-align:center;width:100%">
+      </div>
+   </foreignObject>
+   <g id="imageG" transform="translate(0 30)" preserveAspectRatio="xMidYMid">
+      <image
+         id="imageI"
+         x="0"
+         y="0"
+         width="1000"
+         height="1000"
+         preserveAspectRatio="xMinYMin meet"
+         xlink:href="[image]"/>
+      <rect x="0" y="0" width="1000" height="1000"
+            style="opacity:0.2;fill:#00ffff"/>
+      <image
+         id="imageC"
+         x="0"
+         y="0"
+         width="1000"
+         height="1000"
+         preserveAspectRatio="xMinYMin meet"
+         xlink:href="[image]"/>
+      <g id="clip-scale">
+         <image
+            id="imageS"
+            x="0"
+            y="0"
+            width="1000"
+            height="1000"
+            preserveAspectRatio="xMinYMin meet"
+            xlink:href="[image]"/>      
+      </g>
+   </g>
   </svg>`;
 
-/*
-    <rect
-       id="rect10"
-       x="0"
-       y="0"
-       width="1305"
-       height="831"
-       style="opacity:0.08399999;fill:#0000ff;stroke-width:0.89027536" />
-*/
-
-/*
-DCCGroupMarker.templateElements =
-  `<style>
-      .outsideWrapper{ 
-          position: absolute;
-          width:100%; top:0px; bottom:0px; 
-          margin:20px 60px; 
-          border:1px solid blue;}
-      .insideWrapper{ 
-          width:100%; height:100%; 
-          position:relative;}
-      .coveredImage{ 
-          width:100%; height:100%; 
-          position:absolute; top:0px; left:0px;
-      }
-      .coveringCanvas{ 
-          width:100%; height:100%; 
-          position:absolute; top:0px; left:0px;
-          background-color: rgba(255,0,0,.1);
-      }
-   </style>
-   <div class="outsideWrapper">
-    <div class="insideWrapper">
-        <img id="image-src" class="coveredImage" src="[image]" usemap="#imagemap">
-        <canvas id="image-canvas" class="coveringCanvas"></canvas>
-    </div>
-   </div>
-   <map id="image-map" name="imagemap" class="image-spot"></map>`;
-*/
 
 DCCGroupMarker.elementTag = "dcc-group-marker";
 customElements.define(DCCGroupMarker.elementTag, DCCGroupMarker);
