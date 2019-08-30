@@ -33,8 +33,8 @@ class PlayState {
    }
 
    _stateRetrieve() {
-      const state = JSON.parse(localStorage.getItem(PlayState.storeId));
-      return state;
+      const state = localStorage.getItem(PlayState.storeId);
+      return (state == null || state.completed) ? null : JSON.parse(state);
    }
 
    sessionRecord(userid, token) {
@@ -46,6 +46,11 @@ class PlayState {
    pendingPlayCheck() {
       const state = localStorage.getItem(PlayState.storeId);
       return (state != null && !state.completed);
+   }
+
+   pendingPlayId() {
+      const state = this._stateRetrieve();
+      return (state != null && state.caseid != null) ? state.caseid : null;
    }
 
    pendingPlayRestore() {

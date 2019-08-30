@@ -104,25 +104,19 @@ class PlayerManager {
       switch (topic) {
          case "knot/</navigate": if (this._state.historyHasPrevious())
                                     this.knotLoad(this._state.historyPrevious());
-                                    // this._history.pop();
-                                    // const last = this._history[this._history.length - 1]; 
-                                    // this.knotLoad(last);
                                  break;
          case "knot/<</navigate": this.startCase();
-                                  // const startKnot = this._server.getStartKnot();
                                   const startKnot = (DCCPlayerServer.localEnv)
                                      ? DCCPlayerServer.playerObj.start
                                      : this._compiledCase.start;
-                                  // this._history.push(startKnot);
                                   this._state.historyRecord(startKnot);
                                   this.knotLoad(startKnot);
                                   break;
          case "knot/>/navigate": const nextKnot = this._state.nextKnot();
-                                 // this._nextKnot++;
-                                 // this._history.push(this._nextKnot.toString());
                                  this._state.historyRecord(nextKnot);
                                  this.knotLoad(nextKnot);
                                  break;
+         case "knot/>>>/navigate": 
          default: if (MessageBus.matchFilter(topic, "knot/+/navigate")) {
                      this._state.historyRecord(target);
                      // this._history.push(target);
@@ -158,8 +152,18 @@ class PlayerManager {
    async startPlayer(caseid) {
       this._mainPanel = document.querySelector("#main-panel");
 
+      let precase = window.location.search.substr(1);
+      console.log(precase);
+      if (precase != null && precase.length > 0) {
+         const pm = precase.match(/case=([\w-]+)/i);
+         precase = (pm == null) ? null : pm[1];
+      } else
+         precase = null;
+      console.log(precase);
+
       let resume = false;
       if (this._state.pendingPlayCheck()) {
+         // <TODO> adjust for name: (precase == null || this._state.pendingPlayId() == precase)) {
          const decision = await DCCNoticeInput.displayNotice(
             "You have an unfinished case. Do you want to continue?",
             "message", "Yes", "No");
@@ -174,7 +178,7 @@ class PlayerManager {
             else
                this.knotLoad(current, this._state.parameter);
          }
-      } 
+      }
 
       if (!resume) {
         this._userid = await Basic.service.signin(this._state);
@@ -182,13 +186,23 @@ class PlayerManager {
         if (DCCPlayerServer.localEnv)
            Basic.service.currentCaseId = DCCPlayerServer.playerObj.id;
         else {
-           if (!caseid) {
-              const cases = await MessageBus.ext.request(
+           const casesM = await MessageBus.ext.request(
                  "data/case/*/list",
                  {filterBy: "user", filter: this._userid});
+           const cases = casesM.message;
+           let pi = -1;
+           if (precase != null)
+              for (let c in cases)
+                 if (cases[c].name == precase)
+                    pi = c;
+           console.log("pi: " + pi);
+
+           if (!caseid && (precase == null || pi == -1))
               caseid = await DCCNoticeInput.displayNotice(
                  "Select a case to load.",
-                 "list", "Select", "Cancel", cases.message);
+                 "list", "Select", "Cancel", cases);
+           else {
+              caseid = cases[pi].id;
            }
            this._state.currentCase = caseid;
            await this._caseLoad(caseid);
