@@ -115,7 +115,7 @@
       <!-- End of toolbar -->
 
       <div class="d-flex">
-          <div class="col-6">
+          <div class="w-25">
 
             <div id="navigation-block" class="sty-navigation-block std-border">
               <div id="navigation-panel" class="sty-navigation-panel"></div>
@@ -143,12 +143,29 @@
 
           </div>
 
-          <div class="col-6" id="previewimages">
+          <div class="w-50" id="previewimages">
             <div class="sticky-top">
               <div id="knot-panel" class="sty-knot-panel std-border"></div>
             </div>
           </div>
-
+          <div class="w-25">
+            <div id="elements-block" class="styp-elements-block">
+               <div id="elements-panel" class="sty-control-panel std-border">
+                  <div class="control-button"><dcc-trigger action="control/element/text/new" label="Text" image="icons/icon-dcc-text.svg"></dcc-trigger></div>
+                  <div class="control-button"><dcc-trigger action="control/element/image/new" label="Text" image="icons/icon-dcc-image.svg"></dcc-trigger></div>
+                  <div class="control-button"><dcc-trigger action="control/element/option/new" label="Text" image="icons/icon-dcc-trigger.svg"></dcc-trigger></div>
+               </div>
+               <div id="properties-block" class="styp-properties-block std-border">
+                  <div id="properties-panel" class="styp-properties-panel"></div>
+                  <div id="properties-buttons" class="sty-control-panel std-border" style="display:none">
+                     <div class="control-button"><dcc-trigger xstyle="in" action="properties/apply" label="Apply" image="icons/icon-check.svg"></dcc-trigger></div>
+                     <div class="control-button"><dcc-trigger xstyle="in" action="control/element/selected/up" label="Element Up" image="icons/icon-move-up.svg"></dcc-trigger></div>
+                     <div class="control-button"><dcc-trigger xstyle="in" action="control/element/selected/down" label="Element Down" image="icons/icon-move-down.svg"></dcc-trigger></div>
+                     <div class="control-button"><dcc-trigger xstyle="in" action="control/element/selected/delete" label="Delete Element" image="icons/icon-delete.svg"></dcc-trigger></div>
+                  </div>
+               </div>
+            </div>
+          </div>
           <!--
           <div id="elements-block" class="styp-elements-block">
           <div id="elements-panel" class="sty-control-panel std-border">
