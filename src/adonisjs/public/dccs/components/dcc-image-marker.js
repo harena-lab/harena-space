@@ -105,6 +105,9 @@ class DCCGroupMarker extends DCCBase {
       this._scale = this._svg.querySelector("#clip-scale");
       this._clabel = this._svg.querySelector("#clips-label");
 
+      if (this.hasAttribute("label"))
+         this._clabel.innerHTML = this.label;
+
       this._imageCoord = this._imageG.getBoundingClientRect();
       // console.log(this._imageCoord);
       
@@ -143,7 +146,7 @@ class DCCGroupMarker extends DCCBase {
     */
 
    static get observedAttributes() {
-      return ["image", "context", "states", "edit"];
+      return ["image", "context", "label", "states", "edit"];
    }
 
    get image() {
@@ -161,6 +164,14 @@ class DCCGroupMarker extends DCCBase {
    set context(newValue) {
       this.setAttribute("context", newValue);
    }
+
+   get label() {
+       return this.getAttribute("label");
+   }
+
+    set label(newValue) {
+       this.setAttribute("label", newValue);
+    }
 
    get states() {
       return this.getAttribute("states");

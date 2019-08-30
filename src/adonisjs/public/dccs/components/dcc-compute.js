@@ -7,9 +7,8 @@ class DCCCompute extends DCCBase {
    
    async connectedCallback() {
       if (this.hasAttribute("sentence")) {
-         console.log("*** sentence" + this.sentence);
-         if (this.sentence == "case = 0")
-            MessageBus.ext.publish("knot/*/completed", "");
+         if (this.sentence == "case=0")
+            MessageBus.ext.publish("case/completed", "");
          else {
             const trans = /(\w+)?[ \t]*([+\-*/=])[ \t]*(\d+(?:\.\d+)?)/im;
             const elements = trans.exec(this.sentence);
