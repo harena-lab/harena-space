@@ -82,7 +82,8 @@ class DCCPlayerServer {
    }
    
    getCaseInstance(casekey) {
-      return JSON.parse(localStorage.getItem(DCCPlayerServer.storePrefix + casekey));
+      const casek = localStorage.getItem(DCCPlayerServer.storePrefix + casekey);
+      return JSON.parse(casek);
    }
    
    setCaseInstance(casekey, caseInstance) {

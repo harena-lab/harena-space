@@ -99,7 +99,9 @@ class DCCCommonServer {
       };
       const response =
          await fetch(DCCCommonServer.managerAddressAPI + "case/" + caseId, header);
+
       const jsonResponse = await response.json();
+
       MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
                              {name: jsonResponse.name,
                               source: jsonResponse.source});

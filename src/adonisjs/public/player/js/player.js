@@ -11,7 +11,7 @@ class PlayerManager {
    
    constructor() {
       // <TODO> provisory
-      MessageBus.ext.externalized = true;
+      MessageBus.ext.externalized = false;
 
       Basic.service.host = this;
 
@@ -32,6 +32,9 @@ class PlayerManager {
       this.produceReport = this.produceReport.bind(this);
       MessageBus.int.subscribe("/report/get", this.produceReport);
       
+      this.caseCompleted = this.caseCompleted.bind(this);
+      MessageBus.ext.subscribe("case/completed", this.caseCompleted);
+
       /*
       this.inputEvent = this.inputEvent.bind(this);
       MessageBus.ext.subscribe("input/#", this.inputEvent);
@@ -154,13 +157,11 @@ class PlayerManager {
       this._mainPanel = document.querySelector("#main-panel");
 
       let precase = window.location.search.substr(1);
-      console.log(precase);
       if (precase != null && precase.length > 0) {
          const pm = precase.match(/case=([\w-]+)/i);
          precase = (pm == null) ? null : pm[1];
       } else
          precase = null;
-      console.log(precase);
 
       let resume = false;
       if (this._state.pendingPlayCheck()) {
@@ -196,7 +197,6 @@ class PlayerManager {
               for (let c in cases)
                  if (cases[c].name == precase)
                     pi = c;
-           console.log("pi: " + pi);
 
            if (!caseid && (precase == null || pi == -1))
               caseid = await DCCNoticeInput.displayNotice(
@@ -251,8 +251,7 @@ class PlayerManager {
       MessageBus.ext.publish("knot/" + knotName + "/start");
    }
 
-   caseCompleted() {
-      console.log("--- completed");
+   caseCompleted(topic, message) {
       this._state.sessionCompleted();
    }
    

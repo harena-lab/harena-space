@@ -35,8 +35,6 @@ class PlayState {
    _stateRetrieve() {
       let state = null;
       const stateS = localStorage.getItem(PlayState.storeId);
-      console.log("===state");
-      console.log(stateS);
       if (stateS != null)
          state = JSON.parse(stateS);
       return (state == null || state.completed) ? null : state;
@@ -51,8 +49,6 @@ class PlayState {
    sessionCompleted() {
       this._state.completed = true;
       this._stateStore();
-      console.log("*** completed");
-      console.log(this._state);
    }
 
    pendingPlayCheck() {
