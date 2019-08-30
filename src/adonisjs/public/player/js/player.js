@@ -116,7 +116,8 @@ class PlayerManager {
                                  this._state.historyRecord(nextKnot);
                                  this.knotLoad(nextKnot);
                                  break;
-         case "knot/>>>/navigate": 
+         case "knot/>>>/navigate": window.open(message.parameter, "_self");
+                                   break;
          default: if (MessageBus.matchFilter(topic, "knot/+/navigate")) {
                      this._state.historyRecord(target);
                      // this._history.push(target);
@@ -248,6 +249,11 @@ class PlayerManager {
             this.presentKnot(knot);
       }
       MessageBus.ext.publish("knot/" + knotName + "/start");
+   }
+
+   caseCompleted() {
+      console.log("--- completed");
+      this._state.sessionCompleted();
    }
    
    presentKnot(knot) {
