@@ -116,6 +116,8 @@ class PlayerManager {
                                  this._state.historyRecord(nextKnot);
                                  this.knotLoad(nextKnot);
                                  break;
+         case "knot/*/completed": this.caseCompleted();
+                                  break;
          case "knot/>>>/navigate": window.open(message.parameter, "_self");
                                    break;
          default: if (MessageBus.matchFilter(topic, "knot/+/navigate")) {

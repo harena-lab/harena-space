@@ -7,27 +7,32 @@ class DCCCompute extends DCCBase {
    
    async connectedCallback() {
       if (this.hasAttribute("sentence")) {
-         const trans = /(\w+)?[ \t]*([+\-*/=])[ \t]*(\d+(?:\.\d+)?)/im;
-         const elements = trans.exec(this.sentence);
+         console.log("*** sentence" + this.sentence);
+         if (this.sentence == "case = 0")
+            MessageBus.ext.publish("knot/*/completed", "");
+         else {
+            const trans = /(\w+)?[ \t]*([+\-*/=])[ \t]*(\d+(?:\.\d+)?)/im;
+            const elements = trans.exec(this.sentence);
 
-         let variable = elements[1];
-         let operation = elements[2];
-         let value = parseInt(elements[3]);
+            let variable = elements[1];
+            let operation = elements[2];
+            let value = parseInt(elements[3]);
 
-         let varValue = value;
-         if (operation != "=") {
-            let varM = await MessageBus.ext.request("var/" + variable + "/get");
-            varValue = parseInt(varM.message);
+            let varValue = value;
+            if (operation != "=") {
+               let varM = await MessageBus.ext.request("var/" + variable + "/get");
+               varValue = parseInt(varM.message);
 
-            switch (operation) {
-               case "+": varValue += value; break;
-               case "-": varValue -= value; break;
-               case "*": varValue *= value; break;
-               case "/": varValue /= value; break;
+               switch (operation) {
+                  case "+": varValue += value; break;
+                  case "-": varValue -= value; break;
+                  case "*": varValue *= value; break;
+                  case "/": varValue /= value; break;
+               }
             }
-         }
 
-         MessageBus.ext.publish("var/" + variable + "/set", varValue);
+            MessageBus.ext.publish("var/" + variable + "/set", varValue);
+         }
       }
    }
 
