@@ -33,8 +33,13 @@ class PlayState {
    }
 
    _stateRetrieve() {
-      const state = localStorage.getItem(PlayState.storeId);
-      return (state == null || state.completed) ? null : JSON.parse(state);
+      let state = null;
+      const stateS = localStorage.getItem(PlayState.storeId);
+      console.log("===state");
+      console.log(stateS);
+      if (stateS != null)
+         state = JSON.parse(stateS);
+      return (state == null || state.completed) ? null : state;
    }
 
    sessionRecord(userid, token) {
@@ -43,9 +48,16 @@ class PlayState {
       this._stateStore();
    }
 
+   sessionCompleted() {
+      this._state.completed = true;
+      this._stateStore();
+      console.log("*** completed");
+      console.log(this._state);
+   }
+
    pendingPlayCheck() {
-      const state = localStorage.getItem(PlayState.storeId);
-      return (state != null && !state.completed);
+      const state = this._stateRetrieve();
+      return (state != null);
    }
 
    pendingPlayId() {
