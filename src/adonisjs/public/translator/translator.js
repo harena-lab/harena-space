@@ -663,6 +663,8 @@ class Translator {
                        break;
          case "option": element._source = this._optionObjToMd(element);
                         break;
+         case "talk": element._source = this._talkObjToMd(element);
+                        break;
       }
       // element._source += "\n\n";
    }
@@ -1048,6 +1050,18 @@ class Translator {
          .replace("[title]", title);
    }
    
+
+   _talkObjToMd(obj) {
+      let entity = Translator.markdownTemplates.talk
+                .replace("{entity}", obj.character);
+      if (obj.speech)
+         entity += "\n  " + obj.speech;
+      if (obj.image)
+         entity += "\n  " + this._imageObjToMd(obj.image);
+
+      return entity;
+   }
+
    /*
     * Mention Md to Obj
     */

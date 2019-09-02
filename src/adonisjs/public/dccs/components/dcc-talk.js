@@ -35,10 +35,10 @@ class DCCTalk extends DCCBlock {
 
    checkActivateAuthor() {
       if (this.author && this._presentationEntity) {
-         for (let presentation in this._presentationEntity) {
-            this._presentationEntity[presentation].style.cursor = "pointer";
-            this._presentationEntity[presentation].dccid = this.id;
-            this._presentationEntity[presentation].addEventListener("click",
+         for (let pr in this._presentationEntity) {
+            this._presentationEntity[pr].style.cursor = "pointer";
+            this._presentationEntity[pr].dccid = this.id;
+            this._presentationEntity[pr].addEventListener("click",
                function(){
                   MessageBus.ext.publish("control/element/" + this.dccid + "/selected");
                }
@@ -129,6 +129,8 @@ class DCCTalk extends DCCBlock {
             await this._applyRender(this._speech,
                                     (this.xstyle == "out-image") ? "title" : "innerHTML",
                                     "-text");
+            console.log("### presentation");
+            console.log(this._presentation);
             if (this._presentation != null)
                this._presentationEntity.push(this._presentation);
          }
@@ -163,6 +165,8 @@ class DCCTalk extends DCCBlock {
          this._presentation = this._shadow.querySelector("#presentation-dcc");
          */
       }
+
+      this.checkActivateAuthor();
    }
    
    /*
