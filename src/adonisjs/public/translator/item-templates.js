@@ -75,7 +75,9 @@ knot:
 image:
 `![{alternative}]({path}{title})`,
 option:
-`* {label}{rule}-> {target}`
+`* {label}{rule}-> {target}`,
+talk:
+`@{entity}`
 };
 
 Translator.objTemplates = {

@@ -461,12 +461,16 @@ class AuthorManager {
 
       if (this._previousEditedDCC) {
          if (this._previousBorderStyle) {
-            if (this._previousBorderStyle instanceof Array)
+            if (this._previousBorderStyle instanceof Array) {
+               console.log("=== previous edited dcc");
+               console.log(this._previousEditedDCC);
+               console.log("=== previous border style");
+               console.log(this._previousBorderStyle);
                for (let b in this._previousBorderStyle) {
                   this._previousEditedDCC[b].style.border =
                      this._previousBorderStyle[b];
                }
-            else
+            } else
                this._previousEditedDCC.style.border =
                   this._previousBorderStyle;
             delete this._previousBorderStyle;
@@ -480,6 +484,8 @@ class AuthorManager {
          for (let p in presentation) {
             if (presentation[p].style.border)
                this._previousBorderStyle.push(presentation[p].style.border);
+            else
+               this._previousBorderStyle.push("none");
             presentation[p].style.border = "5px dashed blue";
          }
       } else {
