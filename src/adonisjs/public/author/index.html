@@ -121,10 +121,12 @@
 
             <div id="navigation-block" class="sty-navigation-block std-border">
               <div id="navigation-panel" class="sty-navigation-panel"></div>
+              <!--
               <div id="navigator-expansion" class="sty-navigation-expansion">
                 <dcc-trigger id="button-expand-nav" action="control/navigator/expand" label="Expand" image="icons/icon-expand.svg"></dcc-trigger>
                 <dcc-trigger id="button-retract-nav" action="control/navigator/retract" label="Retract" image="icons/icon-retract.svg" style="display:none"></dcc-trigger>
               </div>
+            -->
             </div>
 
             <div class="container">
@@ -150,7 +152,11 @@
               <div id="knot-panel" class="sty-knot-panel std-border"></div>
             </div>
           </div>
-          <div class="w-25">
+          <div id="elements-main" class="w-25 d-flex">
+            <div id="properties-expansion" class="sty-navigation-expansion">
+                <dcc-trigger id="button-expand-prop" action="control/properties/expand" label="Expand" image="icons/icon-retract.svg" style="display:none"></dcc-trigger>
+                <dcc-trigger id="button-retract-prop" action="control/properties/retract" label="Retract" image="icons/icon-expand.svg"></dcc-trigger>
+            </div>
             <div id="elements-block" class="styp-elements-block">
                <div id="elements-panel" class="sty-control-panel std-border">
                   <div class="control-button"><dcc-trigger action="control/element/text/new" label="Text" image="icons/icon-dcc-text.svg"></dcc-trigger></div>

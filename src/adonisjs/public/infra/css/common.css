@@ -23,6 +23,7 @@ nav.navbar {
 }
 .modal-border{
   border-style: solid;
+  border-width: 0.5px;
   border-color: rgb(180,180,180);
   border-radius: 7px;
   margin-bottom: 8px;
