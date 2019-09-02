@@ -96,6 +96,14 @@
    height: 100%;
 }
 
+.sty-navigation-label {
+   position: relative;
+   font-size: 10pt;
+   text-align: center;
+   vertical-align: middle;
+   line-height: 1em;
+}
+
 .sty-selected-knot {
    border: 5px dashed blue;
    border-radius: 5px;
