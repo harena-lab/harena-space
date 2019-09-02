@@ -1,20 +1,15 @@
-Start
-=====
-
-## Case 001 (start,dialog_left)
-:NURSE Agnes: Present the case.
-
-* Let us go! -> Cycle 1.Begin
-
 Cycle 1
 =======
 
-Begin (information)
+Begin (start, presentation_3)
 -------------------
+  ![Emergency room](theme/background-emergency-room-1.png)
 
-:PATIENT Jakob: Details about the patient.
+@NURSE: Present the case.
 
-:Jacinto:What do you want to do?
+@PATIENT: Details about the patient.
+
+@SYSTEM: What do you want to do?
 
 * -> Generate hypothesis
 * -> More information
@@ -22,19 +17,22 @@ Begin (information)
 
 Generate hypothesis (input)
 ---------------------------
-What is your main diagnostic hypothesis?
-:PATIENT Jakob:.
-{?1 hypothesis:mesh}
+
+@SYSTEM: What is your main diagnostic hypothesis?
+
+?1 hypothesis
 
 * Submit hypothesis -> Check hypothesis
 
 More information (information)
 ------------------------------
+  ![Emergency room](theme/background-emergency-room-2.png)
 
-More information about the patient.
-:PATIENT Jakob:.
+<b>MORE INFORMATION</b> <br> More information about the patient.
 
-:Jacinto:What do you want to do?
+@PATIENT Jakob
+
+@SYSTEM: What do you want to do?
 
 * Back to the case -> Cycle 1.Begin
 
@@ -42,9 +40,10 @@ Call the supervisor
 -------------------
 
 ### A (detailed)
-:SUPERVISOR Harry:
+  @SUPERVISOR Harry
+    ![Supervisor Harry](theme/supervisor.png)
+
 Supervisor explanation.
-::
 
 * Back to the case -> Cycle 1.Begin
 
@@ -53,93 +52,117 @@ Supervisor explanation.
 * template: standard_supervisor
 
 
-Check hypothesis (selector)
----------------------------
+Check hypothesis (detailed_role)
+--------------------------------
 
-:Jacinto:Let us check out your hypothesis. Highlight in green the findings that corroborate your hypothesis; in blue those that are neutral; and in red the ones speaking against your hypothesis.
+@SYSTEM: Let us check out your hypothesis. Highlight in green the key findings, in blue the findings that corroborate your hypothesis; in yellow those that are neutral; and in red the ones speaking against your hypothesis.
 
-{{symptoms#contribution to diagnostics: ,+,=,-
-Nurse: {Symptom#=}, {symptom#=}.
+? contribution to diagnostics
+  * type: group select
+  * states: _, k, +, =, -
+  * labels: empty, key, contibutes, indiferent, against
+
+{{symptoms/contribution to diagnostics/
+Nurse: @Nurse - {symptom}/=/.
 }}
 
 * Submit -> Review hypothesis 
 
 Review hypothesis (input)
 -------------------------
-If you whant to review your hypothesis, type below the new hypothesis.
-:PATIENT Jakob:.
-{?1 hypothesis:mesh}
+
+@SYSTEM: If you want to review your hypothesis, type below the new hypothesis.
+
+? hypothesis
 
 * Submit -> Cycle 2.Order EKG
 
 Cycle 2
 =======
 
-## Order EKG (decision_exam)
+## Order EKG (exam)
+@Emergency room
+
 Information related to the EKG.
 
-:EKG:.
+@EKG
+  ![EKG](template/ekg-template.svg)
 
 * Magnify -> Magnify EKG
 
-:Game: What do you want to do?
+@SYSTEM: What do you want to do?
 * -> Generate hypothesis
 * -> More information
 * -> Call the supervisor
 
-## Magnify EKG (note,magnify_exam)
+## Magnify EKG (notice_wide)
 
-:EKG:.
+![EKG Description](template/ekg-template.svg)
 
 * Return -> Order EKG
 
 ## Generate hypothesis (input)
-What is your main diagnostic hypothesis?
-:PATIENT Jakob:.
-{?1 hypothesis:mesh}
+
+@SYSTEM: What is your main diagnostic hypothesis?
+
+? hypothesis
 
 * Submit hypothesis -> Check hypothesis
 
-## More information (decision_exam)
+## More information (information_exam)
 
-![EKG Description](../templates/jacinto/images/ekg-template.svg)
+<b>MORE INFORMATION</b>
 
-* EKG Analysis
+EKG description/EKG findings
 
-:EKG:.
+<span style="color:#0d4a71;font-weight:bold">Rhythm:</span><br>
+sinus rhythm<br>
+<span style="color:#0d4a71;font-weight:bold">P waves:</span><br>
+normal<br>
+<span style="color:#0d4a71;font-weight:bold">PR interval:</span><br>
+normal; PR-segment depression in<br>
+DII lead<br>
+<span style="color:#0d4a71;font-weight:bold">QRS:</span><br>
+narrow<br>
+normal QRS axis (0 – 90 degrees)<br>
+<span style="color:#0d4a71;font-weight:bold">Segmento ST e ondas T:</span><br>
+supra ST in DI, DII, DIII, avF, V2-V6 leads
 
-:Game: What do you want to do?
-* Back -> Order EKG
+@EKG
+
 * Analyze EKG -> EKG Analysis
 
-## EKG Analysis (note,marker_exam)
+@SYSTEM: What do you want to do?
+* Back -> Order EKG
 
-![EKG Description](../templates/jacinto/images/ekg-template.svg)
+## EKG Analysis (notice_wide)
+
+![EKG Description](template/ekg-template.svg)
 
 * Return -> Order EKG
 
-## Call the supervisor (decision_exam)
+## Call the supervisor (exam)
+  @SUPERVISOR Harry
 
 Supervisor explanation.
 
 * -> EKG Analysis
 
-:EKG:.
+@EKG
 
-:Game: What do you want to do?
+@SYSTEM: What do you want to do?
 * Back -> Order EKG
-* Analyze EKG -> EKG Analysis
 
 ## Check hypothesis (marker_exam)
 
-![EKG Description](../templates/jacinto/images/ekg-template.svg)
+![EKG Description](template/ekg-template.svg)
 
 * Submit -> Review hypothesis
 
 ## Review hypothesis (input)
-If you whant to review your hypothesis, type below the new hypothesis.
-:PATIENT Jakob:.
-{?1 hypothesis:mesh}
+@SYSTEM: If you want to review your hypothesis, type below the new hypothesis.
+
+? hypothesis
 
 * Submit -> Final.Report
 
@@ -151,11 +174,9 @@ Report (detailed)
 
 Congratulations, my young Dr. you could helped your patient providing his diagnosis. Now, Let's review all levels of this case.
 
-:Computer:Select a final report level:
+@Computer: Select a final report level:
 
 * -> Level 1
-* -> Level 2.2a
-* -> Level 3.3a
 
 Level 1 (detailed)
 ------------------

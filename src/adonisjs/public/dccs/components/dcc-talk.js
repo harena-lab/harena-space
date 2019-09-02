@@ -32,6 +32,24 @@ class DCCTalk extends DCCBlock {
          window.addEventListener("load", this._renderInterface);
       */
    }
+
+   checkActivateAuthor() {
+      if (this.author && this._presentationEntity) {
+         for (let presentation in this._presentationEntity) {
+            this._presentationEntity[presentation].style.cursor = "pointer";
+            this._presentationEntity[presentation].dccid = this.id;
+            this._presentationEntity[presentation].addEventListener("click",
+               function(){
+                  MessageBus.ext.publish("control/element/" + this.dccid + "/selected");
+               }
+            );
+         }
+      }
+   }
+
+   get presentation() {
+      return (this._presentationEntity) ? this._presentationEntity : null;
+   }
    
    /*
     * Property handling
@@ -77,18 +95,28 @@ class DCCTalk extends DCCBlock {
    /* Rendering */
    
    async _renderInterface() {
+      this._presentationEntity = [];
       if (this.hasAttribute("xstyle") && this.xstyle.startsWith("out")) {
          await this._applyRender(this.character,
                                  (this.xstyle == "out-image") ? "title" : "innerHTML",
                                  "");
+         if (this._presentation != null) {
+            this._presentationEntity.push(this._presentation);
+            this._presentation = null;
+         }
          /*
          let character = this._injectTalkElement("#talk-character");
          if (character != null)
             character.innerHTML = this.character;
          */
             
-         if (this.image)
+         if (this.image) {
             await this._applyRender(this.image, "image", "-image");
+            if (this._presentation != null) {
+               this._presentationEntity.push(this._presentation);
+               this._presentation = null;
+            }
+         }
          // <TODO> works for SVG but not for HTML
          /*
          let image = this._injectTalkElement("#talk-image");
@@ -97,10 +125,13 @@ class DCCTalk extends DCCBlock {
                   "images/" + this.character.replace(/ /igm, "_").toLowerCase() + ".png");
          */
          
-         if (this._speech)
+         if (this._speech) {
             await this._applyRender(this._speech,
                                     (this.xstyle == "out-image") ? "title" : "innerHTML",
                                     "-text");
+            if (this._presentation != null)
+               this._presentationEntity.push(this._presentation);
+         }
          /*
          this._presentation = this._injectTalkElement("#talk-speech");
          if (this._presentation != null)
@@ -115,6 +146,8 @@ class DCCTalk extends DCCBlock {
             .replace("[character]", this.character)
             .replace("[speech]", ((this._speech) ? this._speech : ""));
          await this._applyRender(html, "innerHTML");
+         if (this._presentation != null)
+            this._presentationEntity.push(this._presentation);
          /*
          let charImg = "images/" + this.character.toLowerCase()
                         .replace(/ /igm, "_") + ".png";

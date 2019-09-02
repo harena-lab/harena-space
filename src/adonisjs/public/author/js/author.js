@@ -158,6 +158,10 @@ class AuthorManager {
          "Select a case to load or start a new case.",
          "list", "Select", "New", cases.message);
 
+      const sticky = document.querySelector("#sticky-top");
+      if (sticky != null)
+         sticky.classList.add("sticky-top");
+
       if (caseId == "New")
          this.caseNew();
       else
@@ -457,17 +461,32 @@ class AuthorManager {
 
       if (this._previousEditedDCC) {
          if (this._previousBorderStyle) {
-            this._previousEditedDCC.style.border =
-               this._previousBorderStyle;
+            if (this._previousBorderStyle instanceof Array)
+               for (let b in this._previousBorderStyle) {
+                  this._previousEditedDCC[b].style.border =
+                     this._previousBorderStyle[b];
+               }
+            else
+               this._previousEditedDCC.style.border =
+                  this._previousBorderStyle;
             delete this._previousBorderStyle;
           } else
             this._previousEditedDCC.style.border = null;
       }
 
       let presentation = this._editableDCCs[dccId].presentation;
-      if (presentation.style.border)
-         this._previousBorderStyle = presentation.style.border;
-      presentation.style.border = "5px dashed blue";
+      if (presentation instanceof Array) {
+         this._previousBorderStyle = [];
+         for (let p in presentation) {
+            if (presentation[p].style.border)
+               this._previousBorderStyle.push(presentation[p].style.border);
+            presentation[p].style.border = "5px dashed blue";
+         }
+      } else {
+         if (presentation.style.border)
+            this._previousBorderStyle = presentation.style.border;
+         presentation.style.border = "5px dashed blue";
+      }
 
       this._previousEditedDCC = presentation;
 

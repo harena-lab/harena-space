@@ -41,17 +41,38 @@ class Properties {
       let seq = 1;
       let html = "";
       for (let p in profile) {
-         let value = (obj[p]) ? obj[p] : "";
-         if (profile[p].type == "ShortStrArray")
-            value = obj[p].join(",");
-         html += Properties.fieldTypes[profile[p].type]
-                    .replace(/\[n\]/igm, seq)
-                    .replace(/\[label\]/igm, profile[p].label)
-                    .replace(/\[value\]/igm, value);
-         seq++;
+         if (!profile[p].composite) {
+            html += this._editSingleProperty(
+               profile[p], ((obj[p]) ? obj[p] : ""), seq);
+            seq++;
+         } else {
+            for (let s in profile[p].composite) {
+               html += this._editSingleProperty(
+                  profile[p].composite[s], ((obj[p] && obj[p][s]) ? obj[p][s] : ""), seq);
+               seq++;
+            }
+         }
       }
       this._propertiesPanel.innerHTML = html;
       this._propertiesButtons.style.display = "flex";
+   }
+
+   _editSingleProperty(property, value, seq) {
+      if (property.type == "ShortStrArray")
+         value = value.join(",");
+      return Properties.fieldTypes[property.type]
+                 .replace(/\[n\]/igm, seq)
+                 .replace(/\[label\]/igm, property.label)
+                 .replace(/\[value\]/igm, value);
+      /*
+      let value = (obj[p]) ? obj[p] : "";
+      if (profile[p].type == "ShortStrArray")
+         value = obj[p].join(",");
+      html += Properties.fieldTypes[profile[p].type]
+                 .replace(/\[n\]/igm, seq)
+                 .replace(/\[label\]/igm, profile[p].label)
+                 .replace(/\[value\]/igm, value);
+      */
    }
 
    clearProperties() {
@@ -64,6 +85,26 @@ class Properties {
          const profile = Properties.elProfiles[this._objProperties.type];
          let seq = 1;
          for (let p in profile) {
+            if (!profile[p].composite) {
+               const objProperty = await this._applySingleProperty(profile[p], seq);
+               if (objProperty != null)
+                  this._objProperties[p] = objProperty;
+               seq++;
+            } else {
+               for (let s in profile[p].composite) {
+                  const objProperty =
+                     await this._applySingleProperty(profile[p].composite[s], seq);
+                  if (objProperty != null &&
+                      (typeof objProperty != "string" || objProperty.trim().length > 0)) {
+                     if (!this._objProperties[p])
+                        this._objProperties[p] = {};
+                     this._objProperties[p][s] = objProperty;
+                  }
+                  seq++;
+               }
+            }
+            console.log(this._objProperties[p]);
+           /*
             let field = this._propertiesPanel.querySelector("#pfield" + seq);
             switch (profile[p].type) {
                case "shortStr" : 
@@ -93,7 +134,9 @@ class Properties {
                   break;
             }
             seq++;
+            */
          }
+
          Translator.instance.updateElementMarkdown(this._objProperties);
 
          if (this._knotOriginalTitle && this._author) {
@@ -105,6 +148,39 @@ class Properties {
          delete this._objProperties;
          MessageBus.ext.publish("control/knot/update");
      }
+   }
+
+   async _applySingleProperty(property, seq) {
+      let objProperty = null;
+      let field = this._propertiesPanel.querySelector("#pfield" + seq);
+      switch (property.type) {
+         case "shortStr" :
+         case "text":
+            const value = field.value.trim();
+            if (value.length > 0)
+               objProperty = value;
+            break;
+         case "shortStrArray" :
+            const catStr = field.value.trim();
+            if (catStr.length > 0) {
+               let categories = catStr.split(",");
+               for (let c in categories)
+                  categories[c] = categories[c].trim();
+               objProperty = categories;
+            }
+            break;
+         case "image":
+            // uploads the image
+            if (field.files[0]) {
+               const asset = await
+                  MessageBus.ext.request("data/asset//new",
+                       {file: field.files[0],
+                        caseid: Basic.service.currentCaseId});
+               objProperty = asset.message;
+            }
+            break;
+      }
+      return objProperty;
    }
 }
 
@@ -130,7 +206,20 @@ option: {label: {type: "shortStr",
                  label: "label"},
          target: {type:  "shortStr",
                   label: "target"}
-        }
+        },
+talk: {character: {type: "shortStr",
+                   label: "entity"},
+       image: {
+          composite: {
+             alternative: {type: "shortStr",
+                            label: "alternative"},
+             path: {type:  "image",
+                    label: "image"}
+          }
+       },
+       speech: {type: "text",
+                 label: "text"}
+      }
 };
 
 Properties.fieldTypes = {

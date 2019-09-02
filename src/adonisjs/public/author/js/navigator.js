@@ -11,6 +11,7 @@ constructor(translator) {
    this._translator = translator;
 
    this._retracted = true;
+   this._showPreviewMiniature = false;
 
    this.expandClicked = this.expandClicked.bind(this);
    MessageBus.ext.subscribe("control/navigator/expand", this.expandClicked);
@@ -120,7 +121,6 @@ async mountTreeCase(author, knots) {
                }
             }            
          }
-         console.log(this._knots);
 
          if (previousKnot == null || newKnot.level == previousKnot.level)
             current.children.push(newKnot);
@@ -161,7 +161,12 @@ async _presentTreeCase() {
    let margin = {top: 10, right: 0, bottom: 10, left: 0},
        width = this._tree.width,
        height = this._tree.height;
-   
+
+   if (!this._showPreviewMiniature) {
+      margin.top = 30;
+      margin.left = 15;
+   }
+
    // append the svg object to the body of the page
    let navTree =
       "<div id='navigation-tree' style='width:" +
@@ -243,8 +248,10 @@ async _presentTreeCase() {
 _computeDimension(knot, horizontal, x, y, titleLevel) {
    knot.x = x;
    knot.y = y;
-   knot.titleSize = Navigator.miniKnot[this._retracted].titleBase +
-                    Navigator.miniKnot[this._retracted].titleDelta * titleLevel;
+   knot.titleSize = (this._showPreviewMiniature)
+                       ? Navigator.miniKnot[this._retracted].titleBase +
+                         Navigator.miniKnot[this._retracted].titleDelta * titleLevel
+                       : 0;
    if (!knot.children) {
       knot.width = Navigator.miniKnot[this._retracted].width;
       knot.height = Navigator.miniKnot[this._retracted].height;
@@ -399,27 +406,38 @@ async _drawMiniatures(knot) {
 async _createMiniature(knot, krender) {
    let miniature = document.createElement("div");
    miniature.classList.add("sty-navigation-knot");
-   miniature.innerHTML = "<dcc-trigger action='control/" +
-                           ((knot.children) ? "group/" : "knot/") +
-                           knot.knotid + "/selected' " +
-                           "xstyle='sty-navigation-knot-cover' label = ''>";
 
-   let htmlKnot = await this._translator.generateHTMLBuffer(this._knots[krender.knotid]);
-   let iframe = document.createElement("iframe");
-   iframe.width = Navigator.miniKnot[this._retracted].width;
-   iframe.height = Navigator.miniKnot[this._retracted].height;
-   iframe.srcdoc = this._capsule.message
-      .replace(/{width}/g, Navigator.miniKnot[this._retracted].width)
-      .replace(/{height}/g, Navigator.miniKnot[this._retracted].height-6)
-      .replace(/{scale}/g, "")
-      .replace("{knot}", htmlKnot);
-      // .replace(/{scale}/g, (this._author._themeSVG)
-      //   ? "" : ";transform-origin:top left;transform:scale(0.1)")
-   miniature.appendChild(iframe);
-   /*
-   let idoc = (iframe.contentWindow || iframe.contentDocument);
-   Basic.service.replaceStyle(idoc.document, null, this._author.currentThemeFamily);
-   */
+   let inner = "";
+
+   if (!this._showPreviewMiniature)
+      inner = "<div class='sty-navigation-label' style='width:" +
+              Navigator.miniKnot[this._retracted].width + "px;height:" +
+              Navigator.miniKnot[this._retracted].height + "px'>" +
+              knot.title + "</div>";
+
+   miniature.innerHTML = inner + "<dcc-trigger action='control/" +
+                            ((knot.children) ? "group/" : "knot/") +
+                            knot.knotid + "/selected' " +
+                            "xstyle='sty-navigation-knot-cover' label = ''>";
+
+   if (this._showPreviewMiniature) {
+      let htmlKnot = await this._translator.generateHTMLBuffer(this._knots[krender.knotid]);
+      let iframe = document.createElement("iframe");
+      iframe.width = Navigator.miniKnot[this._retracted].width;
+      iframe.height = Navigator.miniKnot[this._retracted].height;
+      iframe.srcdoc = this._capsule.message
+         .replace(/{width}/g, Navigator.miniKnot[this._retracted].width)
+         .replace(/{height}/g, Navigator.miniKnot[this._retracted].height-6)
+         .replace(/{scale}/g, "")
+         .replace("{knot}", htmlKnot);
+         // .replace(/{scale}/g, (this._author._themeSVG)
+         //   ? "" : ";transform-origin:top left;transform:scale(0.1)")
+      miniature.appendChild(iframe);
+      /*
+      let idoc = (iframe.contentWindow || iframe.contentDocument);
+      Basic.service.replaceStyle(idoc.document, null, this._author.currentThemeFamily);
+      */
+   }
 
    return miniature;
 }
@@ -461,6 +479,43 @@ _drawLinks(knot, svg) {
 (function() {
    Navigator.miniKnot = {
       true: {
+         width: 75, // 16:9
+         height: 42,
+         marginX : 7.5,
+         marginY : 7.5,
+         paddingX: 1.5,
+         paddingY: 1.5,
+         titleBase: 3.75,
+         titleDelta: 3.75
+      },
+      false: {
+         width: 150, // 16:9
+         height: 84,
+         marginX : 15,
+         marginY : 15,
+         paddingX: 2.25,
+         paddingY: 2.25,
+         titleBase: 7.5,
+         titleDelta: 7.5
+      }
+   };
+   Navigator.microKnot = {
+      true: {
+         width: 15,
+         height: 9,
+         marginX: 2.25,
+         marginY: 2.25
+      },
+      false: {
+         width: 30,
+         height: 18,
+         marginX: 3.75,
+         marginY: 3.75
+      }
+   };
+   /*
+   Navigator.miniKnot = {
+      true: {
          width: 100, // 16:9
          height: 56,
          marginX : 10,
@@ -495,4 +550,5 @@ _drawLinks(knot, svg) {
          marginY: 5
       }
    };
+   */
 })();

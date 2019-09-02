@@ -138,6 +138,10 @@ class Basic {
          result = this._rootPath +
                   "themes/" + this.currentThemeFamily +
                   "/images/" + path.substring(6);
+      else if (path.startsWith("template/"))
+         result = this._rootPath +
+                  "templates/" + this.currentThemeFamily +
+                  "/images/" + path.substring(9);
       else if (!(path.startsWith("http://") || path.startsWith("https://") ||
             path.startsWith("/") || path.startsWith("../")))
          result = DCCCommonServer.managerAddress + "artifacts/cases/" +
