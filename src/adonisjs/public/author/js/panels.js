@@ -12,19 +12,9 @@ class Panels {
    constructor() {
       this._navigationBlock = document.querySelector("#navigation-block");
       this._knotPanel = document.querySelector("#knot-panel");
-      this._knotMain = document.querySelector("#previewimages");
       this._propertiesPanel = document.querySelector("#properties-panel");
-      this._elementsBlock = document.querySelector("#elements-block");
-      this._elementsMain = document.querySelector("#elements-main");
       this._buttonExpandNav = document.querySelector("#button-expand-nav");
       this._buttonRetracNav = document.querySelector("#button-retract-nav");
-      this._buttonRetractProp = document.querySelector("#button-retract-prop");
-      this._buttonExpandProp = document.querySelector("#button-expand-prop");
-
-      this.setupPropertiesRetract = this.setupPropertiesRetract.bind(this);
-      MessageBus.ext.subscribe("control/properties/retract", this.setupPropertiesRetract);
-      this.setupPropertiesExpand = this.setupPropertiesExpand.bind(this);
-      MessageBus.ext.subscribe("control/properties/expand", this.setupPropertiesExpand);
    }
 
    setupWideNavigator() {
@@ -39,24 +29,6 @@ class Panels {
       this._knotPanel.style.flex = "80%";
       this._buttonExpandNav.style.display = "initial";
       this._buttonRetracNav.style.display = "none";
-   }
-
-   setupPropertiesRetract() {
-      this._buttonRetractProp.style.display = "none";
-      this._buttonExpandProp.style.display = "initial";
-      this._elementsBlock.style.display = "none";
-      this._knotMain.classList.remove("w-50");
-      this._elementsMain.classList.remove("w-25");
-      this._knotMain.classList.add("w-75");
-   }
-
-   setupPropertiesExpand() {
-      this._buttonRetractProp.style.display = "initial";
-      this._buttonExpandProp.style.display = "none";
-      this._elementsBlock.style.display = "initial";
-      this._knotMain.classList.remove("w-75");
-      this._knotMain.classList.add("w-50");
-      this._elementsMain.classList.add("w-25");
    }
 
    setupProperties() {
