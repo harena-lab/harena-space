@@ -91,10 +91,6 @@
 }
 
 .sty-navigation-knot {
-   border-style: solid;
-   border-color: rgb(180,180,180);
-   border-radius: 7px;
-   background-color: white;
    position: relative;
    width: 100%;
    height: 100%;
