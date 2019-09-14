@@ -6,10 +6,10 @@ option:
 `<dcc-trigger id='dcc[seq]'[author] type='[subtype]' action='knot/[target]/navigate' label='[display]'[parameter][image][location]></dcc-trigger>`,
 divert:
 `<dcc-trigger id='dcc[seq]'[author] type='+' action='knot/[target]/navigate' label='[display]'></dcc-trigger>`,
-talk:
-`<dcc-talk id='dcc[seq]'[author] character='[character]'[image][alternative][title]>[speech]</dcc-talk>`,
+entity:
+`<dcc-entity id='dcc[seq]'[author] entity='[entity]'[image][alternative][title]>[speech]</dcc-entity>`,
 mention:
-`<b>[character]</b>`,
+`<b>[entity]</b>`,
 /*
 "talk-open":
 `
@@ -76,7 +76,7 @@ image:
 `![{alternative}]({path}{title})`,
 option:
 `* {label}{rule}-> {target}`,
-talk:
+entity:
 `@{entity}`
 };
 

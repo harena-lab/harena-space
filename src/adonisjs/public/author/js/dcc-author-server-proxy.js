@@ -79,15 +79,6 @@ class DCCAuthorServer {
       }
       const response = await fetch("../templates/templates.json", header);
       let jsonResponse = await response.json();
-      /*
-      let busResponse = {};
-      for (var t in jsonResponse)
-         if (jsonResponse[t].scope == message.scope)
-            busResponse[jsonResponse[t].path] = {
-               name: t,
-               icon: "/templates/" + jsonResponse[t].icon
-            };
-      */
       let busResponse = [];
       for (var t in jsonResponse)
          if (jsonResponse[t].scope == message.scope)

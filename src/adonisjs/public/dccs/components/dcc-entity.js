@@ -1,9 +1,9 @@
 /**
- * Talk DCC
+ * Entity DCC
  * 
  * xstyle = out -> in the outer space it first looks for the specific name and then for the generic "character" name
  */
-class DCCTalk extends DCCBlock {
+class DCCEntity extends DCCBlock {
    constructor() {
       super();
       this._renderInterface = this._renderInterface.bind(this);
@@ -16,8 +16,8 @@ class DCCTalk extends DCCBlock {
       super.connectedCallback();
 
       /*
-      if (MessageBus.page.hasSubscriber("dcc/request/talk-sequence")) {
-         let sequencem = await MessageBus.page.request("dcc/request/talk-sequence");
+      if (MessageBus.page.hasSubscriber("dcc/request/entity-sequence")) {
+         let sequencem = await MessageBus.page.request("dcc/request/entity-sequence");
          this.sequence = sequencem.message;
       }
       
@@ -68,12 +68,12 @@ class DCCTalk extends DCCBlock {
       this.setAttribute("sequence", newValue);
    }
    
-   get character() {
-      return this.getAttribute("character");
+   get entity() {
+      return this.getAttribute("entity");
    }
    
-   set character(newValue) {
-      this.setAttribute("character", newValue);
+   set entity(newValue) {
+      this.setAttribute("entity", newValue);
    }
    
    get speech() {
@@ -97,7 +97,7 @@ class DCCTalk extends DCCBlock {
    async _renderInterface() {
       this._presentationEntity = [];
       if (this.hasAttribute("xstyle") && this.xstyle.startsWith("out")) {
-         await this._applyRender(this.character,
+         await this._applyRender(this.entity,
                                  (this.xstyle == "out-image") ? "title" : "innerHTML",
                                  "");
          if (this._presentation != null) {
@@ -105,9 +105,9 @@ class DCCTalk extends DCCBlock {
             this._presentation = null;
          }
          /*
-         let character = this._injectTalkElement("#talk-character");
-         if (character != null)
-            character.innerHTML = this.character;
+         let entity = this._injectEntityElement("#entity-entity");
+         if (entity != null)
+            entity.innerHTML = this.entity;
          */
             
          if (this.image) {
@@ -119,46 +119,44 @@ class DCCTalk extends DCCBlock {
          }
          // <TODO> works for SVG but not for HTML
          /*
-         let image = this._injectTalkElement("#talk-image");
+         let image = this._injectEntityElement("#entity-image");
          if (image != null)
             image.setAttributeNS("http://www.w3.org/1999/xlink", "href",
-                  "images/" + this.character.replace(/ /igm, "_").toLowerCase() + ".png");
+                  "images/" + this.entity.replace(/ /igm, "_").toLowerCase() + ".png");
          */
          
          if (this._speech) {
             await this._applyRender(this._speech,
                                     (this.xstyle == "out-image") ? "title" : "innerHTML",
                                     "-text");
-            console.log("### presentation");
-            console.log(this._presentation);
             if (this._presentation != null)
                this._presentationEntity.push(this._presentation);
          }
          /*
-         this._presentation = this._injectTalkElement("#talk-speech");
+         this._presentation = this._injectEntityElement("#entity-speech");
          if (this._presentation != null)
             this._presentation.innerHTML = (this._speech) ? this._speech : "";
          */
       } else {
          let html = (this.hasAttribute("image"))
-            ? DCCTalk.templateElements.image.replace("[image]", this.image) : "";
+            ? DCCEntity.templateElements.image.replace("[image]", this.image) : "";
          html = html.replace("[alternative]",
             (this.hasAttribute("title")) ? " alt='" + this.title + "'" : "");
-         html += DCCTalk.templateElements.text
-            .replace("[character]", this.character)
+         html += DCCEntity.templateElements.text
+            .replace("[entity]", this.entity)
             .replace("[speech]", ((this._speech) ? this._speech : ""));
          await this._applyRender(html, "innerHTML");
          if (this._presentation != null)
             this._presentationEntity.push(this._presentation);
          /*
-         let charImg = "images/" + this.character.toLowerCase()
+         let charImg = "images/" + this.entity.toLowerCase()
                         .replace(/ /igm, "_") + ".png";
          let template = document.createElement("template");
          
          // const speech = (this.hasAttribute("speech")) ? this.speech : "";
-         template.innerHTML = DCCTalk.templateElements
+         template.innerHTML = DCCEntity.templateElements
             .replace("[image]",charImg)
-            .replace("[character]", this.character)
+            .replace("[entity]", this.entity)
             .replace("[speech]", ((this._speech) ? this._speech : ""));
          this._shadow = this.attachShadow({mode: "open"});
          this._shadow.appendChild(template.content.cloneNode(true));
@@ -170,8 +168,8 @@ class DCCTalk extends DCCBlock {
    }
    
    /*
-   _injectTalkElement(prefix) {
-      const charLabel = this.character.replace(/ /igm, "_").toLowerCase();
+   _injectEntityElement(prefix) {
+      const charLabel = this.entity.replace(/ /igm, "_").toLowerCase();
       
       // search sequence: by name, by number, generic
       let target = document.querySelector(prefix + "-" + charLabel);
@@ -187,7 +185,7 @@ class DCCTalk extends DCCBlock {
    /* Rendering */
 
    elementTag() {
-      return DCCTalk.elementTag;
+      return DCCEntity.elementTag;
    }
 
    externalLocationType() {
@@ -207,16 +205,16 @@ class DCCDialog extends DCCBase {
    }
 
    connectedCallback() {
-      MessageBus.page.subscribe("dcc/request/talk-sequence", this.requestSequence);
+      MessageBus.page.subscribe("dcc/request/entity-sequence", this.requestSequence);
    }
 
    disconnectedCallback() {
-      MessageBus.page.unsubscribe("dcc/request/talk-sequence", this.requestSequence);
+      MessageBus.page.unsubscribe("dcc/request/entity-sequence", this.requestSequence);
    }
 
    requestSequence(topic, message) {
       this._sequence++;
-      // MessageBus.page.publish("dcc/talk-sequence/" + message, this._sequence);
+      // MessageBus.page.publish("dcc/entity-sequence/" + message, this._sequence);
       MessageBus.page.publish(MessageBus.buildResponseTopic(topic, message),
                               this._sequence);
    }
@@ -224,40 +222,37 @@ class DCCDialog extends DCCBase {
 */
 
 (function() {
-   DCCTalk.templateStyle = 
+   DCCEntity.templateStyle = 
       `<style>
            @media (orientation: landscape) {
-             .dcc-talk-style {
+             .dcc-entity-style {
                display: flex;
                flex-direction: row;
              }
            }
            
            @media (orientation: portrait) {
-             .dcc-talk-style {
+             .dcc-entity-style {
                display: flex;
                flex-direction: column;
              }
            }
-         .dcc-character {
-             flex-basis: 100px;
-          }
           .dcc-speech {
              flex-basis: 100%;
           }
       </style>
-      <div id="presentation-dcc" class="dcc-talk-style"></div>
+      <div id="presentation-dcc" class="dcc-entity-style"></div>
       </div>`;
          
-   DCCTalk.templateElements = {
-      image: "<div><img id='dcc-talk-character' src='[image]'[alternative] width='100px'></div>",
-      text:  "<div><div id='dcc-talk-text' class='dcc-speech'>[speech]</div></div>"
+   DCCEntity.templateElements = {
+      image: "<div><img id='dcc-entity-image' src='[image]'[alternative] width='100px'></div>",
+      text:  "<div><div id='dcc-entity-text' class='dcc-speech'>[speech]</div></div>"
    };
    
    // DCCDialog.editableCode = false;
    // customElements.define("dcc-dialog", DCCDialog);
-   // DCCTalk.editableCode = false;
+   // DCCEntity.editableCode = false;
 
-   DCCTalk.elementTag = "dcc-talk";
-   customElements.define(DCCTalk.elementTag, DCCTalk);
+   DCCEntity.elementTag = "dcc-entity";
+   customElements.define(DCCEntity.elementTag, DCCEntity);
 })();

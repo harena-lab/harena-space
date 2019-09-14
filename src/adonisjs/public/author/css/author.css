@@ -79,8 +79,13 @@
 }
 
 .sty-navigation-expansion {
-   width: 20px;
-   height: 100%;
+   width: .700rem;
+   height: .963rem;
+}
+
+.sty-navigation-set {
+   width: .700rem;
+   height: 1.925rem;
 }
 
 .sty-tree-button {
@@ -92,6 +97,7 @@
 
 .sty-navigation-knot {
    border-style: solid;
+   boder-
    border-color: rgb(180,180,180);
    border-radius: 7px;
    background-color: white;

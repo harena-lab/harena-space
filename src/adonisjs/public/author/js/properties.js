@@ -48,7 +48,8 @@ class Properties {
          } else {
             for (let s in profile[p].composite) {
                html += this._editSingleProperty(
-                  profile[p].composite[s], ((obj[p] && obj[p][s]) ? obj[p][s] : ""), seq);
+                  profile[p].composite[s],
+                  ((obj[p] && obj[p][s]) ? obj[p][s] : ""), seq);
                seq++;
             }
          }
@@ -58,21 +59,45 @@ class Properties {
    }
 
    _editSingleProperty(property, value, seq) {
-      if (property.type == "ShortStrArray")
+      if (property.type == "shortStrArray")
          value = value.join(",");
-      return Properties.fieldTypes[property.type]
-                 .replace(/\[n\]/igm, seq)
-                 .replace(/\[label\]/igm, property.label)
-                 .replace(/\[value\]/igm, value);
-      /*
-      let value = (obj[p]) ? obj[p] : "";
-      if (profile[p].type == "ShortStrArray")
-         value = obj[p].join(",");
-      html += Properties.fieldTypes[profile[p].type]
-                 .replace(/\[n\]/igm, seq)
-                 .replace(/\[label\]/igm, profile[p].label)
-                 .replace(/\[value\]/igm, value);
-      */
+      else if (property.type == "variable") {
+         value = (value.indexOf(".") == -1)
+                  ? value : value.substring(value.lastIndexOf(".")+1);
+         property.type = "shortStr";
+      } else if (property.type == "select" &&
+                 typeof property.options === "string") {
+         switch (property.options) {
+            case "selectVocabulary":
+               property.options = Context.instance.listSelectVocabularies();
+               break;
+         }
+      }
+      let fields = null;
+      if (property.type != "select")
+         fields = Properties.fieldTypes[property.type]
+                            .replace(/\[n\]/igm, seq)
+                            .replace(/\[label\]/igm, property.label)
+                            .replace(/\[value\]/igm, value);
+      else {
+         fields = Properties.fieldTypes.selectOpen
+                            .replace(/\[n\]/igm, seq)
+                            .replace(/\[label\]/igm, property.label);
+         for (let o in property.options) {
+            const opvalue = (typeof property.options[o] === "string")
+                            ? property.options[o] : property.options[o][0];
+            const oplabel = (typeof property.options[o] === "string")
+                            ? property.options[o] : property.options[o][1];
+            const selected = (value == opvalue) ? " selected" : "";
+            fields += Properties.fieldTypes.selectOption
+                                .replace(/\[opvalue\]/igm, opvalue)
+                                .replace(/\[oplabel\]/igm, oplabel)
+                                .replace(/\[selected\]/igm, selected);
+         }
+         fields += Properties.fieldTypes.selectClose;
+      }
+
+      return fields;
    }
 
    clearProperties() {
@@ -104,37 +129,6 @@ class Properties {
                }
             }
             console.log(this._objProperties[p]);
-           /*
-            let field = this._propertiesPanel.querySelector("#pfield" + seq);
-            switch (profile[p].type) {
-               case "shortStr" : 
-               case "text":
-                  const value = field.value.trim();
-                  if (value.length > 0)
-                     this._objProperties[p] = value;
-                  break;
-               case "shortStrArray" :
-                  const catStr = field.value.trim();
-                  if (catStr.length > 0) {
-                     let categories = catStr.split(",");
-                     for (let c in categories)
-                        categories[c] = categories[c].trim();
-                      this._objProperties[p] = categories;
-                  }
-                  break;
-               case "image":
-                  // uploads the image
-                  if (field.files[0]) {
-                     const asset = await
-                        MessageBus.ext.request("data/asset//new",
-                             {file: field.files[0],
-                              caseid: Basic.service.currentCaseId});
-                     this._objProperties[p] = asset.message;
-                  }
-                  break;
-            }
-            seq++;
-            */
          }
 
          Translator.instance.updateElementMarkdown(this._objProperties);
@@ -187,39 +181,54 @@ class Properties {
 (function() {
 
 Properties.elProfiles = {
-knot: {title: {type: "shortStr",
-               label: "title"},
-       categories: {type: "shortStrArray",
-                    label: "categories"},
-       level: {type: "shortStr",
+knot: {
+   title: {type: "shortStr",
+           label: "title"},
+   categories: {type: "shortStrArray",
+                label: "categories"},
+   level: {type: "shortStr",
                label: "level"}
-      },
-text: {content: {type: "text",
+},
+text: {
+   content: {type: "text",
                  label: "text"}
-       },
-image: {alternative: {type: "shortStr",
-                      label: "label"},
-        path: {type:  "image",
-               label: "image"}
-       },
-option: {label: {type: "shortStr",
+},
+image: {
+   alternative: {type: "shortStr",
                  label: "label"},
-         target: {type:  "shortStr",
-                  label: "target"}
-        },
-talk: {character: {type: "shortStr",
-                   label: "entity"},
-       image: {
-          composite: {
-             alternative: {type: "shortStr",
-                            label: "alternative"},
-             path: {type:  "image",
-                    label: "image"}
-          }
-       },
-       speech: {type: "text",
-                 label: "text"}
+   path: {type:  "image",
+          label: "image"}
+},
+option: {
+   label: {type: "shortStr",
+           label: "label"},
+   target: {type:  "shortStr",
+            label: "target"}
+},
+entity: {
+   entity: {type: "shortStr",
+            label: "entity"},
+   image: {
+      composite: {
+         alternative: {type: "shortStr",
+                       label: "alternative"},
+         path: {type:  "image",
+                label: "image"}
       }
+   },
+   speech: {type: "text",
+            label: "text"}
+   },
+input: {
+   subtype: {type: "select",
+             options: Translator.inputSubtype,
+             label: "type"},
+   variable: {type: "variable",
+              label: "variable"},
+   vocabularies: {type: "select",
+                  options: "selectVocabulary",
+                  label: "vocabularies"}
+}
 };
 
 Properties.fieldTypes = {
@@ -230,17 +239,26 @@ shortStr:
 </div>`,
 text:
 `<div class="styp-field-row">
-   <textarea rows="5" id="pfield[n]" class="styp-field-value" size="10">[value]</textarea>
+   <textarea style="height:100%" id="pfield[n]" class="styp-field-value" size="10">[value]</textarea>
 </div>`,
 shortStrArray:
 `<div class="styp-field-row">
-   <textarea rows="5" id="pfield[n]" class="styp-field-value" size="10">[value]</textarea>
+   <textarea style="height:100%" id="pfield[n]" class="styp-field-value" size="10">[value]</textarea>
 </div>`,
 image:
 `<div class="styd-notice styd-border-notice">
    <label class="styp-field-label std-border" for="pfield[n]">[label]</label>
    <input type="file" id="pfield[n]" name="pfield[n]" class="styd-selector styp-field-value"
           accept="image/png, image/jpeg, image/svg">
+</div>`,
+selectOpen:
+`<div class="styp-field-row">
+   <div class="styp-field-label std-border">[label]</div>
+   <select id='pfield[n]'>`,
+selectOption:
+`    <option value="[opvalue]"[selected]>[oplabel]</option>`,
+selectClose:
+`  </select>
 </div>`
 };
 

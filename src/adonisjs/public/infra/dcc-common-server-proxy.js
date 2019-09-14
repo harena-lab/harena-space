@@ -13,6 +13,8 @@ class DCCCommonServer {
       MessageBus.ext.subscribe("data/case/+/get", this.loadCase);
       this.loadTheme = this.loadTheme.bind(this);
       MessageBus.ext.subscribe("data/theme/+/get", this.loadTheme);
+      this.contextList = this.contextList.bind(this);
+      MessageBus.int.subscribe("data/context/*/list", this.contextList);
    }
 
    get token() {
@@ -59,21 +61,10 @@ class DCCCommonServer {
          "headers": {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + DCCCommonServer.instance.token
-          }/*
-          "body": JSON.stringify({"filterBy": "user",
-                                  "filter": message.filter})*/
+          }
       }
       const response = await fetch(DCCCommonServer.managerAddressAPI + "case/list", header);
       const jsonResponse = await response.json();
-      /*
-      let busResponse = {};
-      for (var c in jsonResponse)
-         busResponse[jsonResponse[c].uuid] = {
-            name: jsonResponse[c].name,
-            icon: "../resources/icons/mono-slide.svg",
-            svg : jsonResponse[c].svg
-         };
-      */
       let busResponse = [];
       for (var c in jsonResponse)
          busResponse.push({
@@ -125,6 +116,21 @@ class DCCCommonServer {
       let textResponse = await response.text();
       MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
                              textResponse);
+   }
+
+   async contextList(topic, message) {
+      var header = {
+         "async": true,
+         "crossDomain": true,
+         "method": "GET",
+         "headers": {
+            "Content-Type": "application/json",
+          }
+      }
+      const response = await fetch("../context/context.json", header);
+      let ctxCatalog = await response.json();
+      MessageBus.int.publish(MessageBus.buildResponseTopic(topic, message),
+                             ctxCatalog);
    }
 }
 

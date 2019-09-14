@@ -153,6 +153,10 @@ nav.navbar {
    color: #707070;
 }
 
+.sticky-top {
+  z-index: 0;
+}
+
 .custom-switch {
    font-size: 10pt;
    text-align: center;
