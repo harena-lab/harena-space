@@ -10,40 +10,17 @@ class DCCMarkdown extends DCCVisual {
 
    /* Properties
       **********/
-   
    static get observedAttributes() {
       return DCCVisual.observedAttributes();
    }
 
-   /* Editable Component */
-   /*
-   activateEditDCC() {
-
-      if (!DCCImage.editableCode) {
-        editableDCCMarkdown();
-        DCCMarkdown.editableCode = true;
-      }
-      this._activateEditDCC();
-      this.editProperties = this.editProperties.bind(this);
-      this._presentation.style.cursor = "pointer";
-      this._presentation.addEventListener("click", this.editProperties);
-   }
-
    editProperties() {
-      this._presentation.classList.add("styp-field-highlight");
-      MessageBus.ext.publish("control/element/" + this.id + "/edit");
-      this._presentation.contentEditable = true;
-      this.textChanged = this.textChanged.bind(this);
-      this._presentation.addEventListener("blur", this.textChanged);
+      delete this._presentation.style.cursor;
+      this._presentation.removeEventListener("click", this.selectListener);
+      this._editor = new EditDCCText(this._presentation);
    }
-
-   textChanged() {
-
-   }
-   */
 }
 
 (function() {
-   // DCCMarkdown.editableCode = false;
    customElements.define("dcc-markdown", DCCMarkdown);
 })();

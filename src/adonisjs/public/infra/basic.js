@@ -181,5 +181,8 @@ class Basic {
    Basic.standardThemeFamily = "minimal";
    Basic.systemThemeFamily = "system";
 
+   // <TODO> provisory based on SVG from XD
+   Basic.referenceViewport = {width: 1920, height: 1080};
+
    Basic.service = new Basic();
 })();

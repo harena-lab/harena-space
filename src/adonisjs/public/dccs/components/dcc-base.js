@@ -26,4 +26,8 @@ class DCCBase extends HTMLElement {
          this.removeAttribute("author");
       }
    }
+
+   editProperties() {
+      /* nothing */
+   }
 }

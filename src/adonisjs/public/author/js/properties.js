@@ -32,7 +32,6 @@ class Properties {
 
    /*
     * Structure of the editable object
-    * 
     */
    editProperties(obj) {
       this._objProperties = obj;
@@ -190,8 +189,8 @@ knot: {
                label: "level"}
 },
 text: {
-   content: {type: "text",
-                 label: "text"}
+//   content: {type: "text",
+//             label: "text"}
 },
 image: {
    alternative: {type: "shortStr",

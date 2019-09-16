@@ -53,3 +53,43 @@
    border-width: 5px;
    border-color: blue;
 }
+
+/* Editor
+ ********/
+
+.ql-contribution {
+   width: 6.3rem;
+}
+
+.dcc-state-select-0-template {
+   background-color: lightgrey;
+}
+
+.dcc-state-select-key-template {
+   background-color: green;
+}
+
+.dcc-state-select-contributes-template {
+   background-color: blue;
+}
+
+.dcc-state-select-indiferent-template {
+   background-color: yellow;
+}
+
+.dcc-state-select-against-template {
+   background-color: red;
+}
+
+.inplace-editor-toolbar {
+   position: absolute;
+   background-color: white;
+   border-radius: 1px;
+   box-shadow: 0px 0px 0px 5px rgba(0,0,0,0.5);
+   margin: 5px;
+}
+
+.inplace-editor {
+   background-color: white;
+   overflow: hidden;
+}

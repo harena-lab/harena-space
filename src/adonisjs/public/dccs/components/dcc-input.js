@@ -97,10 +97,8 @@ class DCCInput extends DCCBlock {
      
       // === presentation setup (DCC Block)
       this._applyRender(html, "innerHTML");
-      // let presentation = super._renderInterface();
 
       // === post presentation setup
-      // presentation.innerHTML = this._generateTemplate(render);
       const selector = "#" + this.variable.replace(/\./g, "\\.");
       this._inputVariable = this._presentation.querySelector(selector);
       this._inputVariable.addEventListener("input", this.inputTyped);

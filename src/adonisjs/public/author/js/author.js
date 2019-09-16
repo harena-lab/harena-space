@@ -485,13 +485,14 @@ class AuthorManager {
                this._previousBorderStyle.push(presentation[p].style.border);
             else
                this._previousBorderStyle.push("none");
-            presentation[p].style.border = "5px dashed blue";
+            presentation[p].style.border = "5px solid #00ffff";
          }
       } else {
          if (presentation.style.border)
             this._previousBorderStyle = presentation.style.border;
-         presentation.style.border = "5px dashed blue";
+         presentation.style.border = "5px solid #00ffff";
       }
+      this._editableDCCs[dccId].editProperties();
 
       this._previousEditedDCC = presentation;
 

@@ -15,12 +15,13 @@ class DCCVisual extends DCCBase {
       if (this.author && this._presentation) {
          this._presentation.style.cursor = "pointer";
          this._presentation.dccid = this.id;
-         this._presentation.addEventListener("click",
-            function(){
-               MessageBus.ext.publish("control/element/" + this.dccid + "/selected");
-            }
-         );
+         this.selectListener = this.selectListener.bind(this);
+         this._presentation.addEventListener("click", this.selectListener);
       }
+   }
+
+   selectListener() {
+      MessageBus.ext.publish("control/element/" + this.id + "/selected");
    }
 
    get presentation() {
