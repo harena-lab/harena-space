@@ -17,16 +17,6 @@ class Translator {
     * Properties
     */
 
-   /*
-   get currentThemeFamily() {
-      return this._currentThemeFamily;
-   }
-   
-   set currentThemeFamily(newValue) {
-      this._currentThemeFamily = newValue;
-   }
-   */
-
    get authoringRender() {
       return this._authoringRender;
    }
@@ -277,16 +267,20 @@ class Translator {
     */ 
    _compileContext(knotSet, knotId, compiledKnot) {
       for (let c in compiledKnot) {
-         if (compiledKnot[c].type == "input" && compiledKnot[c].variable.indexOf(".") == -1)
+         if (compiledKnot[c].type == "input" &&
+             compiledKnot[c].variable.indexOf(".") == -1)
             compiledKnot[c].variable = knotId + "." + compiledKnot[c].variable;
             // <TODO> can be interesting this link in the future
             // compiledKnot[c].variable = this._findContext(knotSet, knotId, compiledKnot[c].variable);
-         else if (compiledKnot[c].type == "context-open" && compiledKnot[c].input.indexOf(".") == -1)
+         else if (compiledKnot[c].type == "context-open" &&
+                  compiledKnot[c].input.indexOf(".") == -1)
             compiledKnot[c].input = knotId + "." + compiledKnot[c].input;
              // <TODO> can be interesting this link in the future
             // compiledKnot[c].input = this._findContext(knotSet, knotId, compiledKnot[c].input);
-         else if (compiledKnot[c].type == "option" || compiledKnot[c].type == "divert")
-            compiledKnot[c].contextTarget = this._findContext(knotSet, knotId, compiledKnot[c].target);
+         else if (compiledKnot[c].type == "option" ||
+                  compiledKnot[c].type == "divert")
+            compiledKnot[c].contextTarget =
+               this._findContext(knotSet, knotId, compiledKnot[c].target);
          /*
          {
             let target = compiledKnot[c].target.replace(/ /g, "_");
@@ -322,6 +316,7 @@ class Translator {
    */
    _compileMerge(knotSet, knotId, compiledKnot) {
       for (let c = 0; c < compiledKnot.length; c++) {
+         // aggregates text blocks 
          if (compiledKnot[c].type == "linefeed") {
             if (c > 0 && compiledKnot[c-1].type == "text" &&
                 c < compiledKnot.length-1 && compiledKnot[c+1].type == "text") {
@@ -343,6 +338,7 @@ class Translator {
                }
             }
          } else if (c > 0 && compiledKnot[c].subordinate) {
+            // computes subordinate elements
             let merge = false;
             if (compiledKnot[c].type == "field" &&
                 Translator.element[compiledKnot[c-1].type].subfield !== undefined &&
@@ -389,6 +385,7 @@ class Translator {
             }
          } else if (c == 0 && compiledKnot[c].subordinate &&
                     compiledKnot[c].type == "image") {
+            // manages elements subordinated to the knot
             knotSet[knotId].background = {
                alternative: compiledKnot[c].alternative,
                path:  compiledKnot[c].path };

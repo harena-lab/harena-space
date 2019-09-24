@@ -23,76 +23,74 @@ Quill.register(MetadataBlot);
 
 class EditDCCText {
    constructor(element) {
-      this._handleContribution = this._handleContribution.bind(this);
-
+      // builds the toolbar and editor panels
       let container = document;
       if (window.parent && window.parent.document) {
          const cont = window.parent.document.querySelector("#inplace-editor-wrapper");
          if (cont != null)
             container = cont;
       }
+      this._containerRect = container.getBoundingClientRect();
+      this._elementRect = element.getBoundingClientRect();
 
+      const editorToolbar = this._buildToolbarPanel();
+      container.appendChild(editorToolbar);
+
+      const editor = this._buildEditorPanel(element);
+      container.appendChild(editor);
+
+      this._buildEditor(element, editor, editorToolbar);
+
+      this._loadSelectOptions();
+   }
+
+   _buildToolbarPanel() {
       let editorToolbar = document.createElement("div");
       editorToolbar.classList.add("inplace-editor-toolbar");
       editorToolbar.innerHTML = EditDCCText.toolbarTemplate;
-      container.appendChild(editorToolbar);
 
+      editorToolbar.style.left = this._transformRelativeX(
+         this._elementRect.left - this._containerRect.left);
+      editorToolbar.style.bottom = this._transformRelativeY(
+         this._containerRect.height - (this._elementRect.top - this._containerRect.top));
+      return editorToolbar;
+   }
+
+   _buildEditorPanel(element) {
       let editor = document.createElement("div");
-      container.appendChild(editor);
-
       editor.style.position = "absolute";
-
-      const containerRect = container.getBoundingClientRect();
-      const elementRect = element.getBoundingClientRect();
-
-      /*
-      console.log(container);
-      console.log("container width: " + containerRect.width);
-      console.log("container height: " + containerRect.height);
-      console.log("offset width: " + container.offsetWidth);
-      console.log("offset height: " + container.offsetHeight);
-      console.log("client width: " + container.clientWidth);
-      console.log("client height: " + container.clientHeight);
-      console.log("scroll width: " + container.scrollWidth);
-      console.log("scroll height: " + container.scrollHeight);
-      */
-
-      console.log("font size: " +
-         window.getComputedStyle(element, null).getPropertyValue("font-size"));
-
-      editorToolbar.style.left =
-         ((elementRect.left - containerRect.left) /
-           containerRect.width * 100) + "%";
-      editorToolbar.style.bottom =
-         ((containerRect.height - (elementRect.top-containerRect.top)) /
-           containerRect.height * 100) + "%";
-
-      editor.style.left =
-         ((elementRect.left - containerRect.left) * 100 /
-                     containerRect.width) + "%";
-      editor.style.top =
-         ((elementRect.top - containerRect.top) * 100 /
-                     containerRect.height) + "%";
-      editor.style.width = (elementRect.width * 100 / containerRect.width) + "%";
-      editor.style.height = (elementRect.height * 100 / containerRect.height) + "%";
+      editor.style.left = this._transformRelativeX(
+         this._elementRect.left - this._containerRect.left);
+      editor.style.top = this._transformRelativeY(
+         this._elementRect.top - this._containerRect.top);
+      editor.style.width = this._transformRelativeX(this._elementRect.width);
+      editor.style.height = this._transformRelativeY(this._elementRect.height);
       editor.style.fontSize =
          window.getComputedStyle(element, null).getPropertyValue("font-size");
+      return editor;
+   }
 
+
+   // builds a Quill editor
+   _buildEditor(element, editor, editorToolbar) {
       editor.innerHTML =
          EditDCCText.editorTemplate
-            .replace("[width]",
-               (elementRect.width/containerRect.width)*Basic.referenceViewport.width)
-            .replace("[height]",
-               (elementRect.height/containerRect.height)*Basic.referenceViewport.height)
+            .replace("[width]", this._transformViewportX(this._elementRect.width))
+            .replace("[height]", this._transformViewportY(this._elementRect.height))
             .replace("[content]", element.innerHTML);
       let inplaceContent = editor.querySelector("#inplace-content");
 
+      this._handleHighlighter = this._handleHighlighter.bind(this);
+      this._handleComment = this._handleComment.bind(this);
+      this._handleContribution = this._handleContribution.bind(this);
       this._quill = new Quill(inplaceContent, 
          {theme: "snow",
           modules: {
              toolbar: {
                container: editorToolbar,
                handlers: {
+                  "highlighter" : this._handleHighlighter,
+                  "comment"     : this._handleComment,
                   "contribution": this._handleContribution
                }
              }
@@ -100,7 +98,14 @@ class EditDCCText {
          });
       editor.classList.add("inplace-editor");
 
-      // transforms contribution the options in HTML
+      document.querySelector(".ql-comment").innerHTML =
+         EditDCCText.buttonCommentSVG;
+      document.querySelector(".ql-highlighter").innerHTML =
+         EditDCCText.buttonHighlightSVG;
+   }
+
+   _loadSelectOptions() {
+      // transforms the contribution options in HTML
       const selectOptions =
          document.querySelectorAll(".ql-contribution .ql-picker-item");
       const selectItems = Array.prototype.slice.call(selectOptions);
@@ -114,11 +119,49 @@ class EditDCCText {
          this._contributionSelectHTML;
    }
 
+   /*
+    * Relative positions defined in percent are automatically adjusted with resize
+    */
+
+   _transformRelativeX(x) {
+      return (x * 100 / this._containerRect.width) + "%";
+   }
+
+   _transformRelativeY(y) {
+      return (y * 100 / this._containerRect.height) + "%";
+   }
+
+   /*
+    * Positions transformed to the viewport size
+    */
+
+   _transformViewportX(x) {
+      return (x * Basic.referenceViewport.width / this._containerRect.width);
+   }
+
+   _transformViewportY(y) {
+      return (y * Basic.referenceViewport.height / this._containerRect.height);
+   }
+
    _handleContribution(contribution) {
       this._contributionSelect.innerHTML = contribution + this._contributionSelectHTML;
-      var range = this._quill.getSelection();
+      const range = this._quill.getSelection();
       this._quill.formatText(range.index, range.length, {
          metadata: contribution
+      });
+   }
+
+   _handleComment() {
+      const range = this._quill.getSelection();
+      this._quill.formatText(range.index, range.length, {
+         metadata: "comment"
+      });
+   }
+
+   _handleHighlighter() {
+      const range = this._quill.getSelection();
+      this._quill.formatText(range.index, range.length, {
+         metadata: "highlight"
       });
    }
 }
@@ -132,12 +175,24 @@ EditDCCText.toolbarTemplate =
    <option value="against"></option>
 </select>
 <button class="ql-bold"></button>
-<button class="ql-italic"></button>`;
+<button class="ql-italic"></button>
+<button class="ql-comment"></button>
+<button class="ql-highlighter"></button>`;
 EditDCCText.editorTemplate =
 `<svg viewBox="0 0 [width] [height]">
    <foreignObject width="100%" height="100%">
       <div id="inplace-content">[content]</div>
    </foreignObject>
-</svg>
-`;
+</svg>`;
+/* icons from Font Awesome, license: https://fontawesome.com/license */
+// comment-alt https://fontawesome.com/icons/comment-alt?style=regular
+EditDCCText.buttonCommentSVG =
+`<svg viewBox="0 0 512 512">
+<path fill="currentColor" d="M448 0H64C28.7 0 0 28.7 0 64v288c0 35.3 28.7 64 64 64h96v84c0 7.1 5.8 12 12 12 2.4 0 4.9-.7 7.1-2.4L304 416h144c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64zm16 352c0 8.8-7.2 16-16 16H288l-12.8 9.6L208 428v-60H64c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16h384c8.8 0 16 7.2 16 16v288z">
+</path></svg>`;
+// highlighter https://fontawesome.com/icons/highlighter?style=solid
+EditDCCText.buttonHighlightSVG =
+`<svg viewBox="0 0 544 512">
+<path fill="currentColor" d="M0 479.98L99.92 512l35.45-35.45-67.04-67.04L0 479.98zm124.61-240.01a36.592 36.592 0 0 0-10.79 38.1l13.05 42.83-50.93 50.94 96.23 96.23 50.86-50.86 42.74 13.08c13.73 4.2 28.65-.01 38.15-10.78l35.55-41.64-173.34-173.34-41.52 35.44zm403.31-160.7l-63.2-63.2c-20.49-20.49-53.38-21.52-75.12-2.35L190.55 183.68l169.77 169.78L530.27 154.4c19.18-21.74 18.15-54.63-2.35-75.13z">
+</path></svg>`;
 })();

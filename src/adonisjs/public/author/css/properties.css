@@ -81,6 +81,14 @@
    background-color: red;
 }
 
+.dcc-state-select-comment-template {
+   background-color: #defde0;
+}
+
+.dcc-state-select-highlight-template {
+   background-color: #ffffe0;
+}
+
 .inplace-editor-toolbar {
    position: absolute;
    background-color: white;
