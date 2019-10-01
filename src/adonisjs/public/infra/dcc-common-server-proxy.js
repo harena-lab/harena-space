@@ -132,6 +132,26 @@ class DCCCommonServer {
       MessageBus.int.publish(MessageBus.buildResponseTopic(topic, message),
                              ctxCatalog);
    }
+
+   async loadContext(topic, message) {
+      const themeCompleteName = MessageBus.extractLevel(topic, 3);
+      const separator = themeCompleteName.indexOf("."); 
+      const themeFamily = themeCompleteName.substring(0, separator);
+      const themeName = themeCompleteName.substring(separator+1);
+      var header = {
+         "async": true,
+         "crossDomain": true,
+         "method": "GET",
+         "headers": {
+            "Content-Type": "text/html",
+          }
+      }
+      const response = await fetch("../themes/" + themeFamily + "/" + themeName +
+                                   ".html", header);
+      let textResponse = await response.text();
+      MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
+                             textResponse);
+   }
 }
 
 (function() {

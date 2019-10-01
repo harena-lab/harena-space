@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="../lib/bootstrap-4-3-1/css/bootstrap.min.css">
 
 <link rel="stylesheet" href="../infra/css/common.css">
+<link rel="stylesheet" href="../dccs/css/dccs.css">
 <link rel="stylesheet" href="css/author.css">
 <link rel="stylesheet" href="css/properties.css">
 
@@ -131,7 +132,7 @@
             </div>
           </div>
 
-          <div class="w-50 d-flex" id="previewimages">
+          <div class="w-75 d-flex" id="knot-main">
             <div id="navigator-expansion" class="sty-navigation-expansion">
                 <div id="navigation-set" class="sty-navigation-set">
                   <dcc-trigger id="button-expand-nav" action="control/navigator/expand" label="Expand" image="icons/icon-expansion-right.svg"></dcc-trigger>
@@ -144,13 +145,13 @@
               </div>
             </div>
             <div id="properties-expansion" class="sty-navigation-expansion">
-                <dcc-trigger id="button-expand-prop" action="control/properties/expand" label="Expand" image="icons/icon-expansion-left.svg" style="display:none"></dcc-trigger>
-                <dcc-trigger id="button-retract-prop" action="control/properties/retract" label="Retract" image="icons/icon-expansion-right.svg"></dcc-trigger>
+                <dcc-trigger id="button-expand-prop" action="control/properties/expand" label="Expand" image="icons/icon-expansion-left.svg"></dcc-trigger>
+                <dcc-trigger id="button-retract-prop" action="control/properties/retract" label="Retract" image="icons/icon-expansion-right.svg" style="display:none"></dcc-trigger>
             </div>
           </div>
 
-          <div id="elements-main" class="w-25 d-flex">
-            <div id="elements-block" class="styp-elements-block">
+          <div id="elements-main" class="d-flex">
+            <div id="elements-block" class="styp-elements-block" style="display:none">
                <div id="elements-panel" class="sty-control-panel std-border">
                   <div class="control-button"><dcc-trigger action="control/element/text/new" label="Text" image="icons/icon-dcc-text.svg"></dcc-trigger></div>
                   <div class="control-button"><dcc-trigger action="control/element/image/new" label="Text" image="icons/icon-dcc-image.svg"></dcc-trigger></div>

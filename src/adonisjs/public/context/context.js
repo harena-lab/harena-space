@@ -9,6 +9,7 @@ class Context {
        this._contextList = ctxList.message;
    }
 
+   // <TODO> filter only select vocabularies of the context
    listSelectVocabularies() {
       let list = [];
       for (let c in this._contextList)

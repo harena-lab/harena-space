@@ -10,12 +10,12 @@ class Panels {
    }
 
    constructor() {
-      this._knotPanelSize = 50;
-      this._propertiesVisible = true;
+      this._knotPanelSize = 75;
+      this._propertiesVisible = false;
 
       this._navigationBlock = document.querySelector("#navigation-block");
       this._knotPanel = document.querySelector("#knot-panel");
-      this._knotMain = document.querySelector("#previewimages");
+      this._knotMain = document.querySelector("#knot-main");
       this._propertiesPanel = document.querySelector("#properties-panel");
       this._elementsBlock = document.querySelector("#elements-block");
       this._elementsMain = document.querySelector("#elements-main");
