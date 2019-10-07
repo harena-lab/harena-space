@@ -39,7 +39,7 @@ class DCCAuthorServer {
    // wrapper of the services
 
    async themeFamiliesList(topic, message) {
-      var header = {
+      let header = {
          "async": true,
          "crossDomain": true,
          "method": "GET",
@@ -58,7 +58,7 @@ class DCCAuthorServer {
          };
       */
       let busResponse = [];
-      for (var t in jsonResponse)
+      for (let t in jsonResponse)
          busResponse.push({
             id:   jsonResponse[t].path,
             name: t,
@@ -69,7 +69,7 @@ class DCCAuthorServer {
    }
 
    async templatesList(topic, message) {
-      var header = {
+      let header = {
          "async": true,
          "crossDomain": true,
          "method": "GET",
@@ -80,7 +80,7 @@ class DCCAuthorServer {
       const response = await fetch("../templates/templates.json", header);
       let jsonResponse = await response.json();
       let busResponse = [];
-      for (var t in jsonResponse)
+      for (let t in jsonResponse)
          if (jsonResponse[t].scope == message.scope)
             busResponse.push({
                id:   jsonResponse[t].path,
@@ -92,7 +92,7 @@ class DCCAuthorServer {
    }
 
    async newCase(topic, message) {
-      var header = {
+      let header = {
          "async": true,
          "crossDomain": true,
          "method": "POST",
@@ -113,7 +113,7 @@ class DCCAuthorServer {
    async saveCase(topic, message) {
       if (message.format == "markdown") {
          const caseId = MessageBus.extractLevel(topic, 3);
-         var header = {
+         let header = {
             "async": true,
             "crossDomain": true,
             "method": "PUT",
@@ -134,7 +134,7 @@ class DCCAuthorServer {
 
    async deleteCase(topic, message) {
       const caseId = MessageBus.extractLevel(topic, 3);
-      var header = {
+      let header = {
          "async": true,
          "crossDomain": true,
          "method": "DELETE",
@@ -152,7 +152,7 @@ class DCCAuthorServer {
 
    async loadModule(topic, message) {
       const moduleName = MessageBus.extractLevel(topic, 3);
-      var header = {
+      let header = {
          "async": true,
          "crossDomain": true,
          "method": "GET",
@@ -168,7 +168,7 @@ class DCCAuthorServer {
    
    async loadTemplate(topic, message) {
       let templatePath = MessageBus.extractLevel(topic, 3).replace(".", "/");
-      var header = {
+      let header = {
          "async": true,
          "crossDomain": true,
          "method": "GET",
@@ -184,10 +184,10 @@ class DCCAuthorServer {
    }
 
    async uploadArtifact(topic, message) {
-      var data = new FormData();
+      let data = new FormData();
       data.append("file", message.file);
       data.append("case_uuid", message.caseid);
-      var header = {
+      let header = {
          "async": true,
          "crossDomain": true,
          "method": "POST",

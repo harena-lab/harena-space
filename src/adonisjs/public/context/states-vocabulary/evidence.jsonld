@@ -1,35 +1,36 @@
 {
    "@context": {
-      "vrs":   "http://purl.org/versum/",
-      "evd":   "http://purl.org/versum/evidence/",
-      "dc":    "http://purl.org/dc/elements/1.1/"
+      "@vocab": "http://purl.org/versum/evidence/",
+      "versum": "http://purl.org/versum/",
+      "evidence": "http://purl.org/versum/evidence/",
+      "title": "http://purl.org/dc/elements/1.1/title",
+      "states": {
+         "@id": "versum:States_vocabulary",
+         "@container": "@index"
+      }
    },
-   "@graph": [
-    {
-      "@id": "evd:finding_relevance",
-      "@type": "vrs:States_vocabulary",
-      "dc:title": "finding relevance",
-      "vrs:states": [
-         {"vrs:state": "vrs:undefined",
-          "vrs:label": "undefined",
-          "vrs:color": "lightgrey",
-          "vrs:symbol": " "},
-         {"vrs:state": "evd:key_finding",
-          "vrs:label": "key",
-          "vrs:color": "green",
-          "vrs:symbol": "k"},
-         {"vrs:state": "evd:corroborate_finding",
-          "vrs:label": "corroborates",
-          "vrs:color": "blue",
-          "vrs:symbol": "+"},
-         {"vrs:state": "evd:neutral_finding",
-          "vrs:label": "neutral",
-          "vrs:color": "yellow",
-          "vrs:symbol": "="},
-         {"vrs:state": "evd:against_hypothesis",
-          "vrs:label": "against",
-          "vrs:color": "red",
-          "vrs:symbol": "-"}
-      ]
-   }]
+   "@id": "evidence:finding_relevance",
+   "title": "finding relevance",
+   "states": {
+      "undefined": {
+         "@id": "versum:undefined",
+         "color": "lightgrey",
+         "symbol": " "},
+      "key": {
+         "@id": "evidence:key_finding",
+         "color": "green",
+         "symbol": "k"},
+      "corroborates": {
+         "@id": "evidence:corroborate_finding",
+         "color": "blue",
+         "symbol": "+"},
+      "neutral": {
+         "@id": "evidence:neutral_finding",
+         "color": "yellow",
+         "symbol": "="},
+      "against": {
+         "@id": "evd:against_hypothesis",
+         "color": "red",
+         "symbol": "-"}
+   }
 }

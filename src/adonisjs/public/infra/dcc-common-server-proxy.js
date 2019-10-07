@@ -15,6 +15,8 @@ class DCCCommonServer {
       MessageBus.ext.subscribe("data/theme/+/get", this.loadTheme);
       this.contextList = this.contextList.bind(this);
       MessageBus.int.subscribe("data/context/*/list", this.contextList);
+      this.loadContext = this.loadContext.bind(this);
+      MessageBus.int.subscribe("data/context/+/get", this.loadContext);
    }
 
    get token() {
@@ -31,7 +33,7 @@ class DCCCommonServer {
     */
 
    async userLogin(topic, message) {
-      var header = {
+      let header = {
          "async": true,
          "crossDomain": true,
          "method": "POST",
@@ -54,7 +56,7 @@ class DCCCommonServer {
    }
 
    async casesList(topic, message) {
-      var header = {
+      let header = {
          "async": true,
          "crossDomain": true,
          "method": "POST",
@@ -66,7 +68,7 @@ class DCCCommonServer {
       const response = await fetch(DCCCommonServer.managerAddressAPI + "case/list", header);
       const jsonResponse = await response.json();
       let busResponse = [];
-      for (var c in jsonResponse)
+      for (let c in jsonResponse)
          busResponse.push({
             id:   jsonResponse[c].uuid,
             name: jsonResponse[c].name,
@@ -79,7 +81,7 @@ class DCCCommonServer {
    
    async loadCase(topic, message) {
       const caseId = MessageBus.extractLevel(topic, 3);
-      var header = {
+      let header = {
          "async": true,
          "crossDomain": true,
          "method": "GET",
@@ -103,7 +105,7 @@ class DCCCommonServer {
       const separator = themeCompleteName.indexOf("."); 
       const themeFamily = themeCompleteName.substring(0, separator);
       const themeName = themeCompleteName.substring(separator+1);
-      var header = {
+      let header = {
          "async": true,
          "crossDomain": true,
          "method": "GET",
@@ -119,14 +121,14 @@ class DCCCommonServer {
    }
 
    async contextList(topic, message) {
-      var header = {
+      let header = {
          "async": true,
          "crossDomain": true,
          "method": "GET",
          "headers": {
             "Content-Type": "application/json",
           }
-      }
+      };
       const response = await fetch("../context/context.json", header);
       let ctxCatalog = await response.json();
       MessageBus.int.publish(MessageBus.buildResponseTopic(topic, message),
@@ -134,22 +136,17 @@ class DCCCommonServer {
    }
 
    async loadContext(topic, message) {
-      const themeCompleteName = MessageBus.extractLevel(topic, 3);
-      const separator = themeCompleteName.indexOf("."); 
-      const themeFamily = themeCompleteName.substring(0, separator);
-      const themeName = themeCompleteName.substring(separator+1);
-      var header = {
+      let header = {
          "async": true,
          "crossDomain": true,
          "method": "GET",
          "headers": {
-            "Content-Type": "text/html",
+            "Content-Type": "text/json",
           }
-      }
-      const response = await fetch("../themes/" + themeFamily + "/" + themeName +
-                                   ".html", header);
+      };
+      const response = await fetch("../context/" + message.body, header);
       let textResponse = await response.text();
-      MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
+      MessageBus.int.publish(MessageBus.buildResponseTopic(topic, message),
                              textResponse);
    }
 }
