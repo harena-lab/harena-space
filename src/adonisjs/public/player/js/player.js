@@ -10,9 +10,6 @@ class PlayerManager {
    */
    
    constructor() {
-      // <TODO> provisory
-      MessageBus.ext.externalized = false;
-
       Basic.service.host = this;
 
       this._server = new DCCPlayerServer();
