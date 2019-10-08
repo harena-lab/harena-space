@@ -9,6 +9,7 @@ class Basic {
 
       // initial values of shared states
       this.currentThemeFamily = Basic.standardThemeFamily;
+      this._currentThemeCSS = null;
       this.currentCaseId = null;
 
       /*
@@ -49,6 +50,9 @@ class Basic {
    set currentThemeFamily(newValue) {
       // Translator.instance.currentThemeFamily = newValue;
       this._currentThemeFamily = newValue;
+
+      this._currentThemeCSS =
+         this.replaceStyle(document, this._currentThemeCSS, newValue);
    }
 
    /*
@@ -160,7 +164,6 @@ class Basic {
              "/css/" + cssFile;
    }
 
-   // <TODO> Not used (remove?)
    replaceStyle(targetDocument, oldCSS, newTheme, cssFile) {
       if (oldCSS)
          targetDocument.head.removeChild(oldCSS);
@@ -170,7 +173,7 @@ class Basic {
       let newCSS = document.createElement("link");
       newCSS.setAttribute("rel", "stylesheet");
       newCSS.setAttribute("type", "text/css");
-      newCSS.setAttribute("href", this.themeStyleResolver(newTheme, cssF));
+      newCSS.setAttribute("href", this.themeStyleResolver(cssF));
       targetDocument.head.appendChild(newCSS);
 
       return newCSS;
@@ -180,6 +183,9 @@ class Basic {
 (function() {
    Basic.standardThemeFamily = "minimal";
    Basic.systemThemeFamily = "system";
+
+   // <TODO> provisory based on SVG from XD
+   Basic.referenceViewport = {width: 1920, height: 1080};
 
    Basic.service = new Basic();
 })();

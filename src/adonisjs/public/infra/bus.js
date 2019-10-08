@@ -49,13 +49,13 @@ class MessageBus {
    }
    
    async publish(topic, message) {
-      // console.log(topic);
-      // console.log(message);
       for (let l in this._listeners)
          if (this.matchTopic(l, topic))
             this._listeners[l].callback(topic, message);
       
       if (this._externalized) {
+         console.log("--- topic: " + topic);
+         console.log(message);
          if (DCCCommonServer.loggerAddressAPI) {
             let extMessage = (message != null) ? message : {};
             if (typeof message != "object")

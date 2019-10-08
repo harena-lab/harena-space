@@ -11,7 +11,7 @@
  "Jacinto":
    {"description": "The standard theme for the Jacinto cases.",
     "path": "jacinto",
-    "icon": "mono-slide.svg",
+    "icon": "jacinto-theme.png",
     "svg" : "true"},
  "Zombie":
    {"description": "The standard theme for the Zombie Health cases.",

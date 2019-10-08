@@ -17,16 +17,6 @@ class Translator {
     * Properties
     */
 
-   /*
-   get currentThemeFamily() {
-      return this._currentThemeFamily;
-   }
-   
-   set currentThemeFamily(newValue) {
-      this._currentThemeFamily = newValue;
-   }
-   */
-
    get authoringRender() {
       return this._authoringRender;
    }
@@ -277,16 +267,20 @@ class Translator {
     */ 
    _compileContext(knotSet, knotId, compiledKnot) {
       for (let c in compiledKnot) {
-         if (compiledKnot[c].type == "input" && compiledKnot[c].variable.indexOf(".") == -1)
+         if (compiledKnot[c].type == "input" &&
+             compiledKnot[c].variable.indexOf(".") == -1)
             compiledKnot[c].variable = knotId + "." + compiledKnot[c].variable;
             // <TODO> can be interesting this link in the future
             // compiledKnot[c].variable = this._findContext(knotSet, knotId, compiledKnot[c].variable);
-         else if (compiledKnot[c].type == "context-open" && compiledKnot[c].input.indexOf(".") == -1)
+         else if (compiledKnot[c].type == "context-open" &&
+                  compiledKnot[c].input.indexOf(".") == -1)
             compiledKnot[c].input = knotId + "." + compiledKnot[c].input;
              // <TODO> can be interesting this link in the future
             // compiledKnot[c].input = this._findContext(knotSet, knotId, compiledKnot[c].input);
-         else if (compiledKnot[c].type == "option" || compiledKnot[c].type == "divert")
-            compiledKnot[c].contextTarget = this._findContext(knotSet, knotId, compiledKnot[c].target);
+         else if (compiledKnot[c].type == "option" ||
+                  compiledKnot[c].type == "divert")
+            compiledKnot[c].contextTarget =
+               this._findContext(knotSet, knotId, compiledKnot[c].target);
          /*
          {
             let target = compiledKnot[c].target.replace(/ /g, "_");
@@ -322,6 +316,7 @@ class Translator {
    */
    _compileMerge(knotSet, knotId, compiledKnot) {
       for (let c = 0; c < compiledKnot.length; c++) {
+         // aggregates text blocks 
          if (compiledKnot[c].type == "linefeed") {
             if (c > 0 && compiledKnot[c-1].type == "text" &&
                 c < compiledKnot.length-1 && compiledKnot[c+1].type == "text") {
@@ -343,6 +338,7 @@ class Translator {
                }
             }
          } else if (c > 0 && compiledKnot[c].subordinate) {
+            // computes subordinate elements
             let merge = false;
             if (compiledKnot[c].type == "field" &&
                 Translator.element[compiledKnot[c-1].type].subfield !== undefined &&
@@ -389,6 +385,7 @@ class Translator {
             }
          } else if (c == 0 && compiledKnot[c].subordinate &&
                     compiledKnot[c].type == "image") {
+            // manages elements subordinated to the knot
             knotSet[knotId].background = {
                alternative: compiledKnot[c].alternative,
                path:  compiledKnot[c].path };
@@ -409,7 +406,7 @@ class Translator {
    }
 
    /*
-    * Replicates background and character images
+    * Replicates background and entity images
     */
    _replicateImages(compiledCase) {
       let lastBackground = null;
@@ -421,13 +418,13 @@ class Translator {
          else if (lastBackground != null)
             knots[k].background = lastBackground;
          for (let c in knots[k].content) {
-            if (knots[k].content[c].type == "talk") {
+            if (knots[k].content[c].type == "entity") {
                if (knots[k].content[c].image)
-                  entityImage[knots[k].content[c].character] =
+                  entityImage[knots[k].content[c].entity] =
                      knots[k].content[c].image;
-               else if (entityImage[knots[k].content[c].character])
+               else if (entityImage[knots[k].content[c].entity])
                   knots[k].content[c].image =
-                     entityImage[knots[k].content[c].character];
+                     entityImage[knots[k].content[c].entity];
             }
          }
       }
@@ -441,7 +438,7 @@ class Translator {
          case "option" : obj = this._optionMdToObj(match); break;
          case "field"  : obj = this._fieldMdToObj(match); break;
          case "divert" : obj = this._divertMdToObj(match); break;
-         case "talk"   : obj = this._talkMdToObj(match); break;
+         case "entity" : obj = this._entityMdToObj(match); break;
          case "mention": obj = this._mentionMdToObj(match); break;
          // case "talk-open" : obj = this._talkopenMdToObj(match); break;
          // case "talk-close": obj = this._talkcloseMdToObj(match); break;
@@ -599,7 +596,7 @@ class Translator {
             case "option" : html = this._optionObjToHTML(obj); break;
             case "field"  : html = this._fieldObjToHTML(obj); break;
             case "divert" : html = this._divertObjToHTML(obj); break;
-            case "talk"   : html = this._talkObjToHTML(obj); break;
+            case "entity" : html = this._entityObjToHTML(obj); break;
             case "mention": html = this._mentionObjToHTML(obj); break;
             // case "talk-open" : html = this._talkopenObjToHTML(obj); break;
             // case "talk-close": html = this._talkcloseObjToHTML(obj); break;
@@ -663,7 +660,7 @@ class Translator {
                        break;
          case "option": element._source = this._optionObjToMd(element);
                         break;
-         case "talk": element._source = this._talkObjToMd(element);
+         case "entity": element._source = this._entityObjToMd(element);
                         break;
       }
       // element._source += "\n\n";
@@ -1013,24 +1010,24 @@ class Translator {
    }
 
    /*
-    * Talk Md to Obj
+    * Entity Md to Obj
     */
-   _talkMdToObj(matchArray) {
-      let talk = {
-         type: "talk",
-         character: (matchArray[1] != null) ? matchArray[1].trim()
-                                            : matchArray[2].trim()
+   _entityMdToObj(matchArray) {
+      let entity = {
+         type: "entity",
+         entity: (matchArray[1] != null) ? matchArray[1].trim()
+                                         : matchArray[2].trim()
       };
       if (matchArray[3] != null)
-         talk.speech = matchArray[3].trim();
+         entity.speech = matchArray[3].trim();
 
-      return talk;
+      return entity;
    }
 
    /*
-    * Talk Obj to HTML
+    * Entity Obj to HTML
     */
-   _talkObjToHTML(obj) {
+   _entityObjToHTML(obj) {
       let path = "",
           alternative = "",
           title = "";
@@ -1040,10 +1037,10 @@ class Translator {
          if (obj.image.title)
             title = " title='" + obj.image.title + "'";
       }
-      return Translator.htmlTemplates.talk
+      return Translator.htmlTemplates.entity
          .replace("[seq]", obj.seq)
          .replace("[author]", this.authorAttr)
-         .replace("[character]", obj.character)
+         .replace("[entity]", obj.entity)
          .replace("[speech]", (obj.speech) ? obj.speech : "")
          .replace("[image]", path)
          .replace("[alternative]", alternative)
@@ -1051,9 +1048,9 @@ class Translator {
    }
    
 
-   _talkObjToMd(obj) {
-      let entity = Translator.markdownTemplates.talk
-                .replace("{entity}", obj.character);
+   _entityObjToMd(obj) {
+      let entity = Translator.markdownTemplates.entity
+                .replace("{entity}", obj.entity);
       if (obj.speech)
          entity += "\n  " + obj.speech;
       if (obj.image)
@@ -1068,8 +1065,8 @@ class Translator {
    _mentionMdToObj(matchArray) {
       return {
          type: "mention",
-         character: (matchArray[1] != null) ? matchArray[1].trim()
-                                            : matchArray[2].trim()
+         entity: (matchArray[1] != null) ? matchArray[1].trim()
+                                         : matchArray[2].trim()
       };
    }
 
@@ -1080,7 +1077,7 @@ class Translator {
       return Translator.htmlTemplates.mention
          .replace("[seq]", obj.seq)
          .replace("[author]", this.authorAttr)
-         .replace("[character]", obj.character);
+         .replace("[entity]", obj.entity);
    }
 
    /*
@@ -1376,7 +1373,7 @@ class Translator {
       divert: {
          mark: /(?:(\w+)|"([^"]+)")(?:[ \t])*-(?:(?:&gt;)|>)[ \t]*(?:(\w[\w.]*)|"([^"]*)")/im,
          inline: true },
-      talk: {
+      entity: {
          mark: /@(?:(\w[\w \t]*)|"([\w \t]*)")(?:$|:[ \t]*([^\n\r\f]+))/im,
          line: true,
          subfield: true,
@@ -1419,6 +1416,8 @@ class Translator {
    };
 
    Translator.fieldSet = ["vocabularies", "answers", "states", "labels"];
+
+   Translator.inputSubtype = ["short", "text", "group select"];
    
    // Translator.specialCategories = ["start", "note"];
    

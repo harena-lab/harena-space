@@ -158,14 +158,16 @@ class AuthorManager {
          "Select a case to load or start a new case.",
          "list", "Select", "New", cases.message);
 
-      const sticky = document.querySelector("#sticky-top");
-      if (sticky != null)
-         sticky.classList.add("sticky-top");
-
       if (caseId == "New")
          this.caseNew();
       else
          this._caseLoad(caseId);
+
+      /*
+      const sticky = document.querySelector("#sticky-top");
+      if (sticky != null)
+         sticky.classList.add("sticky-top");
+      */
    }
    
    async saveChangedCase() {
@@ -192,7 +194,8 @@ class AuthorManager {
       let template = await this._templateSelect("case");
 
       const templateMd =
-         await MessageBus.ext.request("data/template/" + template.replace("/", ".") + "/get");
+         await MessageBus.ext.request(
+            "data/template/" + template.replace("/", ".") + "/get");
 
       const caseId = await MessageBus.ext.request("data/case//new",
                                                   {format: "markdown",
@@ -462,10 +465,6 @@ class AuthorManager {
       if (this._previousEditedDCC) {
          if (this._previousBorderStyle) {
             if (this._previousBorderStyle instanceof Array) {
-               console.log("=== previous edited dcc");
-               console.log(this._previousEditedDCC);
-               console.log("=== previous border style");
-               console.log(this._previousBorderStyle);
                for (let b in this._previousBorderStyle) {
                   this._previousEditedDCC[b].style.border =
                      this._previousBorderStyle[b];
@@ -486,13 +485,14 @@ class AuthorManager {
                this._previousBorderStyle.push(presentation[p].style.border);
             else
                this._previousBorderStyle.push("none");
-            presentation[p].style.border = "5px dashed blue";
+            presentation[p].style.border = "5px solid #00ffff";
          }
       } else {
          if (presentation.style.border)
             this._previousBorderStyle = presentation.style.border;
-         presentation.style.border = "5px dashed blue";
+         presentation.style.border = "5px solid #00ffff";
       }
+      this._editableDCCs[dccId].editProperties();
 
       this._previousEditedDCC = presentation;
 

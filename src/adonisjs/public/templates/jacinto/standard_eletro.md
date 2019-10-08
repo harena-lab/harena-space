@@ -20,7 +20,7 @@ Generate hypothesis (input)
 
 @SYSTEM: What is your main diagnostic hypothesis?
 
-?1 hypothesis
+? hypothesis
 
 * Submit hypothesis -> Check hypothesis
 

@@ -11,6 +11,7 @@ constructor(translator) {
    this._translator = translator;
 
    this._retracted = true;
+   this._navigatorSpread = 1;
    this._showPreviewMiniature = false;
 
    this.expandClicked = this.expandClicked.bind(this);
@@ -22,31 +23,55 @@ constructor(translator) {
 }
 
 async expandClicked(topic, message) {
-   Panels.s.setupWideNavigator();
-   this._retracted = false;
-   this._presentTreeCase();
+   if (this._navigatorSpread == 0)
+      Panels.s.setupVisibleNavigator();
+   else {
+      Panels.s.setupWideNavigator();
+      this._retracted = false;
+      this._presentTreeCase();
+   }
+   this._navigatorSpread++;
 }
 
 async retractClicked(topic, message) {
-   Panels.s.setupRegularNavigator();
-   this._retracted = true;
-   this._presentTreeCase();
+   if (this._navigatorSpread == 1)
+      Panels.s.setupHiddenNavigator();
+   else {
+      Panels.s.setupRegularNavigator();
+      this._retracted = true;
+      this._presentTreeCase();
+   }
+   this._navigatorSpread--;
 }
 
 async downTree(knotid) {
    const newRoot = this._searchTree(this._tree, knotid);
    if (newRoot != null) {
-      this._treeStack.push(this._tree);
+      this._treeStack.push([this._tree, knotid]);
       this._tree = {level: newRoot.level - 1, children: [newRoot]};
       this._innerTree = newRoot.level - 1;
-      this._presentTreeCase();
+      await this._presentTreeCase();
+      console.log("=== down");
+      console.log(this._tree);
+      if (this._tree.children[0] && this._tree.children[0].children[0]) {
+         let c = 0;
+         while (c < this._tree.children[0].children.length &&
+                !this._tree.children[0].children[c].render)
+            c++;
+         if (c < this._tree.children[0].children.length)
+            MessageBus.ext.publish("control/knot/" +
+                                   this._tree.children[0].children[c].knotid +
+                                   "/selected");
+      }
    }
 }
 
 async upTree() {
-   this._tree = this._treeStack.pop();
+   const treeNode = this._treeStack.pop()
+   this._tree = treeNode[0];
    this._innerTree = this._tree.level;
-   this._presentTreeCase();
+   await this._presentTreeCase();
+   MessageBus.ext.publish("control/knot/" + treeNode[1] + "/selected");
 }
 
 _searchTree(current, knotid) {
@@ -225,7 +250,8 @@ async _presentTreeCase() {
       .attr("font-size", function(d) {return d.data.titleSize + "px"})
       .attr("fill", "black")
       .attr("cursor", "pointer")
-      .on("click", function(d) {MessageBus.ext.publish("control/knot/" + d.data.knotid + "/selected")})
+      .on("click", function(d) {
+         MessageBus.ext.publish("control/knot/" + d.data.knotid + "/selected")})
       .on("mouseover", function(d) {
          let t = document.querySelector("#t_" + d.data.id);
          t.removeChild(t.firstChild);
@@ -416,7 +442,7 @@ async _createMiniature(knot, krender) {
               knot.title + "</div>";
 
    miniature.innerHTML = inner + "<dcc-trigger action='control/" +
-                            ((knot.children) ? "group/" : "knot/") +
+                            ((knot.render) ? "knot/" : "group/") +
                             knot.knotid + "/selected' " +
                             "xstyle='sty-navigation-knot-cover' label = ''>";
 
@@ -444,17 +470,24 @@ async _createMiniature(knot, krender) {
 
 _drawGroups(knot, svg) {
    if (knot.level - this._innerTree == 2 && knot.children) {
+      let g = svg.append("g");
       for (let m = 0; m <= 3; m++)
-         svg.append("rect")
-            .attr("x", knot.x + Navigator.miniKnot[this._retracted].paddingX +
-                       (Navigator.microKnot[this._retracted].width + Navigator.microKnot[this._retracted].marginX) * m)
-            .attr("y", knot.y + knot.titleSize + Navigator.miniKnot[this._retracted].height +
+         g.append("rect")
+            .attr("x", knot.x + Navigator.miniKnot[this._retracted].shiftX +
+                       Navigator.miniKnot[this._retracted].paddingX +
+                       (Navigator.microKnot[this._retracted].width +
+                        Navigator.microKnot[this._retracted].marginX) * m)
+            .attr("y", knot.y + knot.titleSize +
+                       Navigator.miniKnot[this._retracted].height +
                        Navigator.microKnot[this._retracted].marginY)
             .attr("width", Navigator.microKnot[this._retracted].width)
             .attr("height", Navigator.microKnot[this._retracted].height)
             .attr("stroke", "#444444")
             .attr("fill", "#76a7d7")
-            .attr("stroke-width", "2");
+            .attr("stroke-width", "2")
+            .on("click", function(d) {
+                MessageBus.ext.publish("control/group/" + knot.knotid + "/selected")})
+            .attr("cursor", "pointer");
    } else
       for (let kn in knot.children)
          this._drawGroups(knot.children[kn], svg);
@@ -481,16 +514,18 @@ _drawLinks(knot, svg) {
       true: {
          width: 75, // 16:9
          height: 42,
+         shiftX: 4,
          marginX : 7.5,
          marginY : 7.5,
-         paddingX: 1.5,
-         paddingY: 1.5,
+         paddingX: 2,
+         paddingY: 2,
          titleBase: 3.75,
          titleDelta: 3.75
       },
       false: {
          width: 150, // 16:9
          height: 84,
+         shiftX: 8,
          marginX : 15,
          marginY : 15,
          paddingX: 2.25,

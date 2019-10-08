@@ -123,23 +123,23 @@ class DCCBlock extends DCCVisual {
     * Finds the outer target interface or creates an internal interface
     */
    async _applyRender(html, outTarget, sufix) {
+      // location #in to indicate the location is not absent
       if (this.xstyle.startsWith("out") &&
           this.hasAttribute("location") && this.location != "#in") {
          /*
-          * embedded interface
+          * outer target interface
           */
          this._presentation = document.querySelector("#" + this.location +
                                                      ((sufix) ? sufix : ""));
          if (this._presentation != null) {
             if (sufix == "-image" && this.hasAttribute("image"))
                // <TODO> image works for SVG but not for HTML
-               this._presentation.setAttributeNS("http://www.w3.org/1999/xlink", "href", html);
+               this._presentation.setAttributeNS(
+                  "http://www.w3.org/1999/xlink", "href", html);
             else
                this._presentation[outTarget] = html;
          }
 
-         // this._renderEmbeddedInterface(render, presentation);
-         // this._injectDCC(presentation, render);
          let wrapper = document.querySelector("#" + this.location + "-wrapper");
          if (wrapper != null) {
             if (wrapper.style.display)  // html
@@ -149,7 +149,7 @@ class DCCBlock extends DCCVisual {
          }
       } else {
          /*
-          * complete interface
+          * complete internal interface
           */
          if (this.xstyle == "in")
             html = "<style>@import '" +
