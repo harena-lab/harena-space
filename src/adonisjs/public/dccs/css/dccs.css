@@ -4,35 +4,35 @@
    width: 6.3rem;
 }
 
-.dcc-state-select-0-template {
-   background-color: lightgrey;
-}
-
-.dcc-state-select-key-template {
-   background-color: green;
-}
-
-.dcc-state-select-contributes-template {
-   background-color: blue;
-}
-
-.dcc-state-select-indiferent-template {
-   background-color: yellow;
-}
-
-.dcc-state-select-against-template {
-   background-color: red;
-}
-
-.dcc-state-select-annotation-template {
-   background-color: #defde0;
-}
-
-.dcc-state-select-highlight-template {
+.dcc-state-select-area {
    border-style: dashed;
    border-width: 2px;
    border-color: blue;
    /* background-color: #ffffe0; */
+}
+
+.dcc-state-select-undefined {
+   background-color: lightgrey;
+}
+
+.dcc-state-select-positive-plus {
+   background-color: green;
+}
+
+.dcc-state-select-positive {
+   background-color: blue;
+}
+
+.dcc-state-select-neutral {
+   background-color: yellow;
+}
+
+.dcc-state-select-negative {
+   background-color: red;
+}
+
+.dcc-text-annotation {
+   background-color: #defde0;
 }
 
 .inplace-editor-floating {

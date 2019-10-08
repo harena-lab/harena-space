@@ -14,23 +14,23 @@
    "states": {
       "undefined": {
          "@id": "versum:undefined",
-         "color": "lightgrey",
+         "style": "dcc-state-select-undefined",
          "symbol": " "},
       "key": {
          "@id": "evidence:key_finding",
-         "color": "green",
+         "style": "dcc-state-select-positive-plus",
          "symbol": "k"},
       "corroborates": {
          "@id": "evidence:corroborate_finding",
-         "color": "blue",
+         "style": "dcc-state-select-positive",
          "symbol": "+"},
       "neutral": {
          "@id": "evidence:neutral_finding",
-         "color": "yellow",
+         "style": "dcc-state-select-neutral",
          "symbol": "="},
       "against": {
          "@id": "evd:against_hypothesis",
-         "color": "red",
+         "style": "dcc-state-select-negative",
          "symbol": "-"}
    }
 }

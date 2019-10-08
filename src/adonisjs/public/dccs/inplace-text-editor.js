@@ -7,9 +7,14 @@ let Inline = Quill.import('blots/inline');
 
 class MetadataBlot extends Inline {
    static create(value) {
+      console.log(value);
       let node = super.create();
       node.setAttribute("value", value);
-      node.classList.add("dcc-state-select-" + value + "-template");
+      if (value.style)
+         node.classList.add(value.style);
+      else if (EditDCCText.metadataStyle[value.type])
+         node.classList.add(EditDCCText.metadataStyle[value.type]);
+      //  node.style.backgroundColor = value.color;
       return node;
    }
 
@@ -136,23 +141,16 @@ class EditDCCText {
          await Context.instance.loadContext("http://purl.org/versum/evidence/");
       this._highlightOptions = {};
       for (let c in context.states)
-         this._highlightOptions[context.states[c]["@id"]] = c;
-
-      console.log(this._highlightOptions);
-      /*
-      this._highlightOptions = {"vrs:undefined": "undefined",
-                                "evd:key_finding": "key",
-                                "evd:corroborate_finding": "corroborates",
-                                "evd:neutral_finding": "neutral",
-                                "evd:against_hypothesis": "against"};
-      */
+         this._highlightOptions[context.states[c]["@id"]] =
+            {label: c,
+             style: context.states[c].style};
 
       this._toolbarControls = EditDCCText.toolbarTemplate +
                               "<select class='ql-hl-select'>";
       for (let op in this._highlightOptions) {
          this._toolbarControls +=
             "<option value='" + op + "'>" +
-            this._highlightOptions[op] + "</option>";
+            this._highlightOptions[op].label + "</option>";
       }
       this._toolbarControls += "</select>";
       this._container.removeChild(this._editorToolbar);
@@ -161,38 +159,6 @@ class EditDCCText {
    }
 
    _formatSelectOptions() {
-
-      // let optionListSpan = "";
-      /*
-      let optionSelector = document.querySelector(".ql-picker-options");
-      let optionList = "";
-      const thisObj = this;
-      for (let op in options) {
-         let optionSpan = document.createElement("span");
-         optionSpan.tabindex = "0";
-         optionSpan.role="button";
-         optionSpan.dataValue= op;
-         optionSpan.classList.add("ql-picker-item");
-         optionSpan.innerHTML = options[op];
-         optionSpan.addEventListener("click", function() {
-            thisObj._handleHlSelect(optionSpan.dataValue);
-         });
-         optionSelector.appendChild(optionSpan);
-         */
-
-         /*
-         optionListSpan += EditDCCText.qlItemSpanTemplate
-            .replace("[value]", op)
-            .replace("[option]", options[op]);
-         */
-         /*
-         optionList += EditDCCText.qlItemTemplate
-            .replace("[value]", op);
-      }
-      */
-      // document.querySelector(".ql-picker-options").innerHTML = optionListSpan;
-      // document.querySelector("select.ql-hl-select").innerHTML = optionList;
-
       // transforms the highlight select options in HTML
       const selectOptions =
          document.querySelectorAll(".ql-hl-select .ql-picker-item");
@@ -232,12 +198,13 @@ class EditDCCText {
    }
 
    _handleHlSelect(hlSelect) {
-      console.log(hlSelect);
-      this._hlSelect.innerHTML = this._highlightOptions[hlSelect] +
+      this._hlSelect.innerHTML = this._highlightOptions[hlSelect].label +
                                  this._hlSelectHTML;
       const range = this._quill.getSelection();
       this._quill.formatText(range.index, range.length, {
-         metadata: this._highlightOptions[hlSelect]
+         metadata: {type:  "option",
+                    label: this._highlightOptions[hlSelect].label,
+                    style: this._highlightOptions[hlSelect].style}
       });
    }
 
@@ -261,15 +228,15 @@ class EditDCCText {
 
       if (buttonClicked == "confirm")
          this._quill.formatText(range.index, range.length, {
-            metadata: "annotation",
-            content:  this._anContent.value
+            metadata: {type: "annotation",
+                       content: this._anContent.value}
          });
    }
 
    _handleHighlighter() {
       const range = this._quill.getSelection();
       this._quill.formatText(range.index, range.length, {
-         metadata: "highlight"
+         metadata: {type: "select"}
       });
       this._loadSelectOptions();
       // document.querySelector(".ql-hl-select").style.display = "initial";
@@ -302,20 +269,6 @@ EditDCCText.buttonCancelSVG =
 <path fill="currentColor" d="M464 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h416c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48zm0 394c0 3.3-2.7 6-6 6H54c-3.3 0-6-2.7-6-6V86c0-3.3 2.7-6 6-6h404c3.3 0 6 2.7 6 6v340zM356.5 194.6L295.1 256l61.4 61.4c4.6 4.6 4.6 12.1 0 16.8l-22.3 22.3c-4.6 4.6-12.1 4.6-16.8 0L256 295.1l-61.4 61.4c-4.6 4.6-12.1 4.6-16.8 0l-22.3-22.3c-4.6-4.6-4.6-12.1 0-16.8l61.4-61.4-61.4-61.4c-4.6-4.6-4.6-12.1 0-16.8l22.3-22.3c4.6-4.6 12.1-4.6 16.8 0l61.4 61.4 61.4-61.4c4.6-4.6 12.1-4.6 16.8 0l22.3 22.3c4.7 4.6 4.7 12.1 0 16.8z">
 </path></svg>`;
 
-/*
-EditDCCText.toolbarTemplate =
-`<button class="ql-bold"></button>
-<button class="ql-italic"></button>
-<button class="ql-annotation"></button>
-<button class="ql-highlighter"></button>
-<select class="ql-hl-select">
-   <option value="key"></option>
-   <option value="contributes"></option>
-   <option value="indiferent"></option>
-   <option value="against"></option>
-</select>`;
-*/
-
 EditDCCText.toolbarTemplate =
 `<button class="ql-bold"></button>
 <button class="ql-italic"></button>
@@ -342,13 +295,9 @@ EditDCCText.annotationTemplate =
 </div>
 <textarea id="an-content" rows="3" cols="20"></textarea>`;
 
-/*
-EditDCCText.qlItemSpanTemplate =
-`<span tabindex="0" role="button" class="ql-picker-item" data-value="[value]">
-   [option]
-</span>`;
+EditDCCText.metadataStyle = {
+   annotation: "dcc-text-annotation",
+   select: "dcc-state-select-area"
+};
 
-EditDCCText.qlItemTemplate =
-`<option value="[value]"></option>`;
-*/
 })();
