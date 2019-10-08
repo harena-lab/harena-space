@@ -17,17 +17,8 @@ class Panels {
       this._knotPanel = document.querySelector("#knot-panel");
       this._knotMain = document.querySelector("#knot-main");
       this._propertiesPanel = document.querySelector("#properties-panel");
-      this._elementsBlock = document.querySelector("#elements-block");
-      this._elementsMain = document.querySelector("#elements-main");
       this._buttonExpandNav = document.querySelector("#button-expand-nav");
       this._buttonRetracNav = document.querySelector("#button-retract-nav");
-      this._buttonRetractProp = document.querySelector("#button-retract-prop");
-      this._buttonExpandProp = document.querySelector("#button-expand-prop");
-
-      this.setupPropertiesRetract = this.setupPropertiesRetract.bind(this);
-      MessageBus.ext.subscribe("control/properties/retract", this.setupPropertiesRetract);
-      this.setupPropertiesExpand = this.setupPropertiesExpand.bind(this);
-      MessageBus.ext.subscribe("control/properties/expand", this.setupPropertiesExpand);
    }
 
    setupHiddenNavigator() {
