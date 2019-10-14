@@ -81,6 +81,11 @@ class DCCStateSelect extends DCCVisual {
       this._presentation.removeEventListener('click', this._changeState);
    }
 
+   // deactivates the authoring mode
+   checkActivateAuthor() {
+      /* nothing */
+   }
+
    defineStates(topic, message) {
       MessageBus.page.unsubscribe("dcc/select-states/" + this.id, this.defineStates);
       this.states = message;
@@ -143,7 +148,7 @@ class DCCStateSelect extends DCCVisual {
    async _checkRender() {
       if (this._pendingRequests >= 0 && this.states != null) {
          const statesArr = this.states.split(",");
-         if (this.hasAttribute("answer"))
+         if (this.hasAttribute("answer") || this.author)
             this._currentState = statesArr.indexOf(this.answer);
          else if (this.hasAttribute("player")) {
             let value = await MessageBus.ext.request(

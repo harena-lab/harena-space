@@ -1,5 +1,8 @@
 (function() {
 Translator.htmlTemplates = {
+textBlock: `<dcc-markdown id='dcc[seq]'>
+[content]
+</dcc-markdown>`,
 image:
 `<img src='[path]'[alt]>`,
 option:
