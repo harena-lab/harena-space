@@ -18,6 +18,40 @@ div {
 nav.navbar {
   margin-bottom: 1rem;
 }
+/* author home css start*/
+.home-text{
+  color: #808080;
+  height: 10%;
+  width: 100%;
+  font-size: 35px;
+}
+.home-content-padding{
+  background-color: #f2f2f2;
+  padding-left: 70px;
+  padding-right: 70px;
+  padding-top: 70px;
+}
+.home-author-box-content{
+  width: 33%;
+  margin: 10px;
+  padding:30px;
+  background-color: #ffffff;
+  border-color: #808080;
+  border-style: solid;
+  border-radius: 5px;
+  border-width: 2px;
+}
+.home-author-case-box{
+
+  font-size: 45px;
+  color: #808080;
+  font-weight: bold;
+  text-align: center;
+}
+.home-author-sub-text{
+  font-size: 15px;
+}
+/* author home css ended*/
 .grey-text{
   color: rgb(120,120,120);
 }
@@ -36,9 +70,15 @@ nav.navbar {
   overflow: hidden;
 }
 .index-boot-padding{
-  padding-left:15px;
+  padding-left: 15px;
   padding-right: 15px;
   padding-bottom: 15px;
+}
+.home-author-padding{
+  background-color: #ffffff;
+  padding-left: 80px;
+  padding-right: 80px;
+  padding-top: 60px;
 }
 .scroll-y{
   overflow-x: hidden;

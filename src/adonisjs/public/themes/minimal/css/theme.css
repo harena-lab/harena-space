@@ -1,12 +1,5 @@
 @charset "UTF-8";
 
-body {
-    font-family: "Trebuchet MS", Helvetica, sans-serif;
-    font-size: 3vh;
-    margin-left: 10px;
-    margin-right: 10px;
-}
-
 .styt-std-border {
    border: 1px solid gray;
    border-radius: 5px;

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Authoring Environment</title>
+
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
+
+  <link rel="stylesheet" href="../lib/fontawesome-5-10-1/css/all.min.css">
+  <link rel="stylesheet" href="../lib/bootstrap-4-3-1/css/bootstrap.min.css">
+
+  <link rel="stylesheet" href="../infra/css/common.css">
+  <link rel="stylesheet" href="../dccs/css/dccs.css">
+  <link rel="stylesheet" href="css/author.css">
+  <link rel="stylesheet" href="css/properties.css">
+
+  <link rel="stylesheet" href="../lib/quill-1-3-7/quill.snow.css">
+
+  <script src="../infra/bus.js"></script>
+  <script src="../infra/basic.js"></script>
+  <script src="../infra/dcc-common-server-proxy.js"></script>
+  <script src="../infra/dcc-common-server-address.js"></script>
+  <script src="../context/context.js"></script>
+
+  <script src="../lib/quill-1-3-7/quill.min.js"></script>
+  <script src="../lib/d3.v5.min.js"></script>
+
+  <script src="../dccs/inplace-text-editor.js"></script>
+  <script src="../dccs/components/dcc-base.js"></script>
+  <script src="../dccs/components/dcc-visual.js"></script>
+  <script src="../dccs/components/dcc-markdown.js"></script>
+  <script src="../dccs/components/dcc-image.js"></script>
+  <script src="../dccs/components/dcc-expression.js"></script>
+  <script src="../dccs/components/dcc-block.js"></script>
+  <script src="../dccs/components/dcc-trigger.js"></script>
+  <script src="../dccs/components/dcc-character.js"></script>
+  <script src="../dccs/components/dcc-lively-dialog.js"></script>
+  <script src="../dccs/components/dcc-notice-input.js"></script>
+  <script src="../dccs/components/dcc-state-select.js"></script>
+  <script src="../dccs/components/dcc-image-marker.js"></script>
+  <script src="../dccs/components/dcc-styler.js"></script>
+  <script src="../dccs/components/dcc-entity.js"></script>
+  <script src="../dccs/components/dcc-input.js"></script>
+  <script src="../dccs/components/dcc-compute.js"></script>
+  <script src="../dccs/components/dcc-report.js"></script>
+
+  <script src="../lib/showdown-2-0-0/showdown.min.js"></script>
+  <script src="../translator/translator.js"></script>
+  <script src="../translator/item-templates.js"></script>
+
+  <script src="js/dcc-author-server-proxy.js"></script>
+  <script src="js/panels.js"></script>
+  <script src="js/properties.js"></script>
+  <script src="js/navigator.js"></script>
+  <script src="js/author.js"></script>
+</head>
+
+<body onload="AuthorManager.author.start()">
+  <!-- Create a section to place page content -->
+  <main role="main">
+    <div class="d-flex flex-column vh-100 vw-100 home-author-padding hidden-overflow">
+      <div class="h-100 w-100 home-content-padding">
+        <div class="home-text mb-5">
+          <p>Hello -Supervisor Name-!</p>
+        </div>
+        <div class="home-text">
+          <p>What would like to do today?</p>
+        </div>
+        <div class="d-flex h-50 w-100">
+          <div class="d-flex flex-column align-items-center justify-content-center home-author-box-content home-author-case-box">
+              Create
+              <div class="home-author-sub-text">
+                Create a new case.
+              </div>
+          </div>
+          <div class="d-flex flex-column align-items-center justify-content-center home-author-box-content home-author-case-box">
+            Case Lists
+            <div class="home-author-sub-text">
+              See the publised cases list.You also can edit them.
+            </div>
+          </div>
+          <div class="d-flex flex-column align-items-center justify-content-center home-author-box-content home-author-case-box">
+            Drafts
+            <div class="home-author-sub-text">
+              Continue editing a case.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <!-- end of div /.container -->
+
+</body>
+</html>
