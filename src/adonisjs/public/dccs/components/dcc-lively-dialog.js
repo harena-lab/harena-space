@@ -18,6 +18,8 @@ class DCCLivelyTalk extends DCCVisual {
    }
 
    connectedCallback() {
+      this._prefixSpeech = (this.speech) ? this.speech : "";
+
       this.addEventListener("schedule-animation", this._scheduleAnimation);
 
       this._dialog = document.querySelector("dcc-lively-dialog");
@@ -215,7 +217,7 @@ class DCCLivelyTalk extends DCCVisual {
    }
 
    notify(topic, message) {
-      this.speech = message.parameter;
+      this.speech = this._prefixSpeech + message.value;
    }
    
    /* Editable Component */

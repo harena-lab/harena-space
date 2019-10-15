@@ -151,6 +151,11 @@ class DCCBlock extends DCCVisual {
          /*
           * complete internal interface
           */
+         // check if there is a "presentation-dcc"
+         const presentationDCC = /id=['"]presentation-dcc['"]/im;
+         if (!presentationDCC.test(html))
+            html = "<div id='presentation-dcc'>" + html + "</div>"
+
          if (this.xstyle == "in")
             html = "<style>@import '" +
                       Basic.service.systemStyleResolver(this.elementTag() + ".css") +

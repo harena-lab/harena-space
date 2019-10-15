@@ -206,7 +206,7 @@ class DCCStateSelect extends DCCVisual {
 
 /* Group Select DCC
  ********************/
-class DCCGroupSelect extends DCCBase {
+class DCCGroupSelect extends DCCBlock {
    constructor() {
      super();
      this.requestVariable = this.requestVariable.bind(this); 
@@ -214,6 +214,12 @@ class DCCGroupSelect extends DCCBase {
   }
    
    connectedCallback() {
+      this._statement = (this.hasAttribute("statement"))
+         ? this.statement : this.innerHTML;
+      this.innerHTML = "";
+
+      super.connectedCallback();
+
       MessageBus.page.subscribe("dcc/select-variable/request", this.requestVariable);
       MessageBus.page.subscribe("dcc/request/select-states", this.requestStates);
       
@@ -240,9 +246,17 @@ class DCCGroupSelect extends DCCBase {
     */
 
    static get observedAttributes() {
-    return ["variable", "states", "labels", "colors"];
+    return ["statement", "variable", "states", "labels", "colors"];
    }
 
+   get statement() {
+      return this.getAttribute("statement");
+   }
+   
+   set statement(newValue) {
+      this.setAttribute("statement", newValue);
+   }
+   
    get variable() {
       return this.getAttribute("variable");
     }
@@ -273,6 +287,11 @@ class DCCGroupSelect extends DCCBase {
 
     set colors(newColors) {
      this.setAttribute("colors", newColors);
+   }
+
+   async _renderInterface() {
+      // === presentation setup (DCC Block)
+      this._applyRender(this._statement, "innerHTML");
    }
 }
 

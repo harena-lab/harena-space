@@ -954,7 +954,7 @@ class Translator {
       if (matchArray[4] != null)
          option.target = matchArray[4].trim();
       if (matchArray[5] != null)
-         option.parameter = matchArray[5].trim();
+         option.value = matchArray[5].trim();
       
       return option;
    }
@@ -990,8 +990,8 @@ class Translator {
          .replace("[subtype]", obj.subtype)
          .replace("[target]", obj.contextTarget)
          .replace("[display]", label)
-         .replace("[parameter]",
-            (obj.parameter == null) ? "" : " parameter='" + obj.parameter + "'")
+         .replace("[value]",
+            (obj.value == null) ? "" : " value='" + obj.value + "'")
          .replace("[image]", optionalImage)
          .replace("[location]", location);
    }
