@@ -1,9 +1,12 @@
 (function() {
 Translator.htmlTemplates = {
+textBlock: `<dcc-markdown id='dcc[seq]'>
+[content]
+</dcc-markdown>`,
 image:
 `<img src='[path]'[alt]>`,
 option:
-`<dcc-trigger id='dcc[seq]'[author] type='[subtype]' action='knot/[target]/navigate' label='[display]'[parameter][image][location]></dcc-trigger>`,
+`<dcc-trigger id='dcc[seq]'[author] type='[subtype]' action='knot/[target]/navigate' label='[display]'[value][image][location]></dcc-trigger>`,
 divert:
 `<dcc-trigger id='dcc[seq]'[author] type='+' action='knot/[target]/navigate' label='[display]'></dcc-trigger>`,
 entity:

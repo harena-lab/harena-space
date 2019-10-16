@@ -24,7 +24,7 @@ class DCCTrigger extends DCCBlock {
    /* Attribute Handling */
 
    static get observedAttributes() {
-     return DCCBlock.observedAttributes.concat(["type", "link", "action", "parameter"]);
+     return DCCBlock.observedAttributes.concat(["type", "link", "action", "value"]);
    }
 
    get type() {
@@ -51,12 +51,12 @@ class DCCTrigger extends DCCBlock {
       this.setAttribute("action", newValue);
    }
   
-   get parameter() {
-      return this.getAttribute("parameter");
+   get value() {
+      return this.getAttribute("value");
    }
    
-   set parameter(newValue) {
-      this.setAttribute("parameter", newValue);
+   set value(newValue) {
+      this.setAttribute("value", newValue);
    }
    
    /* Rendering */
@@ -138,8 +138,8 @@ class DCCTrigger extends DCCBlock {
          const topic = (this.hasAttribute("action"))
             ? this.action : "trigger/" + this.label + "/clicked";
          let message = {};
-         if (this.hasAttribute("parameter"))
-            message.parameter = this.parameter;
+         if (this.hasAttribute("value"))
+            message.value = this.value;
 
          MessageBus.ext.publish(topic, message);
       }

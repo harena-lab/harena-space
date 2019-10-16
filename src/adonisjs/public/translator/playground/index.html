@@ -33,6 +33,10 @@
   }
   async function translate(topic, message) {
     let mkTranslator = new Translator();
+
+    // to test authoring render
+    mkTranslator.authoringRender = true;
+
     // let compiled = mkTranslator.compileMarkdown("test", window.quill.getText());
     let compiled = mkTranslator.compileMarkdown(
                                    "test", document.querySelector("#editor").value);

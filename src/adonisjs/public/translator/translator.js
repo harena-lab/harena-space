@@ -181,14 +181,14 @@ class Translator {
          matchStart = -1;
          let selected = "";
          for (let mk in Translator.element) {
-            if (!((mk == "annotation" || mk == "select") &&
-                  this.authoringRender)) {
-               let pos = mdfocus.search(Translator.element[mk].mark);
-               if (pos > -1 && (matchStart == -1 || pos < matchStart)) {
-                  selected = mk;
-                  matchStart = pos;
-               }
+            // if (!((mk == "annotation" || mk == "select") &&
+            //        this.authoringRender)) {
+            let pos = mdfocus.search(Translator.element[mk].mark);
+            if (pos > -1 && (matchStart == -1 || pos < matchStart)) {
+               selected = mk;
+               matchStart = pos;
             }
+            // }
          }
 
          if (matchStart > -1) {
@@ -396,6 +396,36 @@ class Translator {
          if (c >= 0)
             compiledKnot[c].seq = c + 1;
       }
+
+      // second cycle - aggregate annotations and selects in authoring mode
+      if (this.authoringRender) {
+         let tblock;
+         let tblockSeq;
+         for (let c = 0; c < compiledKnot.length; c++) {
+            if (compiledKnot[c].type == "select" ||
+                compiledKnot[c].type == "annotation" ||
+                compiledKnot[c].type == "text") {
+               if (c == 0 || compiledKnot[c-1].type != "text-block") {
+                  tblockSeq = 1;
+                  compiledKnot[c].seq = 1;
+                  tblock = this._initializeObject(
+                     { type: "text-block",
+                       content: [compiledKnot[c]]
+                     }, compiledKnot[c]._source);
+                  compiledKnot[c] = tblock;
+               } else {
+                  tblockSeq++;
+                  compiledKnot[c].seq = tblockSeq;
+                  tblock.content.push(compiledKnot[c]);
+                  tblock._source += compiledKnot[c]._source;
+                  compiledKnot.splice(c, 1);
+                  c--;
+               }
+            }
+            if (c >= 0)
+               compiledKnot[c].seq = c + 1;
+         }
+      }
    }
 
    /*
@@ -538,7 +568,7 @@ class Translator {
    /*
     * Generate HTML in a single knot
     */
-   async generateKnotHTML(knotObj) {
+   generateKnotHTML(knotObj) {
       let preDoc = "";
       let html = "";
       if (knotObj != null && knotObj.content != null) {
@@ -547,13 +577,10 @@ class Translator {
             preDoc += (knotObj.content[kc].type == "text" ||
                        knotObj.content[kc].type == "field" ||
                        knotObj.content[kc].type == "context-open" ||
-                       knotObj.content[kc].type == "context-close" ||
-                       (knotObj.content[kc].type == "select" &&
-                        this.authoringRender)) 
+                       knotObj.content[kc].type == "context-close") 
                ? this.objToHTML(knotObj.content[kc])
                : "@@" + knotObj.content[kc].seq + "@@";
-               
-         
+
          // converts to HTML
          html = this._markdownTranslator.makeHtml(preDoc);
 
@@ -579,8 +606,10 @@ class Translator {
             next = html.indexOf("@@");
          }
          
-         html = html.replace(Translator.contextHTML.open, this._contextSelectHTMLAdjust);
-         html = html.replace(Translator.contextHTML.close, this._contextSelectHTMLAdjust);
+         html = html.replace(Translator.contextHTML.open,
+                             this._contextSelectHTMLAdjust);
+         html = html.replace(Translator.contextHTML.close,
+                             this._contextSelectHTMLAdjust);
       }
       return html;
    }
@@ -592,6 +621,7 @@ class Translator {
       else
          switch(obj.type) {
             case "text"   : html = this._textObjToHTML(obj); break;
+            case "text-block": html = this._textBlockObjToHTML(obj); break;
             case "image"  : html = this._imageObjToHTML(obj); break;
             case "option" : html = this._optionObjToHTML(obj); break;
             case "field"  : html = this._fieldObjToHTML(obj); break;
@@ -630,6 +660,7 @@ class Translator {
          if (compiledCase.knots[kn].toCompile)
             md += compiledCase.knots[kn]._source +
                   ((compiledCase.knots[kn].type != "text" &&
+                    Translator.element[compiledCase.knots[kn].type] !== undefined &&
                     Translator.element[compiledCase.knots[kn].type].line !== undefined &&
                     Translator.element[compiledCase.knots[kn].type].line) ? "\n" : "");
          else {
@@ -637,6 +668,7 @@ class Translator {
             for (let ct in compiledCase.knots[kn].content) {
                md += compiledCase.knots[kn].content[ct]._source +
                      ((compiledCase.knots[kn].content[ct].type != "text" &&
+                       Translator.element[compiledCase.knots[kn].content[ct].type] !== undefined &&
                        Translator.element[compiledCase.knots[kn].content[ct].type].line !== undefined &&
                        Translator.element[compiledCase.knots[kn].content[ct].type].line) ? "\n" : "");
             }
@@ -745,6 +777,7 @@ class Translator {
     */
    _textObjToHTML(obj) {
       // return this._markdownTranslator.makeHtml(obj.content);
+      /*
       let result = obj.content;
       if (this.authoringRender)
          result = Translator.htmlTemplatesEditable.text
@@ -752,10 +785,25 @@ class Translator {
                     .replace("[author]", this.authorAttr)
                     .replace("[content]", obj.content);
       return result;
+      */
+      return obj.content;
    }
 
    _textObjToMd(obj) {
       return obj.content;
+   }
+
+   /*
+    * Text Block Obj to HTML
+    */
+    _textBlockObjToHTML(obj) {
+      console.log("text-block");
+      console.log(obj);
+      let html = Translator.htmlTemplates.textBlock
+                .replace("[seq]", obj.seq)
+                .replace("[content]", this.generateKnotHTML(obj));
+      console.log(html);
+      return html;
    }
 
    /*
@@ -794,9 +842,11 @@ class Translator {
    /*
     * Image Obj to HTML
     */
-   _imageObjToHTML(obj) {
+   _imageObjToHTML(obj, authorRender) {
+      const aRender = (authorRender)
+         ? authorRender : this.authoringRender;
       let result;
-      if (this.authoringRender)
+      if (aRender)
          result = Translator.htmlTemplatesEditable.image
             .replace("[seq]", obj.seq)
             .replace("[author]", this.authorAttr)
@@ -904,7 +954,7 @@ class Translator {
       if (matchArray[4] != null)
          option.target = matchArray[4].trim();
       if (matchArray[5] != null)
-         option.parameter = matchArray[5].trim();
+         option.value = matchArray[5].trim();
       
       return option;
    }
@@ -940,8 +990,8 @@ class Translator {
          .replace("[subtype]", obj.subtype)
          .replace("[target]", obj.contextTarget)
          .replace("[display]", label)
-         .replace("[parameter]",
-            (obj.parameter == null) ? "" : " parameter='" + obj.parameter + "'")
+         .replace("[value]",
+            (obj.value == null) ? "" : " value='" + obj.value + "'")
          .replace("[image]", optionalImage)
          .replace("[location]", location);
    }
@@ -1320,24 +1370,27 @@ class Translator {
    /*
     * Select Obj to HTML
     */
-   _selectObjToHTML(obj) {
+   _selectObjToHTML(obj, authorRender) {
+      const aRender = (authorRender)
+         ? authorRender : this.authoringRender;
       let answer="";
-      if (this._inputSelectShow) {
-         if (this._inputSelectShow == "#answer")
+      if (this._inputSelectShow || aRender) {
+         if (this._inputSelectShow == "#answer" || this.authoringRender)
             answer = " answer='" + obj.value + "'";
          else
             answer = " player='" + this._inputSelectShow + "'";
       }
 
-      let result = obj.expression;
-      if (!this.authoringRender)
-         result = Translator.htmlTemplates.select
-                     .replace("[seq]", obj.seq)
-                     .replace("[author]", this.authorAttr)
-                     .replace("[expression]", obj.expression)
-                     .replace("[answer]", answer);
+      // let result = obj.expression;
+      // if (!this.authoringRender)
+      // let result = Translator.htmlTemplates.select
+      return Translator.htmlTemplates.select
+                       .replace("[seq]", obj.seq)
+                       .replace("[author]", this.authorAttr)
+                       .replace("[expression]", obj.expression)
+                       .replace("[answer]", answer);
 
-      return result;
+      // return result;
    }
 
 }

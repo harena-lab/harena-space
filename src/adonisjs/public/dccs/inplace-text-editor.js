@@ -31,9 +31,12 @@ class EditDCCText {
      this._handleHighlighter = this._handleHighlighter.bind(this);
      this._handleAnnotation = this._handleAnnotation.bind(this);
      this._handleHlSelect = this._handleHlSelect.bind(this);
+     this._handleConfirm = this._handleConfirm.bind(this);
+     this._handleCancel = this._handleCancel.bind(this);
      this._editElement = element;
      this._toolbarControls = EditDCCText.toolbarTemplate +
-                             EditDCCText.toolbarTemplateHighlighter;
+                             EditDCCText.toolbarTemplateHighlighter +
+                             EditDCCText.toolbarTemplateConfirm;
      this._buildEditor(false);
    }
 
@@ -102,7 +105,9 @@ class EditDCCText {
                handlers: {
                   "highlighter" : this._handleHighlighter,
                   "annotation"  : this._handleAnnotation,
-                  "hl-select"   : this._handleHlSelect
+                  "hl-select"   : this._handleHlSelect,
+                  "confirm"     : this._handleConfirm,
+                  "cancel"      : this._handleCancel
                }
              }
           }
@@ -116,6 +121,15 @@ class EditDCCText {
          document.querySelector(".ql-highlighter").innerHTML =
             EditDCCText.buttonHighlightSVG;
       // document.querySelector(".ql-hl-select").style.display = "none";
+      document.querySelector(".ql-confirm").innerHTML =
+         EditDCCText.buttonConfirmSVG;
+      document.querySelector(".ql-cancel").innerHTML =
+         EditDCCText.buttonCancelSVG;
+   }
+
+   _removeEditor() {
+      this._container.removeChild(this._editorToolbar);
+      this._container.removeChild(this._editor);
    }
 
    _buildAnnotationPanel() {
@@ -146,15 +160,15 @@ class EditDCCText {
              style: context.states[c].style};
 
       this._toolbarControls = EditDCCText.toolbarTemplate +
-                              "<select class='ql-hl-select'>";
+                              "<select class='ql-hl-select'>" +
+                              EditDCCText.toolbarTemplateConfirm;
       for (let op in this._highlightOptions) {
          this._toolbarControls +=
             "<option value='" + op + "'>" +
             this._highlightOptions[op].label + "</option>";
       }
       this._toolbarControls += "</select>";
-      this._container.removeChild(this._editorToolbar);
-      this._container.removeChild(this._editor);
+      this._removeEditor();
       this._buildEditor(true);
    }
 
@@ -241,6 +255,13 @@ class EditDCCText {
       this._loadSelectOptions();
       // document.querySelector(".ql-hl-select").style.display = "initial";
    }
+
+   _handleConfirm() {
+   }
+
+   _handleCancel() {
+      this._removeEditor();
+   }
 }
 
 (function() {
@@ -276,6 +297,10 @@ EditDCCText.toolbarTemplate =
 
 EditDCCText.toolbarTemplateHighlighter =
 `<button class="ql-highlighter"></button>`;
+
+EditDCCText.toolbarTemplateConfirm =
+`<button class="ql-confirm"></button>
+<button class="ql-cancel"></button>`;
 
 EditDCCText.editorTemplate =
 `<svg viewBox="0 0 [width] [height]">

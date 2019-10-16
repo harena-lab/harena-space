@@ -85,7 +85,8 @@ class DCCAuthorServer {
             busResponse.push({
                id:   jsonResponse[t].path,
                name: t,
-               icon: "/templates/" + jsonResponse[t].icon
+               icon: "/templates/" + jsonResponse[t].icon,
+               description: jsonResponse[t].description
             });
       MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
                              busResponse);

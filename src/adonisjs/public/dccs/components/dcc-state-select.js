@@ -81,6 +81,11 @@ class DCCStateSelect extends DCCVisual {
       this._presentation.removeEventListener('click', this._changeState);
    }
 
+   // deactivates the authoring mode
+   checkActivateAuthor() {
+      /* nothing */
+   }
+
    defineStates(topic, message) {
       MessageBus.page.unsubscribe("dcc/select-states/" + this.id, this.defineStates);
       this.states = message;
@@ -143,7 +148,7 @@ class DCCStateSelect extends DCCVisual {
    async _checkRender() {
       if (this._pendingRequests >= 0 && this.states != null) {
          const statesArr = this.states.split(",");
-         if (this.hasAttribute("answer"))
+         if (this.hasAttribute("answer") || this.author)
             this._currentState = statesArr.indexOf(this.answer);
          else if (this.hasAttribute("player")) {
             let value = await MessageBus.ext.request(
@@ -201,7 +206,7 @@ class DCCStateSelect extends DCCVisual {
 
 /* Group Select DCC
  ********************/
-class DCCGroupSelect extends DCCBase {
+class DCCGroupSelect extends DCCBlock {
    constructor() {
      super();
      this.requestVariable = this.requestVariable.bind(this); 
@@ -209,6 +214,12 @@ class DCCGroupSelect extends DCCBase {
   }
    
    connectedCallback() {
+      this._statement = (this.hasAttribute("statement"))
+         ? this.statement : this.innerHTML;
+      this.innerHTML = "";
+
+      super.connectedCallback();
+
       MessageBus.page.subscribe("dcc/select-variable/request", this.requestVariable);
       MessageBus.page.subscribe("dcc/request/select-states", this.requestStates);
       
@@ -235,9 +246,17 @@ class DCCGroupSelect extends DCCBase {
     */
 
    static get observedAttributes() {
-    return ["variable", "states", "labels", "colors"];
+    return ["statement", "variable", "states", "labels", "colors"];
    }
 
+   get statement() {
+      return this.getAttribute("statement");
+   }
+   
+   set statement(newValue) {
+      this.setAttribute("statement", newValue);
+   }
+   
    get variable() {
       return this.getAttribute("variable");
     }
@@ -268,6 +287,11 @@ class DCCGroupSelect extends DCCBase {
 
     set colors(newColors) {
      this.setAttribute("colors", newColors);
+   }
+
+   async _renderInterface() {
+      // === presentation setup (DCC Block)
+      this._applyRender(this._statement, "innerHTML");
    }
 }
 
