@@ -76,21 +76,36 @@ class Basic {
 
    async signin(state) {
       let status = "start";
+
       let userid = null;
+      let userEmail = null;
+
+      if (!state) {
+         const authorState = this.authorStateRetrieve();
+
+         userid = (authorState != null && authorState.userid != null)
+            ? authorState.userid : null;
+
+         if (userid != null) {
+            let decision = await DCCNoticeInput.displayNotice(
+               "Proceed as " + authorState.email + "?", "message", "Yes", "No");
+            if (decision == "Yes") {
+               DCCCommonServer.instance.token = authorState.token;
+               userEmail = authorState.email;
+            } else
+               userid = null;
+         }
+      }
+
       let errorMessage = "";
       while (userid == null) {
-         /*
-         const userEmail =
+         userEmail =
             await DCCNoticeInput.displayNotice(errorMessage +
                                          "<h3>Signin</h3><h4>inform your email:</h4>",
                                          "input");
          const userPass =
             await DCCNoticeInput.displayNotice("<h3>Signin</h3><h4>inform your password:</h4>",
                                          "password");
-         */
-
-         const userEmail = "jacinto@example.com";
-         const userPass = "jacinto";
 
          let loginReturn = await MessageBus.ext.request("data/user/login",
                                                         {email: userEmail,
@@ -105,9 +120,51 @@ class Basic {
               state.sessionRecord(userid, loginReturn.message.token);
          }
       }
-      return userid;
+      this.authorIdStore(userid, userEmail, DCCCommonServer.instance.token);
+   }
+
+   /*
+    * Authoring State
+    * <TODO> Unify with State
+    */
+   authorStateRetrieve() {
+      let state = null;
+      const stateS = localStorage.getItem(Basic.authorStateId);
+      if (stateS != null) {
+         state = JSON.parse(stateS);
+         DCCCommonServer.instance.token = state.token;
+      }
+      return state;
+   }
+
+   authorIdStore(userid, userEmail, token) {
+      const state = {
+         userid: userid,
+         email: userEmail,
+         token: token
+      };
+      localStorage.setItem(Basic.authorStateId,
+                           JSON.stringify(state));
+   }
+
+   authorTemplateStore(template) {
+      let state = this.authorStateRetrieve();
+      if (state != null) {
+         state.template = template;
+         localStorage.setItem(Basic.authorStateId,
+                              JSON.stringify(state));
+      }
    }
    
+   authorCaseStore(caseId) {
+      let state = this.authorStateRetrieve();
+      if (state != null) {
+         state.caseId = caseId;
+         localStorage.setItem(Basic.authorStateId,
+                              JSON.stringify(state));
+      }
+   }
+
    screenDimensions() {
       let dimensions = {
          left: (window.screenLeft != undefined) ? window.screenLeft : window.screenX,
@@ -186,6 +243,10 @@ class Basic {
 
    // <TODO> provisory based on SVG from XD
    Basic.referenceViewport = {width: 1920, height: 1080};
+
+   // <TODO> unify with State
+   Basic.storeId = "harena-state";
+   Basic.authorStateId = "harena-state-author";
 
    Basic.service = new Basic();
 })();

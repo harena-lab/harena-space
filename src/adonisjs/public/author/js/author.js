@@ -84,9 +84,17 @@ class AuthorManager {
       this._knotPanel = document.querySelector("#knot-panel");
       this._messageSpace = document.querySelector("#message-space");
 
-      this._userid = await Basic.service.signin();
+      // this._userid = await Basic.service.signin();
 
-      this.caseLoadSelect();
+      const authorState = Basic.service.authorStateRetrieve();
+      this._userid = authorState.userid;
+
+      if (authorState.template)
+         this.caseNew(authorState.template);
+      else
+         this._caseLoad(authorState.caseId);
+
+      // this.caseLoadSelect();
    }
 
    /*
@@ -187,11 +195,11 @@ class AuthorManager {
    /*
     * ACTION: control-new
     */
-   async caseNew() {
+   async caseNew(template) {
       this._temporaryCase = true;
       
-      await this._themeSelect();
-      let template = await this._templateSelect("case");
+      // await this._themeSelect();
+      // let template = await this._templateSelect("case");
 
       const templateMd =
          await MessageBus.ext.request(
