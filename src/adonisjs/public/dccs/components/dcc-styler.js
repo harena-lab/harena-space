@@ -6,7 +6,7 @@
 class DCCStyler extends DCCBase {
    constructor() {
       super();
-      this._locationSet = {};
+      this._locationSet = {generic: 1};
       this.requestXstyle = this.requestXstyle.bind(this);
       this.requestLocation = this.requestLocation.bind(this);
    }
@@ -37,7 +37,7 @@ class DCCStyler extends DCCBase {
    
    static get observedAttributes() {
       return DCCBase.observedAttributes.concat(
-         ["xstyle"]);
+         ["xstyle", "distribution"]);
    }
 
    get xstyle() {
@@ -48,6 +48,14 @@ class DCCStyler extends DCCBase {
       this.setAttribute("xstyle", newValue);
    }
    
+   get distribution() {
+      return this.getAttribute("distribution");
+   }
+   
+   set distribution(newValue) {
+      this.setAttribute("distribution", newValue);
+   }
+
    /*
    get locations() {
       return this.getAttribute("locations");
@@ -68,15 +76,22 @@ class DCCStyler extends DCCBase {
     * Manages counting of location by type: role, action etc.
     */
    requestLocation(topic, message) {
-      let counter = 1;
-      if (this._locationSet[message.body] === undefined)
-         this._locationSet[message.body] = 1;
-      else {
-         this._locationSet[message.body]++;
-         counter = this._locationSet[message.body];
+      let location;
+      if (this.hasAttribute("distribution") && this.distribution == "generic") {
+         location = DCCBlock.locationType + "-" + this._locationSet.generic;
+         this._locationSet.generic++;
+      } else {
+         let counter = 1;
+         if (this._locationSet[message.body] === undefined)
+            this._locationSet[message.body] = 1;
+         else {
+            this._locationSet[message.body]++;
+            counter = this._locationSet[message.body];
+         }
+         location = message.body + "-" + counter;
       }
       MessageBus.page.publish(
-         MessageBus.buildResponseTopic(topic, message), counter);
+         MessageBus.buildResponseTopic(topic, message), location);
    }
 }
       

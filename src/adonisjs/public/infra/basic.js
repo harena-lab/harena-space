@@ -80,22 +80,22 @@ class Basic {
       let userid = null;
       let userEmail = null;
 
-      if (!state) {
-         const authorState = this.authorStateRetrieve();
+      // if (!state) {
+      const authorState = this.authorStateRetrieve();
 
-         userid = (authorState != null && authorState.userid != null)
-            ? authorState.userid : null;
+      userid = (authorState != null && authorState.userid != null)
+         ? authorState.userid : null;
 
-         if (userid != null) {
-            let decision = await DCCNoticeInput.displayNotice(
-               "Proceed as " + authorState.email + "?", "message", "Yes", "No");
-            if (decision == "Yes") {
-               DCCCommonServer.instance.token = authorState.token;
-               userEmail = authorState.email;
-            } else
-               userid = null;
-         }
+      if (userid != null) {
+         let decision = await DCCNoticeInput.displayNotice(
+            "Proceed as " + authorState.email + "?", "message", "Yes", "No");
+         if (decision == "Yes") {
+            DCCCommonServer.instance.token = authorState.token;
+            userEmail = authorState.email;
+         } else
+            userid = null;
       }
+      // }
 
       let errorMessage = "";
       while (userid == null) {

@@ -27,7 +27,7 @@ class DCCBlock extends DCCVisual {
           MessageBus.page.hasSubscriber("dcc/request/location")) {
          let locationM = await MessageBus.page.request("dcc/request/location",
                                                        this.externalLocationType());
-         this.location = this.externalLocationType() + "-" + locationM.message;
+         this.location = locationM.message;
       }
 
       if (document.readyState === "complete")
@@ -84,7 +84,7 @@ class DCCBlock extends DCCVisual {
    }
    
    externalLocationType() {
-      return "role";
+      return DCCBlock.locationType;
    }
 
    /*
@@ -181,6 +181,7 @@ class DCCBlock extends DCCVisual {
 
 (function() {
    DCCBlock.elementTag = "dcc-block";
+   DCCBlock.locationType = "role";
 
    customElements.define(DCCBlock.elementTag, DCCBlock);
 })();

@@ -76,6 +76,15 @@ class AuthorManager {
     */
 
    async start() {
+      let mode = window.location.search.substr(1);
+      if (mode != null && mode.length > 0) {
+         const md = mode.match(/mode=([\w-]+)/i);
+         mode = (md == null) ? null : md[1];
+      } else
+         mode = null;
+      if (mode != null && mode.toLowerCase() == "advanced")
+         document.querySelector("#advanced-mode").style.display = "initial";
+
       // build singletons
       Panels.start();
       Properties.start(this);

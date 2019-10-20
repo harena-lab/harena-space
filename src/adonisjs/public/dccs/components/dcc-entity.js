@@ -189,7 +189,7 @@ class DCCEntity extends DCCBlock {
    }
 
    externalLocationType() {
-      return "role";
+      return "entity";
    }
 }
 

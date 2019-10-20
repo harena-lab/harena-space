@@ -219,8 +219,10 @@ class PlayerManager {
 
       this._compiledCase =
          Translator.instance.compileMarkdown(Basic.service.currentCaseId,
-                                          caseObj.message.source);
+                                             caseObj.message.source);
       this._knots = this._compiledCase.knots;
+      console.log("=== compiled case");
+      console.log(this._compiledCase);      
       Basic.service.currentThemeFamily = this._compiledCase.theme;
    }
    
