@@ -20,8 +20,6 @@ class DCCAuthorServer {
 
       this.themeFamiliesList = this.themeFamiliesList.bind(this);
       MessageBus.ext.subscribe("data/theme_family/*/list", this.themeFamiliesList);
-      this.themeFamilyConfig = this.themeFamilyConfig.bind(this);
-      MessageBus.ext.subscribe("data/theme_family/+/config", this.themeFamilyConfig);
       
       this.templatesList = this.templatesList.bind(this);
       MessageBus.ext.subscribe("data/template/*/list", this.templatesList);
@@ -92,23 +90,6 @@ class DCCAuthorServer {
             });
       MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
                              busResponse);
-   }
-
-   async themeFamilyConfig(topic, message) {
-      const themeFamily = MessageBus.extractLevel(topic, 3);
-      let header = {
-         "async": true,
-         "crossDomain": true,
-         "method": "GET",
-         "headers": {
-            "Content-Type": "text/json",
-          }
-      };
-      const response = await fetch("../themes/" + themeFamily + "/theme.json",
-                                   header);
-      let jsonResponse = await response.json();
-      MessageBus.int.publish(MessageBus.buildResponseTopic(topic, message),
-                             jsonResponse);
    }
 
    async newCase(topic, message) {

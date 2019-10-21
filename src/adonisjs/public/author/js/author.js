@@ -228,15 +228,22 @@ class AuthorManager {
       Basic.service.currentCaseId = caseId;
       const caseObj = await MessageBus.ext.request(
          "data/case/" + Basic.service.currentCaseId + "/get");
+
       this._currentCaseName = caseObj.message.name;
       await this._compile(caseObj.message.source);
       this._showCase();
    }
       
    async _compile(caseSource) {
-      this._compiledCase = Translator.instance.compileMarkdown(Basic.service.currentCaseId,
-                                                               caseSource);
+      this._compiledCase =
+         await Translator.instance.compileMarkdown(Basic.service.currentCaseId,
+                                                   caseSource);
+
+      console.log("=== compiled case");
+      console.log(this._compiledCase);
+
       this._knots = this._compiledCase.knots;
+
       Basic.service.currentThemeFamily = this._compiledCase.theme;
       if (this._compiledCase.name)
          this._currentCaseName = this._compiledCase.name;

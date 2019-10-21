@@ -39,7 +39,7 @@ class Translator {
    /*
     * Compiles a markdown text to an object representation
     */
-   compileMarkdown(caseId, markdown) {
+   async compileMarkdown(caseId, markdown) {
       let compiledCase = {
          id: caseId,
          knots: {},
@@ -48,8 +48,15 @@ class Translator {
 
       const layerBlocks = this._indexLayers(markdown, compiledCase);
       this._extractCaseMetadata(compiledCase);
-      console.log("=== origin");
-      console.log(compiledCase);
+
+      if (this._themeSettings)
+         delete this._themeSettings;
+      if (compiledCase.theme) {
+         const themeSt = await MessageBus.int.request(
+            "data/theme_family/" + compiledCase.theme + "/settings");
+         if (themeSt != null)
+            this._themeSettings = themeSt.message;
+      }
 
       this._indexKnots(layerBlocks[0], compiledCase);
       
@@ -267,8 +274,15 @@ class Translator {
             // attach to a knot array (if it is a knot) or an array inside a knot
             if (selected == "knot") {
                unity._sourceHead = toTranslate;
-               if (transObj.categories)
+               if (transObj.categories) {
                   unity.categories = transObj.categories;
+                  if (this._themeSettings &&
+                      this._themeSettings[unity.categories[0]])
+                     this._categorySettings =
+                        this._themeSettings[unity.categories[0]];
+                  else if (this._categorySettings)
+                     delete this._categorySettings;
+               }
             } else
                unity.content.push(transObj);
             
@@ -599,7 +613,8 @@ class Translator {
 
    async loadTheme(themeName) {
       const themeObj = await MessageBus.ext.request(
-            "data/theme/" + Basic.service.currentThemeFamily + "." + themeName + "/get");
+            "data/theme/" + Basic.service.currentThemeFamily +
+            "." + themeName + "/get");
       return themeObj.message;
    }
 

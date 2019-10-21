@@ -55,9 +55,8 @@ Supervisor explanation.
 Check hypothesis (detailed_role)
 --------------------------------
 
-@SYSTEM: Let us check out your hypothesis. Highlight in green the key findings, in blue the findings that corroborate your hypothesis; in yellow those that are neutral; and in red the ones speaking against your hypothesis.
-
 ? contribution to diagnostics
+  Let us check out your hypothesis. Highlight in green the key findings, in blue the findings that corroborate your hypothesis; in yellow those that are neutral; and in red the ones speaking against your hypothesis.
   * type: group select
   * states: _, k, +, =, -
   * labels: empty, key, contibutes, indiferent, against
@@ -185,6 +184,5 @@ Final report.
 
 * Return -> Final.Report  
 
-_Case_
-======
+____ Data _____
 * theme: jacinto

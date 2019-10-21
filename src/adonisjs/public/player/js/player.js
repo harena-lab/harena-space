@@ -106,6 +106,10 @@ class PlayerManager {
                                     this.knotLoad(this._state.historyPrevious());
                                  break;
          case "knot/<</navigate": this.startCase();
+                                  console.log("=== start");
+                                  console.log(DCCPlayerServer.localEnv);
+                                  // console.log(DCCPlayerServer.playerObj.start);
+                                  console.log(this._compiledCase);
                                   const startKnot = (DCCPlayerServer.localEnv)
                                      ? DCCPlayerServer.playerObj.start
                                      : this._compiledCase.start;
@@ -116,14 +120,14 @@ class PlayerManager {
                                  this._state.historyRecord(nextKnot);
                                  this.knotLoad(nextKnot);
                                  break;
-         case "knot/>>>/navigate": window.open(message.parameter, "_self");
+         case "knot/>>>/navigate": window.open(message.value, "_self");
                                    break;
          default: if (MessageBus.matchFilter(topic, "knot/+/navigate")) {
                      this._state.historyRecord(target);
                      // this._history.push(target);
-                     if (message.parameter) {
-                        this._state.parameter = message.parameter;
-                        this.knotLoad(target, message.parameter);
+                     if (message.value) {
+                        this._state.parameter = message.value;
+                        this.knotLoad(target, message.value);
                      } else {
                         this._state.parameter = null;
                         this.knotLoad(target);
@@ -199,9 +203,8 @@ class PlayerManager {
               caseid = await DCCNoticeInput.displayNotice(
                  "Select a case to load.",
                  "list", "Select", "Cancel", cases);
-           else {
+           else
               caseid = cases[pi].id;
-           }
            this._state.currentCase = caseid;
            await this._caseLoad(caseid);
         }
@@ -217,17 +220,22 @@ class PlayerManager {
          "data/case/" + Basic.service.currentCaseId + "/get");
       this._currentCaseName = caseObj.message.name;
 
+      console.log("=== compile");
+      console.log(Basic.service.currentCaseId);
+      console.log(caseObj.message.source);
       this._compiledCase =
-         Translator.instance.compileMarkdown(Basic.service.currentCaseId,
-                                             caseObj.message.source);
+         await Translator.instance.compileMarkdown(Basic.service.currentCaseId,
+                                                   caseObj.message.source);
+      console.log(this._compiledCase);
       this._knots = this._compiledCase.knots;
-      console.log("=== compiled case");
-      console.log(this._compiledCase);      
       Basic.service.currentThemeFamily = this._compiledCase.theme;
    }
    
    async knotLoad(knotName, parameter) {
       this._currentKnot = knotName;
+      console.log("=== knots");
+      console.log(knotName);
+      console.log(this._knots);
       // <TODO> Local Environment - Future
       /*
       this._knotScript = document.createElement("script");

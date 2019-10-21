@@ -10,7 +10,5 @@ Next Scene (expansion)
 
 * template: picture_up_left
 
-_Case_
-======
-
+____ Data _____
 * theme: minimal
