@@ -174,6 +174,9 @@ class PlayerManager {
             resume = true;
             this._state.pendingPlayRestore();
             DCCCommonServer.instance.token = this._state.token;
+            console.log("=== state");
+            console.log(this._state);
+            console.log(this._state.currentCase);
             await this._caseLoad(this._state.currentCase);
             const current = this._state.historyCurrent();
             if (this._state.parameter == null)
@@ -215,6 +218,7 @@ class PlayerManager {
    }
 
    async _caseLoad(caseid) {
+      console.log("=== load: " + caseid);
       Basic.service.currentCaseId = caseid;
       const caseObj = await MessageBus.ext.request(
          "data/case/" + Basic.service.currentCaseId + "/get");

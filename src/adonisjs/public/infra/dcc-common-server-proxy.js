@@ -65,7 +65,7 @@ class DCCCommonServer {
          "method": "POST",
          "headers": {
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + DCCCommonServer.instance.token
+            "Authorization": "Bearer " + this.token
           }
       }
       const response = await fetch(DCCCommonServer.managerAddressAPI + "case/list", header);
@@ -90,7 +90,7 @@ class DCCCommonServer {
          "method": "GET",
          "headers": {
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + this._token
+            "Authorization": "Bearer " + this.token
           }
       };
       const response =

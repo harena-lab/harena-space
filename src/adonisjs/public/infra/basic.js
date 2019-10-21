@@ -74,6 +74,10 @@ class Basic {
       return (!str || /^\s*$/.test(str));
    }
 
+   /*
+    * Use signin
+    *    state - player state variable; stores user credentials after login
+    */
    async signin(state) {
       let status = "start";
 
@@ -115,11 +119,9 @@ class Basic {
          if (userid == null)
             errorMessage =
                "<span style='color: red'>Invalid user and/or password.</span>";
-         else {
-            if (state)
-              state.sessionRecord(userid, loginReturn.message.token);
-         }
       }
+      if (state)
+        state.sessionRecord(userid, DCCCommonServer.instance.token);
       this.authorIdStore(userid, userEmail, DCCCommonServer.instance.token);
    }
 
