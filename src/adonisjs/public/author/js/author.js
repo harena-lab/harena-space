@@ -76,6 +76,15 @@ class AuthorManager {
     */
 
    async start() {
+      let mode = window.location.search.substr(1);
+      if (mode != null && mode.length > 0) {
+         const md = mode.match(/mode=([\w-]+)/i);
+         mode = (md == null) ? null : md[1];
+      } else
+         mode = null;
+      if (mode != null && mode.toLowerCase() == "advanced")
+         document.querySelector("#advanced-mode").style.display = "initial";
+
       // build singletons
       Panels.start();
       Properties.start(this);
@@ -219,15 +228,22 @@ class AuthorManager {
       Basic.service.currentCaseId = caseId;
       const caseObj = await MessageBus.ext.request(
          "data/case/" + Basic.service.currentCaseId + "/get");
+
       this._currentCaseName = caseObj.message.name;
       await this._compile(caseObj.message.source);
       this._showCase();
    }
       
    async _compile(caseSource) {
-      this._compiledCase = Translator.instance.compileMarkdown(Basic.service.currentCaseId,
-                                                               caseSource);
+      this._compiledCase =
+         await Translator.instance.compileMarkdown(Basic.service.currentCaseId,
+                                                   caseSource);
+
+      console.log("=== compiled case");
+      console.log(this._compiledCase);
+
       this._knots = this._compiledCase.knots;
+
       Basic.service.currentThemeFamily = this._compiledCase.theme;
       if (this._compiledCase.name)
          this._currentCaseName = this._compiledCase.name;

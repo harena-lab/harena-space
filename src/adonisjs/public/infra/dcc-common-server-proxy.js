@@ -12,6 +12,9 @@ class DCCCommonServer {
       this.loadCase = this.loadCase.bind(this);
       MessageBus.ext.subscribe("data/case/+/get", this.loadCase);
       this.loadTheme = this.loadTheme.bind(this);
+      this.themeFamilySettings = this.themeFamilySettings.bind(this);
+      MessageBus.int.subscribe("data/theme_family/+/settings",
+                               this.themeFamilySettings);
       MessageBus.ext.subscribe("data/theme/+/get", this.loadTheme);
       this.contextList = this.contextList.bind(this);
       MessageBus.int.subscribe("data/context/*/list", this.contextList);
@@ -98,6 +101,23 @@ class DCCCommonServer {
       MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
                              {name: jsonResponse.name,
                               source: jsonResponse.source});
+   }
+
+   async themeFamilySettings(topic, message) {
+      const themeFamily = MessageBus.extractLevel(topic, 3);
+      let header = {
+         "async": true,
+         "crossDomain": true,
+         "method": "GET",
+         "headers": {
+            "Content-Type": "text/json",
+          }
+      };
+      const response = await fetch("../themes/" + themeFamily + "/theme.json",
+                                   header);
+      let jsonResponse = await response.json();
+      MessageBus.int.publish(MessageBus.buildResponseTopic(topic, message),
+                             jsonResponse);
    }
 
    async loadTheme(topic, message) {

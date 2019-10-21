@@ -290,8 +290,14 @@ class DCCGroupSelect extends DCCBlock {
    }
 
    async _renderInterface() {
+      console.log("=== statement");
+      console.log(this._statement);
       // === presentation setup (DCC Block)
       this._applyRender(this._statement, "innerHTML");
+   }
+
+   externalLocationType() {
+      return "input";
    }
 }
 

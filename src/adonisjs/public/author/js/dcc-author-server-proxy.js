@@ -141,7 +141,7 @@ class DCCAuthorServer {
          "method": "DELETE",
          "headers": {
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + this._token
+            "Authorization": "Bearer " + DCCCommonServer.instance.token
           }
       };
       const response =

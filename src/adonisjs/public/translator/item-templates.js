@@ -28,7 +28,7 @@ mention:
 `,
 */
 input:
-`<dcc-input id='dcc[seq]'[author] variable='[variable]'[rows][vocabularies]></dcc-input>`,
+`<dcc-input id='dcc[seq]'[author] variable='[variable]'[rows][vocabularies]>[statement]</dcc-input>`,
 output:
 `<dcc-expression id='dcc[seq]'[author] expression='[variable]'[variant]></dcc-expression>`,
 compute:
@@ -36,7 +36,7 @@ compute:
 domain:
 `[natural]`,
 "input-group-select":
-`<dcc-group-select id='dcc[seq]'[author] variable='[variable]'[states][labels]></dcc-group-select>`,
+`<dcc-group-select id='dcc[seq]'[author] variable='[variable]'[states][labels]>[statement]</dcc-group-select>`,
 /*
 selctxopen:
 `
@@ -73,6 +73,9 @@ image:
 };
 
 Translator.markdownTemplates = {
+layer:
+`___ [title] ___
+`,
 knot:
 `[level] [title][categories]`,
 image:
