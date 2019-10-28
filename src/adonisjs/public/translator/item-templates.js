@@ -55,6 +55,11 @@ select:
 `<dcc-state-select id='dcc[seq]'[author][answer]>[expression]</dcc-state-select>`
 };
 
+Translator.htmlFlatTemplates = {
+entity:
+`<p><b>[entity]: </b>[speech]</p>`
+};
+
 Translator.htmlTemplatesEditable = {
 text:
 `

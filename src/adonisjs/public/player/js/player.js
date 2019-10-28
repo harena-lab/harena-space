@@ -187,31 +187,34 @@ class PlayerManager {
       }
 
       if (!resume) {
-        this._userid = await Basic.service.signin(this._state);
+         if (DCCCommonServer.instance.local)
+            await this._caseLoad();
+         else {
+           this._userid = await Basic.service.signin(this._state);
 
-        if (DCCPlayerServer.localEnv)
-           Basic.service.currentCaseId = DCCPlayerServer.playerObj.id;
-        else {
-           const casesM = await MessageBus.ext.request(
-                 "data/case/*/list",
-                 {filterBy: "user", filter: this._userid});
-           const cases = casesM.message;
-           let pi = -1;
-           if (precase != null)
-              for (let c in cases)
-                 if (cases[c].name == precase)
-                    pi = c;
+           if (DCCPlayerServer.localEnv)
+              Basic.service.currentCaseId = DCCPlayerServer.playerObj.id;
+           else {
+              const casesM = await MessageBus.ext.request(
+                    "data/case/*/list",
+                    {filterBy: "user", filter: this._userid});
+              const cases = casesM.message;
+              let pi = -1;
+              if (precase != null)
+                 for (let c in cases)
+                    if (cases[c].name == precase)
+                       pi = c;
 
-           if (!caseid && (precase == null || pi == -1))
-              caseid = await DCCNoticeInput.displayNotice(
-                 "Select a case to load.",
-                 "list", "Select", "Cancel", cases);
-           else
-              caseid = cases[pi].id;
-           this._state.currentCase = caseid;
-           await this._caseLoad(caseid);
+              if (!caseid && (precase == null || pi == -1))
+                 caseid = await DCCNoticeInput.displayNotice(
+                    "Select a case to load.",
+                    "list", "Select", "Cancel", cases);
+              else
+                 caseid = cases[pi].id;
+              this._state.currentCase = caseid;
+              await this._caseLoad(caseid);
+           }
         }
-        
         MessageBus.ext.publish("knot/<</navigate");
         // this.knotLoad("entry");
       }

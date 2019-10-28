@@ -239,9 +239,6 @@ class AuthorManager {
          await Translator.instance.compileMarkdown(Basic.service.currentCaseId,
                                                    caseSource);
 
-      console.log("=== compiled case");
-      console.log(this._compiledCase);
-
       this._knots = this._compiledCase.knots;
 
       Basic.service.currentThemeFamily = this._compiledCase.theme;
@@ -583,8 +580,6 @@ class AuthorManager {
          contentSel[pos] = element;
 
          this.knotUpdate();
-
-         console.log(this._knots);
       }
    }
 

@@ -57,6 +57,8 @@ class Translator {
          if (themeSt != null)
             this._themeSettings = themeSt.message;
       }
+      console.log("=== theme settings");
+      console.log(this._themeSettings);
 
       this._indexKnots(layerBlocks[0], compiledCase);
       
@@ -274,15 +276,10 @@ class Translator {
             // attach to a knot array (if it is a knot) or an array inside a knot
             if (selected == "knot") {
                unity._sourceHead = toTranslate;
-               if (transObj.categories) {
+               if (transObj.categories)
                   unity.categories = transObj.categories;
-                  if (this._themeSettings &&
-                      this._themeSettings[unity.categories[0]])
-                     this._categorySettings =
-                        this._themeSettings[unity.categories[0]];
-                  else if (this._categorySettings)
-                     delete this._categorySettings;
-               }
+               this._defineCategorySettings(
+                  (transObj.categories) ? transObj.categories : null);
             } else
                unity.content.push(transObj);
             
@@ -296,6 +293,27 @@ class Translator {
       if (mdfocus.length > 0)
          unity.content.push(
             this._initializeObject(this._textMdToObj(mdfocus), mdfocus));
+   }
+
+   _defineCategorySettings(categories) {
+      let focusCategory = null;
+      // when there is more than one category, priority in reverse order
+      if (categories != null) {
+         let cat = categories.length - 1;
+         while (focusCategory == null && cat >= 0 &&
+                !this._themeSettings[categories[cat]])
+            cat--;
+         if (cat >= 0)
+            focusCategory = categories[cat];
+         else
+            focusCategory = "knot";
+      }
+      if (this._themeSettings &&
+          this._themeSettings[focusCategory])
+         this._categorySettings =
+            this._themeSettings[focusCategory];
+      else if (this._categorySettings)
+         delete this._categorySettings;
    }
 
    /*
@@ -403,8 +421,8 @@ class Translator {
                   c--;
                }
             }
-         } else if (c > 0 && compiled[c].subordinate) {
-            // computes subordinate elements
+         } // computes subordinate elements
+           else if (c > 0 && compiled[c].subordinate) {
             let merge = false;
             if (compiled[c].type == "field" &&
                 Translator.element[compiled[c-1].type].subfield !== undefined &&
@@ -449,9 +467,9 @@ class Translator {
                compiled.splice(c, 1);
                c--;
             }
-         } else if (c == 0 && compiled[c].subordinate &&
+         } // manages elements subordinated to the knot
+           else if (c == 0 && compiled[c].subordinate &&
                     compiled[c].type == "image") {
-            // manages elements subordinated to the knot
             unity.background = {
                alternative: compiled[c].alternative,
                path:  compiled[c].path };
@@ -585,6 +603,8 @@ class Translator {
    }
    
    async generateHTMLBuffer(knot) {
+      this._defineCategorySettings(
+         (knot.categories) ? knot.categories : null);
       let themes = (knot.categories)
                    ? knot.categories : ["knot"];
       for (let tp in themes)
@@ -1129,6 +1149,17 @@ class Translator {
       return entity;
    }
 
+   _fieldCategorySetting(field) {
+      let setting = "undefined";
+      if (this._categorySettings) {
+         if (this._categorySettings[field])
+            setting = this._categorySettings[field];
+         else if (this._categorySettings[Translator.genericFieldType])
+            setting = this._categorySettings[Translator.genericFieldType];
+      }
+      return setting;
+   }
+
    /*
     * Entity Obj to HTML
     */
@@ -1142,14 +1173,19 @@ class Translator {
          if (obj.image.title)
             title = " title='" + obj.image.title + "'";
       }
-      return Translator.htmlTemplates.entity
-         .replace("[seq]", obj.seq)
-         .replace("[author]", this.authorAttr)
-         .replace("[entity]", obj.entity)
-         .replace("[speech]", (obj.speech) ? obj.speech : "")
-         .replace("[image]", path)
-         .replace("[alternative]", alternative)
-         .replace("[title]", title);
+      const setting = this._fieldCategorySetting("entity");
+      console.log("=== setting: " + setting);
+      console.log(obj);
+      const template = (setting == "flat")
+         ? Translator.htmlFlatTemplates : Translator.htmlTemplates;
+      return template.entity
+                .replace("[seq]", obj.seq)
+                .replace("[author]", this.authorAttr)
+                .replace("[entity]", obj.entity)
+                .replace("[speech]", (obj.speech) ? obj.speech : "")
+                .replace("[image]", path)
+                .replace("[alternative]", alternative)
+                .replace("[title]", title);
    }
    
 
@@ -1539,6 +1575,8 @@ class Translator {
    };
 
    Translator.defaultVariable = "points";
+
+   Translator.genericFieldType = "generic";
 
    Translator.instance = new Translator();
 })();
