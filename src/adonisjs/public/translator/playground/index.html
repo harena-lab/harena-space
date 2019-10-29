@@ -18,6 +18,9 @@
   <script src="../../infra/bus.js"></script>
   <script src="../../infra/basic.js"></script>
   <script src="../../infra/dcc-common-server-proxy.js"></script>
+  <script src="../../infra/dcc-common-server-address.js"></script>
+  <script src="../../context/context.js"></script>
+
   <script src="../../dccs/components/dcc-base.js"></script>
   <script src="../../dccs/components/dcc-visual.js"></script>
   <script src="../../dccs/components/dcc-block.js"></script>
@@ -38,7 +41,7 @@
     mkTranslator.authoringRender = true;
 
     // let compiled = mkTranslator.compileMarkdown("test", window.quill.getText());
-    let compiled = mkTranslator.compileMarkdown(
+    let compiled = await mkTranslator.compileMarkdown(
                                    "test", document.querySelector("#editor").value);
     document.querySelector("#object-results").value = JSON.stringify(compiled, null, 3);
     let html = "";

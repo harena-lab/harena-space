@@ -12,9 +12,14 @@ class DCCStyler extends DCCBase {
    }
 
    connectedCallback() {
-      if (this.hasAttribute("xstyle")) {
-         MessageBus.page.subscribe("dcc/request/xstyle", this.requestXstyle);
+      if (this.hasAttribute("targeted")) {
+         this._targeted = this.targeted.split(";");
+         for (let t in this._targeted)
+            this._targeted[t] = this._targeted[t].trim();
       }
+
+      if (this.hasAttribute("xstyle"))
+         MessageBus.page.subscribe("dcc/request/xstyle", this.requestXstyle);
       
       MessageBus.page.subscribe("dcc/request/location", this.requestLocation);
 
@@ -37,7 +42,7 @@ class DCCStyler extends DCCBase {
    
    static get observedAttributes() {
       return DCCBase.observedAttributes.concat(
-         ["xstyle", "distribution"]);
+         ["xstyle", "distribution", "targeted"]);
    }
 
    get xstyle() {
@@ -54,6 +59,14 @@ class DCCStyler extends DCCBase {
    
    set distribution(newValue) {
       this.setAttribute("distribution", newValue);
+   }
+
+   get targeted() {
+      return this.getAttribute("targeted");
+   }
+   
+   set targeted(newValue) {
+      this.setAttribute("targeted", newValue);
    }
 
    /*
@@ -77,7 +90,8 @@ class DCCStyler extends DCCBase {
     */
    requestLocation(topic, message) {
       let location;
-      if (this.hasAttribute("distribution") && this.distribution == "generic") {
+      if ((this.hasAttribute("distribution") && this.distribution == "generic") &&
+          (!this._targeted || !this._targeted.includes(message.body))) {
          location = DCCBlock.locationType + "-" + this._locationSet.generic;
          this._locationSet.generic++;
       } else {

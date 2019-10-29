@@ -6,7 +6,7 @@
  *   * "out"  -> apply an style externally defined with the name "trigger-button-template"
 **************************************************************************/
 
-class DCCBlock extends DCCVisual {
+class DCCBlock extends DCCMultiVisual {
    constructor() {
      super();
      
@@ -123,21 +123,22 @@ class DCCBlock extends DCCVisual {
     * Finds the outer target interface or creates an internal interface
     */
    async _applyRender(html, outTarget, sufix) {
+      let presentation = null;
       // location #in to indicate the location is not absent
       if (this.xstyle.startsWith("out") &&
           this.hasAttribute("location") && this.location != "#in") {
          /*
           * outer target interface
           */
-         this._presentation = document.querySelector("#" + this.location +
+         presentation = document.querySelector("#" + this.location +
                                                      ((sufix) ? sufix : ""));
-         if (this._presentation != null) {
+         if (presentation != null) {
             if (sufix == "-image" && this.hasAttribute("image"))
                // <TODO> image works for SVG but not for HTML
-               this._presentation.setAttributeNS(
+               presentation.setAttributeNS(
                   "http://www.w3.org/1999/xlink", "href", html);
             else
-               this._presentation[outTarget] = html;
+               presentation[outTarget] = html;
          }
 
          let wrapper = document.querySelector("#" + this.location + "-wrapper");
@@ -173,9 +174,11 @@ class DCCBlock extends DCCVisual {
              this.xstyle == "none")
             host = this.attachShadow({mode: "open"});
          host.appendChild(template.content.cloneNode(true));
-         this._presentation = host.querySelector("#presentation-dcc");
+         presentation = host.querySelector("#presentation-dcc");
       }
       this.checkActivateAuthor();
+      this._storePresentation(presentation);
+      return presentation;
    }
 }
 

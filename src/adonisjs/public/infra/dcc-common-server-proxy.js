@@ -58,7 +58,8 @@ class DCCCommonServer {
                                   "password": message.password})
       }
 
-      const response = await fetch(DCCCommonServer.managerAddressAPI + "user/login", header);
+      const response = await fetch(
+         DCCCommonServer.managerAddressAPI + "user/login", header);
       const jsonResponse = await response.json();
       const busResponse = {
          userid: jsonResponse.id,
@@ -79,14 +80,15 @@ class DCCCommonServer {
             "Authorization": "Bearer " + this.token
           }
       }
-      const response = await fetch(DCCCommonServer.managerAddressAPI + "case/list", header);
+      const response = await fetch(
+         DCCCommonServer.managerAddressAPI + "case/list", header);
       const jsonResponse = await response.json();
       let busResponse = [];
       for (let c in jsonResponse)
          busResponse.push({
             id:   jsonResponse[c].uuid,
             name: jsonResponse[c].name,
-            icon: "../resources/icons/mono-slide.svg",
+            icon: Basic.service.rootPath + "resources/icons/mono-slide.svg",
             svg : jsonResponse[c].svg
          });
       MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
@@ -97,7 +99,7 @@ class DCCCommonServer {
       let caseObj;
       if (this.local) {
          this._caseScript = document.createElement("script");
-         this._caseScript.src = "../cases/current-case.js";
+         this._caseScript.src = Basic.service.rootPath + "cases/current-case.js";
          document.head.appendChild(this._caseScript);
          // <TODO> adjust topic
          const caseM = await MessageBus.int.waitMessage("control/case/load/ready");
@@ -136,8 +138,8 @@ class DCCCommonServer {
                "Content-Type": "text/json",
              }
          };
-         const response = await fetch("../themes/" + themeFamily + "/theme.json",
-                                      header);
+         const response = await fetch(Basic.service.rootPath + "themes/" +
+                                      themeFamily + "/theme.json", header);
          settings = await response.json();
       }
       MessageBus.int.publish(MessageBus.buildResponseTopic(topic, message),
@@ -153,12 +155,13 @@ class DCCCommonServer {
       let caseObj;
       if (this.local) {
          this._themeScript = document.createElement("script");
-         this._themeScript.src = "../themes/" + themeFamily + "/local/" +
-                                 themeName + ".js";
+         this._themeScript.src = Basic.service.rootPath + "themes/" +
+                                 themeFamily + "/local/" + themeName + ".js";
          document.head.appendChild(this._themeScript);
          // <TODO> adjust topic
-         const themeM = await MessageBus.int.waitMessage("control/theme/" + themeName +
-                                                        "/load/ready");
+         const themeM = await MessageBus.int.waitMessage("control/theme/" +
+                                                         themeName +
+                                                         "/load/ready");
          themeObj = themeM.message;
       } else {
          let header = {
@@ -169,7 +172,8 @@ class DCCCommonServer {
                "Content-Type": "text/html",
              }
          }
-         const response = await fetch("../themes/" + themeFamily + "/" + themeName +
+         const response = await fetch(Basic.service.rootPath + "themes/" +
+                                      themeFamily + "/" + themeName +
                                       ".html", header);
          themeObj = await response.text();
       }
@@ -186,7 +190,8 @@ class DCCCommonServer {
             "Content-Type": "application/json",
           }
       };
-      const response = await fetch("../context/context.json", header);
+      const response = await fetch(Basic.service.rootPath + "context/context.json",
+                                   header);
       let ctxCatalog = await response.json();
       MessageBus.int.publish(MessageBus.buildResponseTopic(topic, message),
                              ctxCatalog);
@@ -201,7 +206,8 @@ class DCCCommonServer {
             "Content-Type": "text/json",
           }
       };
-      const response = await fetch("../context/" + message.body, header);
+      const response = await fetch(Basic.service.rootPath + "context/" +
+                                   message.body, header);
       let textResponse = await response.text();
       MessageBus.int.publish(MessageBus.buildResponseTopic(topic, message),
                              textResponse);

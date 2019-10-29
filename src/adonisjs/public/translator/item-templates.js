@@ -12,7 +12,7 @@ divert:
 entity:
 `<dcc-entity id='dcc[seq]'[author] entity='[entity]'[image][alternative][title]>[speech]</dcc-entity>`,
 mention:
-`<b>[entity]</b>`,
+`<b>[entity]: </b>`,
 /*
 "talk-open":
 `

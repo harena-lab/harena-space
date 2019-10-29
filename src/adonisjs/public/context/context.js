@@ -4,9 +4,13 @@
  */
 
 class Context {
+   constructor() {
+      this._namespaces = {};
+   }
+
    async loadContextIndex() {
-       const ctxIndex = await MessageBus.int.request("data/context/*/list");
-       this._contextIndex = ctxIndex.message;
+      const ctxIndex = await MessageBus.int.request("data/context/*/list");
+      this._contextIndex = ctxIndex.message;
    }
 
    // <TODO> filter only select vocabularies of the context
@@ -23,6 +27,17 @@ class Context {
             this._contextIndex[uri].label + "/get",
             this._contextIndex[uri].resource);
       return JSON.parse(context.message);
+   }
+
+   addNamespace(namespace, uri) {
+      this._namespaces[namespace] = uri;
+   }
+
+   addNamespaceSet(namespaceSet) {
+      for (let n in namespaceSet)
+         this._namespaces[n] = namespaceSet[n];
+      console.log("=== namespaces");
+      console.log(this._namespaces);
    }
 }
 

@@ -57,8 +57,6 @@ class Translator {
          if (themeSt != null)
             this._themeSettings = themeSt.message;
       }
-      console.log("=== theme settings");
-      console.log(this._themeSettings);
 
       this._indexKnots(layerBlocks[0], compiledCase);
       
@@ -67,7 +65,7 @@ class Translator {
          this._compileKnotMarkdown(compiledCase.knots, kn);
       }
 
-      this._extractCaseMetadata(compiledCase);
+      // this._extractCaseMetadata(compiledCase);
 
       this._replicateImages(compiledCase);
 
@@ -103,6 +101,9 @@ class Translator {
                                 break;
                   case "title": compiledCase.name = content[c].value;
                                 break;
+                  case "namespaces":
+                     Context.instance.addNamespaceSet(content[c].value);
+                     break;
                }
       }
    }
@@ -399,73 +400,103 @@ class Translator {
    */
    _compileMerge(unity) {
       let compiled = unity.content;
+
+      // first cycle - aggregates texts, mentions, annotations and selects
+      let tblock;
+      let tblockSeq;
       for (let c = 0; c < compiled.length; c++) {
-         // aggregates text blocks 
-         if (compiled[c].type == "linefeed") {
-            if (c > 0 && compiled[c-1].type == "text" &&
-                c < compiled.length-1 && compiled[c+1].type == "text") {
-               compiled[c-1].content += compiled[c].content +
-                                            compiled[c+1].content;
-               compiled[c-1]._source += compiled[c]._source +
-                                            compiled[c+1]._source;
-               compiled.splice(c, 2);
-               c--;
-            } else if (c == 0 || compiled[c-1].type != "text" &&
-                       Translator.element[compiled[c-1].type].line !== undefined &&
-                       Translator.element[compiled[c-1].type].line) {
-               if (compiled[c].content.length > 1) {
-                  compiled[c].content = compiled[c].content.substring(1);
-                  compiled[c]._source = compiled[c]._source.substring(1);
-               } else {
-                  compiled.splice(c, 1);
-                  c--;
+         if (Translator.TextBlockCandidate.includes(compiled[c].type)) {
+            if (c == 0 || compiled[c-1].type != "text-block") {
+               if (c < compiled.length-1 &&
+                   Translator.TextBlockCandidate.includes(compiled[c+1].type)) {
+                  tblockSeq = 1;
+                  compiled[c].seq = 1;
+                  tblock = this._initializeObject(
+                     { type: "text-block",
+                       content: [compiled[c]],
+                     }, compiled[c]._source);
+                  if (compiled[c].subordinate)
+                     tblock.subordinate = compiled[c].subordinate;
+                  compiled[c] = tblock;
                }
+            } else {
+               tblockSeq++;
+               compiled[c].seq = tblockSeq;
+               tblock.content.push(compiled[c]);
+               tblock._source += compiled[c]._source;
+               compiled.splice(c, 1);
+               c--;
             }
-         } // computes subordinate elements
-           else if (c > 0 && compiled[c].subordinate) {
+         }
+         if (c >= 0)
+            compiled[c].seq = c + 1;
+      }
+
+      // second cycle - aggregates text blocks separated by line feeds
+      this._compileMergeLinefeeds(unity);
+
+      // third cycle - computes field hierarchy
+      for (let c = compiled.length-1; c > 0 ; c--) {
+         if (compiled[c].type == "field" && compiled[c-1].type == "field" &&
+             compiled[c].subordinate &&
+             (!compiled[c-1].level || compiled[c].level < compiled[c-1].level)) {
+            compiled[c-1].value =
+               (compiled[c-1].value) ? {value: compiled[c-1].value} : {};
+            compiled[c-1].value[compiled[c].field] = compiled[c].value;
+            compiled.splice(c, 1);
+         }
+      }
+
+      // fourth cycle - computes subordinate elements
+      for (let c = 0; c < compiled.length; c++) {
+         const pr = (c > 1 && compiled[c-1].type == "linefeed") ? c-2 : c-1;
+         if (c > 0 && compiled[c].subordinate &&
+             Translator.element[compiled[pr].type]) {
             let merge = false;
             if (compiled[c].type == "field" &&
-                Translator.element[compiled[c-1].type].subfield !== undefined &&
-                Translator.element[compiled[c-1].type].subfield) {
+                Translator.element[compiled[pr].type].subfield !== undefined &&
+                Translator.element[compiled[pr].type].subfield) {
                if (compiled[c].field.indexOf("answers") > -1) {
-                  if (!compiled[c-1].answers)
-                     compiled[c-1].answers = {};
+                  if (!compiled[pr].answers)
+                     compiled[pr].answers = {};
                   let answerType = compiled[c].field.replace("answers", "").trim();
                   if (answerType.length == 0)
                      answerType = "untyped";
-                  compiled[c-1].answers[answerType] = {answers: compiled[c].value};
+                  compiled[pr].answers[answerType] = {answers: compiled[c].value};
                   if (compiled[c].target)
-                     compiled[c-1].answers[answerType].target = compiled[c].target;
+                     compiled[pr].answers[answerType].target = compiled[c].target;
                } else {
                   let fieldName = compiled[c].field;
                   if (fieldName == "type")
                      fieldName = "subtype";
-                  compiled[c-1][fieldName] = compiled[c].value;
+                  compiled[pr][fieldName] = compiled[c].value;
                }
                merge = true;
             } else if (compiled[c].type == "image" &&
-                       Translator.element[compiled[c-1].type].subimage !== undefined &&
-                       Translator.element[compiled[c-1].type].subimage) {
-               compiled[c-1].image = {
+                       Translator.element[compiled[pr].type].subimage !== undefined &&
+                       Translator.element[compiled[pr].type].subimage) {
+               compiled[pr].image = {
                   alternative: compiled[c].alternative,
                   path:  compiled[c].path };
                if (compiled[c].title)
-                  compiled[c-1].image.title = compiled[c].title;
+                  compiled[pr].image.title = compiled[c].title;
                merge = true;
-            } else if (compiled[c].type == "text" &&
-                       Translator.element[compiled[c-1].type].subtext !== undefined) {
-               if (compiled[c-1][Translator.element[compiled[c-1].type].subtext] == null)
-                  compiled[c-1][Translator.element[compiled[c-1].type].subtext] =
+            } else if ((compiled[c].type == "text" ||
+                        compiled[c].type == "text-block") &&
+                       Translator.element[compiled[pr].type].subtext !== undefined) {
+               if (compiled[pr][Translator.element[compiled[pr].type].subtext] == null)
+                  compiled[pr][Translator.element[compiled[pr].type].subtext] =
                      compiled[c].content;
                else
-                  compiled[c-1][Translator.element[compiled[c-1].type].subtext] += "\n" +
+                  compiled[pr][Translator.element[compiled[pr].type].subtext] += "\n" +
                      compiled[c].content;
                merge = true;
             }
             if (merge) {
-               compiled[c-1]._source += "\n" + compiled[c]._source;
-               compiled.splice(c, 1);
-               c--;
+               compiled[pr]._source += "\n" + compiled[c]._source;
+               const shift = c - pr;
+               compiled.splice(c - shift + 1, shift);
+               c -= shift;
             }
          } // manages elements subordinated to the knot
            else if (c == 0 && compiled[c].subordinate &&
@@ -480,37 +511,64 @@ class Translator {
          if (c >= 0)
             compiled[c].seq = c + 1;
       }
+   }
 
-      // second cycle - aggregate annotations and selects in authoring mode
-      if (this.authoringRender) {
-         let tblock;
-         let tblockSeq;
-         for (let c = 0; c < compiled.length; c++) {
-            if (compiled[c].type == "select" ||
-                compiled[c].type == "annotation" ||
-                compiled[c].type == "text") {
-               if (c == 0 || compiled[c-1].type != "text-block") {
-                  tblockSeq = 1;
-                  compiled[c].seq = 1;
-                  tblock = this._initializeObject(
-                     { type: "text-block",
-                       content: [compiled[c]]
-                     }, compiled[c]._source);
-                  compiled[c] = tblock;
+   _compileMergeLinefeeds(unity) {
+      let compiled = unity.content;
+      for (let c = 0; c < compiled.length; c++) {
+         if (c > 0) {
+            const pr = (c > 1 && compiled[c-1].type == "linefeed") ? c-2 : c-1;
+            if (Translator.SubordinatorElement.includes(compiled[pr].type))
+               compiled[c].subordinate = true;
+         }
+
+         if (compiled[c].type == "linefeed") {
+            if (c > 0 && compiled[c-1].type == "text" &&
+                c < compiled.length-1 && compiled[c+1].type == "text" &&
+                compiled[c-1].subordinate == compiled[c+1].subordinate) {
+               compiled[c-1].content += compiled[c].content +
+                                            compiled[c+1].content;
+               compiled[c-1]._source += compiled[c]._source +
+                                            compiled[c+1]._source;
+               compiled.splice(c, 2);
+               c--; 
+            } else if (c > 0 && compiled[c-1].type == "text-block" &&
+                       c < compiled.length-1 &&
+                       compiled[c+1].type == "text-block" &&
+                       this._authoringRender) {
+               compiled[c].render = true;
+               compiled[c-1].content.push(compiled[c]);
+               compiled[c-1].content = compiled[c-1].content
+                                          .concat(compiled[c+1].content);
+               for (let s in compiled[c-1].content)
+                  compiled[c-1].content[s].seq = s;
+               compiled[c-1]._source += compiled[c]._source +
+                                            compiled[c+1]._source;
+               compiled.splice(c, 2);
+               c--;
+            } else if (c == 0 ||
+                       (compiled[c-1].type != "text" &&
+                        compiled[c-1].type != "text-block" &&
+                        Translator.element[compiled[c-1].type].line !== undefined &&
+                        Translator.element[compiled[c-1].type].line)) {
+               if (compiled[c].content.length > 1) {
+                  compiled[c].content = compiled[c].content.substring(1);
+                  compiled[c]._source = compiled[c]._source.substring(1);
                } else {
-                  tblockSeq++;
-                  compiled[c].seq = tblockSeq;
-                  tblock.content.push(compiled[c]);
-                  tblock._source += compiled[c]._source;
                   compiled.splice(c, 1);
                   c--;
                }
             }
-            if (c >= 0)
-               compiled[c].seq = c + 1;
          }
+         if (c >= 0)
+            compiled[c].seq = c + 1;
       }
+      for (let c = 0; c < compiled.length; c++)
+         if (compiled[c].type == "text-block")
+            this._compileMergeLinefeeds(compiled[c]);
    }
+
+
 
    /*
     * Joins inline elements in a composition
@@ -620,7 +678,7 @@ class Translator {
                this._themeSet[themes[tp]] = this._themeSet["knot"];
             }
          }
-      let finalHTML = await this.generateKnotHTML(knot);
+      let finalHTML = await this.generateKnotHTML(knot.content);
       const backPath = (knot.background !== undefined)
          ? Basic.service.imageResolver(knot.background.path) : "";
       const backAlt = (knot.background !== undefined) ? knot.background.alternative : "";
@@ -642,18 +700,18 @@ class Translator {
    /*
     * Generate HTML in a single knot
     */
-   generateKnotHTML(knotObj) {
+   generateKnotHTML(content) {
       let preDoc = "";
       let html = "";
-      if (knotObj != null && knotObj.content != null) {
+      if (content != null) {
          // produces a pretext with object slots to process markdown
-         for (let kc in knotObj.content)
-            preDoc += (knotObj.content[kc].type == "text" ||
-                       knotObj.content[kc].type == "field" ||
-                       knotObj.content[kc].type == "context-open" ||
-                       knotObj.content[kc].type == "context-close") 
-               ? this.objToHTML(knotObj.content[kc])
-               : "@@" + knotObj.content[kc].seq + "@@";
+         for (let kc in content)
+            preDoc += (content[kc].type == "text" ||
+                       content[kc].type == "field" ||
+                       content[kc].type == "context-open" ||
+                       content[kc].type == "context-close") 
+               ? this.objToHTML(content[kc])
+               : "@@" + content[kc].seq + "@@";
 
          // converts to HTML
          html = this._markdownTranslator.makeHtml(preDoc);
@@ -669,13 +727,13 @@ class Translator {
          while (next != -1) {
             let end = html.indexOf("@@", next+1);
             let seq = parseInt(html.substring(next+2, end));
-            while (knotObj.content[current].seq < seq)
+            while (current < content.length && content[current].seq < seq)
                current++;
-            if (knotObj.content[current].seq != seq)
-               console.log("Error in finding seq.");
+            if (current >= content.length || content[current].seq != seq)
+               console.log("Error in finding seq: " + seq);
             else
                html = html.substring(0, next) +
-                      this.objToHTML(knotObj.content[current]) +
+                      this.objToHTML(content[current]) +
                       html.substring(end+2);
             next = html.indexOf("@@");
          }
@@ -877,7 +935,7 @@ class Translator {
     _textBlockObjToHTML(obj) {
       let html = Translator.htmlTemplates.textBlock
                 .replace("[seq]", obj.seq)
-                .replace("[content]", this.generateKnotHTML(obj));
+                .replace("[content]", this.generateKnotHTML(obj.content));
       return html;
    }
 
@@ -887,7 +945,8 @@ class Translator {
    _linefeedMdToObj(matchArray) {
       return {
          type: "linefeed",
-         content: matchArray[0]
+         content: matchArray[0],
+         render: false
       };
    }
 
@@ -895,7 +954,7 @@ class Translator {
     * Line feed Obj to HTML
     */
    _linefeedObjToHTML(obj) {
-      return ""; // obj.content.replace(/[\f\n\r]/im, "<br>");
+      return (obj.render) ? obj.content.replace(/[\f\n\r]/im, "<br>") : "";
    }
 
    /*
@@ -1087,20 +1146,31 @@ class Translator {
          presentation: matchArray[0],
          subordinate:
             (matchArray[1][0] === "\t" || matchArray[1].length > 1) ? true : false,
-         field: matchArray[2].trim(),
-         value: matchArray[3].trim()
+         field: matchArray[2].trim()
       };
-      let fset = false;
-      for (let fs in Translator.fieldSet)
-         if (field.field.indexOf(Translator.fieldSet[fs]) > -1)
-            fset = true;
-      if (fset) {
+      if (matchArray[3] != null)
+         field.value = matchArray[3].trim();
+      if (Translator.fieldSet.includes(field.field) && field.value) {
          field.value = field.value.split(",");
          for (let fv in field.value)
             field.value[fv] = field.value[fv].trim();
       }
       if (matchArray[4] != null)
          field.target = matchArray[4].trim();
+      if (field.subordinate) {
+         field.level = 0;
+         let space = 0;
+         for (let c in matchArray[1])
+            if (matchArray[1][c] === "\t")
+               field.level++;
+            else {
+               space++;
+               if (space > 1) {
+                  field.level++;
+                  space = 0;
+               }
+            }
+      }
       return field;
    }
 
@@ -1139,12 +1209,16 @@ class Translator {
     */
    _entityMdToObj(matchArray) {
       let entity = {
-         type: "entity",
+         type: (this.authoringRender && this._categorySettings &&
+                this._categorySettings.entity == "flat")
+                  ? "mention" : "entity",
          entity: (matchArray[1] != null) ? matchArray[1].trim()
                                          : matchArray[2].trim()
       };
+      /*
       if (matchArray[3] != null)
          entity.speech = matchArray[3].trim();
+      */
 
       return entity;
    }
@@ -1174,20 +1248,21 @@ class Translator {
             title = " title='" + obj.image.title + "'";
       }
       const setting = this._fieldCategorySetting("entity");
-      console.log("=== setting: " + setting);
-      console.log(obj);
       const template = (setting == "flat")
          ? Translator.htmlFlatTemplates : Translator.htmlTemplates;
+      let speech = (obj.speech == null)
+         ? "" : ((Array.isArray(obj.speech))
+            ? this.generateKnotHTML(obj.speech) : obj.speech);
+      speech = speech.replace(/^<p>(.*)<\/p>$/im, "$1");
       return template.entity
                 .replace("[seq]", obj.seq)
                 .replace("[author]", this.authorAttr)
                 .replace("[entity]", obj.entity)
-                .replace("[speech]", (obj.speech) ? obj.speech : "")
+                .replace("[speech]", speech)
                 .replace("[image]", path)
                 .replace("[alternative]", alternative)
                 .replace("[title]", title);
    }
-   
 
    _entityObjToMd(obj) {
       let entity = Translator.markdownTemplates.entity
@@ -1511,7 +1586,7 @@ class Translator {
          mark: /([ \t]*)!\[([\w \t]*)\]\(([\w:.\/\?&#\-~]+)[ \t]*(?:"([\w ]*)")?\)/im,
          inline: true },
       field: {
-         mark: /^([ \t]*)(?:[\+\*])[ \t]*([\w.\/\?&#\-][\w.\/\?&#\- \t]*):[ \t]*([^&>\n\r\f]+)(?:-(?:(?:&gt;)|>)[ \t]*([^\(\n\r\f]+))?$/im,
+         mark: /^([ \t]*)(?:[\+\*])[ \t]*([\w.\/\?&#\-][\w.\/\?&#\- \t]*):[ \t]*([^&>\n\r\f]+)?(?:-(?:(?:&gt;)|>)[ \t]*([^\(\n\r\f]+))?$/im,
          line: true,
          subimage: true,
          subtext:  "value" },
@@ -1522,7 +1597,7 @@ class Translator {
          mark: /(?:(\w+)|"([^"]+)")(?:[ \t])*-(?:(?:&gt;)|>)[ \t]*(?:(\w[\w.]*)|"([^"]*)")/im,
          inline: true },
       entity: {
-         mark: /@(?:(\w[\w \t]*)|"([\w \t]*)")(?:$|:[ \t]*([^\n\r\f]+))/im,
+         mark: /@(?:(\w[\w \t]*)|"([\w \t]*)")(?:$|:[ \t]*)/im,
          line: true,
          subfield: true,
          subimage: true,
@@ -1562,6 +1637,11 @@ class Translator {
          line: true }
       */
    };
+
+   // <TODO> this is a different approach indicating characteristic by type
+   // (homogenize?)
+   Translator.SubordinatorElement = ["entity"];
+   Translator.TextBlockCandidate = ["select", "annotation", "text", "mention"];
 
    Translator.fieldSet = ["vocabularies", "answers", "states", "labels"];
 
