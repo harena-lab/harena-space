@@ -18,6 +18,11 @@
     "path": "jacinto/standard_eletro",
     "icon": "jacinto/images/standard_eletro.png",
     "scope": "case"},
+ "Linear Description-EKG":
+   {"description": "Linear description of the case followed by an EKG.",
+    "path": "jacinto/standard_linear_details_ekg",
+    "icon": "jacinto/images/standard_eletro.png",
+    "scope": "case"},
  "Jacinto Supervisor":
    {"description": "Standard supervisor assistance.",
     "path": "jacinto/standard_supervisor",

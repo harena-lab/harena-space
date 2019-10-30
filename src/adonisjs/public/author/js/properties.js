@@ -15,8 +15,21 @@ class Properties {
       this._propertiesPanel = document.querySelector("#properties-panel");
       this._propertiesButtons = document.querySelector("#properties-buttons");
 
+      this.expandClicked = this.expandClicked.bind(this);
+      MessageBus.ext.subscribe("control/properties/expand", this.expandClicked);
+      this.retractClicked = this.retractClicked.bind(this);
+      MessageBus.ext.subscribe("control/properties/retract", this.retractClicked);
+
       this.applyProperties = this.applyProperties.bind(this);
       MessageBus.ext.subscribe("properties/apply", this.applyProperties);
+   }
+
+   async expandClicked(topic, message) {
+      Panels.s.setupPropertiesExpand();
+   }
+
+   async retractClicked(topic, message) {
+      Panels.s.setupPropertiesRetract();
    }
 
    editKnotProperties(obj, knotId) {
@@ -24,10 +37,20 @@ class Properties {
       this.editProperties(obj);
    }
 
-   editElementProperties(obj) {
+   editElementProperties(obj, element) {
+      console.log("=== obj");
+      console.log(obj);
+      console.log("=== element");
+      console.log(element);
       if (this._knotOriginalTitle)
          delete this._knotOriginalTitle;
       this.editProperties(obj);
+      switch (obj.type) {
+         case "text": this._editor = new EditDCCText(obj, element);
+                      break;
+         case "entity": this._editor = new EditDCCImage(obj, element);
+                      break;
+      }
    }
 
    /*

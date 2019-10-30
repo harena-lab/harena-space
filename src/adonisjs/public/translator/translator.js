@@ -29,6 +29,14 @@ class Translator {
       return (this.authoringRender) ? " author" : "";
    }
 
+   _authorAttrSub(superseq) {
+      return (this.authoringRender && superseq == -1) ? " author" : "";
+   }
+
+   _subSeq(superseq, seq) {
+      return (superseq == -1) ? seq : superseq * 1000 + seq;
+   }
+
    /*
     * Proxy of Markdown functions
     */
@@ -700,17 +708,19 @@ class Translator {
    /*
     * Generate HTML in a single knot
     */
-   generateKnotHTML(content) {
+   generateKnotHTML(content, superseq) {
+      let ss = (superseq) ? superseq : -1;
       let preDoc = "";
       let html = "";
       if (content != null) {
          // produces a pretext with object slots to process markdown
          for (let kc in content)
             preDoc += (content[kc].type == "text" ||
+                       content[kc].type == "text-block" ||
                        content[kc].type == "field" ||
                        content[kc].type == "context-open" ||
                        content[kc].type == "context-close") 
-               ? this.objToHTML(content[kc])
+               ? this.objToHTML(content[kc], ss)
                : "@@" + content[kc].seq + "@@";
 
          // converts to HTML
@@ -733,7 +743,7 @@ class Translator {
                console.log("Error in finding seq: " + seq);
             else
                html = html.substring(0, next) +
-                      this.objToHTML(content[current]) +
+                      this.objToHTML(content[current], ss) +
                       html.substring(end+2);
             next = html.indexOf("@@");
          }
@@ -746,14 +756,15 @@ class Translator {
       return html;
    }
 
-   objToHTML(obj) {
+   objToHTML(obj, superseq) {
       let html;
       if (obj.render !== undefined && !obj.render)
          html = "";
       else
          switch(obj.type) {
-            case "text"   : html = this._textObjToHTML(obj); break;
-            case "text-block": html = this._textBlockObjToHTML(obj); break;
+            case "text"   : html = this._textObjToHTML(obj, superseq); break;
+            case "text-block": html = this._textBlockObjToHTML(obj, superseq);
+                               break;
             case "image"  : html = this._imageObjToHTML(obj); break;
             case "option" : html = this._optionObjToHTML(obj); break;
             case "field"  : html = this._fieldObjToHTML(obj); break;
@@ -767,7 +778,7 @@ class Translator {
             case "compute" : html = this._computeObjToHTML(obj); break;
             case "context-open"  : // html = this._selctxopenObjToHTML(obj); break;
             case "context-close" : html = ""; break; // html = this._selctxcloseObjToHTML(obj); 
-            case "select"     : html = this._selectObjToHTML(obj); break;
+            case "select"     : html = this._selectObjToHTML(obj, superseq); break;
             case "annotation" : html = this._annotationObjToHTML(obj); break;
             case "linefeed"   : html = this._linefeedObjToHTML(obj); break;
          }
@@ -911,18 +922,16 @@ class Translator {
    /*
     * Text Obj to HTML
     */
-   _textObjToHTML(obj) {
+   _textObjToHTML(obj, superseq) {
       // return this._markdownTranslator.makeHtml(obj.content);
-      /*
       let result = obj.content;
-      if (this.authoringRender)
+      if (this.authoringRender && superseq == -1)
          result = Translator.htmlTemplatesEditable.text
                     .replace("[seq]", obj.seq)
-                    .replace("[author]", this.authorAttr)
+                    .replace("[author]", this._authorAttrSub(superseq))
                     .replace("[content]", obj.content);
       return result;
-      */
-      return obj.content;
+      // return obj.content;
    }
 
    _textObjToMd(obj) {
@@ -932,10 +941,12 @@ class Translator {
    /*
     * Text Block Obj to HTML
     */
-    _textBlockObjToHTML(obj) {
+    _textBlockObjToHTML(obj, superseq) {
       let html = Translator.htmlTemplates.textBlock
-                .replace("[seq]", obj.seq)
-                .replace("[content]", this.generateKnotHTML(obj.content));
+                .replace("[seq]", this._subSeq(superseq, obj.seq))
+                .replace("[author]", this._authorAttrSub(superseq))
+                .replace("[content]", this.generateKnotHTML(obj.content,
+                                         this._subSeq(superseq, obj.seq)));
       return html;
    }
 
@@ -976,11 +987,13 @@ class Translator {
    /*
     * Image Obj to HTML
     */
-   _imageObjToHTML(obj, authorRender) {
+   _imageObjToHTML(obj) {
+      /*
       const aRender = (authorRender)
          ? authorRender : this.authoringRender;
+      */
       let result;
-      if (aRender)
+      if (this.authoringRender)
          result = Translator.htmlTemplatesEditable.image
             .replace("[seq]", obj.seq)
             .replace("[author]", this.authorAttr)
@@ -1383,6 +1396,9 @@ class Translator {
 
          const states = (obj.states) ? " states='" + obj.states + "'" : "";
          const labels = (obj.labels) ? " labels='" + obj.labels + "'" : "";
+
+         
+         
          input = Translator.htmlTemplates["input-group-select"]
                                          .replace("[seq]", obj.seq)
                                          .replace("[author]", this.authorAttr)
@@ -1539,11 +1555,13 @@ class Translator {
    /*
     * Select Obj to HTML
     */
-   _selectObjToHTML(obj, authorRender) {
+   _selectObjToHTML(obj, superseq) {
+      /*
       const aRender = (authorRender)
          ? authorRender : this.authoringRender;
+      */
       let answer="";
-      if (this._inputSelectShow || aRender) {
+      if (this._inputSelectShow || this.authoringRender) {
          if (this._inputSelectShow == "#answer" || this.authoringRender)
             answer = " answer='" + obj.value + "'";
          else
@@ -1554,8 +1572,8 @@ class Translator {
       // if (!this.authoringRender)
       // let result = Translator.htmlTemplates.select
       return Translator.htmlTemplates.select
-                       .replace("[seq]", obj.seq)
-                       .replace("[author]", this.authorAttr)
+                       .replace("[seq]", this._subSeq(superseq, obj.seq))
+                       .replace("[author]", this._authorAttrSub(superseq))
                        .replace("[expression]", obj.expression)
                        .replace("[answer]", answer);
 

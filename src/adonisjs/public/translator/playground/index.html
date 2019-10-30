@@ -35,18 +35,19 @@
     MessageBus.ext.subscribe("control/translate/example", translate);
   }
   async function translate(topic, message) {
-    let mkTranslator = new Translator();
+    // let mkTranslator = new Translator();
 
     // to test authoring render
-    mkTranslator.authoringRender = true;
+    Translator.instance.authoringRender = true;
 
     // let compiled = mkTranslator.compileMarkdown("test", window.quill.getText());
-    let compiled = await mkTranslator.compileMarkdown(
+    let compiled = await Translator.instance.compileMarkdown(
                                    "test", document.querySelector("#editor").value);
     document.querySelector("#object-results").value = JSON.stringify(compiled, null, 3);
     let html = "";
     for (let knot in compiled.knots) {
-      let mkHTML = await mkTranslator.generateKnotHTML(compiled.knots[knot]);
+      let mkHTML =
+         await Translator.instance.generateKnotHTML(compiled.knots[knot].content);
       html += mkHTML;
       // html += mkHTML.replace(/>/igm, "&gt;").replace(/</igm, "&lt;");
     }

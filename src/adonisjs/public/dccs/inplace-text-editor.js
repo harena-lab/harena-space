@@ -7,7 +7,6 @@ let Inline = Quill.import('blots/inline');
 
 class MetadataBlot extends Inline {
    static create(value) {
-      console.log(value);
       let node = super.create();
       node.setAttribute("value", value);
       if (value.style)
@@ -27,17 +26,21 @@ MetadataBlot.tagName = "span";
 Quill.register(MetadataBlot);
 
 class EditDCCText {
-   constructor(element) {
-     this._handleHighlighter = this._handleHighlighter.bind(this);
-     this._handleAnnotation = this._handleAnnotation.bind(this);
-     this._handleHlSelect = this._handleHlSelect.bind(this);
-     this._handleConfirm = this._handleConfirm.bind(this);
-     this._handleCancel = this._handleCancel.bind(this);
-     this._editElement = element;
-     this._toolbarControls = EditDCCText.toolbarTemplate +
-                             EditDCCText.toolbarTemplateHighlighter +
-                             EditDCCText.toolbarTemplateConfirm;
-     this._buildEditor(false);
+   constructor(obj, element) {
+      this._objProperties = obj;
+      this._handleHighlighter = this._handleHighlighter.bind(this);
+      this._handleAnnotation = this._handleAnnotation.bind(this);
+      this._handleHlSelect = this._handleHlSelect.bind(this);
+      this._handleConfirm = this._handleConfirm.bind(this);
+      this._handleCancel = this._handleCancel.bind(this);
+      this._editElement = element;
+      /*
+      this._toolbarControls = EditDCCText.toolbarTemplate +
+                              EditDCCText.toolbarTemplateHighlighter +
+                              EditDCCText.toolbarTemplateConfirm;
+      */
+      this._toolbarControls = EditDCCText.toolbarTemplateConfirm;
+      this._buildEditor(false);
    }
 
    _buildEditor(selectOptions) {
@@ -115,11 +118,13 @@ class EditDCCText {
       this._editor.classList.add("inplace-editor");
 
       // toolbar customization
+      /*
       document.querySelector(".ql-annotation").innerHTML =
          EditDCCText.buttonAnnotationSVG;
       if (!selectOptions)
          document.querySelector(".ql-highlighter").innerHTML =
             EditDCCText.buttonHighlightSVG;
+      */
       // document.querySelector(".ql-hl-select").style.display = "none";
       document.querySelector(".ql-confirm").innerHTML =
          EditDCCText.buttonConfirmSVG;
@@ -160,14 +165,14 @@ class EditDCCText {
              style: context.states[c].style};
 
       this._toolbarControls = EditDCCText.toolbarTemplate +
-                              "<select class='ql-hl-select'>" +
-                              EditDCCText.toolbarTemplateConfirm;
+                              "<select class='ql-hl-select'>";
       for (let op in this._highlightOptions) {
          this._toolbarControls +=
             "<option value='" + op + "'>" +
             this._highlightOptions[op].label + "</option>";
       }
-      this._toolbarControls += "</select>";
+      this._toolbarControls += "</select>" +
+                               EditDCCText.toolbarTemplateConfirm;
       this._removeEditor();
       this._buildEditor(true);
    }
@@ -257,6 +262,9 @@ class EditDCCText {
    }
 
    _handleConfirm() {
+      this._objProperties.content = this._quill.container.innerHTML;
+      MessageBus.ext.publish("properties/apply");
+      this._removeEditor();
    }
 
    _handleCancel() {

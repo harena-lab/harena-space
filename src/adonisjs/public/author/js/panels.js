@@ -18,7 +18,11 @@ class Panels {
       this._knotMain = document.querySelector("#knot-main");
       this._propertiesPanel = document.querySelector("#properties-panel");
       this._buttonExpandNav = document.querySelector("#button-expand-nav");
-      this._buttonRetracNav = document.querySelector("#button-retract-nav");
+      this._buttonRetractNav = document.querySelector("#button-retract-nav");
+      this._buttonExpandProp = document.querySelector("#button-expand-prop");
+      this._buttonRetractProp = document.querySelector("#button-retract-prop");
+      this._elementsBlock = document.querySelector("#elements-block");
+      this._elementsMain = document.querySelector("#elements-main");
    }
 
    setupHiddenNavigator() {
@@ -30,7 +34,7 @@ class Panels {
       this._knotPanelSize += 25;
       this._knotMain.classList.add("w-" + this._knotPanelSize);
       this._buttonExpandNav.style.display = "initial";
-      this._buttonRetracNav.style.display = "none";
+      this._buttonRetractNav.style.display = "none";
    }
 
    setupVisibleNavigator() {
@@ -42,7 +46,7 @@ class Panels {
       this._navigationBlock.classList.add("w-25");
       this._navigationBlock.style.display = "initial";
       this._buttonExpandNav.style.display = "initial";
-      this._buttonRetracNav.style.display = "initial";
+      this._buttonRetractNav.style.display = "initial";
    }
 
    setupRegularNavigator() {
@@ -54,7 +58,7 @@ class Panels {
       this._navigationBlock.classList.add("w-25");
       this._navigationBlock.style.display = "initial";
       this._buttonExpandNav.style.display = "initial";
-      this._buttonRetracNav.style.display = "initial";
+      this._buttonRetractNav.style.display = "initial";
    }
 
    setupWideNavigator() {
@@ -68,7 +72,7 @@ class Panels {
       this._navigationBlock.classList.remove("w-25");
       this._navigationBlock.classList.add("w-100");
       this._buttonExpandNav.style.display = "none";
-      this._buttonRetracNav.style.display = "initial";
+      this._buttonRetractNav.style.display = "initial";
       this._buttonExpandProp.style.display = "none";
    }
 

@@ -29,6 +29,11 @@ class Context {
       return JSON.parse(context.message);
    }
 
+   async loadContextNS(namespace) {
+      let context = null;
+      
+   }
+
    addNamespace(namespace, uri) {
       this._namespaces[namespace] = uri;
    }
@@ -36,8 +41,6 @@ class Context {
    addNamespaceSet(namespaceSet) {
       for (let n in namespaceSet)
          this._namespaces[n] = namespaceSet[n];
-      console.log("=== namespaces");
-      console.log(this._namespaces);
    }
 }
 
