@@ -106,10 +106,6 @@ class PlayerManager {
                                     this.knotLoad(this._state.historyPrevious());
                                  break;
          case "knot/<</navigate": this.startCase();
-                                  console.log("=== start");
-                                  console.log(DCCPlayerServer.localEnv);
-                                  // console.log(DCCPlayerServer.playerObj.start);
-                                  console.log(this._compiledCase);
                                   const startKnot = (DCCPlayerServer.localEnv)
                                      ? DCCPlayerServer.playerObj.start
                                      : this._compiledCase.start;
@@ -174,9 +170,6 @@ class PlayerManager {
             resume = true;
             this._state.pendingPlayRestore();
             DCCCommonServer.instance.token = this._state.token;
-            console.log("=== state");
-            console.log(this._state);
-            console.log(this._state.currentCase);
             await this._caseLoad(this._state.currentCase);
             const current = this._state.historyCurrent();
             if (this._state.parameter == null)
@@ -187,46 +180,45 @@ class PlayerManager {
       }
 
       if (!resume) {
-        this._userid = await Basic.service.signin(this._state);
+         if (DCCCommonServer.instance.local)
+            await this._caseLoad();
+         else {
+           this._userid = await Basic.service.signin(this._state);
 
-        if (DCCPlayerServer.localEnv)
-           Basic.service.currentCaseId = DCCPlayerServer.playerObj.id;
-        else {
-           const casesM = await MessageBus.ext.request(
-                 "data/case/*/list",
-                 {filterBy: "user", filter: this._userid});
-           const cases = casesM.message;
-           let pi = -1;
-           if (precase != null)
-              for (let c in cases)
-                 if (cases[c].name == precase)
-                    pi = c;
+           if (DCCPlayerServer.localEnv)
+              Basic.service.currentCaseId = DCCPlayerServer.playerObj.id;
+           else {
+              const casesM = await MessageBus.ext.request(
+                    "data/case/*/list",
+                    {filterBy: "user", filter: this._userid});
+              const cases = casesM.message;
+              let pi = -1;
+              if (precase != null)
+                 for (let c in cases)
+                    if (cases[c].name == precase)
+                       pi = c;
 
-           if (!caseid && (precase == null || pi == -1))
-              caseid = await DCCNoticeInput.displayNotice(
-                 "Select a case to load.",
-                 "list", "Select", "Cancel", cases);
-           else
-              caseid = cases[pi].id;
-           this._state.currentCase = caseid;
-           await this._caseLoad(caseid);
+              if (!caseid && (precase == null || pi == -1))
+                 caseid = await DCCNoticeInput.displayNotice(
+                    "Select a case to load.",
+                    "list", "Select", "Cancel", cases);
+              else
+                 caseid = cases[pi].id;
+              this._state.currentCase = caseid;
+              await this._caseLoad(caseid);
+           }
         }
-        
         MessageBus.ext.publish("knot/<</navigate");
         // this.knotLoad("entry");
       }
    }
 
    async _caseLoad(caseid) {
-      console.log("=== load: " + caseid);
       Basic.service.currentCaseId = caseid;
       const caseObj = await MessageBus.ext.request(
          "data/case/" + Basic.service.currentCaseId + "/get");
       this._currentCaseName = caseObj.message.name;
 
-      console.log("=== compile");
-      console.log(Basic.service.currentCaseId);
-      console.log(caseObj.message.source);
       this._compiledCase =
          await Translator.instance.compileMarkdown(Basic.service.currentCaseId,
                                                    caseObj.message.source);
@@ -237,9 +229,6 @@ class PlayerManager {
    
    async knotLoad(knotName, parameter) {
       this._currentKnot = knotName;
-      console.log("=== knots");
-      console.log(knotName);
-      console.log(this._knots);
       // <TODO> Local Environment - Future
       /*
       this._knotScript = document.createElement("script");

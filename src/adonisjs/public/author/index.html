@@ -1,16 +1,15 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
+  <!-- meta tags -->
   <meta charset="utf-8">
-  <title>Authoring Environment</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
-
-  <link rel="stylesheet" href="../lib/fontawesome-5-10-1/css/all.min.css">
-  <link rel="stylesheet" href="../lib/bootstrap-4-3-1/css/bootstrap.min.css">
-
-  <link rel="stylesheet" href="../infra/css/common.css">
-  <link rel="stylesheet" href="css/author.css">
+  <!-- Reference CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="css/only-start.css"/>
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Lato"/>
 
   <script src="../infra/bus.js"></script>
   <script src="../infra/basic.js"></script>
@@ -22,43 +21,41 @@
   <script src="../dccs/components/dcc-notice-input.js"></script>
 
   <script src="js/start.js"></script>
+
+  <title>Phil Muchbetter Game</title>
+
+  <style media="screen">
+    .test-margin{
+      border-color: rgb(52,110,147);
+      border-bottom-width: 45px;
+      border-top: 0;
+      border-left: 0;
+      border-right: 0;
+      border-style: solid;
+    }
+  </style>
 </head>
 
 <body onload="AuthorStart.instance.start()">
-  <!-- Create a section to place page content -->
-  <main role="main">
-    <div class="d-flex flex-column vh-100 vw-100 home-author-padding hidden-overflow">
-      <div class="h-100 w-100 home-content-padding">
-        <div class="home-text mb-5">
-          <p>Hello -Supervisor Name-!</p>
-        </div>
-        <div class="home-text">
-          <p>What would like to do today?</p>
-        </div>
-        <div class="d-flex h-50 w-100">
-          <a href="create.html" class="d-flex flex-column align-items-center justify-content-center home-author-box-content home-author-case-box">
-              Create
-              <div class="home-author-sub-text">
-                Create a new case.
-              </div>
-          </a>
-          <div class="d-flex flex-column align-items-center justify-content-center home-author-box-content home-author-case-box">
-            Case Lists
-            <div class="home-author-sub-text">
-              See the publised cases list.
-            </div>
-          </div>
-          <a href="draft.html" class="d-flex flex-column align-items-center justify-content-center home-author-box-content home-author-case-box">
-            Drafts
-            <div class="home-author-sub-text">
-              Continue editing a case.
-            </div>
-          </a>
+  <div class="d-flex vh-100 vw-100" style="background-color: rgb(245,245,245);">
+    <div class="w-100 mx-5 home-image-margin" style="">
+      <img src="images/home-image.png" class="h-100 float-right" id="home-image" />
+      <div class="d-flex h-100 align-items-center">
+        <div class="flex-column">
+          <h1 class="home-header-text"> Phil Muchbetter: a clinical reasoning game</h1>
+          <p class="home-p-text">Join us in this adventure of becoming a doctor</p>
+          <div class="lets-play rounded-pill" onclick="location.href='home.html'">Let's Play</div>
         </div>
       </div>
     </div>
-  </main>
-  <!-- end of div /.container -->
+    </div>
 
+
+  </div>
+
+  <script src="js/Js_Anim.js"> </script>
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 </body>
 </html>

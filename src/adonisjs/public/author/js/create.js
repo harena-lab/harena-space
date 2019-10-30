@@ -18,7 +18,7 @@ class TemplateManager {
          let template = document.createElement("template");
          template.innerHTML = TemplateManager.templateBox
             .replace("[id]", tid)
-            .replace("[icon]", tl[t].icon)
+            .replace("[icon]", Basic.service.imageResolver(tl[t].icon))
             .replace("[title]", tl[t].name)
             .replace("[description]", tl[t].description);
          this._boxesPanel.appendChild(template.content.cloneNode(true));

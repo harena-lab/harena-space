@@ -27,6 +27,7 @@
 <script src="../lib/d3.v5.min.js"></script>
 
 <script src="../dccs/inplace-text-editor.js"></script>
+<script src="../dccs/inplace-image-editor.js"></script>
 <script src="../dccs/components/dcc-base.js"></script>
 <script src="../dccs/components/dcc-visual.js"></script>
 <script src="../dccs/components/dcc-markdown.js"></script>
@@ -65,8 +66,13 @@
       <div class="container-fluid" >
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="supervisor-home.html">Home</a></li>
-            <li class="breadcrumb-item"><a href="drafts1.html">Drafts</a></li>
+            <li class="breadcrumb-item"><a href="home.html">Home</a></li>
+            <li class="breadcrumb-item">
+              <div style="height: 15px">
+                <dcc-trigger action="control/leave/drafts" label="Drafts" xstyle="out">
+                </dcc-trigger>
+              </div>
+            </li>
             <li class="breadcrumb-item active" aria-current="page">Edit case</li>
           </ol>
         </nav>

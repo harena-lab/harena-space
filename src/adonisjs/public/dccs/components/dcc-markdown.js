@@ -17,7 +17,7 @@ class DCCMarkdown extends DCCVisual {
    editProperties() {
       delete this._presentation.style.cursor;
       this._presentation.removeEventListener("click", this.selectListener);
-      this._editor = new EditDCCText(this._presentation);
+      // this._editor = new EditDCCText(this._presentation);
    }
 }
 

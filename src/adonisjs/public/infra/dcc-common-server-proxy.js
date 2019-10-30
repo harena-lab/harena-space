@@ -5,6 +5,8 @@
 class DCCCommonServer {
 
    constructor() {
+      this._local = false;
+
       this.userLogin = this.userLogin.bind(this);
       MessageBus.ext.subscribe("data/user/login", this.userLogin);
       this.casesList = this.casesList.bind(this);
@@ -29,6 +31,15 @@ class DCCCommonServer {
    set token(newToken) {
       this._token = newToken;
    }
+
+   get local() {
+      return this._local;
+   }
+
+   set local(newValue) {
+      this._local = newValue;
+   }
+
    
    /*
     * Wrappers of the services
@@ -47,7 +58,8 @@ class DCCCommonServer {
                                   "password": message.password})
       }
 
-      const response = await fetch(DCCCommonServer.managerAddressAPI + "user/login", header);
+      const response = await fetch(
+         DCCCommonServer.managerAddressAPI + "user/login", header);
       const jsonResponse = await response.json();
       const busResponse = {
          userid: jsonResponse.id,
@@ -68,14 +80,15 @@ class DCCCommonServer {
             "Authorization": "Bearer " + this.token
           }
       }
-      const response = await fetch(DCCCommonServer.managerAddressAPI + "case/list", header);
+      const response = await fetch(
+         DCCCommonServer.managerAddressAPI + "case/list", header);
       const jsonResponse = await response.json();
       let busResponse = [];
       for (let c in jsonResponse)
          busResponse.push({
             id:   jsonResponse[c].uuid,
             name: jsonResponse[c].name,
-            icon: "../resources/icons/mono-slide.svg",
+            icon: Basic.service.rootPath + "resources/icons/mono-slide.svg",
             svg : jsonResponse[c].svg
          });
       MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
@@ -83,61 +96,89 @@ class DCCCommonServer {
    }
    
    async loadCase(topic, message) {
-      const caseId = MessageBus.extractLevel(topic, 3);
-      let header = {
-         "async": true,
-         "crossDomain": true,
-         "method": "GET",
-         "headers": {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + this.token
-          }
-      };
-      const response =
-         await fetch(DCCCommonServer.managerAddressAPI + "case/" + caseId, header);
+      let caseObj;
+      if (this.local) {
+         this._caseScript = document.createElement("script");
+         this._caseScript.src = Basic.service.rootPath + "cases/current-case.js";
+         document.head.appendChild(this._caseScript);
+         // <TODO> adjust topic
+         const caseM = await MessageBus.int.waitMessage("control/case/load/ready");
+         caseObj = caseM.message;
+      } else {
+         const caseId = MessageBus.extractLevel(topic, 3);
+         let header = {
+            "async": true,
+            "crossDomain": true,
+            "method": "GET",
+            "headers": {
+               "Content-Type": "application/json",
+               "Authorization": "Bearer " + this.token
+             }
+         };
+         const response =
+            await fetch(DCCCommonServer.managerAddressAPI + "case/" + caseId, header);
 
-      const jsonResponse = await response.json();
+         const jsonResponse = await response.json();
+         caseObj = {name: jsonResponse.name,
+                    source: jsonResponse.source};
+      }
 
-      MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-                             {name: jsonResponse.name,
-                              source: jsonResponse.source});
+      MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message), caseObj);
    }
 
    async themeFamilySettings(topic, message) {
-      const themeFamily = MessageBus.extractLevel(topic, 3);
-      let header = {
-         "async": true,
-         "crossDomain": true,
-         "method": "GET",
-         "headers": {
-            "Content-Type": "text/json",
-          }
-      };
-      const response = await fetch("../themes/" + themeFamily + "/theme.json",
-                                   header);
-      let jsonResponse = await response.json();
+      let settings = {};
+      if (!this.local) {
+         const themeFamily = MessageBus.extractLevel(topic, 3);
+         let header = {
+            "async": true,
+            "crossDomain": true,
+            "method": "GET",
+            "headers": {
+               "Content-Type": "text/json",
+             }
+         };
+         const response = await fetch(Basic.service.rootPath + "themes/" +
+                                      themeFamily + "/theme.json", header);
+         settings = await response.json();
+      }
       MessageBus.int.publish(MessageBus.buildResponseTopic(topic, message),
-                             jsonResponse);
+                             settings);
    }
 
    async loadTheme(topic, message) {
+      let themeObj;
       const themeCompleteName = MessageBus.extractLevel(topic, 3);
       const separator = themeCompleteName.indexOf("."); 
       const themeFamily = themeCompleteName.substring(0, separator);
       const themeName = themeCompleteName.substring(separator+1);
-      let header = {
-         "async": true,
-         "crossDomain": true,
-         "method": "GET",
-         "headers": {
-            "Content-Type": "text/html",
-          }
+      let caseObj;
+      if (this.local) {
+         this._themeScript = document.createElement("script");
+         this._themeScript.src = Basic.service.rootPath + "themes/" +
+                                 themeFamily + "/local/" + themeName + ".js";
+         document.head.appendChild(this._themeScript);
+         // <TODO> adjust topic
+         const themeM = await MessageBus.int.waitMessage("control/theme/" +
+                                                         themeName +
+                                                         "/load/ready");
+         themeObj = themeM.message;
+      } else {
+         let header = {
+            "async": true,
+            "crossDomain": true,
+            "method": "GET",
+            "headers": {
+               "Content-Type": "text/html",
+             }
+         }
+         const response = await fetch(Basic.service.rootPath + "themes/" +
+                                      themeFamily + "/" + themeName +
+                                      ".html", header);
+         themeObj = await response.text();
       }
-      const response = await fetch("../themes/" + themeFamily + "/" + themeName +
-                                   ".html", header);
-      let textResponse = await response.text();
       MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-                             textResponse);
+                             themeObj);
    }
 
    async contextList(topic, message) {
@@ -149,7 +190,8 @@ class DCCCommonServer {
             "Content-Type": "application/json",
           }
       };
-      const response = await fetch("../context/context.json", header);
+      const response = await fetch(Basic.service.rootPath + "context/context.json",
+                                   header);
       let ctxCatalog = await response.json();
       MessageBus.int.publish(MessageBus.buildResponseTopic(topic, message),
                              ctxCatalog);
@@ -164,7 +206,8 @@ class DCCCommonServer {
             "Content-Type": "text/json",
           }
       };
-      const response = await fetch("../context/" + message.body, header);
+      const response = await fetch(Basic.service.rootPath + "context/" +
+                                   message.body, header);
       let textResponse = await response.text();
       MessageBus.int.publish(MessageBus.buildResponseTopic(topic, message),
                              textResponse);

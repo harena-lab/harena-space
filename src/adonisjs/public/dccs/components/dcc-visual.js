@@ -27,4 +27,35 @@ class DCCVisual extends DCCBase {
    get presentation() {
       return (this._presentation) ? this._presentation : null;
    }
+
+   _storePresentation(presentation) {
+      this._presentation = presentation;
+   }
+}
+
+class DCCMultiVisual extends DCCVisual {
+   constructor() {
+      super();
+      this._presentationSet = [];
+   }
+
+   _storePresentation(presentation) {
+      super._storePresentation(presentation);
+      if (presentation != null)
+         this._presentationSet.push(presentation);
+   }
+
+   checkActivateAuthor() {
+      if (this.author) {
+         for (let pr in this._presentationSet) {
+            this._presentationSet[pr].style.cursor = "pointer";
+            this._presentationSet[pr].dccid = this.id;
+            this._presentationSet[pr].addEventListener("click",
+               function(){
+                  MessageBus.ext.publish("control/element/" + this.dccid + "/selected");
+               }
+            );
+         }
+      }
+   }
 }

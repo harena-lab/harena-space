@@ -109,7 +109,7 @@ class AuthorManager {
    /*
     * Redirects control/<entity>/<operation> messages
     */
-   controlEvent(topic, message) {
+   async controlEvent(topic, message) {
       if (MessageBus.matchFilter(topic, "control/knot/+/selected"))
          this.knotSelected(topic, message);
       else if (MessageBus.matchFilter(topic, "control/group/+/selected"))
@@ -155,6 +155,9 @@ class AuthorManager {
          */
          case "control/knot/update": this.knotUpdate(message);
                                      break;
+         case "control/leave/drafts": await this.caseSave();
+                                      window.location.href = 'draft.html';
+                                      break;
       }
    }
    
@@ -238,9 +241,6 @@ class AuthorManager {
       this._compiledCase =
          await Translator.instance.compileMarkdown(Basic.service.currentCaseId,
                                                    caseSource);
-
-      console.log("=== compiled case");
-      console.log(this._compiledCase);
 
       this._knots = this._compiledCase.knots;
 
@@ -528,7 +528,7 @@ class AuthorManager {
       if (el != -1) {
          this._elementSelected = el;
          Properties.s.editElementProperties(
-            this._knots[this._knotSelected].content[el]);
+            this._knots[this._knotSelected].content[el], presentation);
        }
    }
 
@@ -583,8 +583,6 @@ class AuthorManager {
          contentSel[pos] = element;
 
          this.knotUpdate();
-
-         console.log(this._knots);
       }
    }
 

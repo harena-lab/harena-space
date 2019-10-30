@@ -110,7 +110,8 @@ async mountTreeCase(author, knots) {
       if (!this._knots[k].categories ||
           (this._knots[k].categories.indexOf("note") == -1 &&
            this._knots[k].categories.indexOf("notice") == -1 &&
-           this._knots[k].categories.indexOf("notice_wide") == -1)) {
+           this._knots[k].categories.indexOf("notice_wide") == -1 &&
+           this._knots[k].categories.indexOf("notice_exam_zoom") == -1)) {
          let newKnot = {id: k.replace(/\./g, "_"),
                         knotid: k,
                         title: this._knots[k].title,
@@ -127,7 +128,8 @@ async mountTreeCase(author, knots) {
                   if (noteKnot && noteKnot.categories &&
                       (noteKnot.categories.indexOf("note") > -1 ||
                        noteKnot.categories.indexOf("notice") > -1 ||
-                       noteKnot.categories.indexOf("notice_wide") > -1)) {
+                       noteKnot.categories.indexOf("notice_wide") > -1 ||
+                       noteKnot.categories.indexOf("notice_exam_zoom") > -1)) {
                      let newNoteKnot = {
                         id: content[c].contextTarget.replace(/\./g, "_"),
                         knotid: content[c].contextTarget,

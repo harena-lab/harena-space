@@ -96,29 +96,36 @@ class DCCInput extends DCCBlock {
    // _injectDCC(presentation, render) {
    async _renderInterface() {
       // === pre presentation setup
+      const statement =
+         (this.hasAttribute("xstyle") && this.xstyle.startsWith("out"))
+         ? "" : this._statement;
+
       let html;
       if (this.hasAttribute("rows") && this.rows > 1)
          html = DCCInput.templateElements.area
-            .replace("[statement]", this._statement)
+            .replace("[statement]", statement)
             .replace("[rows]", this.rows)
             .replace("[variable]", this.variable)
             .replace("[render]", this._renderStyle());
       else
          html = DCCInput.templateElements.text
-            .replace("[statement]", this._statement)
+            .replace("[statement]", statement)
             .replace("[variable]", this.variable)
             .replace("[render]", this._renderStyle())
             .replace("[itype]", (this.hasAttribute("itype")) ?
                                    " type='" + this.itype + "'" : "");
      
       // === presentation setup (DCC Block)
-      this._applyRender(html, "innerHTML");
+      let presentation;
+      if (this.hasAttribute("xstyle") && this.xstyle.startsWith("out")) {
+         await this._applyRender(this._statement, "innerHTML", "-statement");
+         presentation = await this._applyRender(html, "innerHTML", "-input");
+      } else
+         presentation = await this._applyRender(html, "innerHTML");
 
       // === post presentation setup
       const selector = "#" + this.variable.replace(/\./g, "\\.");
-      console.log(selector);
-      this._inputVariable = this._presentation.querySelector(selector);
-      console.log(this._inputVariable);
+      this._inputVariable = presentation.querySelector(selector);
       this._inputVariable.addEventListener("input", this.inputTyped);
       this._inputVariable.addEventListener("change", this.inputChanged);
    }

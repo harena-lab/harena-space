@@ -1,8 +1,17 @@
 (function() {
 Translator.htmlTemplates = {
-textBlock: `<dcc-markdown id='dcc[seq]'>
+textBlock:
+`
+
+
+<dcc-markdown id='dcc[seq]'[author]>
+
 [content]
-</dcc-markdown>`,
+
+</dcc-markdown>
+
+
+`,
 image:
 `<img src='[path]'[alt]>`,
 option:
@@ -12,7 +21,7 @@ divert:
 entity:
 `<dcc-entity id='dcc[seq]'[author] entity='[entity]'[image][alternative][title]>[speech]</dcc-entity>`,
 mention:
-`<b>[entity]</b>`,
+`<b>[entity]: </b>`,
 /*
 "talk-open":
 `
@@ -53,6 +62,11 @@ selctxclose:
 */
 select:
 `<dcc-state-select id='dcc[seq]'[author][answer]>[expression]</dcc-state-select>`
+};
+
+Translator.htmlFlatTemplates = {
+entity:
+`<p><b>[entity]: </b>[speech]</p>`
 };
 
 Translator.htmlTemplatesEditable = {
