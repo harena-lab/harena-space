@@ -96,7 +96,6 @@ EditDCCImage.editorTemplate =
 `<svg viewBox="0 0 [width] [height]">
    <foreignObject width="100%" height="100%">
       <div class="styd-notice styd-border-notice">
-         <label class="styp-field-label std-border" for="pfieldimage">image</label>
          <input type="file" id="pfieldimage" name="pfieldimage" class="styd-selector styp-field-value"
                 accept="image/png, image/jpeg, image/svg">
       </div>

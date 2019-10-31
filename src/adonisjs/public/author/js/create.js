@@ -10,8 +10,6 @@ class TemplateManager {
       const templateList = await MessageBus.ext.request("data/template/*/list",
                                                         {scope: "case"});
 
-      console.log("List:");
-      console.log(templateList.message);
       const tl = templateList.message;
       for (let t in tl) {
          let tid = tl[t].id.replace(/\//ig, "__");
@@ -26,8 +24,7 @@ class TemplateManager {
          box.addEventListener("click",
                function(){
                   let tid = this.id.replace(/__/ig, "/");
-                  console.log(tid);
-                  Basic.service.authorTemplateStore(tid);
+                  Basic.service.authorPropertyStore("template", tid);
                   window.location.href = 'author.html';
                }
             );

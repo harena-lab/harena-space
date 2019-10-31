@@ -139,34 +139,36 @@ class Basic {
       return state;
    }
 
+   authorStateStore(state) {
+      localStorage.setItem(Basic.authorStateId,
+                           JSON.stringify(state));
+   }
+
    authorIdStore(userid, userEmail, token) {
       const state = {
          userid: userid,
          email: userEmail,
          token: token
       };
-      localStorage.setItem(Basic.authorStateId,
-                           JSON.stringify(state));
+      this.authorStateStore(state);
    }
 
-   authorTemplateStore(template) {
+   authorPropertyStore(property, value) {
       let state = this.authorStateRetrieve();
       if (state != null) {
-         state.template = template;
-         localStorage.setItem(Basic.authorStateId,
-                              JSON.stringify(state));
+         state[property] = value;
+         this.authorStateStore(state);
+      }
+   }
+
+   authorPropertyRemove(property) {
+      let state = this.authorStateRetrieve();
+      if (state != null && state[property]) {
+         delete state[property];
+         this.authorStateStore(state);
       }
    }
    
-   authorCaseStore(caseId) {
-      let state = this.authorStateRetrieve();
-      if (state != null) {
-         state.caseId = caseId;
-         localStorage.setItem(Basic.authorStateId,
-                              JSON.stringify(state));
-      }
-   }
-
    screenDimensions() {
       let dimensions = {
          left: (window.screenLeft != undefined) ? window.screenLeft : window.screenX,

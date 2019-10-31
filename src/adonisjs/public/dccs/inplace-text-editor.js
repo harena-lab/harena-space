@@ -262,7 +262,8 @@ class EditDCCText {
    }
 
    _handleConfirm() {
-      this._objProperties.content = this._quill.container.innerHTML;
+      const editorText = this._quill.getText();
+      this._objProperties.content = editorText.substring(0, editorText.length - 1);
       MessageBus.ext.publish("properties/apply");
       this._removeEditor();
    }

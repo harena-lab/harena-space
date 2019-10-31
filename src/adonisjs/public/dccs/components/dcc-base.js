@@ -20,11 +20,10 @@ class DCCBase extends HTMLElement {
    }
 
    set author(isAuthor) {
-      if (isAuthor) {
-         this.setAttribute("author", '');
-      } else {
+      if (isAuthor)
+         this.setAttribute("author", "");
+      else
          this.removeAttribute("author");
-      }
    }
 
    editProperties() {
