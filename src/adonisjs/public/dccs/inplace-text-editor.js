@@ -262,8 +262,11 @@ class EditDCCText {
    }
 
    _handleConfirm() {
-      const editorText = this._quill.getText();
-      this._objProperties.content = editorText.substring(0, editorText.length - 1);
+      // const editorText = this._quill.getText();
+      // this._objProperties.content = editorText.substring(0, editorText.length - 1);
+      const htmlContent = document.querySelector(".ql-editor").innerHTML;
+      this._objProperties.content =
+         Translator.instance.htmlToMarkdown(htmlContent);
       MessageBus.ext.publish("properties/apply");
       this._removeEditor();
    }
