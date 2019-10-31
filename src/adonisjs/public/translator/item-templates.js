@@ -37,15 +37,13 @@ mention:
 `,
 */
 input:
-`<dcc-input id='dcc[seq]'[author] variable='[variable]'[rows][vocabularies]>[statement]</dcc-input>`,
+`<dcc-[dcc] id='dcc[seq]'[author][extra]>[statement]</dcc-[dcc]>`,
 output:
 `<dcc-expression id='dcc[seq]'[author] expression='[variable]'[variant]></dcc-expression>`,
 compute:
 `<dcc-compute sentence='[sentence]'></dcc-compute>`,
 domain:
 `[natural]`,
-"input-group-select":
-`<dcc-group-select id='dcc[seq]'[author] variable='[variable]'[states][labels]>[statement]</dcc-group-select>`,
 /*
 selctxopen:
 `

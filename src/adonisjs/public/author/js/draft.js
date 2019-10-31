@@ -28,7 +28,7 @@ class DraftManager {
          let deleteButton = this._boxesPanel.querySelector("#d" + cl[c].id);
          editButton.addEventListener("click",
             function() {
-               Basic.service.authorCaseStore(this.id.substring(1));
+               Basic.service.authorPropertyStore("caseId", this.id.substring(1));
                window.location.href = 'author.html';
             }
          );

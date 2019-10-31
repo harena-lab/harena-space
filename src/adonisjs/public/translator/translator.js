@@ -1381,8 +1381,36 @@ class Translator {
     * Input Obj to HTML
     */
    _inputObjToHTML(obj) {
-      let input = "";
+      // core attributes are not straight mapped
+      const coreAttributes = ["seq", "author", "type", "subtype", "text",
+                              "_source", "_modified"];
+      const subtypeMap = {
+         short: "input",
+         text: "input",
+         "group select": "group-select",
+         slider: "slider"
+      };
+      const subtype = (obj.subtype)
+         ? subtypeMap[obj.subtype] : subtypeMap.short;
+
       const statement = (obj.text) ? obj.text : "";
+
+      let extraAttr = "";
+      for (let atr in obj)
+         if (!coreAttributes.includes(atr) && obj[atr] != "false")
+            extraAttr += " " + atr +
+                         ((obj[atr] == "true") ? "" : "='" + obj[atr] + "'");
+
+      let input = Translator.htmlTemplates.input
+                     .replace(/\[dcc\]/igm, subtype)
+                     .replace("[seq]", obj.seq)
+                     .replace("[author]", this.authorAttr)
+                     .replace("[variable]", obj.variable)
+                     .replace("[statement]", statement)
+                     .replace("[extra]", extraAttr);
+
+      console.log("=== final input");
+      console.log(input);
 
       if (obj.subtype == "group select") {
          // <TODO> weak strategy -- improve
@@ -1393,29 +1421,6 @@ class Translator {
                this._inputSelectShow = "#answer";
             else
                this._inputSelectShow = obj.variable;
-
-         const states = (obj.states) ? " states='" + obj.states + "'" : "";
-         const labels = (obj.labels) ? " labels='" + obj.labels + "'" : "";
-
-         
-         
-         input = Translator.htmlTemplates["input-group-select"]
-                                         .replace("[seq]", obj.seq)
-                                         .replace("[author]", this.authorAttr)
-                                         .replace("[variable]", obj.variable)
-                                         .replace("[states]", states)
-                                         .replace("[labels]", labels)
-                                         .replace("[statement]", statement);
-      } else {
-         const rows = (obj.rows) ? " rows='" + obj.rows + "'" : "";
-         const vocabularies = (obj.vocabularies)
-            ? " vocabularies='" + obj.vocabularies + "'" : "";
-         input = Translator.htmlTemplates.input.replace("[seq]", obj.seq)
-                                           .replace("[author]", this.authorAttr)
-                                           .replace("[variable]", obj.variable)
-                                           .replace("[rows]", rows)
-                                           .replace("[vocabularies]", vocabularies)
-                                           .replace("[statement]", statement);
       }
 
       return input;

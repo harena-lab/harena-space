@@ -98,9 +98,10 @@ class AuthorManager {
       const authorState = Basic.service.authorStateRetrieve();
       this._userid = authorState.userid;
 
-      if (authorState.template)
+      if (authorState.template) {
+         Basic.service.authorPropertyRemove("template");
          this.caseNew(authorState.template);
-      else
+      } else
          this._caseLoad(authorState.caseId);
 
       // this.caseLoadSelect();
@@ -285,6 +286,8 @@ class AuthorManager {
              source: md});
          
          console.log("Case saved! Status: " + status.message);
+
+         Basic.service.authorPropertyStore("caseId", Basic.service.currentCaseId);
 
          this._messageSpace.innerHTML = "Saved";
          setTimeout(this._clearMessage, 2000);
