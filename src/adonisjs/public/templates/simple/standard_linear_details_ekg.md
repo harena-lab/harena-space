@@ -6,6 +6,24 @@ Begin (start, detailed)
 
 Present the case.
 
+Line 2
+
+Line 3
+
+Line 4
+
+Line 5
+
+Line 6
+
+Line 7
+
+Line 8
+
+Line 9
+
+Line 10
+
 * -> Generate hypothesis
 
 Generate hypothesis (input)
