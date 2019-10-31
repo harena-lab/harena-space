@@ -93,13 +93,11 @@ class EditDCCImage {
 
 (function() {
 EditDCCImage.editorTemplate =
-`<svg viewBox="0 0 [width] [height]">
-   <foreignObject width="100%" height="100%">
-      <div class="styd-notice styd-border-notice">
-         <input type="file" id="pfieldimage" name="pfieldimage" class="styd-selector styp-field-value"
-                accept="image/png, image/jpeg, image/svg">
+`<foreignObject width="100%" height="100%">
+    <div class="styd-notice styd-border-notice">
+        <input type="file" id="pfieldimage" name="pfieldimage" class="styd-selector styp-field-value"
+               accept="image/png, image/jpeg, image/svg">
       </div>
-   </foreignObject>
-</svg>`;
+</foreignObject>`;
 
 })();
