@@ -20,13 +20,14 @@ nav.navbar {
 }
 /* author draft css start*/
 .draft-author-case-container{
-  width: 25%;
+  min-width: 25%;
   margin: 10px;
   background-color: #ffffff;
   border-color: #808080;
   border-style: solid;
   border-radius: 5px;
   border-width: 2px;
+
 }
 .draft-author-description{
   font-size: 12px;
@@ -145,6 +146,10 @@ nav.navbar {
   overflow-x: hidden;
   overflow-y: scroll;
 }
+.scroll-x{
+  overflow-x: scroll;
+  overflow-y: hidden;
+}
 
 .container-padding{
   width: 100%;
@@ -185,54 +190,6 @@ nav.navbar {
   border-right: .1rem solid #707070;
   padding-top: .5rem;
   padding-bottom: .5rem;
-}
-
-.breadcrumb {
-  list-style-type: inherit;
-  list-style-position: outside;
-  background-color: unset;
-  padding-left: 0px;
-  text-transform: uppercase;
-}
-
-.breadcrumb-item {
-  font-size: 8pt;
-  background-color: #a6a6a6;
-  color: white;
-  border-radius: 5px;
-  padding-top: 2px;
-  padding-bottom: 2px;
-  padding-left: 10px;
-  padding-right: 10px;
-}
-
-.breadcrumb-item + .breadcrumb-item {
-  padding-left: 10px;
-  margin-left: 20px;
-}
-
-.breadcrumb-item::marker {
-  content: "";
-}
-
-.breadcrumb-item + .breadcrumb-item::marker {
-  content: " > ";
-  background-color: #f2f2f2;
-  color: #a6a6a6;
-  margin-right: 5px;
-}
-
-.breadcrumb-item + .breadcrumb-item::before {
-  content: none;
-  padding-right: 10px;
-}
-
-.breadcrumb-item.active {
-  color: white;
-}
-
-.breadcrumb-item a {
-  color: white;
 }
 
 .lead {

@@ -29,13 +29,15 @@ class DraftManager {
          editButton.addEventListener("click",
             function() {
                Basic.service.authorPropertyStore("caseId", this.id.substring(1));
-               window.location.href = 'author.html';
+               window.location.href = "author.html";
             }
          );
          previewButton.addEventListener("click",
             function(){
-               Basic.service.authorCaseStore(this.id.substring(1));
-               window.location.href = '../player/index.html';
+               Basic.service.authorPropertyStore("caseId", this.id.substring(1));
+               window.location.href = "../player/index.html?caseid=" +
+                                      this.id.substring(1) +
+                                      "&preview";
             }
          );
          deleteButton.addEventListener("click",

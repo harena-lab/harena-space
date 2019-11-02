@@ -9,7 +9,8 @@
   <link rel="stylesheet" href="../lib/fontawesome-5-10-1/css/all.min.css">
   <link rel="stylesheet" href="../lib/bootstrap-4-3-1/css/bootstrap.min.css">
 
-  <link rel="stylesheet" href="../infra/css/common.css">
+  <link rel="stylesheet" href="../infra/css/common-player.css">
+  <link rel="stylesheet" href="../infra/css/common-author.css">
   <link rel="stylesheet" href="css/author.css">
 
   <script src="../infra/bus.js"></script>
@@ -28,7 +29,7 @@
 <body onload="DraftManager.instance.start()">
   <!-- Create a section to place page content -->
   <main role="main">
-    <div class="d-flex flex-column vh-100 vw-100 home-author-padding hidden-overflow">
+    <div class="d-flex flex-column vh-100 vw-100 home-author-padding">
 
       <!-- Create breadcrumbs -->
       <div class="container-fluid" >
@@ -45,7 +46,7 @@
         <div class="home-text mb-5">
           <p>Continue editing your draft cases.</p>
         </div>
-        <div id="case-boxes" class="d-flex h-50 w-100">
+        <div id="case-boxes" class="d-flex h-50 w-100 scroll-x">
         </div>
       </div>
     </div>
