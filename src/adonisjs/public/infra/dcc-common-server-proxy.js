@@ -79,6 +79,12 @@ class DCCCommonServer {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + this.token
           }
+      };
+      if (message.filterBy) {
+         header.body = JSON.stringify({
+            filterBy: message.filterBy,
+            filter: message.filter
+         });
       }
       const response = await fetch(
          DCCCommonServer.managerAddressAPI + "case/list", header);
