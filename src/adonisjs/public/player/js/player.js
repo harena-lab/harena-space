@@ -153,15 +153,32 @@ class PlayerManager {
    async startPlayer(caseid) {
       this._mainPanel = document.querySelector("#main-panel");
 
-      let precase = window.location.search.substr(1);
-      if (precase != null && precase.length > 0) {
-         const pm = precase.match(/case=([\w-]+)/i);
-         precase = (pm == null) ? null : pm[1];
+      let parameters = window.location.search.substr(1);
+      let precase = null;
+      let precaseid = null;
+      let preview = null;
+      if (parameters != null && parameters.length > 0) {
+         precase = parameters.match(/case=([\w-]+)/i);
+         precase = (precase != null) ? precase[1] : null;
+         if (precase != null)
+            precase = precase[1];
+         else {
+            precaseid = parameters.match(/caseid=([\w-]+)/i);
+            precaseid = (precaseid != null) ? precaseid[1] : null;
+         }
+         preview = /preview/i;
+         if (preview.test(parameters))
+            document.querySelector("#preview-panel").style.display = "initial";
       } else
          precase = null;
 
+      console.log("=== preview");
+      console.log(precase);
+      console.log(precaseid);
+      console.log(preview);
+
       let resume = false;
-      if (this._state.pendingPlayCheck()) {
+      if (!preview && this._state.pendingPlayCheck()) {
          // <TODO> adjust for name: (precase == null || this._state.pendingPlayId() == precase)) {
          const decision = await DCCNoticeInput.displayNotice(
             "You have an unfinished case. Do you want to continue?",
@@ -188,22 +205,27 @@ class PlayerManager {
            if (DCCPlayerServer.localEnv)
               Basic.service.currentCaseId = DCCPlayerServer.playerObj.id;
            else {
-              const casesM = await MessageBus.ext.request(
-                    "data/case/*/list",
-                    {filterBy: "user", filter: this._userid});
-              const cases = casesM.message;
-              let pi = -1;
-              if (precase != null)
-                 for (let c in cases)
-                    if (cases[c].name == precase)
-                       pi = c;
+              if (precaseid)
+                 caseid = precaseid;
+              else {
+                 const casesM = await MessageBus.ext.request(
+                       "data/case/*/list",
+                       {filterBy: "user", filter: this._userid});
+                 const cases = casesM.message;
+                 let pi = -1;
+                 if (precase != null)
+                    for (let c in cases)
+                       if (cases[c].name == precase)
+                          pi = c;
 
-              if (!caseid && (precase == null || pi == -1))
-                 caseid = await DCCNoticeInput.displayNotice(
-                    "Select a case to load.",
-                    "list", "Select", "Cancel", cases);
-              else
-                 caseid = cases[pi].id;
+                 if (!caseid && (precase == null || pi == -1))
+                    caseid = await DCCNoticeInput.displayNotice(
+                       "Select a case to load.",
+                       "list", "Select", "Cancel", cases);
+                 else
+                    caseid = cases[pi].id;
+              }
+              console.log("=== case: " + caseid);
               this._state.currentCase = caseid;
               await this._caseLoad(caseid);
            }
@@ -423,4 +445,6 @@ class PlayerManager {
 
 (function() {
    PlayerManager.player = new PlayerManager();
+
+   
 })();

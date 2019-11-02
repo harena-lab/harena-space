@@ -5,6 +5,7 @@
    <title>Player</title>
    
    <link rel="stylesheet" href="css/player.css">
+   <link rel="stylesheet" href="../infra/css/common-player.css">
 
    <script src="../infra/bus.js"></script>
    <script src="../infra/basic.js"></script>
@@ -40,6 +41,14 @@
    <script src="js/player.js"></script>
 </head>
 <body onload="PlayerManager.player.startPlayer()">
+   <div class="sty-preview-panel" id="preview-panel" style="display:none">
+     <nav aria-label="breadcrumb">
+       <ol class="breadcrumb">
+         <li class="breadcrumb-item"><a href="../author/home.html">Home</a></li>
+         <li class="breadcrumb-item active" aria-current="page">Player</li>
+       </ol>
+     </nav>
+   </div>
    <div id="main-panel" class="sty-main-panel">
       
    </div>
