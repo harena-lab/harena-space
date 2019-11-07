@@ -209,8 +209,7 @@ class PlayerManager {
                  caseid = precaseid;
               else {
                  const casesM = await MessageBus.ext.request(
-                       "data/case/*/list",
-                       {filterBy: "user", filter: this._userid});
+                       "data/case/*/list");
                  const cases = casesM.message;
                  let pi = -1;
                  if (precase != null)
