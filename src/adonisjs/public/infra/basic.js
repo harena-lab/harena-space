@@ -197,12 +197,17 @@ class Basic {
    }
 
    imageResolver(path) {
+      console.log("=== path");
+      console.log(path);
       let result = path;
       // <TODO> improve
       if (path.startsWith("theme/"))
          result = this._rootPath +
                   "themes/" + this.currentThemeFamily +
                   "/images/" + path.substring(6);
+      else if (path.startsWith("template_fix/"))
+         result = this._rootPath +
+                  "templates/" + path.substring(13);
       else if (path.startsWith("template/"))
          result = this._rootPath +
                   "templates/" + this.currentThemeFamily +
@@ -238,6 +243,21 @@ class Basic {
       targetDocument.head.appendChild(newCSS);
 
       return newCSS;
+   }
+
+   downloadFile(data, fileName, type="text/plain") {
+      const a = document.createElement("a");
+      a.style.display = "none";
+      document.body.appendChild(a);
+      a.href = window.URL.createObjectURL(
+         new Blob([data], { type })
+      );
+      a.setAttribute("download", fileName);
+
+      a.click();
+
+      window.URL.revokeObjectURL(a.href);
+      document.body.removeChild(a);
    }
 }
 
