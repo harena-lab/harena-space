@@ -24,7 +24,8 @@ class DCCTrigger extends DCCBlock {
    /* Attribute Handling */
 
    static get observedAttributes() {
-     return DCCBlock.observedAttributes.concat(["type", "link", "action", "value"]);
+     return DCCBlock.observedAttributes.concat(
+        ["type", "link", "action", "value"]);
    }
 
    get type() {
@@ -80,7 +81,8 @@ class DCCTrigger extends DCCBlock {
       }
 
       // === presentation setup (DCC Block)
-      await this._applyRender(html, (this.xstyle == "out-image") ? "title" : "innerHTML");
+      await this._applyRender(html,
+         (this.xstyle == "out-image") ? "title" : "innerHTML");
 
       // === post presentation setup
       // <TODO> provisory

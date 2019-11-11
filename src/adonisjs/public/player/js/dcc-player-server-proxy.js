@@ -163,5 +163,5 @@ class DCCPlayerServer {
 }
 
 (function() {
-   DCCPlayerServer.storePrefix = "casenote_";
+   DCCPlayerServer.storePrefix = "harena_";
 })();

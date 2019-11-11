@@ -6,31 +6,17 @@ class DCCExpression extends DCCVisual {
    }
    
    async connectedCallback() {
-      /*
-      let template = document.createElement("template");
-      template.innerHTML = 
-         DCCExpression.templateElements.replace("[result]", result.message);
-
-      this._shadow = this.attachShadow({mode: "open"});
-      this._shadow.appendChild(template.content.cloneNode(true));
-
-      this._presentation = this._shadow.querySelector("#presentation-dcc");
-      */
-
-      /*
-      this.innerHTML =
-          DCCExpression.templateElements.replace("[result]", result.message);
-      */
-
       // <TODO> provisory solution due to message ordering
       this._updated = false
 
       if (this.active) {
          this.variableUpdated = this.variableUpdated.bind(this);
-         MessageBus.ext.subscribe("var/" + this.expression + "/set", this.variableUpdated);
+         MessageBus.ext.subscribe(
+            "var/" + this.expression + "/set", this.variableUpdated);
       }
 
-      const result = await MessageBus.ext.request("var/" + this.expression + "/get");
+      const result = await MessageBus.ext.request(
+         "var/" + this.expression + "/get");
 
       // <TODO> provisory solution due to message ordering
       if (!this._updated)
@@ -78,11 +64,6 @@ class DCCExpression extends DCCVisual {
 }
 
 (function() {
-   /*
-   DCCExpression.templateElements = 
-      "<span id='presentation-dcc'>[result]</span>";
-   */
-     
    DCCExpression.elementTag = "dcc-expression";
    customElements.define(DCCExpression.elementTag, DCCExpression);
 })();
