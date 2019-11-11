@@ -3,7 +3,16 @@
  * 
  * State Object
  * {
- *   variables = {id: <variable name>, value: <variable value>}
+ *   variables: {id: <variable name>, value: <variable value>},
+ *   history: [<knot name>, ..., <knot name>]
+ *   parameter: parameter object
+ *   nextKnot: <integer> -- provisory
+ *   completed: boolean
+ * }
+ *
+ * MetaState Object
+ * {
+ *   script: {type: <instruction type>, }
  * }
  */
 
@@ -16,6 +25,8 @@ class PlayState {
          nextKnot: 1,
          completed: false
       };
+
+      this._metastate = {};
       
       this.variableGet = this.variableGet.bind(this);
       MessageBus.ext.subscribe("var/+/get", this.variableGet);
@@ -95,28 +106,21 @@ class PlayState {
       this._stateStore();
    }
 
-
-   /*
-   currentCaseSet(caseid) {
-      this._state.caseid = caseid;
-      this._stateStore();
-   }
-
-   currentCaseGet() {
-      return this._state.caseid;
-   }
-
-   tokenGet() {
-      return this._state.token;
-   }
-   */
-
    /*
     * Scenario Variables
     */
    
    variableGet(topic, message) {
-      const id = MessageBus.extractLevel(topic, 2);
+      let id = MessageBus.extractLevel(topic, 2);
+
+      // tries to give a scope to the variable
+      if (id != null && this._state.variables[id] == null) {
+         const currentKnot = this.historyCurrent();
+         if (currentKnot != null &&
+             this._state.variables[currentKnot + "." + id] != null)
+            id = currentKnot + "." + id;
+      }
+
       if (id != null)
          MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
                                 this._state.variables[id]);
@@ -183,8 +187,43 @@ class PlayState {
       this._stateStore();
       return this._state.nextKnot.toString();
    }
+
+   /*
+    * MetaState Storage
+    */
+   _metastateStore() {
+      localStorage.setItem(
+         PlayState.storeMetaId, JSON.stringify(this._metastate));
+   }
+
+   _metastateRetrieve() {
+      const metastateS = localStorage.getItem(PlayState.storeMetaId);
+      if (metastateS != null)
+         this._metastate = JSON.parse(metastateS);
+   }
+
+   /*
+    * MetaScript Management
+    */
+
+   metascriptRecord(script) {
+      this._metastate.script = script;
+      this._metastateStore();
+   }
+
+   metascriptNextInstruction() {
+      let instruction = null;
+      this._metastateRetrieve();
+      if (this._metastate != null && this._metastate.script &&
+          this._metastate.script.length > 0) {
+         instruction = this._metastate.script.shift();
+         this._metastateStore();
+      }
+      return instruction;
+   }
 }
 
 (function() {
    PlayState.storeId = "harena-state";
+   PlayState.storeMetaId = "harena-metastate";
 })();

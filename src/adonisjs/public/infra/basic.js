@@ -78,7 +78,7 @@ class Basic {
     * Use signin
     *    state - player state variable; stores user credentials after login
     */
-   async signin(state) {
+   async signin(state, hasPrecase) {
       let status = "start";
 
       let userid = null;
@@ -90,14 +90,15 @@ class Basic {
       userid = (authorState != null && authorState.userid != null)
          ? authorState.userid : null;
 
-      if (userid != null) {
+      if (userid != null && !hasPrecase) {
          let decision = await DCCNoticeInput.displayNotice(
             "Proceed as " + authorState.email + "?", "message", "Yes", "No");
-         if (decision == "Yes") {
-            DCCCommonServer.instance.token = authorState.token;
-            userEmail = authorState.email;
-         } else
+         if (decision != "Yes")
             userid = null;
+      }
+      if (userid != null) {
+         DCCCommonServer.instance.token = authorState.token;
+         userEmail = authorState.email;
       }
       // }
 
@@ -197,8 +198,6 @@ class Basic {
    }
 
    imageResolver(path) {
-      console.log("=== path");
-      console.log(path);
       let result = path;
       // <TODO> improve
       if (path.startsWith("theme/"))

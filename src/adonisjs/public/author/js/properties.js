@@ -38,10 +38,12 @@ class Properties {
    }
 
    editElementProperties(obj, element) {
+      /*
       console.log("=== obj");
       console.log(obj);
       console.log("=== element");
       console.log(element);
+      */
       if (this._knotOriginalTitle)
          delete this._knotOriginalTitle;
       this.editProperties(obj);
@@ -81,7 +83,7 @@ class Properties {
    }
 
    _editSingleProperty(property, value, seq) {
-      if (property.type == "shortStrArray")
+      if (property.type == "shortStrArray" && value.length > 0)
          value = value.join(",");
       else if (property.type == "variable") {
          value = (value.indexOf(".") == -1)
@@ -150,7 +152,7 @@ class Properties {
                   seq++;
                }
             }
-            console.log(this._objProperties[p]);
+            // console.log(this._objProperties[p]);
          }
 
          Translator.instance.updateElementMarkdown(this._objProperties);

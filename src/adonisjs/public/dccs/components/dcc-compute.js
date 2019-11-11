@@ -6,12 +6,12 @@ class DCCCompute extends DCCBase {
    }
    
    async connectedCallback() {
-      if (this.hasAttribute("sentence")) {
-         if (this.sentence == "case=0")
+      if (this.hasAttribute("instruction")) {
+         if (this.instruction == "case=0")
             MessageBus.ext.publish("case/completed", "");
          else {
             const trans = /(\w+)?[ \t]*([+\-*/=])[ \t]*(\d+(?:\.\d+)?)/im;
-            const elements = trans.exec(this.sentence);
+            const elements = trans.exec(this.instruction);
 
             let variable = elements[1];
             let operation = elements[2];
@@ -40,15 +40,47 @@ class DCCCompute extends DCCBase {
     */
    
    static get observedAttributes() {
-      return DCCBase.observedAttributes.concat(["sentence"]);
+      return DCCBase.observedAttributes.concat(["instruction"]);
    }
 
-   get sentence() {
-      return this.getAttribute("sentence");
+   get instruction() {
+      return this.getAttribute("instruction");
    }
    
-   set sentence(newValue) {
-      this.setAttribute("sentence", newValue);
+   set instruction(newValue) {
+      this.setAttribute("instruction", newValue);
+   }
+
+   /*
+    * Static Instruction Processing Methods
+    */
+
+   /*
+    * Computes a instruction that comes as object
+    *
+    * {
+    *   type: <type of the instruction>,
+    *   <properties according to the type>
+    * }
+    */
+   static computeInstructionObj(instruction) {
+      console.log("=== instruction");
+      console.log(instruction);
+      switch (instruction.type) {
+         case "divert-script":
+            let message;
+            if (instruction.target.startsWith("Case."))
+               message = "case/" + instruction.target.substring(5) + "/navigate";
+            else
+               message = "knot/" + instruction.target + "/navigate";
+            console.log("=== message");
+            console.log(message);
+            if (instruction.parameter)
+               MessageBus.ext.publish(message, instruction.parameter);
+            else
+               MessageBus.ext.publish(message);
+            break;
+      }
    }
 }
 

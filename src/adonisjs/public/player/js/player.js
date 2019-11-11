@@ -1,29 +1,18 @@
-const storePrefix = "casenote_";
+// const storePrefix = "casenote_";
 
 class PlayerManager {
-   /*
-   static instance() {
-      if (!PlayerManager._instance)
-         PlayerManager._instance = new PlayerManager();
-      return PlayerManager._instance;
-   }
-   */
-   
    constructor() {
       Basic.service.host = this;
 
       this._server = new DCCPlayerServer();
       this._tracker = new Tracker();
-      // this._history = [];
       this._state = new PlayState();
 
-      // this._currentThemeCSS = null;
-      // this.currentThemeFamily = "minimal";
-      
       this.controlEvent = this.controlEvent.bind(this);
       MessageBus.ext.subscribe("control/#", this.controlEvent);
       this.navigateEvent = this.navigateEvent.bind(this);
       MessageBus.ext.subscribe("knot/+/navigate", this.navigateEvent);
+      MessageBus.ext.subscribe("case/+/navigate", this.navigateEvent);
       
       // <TODO> temporary
       this.produceReport = this.produceReport.bind(this);
@@ -32,44 +21,12 @@ class PlayerManager {
       this.caseCompleted = this.caseCompleted.bind(this);
       MessageBus.ext.subscribe("case/completed", this.caseCompleted);
 
-      /*
-      this.inputEvent = this.inputEvent.bind(this);
-      MessageBus.ext.subscribe("input/#", this.inputEvent);
-      */
-      
       // tracking
       this.trackTyping = this.trackTyping.bind(this);
 
       // <TODO> provisory
       // this._nextKnot = 1;
    }
-
-   /* <TODO>
-      A commom code for shared functionalities between player and author
-      ******/
-
-   /*
-   get currentThemeFamily() {
-      return this._currentThemeFamily;
-   }
-   
-   set currentThemeFamily(newValue) {
-      Translator.instance.currentThemeFamily = newValue;
-      this._currentThemeFamily = newValue;
-
-      this._currentThemeCSS =
-         Basic.service.replaceStyle(document, this._currentThemeCSS, newValue);
-   }
-
-   requestCurrentThemeFamily(topic, message) {
-      MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-                             this.currentThemeFamily);
-   }
-
-   get currentCaseId() {
-      return this._currentCaseId;
-   }
-   */
 
    /*
     * Event handlers
@@ -80,27 +37,18 @@ class PlayerManager {
       switch (topic) {
          case "control/register": this.register(); break;
          case "control/signin":   this.signIn(); break;
-         /*
-         case "control/_current_theme_name/get" :
-             this.requestCurrentThemeFamily(topic, message);
-             break;
-         */
       }
    }
    
    navigateEvent(topic, message) {
       let target = MessageBus.extractLevel(topic, 2);
-      /*     
-      if (message)
-         target = (typeof message === "string") ? message : message.target;
-      */
       this.trackTrigger(target);
 
-      // MessageBus.ext.publish("checkout", message);
       if (this._currentKnot != null) {
          MessageBus.ext.publish("control/input/submit"); // <TODO> provisory
          MessageBus.ext.publish("knot/" + this._currentKnot + "/end");
       }
+
       switch (topic) {
          case "knot/</navigate": if (this._state.historyHasPrevious())
                                     this.knotLoad(this._state.historyPrevious());
@@ -116,11 +64,21 @@ class PlayerManager {
                                  this._state.historyRecord(nextKnot);
                                  this.knotLoad(nextKnot);
                                  break;
-         case "knot/>>>/navigate": window.open(message.value, "_self");
-                                   break;
+         case "case/>/navigate":
+            // <TODO> jumping other instructions - improve it
+            console.log("=== next case");
+            let instruction;
+            do {
+               instruction = this._state.metascriptNextInstruction();
+            } while (instruction != null && instruction.type != "divert-script" &&
+                     instruction.target.substring(0, 5).toLowerCase() != "case.");
+            console.log(instruction);
+            if (instruction != null)
+               window.open("index.html?case=" +
+                  instruction.target.substring(5), "_self");
+            break;
          default: if (MessageBus.matchFilter(topic, "knot/+/navigate")) {
                      this._state.historyRecord(target);
-                     // this._history.push(target);
                      if (message.value) {
                         this._state.parameter = message.value;
                         this.knotLoad(target, message.value);
@@ -128,28 +86,12 @@ class PlayerManager {
                         this._state.parameter = null;
                         this.knotLoad(target);
                      }
-                  }
+                  } else if (MessageBus.matchFilter(topic, "case/+/navigate"))
+                     window.open("index.html?case=" + target, "_self");
                   break;
       }
-      /*
-      switch (topic) {
-         case "navigate/knot/previous": window.history.back();
-                                        break;
-         case "navigate/knot/start": window.open(this._server.getStartKnot().
-                                       replace(/ /igm, "_") + ".html", "_self");
-                                     break;
-         case "navigate/trigger": window.open(message, "_self");
-                                  break;
-      }
-      */
    }
 
-   /*
-   inputEvent(topic, message) {
-      this._server.recordInput(topic.substring(6), message);
-   } 
-   */  
-   
    async startPlayer(caseid) {
       this._mainPanel = document.querySelector("#main-panel");
 
@@ -159,7 +101,10 @@ class PlayerManager {
       let preview = null;
       if (parameters != null && parameters.length > 0) {
          precase = parameters.match(/case=([\w-]+)/i);
-         precase = (precase != null) ? precase[1] : null;
+         /*
+         console.log("=== precase");
+         console.log(precase);
+         */
          if (precase != null)
             precase = precase[1];
          else {
@@ -172,13 +117,15 @@ class PlayerManager {
       } else
          precase = null;
 
+      /*
       console.log("=== preview");
       console.log(precase);
       console.log(precaseid);
       console.log(preview);
+      */
 
       let resume = false;
-      if (!preview && this._state.pendingPlayCheck()) {
+      if (preview == null && this._state.pendingPlayCheck()) {
          // <TODO> adjust for name: (precase == null || this._state.pendingPlayId() == precase)) {
          const decision = await DCCNoticeInput.displayNotice(
             "You have an unfinished case. Do you want to continue?",
@@ -200,7 +147,8 @@ class PlayerManager {
          if (DCCCommonServer.instance.local)
             await this._caseLoad();
          else {
-           this._userid = await Basic.service.signin(this._state);
+           this._userid =
+              await Basic.service.signin(this._state, (precase!=null));
 
            if (DCCPlayerServer.localEnv)
               Basic.service.currentCaseId = DCCPlayerServer.playerObj.id;
@@ -211,11 +159,20 @@ class PlayerManager {
                  const casesM = await MessageBus.ext.request(
                        "data/case/*/list");
                  const cases = casesM.message;
+                 /*
+                 console.log("=== cases");
+                 console.log(cases);
+                 console.log(precase);
+                 */
                  let pi = -1;
                  if (precase != null)
                     for (let c in cases)
                        if (cases[c].name == precase)
                           pi = c;
+                 /*
+                 console.log(caseid);
+                 console.log(pi);
+                 */
 
                  if (!caseid && (precase == null || pi == -1))
                     caseid = await DCCNoticeInput.displayNotice(
@@ -224,7 +181,7 @@ class PlayerManager {
                  else
                     caseid = cases[pi].id;
               }
-              console.log("=== case: " + caseid);
+              // console.log("=== case: " + caseid);
               this._state.currentCase = caseid;
               await this._caseLoad(caseid);
            }
@@ -250,6 +207,11 @@ class PlayerManager {
    
    async knotLoad(knotName, parameter) {
       this._currentKnot = knotName;
+
+      if (this._knots[knotName].categories &&
+          this._knots[knotName].categories.includes("end"))
+         MessageBus.ext.publish("case/completed", "");
+
       // <TODO> Local Environment - Future
       /*
       this._knotScript = document.createElement("script");
@@ -257,17 +219,22 @@ class PlayerManager {
       document.head.appendChild(this._knotScript);
       */
       if (!DCCPlayerServer.localEnv) {
-         let knot = await Translator.instance.generateHTML(
-            this._knots[knotName]);
-         if (parameter &&
-             (knot.indexOf("<>") > -1 || knot.indexOf("&lt;&gt;") > -1))
-            knot = knot.replace("<>", parameter)
-                       .replace("&lt;&gt;", parameter);
-         if (this._knots[knotName].categories &&
-             this._knots[knotName].categories.indexOf("note") > -1)
-            this.presentNote(knot);
-         else
-            this.presentKnot(knot);
+         if (parameter)
+            MessageBus.ext.publish(
+               "var/" + knotName + ".parameter/set", parameter);
+         if (this._compiledCase.role && this._compiledCase.role == "metacase" &&
+             this._knots[knotName].categories &&
+             this._knots[knotName].categories.includes("script"))
+            MetaPlayer.player.play(this._knots[knotName], this._state);
+         else {
+            let knot = await Translator.instance.generateHTML(
+               this._knots[knotName]);
+            if (this._knots[knotName].categories &&
+                this._knots[knotName].categories.includes("note"))
+               this.presentNote(knot);
+            else
+               this.presentKnot(knot);
+         }
       }
       MessageBus.ext.publish("knot/" + knotName + "/start");
    }
@@ -443,7 +410,5 @@ class PlayerManager {
 }
 
 (function() {
-   PlayerManager.player = new PlayerManager();
-
-   
+   PlayerManager.player = new PlayerManager();  
 })();

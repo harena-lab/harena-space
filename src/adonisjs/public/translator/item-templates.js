@@ -12,12 +12,26 @@ textBlock:
 
 
 `,
+script:
+`
+
+
+<dcc-markdown id='dcc[seq]'[author]>
+
+[content]
+
+</dcc-markdown>
+
+
+`,
 image:
 `<img src='[path]'[alt]>`,
 option:
-`<dcc-trigger id='dcc[seq]'[author] type='[subtype]' action='knot/[target]/navigate' label='[display]'[value][image][location]></dcc-trigger>`,
+`<dcc-trigger id='dcc[seq]'[author] type='[subtype]' action='[target]' label='[display]'[value][image]></dcc-trigger>`,
 divert:
-`<dcc-trigger id='dcc[seq]'[author] type='+' action='knot/[target]/navigate' label='[display]'></dcc-trigger>`,
+`<dcc-trigger id='dcc[seq]'[author] type='+' action='[target]' label='[display]'></dcc-trigger>`,
+"divert-script":
+`-&gt; [target][parameter]<br>`,
 entity:
 `<dcc-entity id='dcc[seq]'[author] entity='[entity]'[image][alternative][title]>[speech]</dcc-entity>`,
 mention:
@@ -41,7 +55,7 @@ input:
 output:
 `<dcc-expression id='dcc[seq]'[author] expression='[variable]'[variant]></dcc-expression>`,
 compute:
-`<dcc-compute sentence='[sentence]'></dcc-compute>`,
+`<dcc-compute instruction='[instruction]'></dcc-compute>`,
 domain:
 `[natural]`,
 /*
@@ -86,14 +100,13 @@ image:
 
 Translator.markdownTemplates = {
 layer:
-`___ [title] ___
-`,
+`___ [title] ___`,
 knot:
 `[level] [title][categories]`,
 image:
 `![{alternative}]({path}{title})`,
 option:
-`* {label}{rule}-> {target}`,
+`{subtype}{label} -> {target}`,
 entity:
 `@{entity}`
 };
