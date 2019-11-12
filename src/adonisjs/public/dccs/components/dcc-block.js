@@ -133,11 +133,14 @@ class DCCBlock extends DCCMultiVisual {
          presentation = document.querySelector("#" + this.location +
                                                      ((sufix) ? sufix : ""));
          if (presentation != null) {
-            if (sufix == "-image" && this.hasAttribute("image"))
+            if (sufix == "-image" && this.hasAttribute("image")) {
                // <TODO> image works for SVG but not for HTML
-               presentation.setAttributeNS(
-                  "http://www.w3.org/1999/xlink", "href", html);
-            else
+               if (presentation.nodeName.toLowerCase() == "image")
+                  presentation.setAttributeNS(
+                     "http://www.w3.org/1999/xlink", "href", html);
+               else
+                  presentation.innerHTML = "<img src='" + html + "'>";
+            } else
                presentation[outTarget] = html;
          }
 

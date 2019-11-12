@@ -128,8 +128,8 @@ class DCCSlider extends DCCBlock {
       // === presentation setup (DCC Block)
       let presentation;
       if (this.hasAttribute("xstyle") && this.xstyle.startsWith("out")) {
-         await this._applyRender(this._statement, "innerHTML", "-statement");
-         presentation = await this._applyRender(html, "innerHTML", "-input");
+         await this._applyRender(this._statement, "innerHTML", "-text");
+         presentation = await this._applyRender(html, "innerHTML");
       } else
          presentation = await this._applyRender(html, "innerHTML");
 
