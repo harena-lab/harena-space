@@ -118,8 +118,8 @@ class DCCInput extends DCCBlock {
       // === presentation setup (DCC Block)
       let presentation;
       if (this.hasAttribute("xstyle") && this.xstyle.startsWith("out")) {
-         await this._applyRender(this._statement, "innerHTML", "-statement");
-         presentation = await this._applyRender(html, "innerHTML", "-input");
+         await this._applyRender(this._statement, "innerHTML", "-text");
+         presentation = await this._applyRender(html, "innerHTML");
       } else
          presentation = await this._applyRender(html, "innerHTML");
 
@@ -135,8 +135,8 @@ class DCCInput extends DCCBlock {
    // <TODO> temporary (size = 50)
    // <TODO> transfer the definition of font to CSS
    DCCInput.templateElements = {
-      text: "[statement]<input type='text' id='[variable]' class='[render]' size='50' [itype] style='font-size:30pt; border-color:darkgray'></input>",
-      area: "[statement]<textarea rows='[rows]' id='[variable]' class='[render]' size='28'></textarea>"
+      text: "[statement]<input type='text' id='[variable]' class='[render]' [itype] style='border-color:darkgray'></input>",
+      area: "[statement]<textarea rows='[rows]' id='[variable]' class='[render]'></textarea>"
    };
 
    DCCInput.elementTag = "dcc-input";

@@ -26,7 +26,7 @@ MetadataBlot.tagName = "span";
 Quill.register(MetadataBlot);
 
 class EditDCCText {
-   constructor(obj, element) {
+   constructor(obj, element, svg) {
       this._objProperties = obj;
       this._handleHighlighter = this._handleHighlighter.bind(this);
       this._handleAnnotation = this._handleAnnotation.bind(this);
@@ -34,6 +34,7 @@ class EditDCCText {
       this._handleConfirm = this._handleConfirm.bind(this);
       this._handleCancel = this._handleCancel.bind(this);
       this._editElement = element;
+      this._svgDraw = svg;
       /*
       this._toolbarControls = EditDCCText.toolbarTemplate +
                               EditDCCText.toolbarTemplateHighlighter +
@@ -88,11 +89,16 @@ class EditDCCText {
       editor.style.height = this._transformRelativeY(this._elementRect.height);
       editor.style.fontSize =
          window.getComputedStyle(this._editElement, null).getPropertyValue("font-size");
-      editor.innerHTML =
-         EditDCCText.editorTemplate
-            .replace("[width]", this._transformViewportX(this._elementRect.width))
-            .replace("[height]", this._transformViewportY(this._elementRect.height))
-            .replace("[content]", this._editElement.innerHTML);
+      if (this._svgDraw)
+         editor.innerHTML =
+            EditDCCText.editorTemplate.svg
+               .replace("[width]", this._transformViewportX(this._elementRect.width))
+               .replace("[height]", this._transformViewportY(this._elementRect.height))
+               .replace("[content]", this._editElement.innerHTML);
+      else
+         editor.innerHTML =
+            EditDCCText.editorTemplate.html
+               .replace("[content]", this._editElement.innerHTML);
       return editor;
    }
 
@@ -314,12 +320,16 @@ EditDCCText.toolbarTemplateConfirm =
 `<button class="ql-confirm"></button>
 <button class="ql-cancel"></button>`;
 
-EditDCCText.editorTemplate =
+EditDCCText.editorTemplate = {
+html:
+`<div id="inplace-content">[content]</div>`,
+svg:
 `<svg viewBox="0 0 [width] [height]">
    <foreignObject width="100%" height="100%">
       <div id="inplace-content">[content]</div>
    </foreignObject>
-</svg>`;
+</svg>`
+};
 
 EditDCCText.annotationTemplate =
 `<div class="annotation-bar">Annotation

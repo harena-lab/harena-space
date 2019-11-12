@@ -47,8 +47,11 @@ class Properties {
       if (this._knotOriginalTitle)
          delete this._knotOriginalTitle;
       this.editProperties(obj);
+      // <TODO> Provisory
+      const svg = ["jacinto", "simple-svg"].
+         includes(Basic.service.currentThemeFamily);
       switch (obj.type) {
-         case "text": this._editor = new EditDCCText(obj, element);
+         case "text": this._editor = new EditDCCText(obj, element, svg);
                       break;
          case "entity": this._editor = new EditDCCImage(obj, element);
                       break;
