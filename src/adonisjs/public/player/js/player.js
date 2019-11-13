@@ -72,10 +72,12 @@ class PlayerManager {
                instruction = this._state.metascriptNextInstruction();
             } while (instruction != null && instruction.type != "divert-script" &&
                      instruction.target.substring(0, 5).toLowerCase() != "case.");
+
             console.log(instruction);
             if (instruction != null)
                window.open("index.html?case=" +
-                  instruction.target.substring(5), "_self");
+                  instruction.target.substring(5) +
+                  (this._previewCase ? "&preview" : ""), "_self");
             break;
          default: if (MessageBus.matchFilter(topic, "knot/+/navigate")) {
                      this._state.historyRecord(target);
@@ -87,7 +89,8 @@ class PlayerManager {
                         this.knotLoad(target);
                      }
                   } else if (MessageBus.matchFilter(topic, "case/+/navigate"))
-                     window.open("index.html?case=" + target, "_self");
+                     window.open("index.html?case=" + target +
+                        (this._previewCase ? "&preview" : ""), "_self");
                   break;
       }
    }
@@ -98,7 +101,7 @@ class PlayerManager {
       let parameters = window.location.search.substr(1);
       let precase = null;
       let precaseid = null;
-      let preview = null;
+      this._previewCase = false;
       if (parameters != null && parameters.length > 0) {
          precase = parameters.match(/case=([\w-]+)/i);
          /*
@@ -111,8 +114,9 @@ class PlayerManager {
             precaseid = parameters.match(/caseid=([\w-]+)/i);
             precaseid = (precaseid != null) ? precaseid[1] : null;
          }
-         preview = /preview/i;
-         if (preview.test(parameters))
+         const previewRE = /preview/i;
+         this._previewCase = previewRE.test(parameters);
+         if (this._previewCase)
             document.querySelector("#preview-panel").style.display = "initial";
       } else
          precase = null;
@@ -125,7 +129,7 @@ class PlayerManager {
       */
 
       let resume = false;
-      if (preview == null && this._state.pendingPlayCheck()) {
+      if (!this._previewCase && this._state.pendingPlayCheck()) {
          // <TODO> adjust for name: (precase == null || this._state.pendingPlayId() == precase)) {
          const decision = await DCCNoticeInput.displayNotice(
             "You have an unfinished case. Do you want to continue?",
@@ -148,7 +152,8 @@ class PlayerManager {
             await this._caseLoad();
          else {
            this._userid =
-              await Basic.service.signin(this._state, (precase!=null));
+              await Basic.service.signin(this._state,
+                 (precase != null || precaseid != null));
 
            if (DCCPlayerServer.localEnv)
               Basic.service.currentCaseId = DCCPlayerServer.playerObj.id;

@@ -1326,12 +1326,19 @@ class Translator {
    _divertScriptMdToObj(matchArray) {
       let sentence = {
          type: "divert-script",
-         target: matchArray[1].trim()
+         target: matchArray[4].trim()
       };
       
-      if (matchArray[2] != null)
+      if (matchArray[1] != null)
+         sentence.condition = {
+            variable: matchArray[1].trim(),
+            operator: matchArray[2].trim(),
+            value: matchArray[3].trim()
+         };
+
+      if (matchArray[5] != null)
          sentence.parameter = {
-            parameter: matchArray[2].trim() };
+            parameter: matchArray[5].trim() };
       
       return sentence;
    }
@@ -1768,7 +1775,7 @@ class Translator {
          mark: /^[ \t]*([\+\*])[ \t]*([^\(&> \t\n\r\f][^\(&>\n\r\f]*)?-(?:(?:&gt;)|>)[ \t]*([^"\n\r\f]+)(?:"([^"\n\r\f]+)")?[ \t]*$/im,
          line: true },
       "divert-script": {
-         mark: /^[ \t]*-(?:(?:&gt;)|>)[ \t]*([^"\n\r\f]+)(?:"([^"\n\r\f]+)")?[ \t]*$/im,
+         mark: /^[ \t]*(?:\(([\w\.]+)[ \t]*(==|>|<|>=|<=|&gt;|&lt;|&gt;=|&lt;=)[ \t]*((?:"[^"\n\r\f]+")|(?:\-?\d+(?:\.\d+)?)|(?:[\w\.]+))\)[ \t]*)?-(?:(?:&gt;)|>)[ \t]*([^"\n\r\f]+)(?:"([^"\n\r\f]+)")?[ \t]*$/im,
          line: true },
       divert: {
          mark: /(?:(\w+)|"([^"]+)")(?:[ \t])*-(?:(?:&gt;)|>)[ \t]*(?:(\w[\w.]*)|"([^"]*)")/im,
