@@ -78,7 +78,7 @@ class Basic {
     * Use signin
     *    state - player state variable; stores user credentials after login
     */
-   async signin(state) {
+   async signin(state, hasPrecase) {
       let status = "start";
 
       let userid = null;
@@ -90,14 +90,15 @@ class Basic {
       userid = (authorState != null && authorState.userid != null)
          ? authorState.userid : null;
 
-      if (userid != null) {
+      if (userid != null && !hasPrecase) {
          let decision = await DCCNoticeInput.displayNotice(
             "Proceed as " + authorState.email + "?", "message", "Yes", "No");
-         if (decision == "Yes") {
-            DCCCommonServer.instance.token = authorState.token;
-            userEmail = authorState.email;
-         } else
+         if (decision != "Yes")
             userid = null;
+      }
+      if (userid != null) {
+         DCCCommonServer.instance.token = authorState.token;
+         userEmail = authorState.email;
       }
       // }
 
@@ -203,6 +204,9 @@ class Basic {
          result = this._rootPath +
                   "themes/" + this.currentThemeFamily +
                   "/images/" + path.substring(6);
+      else if (path.startsWith("template_fix/"))
+         result = this._rootPath +
+                  "templates/" + path.substring(13);
       else if (path.startsWith("template/"))
          result = this._rootPath +
                   "templates/" + this.currentThemeFamily +
@@ -238,6 +242,21 @@ class Basic {
       targetDocument.head.appendChild(newCSS);
 
       return newCSS;
+   }
+
+   downloadFile(data, fileName, type="text/plain") {
+      const a = document.createElement("a");
+      a.style.display = "none";
+      document.body.appendChild(a);
+      a.href = window.URL.createObjectURL(
+         new Blob([data], { type })
+      );
+      a.setAttribute("download", fileName);
+
+      a.click();
+
+      window.URL.revokeObjectURL(a.href);
+      document.body.removeChild(a);
    }
 }
 

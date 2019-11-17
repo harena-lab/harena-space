@@ -8,6 +8,11 @@
     "path": "classic",
     "icon": "mono-slide.svg",
     "svg" : "false"},
+ "Simple":
+   {"description": "A simplified theme for the Jacinto cases.",
+    "path": "simple",
+    "icon": "jacinto-theme.png",
+    "svg" : "false"},
  "Jacinto":
    {"description": "The standard theme for the Jacinto cases.",
     "path": "jacinto",

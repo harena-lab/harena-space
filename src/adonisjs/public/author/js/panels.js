@@ -23,6 +23,13 @@ class Panels {
       this._buttonRetractProp = document.querySelector("#button-retract-prop");
       this._elementsBlock = document.querySelector("#elements-block");
       this._elementsMain = document.querySelector("#elements-main");
+
+      this._setupKnotHeight();
+   }
+
+   _setupKnotHeight() {
+      const size = this._knotPanel.getBoundingClientRect();
+      this._knotPanel.style.height = Math.round(size.width * 9 / 16) + "px";
    }
 
    setupHiddenNavigator() {

@@ -416,12 +416,12 @@
      height="59"
      rx="29.5"
      x="800"
-     y="550"
+     y="850"
      style="fill:#ba2027" />
   <foreignObject
      data-name="Action 1"
      x="806"
-     y="567"
+     y="867"
      width="180"
      height="30">
     <div
@@ -431,13 +431,25 @@
      </div>
   </foreignObject>
   <foreignObject
-     data-name="input-1-text"
+     data-name="input-1-statement"
      x="390"
      y="350"
      width="750"
      height="80">
     <div
-       id="input-1-text"
+       id="input-1-statement"
+       class="cls-17"
+       style="font-size:28px;font-family:Tahoma, Geneva, sans-serif;color:#346e93ff">
+    </div>
+  </foreignObject>
+  <foreignObject
+     data-name="input-2-statement"
+     x="390"
+     y="550"
+     width="750"
+     height="80">
+    <div
+       id="input-2-statement"
        class="cls-17"
        style="font-size:28px;font-family:Tahoma, Geneva, sans-serif;color:#346e93ff">
     </div>
@@ -503,7 +515,8 @@
      transform="translate(66.5,161.052)"
      class="cls-23"
      data-name="Seta voltar"
-     id="Seta_voltar">
+     id="Seta_voltar"
+     visibility="hidden">
     <ellipse
        style="fill:#346e93"
        ry="25.347"
@@ -523,15 +536,29 @@
        id="Caminho_320" />
   </g>
   <foreignObject
-     data-name="input-1"
+     data-name="input-1-input"
      x="390"
      y="450"
      width="675"
      height="50">
     <div
-       id="input-1"
+       id="input-1-input"
        class="cls-15"
-       style="font-size:18px;font-family:Tahoma, Geneva, sans-serif;color:#2e2e2eff">
+       style="font-size:28px;font-family:Tahoma, Geneva, sans-serif;color:#2e2e2eff">
+      <dcc-styler xstyle="out">
+      </dcc-styler>
+    </div>
+  </foreignObject>
+  <foreignObject
+     data-name="input-2-input"
+     x="390"
+     y="650"
+     width="675"
+     height="50">
+    <div
+       id="input-2-input"
+       class="cls-15"
+       style="font-size:28px;font-family:Tahoma, Geneva, sans-serif;color:#2e2e2eff">
       <dcc-styler xstyle="out">
       </dcc-styler>
     </div>
@@ -541,7 +568,7 @@
      x="390"
      y="700"
      width="675"
-     height="180">
+     height="90">
     <div
        id="text"
        class="cls-15"
@@ -551,37 +578,13 @@
       </dcc-styler>
     </div>
   </foreignObject>
-  <path
-     style="fill:#0d4a71;stroke:none"
-     inkscape:connector-curvature="0"
-     id="path5558"
-     d="m 1607.5,974 h -165 c -3.0379,0 -5.9844,-0.59475 -8.7577,-1.76775 -2.6792,-1.13319 -5.0855,-2.75567 -7.1522,-4.82233 -2.0667,-2.0667 -3.6892,-4.47306 -4.8223,-7.1522 -1.173,-2.77328 -1.7678,-5.7198 -1.7678,-8.75772 0,-3.03792 0.5948,-5.98444 1.7678,-8.75772 1.1331,-2.67914 2.7556,-5.0855 4.8223,-7.1522 2.0667,-2.06666 4.473,-3.68914 7.1522,-4.82233 2.7733,-1.173 5.7198,-1.76775 8.7577,-1.76775 h 165 c 3.0379,0 5.9845,0.59475 8.7577,1.76775 2.6792,1.13319 5.0855,2.75567 7.1522,4.82233 2.0667,2.0667 3.6892,4.47306 4.8224,7.1522 1.1729,2.77328 1.7677,5.7198 1.7677,8.75772 0,3.03792 -0.5948,5.98444 -1.7677,8.75772 -1.1332,2.67914 -2.7557,5.0855 -4.8224,7.1522 -2.0667,2.06666 -4.473,3.68914 -7.1522,4.82233 -2.7732,1.173 -5.7198,1.76775 -8.7577,1.76775 z"
-     class="cls-38" />
-  <path
-     style="fill:#ffffff;stroke:none"
-     inkscape:connector-curvature="0"
-     id="path5560"
-     d="m 1442.5,930 c -2.9034,0 -5.7188,0.56816 -8.3682,1.68875 -2.5599,1.08278 -4.8594,2.63328 -6.8346,4.60845 -1.9752,1.97516 -3.5257,4.27469 -4.6084,6.83463 -1.1206,2.64937 -1.6888,5.46481 -1.6888,8.36817 0,2.90336 0.5682,5.7188 1.6888,8.36817 1.0827,2.55994 2.6332,4.85947 4.6084,6.83463 1.9752,1.97517 4.2747,3.52567 6.8346,4.60845 2.6494,1.12058 5.4648,1.68875 8.3682,1.68875 h 165 c 2.9034,0 5.7188,-0.56817 8.3682,-1.68875 2.5599,-1.08278 4.8595,-2.63328 6.8346,-4.60845 1.9752,-1.97516 3.5257,-4.27469 4.6085,-6.83463 1.1205,-2.64937 1.6887,-5.46481 1.6887,-8.36817 0,-2.90336 -0.5682,-5.7188 -1.6887,-8.36817 -1.0828,-2.55994 -2.6333,-4.85947 -4.6085,-6.83463 -1.9751,-1.97517 -4.2747,-3.52567 -6.8346,-4.60845 C 1613.2188,930.56816 1610.4034,930 1607.5,930 h -165 m 0,-2 h 165 c 12.9787,0 23.5,10.5213 23.5,23.5 0,12.9787 -10.5213,23.5 -23.5,23.5 h -165 c -12.9787,0 -23.5,-10.5213 -23.5,-23.5 0,-12.9787 10.5213,-23.5 23.5,-23.5 z"
-     class="cls-39" />
-  <foreignObject
-     data-name="background-alternative"
-     x="1425"
-     y="940"
-     width="200"
-     height="90">
-    <div
-       id="background-alternative"
-       class="cls-15"
-       style="font-weight:700;font-size:18px;font-family:Tahoma, Geneva, sans-serif;color:#ffffff;stroke-width:0.93;text-align:center">
-       {background-alternative}
-    </div>
-  </foreignObject>
   <circle
    style="opacity:0;fill:#ffffff"
    id="back-button"
    cx="90.811577"
    cy="186.4236"
-   r="25.741863" />
+   r="25.741863"
+   visibility="hidden" />
   <foreignObject>
      <dcc-trigger action="knot/</navigate" label="Previous Knot" xstyle="out-image" location="back-button"></dcc-trigger>
   </foreignObject>

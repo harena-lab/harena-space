@@ -1,15 +1,29 @@
 class DraftManager {
    async start() {
+      let mode = window.location.search.substr(1);
+      if (mode != null && mode.length > 0) {
+         const md = mode.match(/mode=([\w-]+)/i);
+         mode = (md == null) ? null : md[1];
+      } else
+         mode = null;
+      let advanced =
+         (mode != null && mode.toLowerCase() == "advanced") ? true : false;
+
       this.deleteCase = this.deleteCase.bind(this);
       MessageBus.int.subscribe("control/case/delete", this.deleteCase);
+
+      if (advanced) {
+         this.downloadCase = this.downloadCase.bind(this);
+         MessageBus.int.subscribe("control/case/download", this.downloadCase);
+      }
 
       const authorState = Basic.service.authorStateRetrieve();
 
       this._boxesPanel = document.querySelector("#case-boxes");
-      this._draftSelect(authorState.userid);
+      this._draftSelect(authorState.userid, advanced);
    }
 
-   async _draftSelect(userid) {
+   async _draftSelect(userid, advanced) {
       const cases = await MessageBus.ext.request("data/case/*/list",
                                                  {filterBy: "user",
                                                   filter: userid});
@@ -17,7 +31,9 @@ class DraftManager {
       const cl = cases.message;
       for (let c in cl) {
          let template = document.createElement("template");
-         template.innerHTML = DraftManager.caseBox
+         const html = DraftManager.caseBox
+            .replace("[download]", (advanced) ? DraftManager.caseDownload : "");
+         template.innerHTML = html
             .replace(/\[id\]/ig, cl[c].id)
             // .replace("[icon]", cl[c].icon)
             .replace("[title]", cl[c].name);
@@ -26,6 +42,8 @@ class DraftManager {
          let editButton = this._boxesPanel.querySelector("#e" + cl[c].id);
          let previewButton = this._boxesPanel.querySelector("#p" + cl[c].id);
          let deleteButton = this._boxesPanel.querySelector("#d" + cl[c].id);
+         let downloadButton = (advanced)
+            ? this._boxesPanel.querySelector("#w" + cl[c].id) : null;
          editButton.addEventListener("click",
             function() {
                Basic.service.authorPropertyStore("caseId", this.id.substring(1));
@@ -45,6 +63,12 @@ class DraftManager {
                MessageBus.int.publish("control/case/delete", this.id.substring(1));
             }
          );
+         if (advanced)
+            downloadButton.addEventListener("click",
+               function() {
+                  MessageBus.int.publish("control/case/download", this.id.substring(1));
+               }
+            );
       }
    }
 
@@ -57,6 +81,13 @@ class DraftManager {
          await MessageBus.ext.request("data/case/" + message + "/delete");
       const box = this._boxesPanel.querySelector("#b" + message);
       this._boxesPanel.removeChild(box);
+   }
+
+   async downloadCase(topic, message) {
+      const caseObj = await MessageBus.ext.request(
+         "data/case/" + message + "/get");
+      Basic.service.downloadFile(
+         caseObj.message.source, caseObj.message.name + ".md");
    }
 }
 
@@ -71,8 +102,12 @@ DraftManager.caseBox =
    <div class="d-flex">
       <div id="e[id]" class="author-case-buttons">EDIT</div>
       <div id="p[id]" class="author-case-buttons">PREVIEW</div>
-      <div id="d[id]" class="author-case-buttons">DELETE</div>
+      <div id="d[id]" class="author-case-buttons">DELETE</div>[download]
    </div>
 </div>`;
+
+DraftManager.caseDownload =
+`
+      <div id="w[id]" class="author-case-buttons">DOWNLOAD</div>`;
 
 })();

@@ -130,6 +130,8 @@ class AuthorManager {
                                        break;
          case "control/case/play": this.casePlay();
                                    break;
+         case "control/case/settings": await this.caseRename();
+                                       break;
          case "control/knot/new":  this.knotNew();
                                    break;
          case "control/knot/edit": this.knotEdit();
@@ -267,6 +269,11 @@ class AuthorManager {
     * ACTION: control-save
     */
    async caseSave() {
+      /*
+      console.log("=== case save");
+      console.log(this._knots);
+      */
+
       if (Basic.service.currentCaseId != null && this._compiledCase != null) {
          this._checkKnotModification(this._renderState);
 
@@ -395,6 +402,8 @@ class AuthorManager {
       
       const knotid = MessageBus.extractLevel(topic, 3);
 
+      // console.log("=== miniatureF");
+      // console.log("#mini-" + knotid.replace(/\./g, "_"));
       const miniatureF = document.querySelector("#mini-" + knotid.replace(/\./g, "_"));
       let miniature = miniatureF.getElementsByTagName("div")[0];
 
@@ -598,6 +607,10 @@ class AuthorManager {
    }
 
    async knotUpdate() {
+      /*
+      console.log("=== knot update");
+      console.log(this._knots);
+      */
       if (this._knotSelected != null) {
          this._htmlKnot = await Translator.instance.generateHTML(
             this._knots[this._knotSelected]);
@@ -700,6 +713,14 @@ class AuthorManager {
       
       Translator.instance.deleteThemeSet();
       window.open(dirPlay.message + "/html/index.html", "_blank");
+   }
+
+   async caseRename() {
+      const caseName =
+         await DCCNoticeInput.displayNotice("Inform a new name for your case:",
+                                            "input");
+      if (caseName.length > 0)
+         this._currentCaseName = caseName;
    }
    
    /*

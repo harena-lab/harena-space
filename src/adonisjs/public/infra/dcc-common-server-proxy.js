@@ -79,6 +79,12 @@ class DCCCommonServer {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + this.token
           }
+      };
+      if (message.filterBy) {
+         header.body = JSON.stringify({
+            filterBy: message.filterBy,
+            filter: message.filter
+         });
       }
       const response = await fetch(
          DCCCommonServer.managerAddressAPI + "case/list", header);
@@ -91,6 +97,8 @@ class DCCCommonServer {
             icon: Basic.service.rootPath + "resources/icons/mono-slide.svg",
             svg : jsonResponse[c].svg
          });
+      busResponse.sort(function(c1, c2){
+         return (c1.name < c2.name) ? -1 : 1});
       MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
                              busResponse);
    }
