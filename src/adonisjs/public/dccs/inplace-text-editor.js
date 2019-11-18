@@ -47,12 +47,38 @@ class EditDCCText {
    _buildEditor(selectOptions) {
       this._container = document;
       if (window.parent && window.parent.document) {
-         const cont = window.parent.document.querySelector("#inplace-editor-wrapper");
+         const cont = window.parent.document.querySelector(
+            "#inplace-editor-wrapper");
          if (cont != null)
             this._container = cont;
       }
       this._containerRect = this._container.getBoundingClientRect();
+
+      // find the wrapper
+      let elementWrapper = this._editElement;
+      let ew = elementWrapper.parentNode;
+      while (ew != null && (!ew.id || !ew.id.endsWith("-wrapper")))
+         ew = ew.parentNode;
+      console.log("=== parent ew");
+      console.log(ew);
+      if (ew != null && ew.id && ew.id != "inplace-editor-wrapper")
+         elementWrapper = ew;
+      else if (elementWrapper.parentNode != null) {
+         elementWrapper = elementWrapper.parentNode;
+         while (elementWrapper.nodeName.toLowerCase().startsWith("dcc-") &&
+             elementWrapper.parentNode != null)
+            elementWrapper = elementWrapper.parentNode;
+      }
+      console.log("=== elementWrapper");
+      console.log(elementWrapper);
+
+      this._elementRect = elementWrapper.getBoundingClientRect();
+      /*
       this._elementRect = this._editElement.getBoundingClientRect();
+      this._elementRect = (this._editElement.parentNode != null)
+         ? this._editElement.parentNode.getBoundingClientRect()
+         : this._editElement.getBoundingClientRect();
+      */
 
       this._editorToolbar = this._buildToolbarPanel();
       this._container.appendChild(this._editorToolbar);
@@ -61,6 +87,8 @@ class EditDCCText {
       this._container.appendChild(this._editor);
 
       this._buildQuillEditor(selectOptions);
+
+      this._editElement.style.display = "none";
 
       if (selectOptions)
          this._formatSelectOptions();
@@ -74,7 +102,8 @@ class EditDCCText {
       editorToolbar.style.left = this._transformRelativeX(
          this._elementRect.left - this._containerRect.left);
       editorToolbar.style.bottom = this._transformRelativeY(
-         this._containerRect.height - (this._elementRect.top - this._containerRect.top));
+         this._containerRect.height - 
+            (this._elementRect.top - this._containerRect.top));
       return editorToolbar;
    }
 
@@ -86,19 +115,36 @@ class EditDCCText {
       editor.style.top = this._transformRelativeY(
          this._elementRect.top - this._containerRect.top);
       editor.style.width = this._transformRelativeX(this._elementRect.width);
-      editor.style.height = this._transformRelativeY(this._elementRect.height);
-      editor.style.fontSize =
-         window.getComputedStyle(this._editElement, null).getPropertyValue("font-size");
+      editor.style.height =
+         this._transformRelativeY(this._elementRect.height);
+      /*
+      editor.style.height = this._transformRelativeY(
+         (this._elementRect.height < this._containerRect.height)
+            ? this._elementRect.height : this._containerRect.height);
+      editor.style.height = this._transformRelativeY(
+         this._containerRect.height);
+      */
       if (this._svgDraw)
          editor.innerHTML =
             EditDCCText.editorTemplate.svg
-               .replace("[width]", this._transformViewportX(this._elementRect.width))
-               .replace("[height]", this._transformViewportY(this._elementRect.height))
-               .replace("[content]", this._editElement.innerHTML);
+               .replace("[width]",
+                  this._transformViewportX(this._elementRect.width))
+               .replace("[height]",
+                  this._transformViewportY(this._elementRect.height))
+               .replace("[content]",
+                  this._editElement.innerHTML);
       else
          editor.innerHTML =
             EditDCCText.editorTemplate.html
                .replace("[content]", this._editElement.innerHTML);
+      let inplaceContent = editor.querySelector("#inplace-content");
+      const elementStyle = window.getComputedStyle(this._editElement, null);
+      inplaceContent.style.fontSize =
+         elementStyle.getPropertyValue("font-size");
+      inplaceContent.style.fontFamily =
+         elementStyle.getPropertyValue("font-family");
+      inplaceContent.style.fontWeight =
+         elementStyle.getPropertyValue("font-weight");
       return editor;
    }
 
@@ -152,7 +198,8 @@ class EditDCCText {
       editorAnnotation.style.left = this._transformRelativeX(
          this._elementRect.left - this._containerRect.left);
       editorAnnotation.style.bottom = this._transformRelativeY(
-         this._containerRect.height - (this._elementRect.top - this._containerRect.top));
+         this._containerRect.height -
+            (this._elementRect.top - this._containerRect.top));
 
       this._buttonAnConfirm = editorAnnotation.querySelector("#an-confirm");
       this._buttonAnCancel  = editorAnnotation.querySelector("#an-cancel");
