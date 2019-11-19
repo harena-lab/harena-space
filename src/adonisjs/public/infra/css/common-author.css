@@ -19,6 +19,12 @@ nav.navbar {
   margin-bottom: 1rem;
 }
 /* author draft css start*/
+.draft-scroll-container{
+  padding-bottom: 2%;
+  height: 60% !important;
+  width: 100% !important;
+}
+
 .draft-author-case-container{
   min-width: 25%;
   margin: 10px;
