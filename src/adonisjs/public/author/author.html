@@ -65,7 +65,7 @@
     <div class="d-flex flex-column vh-100 vw-100 scroll-y index-boot-padding">
 
       <!-- Create breadcrumbs -->
-      <div class="container-fluid" >
+      <div id="system-panel" class="container-fluid" style="position:relative">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="home.html">Home</a></li>
@@ -89,7 +89,8 @@
       <!-- End of page title and description -->
 
       <!-- Toolbar -->
-      <div class="container-fluid no-spacing">
+      <div id="toolbar-panel" class="container-fluid no-spacing"
+           style="position:relative">
         <nav class="navbar navbar-light">
           <div class="col-6">
 
@@ -125,7 +126,7 @@
       <!-- End of toolbar -->
 
       <div class="d-flex">
-          <div id="navigation-block" class="w-25">
+          <div id="navigation-block" style="position:relative" class="w-25">
             <div class="sty-navigation-block">
               <div id="navigation-panel" class="sty-navigation-panel std-border"></div>
             </div>
@@ -163,7 +164,7 @@
           </div>
 
           <div id="elements-main" class="d-flex">
-            <div id="elements-block" class="styp-elements-block" style="display:none">
+            <div id="elements-block" class="styp-elements-block" style="position:relative; display:none">
                <div id="elements-panel" class="sty-control-panel std-border">
                   <div class="control-button"><dcc-trigger action="control/element/text/new" label="Text" image="icons/icon-dcc-text.svg"></dcc-trigger></div>
                   <div class="control-button"><dcc-trigger action="control/element/image/new" label="Text" image="icons/icon-dcc-image.svg"></dcc-trigger></div>

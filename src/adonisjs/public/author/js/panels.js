@@ -13,6 +13,9 @@ class Panels {
       this._knotPanelSize = 75;
       this._propertiesVisible = false;
 
+      this._systemPanel = document.querySelector("#system-panel");
+      this._toolbarPanel = document.querySelector("#toolbar-panel");
+
       this._navigationBlock = document.querySelector("#navigation-block");
       this._knotPanel = document.querySelector("#knot-panel");
       this._knotMain = document.querySelector("#knot-main");
@@ -110,5 +113,29 @@ class Panels {
       this._knotPanel.style.flex = "60%";
       this._propertiesPanel.style.display = "initial";
       // this._propertiesPanel.style.flex = "30%";
+   }
+
+   lockNonEditPanels() {
+      this._locks = [];
+      for (let l = 0; l <= 4; l++) {
+         this._locks.push(document.createElement("div"));
+         this._locks[l].classList.add("sty-lock");
+      }
+      this._systemPanel.appendChild(this._locks[0]);
+      this._toolbarPanel.appendChild(this._locks[1]);
+      this._navigationBlock.appendChild(this._locks[2]);
+      this._knotPanel.appendChild(this._locks[3]);
+      this._elementsBlock.appendChild(this._locks[4]);
+   }
+
+   unlockNonEditPanels() {
+      if (this._locks != null) {
+         this._systemPanel.removeChild(this._locks[0]);
+         this._toolbarPanel.removeChild(this._locks[1]);
+         this._navigationBlock.removeChild(this._locks[2]);
+         this._knotPanel.appendChild(this._locks[3]);
+         this._elementsBlock.removeChild(this._locks[4]);
+         this._locks = null;
+      }
    }
 }

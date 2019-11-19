@@ -45,6 +45,8 @@ class EditDCCText {
    }
 
    _buildEditor(selectOptions) {
+      Panels.s.lockNonEditPanels();
+
       this._container = document;
       if (window.parent && window.parent.document) {
          const cont = window.parent.document.querySelector(
@@ -55,12 +57,12 @@ class EditDCCText {
       this._containerRect = this._container.getBoundingClientRect();
 
       // find the wrapper
+      // looks for a knot-wrapper or equivalent
       let elementWrapper = this._editElement;
       let ew = elementWrapper.parentNode;
       while (ew != null && (!ew.id || !ew.id.endsWith("-wrapper")))
          ew = ew.parentNode;
-      console.log("=== parent ew");
-      console.log(ew);
+      // otherwise, finds the element outside dccs
       if (ew != null && ew.id && ew.id != "inplace-editor-wrapper")
          elementWrapper = ew;
       else if (elementWrapper.parentNode != null) {
@@ -69,8 +71,6 @@ class EditDCCText {
              elementWrapper.parentNode != null)
             elementWrapper = elementWrapper.parentNode;
       }
-      console.log("=== elementWrapper");
-      console.log(elementWrapper);
 
       this._elementRect = elementWrapper.getBoundingClientRect();
       /*
@@ -315,6 +315,7 @@ class EditDCCText {
    }
 
    _handleConfirm() {
+      Panels.s.unlockNonEditPanels();
       // const editorText = this._quill.getText();
       // this._objProperties.content = editorText.substring(0, editorText.length - 1);
       const htmlContent = document.querySelector(".ql-editor").innerHTML;
@@ -325,6 +326,8 @@ class EditDCCText {
    }
 
    _handleCancel() {
+      Panels.s.unlockNonEditPanels();
+      MessageBus.ext.publish("control/knot/update");
       this._removeEditor();
    }
 }
