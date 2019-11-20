@@ -320,7 +320,7 @@ class EditDCCText {
       // this._objProperties.content = editorText.substring(0, editorText.length - 1);
       const htmlContent = document.querySelector(".ql-editor").innerHTML;
       this._objProperties.content =
-         Translator.instance.htmlToMarkdown(htmlContent);
+         Translator.instance.htmlToMarkdown(htmlContent).trimEnd();
       MessageBus.ext.publish("properties/apply");
       this._removeEditor();
    }

@@ -12,8 +12,9 @@ class PlayerManager {
       MessageBus.ext.subscribe("control/#", this.controlEvent);
       this.navigateEvent = this.navigateEvent.bind(this);
       MessageBus.ext.subscribe("knot/+/navigate", this.navigateEvent);
+      MessageBus.ext.subscribe("flow/+/navigate", this.navigateEvent);
       MessageBus.ext.subscribe("case/+/navigate", this.navigateEvent);
-      
+
       // <TODO> temporary
       this.produceReport = this.produceReport.bind(this);
       MessageBus.int.subscribe("/report/get", this.produceReport);
@@ -54,15 +55,27 @@ class PlayerManager {
                                     this.knotLoad(this._state.historyPrevious());
                                  break;
          case "knot/<</navigate": this.startCase();
-                                  const startKnot = (DCCPlayerServer.localEnv)
-                                     ? DCCPlayerServer.playerObj.start
-                                     : this._compiledCase.start;
+                                  const flowStart = this._nextFlowKnot();
+                                  const startKnot =
+                                    (flowStart != null)
+                                      ? flowStart.target
+                                      : (DCCPlayerServer.localEnv)
+                                        ? DCCPlayerServer.playerObj.start
+                                        : this._compiledCase.start;
                                   this._state.historyRecord(startKnot);
                                   this.knotLoad(startKnot);
                                   break;
          case "knot/>/navigate": const nextKnot = this._state.nextKnot();
                                  this._state.historyRecord(nextKnot);
                                  this.knotLoad(nextKnot);
+                                 break;
+         case "flow/>/navigate": const flowNext = this._nextFlowKnot();
+                                 if (flowNext != null) {
+                                    console.log("=== flow next");
+                                    console.log(flowNext);
+                                    this._state.historyRecord(flowNext.target);
+                                    this.knotLoad(flowNext.target);
+                                 }
                                  break;
          case "case/>/navigate":
             // <TODO> jumping other instructions - improve it
@@ -74,10 +87,16 @@ class PlayerManager {
                      instruction.target.substring(0, 5).toLowerCase() != "case.");
 
             console.log(instruction);
-            if (instruction != null)
+            if (instruction != null) {
+               if (instruction.parameter) {
+                  console.log("=== metaparameter");
+                  console.log(instruction.parameter.parameter);
+                  this._state.metaexecParameterSet(instruction.parameter.parameter);
+               }
                window.open("index.html?case=" +
                   instruction.target.substring(5) +
                   (this._previewCase ? "&preview" : ""), "_self");
+            }
             break;
          default: if (MessageBus.matchFilter(topic, "knot/+/navigate")) {
                      this._state.historyRecord(target);
@@ -88,11 +107,27 @@ class PlayerManager {
                         this._state.parameter = null;
                         this.knotLoad(target);
                      }
-                  } else if (MessageBus.matchFilter(topic, "case/+/navigate"))
+                  } else if (MessageBus.matchFilter(topic, "case/+/navigate")) {
+                     if (message) {
+                        console.log("=== metaparameter");
+                        console.log(message.parameter);
+                        this._state.metaexecParameterSet(message.parameter);
+                     }
                      window.open("index.html?case=" + target +
                         (this._previewCase ? "&preview" : ""), "_self");
+                  }
                   break;
       }
+   }
+
+   _nextFlowKnot() {
+      let next = null;
+      if (this._state.flow) {
+         next = this._state.flow.shift();
+         if (this._state.flow.length == 0)
+            delete this._state.flow;
+      }
+      return next;
    }
 
    async startPlayer(caseid) {
@@ -114,6 +149,9 @@ class PlayerManager {
             precaseid = parameters.match(/caseid=([\w-]+)/i);
             precaseid = (precaseid != null) ? precaseid[1] : null;
          }
+         const metaparameter = this._state.metaexecParameterGet();
+         if (metaparameter != null)
+            this._state.metaparameter = metaparameter;
          const previewRE = /preview/i;
          this._previewCase = previewRE.test(parameters);
          if (this._previewCase)
@@ -144,15 +182,15 @@ class PlayerManager {
                this.knotLoad(current);
             else
                this.knotLoad(current, this._state.parameter);
-         }
+         } else
+            this._state.sessionCompleted();
       }
 
       if (!resume) {
          if (DCCCommonServer.instance.local)
             await this._caseLoad();
          else {
-           this._userid =
-              await Basic.service.signin(this._state,
+           await Basic.service.signin(this._state,
                  (precase != null || precaseid != null));
 
            if (DCCPlayerServer.localEnv)
@@ -161,25 +199,28 @@ class PlayerManager {
               if (precaseid)
                  caseid = precaseid;
               else {
-                 const casesM = await MessageBus.ext.request(
-                       "data/case/*/list");
-                 const cases = casesM.message;
-                 /*
-                 console.log("=== cases");
-                 console.log(cases);
-                 console.log(precase);
-                 */
                  let pi = -1;
-                 if (precase != null)
-                    for (let c in cases)
-                       if (cases[c].name == precase)
-                          pi = c;
-                 /*
-                 console.log(caseid);
-                 console.log(pi);
-                 */
+                 let cases = null;
+                 if (!precase) {
+                    let casesM = await MessageBus.ext.request("data/case/*/list",
+                                                              {filterBy: "user",
+                                                               filter: this._state.userid});
+                    cases = casesM.message;
+                    if (cases != null && cases.length == 1)
+                       pi = 0;
+                 }
 
-                 if (!caseid && (precase == null || pi == -1))
+                 if (pi == -1) {
+                    let casesM = await MessageBus.ext.request("data/case/*/list");
+                    cases = casesM.message;
+
+                    if (precase != null)
+                       for (let c in cases)
+                          if (cases[c].name == precase)
+                             pi = c;
+                 }
+
+                 if (!caseid && pi == -1)
                     caseid = await DCCNoticeInput.displayNotice(
                        "Select a case to load.",
                        "list", "Select", "Cancel", cases);
@@ -189,6 +230,8 @@ class PlayerManager {
               // console.log("=== case: " + caseid);
               this._state.currentCase = caseid;
               await this._caseLoad(caseid);
+
+              this._caseFlow();
            }
         }
         MessageBus.ext.publish("knot/<</navigate");
@@ -208,6 +251,32 @@ class PlayerManager {
       console.log(this._compiledCase);
       this._knots = this._compiledCase.knots;
       Basic.service.currentThemeFamily = this._compiledCase.theme;
+   }
+
+   _caseFlow() {
+      if (this._compiledCase.layers && this._compiledCase.layers.Flow) {
+         const content = this._compiledCase.layers.Flow.content;
+         let flow = null;
+         let c = 0;
+         console.log("=== metaparameter");
+         console.log(this._state.metaparameter);
+         while (c < content.length && flow == null) {
+            if (content[c].type == "field" &&
+                (!this._state.metaparameter ||
+                 this._state.metaparameter == content[c].field)) {
+               flow = [];
+               for (let f in content[c].value) {
+                  let t = {target: f.replace(/ /g, "_")};
+                  if (content[c].value)
+                     t.parameter = content[c].value;
+                  flow.push(t);
+               }
+            }
+            c++;
+         }
+         if (flow != null)
+            this._state.flow = flow;
+      }
    }
    
    async knotLoad(knotName, parameter) {
@@ -363,7 +432,7 @@ class PlayerManager {
       if (!PlayerManager.isCapsule) {
          // <TODO> this._runningCase is provisory
          const runningCase =
-            this._server.generateRunningCase(this._userid,
+            this._server.generateRunningCase(this._state.userid,
                                              Basic.service.currentCaseId);
         
          MessageBus.ext.defineRunningCase(runningCase);
