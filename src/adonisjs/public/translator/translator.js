@@ -76,6 +76,7 @@ class Translator {
       // this._extractCaseMetadata(compiledCase);
 
       this._replicateImages(compiledCase);
+      this._replicateInheritance(compiledCase);
 
       return compiledCase;
    }
@@ -107,18 +108,6 @@ class Translator {
                   Context.instance.addNamespaceSet(content[c].value);
                else if (Translator.globalFields.includes(content[c].field))
                   compiledCase[content[c].field] = content[c].value;
-               /*
-               switch (content[c].field) {
-                  case "theme": compiledCase.theme = content[c].value;
-                                // this.currentThemeFamily = content[c].value;
-                                break;
-                  case "title": compiledCase.name = content[c].value;
-                                break;
-                  case "namespaces":
-                     Context.instance.addNamespaceSet(content[c].value);
-                     break;
-               }
-               */
             }
       }
    }
@@ -461,14 +450,38 @@ class Translator {
       this._compileMergeLinefeeds(unity);
 
       // third cycle - computes field hierarchy
-      for (let c = compiled.length-1; c > 0 ; c--) {
-         if (compiled[c].type == "field" && compiled[c-1].type == "field" &&
-             compiled[c].subordinate &&
-             (!compiled[c-1].level || compiled[c].level < compiled[c-1].level)) {
-            compiled[c-1].value =
-               (compiled[c-1].value) ? {value: compiled[c-1].value} : {};
-            compiled[c-1].value[compiled[c].field] = compiled[c].value;
-            compiled.splice(c, 1);
+      let lastRoot = null;
+      let lastField = null;
+      let hierarchy = [];
+      for (let c = 0; c < compiled.length; c++) {
+         if (compiled[c].type == "field") {
+            if (lastRoot == null || !compiled[c].subordinate) {
+               lastRoot = compiled[c];
+               lastField = compiled[c];
+            } else {
+               while (lastField != null &&
+                      lastField.level && compiled[c].level <= lastField.level)
+                  lastField = hierarchy.pop();
+               if (lastField == null) {
+                  lastRoot = compiled[c];
+                  lastField = compiled[c];
+               } else {
+                  if (!lastField.value)
+                     lastField.value = {};
+                  else if (typeof lastField.value !== "object")
+                     lastField.value = {value: lastField.value};
+                  lastField.value[compiled[c].field] = compiled[c].value;
+                  lastRoot._source += compiled[c]._source;
+                  hierarchy.push(lastField);
+                  lastField = compiled[c];
+                  compiled.splice(c, 1);
+                  c--;
+               }
+            }
+         } else {
+            lastRoot = null;
+            lastField = null;
+            hierarchy = [];
          }
       }
 
@@ -649,8 +662,6 @@ class Translator {
             this._compileMergeLinefeeds(compiled[c]);
    }
 
-
-
    /*
     * Joins inline elements in a composition
     */
@@ -680,6 +691,23 @@ class Translator {
                else if (entityImage[knots[k].content[c].entity])
                   knots[k].content[c].image =
                      entityImage[knots[k].content[c].entity];
+            }
+         }
+      }
+   }
+
+   /*
+    * Replicates inherited content
+    */
+   _replicateInheritance(compiledCase) {
+      let knots = compiledCase.knots;
+      for (let k in knots) {
+         if (knots[k].inheritance) {
+            const target = this._findContext(knots, k, knots[k].inheritance);
+            if (knots[target]) {
+               if (!knots[k].categories && knots[target].categories)
+                  knots[k].categories = knots[target].categories;
+               knots[k].content = knots[target].content;
             }
          }
       }
@@ -890,36 +918,39 @@ class Translator {
          } else {
          */
          md += compiledCase.knots[kn]._sourceHead + "\n";
-         for (let ct in compiledCase.knots[kn].content) {
-            /*
-            let knotType =
-               Translator.element[compiledCase.knots[kn].content[ct].type];
-            */
-            const content = compiledCase.knots[kn].content[ct];
-            const knotType = Translator.element[content.type];
-            /*
-            console.log("=== knot type");
-            console.log(compiledCase.knots[kn].content[ct].type);
-            console.log(knotType);
-            console.log(compiledCase.knots[kn].content[ct]._source +
-                  ((knotType !== undefined &&
-                    knotType.line !== undefined &&
-                    knotType.line) ? "\n" : ""));
-            */
-            md += content._source +
-                  (((knotType !== undefined &&
-                     content.mergeLine === undefined &&
-                     knotType.line !== undefined &&
-                     knotType.line) ||
-                    (content.mergeLine !== undefined &&
-                     content.mergeLine))
-                  ? "\n" : "");
-            /*
-            console.log((knotType !== undefined &&
-                    knotType.line !== undefined &&
-                    knotType.line));
-            */
-         }
+         if (compiledCase.knots[kn].inheritance)
+            md += "\n";
+         else
+            for (let ct in compiledCase.knots[kn].content) {
+               /*
+               let knotType =
+                  Translator.element[compiledCase.knots[kn].content[ct].type];
+               */
+               const content = compiledCase.knots[kn].content[ct];
+               const knotType = Translator.element[content.type];
+               /*
+               console.log("=== knot type");
+               console.log(compiledCase.knots[kn].content[ct].type);
+               console.log(knotType);
+               console.log(compiledCase.knots[kn].content[ct]._source +
+                     ((knotType !== undefined &&
+                       knotType.line !== undefined &&
+                       knotType.line) ? "\n" : ""));
+               */
+               md += content._source +
+                     (((knotType !== undefined &&
+                        content.mergeLine === undefined &&
+                        knotType.line !== undefined &&
+                        knotType.line) ||
+                       (content.mergeLine !== undefined &&
+                        content.mergeLine))
+                     ? "\n" : "");
+               /*
+               console.log((knotType !== undefined &&
+                       knotType.line !== undefined &&
+                       knotType.line));
+               */
+            }
          //}
       }
       
@@ -968,12 +999,12 @@ class Translator {
       if (matchArray[2] != null)
          knot.title = matchArray[2].trim();
       else
-         knot.title = matchArray[4].trim();
+         knot.title = matchArray[5].trim();
       
       if (matchArray[3] != null)
          knot.categories = matchArray[3].split(",");
-      else if (matchArray[5] != null)
-         knot.categories = matchArray[5].split(",");
+      else if (matchArray[6] != null)
+         knot.categories = matchArray[6].split(",");
       if (knot.categories)
          for (let c in knot.categories)
             knot.categories[c] = knot.categories[c].trim();
@@ -990,10 +1021,15 @@ class Translator {
          }
       }
       
+      if (matchArray[4] != null)
+         knot.inheritance = matchArray[4].trim();
+      else if (matchArray[7] != null)
+         knot.inheritance = matchArray[7].trim();
+
       if (matchArray[1] != null)
          knot.level = matchArray[1].trim().length;
       else
-         if (matchArray[6][0] == "=")
+         if (matchArray[8][0] == "=")
             knot.level = 1;
          else
             knot.level = 2;
@@ -1010,7 +1046,10 @@ class Translator {
                 .replace("[title]", obj.title)
                 .replace("[categories]",
                    (obj.categories)
-                      ? " (" + obj.categories.join(",") + ")" : ""); 
+                      ? " (" + obj.categories.join(",") + ")" : "")
+                .replace("[inheritance]",
+                   (obj.inheritance)
+                      ? ": " + obj.inheritance : "");
    }
    
    /*
@@ -1747,7 +1786,7 @@ class Translator {
 
 (function() {
    Translator.marksLayerTitle = /^[ \t]*\_{2,}((?:.(?!\_{2,}))*.)(?:\_{2,})?[ \t]*$/igm;
-   Translator.marksKnotTitle = /((?:^[ \t]*(?:#+)[ \t]*(?:[^\( \t\n\r\f][^\(\n\r\f]*)(?:\((?:\w[\w \t,]*)\))?[ \t]*#*[ \t]*$)|(?:^[ \t]*(?:[^\( \t\n\r\f][^\(\n\r\f]*)(?:\((?:\w[\w \t,]*)\))?[ \t]*[\f\n\r][\n\r]?(?:==+|--+)$))/igm;
+   Translator.marksKnotTitle = /((?:^[ \t]*(?:#+)[ \t]*(?:[^\( \t\n\r\f][^\(\n\r\f]*)(?:\((?:\w[\w \t,]*)\))?(?:\:[ \t]*[^\(\n\r\f][^\(\n\r\f\t]*)?[ \t]*#*[ \t]*$)|(?:^[ \t]*(?:[^\( \t\n\r\f][^\(\n\r\f]*)(?:\((?:\w[\w \t,]*)\))?(?:\:[ \t]*[^\(\n\r\f][^\(\n\r\f\t]*)?[ \t]*[\f\n\r][\n\r]?(?:==+|--+)$))/igm;
 
    Translator.marksAnnotation = {
      "context-open" : /\{\{([\w \t\+\-\*\."=\:%]+)?(?:\/([\w \t\.]+)\/)?[\f\n\r]/im,
@@ -1759,7 +1798,7 @@ class Translator {
 
    Translator.element = {
       knot: {
-         mark: /(?:^[ \t]*(#+)[ \t]*([^\( \t\n\r\f][^\(\n\r\f]*)(?:\((\w[\w \t,]*)\))?[ \t]*#*[ \t]*$)|(?:^[ \t]*([^\( \t\n\r\f][^\(\n\r\f]*)(?:\((\w[\w \t,]*)\))?[ \t]*[\f\n\r][\n\r]?(==+|--+)$)/im,
+         mark: /(?:^[ \t]*(#+)[ \t]*([^\( \t\n\r\f\:][^\(\n\r\f\:]*)(?:\((\w[\w \t,]*)\))?[ \t]*(?:\:[ \t]*([^\(\n\r\f][^\(\n\r\f\t]*))?[ \t]*#*[ \t]*$)|(?:^[ \t]*([^\( \t\n\r\f\:][^\(\n\r\f\:]*)(?:\((\w[\w \t,]*)\))?[ \t]*(?:\:[ \t]*([^\(\n\r\f][^\(\n\r\f\t]*))?[ \t]*[\f\n\r][\n\r]?(==+|--+)$)/im,
          line: true,
          subfield: true,
          subimage: true },
@@ -1834,12 +1873,14 @@ class Translator {
 
    Translator.globalFields = ["theme", "title", "role"];
 
-   Translator.reservedNavigation = ["case.next", "knot.previous", "knot.next"];
+   Translator.reservedNavigation = ["case.next", "knot.previous", "knot.next",
+                                    "flow.next"];
    Translator.navigationMap = {
       "case.next":     "case/>/navigate",
       "knot.start":    "knot/<</navigate",
       "knot.previous": "knot/</navigate",
-      "knot.next":     "knot/>/navigate"
+      "knot.next":     "knot/>/navigate",
+      "flow.next":     "flow/>/navigate"
    };
    
    // Translator.specialCategories = ["start", "note"];

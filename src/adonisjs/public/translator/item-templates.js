@@ -102,7 +102,7 @@ Translator.markdownTemplates = {
 layer:
 `___ [title] ___`,
 knot:
-`[level] [title][categories]`,
+`[level] [title][categories][inheritance]`,
 image:
 `![{alternative}]({path}{title})`,
 option:

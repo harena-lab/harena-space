@@ -402,8 +402,8 @@ class AuthorManager {
       
       const knotid = MessageBus.extractLevel(topic, 3);
 
-      // console.log("=== miniatureF");
-      // console.log("#mini-" + knotid.replace(/\./g, "_"));
+      console.log("=== miniatureF");
+      console.log("#mini-" + knotid.replace(/\./g, "_"));
       const miniatureF = document.querySelector("#mini-" + knotid.replace(/\./g, "_"));
       let miniature = miniatureF.getElementsByTagName("div")[0];
 

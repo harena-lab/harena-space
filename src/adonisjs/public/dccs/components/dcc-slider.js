@@ -144,9 +144,12 @@ class DCCSlider extends DCCBlock {
 
 (function() {
    DCCSlider.templateElement =
-      "[statement]&nbsp;" +
-      "<input type='range' id='[variable]' min='[min]' max='[max]' "+
-             "value='[value]' class='[render]'>&nbsp;[index]";
+`[statement]&nbsp;
+<div style="width:100%; display:flex; flex-direction:row">
+   <span style="flex:initial">[index]&nbsp;</span>
+   <input type="range" id="[variable]" min="[min]" max="[max]"
+          value="[value]" class="[render]" style="flex:auto">
+</div>`;
 
    DCCSlider.defaultValueMin = 0;
    DCCSlider.defaultValueMax = 100;

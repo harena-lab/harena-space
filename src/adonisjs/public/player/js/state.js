@@ -84,6 +84,10 @@ class PlayState {
     * Properties
     */
 
+   get userid() {
+      return this._state.userid;
+   }
+   
    get currentCase() {
       return this._state.caseid;
    }
@@ -220,6 +224,23 @@ class PlayState {
          this._metastateStore();
       }
       return instruction;
+   }
+
+   metaexecParameterSet(value) {
+      this._metastateRetrieve();
+      this._metastate.parameter = value;
+      this._metastateStore();
+   }
+
+   metaexecParameterGet() {
+      this._metastateRetrieve();
+      let parameter = null;
+      if (this._metastate != null && this._metastate.parameter) {
+         parameter = this._metastate.parameter;
+         delete this._metastate.parameter;
+         this._metastateStore();
+      }
+      return parameter;
    }
 }
 
