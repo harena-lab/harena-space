@@ -415,6 +415,44 @@ class Translator {
    _compileMerge(unity) {
       let compiled = unity.content;
 
+      // first cycle - define the identity of each item: field or list
+      for (let c = 1; c < compiled.length; c++)
+         if (compiled[c].type == "item") {
+            let u = c-1;
+            while (u >= 0 && compiled[u].type == "linefeed" ||
+                   (!Translator.element[compiled[u].type].subfield &&
+                    compiled[u].subordinate))
+               u--;
+            console.log("=== item");
+            console.log(u);
+            console.log(compiled[u]);
+            console.log(compiled[c]);
+            if (u >= 0 && Translator.element[compiled[u].type].subfield) {
+               let field = {
+                  type: "field",
+                  presentation: compiled[c].presentation,
+                  subordinate: compiled[c].subordinate,
+                  field: compiled[c].label,
+                  _source: compiled[c]._source
+               };
+               if (compiled[c].level)
+                  field.level = compiled[c].level;
+               compiled[c] = field;
+               console.log("=== field");
+               console.log(compiled[c]);
+            } else {
+               const markdown = {
+                  type: "text",
+                  subordinate: compiled[c].subordinate,
+                  content: compiled[c].presentation,
+                  _source: compiled[c]._source
+               };
+               compiled[c] = markdown;
+               console.log("=== text");
+               console.log(compiled[c]);
+            }
+         }
+
       // first cycle - aggregates texts, mentions, annotations and selects
       let tblock;
       let tblockSeq;
@@ -471,7 +509,7 @@ class Translator {
                   else if (typeof lastField.value !== "object")
                      lastField.value = {value: lastField.value};
                   lastField.value[compiled[c].field] = compiled[c].value;
-                  lastRoot._source += compiled[c]._source;
+                  lastRoot._source += "\n" + compiled[c]._source;
                   hierarchy.push(lastField);
                   lastField = compiled[c];
                   compiled.splice(c, 1);
@@ -719,6 +757,7 @@ class Translator {
          case "knot"   : obj = this._knotMdToObj(match); break;
          case "image"  : obj = this._imageMdToObj(match); break;
          case "option" : obj = this._optionMdToObj(match); break;
+         case "item"   : obj = this._itemMdToObj(match); break;
          case "field"  : obj = this._fieldMdToObj(match); break;
          case "divert-script" : obj = this._divertScriptMdToObj(match); break;
          case "divert" : obj = this._divertMdToObj(match); break;
@@ -1335,21 +1374,25 @@ class Translator {
       }
       if (matchArray[4] != null)
          field.target = matchArray[4].trim();
-      if (field.subordinate) {
-         field.level = 0;
-         let space = 0;
-         for (let c in matchArray[1])
-            if (matchArray[1][c] === "\t")
-               field.level++;
-            else {
-               space++;
-               if (space > 1) {
-                  field.level++;
-                  space = 0;
-               }
-            }
-      }
+      if (field.subordinate)
+         field.level = this._computeLevel(matchArray[1]);
       return field;
+   }
+
+   _computeLevel(indent) {
+      let level = 0;
+      let space = 0;
+      for (let c in indent)
+         if (indent[c] === "\t")
+            level++;
+         else {
+            space++;
+            if (space > 1) {
+               level++;
+               space = 0;
+            }
+         }
+      return level;
    }
 
    /*
@@ -1357,6 +1400,19 @@ class Translator {
     */
    _fieldObjToHTML(obj) {
       return obj.presentation;
+   }
+
+   _itemMdToObj(matchArray) {
+      let item = {
+         type: "item",
+         presentation: matchArray[0],
+         subordinate:
+            (matchArray[1][0] === "\t" || matchArray[1].length > 1) ? true : false,
+         label: matchArray[2].trim()
+      };
+      if (item.subordinate)
+         item.level = this._computeLevel(matchArray[1]);
+      return item;
    }
 
    /*
@@ -1808,8 +1864,13 @@ class Translator {
       field: {
          mark: /^([ \t]*)(?:[\+\*])[ \t]*([\w.\/\?&#\-][\w.\/\?&#\- \t]*):[ \t]*([^&>\n\r\f]+)?(?:-(?:(?:&gt;)|>)[ \t]*([^\(\n\r\f]+))?$/im,
          line: true,
+         subfield: true,
          subimage: true,
          subtext:  "value" },
+      item: {
+         mark: /^(  |\t[ \t]*)(?:[\+\*])[ \t]*([\w.\/\?&#\-][\w.\/\?&#\- \t]*)$/im,
+         line: true,
+         subtext: "value" },
       option: {
          mark: /^[ \t]*([\+\*])[ \t]*([^\(&> \t\n\r\f][^\(&>\n\r\f]*)?-(?:(?:&gt;)|>)[ \t]*([^"\n\r\f]+)(?:"([^"\n\r\f]+)")?[ \t]*$/im,
          line: true },
