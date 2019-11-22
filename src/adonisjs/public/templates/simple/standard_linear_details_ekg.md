@@ -1,28 +1,11 @@
-Cycle 1
-=======
+Description Cycle
+=================
 
-Begin (start, detailed)
---------------------------
+Description (detailed)
+----------------------
 
-Present the case.
+Present the case here.
 
-Line 2
-
-Line 3
-
-Line 4
-
-Line 5
-
-Line 6
-
-Line 7
-
-Line 8
-
-Line 9
-
-Line 10
 
 * -> Generate hypothesis
 
@@ -41,10 +24,10 @@ Generate hypothesis (input)
   * value: 50
   * index: true
 
-* Submit hypothesis -> Cycle 2.EKG
+* Submit hypothesis -> Flow.Next
 
-Cycle 2
-=======
+EKG Cycle
+=========
 
 ## EKG (exam_zoom)
 
@@ -53,31 +36,32 @@ Cycle 2
 
 * -> Generate hypothesis
 
-## Generate hypothesis (input)
-
-? hypothesis
-  What is your main diagnostic hypothesis?
-
-? confidence
-  How sure are you of your diagnosis?
-  * type: slider
-  * min: 0
-  * max: 100
-  * value: 50
-  * index: true
-
-* Submit hypothesis -> Final.Report
+## Generate hypothesis: Description Cycle.Generate hypothesis
 
 Final
 =====
 
-Report (detailed)
------------------
-~ case=0
+## Report (detailed,end)
+------------------------
 
-Congratulations, my young Dr. you could helped your patient providing his diagnosis.
+Congratulations, my young Dr., you could helped your patient providing his diagnosis.
 
-____ Data _____
+* Next case -> Case.Next
+
+___ Flow ___
+
+* Description first:
+  * Description Cycle.Description:
+  * EKG Cycle.EKG:
+  * Final.Report:
+
+* EKG first:
+  * EKG Cycle.EKG:
+  * Description Cycle.Description:
+  * Final.Report:
+
+___ Data ___
+
 * theme: simple
 * namespaces:
   * evidence: http://purl.org/versum/evidence/
