@@ -69,9 +69,9 @@ class DCCStateSelect extends DCCVisual {
       
       this._checkRender();
 
-      MessageBus.ext.publish("var/" + this.completeId + "/subinput/ready",
-                                    {sourceType: DCCStateSelect.elementTag,
-                                     content: this.innerHTML});
+      MessageBus.int.publish("var/" + this.completeId + "/subinput/ready",
+                             {sourceType: DCCStateSelect.elementTag,
+                              content: this.innerHTML});
       super.connectedCallback();
    }
    
@@ -196,7 +196,7 @@ class DCCStateSelect extends DCCVisual {
        const statesArr = this.states.split(",");
        this._currentState = (this._currentState + 1) % statesArr.length;
        MessageBus.ext.publish("var/" + this.completeId + "/state_changed",
-             {sourceType: DCCInput.elementTag,
+             {sourceType: DCCStateSelect.elementTag,
               state: statesArr[this._currentState]});
      }
      this._renderInterface();
@@ -223,8 +223,8 @@ class DCCGroupSelect extends DCCBlock {
       MessageBus.page.subscribe("dcc/select-variable/request", this.requestVariable);
       MessageBus.page.subscribe("dcc/request/select-states", this.requestStates);
       
-      MessageBus.ext.publish("var/" + this.variable + "/group_input/ready",
-                                    DCCGroupSelect.elementTag);
+      MessageBus.int.publish("var/" + this.variable + "/group_input/ready",
+                             DCCGroupSelect.elementTag);
    }
 
    disconnectedCallback() {

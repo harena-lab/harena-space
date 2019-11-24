@@ -116,8 +116,8 @@ class DCCGroupMarker extends DCCBase {
       MessageBus.page.subscribe("dcc/marker-spot/set", this.setMarkerSpot);
       MessageBus.page.subscribe("dcc/marker-spot/selected", this.spotSelected);
       
-      MessageBus.ext.publish("var/" + this.context + "/group_input/ready",
-            DCCGroupMarker.elementTag);
+      MessageBus.int.publish("var/" + this.context + "/group_input/ready",
+                             DCCGroupMarker.elementTag);
 
       if (this.hasAttribute("edit")) {
          this._editState = 0;
