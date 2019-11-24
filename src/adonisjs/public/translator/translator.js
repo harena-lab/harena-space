@@ -423,23 +423,18 @@ class Translator {
                    (!Translator.element[compiled[u].type].subfield &&
                     compiled[u].subordinate))
                u--;
-            console.log("=== item");
-            console.log(u);
-            console.log(compiled[u]);
-            console.log(compiled[c]);
             if (u >= 0 && Translator.element[compiled[u].type].subfield) {
                let field = {
                   type: "field",
                   presentation: compiled[c].presentation,
                   subordinate: compiled[c].subordinate,
                   field: compiled[c].label,
+                  value: true,
                   _source: compiled[c]._source
                };
                if (compiled[c].level)
                   field.level = compiled[c].level;
                compiled[c] = field;
-               console.log("=== field");
-               console.log(compiled[c]);
             } else {
                const markdown = {
                   type: "text",
@@ -448,12 +443,10 @@ class Translator {
                   _source: compiled[c]._source
                };
                compiled[c] = markdown;
-               console.log("=== text");
-               console.log(compiled[c]);
             }
          }
 
-      // first cycle - aggregates texts, mentions, annotations and selects
+      // second cycle - aggregates texts, mentions, annotations and selects
       let tblock;
       let tblockSeq;
       for (let c = 0; c < compiled.length; c++) {
@@ -484,10 +477,10 @@ class Translator {
             compiled[c].seq = c + 1;
       }
 
-      // second cycle - aggregates text blocks separated by line feeds
+      // third cycle - aggregates text blocks separated by line feeds
       this._compileMergeLinefeeds(unity);
 
-      // third cycle - computes field hierarchy
+      // fourth cycle - computes field hierarchy
       let lastRoot = null;
       let lastField = null;
       let hierarchy = [];
@@ -523,7 +516,7 @@ class Translator {
          }
       }
 
-      // fourth cycle - computes subordinate elements
+      // fifith cycle - computes subordinate elements
       for (let c = 0; c < compiled.length; c++) {
          const pr = (c > 1 && compiled[c-1].type == "linefeed") ? c-2 : c-1;
          if (c > 0 && compiled[c].subordinate &&
@@ -592,7 +585,7 @@ class Translator {
             compiled[c].seq = c + 1;
       }
 
-      // fifth cycle - joins script sentences
+      // sixth cycle - joins script sentences
       // <TODO> quite similar to text-block (join?)
       let script;
       let scriptSeq;

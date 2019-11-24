@@ -9,11 +9,11 @@ class Tracker {
       this._groupInput = null;
       
       this.inputReady = this.inputReady.bind(this);
-      MessageBus.ext.subscribe("var/+/input/ready", this.inputReady);
+      MessageBus.int.subscribe("var/+/input/ready", this.inputReady);
       this.groupinputReady = this.groupinputReady.bind(this);
-      MessageBus.ext.subscribe("var/+/group_input/ready", this.groupinputReady);
+      MessageBus.int.subscribe("var/+/group_input/ready", this.groupinputReady);
       this.subinputReady = this.subinputReady.bind(this);
-      MessageBus.ext.subscribe("var/+/subinput/ready", this.subinputReady);
+      MessageBus.int.subscribe("var/+/subinput/ready", this.subinputReady);
       this.inputTyped = this.inputTyped.bind(this);
       MessageBus.ext.subscribe("var/+/typed", this.inputTyped);
       this.inputChanged = this.inputChanged.bind(this);
@@ -27,7 +27,6 @@ class Tracker {
    
    inputReady(topic, message) {
       this._updateVariable(topic, "");
-      // console.log("input: " + message.value);
    }
    
    groupinputReady(topic, message) {

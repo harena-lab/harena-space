@@ -2,7 +2,7 @@
  * Slider DCC
  ***********/
 
-class DCCSlider extends DCCBlock {
+class DCCSlider extends DCCInput {
    constructor() {
       super();
       this.inputChanged = this.inputChanged.bind(this);
@@ -21,7 +21,7 @@ class DCCSlider extends DCCBlock {
 
       super.connectedCallback();
       
-      MessageBus.ext.publish("var/" + this.variable + "/input/ready",
+      MessageBus.int.publish("var/" + this.variable + "/input/ready",
                              DCCSlider.elementTag);
    }
    
@@ -30,32 +30,8 @@ class DCCSlider extends DCCBlock {
     */
    
    static get observedAttributes() {
-      return DCCBlock.observedAttributes.concat(
-         ["statement", "variable", "value", "min", "max", "index"]);
-   }
-
-   get statement() {
-      return this.getAttribute("statement");
-   }
-   
-   set statement(newValue) {
-      this.setAttribute("statement", newValue);
-   }
-   
-   get variable() {
-      return this.getAttribute("variable");
-   }
-   
-   set variable(newValue) {
-      this.setAttribute("variable", newValue);
-   }
-
-   get value() {
-      return this.getAttribute("value");
-   }
-
-   set value(newValue) {
-      this.setAttribute("value", newValue);
+      return DCCInput.observedAttributes.concat(
+         ["min", "max", "index"]);
    }
 
    get min() {
@@ -88,11 +64,13 @@ class DCCSlider extends DCCBlock {
    /* Event handling */
    
    inputChanged() {
+      this.changed = true;
+      this.value = this._inputVariable.value;
       if (this._inputIndex)
-         this._inputIndex.innerHTML = this._inputVariable.value;
+         this._inputIndex.innerHTML = this.value;
       MessageBus.ext.publish("var/" + this.variable + "/changed",
-                                    {sourceType: DCCSlider.elementTag,
-                                     value: this._inputVariable.value});
+                             {sourceType: DCCSlider.elementTag,
+                              value: this.value});
    }
    
    /* Rendering */

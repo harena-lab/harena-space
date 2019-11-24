@@ -50,74 +50,77 @@ class PlayerManager {
          MessageBus.ext.publish("knot/" + this._currentKnot + "/end");
       }
 
-      switch (topic) {
-         case "knot/</navigate": if (this._state.historyHasPrevious())
-                                    this.knotLoad(this._state.historyPrevious());
-                                 break;
-         case "knot/<</navigate": this.startCase();
-                                  const flowStart = this._nextFlowKnot();
-                                  const startKnot =
-                                    (flowStart != null)
-                                      ? flowStart.target
-                                      : (DCCPlayerServer.localEnv)
-                                        ? DCCPlayerServer.playerObj.start
-                                        : this._compiledCase.start;
-                                  this._state.historyRecord(startKnot);
-                                  this.knotLoad(startKnot);
-                                  break;
-         case "knot/>/navigate": const nextKnot = this._state.nextKnot();
-                                 this._state.historyRecord(nextKnot);
-                                 this.knotLoad(nextKnot);
-                                 break;
-         case "flow/>/navigate": const flowNext = this._nextFlowKnot();
-                                 if (flowNext != null) {
-                                    console.log("=== flow next");
-                                    console.log(flowNext);
-                                    this._state.historyRecord(flowNext.target);
-                                    this.knotLoad(flowNext.target);
-                                 }
-                                 break;
-         case "case/>/navigate":
-            // <TODO> jumping other instructions - improve it
-            console.log("=== next case");
-            let instruction;
-            do {
-               instruction = this._state.metascriptNextInstruction();
-            } while (instruction != null && instruction.type != "divert-script" &&
-                     instruction.target.substring(0, 5).toLowerCase() != "case.");
+      let mandatoryOk = true;
 
-            console.log(instruction);
-            if (instruction != null) {
-               if (instruction.parameter) {
-                  console.log("=== metaparameter");
-                  console.log(instruction.parameter.parameter);
-                  this._state.metaexecParameterSet(instruction.parameter.parameter);
-               }
-               window.open("index.html?case=" +
-                  instruction.target.substring(5) +
-                  (this._previewCase ? "&preview" : ""), "_self");
-            }
-            break;
-         default: if (MessageBus.matchFilter(topic, "knot/+/navigate")) {
-                     this._state.historyRecord(target);
-                     if (message.value) {
-                        this._state.parameter = message.value;
-                        this.knotLoad(target, message.value);
-                     } else {
-                        this._state.parameter = null;
-                        this.knotLoad(target);
-                     }
-                  } else if (MessageBus.matchFilter(topic, "case/+/navigate")) {
-                     if (message) {
-                        console.log("=== metaparameter");
-                        console.log(message.parameter);
-                        this._state.metaexecParameterSet(message.parameter);
-                     }
-                     window.open("index.html?case=" + target +
-                        (this._previewCase ? "&preview" : ""), "_self");
+      if (mandatoryOk)
+         switch (topic) {
+            case "knot/</navigate": if (this._state.historyHasPrevious())
+                                       this.knotLoad(this._state.historyPrevious());
+                                    break;
+            case "knot/<</navigate": this.startCase();
+                                     const flowStart = this._nextFlowKnot();
+                                     const startKnot =
+                                       (flowStart != null)
+                                         ? flowStart.target
+                                         : (DCCPlayerServer.localEnv)
+                                           ? DCCPlayerServer.playerObj.start
+                                           : this._compiledCase.start;
+                                     this._state.historyRecord(startKnot);
+                                     this.knotLoad(startKnot);
+                                     break;
+            case "knot/>/navigate": const nextKnot = this._state.nextKnot();
+                                    this._state.historyRecord(nextKnot);
+                                    this.knotLoad(nextKnot);
+                                    break;
+            case "flow/>/navigate": const flowNext = this._nextFlowKnot();
+                                    if (flowNext != null) {
+                                       console.log("=== flow next");
+                                       console.log(flowNext);
+                                       this._state.historyRecord(flowNext.target);
+                                       this.knotLoad(flowNext.target);
+                                    }
+                                    break;
+            case "case/>/navigate":
+               // <TODO> jumping other instructions - improve it
+               console.log("=== next case");
+               let instruction;
+               do {
+                  instruction = this._state.metascriptNextInstruction();
+               } while (instruction != null && instruction.type != "divert-script" &&
+                        instruction.target.substring(0, 5).toLowerCase() != "case.");
+
+               console.log(instruction);
+               if (instruction != null) {
+                  if (instruction.parameter) {
+                     console.log("=== metaparameter");
+                     console.log(instruction.parameter.parameter);
+                     this._state.metaexecParameterSet(instruction.parameter.parameter);
                   }
-                  break;
-      }
+                  window.open("index.html?case=" +
+                     instruction.target.substring(5) +
+                     (this._previewCase ? "&preview" : ""), "_self");
+               }
+               break;
+            default: if (MessageBus.matchFilter(topic, "knot/+/navigate")) {
+                        this._state.historyRecord(target);
+                        if (message.value) {
+                           this._state.parameter = message.value;
+                           this.knotLoad(target, message.value);
+                        } else {
+                           this._state.parameter = null;
+                           this.knotLoad(target);
+                        }
+                     } else if (MessageBus.matchFilter(topic, "case/+/navigate")) {
+                        if (message) {
+                           console.log("=== metaparameter");
+                           console.log(message.parameter);
+                           this._state.metaexecParameterSet(message.parameter);
+                        }
+                        window.open("index.html?case=" + target +
+                           (this._previewCase ? "&preview" : ""), "_self");
+                     }
+                     break;
+         }
    }
 
    _nextFlowKnot() {
@@ -139,10 +142,6 @@ class PlayerManager {
       this._previewCase = false;
       if (parameters != null && parameters.length > 0) {
          precase = parameters.match(/case=([\w-]+)/i);
-         /*
-         console.log("=== precase");
-         console.log(precase);
-         */
          if (precase != null)
             precase = precase[1];
          else {
@@ -158,13 +157,6 @@ class PlayerManager {
             document.querySelector("#preview-panel").style.display = "initial";
       } else
          precase = null;
-
-      /*
-      console.log("=== preview");
-      console.log(precase);
-      console.log(precaseid);
-      console.log(preview);
-      */
 
       let resume = false;
       if (!this._previewCase && this._state.pendingPlayCheck()) {
