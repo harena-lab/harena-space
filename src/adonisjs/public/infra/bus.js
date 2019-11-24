@@ -157,15 +157,16 @@ class MessageBus {
       *************************/
    
    static _convertRegExp(filter) {
-      return new RegExp(filter.replace("/", "\\/")
-                              .replace("+", "[^\/]+")  // "[\\w -\.\*<>]+"
-                              .replace("#", ".+"));  // "[\\w\\/ -\.\*<>]+"
+      return new RegExp(filter.replace(/\//g, "\\/")
+                              .replace(/\+/g, "[^\/]+")  // "[\\w -\.\*<>]+"
+                              .replace(/#/g, ".+"));  // "[\\w\\/ -\.\*<>]+"
    }
    
    static matchFilter(topic, filter) {
       let match = false;
       const regExp = MessageBus._convertRegExp(filter);
-      if (regExp.exec(topic) != null)
+      const matched = regExp.exec(topic);
+      if (matched != null && matched[0] === topic)
          match = true;
       return match;
    }

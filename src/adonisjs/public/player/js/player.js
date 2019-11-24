@@ -41,18 +41,27 @@ class PlayerManager {
       }
    }
    
-   navigateEvent(topic, message) {
+   async navigateEvent(topic, message) {
       let target = MessageBus.extractLevel(topic, 2);
       this.trackTrigger(target);
 
-      if (this._currentKnot != null) {
-         MessageBus.ext.publish("control/input/submit"); // <TODO> provisory
-         MessageBus.ext.publish("knot/" + this._currentKnot + "/end");
-      }
+      let mandatoryEmpty = null;
+      let mandatoryM = await MessageBus.int.request("var/*/input/mandatory/get");
+      for (let m in mandatoryM.message)
+         if (mandatoryM.message[m].filled == false && mandatoryEmpty == null)
+            mandatoryEmpty = mandatoryM.message[m].message;
 
-      let mandatoryOk = true;
+      if (mandatoryEmpty != null) {
+         MessageBus.ext.publish(topic + "/blocked", "Input missing: " + mandatoryEmpty);
+         await DCCNoticeInput.displayNotice(
+            "You must answer the question: " + mandatoryEmpty,
+            "message", "Ok");
+      } else {
+         if (this._currentKnot != null) {
+            MessageBus.ext.publish("control/input/submit"); // <TODO> provisory
+            MessageBus.ext.publish("knot/" + this._currentKnot + "/end");
+         }
 
-      if (mandatoryOk)
          switch (topic) {
             case "knot/</navigate": if (this._state.historyHasPrevious())
                                        this.knotLoad(this._state.historyPrevious());
@@ -121,6 +130,7 @@ class PlayerManager {
                      }
                      break;
          }
+      }
    }
 
    _nextFlowKnot() {

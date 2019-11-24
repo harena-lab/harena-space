@@ -9,10 +9,20 @@ class DCCInput extends DCCBlock {
    }
 
    connectedCallback() {
+      this._statement = (this.hasAttribute("statement"))
+         ? this.statement : this.innerHTML;
+      this.innerHTML = "";
+
       super.connectedCallback();
-      if (this.mandatory)
+
+      if (this.mandatory) {
+         const inputIndication = (this._statement != null)
+            ? this._statement
+            : this.variable.substring(this.variable.lastIndexOf(".") + 1);
+
          MessageBus.int.publish("var/" + this.variable + "/input/mandatory",
-                                DCCInputTyped.elementTag);
+                                inputIndication);
+      }
    }
 
    static get observedAttributes() {

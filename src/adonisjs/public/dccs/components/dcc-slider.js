@@ -9,9 +9,6 @@ class DCCSlider extends DCCInput {
    }
    
    connectedCallback() {
-      this._statement = (this.hasAttribute("statement"))
-         ? this.statement : this.innerHTML;
-      this.innerHTML = "";
       if (!this.hasAttribute("min"))
          this.min = DCCSlider.defaultValueMin;
       if (!this.hasAttribute("max"))
@@ -90,8 +87,10 @@ class DCCSlider extends DCCInput {
          (this.hasAttribute("xstyle") && this.xstyle.startsWith("out"))
          ? "" : this._statement;
 
-      const index = (this.hasAttribute("index"))
-         ? "<span id='" + this.variable + "-index'>" + this.value + "</span>"
+      const index = (this.index)
+         ? "<span id='" + this.variable + "-index'>" + 
+              ((this.mandatory) ? "  " : this.value) +
+           "</span>"
          : "";
 
       let html = DCCSlider.templateElement

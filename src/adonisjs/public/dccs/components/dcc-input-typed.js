@@ -10,10 +10,6 @@ class DCCInputTyped extends DCCInput {
    }
    
    connectedCallback() {
-      this._statement = (this.hasAttribute("statement"))
-         ? this.statement : this.innerHTML;
-      this.innerHTML = "";
-
       super.connectedCallback();
       
       MessageBus.int.publish("var/" + this.variable + "/input/ready",
@@ -67,8 +63,8 @@ class DCCInputTyped extends DCCInput {
       this.changed = true;
       this.value = this._inputVariable.value;
       MessageBus.ext.publish("var/" + this.variable + "/changed",
-                                    {sourceType: DCCInputTyped.elementTag,
-                                     value: this.value});
+                             {sourceType: DCCInputTyped.elementTag,
+                              value: this.value});
    }
    
    /* Rendering */

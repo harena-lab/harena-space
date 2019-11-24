@@ -18,7 +18,13 @@ class DCCTrigger extends DCCBlock {
          this.location = "#in";
          this.xstyle = "theme";
       }
+
       super.connectedCallback();
+
+      if (this.hasAttribute("action") && this.action.endsWith("/navigate")) {
+         this.navigationBlocked = this.navigationBlocked.bind(this);
+         MessageBus.ext.subscribe("+/+/navigate/blocked", this.navigationBlocked);
+      }
    }
    
    /* Attribute Handling */
@@ -89,16 +95,19 @@ class DCCTrigger extends DCCBlock {
       if (this.hasAttribute("image"))
          this._imageElement = this._presentation.querySelector("#pres-image-dcc");
       
+      let wrapperListener = false;
       if (this.location && this.location[0] != "#") {
          let wrapper = document.querySelector("#" + this.location + "-wrapper");
          if (wrapper != null) {
             wrapper.style.cursor = "pointer";
-            if (!this.author)
+            if (!this.author) {
                wrapper.addEventListener("click", this._computeTrigger);
+               wrapperListener = true;
+            }
          }
       }
 
-      if (this._presentation != null) {
+      if (this._presentation != null && !wrapperListener) {
          this._presentation.style.cursor = "pointer";
          if (!this.author)
             this._presentation.addEventListener("click", this._computeTrigger);
@@ -118,25 +127,8 @@ class DCCTrigger extends DCCBlock {
    _computeTrigger() {
       if (this._active &&
           (this.hasAttribute("label") || this.hasAttribute("action"))) {
-         /*
-         if (this.hasAttribute("link") ||
-             (this.hasAttribute("action") && this.action.endsWith("/navigate")))
-            this._active = false;
-         */
          if (this.hasAttribute("action") && this.action.endsWith("/navigate"))
             this._active = false;
-
-         /*
-         let message = (this.hasAttribute("link")) ? this.link : this.label;
-         if (!this.hasAttribute("action")) {
-            message = {target: message};
-            if (this.hasAttribute("parameter"))
-               message.parameter = this.parameter;
-         }
-         const topic = (this.hasAttribute("action"))
-            ? this.action : "knot/" + message.target + "/navigate";
-         */
-
          const topic = (this.hasAttribute("action"))
             ? this.action : "trigger/" + this.label + "/clicked";
          let message = {};
@@ -145,6 +137,10 @@ class DCCTrigger extends DCCBlock {
 
          MessageBus.ext.publish(topic, message);
       }
+   }
+
+   navigationBlocked() {
+      this._active = true;
    }
 }
 
