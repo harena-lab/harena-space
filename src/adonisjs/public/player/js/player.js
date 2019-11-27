@@ -178,12 +178,24 @@ class PlayerManager {
             resume = true;
             this._state.pendingPlayRestore();
             DCCCommonServer.instance.token = this._state.token;
-            await this._caseLoad(this._state.currentCase);
-            const current = this._state.historyCurrent();
+
+            // <TODO> provisory deactivation
+            // await this._caseLoad(this._state.currentCase);
+            // const current = this._state.historyCurrent();
+            this.resumeCase();
+            /*
             if (this._state.parameter == null)
                this.knotLoad(current);
             else
                this.knotLoad(current, this._state.parameter);
+            */
+
+            // <TODO> provisory
+            this._state.currentCase = this._state.currentCase;
+            await this._caseLoad(this._state.currentCase);
+
+            this._caseFlow();
+            MessageBus.ext.publish("knot/<</navigate");
          } else
             this._state.sessionCompleted();
       }
@@ -437,7 +449,17 @@ class PlayerManager {
             this._server.generateRunningCase(this._state.userid,
                                              Basic.service.currentCaseId);
         
+         this._state.runningCase = runningCase;
          MessageBus.ext.defineRunningCase(runningCase);
+      }
+   }
+
+   resumeCase() {
+      if (!PlayerManager.isCapsule) {
+         // <TODO> this._runningCase is provisory
+         MessageBus.ext.publish("case/" + this._state.currentCase + "/resume", this._state.runningCase);
+
+         MessageBus.ext.defineRunningCase(this._state.runningCase);
       }
    }
    

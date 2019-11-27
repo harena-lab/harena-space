@@ -54,8 +54,6 @@ class MessageBus {
             this._listeners[l].callback(topic, message);
       
       if (this._externalized) {
-         // console.log("--- topic: " + topic);
-         // console.log(message);
          if (DCCCommonServer.loggerAddressAPI) {
             let extMessage = (message != null) ? message : {};
             if (typeof message != "object")
@@ -77,6 +75,8 @@ class MessageBus {
                }
              });
              const status = await response.json();
+            console.log("--- topic: " + extTopic);
+            console.log(extMessage);
           }
 
           parent.postMessage({topic: topic, message: message}, "*");

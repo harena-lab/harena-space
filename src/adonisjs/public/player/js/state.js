@@ -110,6 +110,15 @@ class PlayState {
       this._stateStore();
    }
 
+   get runningCase() {
+      return this._state.running;
+   }
+   
+   set runningCase(running) {
+      this._state.running = running;
+      this._stateStore();
+   }
+
    /*
     * Scenario Variables
     */

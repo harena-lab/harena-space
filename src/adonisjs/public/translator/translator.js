@@ -738,8 +738,24 @@ class Translator {
             if (knots[target]) {
                if (!knots[k].categories && knots[target].categories)
                   knots[k].categories = knots[target].categories;
-               knots[k].content = knots[target].content;
+               knots[k].content = JSON.parse(JSON.stringify(knots[target].content));
             }
+
+            // adjusting the context
+            // <TODO> this solution is provisory as I am removing the context to add again
+
+            // removing context
+            let compiled = knots[k].content;
+            for (let c in compiled) {
+               if (compiled[c].type == "input")
+                  compiled[c].variable =
+                     compiled[c].variable.substring(compiled[c].variable.lastIndexOf(".")+1);
+               else if (compiled[c].type == "context-open")
+                  compiled[c].input =
+                     compiled[c].input.substring(compiled[c].input.lastIndexOf(".")+1);
+            }
+            // reinserting context
+            this._compileContext(knots, k);
          }
       }
    }
