@@ -7,13 +7,13 @@
 
 class AuthorManager {
    constructor() {
+      MessageBus.ext.externalized = false;
       MessageBus.page = new MessageBus(false);
 
       Basic.service.host = this;
       
       this._knotGenerateCounter = 2;
       
-      // Translator.instance = new Translator();
       Translator.instance.authoringRender = true;
 
       this._compiledCase = null;
@@ -21,10 +21,7 @@ class AuthorManager {
       
       this._navigator = new Navigator(Translator.instance);
       
-      // this._currentThemeCSS = null;
-      // this.currentThemeFamily = "minimal";
       this._themeSVG = true;
-      // this._currentCaseId = null;
       this._knotSelected = null;
       this._htmlKnot = null;
       this._editor = null;

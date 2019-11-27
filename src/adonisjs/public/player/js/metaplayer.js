@@ -1,5 +1,8 @@
 class MetaPlayer {
    play(knot, state) {
+      // <TODO> temporary - to avoid state in the metacase
+      state.sessionCompleted();
+
       console.log("=== script");
       let script = [];
       this._addInstructions(knot.content, script);
