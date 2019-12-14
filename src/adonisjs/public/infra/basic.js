@@ -126,6 +126,11 @@ class Basic {
       this.authorIdStore(userid, userEmail, DCCCommonServer.instance.token);
    }
 
+   async signout() {
+      await this.authorStateClean();
+      
+   }
+
    /*
     * Authoring State
     * <TODO> Unify with State
@@ -143,6 +148,10 @@ class Basic {
    authorStateStore(state) {
       localStorage.setItem(Basic.authorStateId,
                            JSON.stringify(state));
+   }
+
+   authorStateClean() {
+      localStorage.removeItem(Basic.authorStateId);
    }
 
    authorIdStore(userid, userEmail, token) {

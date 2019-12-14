@@ -12,27 +12,27 @@
 }
 
 .dcc-state-select-undefined {
-   background-color: lightgrey;
+   background-color: #d3d3d385;
 }
 
 .dcc-state-select-positive-plus {
-   background-color: green;
+   background-color: #90ee9078;
 }
 
 .dcc-state-select-positive {
-   background-color: blue;
+   background-color: #87cefac9;
 }
 
 .dcc-state-select-neutral {
-   background-color: yellow;
+   background-color: #ffff77;
 }
 
 .dcc-state-select-negative {
-   background-color: red;
+   background-color: #f0808078;
 }
 
 .dcc-text-annotation {
-   background-color: #defde0;
+   background-color: #ffaa0078;
 }
 
 .inplace-editor-floating {

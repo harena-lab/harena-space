@@ -6,7 +6,7 @@ class DCCStateSelect extends DCCVisual {
      
      this._pendingRequests = 0;
      
-     this._currentState = 0;
+     this.selectionIndex = 0;
      this._stateVisible = false;
      
      // Without shadow - not working
@@ -39,16 +39,16 @@ class DCCStateSelect extends DCCVisual {
       "<style> @import '" +
          Basic.service.themeStyleResolver("dcc-state-select.css") +
       "' </style>" +
-      `<span id="presentation-dcc">
-         <span id="presentation-text"><slot></slot></span>
-         <span id="presentation-state"></span>
-      </span>`;
+      "<span id='presentation-dcc'>" +
+         "<span id='presentation-text'><slot></slot></span>" +
+         "<span id='presentation-state'></span>" +
+      "</span>";
 
       let template = document.createElement("template");
       template.innerHTML = DCCStateSelect.templateElements;
 
       // Basic.service.replaceStyle(template, null, newValue, "dcc-state-select.css");
-     
+
       this._shadow = this.attachShadow({mode: "open"});
       this._shadow.appendChild(template.content.cloneNode(true));
      
@@ -76,9 +76,9 @@ class DCCStateSelect extends DCCVisual {
    }
    
    disconnectedCallback() {
-      this._presentation.removeEventListener('mouseover', this._showState);
-      this._presentation.removeEventListener('mouseout', this._hideState);
-      this._presentation.removeEventListener('click', this._changeState);
+      this._presentation.removeEventListener("mouseover", this._showState);
+      this._presentation.removeEventListener("mouseout", this._hideState);
+      this._presentation.removeEventListener("click", this._changeState);
    }
 
    // deactivates the authoring mode
@@ -100,7 +100,7 @@ class DCCStateSelect extends DCCVisual {
    // <TODO> remove "answer" and "player"?
    static get observedAttributes() {
       return DCCVisual.observedAttributes.concat(
-         ["variable", "states", "colors", "answer", "player"]);
+         ["variable", "states", "colors", "answer", "player", "selection"]);
    }
 
    get variable() {
@@ -116,7 +116,12 @@ class DCCStateSelect extends DCCVisual {
    }
 
    set states(newStates) {
-     this.setAttribute("states", newStates);
+      if (newStates == null)
+         this._statesArr = null;
+      else {
+         this._statesArr = newStates.split(",");
+         this.setAttribute("states", newStates);
+      }
    }
 
    get colors() {
@@ -143,17 +148,38 @@ class DCCStateSelect extends DCCVisual {
       this.setAttribute("player", newValue);
    }
    
+   get selection() {
+      return this.getAttribute("selection");
+    }
+
+   set selection(newValue) {
+      if (this._statesArr && this._statesArr.includes(newValue))
+         this._selectionIndex = this._statesArr.indexOf(newValue);
+      this.setAttribute("selection", newValue);
+   }
+
+   get selectionIndex() {
+      return this._selectionIndex;
+   }
+
+   set selectionIndex(newValue) {
+      if (this._statesArr && this._statesArr[newValue])
+         this.selection = this._statesArr[newValue];
+      else
+         this._selectionIndex = newValue;
+   }
+
    /* Rendering */
 
    async _checkRender() {
       if (this._pendingRequests >= 0 && this.states != null) {
-         const statesArr = this.states.split(",");
+         // const statesArr = this.states.split(",");
          if (this.hasAttribute("answer") || this.author)
-            this._currentState = statesArr.indexOf(this.answer);
+            this.selection = this.answer;
          else if (this.hasAttribute("player")) {
             let value = await MessageBus.ext.request(
                   "var/" + this.player + "/get/sub", this.innerHTML);
-            this._currentState = statesArr.indexOf(value.message);
+            this.selection = value.message;
          } else {
             this._presentation.addEventListener("mouseover", this._showState);
             this._presentation.addEventListener("mouseout", this._hideState);
@@ -168,36 +194,37 @@ class DCCStateSelect extends DCCVisual {
      if (this._presentation != null) {
        if (this._presentationState != null) {
           if (this._stateVisible && this.states != null) {
-             const statesArr = this.states.split(",");
-             this._presentationState.innerHTML = "[" + statesArr[this._currentState] + "]";
+             // const statesArr = this.states.split(",");
+             this._presentationState.innerHTML =
+                "[" + ((this.selection == null) ? " " : this.selection) + "]";
           } else
              this._presentationState.innerHTML = "";
        }
        this._presentation.className =
           DCCStateSelect.elementTag + "-template " +
-          DCCStateSelect.elementTag + "-" + this._currentState + "-template";
+          DCCStateSelect.elementTag + "-" + this.selectionIndex + "-template";
      }
    }
    
    /* Event handling */
    
    _showState() {
-     this._stateVisible = true;
-     this._renderInterface();
+      this._stateVisible = true;
+      this._renderInterface();
    }
    
    _hideState() {
-     this._stateVisible = false;
-     this._renderInterface();
+      this._stateVisible = false;
+      this._renderInterface();
    }
    
    _changeState() {
      if (this.states != null) {
-       const statesArr = this.states.split(",");
-       this._currentState = (this._currentState + 1) % statesArr.length;
+       // const statesArr = this.states.split(",");
+       this.selectionIndex = (this.selectionIndex + 1) % this._statesArr.length;
        MessageBus.ext.publish("var/" + this.completeId + "/state_changed",
              {sourceType: DCCStateSelect.elementTag,
-              state: statesArr[this._currentState]});
+              state: this.selection});
      }
      this._renderInterface();
    }
@@ -208,12 +235,23 @@ class DCCStateSelect extends DCCVisual {
  ********************/
 class DCCGroupSelect extends DCCBlock {
    constructor() {
-     super();
-     this.requestVariable = this.requestVariable.bind(this); 
-     this.requestStates = this.requestStates.bind(this);
-  }
-   
-   connectedCallback() {
+      super();
+      this.requestVariable = this.requestVariable.bind(this); 
+      this.requestStates = this.requestStates.bind(this);
+   }
+
+   async connectedCallback() {
+      if (this.vocabularies) {
+         let context =
+            await Context.instance.loadContext("http://purl.org/versum/evidence/");
+         this._highlightOptions = {};
+         for (let c in context.states)
+            this._highlightOptions[context.states[c]["@id"]] =
+               {label:  c,
+                symbol: context.states[c].symbol,
+                style:  context.states[c].style};
+      }
+
       this._statement = (this.hasAttribute("statement"))
          ? this.statement : this.innerHTML;
       this.innerHTML = "";
@@ -246,7 +284,7 @@ class DCCGroupSelect extends DCCBlock {
     */
 
    static get observedAttributes() {
-    return ["statement", "variable", "states", "labels", "colors"];
+    return ["statement", "variable", "states", "labels", "colors", "vocabularies"];
    }
 
    get statement() {
@@ -285,8 +323,16 @@ class DCCGroupSelect extends DCCBlock {
      return this.getAttribute("colors");
    }
 
-    set colors(newColors) {
+   set colors(newColors) {
      this.setAttribute("colors", newColors);
+   }
+
+   get vocabularies() {
+      return this.getAttribute("vocabularies");
+   }
+
+   set vocabularies(newValue) {
+      this.setAttribute("vocabularies", newValue);
    }
 
    async _renderInterface() {

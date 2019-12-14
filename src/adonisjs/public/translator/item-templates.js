@@ -1,5 +1,7 @@
 (function() {
 Translator.htmlTemplates = {
+annotation:
+`<dcc-annotation id='dcc[seq]'[annotation][author]>[content]</dcc-annotation>`,
 textBlock:
 `
 

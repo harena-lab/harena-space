@@ -20,10 +20,12 @@ class Panels {
       this._knotPanel = document.querySelector("#knot-panel");
       this._knotMain = document.querySelector("#knot-main");
       this._propertiesPanel = document.querySelector("#properties-panel");
+      
       this._buttonExpandNav = document.querySelector("#button-expand-nav");
       this._buttonRetractNav = document.querySelector("#button-retract-nav");
       this._buttonExpandProp = document.querySelector("#button-expand-prop");
       this._buttonRetractProp = document.querySelector("#button-retract-prop");
+
       this._elementsBlock = document.querySelector("#elements-block");
       this._elementsMain = document.querySelector("#elements-main");
 
@@ -133,7 +135,7 @@ class Panels {
          this._systemPanel.removeChild(this._locks[0]);
          this._toolbarPanel.removeChild(this._locks[1]);
          this._navigationBlock.removeChild(this._locks[2]);
-         this._knotPanel.appendChild(this._locks[3]);
+         this._knotPanel.removeChild(this._locks[3]);
          this._elementsBlock.removeChild(this._locks[4]);
          this._locks = null;
       }
