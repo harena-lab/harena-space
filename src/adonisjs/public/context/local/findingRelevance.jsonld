@@ -5,11 +5,11 @@
       "evidence": "http://purl.org/versum/evidence/",
       "title": "http://purl.org/dc/elements/1.1/title",
       "states": {
-         "@id": "versum:States_vocabulary",
+         "@id": "versum:StatesVocabulary",
          "@container": "@index"
       }
    },
-   "@id": "evidence:finding_relevance",
+   "@id": "evidence:findingRelevance",
    "title": "finding relevance",
    "states": {
       "undefined": {
@@ -17,19 +17,19 @@
          "style": "dcc-state-select-undefined",
          "symbol": " "},
       "key": {
-         "@id": "evidence:key_finding",
+         "@id": "evidence:keyFinding",
          "style": "dcc-state-select-positive-plus",
          "symbol": "k"},
       "corroborates": {
-         "@id": "evidence:corroborate_finding",
+         "@id": "evidence:corroborateFinding",
          "style": "dcc-state-select-positive",
          "symbol": "+"},
       "neutral": {
-         "@id": "evidence:neutral_finding",
+         "@id": "evidence:neutralFinding",
          "style": "dcc-state-select-neutral",
          "symbol": "="},
       "against": {
-         "@id": "evd:against_hypothesis",
+         "@id": "evidence:againstHypothesis",
          "style": "dcc-state-select-negative",
          "symbol": "-"}
    }

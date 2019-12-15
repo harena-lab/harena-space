@@ -330,6 +330,11 @@ class PlayerManager {
    caseCompleted(topic, message) {
       this._state.sessionCompleted();
    }
+
+   async sessionClose(topic, message) {
+      this._state.sessionCompleted();
+      // await Basic.service.
+   }
    
    presentKnot(knot) {
       MessageBus.page = new MessageBus(false);

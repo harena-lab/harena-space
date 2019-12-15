@@ -51,14 +51,14 @@ Congratulations, my young Dr., you could helped your patient providing his diagn
 ___ Flow ___
 
 * Description first:
-  * Description Cycle.Description:
-  * EKG Cycle.EKG:
-  * Final.Report:
+  * Description Cycle.Description
+  * EKG Cycle.EKG
+  * Final.Report
 
 * EKG first:
-  * EKG Cycle.EKG:
-  * Description Cycle.Description:
-  * Final.Report:
+  * EKG Cycle.EKG
+  * Description Cycle.Description
+  * Final.Report
 
 ___ Data ___
 

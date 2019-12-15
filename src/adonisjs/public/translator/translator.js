@@ -9,8 +9,6 @@ class Translator {
       this.authoringRender = false;
 
       this._markdownTranslator = new showdown.Converter();
-      
-      this._annotationMdToObj = this._annotationMdToObj.bind(this);
    }
 
    /*
@@ -164,11 +162,14 @@ class Translator {
     * Extract annotations of a single node
     */
    _extractKnotAnnotations(knot) {
+      /*
       const mdAnnToObj = {
          "context-open" : this._contextOpenMdToObj,
          "context-close": this._contextCloseMdToObj,
-         annotation: this._annotationMdToObj
+         annotation: this._annotationMdToObj,
+         select: this._selectMdToObj
       };
+      */
       
       knot.annotations = [];
       let currentSet = knot.annotations;
@@ -194,12 +195,13 @@ class Translator {
             // translate the expression to an object
             let matchSize = mdfocus.match(Translator.marksAnnotation[selected])[0].length;
             let toTranslate = mdfocus.substr(matchStart, matchSize);
-            let transObj = mdAnnToObj[selected](
-                  Translator.marksAnnotation[selected].exec(toTranslate));
+            const match = Translator.marksAnnotation[selected].exec(toTranslate);
+            // let transObj = mdAnnToObj[selected]( );
             
             // hierarchical annotation building inside contexts
             switch (selected) {
                case "context-open":
+                  let transObj = this._contextOpenMdToObj(match);
                   currentSet.push(transObj);
                   currentSet = [];
                   transObj.annotations = currentSet;
@@ -207,8 +209,11 @@ class Translator {
                case "context-close":
                   currentSet = knot.annotations;
                   break;
+               case "select":
+                  currentSet.push(this._selectMdToObj(match));
+                  break;
                case "annotation":
-                  currentSet.push(transObj);
+                  currentSet.push(this._annotationMdToObj(match));
                   break;
             }
             
@@ -232,11 +237,6 @@ class Translator {
       this._compileUnityMarkdown(knot);
 
       this._compileContext(knotSet, knotId);
-
-      /*
-      console.log("=== antes");
-      console.log(JSON.stringify(knot));
-      */
 
       this._compileMerge(knot);
 
@@ -564,9 +564,14 @@ class Translator {
             if (merge) {
                compiled[pr]._source += "\n" + compiled[c]._source;
                compiled[pr].mergeLine =
+                  Translator.element[compiled[c].type] &&
+                  Translator.isLine.includes(compiled[c].type);
+               /*
+               compiled[pr].mergeLine =
                   (Translator.element[compiled[c].type] &&
                    Translator.element[compiled[c].type].line !== undefined)
                      ? Translator.element[compiled[c].type].line : false;
+               */
                const shift = c - pr;
                compiled.splice(c - shift + 1, shift);
                c -= shift;
@@ -591,9 +596,13 @@ class Translator {
       let scriptSeq;
       for (let c = 0; c < compiled.length; c++) {
          if (Translator.scriptable.includes(compiled[c].type)) {
+            const line = (Translator.isLine.includes(compiled[c].type))
+                         ? "\n" : "";
+            /*
             const line = (Translator.element[compiled[c].type].line !== undefined &&
                           Translator.element[compiled[c].type].line)
                          ? "\n" : "";
+            */
             if (c == 0 || compiled[c-1].type != "script") {
                if (c < compiled.length-1 &&
                    Translator.scriptable.includes(compiled[c+1].type)) {
@@ -659,9 +668,12 @@ class Translator {
             } else if (c == 0 ||
                        (compiled[c-1].type != "text" &&
                         compiled[c-1].type != "text-block" &&
+                        Translator.isLine.includes(compiled[c-1].type))) {
+                        /*
                         Translator.element[compiled[c-1].type].line
                             !== undefined &&
                         Translator.element[compiled[c-1].type].line)) {
+                        */
 
                /*
                console.log("=== types");
@@ -933,7 +945,7 @@ class Translator {
             case "context-open"  : // html = this._selctxopenObjToHTML(obj); break;
             case "context-close" : html = ""; break; // html = this._selctxcloseObjToHTML(obj); 
             case "select"     : html = this._selectObjToHTML(obj, superseq); break;
-            case "annotation" : html = this._annotationObjToHTML(obj); break;
+            case "annotation" : html = this._annotationObjToHTML(obj, superseq); break;
             case "linefeed"   : html = this._linefeedObjToHTML(obj); break;
          }
       return html;
@@ -975,7 +987,7 @@ class Translator {
                   Translator.element[compiledCase.knots[kn].content[ct].type];
                */
                const content = compiledCase.knots[kn].content[ct];
-               const knotType = Translator.element[content.type];
+               // const knotType = Translator.element[content.type];
                /*
                console.log("=== knot type");
                console.log(compiledCase.knots[kn].content[ct].type);
@@ -986,6 +998,14 @@ class Translator {
                        knotType.line) ? "\n" : ""));
                */
                md += content._source +
+                     (((content.mergeLine === undefined &&
+                       Translator.isLine.includes(content.type)) ||
+                      (content.mergeLine !== undefined &&
+                        content.mergeLine))
+                      ? "\n" : "");
+
+               /*
+               md += content._source +
                      (((knotType !== undefined &&
                         content.mergeLine === undefined &&
                         knotType.line !== undefined &&
@@ -993,6 +1013,7 @@ class Translator {
                        (content.mergeLine !== undefined &&
                         content.mergeLine))
                      ? "\n" : "");
+               */
                /*
                console.log((knotType !== undefined &&
                        knotType.line !== undefined &&
@@ -1119,7 +1140,7 @@ class Translator {
       let result = obj.content;
       if (this.authoringRender && superseq == -1)
          result = Translator.htmlTemplatesEditable.text
-                    .replace("[seq]", obj.seq)
+                    .replace("[seq]", this._subSeq(superseq, obj.seq))
                     .replace("[author]", this._authorAttrSub(superseq))
                     .replace("[content]", obj.content);
       return result;
@@ -1285,8 +1306,15 @@ class Translator {
    /*
     * Annotation Obj to HTML
     */
-   _annotationObjToHTML(obj) {
-      return obj.natural.complete;
+   _annotationObjToHTML(obj, superseq) {
+      return (this.authoringRender)
+         ? Translator.htmlTemplates.annotation
+                     .replace("[seq]", this._subSeq(superseq, obj.seq))
+                     .replace("[author]", this._authorAttrSub(superseq))
+                     .replace("[annotation]",
+                         (obj.formal) ? " annotation='" + obj.formal.complete + "'" : "")
+                     .replace("[content]", obj.natural.complete)
+         : obj.natural.complete;
    }   
    
    /*
@@ -1853,45 +1881,33 @@ class Translator {
    Translator.marksLayerTitle = /^[ \t]*\_{2,}((?:.(?!\_{2,}))*.)(?:\_{2,})?[ \t]*$/igm;
    Translator.marksKnotTitle = /((?:^[ \t]*(?:#+)[ \t]*(?:[^\( \t\n\r\f][^\(\n\r\f]*)(?:\((?:\w[\w \t,]*)\))?(?:\:[ \t]*[^\(\n\r\f][^\(\n\r\f\t]*)?[ \t]*#*[ \t]*$)|(?:^[ \t]*(?:[^\( \t\n\r\f][^\(\n\r\f]*)(?:\((?:\w[\w \t,]*)\))?(?:\:[ \t]*[^\(\n\r\f][^\(\n\r\f\t]*)?[ \t]*[\f\n\r][\n\r]?(?:==+|--+)$))/igm;
 
-   Translator.marksAnnotation = {
-     "context-open" : /\{\{([\w \t\+\-\*\."=\:%]+)?(?:\/([\w \t\.]+)\/)?[\f\n\r]/im,
-     "context-close": /\}\}/im,
-     annotation: /\{([^\(\{\}\/]+)\}(?:\(([^\)]+)\))?(?:\/([^\/]+)\/)?/im
-   };
-   
-   Translator.marksAnnotationInside = /([\w \t\+\-\*"]+)(?:[=\:]([\w \t%]*)(?:\/([\w \t%]*))?)?/im;
-
    Translator.element = {
       knot: {
          mark: /(?:^[ \t]*(#+)[ \t]*([^\( \t\n\r\f\:][^\(\n\r\f\:]*)(?:\((\w[\w \t,]*)\))?[ \t]*(?:\:[ \t]*([^\(\n\r\f][^\(\n\r\f\t]*))?[ \t]*#*[ \t]*$)|(?:^[ \t]*([^\( \t\n\r\f\:][^\(\n\r\f\:]*)(?:\((\w[\w \t,]*)\))?[ \t]*(?:\:[ \t]*([^\(\n\r\f][^\(\n\r\f\t]*))?[ \t]*[\f\n\r][\n\r]?(==+|--+)$)/im,
-         line: true,
          subfield: true,
          subimage: true },
       image: {
          mark: /([ \t]*)!\[([\w \t]*)\]\(([\w:.\/\?&#\-~]+)[ \t]*(?:"([\w ]*)")?\)/im,
          inline: true },
       field: {
-         mark: /^([ \t]*)(?:[\+\*])[ \t]*([\w.\/\?&#\-][\w.\/\?&#\- \t]*):[ \t]*([^&>\n\r\f]+)?(?:-(?:(?:&gt;)|>)[ \t]*([^\(\n\r\f]+))?$/im,
-         line: true,
+         mark: /^([ \t]*)(?:[\+\*])[ \t]+([\w.\/\?&#\-][\w.\/\?&#\- \t]*):[ \t]*([^&>\n\r\f]+)?(?:-(?:(?:&gt;)|>)[ \t]*([^\(\n\r\f]+))?$/im,
          subfield: true,
          subimage: true,
          subtext:  "value" },
       item: {
-         mark: /^(  |\t[ \t]*)(?:[\+\*])[ \t]*([\w.\/\?&#\-][\w.\/\?&#\- \t]*)$/im,
-         line: true,
+         mark: /^(  |\t[ \t]*)(?:[\+\*])[ \t]+([\w.\/\?&#\-][\w.\/\?&#\- \t]*)$/im,
          subtext: "value" },
       option: {
-         mark: /^[ \t]*([\+\*])[ \t]*([^\(&> \t\n\r\f][^\(&>\n\r\f]*)?-(?:(?:&gt;)|>)[ \t]*([^"\n\r\f]+)(?:"([^"\n\r\f]+)")?[ \t]*$/im,
-         line: true },
+         mark: /^[ \t]*([\+\*])[ \t]+([^\(&> \t\n\r\f][^\(&>\n\r\f]*)?-(?:(?:&gt;)|>)[ \t]*([^"\n\r\f]+)(?:"([^"\n\r\f]+)")?[ \t]*$/im
+         },
       "divert-script": {
          mark: /^[ \t]*(?:\(([\w\.]+)[ \t]*(==|>|<|>=|<=|&gt;|&lt;|&gt;=|&lt;=)[ \t]*((?:"[^"\n\r\f]+")|(?:\-?\d+(?:\.\d+)?)|(?:[\w\.]+))\)[ \t]*)?-(?:(?:&gt;)|>)[ \t]*([^"\n\r\f]+)(?:"([^"\n\r\f]+)")?[ \t]*$/im,
-         line: true },
+         },
       divert: {
          mark: /(?:(\w+)|"([^"]+)")(?:[ \t])*-(?:(?:&gt;)|>)[ \t]*(?:(\w[\w.]*)|"([^"]*)")/im,
          inline: true },
       entity: {
          mark: /@(?:(\w[\w \t]*)|"([\w \t]*)")(?:$|:[ \t]*)/im,
-         line: true,
          subfield: true,
          subimage: true,
          subtext:  "speech" },
@@ -1900,7 +1916,6 @@ class Translator {
          inline: true },
       input: {
          mark: /^\?[ \t]+([\w \t.]+)$/im,
-         line: true,
          subfield: true,
          subimage: true,
          subtext:  "text" },
@@ -1909,17 +1924,16 @@ class Translator {
          inline: true },
       compute: {
          mark: /~[ \t]*(\w+)?[ \t]*([+\-*/=])[ \t]*(\d+(?:\.\d+)?)$/im,
-         line: true },
+         },
       "context-open": {
-         mark: Translator.marksAnnotation["context-open"],
-         line: true },
+         mark: /\{\{([\w \t\+\-\*\."=\:%]+)?(?:\/([\w \t\.]+)\/)?[\f\n\r]/im },
       "context-close": {
-         mark: Translator.marksAnnotation["context-close"] },
+         mark: /\}\}/im },
       select: {
-         mark: /\{([^\(\{\}\/]+)\}(?:\(([^\)]+)\))?(?:\/([^\/]+)\/)/im,
+         mark: /\{([^\}\n\r\f]+)\}(?:\(([^\)\n\r\f]+)\))?(?:\/([^\/\n\r\f]+)\/)/im,
          inline: true },
       annotation: {
-         mark: /\{([^\(\{\}\/]+)\}(?:\(([^\)]+)\))?/im,
+         mark: /\{([^\}\n\r\f]+)\}(?:\(([^\)\n\r\f]+)\))?/im,
          inline: true },
       linefeed: {
          mark: /[\f\n\r]+/im,
@@ -1931,9 +1945,20 @@ class Translator {
       */
    };
 
+   Translator.marksAnnotation = {
+     "context-open" : Translator.element["context-open"].mark,
+     "context-close": Translator.element["context-close"].mark,
+     select: Translator.element.select.mark,
+     annotation: Translator.element.annotation.mark
+   };
+   
+   Translator.marksAnnotationInside = /([^=\:\n\r\f]+)(?:[=\:]([\w \t%]*)(?:\/([\w \t%]*))?)?/im;
+
    // <TODO> this is a different approach indicating characteristic by type
    // (homogenize?)
    Translator.subordinatorElement = ["entity"];
+   Translator.isLine = ["knot", "field", "item", "option", "divert-script", "entity", "input",
+                        "compute", "context-open"];
    Translator.textBlockCandidate = ["select", "annotation", "text", "mention"];
    Translator.scriptable = ["compute", "divert-script"];
 
@@ -1944,19 +1969,20 @@ class Translator {
    Translator.globalFields = ["theme", "title", "role"];
 
    Translator.reservedNavigation = ["case.next", "knot.previous", "knot.next",
-                                    "flow.next"];
+                                    "flow.next", "session.close"];
    Translator.navigationMap = {
       "case.next":     "case/>/navigate",
       "knot.start":    "knot/<</navigate",
       "knot.previous": "knot/</navigate",
       "knot.next":     "knot/>/navigate",
-      "flow.next":     "flow/>/navigate"
+      "flow.next":     "flow/>/navigate",
+      "session.close": "session/close"
    };
    
    // Translator.specialCategories = ["start", "note"];
    
    Translator.contextHTML = {
-      open:  /<p>(<dcc-group-select(?:[\w \t\+\-\*"'=\%\/,\.]*)?>)<\/p>/igm,
+      open:  /<p>(<dcc-group-select(?:[^>]*)?>)<\/p>/igm,
       close: /<p>(<\/dcc-group-select>)<\/p>/igm
    };
 

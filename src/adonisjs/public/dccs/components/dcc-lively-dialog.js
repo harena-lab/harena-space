@@ -217,7 +217,7 @@ class DCCLivelyTalk extends DCCVisual {
    }
 
    notify(topic, message) {
-      this.speech = this._prefixSpeech + message.value;
+      this.speech = this._prefixSpeech + ((message.value) ? message.value : message);
    }
    
    /* Editable Component */

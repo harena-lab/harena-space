@@ -75,8 +75,8 @@ class MessageBus {
                }
              });
              const status = await response.json();
-            console.log("--- topic: " + extTopic);
-            console.log(extMessage);
+            // console.log("--- topic: " + extTopic);
+            // console.log(extMessage);
           }
 
           parent.postMessage({topic: topic, message: message}, "*");
