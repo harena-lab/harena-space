@@ -7,6 +7,7 @@ class DCCSpaceCellular extends DCCBase {
       super();
       this.cellTypeRegister = this.cellTypeRegister.bind(this);
       this.monitorRegister = this.monitorRegister.bind(this);
+      this.cycleNext = this.cycleNext.bind(this);
       
       this._cellTypes = {};
       this._monitors = {};
@@ -37,19 +38,18 @@ class DCCSpaceCellular extends DCCBase {
       if (!this.cellWidth) this.cellWidth = DCCSpaceCellular.defaultCellDimensions.width;
       if (!this.cellHeight) this.cellHeight = DCCSpaceCellular.defaultCellDimensions.height;
       this.innerHTML = DCCSpaceCellular.svgTemplate
-                         .replace(/\[cell-width\]/g, this.cellWidth)
-                         .replace(/\[cell-height\]/g, this.cellHeight)
-                         .replace("[width]", this.cols * this.cellWidth)
-                         .replace("[height]", this.rows * this.cellHeight);
+                         .replace(/\[cell-width\]/g, this.cellWidth + "px")
+                         .replace(/\[cell-height\]/g, this.cellHeight + "px")
+                         .replace(/\[width\]/g, this.cols * this.cellWidth + "px")
+                         .replace(/\[height\]/g, this.rows * this.cellHeight + "px");
       this._cells = this.querySelector("#cells");
 
-      console.log("=== check all types");
-      console.log(this._checkAllTypes());
-      if (this._checkAllTypes())
+      if (!this._state && this._checkAllTypes())
          this._createIndividuals();
 
       MessageBus.page.subscribe("dcc/cell-type/register", this.cellTypeRegister);
       MessageBus.page.subscribe("dcc/monitor-dcc-cell/register", this.monitorRegister);
+      MessageBus.ext.subscribe("dcc/dcc-space-cell/next", this.cycleNext);
    }
 
    disconnectedCallback() {
@@ -96,15 +96,8 @@ class DCCSpaceCellular extends DCCBase {
    cellTypeRegister(topic, cellType) {
       cellType.space = this;
       this._cellTypes[cellType.type] = cellType;
-      console.log("=== type");
-      console.log(cellType.type);
-      console.log("=== check all types");
-      console.log(this._checkAllTypes());
-      if (this._checkAllTypes())
+      if (!this._state && this._checkAllTypes())
          this._createIndividuals();
-   }
-
-   monitorRegister(topic, monitor) {
    }
 
    _checkAllTypes() {
@@ -116,30 +109,39 @@ class DCCSpaceCellular extends DCCBase {
    }
 
    _createIndividuals() {
+      this._state = this._createEmptyState();
       if (this._stateStr.length > 0) {
-         this._state = [];
          for (let r in this._stateStr) {
-            let row = [];
             for (let c = 0; c < this._stateStr[r].length; c++) {
                if (this._cellTypes[this._stateStr[r][c]]) {
-                  const individual =
+                  this._state[r][c] =
                      this._cellTypes[this._stateStr[r][c]].createIndividual(c+1, parseInt(r)+1);
-                  console.log("=== individual");
-                  console.log(individual);
-                  this._cells.appendChild(individual.element);
-                  row.push(individual);
+                  this._cells.appendChild(this._state[r][c].element);
                }
-               else
-                  row.push(null);
             }
-            this._state.push(row);
          }
       }
    }
 
+   _createEmptyState() {
+      let state = [];
+      for (let r = 0; r < this.rows; r++) {
+         let row = [];
+         for (let c = 0; c < this.cols; c++)
+            row.push(null);
+         state.push(row);
+      }
+      return state;
+   }
+
+   monitorRegister(topic, monitor) {
+      if (!this._monitors[monitor.oldSource])
+         this._monitors[monitor.oldSource] = [monitor];
+      else
+         this._monitors[monitor.oldSource].push(monitor);
+   }
+
    computeCoordinates(col, row) {
-      console.log("col, row");
-      console.log(col + "," + row);
       return {
          x: (col-1) * this.cellWidth,
          y: (row-1) * this.cellHeight,
@@ -156,11 +158,68 @@ class DCCSpaceCellular extends DCCBase {
          height: DCCSpaceCellular.defaultCellDimensions.height
       };
    }
+
+   cycleNext() {
+      console.log("=== cycle next");
+      console.log(this._state);
+      let newState = this._createEmptyState();
+      for (let r = 0; r < this._state.length; r++) {
+         let row = this._state[r];
+         for (let c = 0; c < row.length; c++) {
+            let cell = row[c];
+            if (cell != null && this._monitors[cell.dcc.type])
+               for (let monitor of this._monitors[cell.dcc.type]) {
+                  console.log("=== monitor");
+                  console.log(monitor);
+                  if (Math.random() <= monitor.decimalProbability) {
+                     console.log(monitor.monitorNeighbors);
+                     const neighbor = monitor.monitorNeighbors[
+                        Math.ceil(Math.random() * monitor.monitorNeighbors.length)-1];
+                     const nr = r + neighbor[0];
+                     const nc = c + neighbor[1];
+                     if (nr >= 0 && nr < this._state.length &&
+                         nc >= 0 && nc < row.length) {
+                        if (this._state[nr][nc] == null ||
+                            monitor.newTarget != this._state[nr][nc].dcc.type) {
+                           if (this._state[nr][nc] != null) {
+                              console.log("=== remove old");
+                              console.log(this._state[nr][nc].element);
+                              this._cells.removeChild(this._state[nr][nc].element);
+                           }
+                           if (monitor.newTarget != "_") {
+                              newState[nr][nc] =
+                                 this._cellTypes[monitor.newTarget].createIndividual(nc+1, nr+1);
+                              this._cells.appendChild(newState[nr][nc].element);
+                           }
+                        } else
+                           newState[nr][nc] = this._state[nr][nc];
+                        if (this._state[r][c] == null ||
+                            monitor.newSource != this._state[r][c].dcc.type) {
+                           if (this._state[r][c] != null) {
+                              console.log("=== remove new");
+                              console.log(this._state[r][c].element);
+                              this._cells.removeChild(this._state[r][c].element);
+                           }
+                           if (monitor.newSource != "_") {
+                              newState[r][c] =
+                                 this._cellTypes[monitor.newSource].createIndividual(c+1, r+1);
+                              this._cells.appendChild(newState[r][c].element);
+                           }
+                        } else
+                           newState[r][c] = this._state[r][c];
+                     }
+                  }
+               }
+         }
+      }
+      this._state = newState;
+   }
 }
 
 (function() {
    DCCSpaceCellular.svgTemplate =
-`<svg width="100%" height="100%">
+`<div width="[width]" height="[height]">
+<svg width="[width]" height="[height]">
 <def>
   <pattern id="cell-grid" width="[cell-width]" height="[cell-height]" patternUnits="userSpaceOnUse">
     <rect width="[cell-width]" height="[cell-height]"
@@ -169,7 +228,8 @@ class DCCSpaceCellular extends DCCBase {
 </def>
 <rect fill="url(#cell-grid)" x="0" y="0" width="[width]" height="[height]"/>
 <g id="cells"/>
-</svg>`;
+</svg>
+</div>`;
 
    DCCSpaceCellular.defaultCellDimensions = {width: 20, height: 20};
 

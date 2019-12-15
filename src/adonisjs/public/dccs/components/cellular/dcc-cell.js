@@ -45,17 +45,17 @@ class DCCCell extends DCCBase {
 }
 
 class DCCCellLight {
-   constructor(type, element) {
-      this.type = type;
+   constructor(dcc, element) {
+      this.dcc = dcc;
       this.element = element;
    }
 
-   get type() {
-      return this._type;
+   get dcc() {
+      return this._dcc;
    }
    
-   set type(newValue) {
-      this._type = newValue;
+   set dcc(newValue) {
+      this._dcc = newValue;
    }
 
    get element() {

@@ -1,16 +1,24 @@
-/* DCC Monitor
-  ************/
+/* DCC Monitor Cell
+  *****************/
 
 class MonitorDCCCell extends HTMLElement {
    connectedCallback() {
       if (!this.neighbors) this.neighbors = this.innerHTML.replace(/[ \r\n]/g, "");
+      this.innerHTML = "";
+      const neighbors = this.neighbors;
+      this._monitorNeighbors = [];
+      for (let n = 0; n < neighbors.length; n++)
+         if (neighbors[n] != "_")
+            this._monitorNeighbors.push([Math.floor(n/3)-1, n%3-1]);
+
       if (!this.hasAttribute("probability")) this.probability = "100";
+      this._decimalProbability = parseInt(this.probability) / 100;
       if (!this.hasAttribute("new-source")) this.newSource = "_";
       if (!this.hasAttribute("old-target")) this.oldTarget = "_";
-      if (this.parentNode && this.parentNode.type) {
-         if (!this.hasAttribute("new-target")) this.newTarget = this.parentNode.oldTarget;
-         MessageBus.page.publish("dcc/monitor-dcc-cell/register", this);
-      }
+      if (!this.hasAttribute("old-source") && this.parentNode && this.parentNode.type)
+         this.oldSource = this.parentNode.type;
+      if (!this.hasAttribute("new-target")) this.newTarget = this.oldSource;
+      MessageBus.page.publish("dcc/monitor-dcc-cell/register", this);
    }
 
    /* Properties
@@ -18,7 +26,7 @@ class MonitorDCCCell extends HTMLElement {
    
    static get observedAttributes() {
       return DCCVisual.observedAttributes.concat(
-         ["neighbors", "probability", "new-source", "old-target", "new-target"]);
+         ["neighbors", "probability", "old-source", "new-source", "old-target", "new-target"]);
    }
 
    get neighbors() {
@@ -29,12 +37,28 @@ class MonitorDCCCell extends HTMLElement {
       this.setAttribute("neighbors", newValue);
    }
 
+   get monitorNeighbors() {
+      return this._monitorNeighbors;
+   }
+
    get probability() {
       return this.getAttribute("probability");
    }
 
    set probability(newValue) {
       this.setAttribute("probability", newValue);
+   }
+
+   get decimalProbability() {
+      return this._decimalProbability;
+   }
+
+   get oldSource() {
+      return this.getAttribute("old-source");
+   }
+   
+   set oldSource(newValue) {
+      this.setAttribute("old-source", newValue);
    }
 
    get newSource() {
@@ -63,5 +87,5 @@ class MonitorDCCCell extends HTMLElement {
 }
 
 (function() {
-   customElements.define("monitor-dcc-cell", MonitorDCC);
+   customElements.define("monitor-dcc-cell", MonitorDCCCell);
 })();
