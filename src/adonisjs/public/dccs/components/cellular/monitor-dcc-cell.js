@@ -18,7 +18,7 @@ class MonitorDCCCell extends HTMLElement {
       if (!this.hasAttribute("old-source") && this.parentNode && this.parentNode.type)
          this.oldSource = this.parentNode.type;
       if (!this.hasAttribute("new-target")) this.newTarget = this.oldSource;
-      MessageBus.page.publish("dcc/monitor-dcc-cell/register", this);
+      MessageBus.page.publish("dcc/monitor-cell/register", this);
    }
 
    /* Properties

@@ -7,7 +7,8 @@ class DCCSpaceCellular extends DCCBase {
       super();
       this.cellTypeRegister = this.cellTypeRegister.bind(this);
       this.monitorRegister = this.monitorRegister.bind(this);
-      this.cycleNext = this.cycleNext.bind(this);
+      this.stateNext = this.stateNext.bind(this);
+      this.notify = this.notify.bind(this);
       
       this._cellTypes = {};
       this._monitors = {};
@@ -48,8 +49,7 @@ class DCCSpaceCellular extends DCCBase {
          this._createIndividuals();
 
       MessageBus.page.subscribe("dcc/cell-type/register", this.cellTypeRegister);
-      MessageBus.page.subscribe("dcc/monitor-dcc-cell/register", this.monitorRegister);
-      MessageBus.ext.subscribe("dcc/dcc-space-cell/next", this.cycleNext);
+      MessageBus.page.subscribe("dcc/monitor-cell/register", this.monitorRegister);
    }
 
    disconnectedCallback() {
@@ -121,6 +121,8 @@ class DCCSpaceCellular extends DCCBase {
             }
          }
       }
+      console.log("=== new state");
+      console.log(this._state);
    }
 
    _createEmptyState() {
@@ -132,6 +134,16 @@ class DCCSpaceCellular extends DCCBase {
          state.push(row);
       }
       return state;
+   }
+
+   _cloneState() {
+      let clone = [];
+      for (let row = 0; row < this._state.length; row++) {
+         clone[row] = [];
+         for (let col = 0; col < this._state[row].length; col++)
+            clone[row][col] = this._state[row][col];
+      }
+      return clone;
    }
 
    monitorRegister(topic, monitor) {
@@ -159,60 +171,67 @@ class DCCSpaceCellular extends DCCBase {
       };
    }
 
-   cycleNext() {
-      console.log("=== cycle next");
-      console.log(this._state);
-      let newState = this._createEmptyState();
+   notify(topic, message) {
+      if (message.role) {
+         switch (message.role.toLowerCase()) {
+            case "next": this.stateNext(); break;
+         }
+      }
+   }
+
+   stateNext() {
+      let newState = this._cloneState();
       for (let r = 0; r < this._state.length; r++) {
          let row = this._state[r];
          for (let c = 0; c < row.length; c++) {
             let cell = row[c];
-            if (cell != null && this._monitors[cell.dcc.type])
-               for (let monitor of this._monitors[cell.dcc.type]) {
-                  console.log("=== monitor");
-                  console.log(monitor);
+            if (cell != null && this._monitors[cell.dcc.type]) {
+               let triggered = false;
+               for (let m = 0; m < this._monitors[cell.dcc.type].length && !triggered; m++) {
+                  let monitor = this._monitors[cell.dcc.type][m];
                   if (Math.random() <= monitor.decimalProbability) {
-                     console.log(monitor.monitorNeighbors);
                      const neighbor = monitor.monitorNeighbors[
                         Math.ceil(Math.random() * monitor.monitorNeighbors.length)-1];
                      const nr = r + neighbor[0];
                      const nc = c + neighbor[1];
                      if (nr >= 0 && nr < this._state.length &&
                          nc >= 0 && nc < row.length) {
-                        if (this._state[nr][nc] == null ||
-                            monitor.newTarget != this._state[nr][nc].dcc.type) {
-                           if (this._state[nr][nc] != null) {
-                              console.log("=== remove old");
-                              console.log(this._state[nr][nc].element);
-                              this._cells.removeChild(this._state[nr][nc].element);
+                        const expectedTarget = (newState[nr][nc] == null)
+                           ? "_" : newState[nr][nc].dcc.type;
+                        if (expectedTarget == monitor.oldTarget) {
+                           triggered = true;
+                           if (newState[nr][nc] == null ||
+                               monitor.newTarget != newState[nr][nc].dcc.type) {
+                              if (newState[nr][nc] != null)
+                                 this._cells.removeChild(newState[nr][nc].element);
+                              if (monitor.newTarget != "_") {
+                                 newState[nr][nc] =
+                                    this._cellTypes[monitor.newTarget].createIndividual(nc+1, nr+1);
+                                 this._cells.appendChild(newState[nr][nc].element);
+                              } else
+                                 newState[nr][nc] = null;
                            }
-                           if (monitor.newTarget != "_") {
-                              newState[nr][nc] =
-                                 this._cellTypes[monitor.newTarget].createIndividual(nc+1, nr+1);
-                              this._cells.appendChild(newState[nr][nc].element);
+                           if (this._state[r][c] == null ||
+                               monitor.newSource != this._state[r][c].dcc.type) {
+                              if (this._state[r][c] != null)
+                                 this._cells.removeChild(this._state[r][c].element);
+                              if (monitor.newSource != "_") {
+                                 newState[r][c] =
+                                    this._cellTypes[monitor.newSource].createIndividual(c+1, r+1);
+                                 this._cells.appendChild(newState[r][c].element);
+                              } else
+                                 newState[r][c] = null;
                            }
-                        } else
-                           newState[nr][nc] = this._state[nr][nc];
-                        if (this._state[r][c] == null ||
-                            monitor.newSource != this._state[r][c].dcc.type) {
-                           if (this._state[r][c] != null) {
-                              console.log("=== remove new");
-                              console.log(this._state[r][c].element);
-                              this._cells.removeChild(this._state[r][c].element);
-                           }
-                           if (monitor.newSource != "_") {
-                              newState[r][c] =
-                                 this._cellTypes[monitor.newSource].createIndividual(c+1, r+1);
-                              this._cells.appendChild(newState[r][c].element);
-                           }
-                        } else
-                           newState[r][c] = this._state[r][c];
+                        }
                      }
                   }
                }
+            }
          }
       }
       this._state = newState;
+      console.log("=== new state");
+      console.log(newState);
    }
 }
 
