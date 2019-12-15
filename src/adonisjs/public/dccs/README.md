@@ -4,11 +4,11 @@ The authoring environment and the generated cases use web components to execute 
 
 # Playground
 
-Learn and try to instantiate and customize Digital Content Components (DCCs) at [DCC Playground](http://datasci4health.github.io/harena-space/src/adonisjs/public/dccs/playground/).
+Learn and try to instantiate and customize Digital Content Components (DCCs) at [DCC Playground](playground/).
 
 # Gallery
 
-Visit our [DCC Gallery](http://datasci4health.github.io/harena-space/src/adonisjs/public/dccs/playground/gallery/) where you will see some examples of how to compose DCCs to build things. Each example can be interactively edited inside our playground.
+Visit our [DCC Gallery](playground/gallery/) where you will see some examples of how to compose DCCs to build things. Each example can be interactively edited inside our playground.
 
 # Syntax and Examples
 
