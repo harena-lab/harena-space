@@ -73,13 +73,13 @@ class DCCTimer extends DCCBase {
    }
 
    start() {
-      this._timeout = window.setTimeout(this.next, this.interval);
+      this._timeout = setTimeout(this.next, this.interval);
    }
 
    next() {
       this.step();
       if (this._currentCycle < this.cycles)
-         this._timeout = window.setTimeout(this.next, this.interval);
+         this._timeout = setTimeout(this.next, this.interval);
    }
 
    step() {
@@ -90,7 +90,7 @@ class DCCTimer extends DCCBase {
 
    stop() {
       if (this._timeout)
-         this._timeout.clearTimeout();
+         clearTimeout(this._timeout);
    }
 }
 

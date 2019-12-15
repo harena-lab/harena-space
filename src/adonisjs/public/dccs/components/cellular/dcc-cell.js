@@ -10,7 +10,7 @@ class DCCCell extends DCCBase {
 
    static get observedAttributes() {
       return DCCBase.observedAttributes.concat(
-         ["type"]);
+         ["type", "label"]);
    }
 
    get type() {
@@ -19,6 +19,14 @@ class DCCCell extends DCCBase {
    
    set type(newValue) {
       this.setAttribute("type", newValue);
+   }
+
+   get label() {
+      return this.getAttribute("label");
+   }
+   
+   set label(newValue) {
+      this.setAttribute("label", newValue);
    }
 
    get space() {

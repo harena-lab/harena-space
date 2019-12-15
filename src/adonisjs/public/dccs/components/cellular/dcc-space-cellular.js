@@ -6,12 +6,12 @@ class DCCSpaceCellular extends DCCBase {
    constructor() {
       super();
       this.cellTypeRegister = this.cellTypeRegister.bind(this);
-      this.monitorRegister = this.monitorRegister.bind(this);
+      this.ruleRegister = this.ruleRegister.bind(this);
       this.stateNext = this.stateNext.bind(this);
       this.notify = this.notify.bind(this);
       
       this._cellTypes = {};
-      this._monitors = {};
+      this._rules = {};
       this._stateTypes = [];
    }
 
@@ -38,18 +38,23 @@ class DCCSpaceCellular extends DCCBase {
 
       if (!this.cellWidth) this.cellWidth = DCCSpaceCellular.defaultCellDimensions.width;
       if (!this.cellHeight) this.cellHeight = DCCSpaceCellular.defaultCellDimensions.height;
+
+      if (!this.backgroundColor) this.backgroundColor = "#ffffc8";
+
       this.innerHTML = DCCSpaceCellular.svgTemplate
                          .replace(/\[cell-width\]/g, this.cellWidth + "px")
                          .replace(/\[cell-height\]/g, this.cellHeight + "px")
                          .replace(/\[width\]/g, this.cols * this.cellWidth + "px")
-                         .replace(/\[height\]/g, this.rows * this.cellHeight + "px");
+                         .replace(/\[height\]/g, this.rows * this.cellHeight + "px")
+                         .replace(/\[background-color\]/g, this.backgroundColor)
+                         .replace(/\[grid\]/g, (this.grid) ? ";stroke-width:2;stroke:#646464" : "");
       this._cells = this.querySelector("#cells");
 
       if (!this._state && this._checkAllTypes())
          this._createIndividuals();
 
       MessageBus.page.subscribe("dcc/cell-type/register", this.cellTypeRegister);
-      MessageBus.page.subscribe("dcc/monitor-cell/register", this.monitorRegister);
+      MessageBus.page.subscribe("dcc/rule-cell/register", this.ruleRegister);
    }
 
    disconnectedCallback() {
@@ -58,7 +63,15 @@ class DCCSpaceCellular extends DCCBase {
 
    static get observedAttributes() {
       return DCCBase.observedAttributes.concat(
-         ["cols", "rows", "cell-width", "cell-height"]);
+         ["label", "cols", "rows", "cell-width", "cell-height", "background-color", "grid"]);
+   }
+
+   get label() {
+      return this.getAttribute("label");
+   }
+   
+   set label(newValue) {
+      this.setAttribute("label", newValue);
    }
 
    get cols() {
@@ -93,6 +106,25 @@ class DCCSpaceCellular extends DCCBase {
       this.setAttribute("cell-height", newValue);
    }
 
+   get backgroundColor() {
+      return this.getAttribute("background-color");
+   }
+   
+   set backgroundColor(newValue) {
+      this.setAttribute("background-color", newValue);
+   }
+
+   get grid() {
+      return this.hasAttribute("grid");
+   }
+
+   set grid(hasGrid) {
+      if (hasGrid)
+         this.setAttribute("grid", "");
+      else
+         this.removeAttribute("grid");
+   }
+
    cellTypeRegister(topic, cellType) {
       cellType.space = this;
       this._cellTypes[cellType.type] = cellType;
@@ -121,8 +153,6 @@ class DCCSpaceCellular extends DCCBase {
             }
          }
       }
-      console.log("=== new state");
-      console.log(this._state);
    }
 
    _createEmptyState() {
@@ -136,21 +166,21 @@ class DCCSpaceCellular extends DCCBase {
       return state;
    }
 
-   _cloneState() {
-      let clone = [];
+   _changeControl() {
+      let control = [];
       for (let row = 0; row < this._state.length; row++) {
-         clone[row] = [];
+         control[row] = [];
          for (let col = 0; col < this._state[row].length; col++)
-            clone[row][col] = this._state[row][col];
+            control[row][col] = false;
       }
-      return clone;
+      return control;
    }
 
-   monitorRegister(topic, monitor) {
-      if (!this._monitors[monitor.oldSource])
-         this._monitors[monitor.oldSource] = [monitor];
+   ruleRegister(topic, rule) {
+      if (!this._rules[rule.oldSource])
+         this._rules[rule.oldSource] = [rule];
       else
-         this._monitors[monitor.oldSource].push(monitor);
+         this._rules[rule.oldSource].push(rule);
    }
 
    computeCoordinates(col, row) {
@@ -180,47 +210,49 @@ class DCCSpaceCellular extends DCCBase {
    }
 
    stateNext() {
-      let newState = this._cloneState();
+      let changed = this._changeControl();
       for (let r = 0; r < this._state.length; r++) {
          let row = this._state[r];
          for (let c = 0; c < row.length; c++) {
             let cell = row[c];
-            if (cell != null && this._monitors[cell.dcc.type]) {
+            if (cell != null && !changed[r][c] && this._rules[cell.dcc.type]) {
                let triggered = false;
-               for (let m = 0; m < this._monitors[cell.dcc.type].length && !triggered; m++) {
-                  let monitor = this._monitors[cell.dcc.type][m];
-                  if (Math.random() <= monitor.decimalProbability) {
-                     const neighbor = monitor.monitorNeighbors[
-                        Math.ceil(Math.random() * monitor.monitorNeighbors.length)-1];
+               for (let m = 0; m < this._rules[cell.dcc.type].length && !triggered; m++) {
+                  let rule = this._rules[cell.dcc.type][m];
+                  if (Math.random() <= rule.decimalProbability) {
+                     const neighbor = rule.ruleNeighbors[
+                        Math.ceil(Math.random() * rule.ruleNeighbors.length)-1];
                      const nr = r + neighbor[0];
                      const nc = c + neighbor[1];
                      if (nr >= 0 && nr < this._state.length &&
                          nc >= 0 && nc < row.length) {
-                        const expectedTarget = (newState[nr][nc] == null)
-                           ? "_" : newState[nr][nc].dcc.type;
-                        if (expectedTarget == monitor.oldTarget) {
+                        const expectedTarget = (this._state[nr][nc] == null)
+                           ? "_" : this._state[nr][nc].dcc.type;
+                        if (expectedTarget == rule.oldTarget) {
                            triggered = true;
-                           if (newState[nr][nc] == null ||
-                               monitor.newTarget != newState[nr][nc].dcc.type) {
-                              if (newState[nr][nc] != null)
-                                 this._cells.removeChild(newState[nr][nc].element);
-                              if (monitor.newTarget != "_") {
-                                 newState[nr][nc] =
-                                    this._cellTypes[monitor.newTarget].createIndividual(nc+1, nr+1);
-                                 this._cells.appendChild(newState[nr][nc].element);
+                           if (this._state[nr][nc] == null ||
+                               rule.newTarget != this._state[nr][nc].dcc.type) {
+                              if (this._state[nr][nc] != null)
+                                 this._cells.removeChild(this._state[nr][nc].element);
+                              if (rule.newTarget != "_") {
+                                 this._state[nr][nc] =
+                                    this._cellTypes[rule.newTarget].createIndividual(nc+1, nr+1);
+                                 this._cells.appendChild(this._state[nr][nc].element);
                               } else
-                                 newState[nr][nc] = null;
+                                 this._state[nr][nc] = null;
+                              changed[nr][nc] = true;
                            }
                            if (this._state[r][c] == null ||
-                               monitor.newSource != this._state[r][c].dcc.type) {
+                               rule.newSource != this._state[r][c].dcc.type) {
                               if (this._state[r][c] != null)
                                  this._cells.removeChild(this._state[r][c].element);
-                              if (monitor.newSource != "_") {
-                                 newState[r][c] =
-                                    this._cellTypes[monitor.newSource].createIndividual(c+1, r+1);
-                                 this._cells.appendChild(newState[r][c].element);
+                              if (rule.newSource != "_") {
+                                 this._state[r][c] =
+                                    this._cellTypes[rule.newSource].createIndividual(c+1, r+1);
+                                 this._cells.appendChild(this._state[r][c].element);
                               } else
-                                 newState[r][c] = null;
+                                 this._state[r][c] = null;
+                              changed[r][c] = true;
                            }
                         }
                      }
@@ -229,9 +261,6 @@ class DCCSpaceCellular extends DCCBase {
             }
          }
       }
-      this._state = newState;
-      console.log("=== new state");
-      console.log(newState);
    }
 }
 
@@ -242,7 +271,7 @@ class DCCSpaceCellular extends DCCBase {
 <def>
   <pattern id="cell-grid" width="[cell-width]" height="[cell-height]" patternUnits="userSpaceOnUse">
     <rect width="[cell-width]" height="[cell-height]"
-     style="fill:rgb(255,255,200);stroke-width:2;stroke:rgb(100,100,100)"/>
+     style="fill:[background-color][grid]"/>
   </pattern>
 </def>
 <rect fill="url(#cell-grid)" x="0" y="0" width="[width]" height="[height]"/>

@@ -1,15 +1,15 @@
-/* DCC Monitor Cell
-  *****************/
+/* DCC Rule Cell Neighbor
+  ***********************/
 
-class MonitorDCCCell extends HTMLElement {
+class RuleDCCCellNeighbor extends HTMLElement {
    connectedCallback() {
       if (!this.neighbors) this.neighbors = this.innerHTML.replace(/[ \r\n]/g, "");
       this.innerHTML = "";
       const neighbors = this.neighbors;
-      this._monitorNeighbors = [];
+      this._ruleNeighbors = [];
       for (let n = 0; n < neighbors.length; n++)
          if (neighbors[n] != "_")
-            this._monitorNeighbors.push([Math.floor(n/3)-1, n%3-1]);
+            this._ruleNeighbors.push([Math.floor(n/3)-1, n%3-1]);
 
       if (!this.hasAttribute("probability")) this.probability = "100";
       this._decimalProbability = parseInt(this.probability) / 100;
@@ -18,7 +18,7 @@ class MonitorDCCCell extends HTMLElement {
       if (!this.hasAttribute("old-source") && this.parentNode && this.parentNode.type)
          this.oldSource = this.parentNode.type;
       if (!this.hasAttribute("new-target")) this.newTarget = this.oldSource;
-      MessageBus.page.publish("dcc/monitor-cell/register", this);
+      MessageBus.page.publish("dcc/rule-cell/register", this);
    }
 
    /* Properties
@@ -26,7 +26,15 @@ class MonitorDCCCell extends HTMLElement {
    
    static get observedAttributes() {
       return DCCVisual.observedAttributes.concat(
-         ["neighbors", "probability", "old-source", "new-source", "old-target", "new-target"]);
+         ["label", "neighbors", "probability", "old-source", "new-source", "old-target", "new-target"]);
+   }
+
+   get label() {
+      return this.getAttribute("label");
+   }
+   
+   set label(newValue) {
+      this.setAttribute("label", newValue);
    }
 
    get neighbors() {
@@ -37,8 +45,8 @@ class MonitorDCCCell extends HTMLElement {
       this.setAttribute("neighbors", newValue);
    }
 
-   get monitorNeighbors() {
-      return this._monitorNeighbors;
+   get ruleNeighbors() {
+      return this._ruleNeighbors;
    }
 
    get probability() {
@@ -87,5 +95,5 @@ class MonitorDCCCell extends HTMLElement {
 }
 
 (function() {
-   customElements.define("monitor-dcc-cell", MonitorDCCCell);
+   customElements.define("rule-dcc-cell-neighbor", RuleDCCCellNeighbor);
 })();
