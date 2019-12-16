@@ -21,17 +21,21 @@ class Context {
       return list;
    }
 
-   async loadContext(uri) {
-      let context =
+   async loadResource(id) {
+      const uri = this.resolveNS(id);
+      let resource =
          await MessageBus.int.request("data/context/" +
             this._contextIndex[uri].label + "/get",
             this._contextIndex[uri].resource);
-      return JSON.parse(context.message);
+      return JSON.parse(resource.message);
    }
 
-   async loadContextNS(namespace) {
-      let context = null;
-      
+   resolveNS(id) {
+      let nf = null;
+      for (let ns in this._namespaces)
+         if (id.startsWith(ns + ":"))
+            nf = ns;
+      return (nf == null) ? id : id.replace(nf + ":", this._namespaces[nf]);
    }
 
    addNamespace(namespace, uri) {

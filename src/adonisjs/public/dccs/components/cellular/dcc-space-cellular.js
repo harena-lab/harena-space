@@ -16,6 +16,8 @@ class DCCSpaceCellular extends DCCBase {
    }
 
    connectedCallback() {
+      this._infinite = this.infinite;
+
       this._stateStr = this.innerHTML.trim();
 
       for (let c of this._stateStr)
@@ -63,7 +65,8 @@ class DCCSpaceCellular extends DCCBase {
 
    static get observedAttributes() {
       return DCCBase.observedAttributes.concat(
-         ["label", "cols", "rows", "cell-width", "cell-height", "background-color", "grid"]);
+         ["label", "cols", "rows", "cell-width", "cell-height", "background-color", "grid",
+          "infinite"]);
    }
 
    get label() {
@@ -119,6 +122,18 @@ class DCCSpaceCellular extends DCCBase {
    }
 
    set grid(hasGrid) {
+      if (hasGrid)
+         this.setAttribute("grid", "");
+      else
+         this.removeAttribute("grid");
+   }
+
+   get infinite() {
+      return this.hasAttribute("infinite");
+   }
+
+   set infinite(isInfinite) {
+      this._infinite = isInfinite; // faster performance duplicate
       if (hasGrid)
          this.setAttribute("grid", "");
       else
@@ -211,9 +226,11 @@ class DCCSpaceCellular extends DCCBase {
 
    stateNext() {
       let changed = this._changeControl();
-      for (let r = 0; r < this._state.length; r++) {
+      const nrows = this._state.length;
+      for (let r = 0; r < nrows; r++) {
          let row = this._state[r];
-         for (let c = 0; c < row.length; c++) {
+         let ncols = row.length;
+         for (let c = 0; c < ncols; c++) {
             let cell = row[c];
             if (cell != null && !changed[r][c] && this._rules[cell.dcc.type]) {
                let triggered = false;
@@ -222,10 +239,14 @@ class DCCSpaceCellular extends DCCBase {
                   if (Math.random() <= rule.decimalProbability) {
                      const neighbor = rule.ruleNeighbors[
                         Math.ceil(Math.random() * rule.ruleNeighbors.length)-1];
-                     const nr = r + neighbor[0];
-                     const nc = c + neighbor[1];
-                     if (nr >= 0 && nr < this._state.length &&
-                         nc >= 0 && nc < row.length) {
+                     let nr = r + neighbor[0];
+                     let nc = c + neighbor[1];
+                     if (this._infinite) {
+                        nr = (nr < 0) ? nrows - 1 : nr % nrows;
+                        nc = (nc < 0) ? ncols - 1 : nc % ncols;
+                     }
+                     if (nr >= 0 && nr < nrows &&
+                         nc >= 0 && nc < ncols) {
                         const expectedTarget = (this._state[nr][nc] == null)
                            ? "_" : this._state[nr][nc].dcc.type;
                         if (expectedTarget == rule.oldTarget) {

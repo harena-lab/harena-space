@@ -4,7 +4,7 @@ class DCCStateSelect extends DCCVisual {
    constructor() {
      super();
      
-     this._pendingRequests = 0;
+     // this._pendingRequests = 0;
      
      this.selectionIndex = 0;
      this._stateVisible = false;
@@ -21,7 +21,11 @@ class DCCStateSelect extends DCCVisual {
      this._showState = this._showState.bind(this);
      this._hideState = this._hideState.bind(this);
      this._changeState = this._changeState.bind(this);
-     this.defineStates = this.defineStates.bind(this);
+     // this.defineStates = this.defineStates.bind(this);
+
+     this.variable = null;
+     this.states = null;
+     this.styles = null;
    }
    
    createdCallback() {
@@ -55,19 +59,41 @@ class DCCStateSelect extends DCCVisual {
       this._presentation = this._shadow.querySelector("#presentation-dcc");
       this._presentationState = this._shadow.querySelector("#presentation-state");
      
-      // <TODO> limited: considers only one group per page
       this.completeId = this.id; 
-      if (!this.hasAttribute("states") && MessageBus.page.hasSubscriber("dcc/request/select-states")) {
-         const variableMess = await MessageBus.page.request("dcc/select-variable/request", this.id, "dcc/select-variable/" + this.id);
-         this.variable = variableMess.message;
-         this.completeId = this.variable + "." + this.id;
 
+      // <TODO> limited: considers only one group per page
+      if (!this.hasAttribute("states") &&
+          MessageBus.page.hasSubscriber("dcc/request/select-parameters")) {
+         let parametersM = await MessageBus.page.request(
+            "dcc/request/select-parameters", this.id, "dcc/select-parameters/" + this.id);
+         const parameters = parametersM.message;
+         console.log("=== parameters");
+         console.log(parameters);
+
+         if (parameters.variable) {
+            this.variable = parameters.variable;
+            this.completeId = this.variable + "." + this.id;
+         }
+         if (parameters.states)
+            this.states = parameters.states;
+         if (parameters.styles)
+            this.styles = parameters.styles;
+         
+         /*
          MessageBus.page.subscribe("dcc/select-states/" + this.id, this.defineStates);
          MessageBus.page.publish("dcc/request/select-states", this.id);
          this._pendingRequests++;
+         */
       }
+
+      console.log("=== variable");
+      console.log(this.variable);
+      console.log("=== states");
+      console.log(this.states);
+      console.log("=== styles");
+      console.log(this.styles);
       
-      this._checkRender();
+      this._render();
 
       MessageBus.int.publish("var/" + this.completeId + "/subinput/ready",
                              {sourceType: DCCStateSelect.elementTag,
@@ -86,12 +112,14 @@ class DCCStateSelect extends DCCVisual {
       /* nothing */
    }
 
+   /*
    defineStates(topic, message) {
       MessageBus.page.unsubscribe("dcc/select-states/" + this.id, this.defineStates);
       this.states = message;
       this._pendingRequests--;
       this._checkRender();
    }
+   */
    
    /*
     * Property handling
@@ -171,8 +199,8 @@ class DCCStateSelect extends DCCVisual {
 
    /* Rendering */
 
-   async _checkRender() {
-      if (this._pendingRequests >= 0 && this.states != null) {
+   async _render() {
+      if (this.states != null) {
          // const statesArr = this.states.split(",");
          if (this.hasAttribute("answer") || this.author)
             this.selection = this.answer;
@@ -200,9 +228,12 @@ class DCCStateSelect extends DCCVisual {
           } else
              this._presentationState.innerHTML = "";
        }
-       this._presentation.className =
-          DCCStateSelect.elementTag + "-template " +
-          DCCStateSelect.elementTag + "-" + this.selectionIndex + "-template";
+       if (this.styles && this.selectionIndex < this.styles.length)
+          this._presentation.className = this.styles[this.selectionIndex];
+       else
+          this._presentation.className =
+             DCCStateSelect.elementTag + "-template " +
+             DCCStateSelect.elementTag + "-" + this.selectionIndex + "-template";
      }
    }
    
@@ -236,20 +267,31 @@ class DCCStateSelect extends DCCVisual {
 class DCCGroupSelect extends DCCBlock {
    constructor() {
       super();
+      this.requestParameters = this.requestParameters.bind(this);
+      /*
       this.requestVariable = this.requestVariable.bind(this); 
       this.requestStates = this.requestStates.bind(this);
+      this.requestStyles = this.requestStyles.bind(this);
+      */
+      this.styles = null;
+      this._groupReady = false;
+      this._pendingRequests = [];
+      MessageBus.page.subscribe("dcc/request/select-parameters", this.requestParameters);
    }
 
    async connectedCallback() {
       if (this.vocabularies) {
-         let context =
-            await Context.instance.loadContext("http://purl.org/versum/evidence/");
-         this._highlightOptions = {};
-         for (let c in context.states)
-            this._highlightOptions[context.states[c]["@id"]] =
-               {label:  c,
-                symbol: context.states[c].symbol,
-                style:  context.states[c].style};
+         let voc = await Context.instance.loadResource(this.vocabularies);
+         let states = [];
+         let styles = [];
+         for (let v in voc.states) {
+            if (voc.states[v].symbol)
+               states.push(voc.states[v].symbol);
+            if (voc.states[v].style)
+               styles.push(voc.states[v].style);
+         }
+         this.states = (states.length == 0) ? null : states.join(",");
+         this.styles = (styles.length == 0) ? null : styles;
       }
 
       this._statement = (this.hasAttribute("statement"))
@@ -258,27 +300,64 @@ class DCCGroupSelect extends DCCBlock {
 
       super.connectedCallback();
 
-      MessageBus.page.subscribe("dcc/select-variable/request", this.requestVariable);
+      this._groupReady = true;
+      this._answerRequests();
+
+      /*
+      MessageBus.page.subscribe("dcc/request/select-variable", this.requestVariable);
       MessageBus.page.subscribe("dcc/request/select-states", this.requestStates);
+      MessageBus.page.subscribe("dcc/request/select-styles", this.requestStyles);
+      */
       
       MessageBus.int.publish("var/" + this.variable + "/group_input/ready",
                              DCCGroupSelect.elementTag);
    }
 
    disconnectedCallback() {
-      MessageBus.page.unsubscribe("dcc/select-variable/request", this.requestVariable);
+      MessageBus.page.unsubscribe("dcc/request/select-parameters", this.requestParameters);
+      /*
+      MessageBus.page.unsubscribe("dcc/request/select-variable", this.requestVariable);
       MessageBus.page.unsubscribe("dcc/request/select-states", this.requestStates);
+      MessageBus.page.unsubscribe("dcc/request/select-styles", this.requestStyles);
+      */
    }
    
+   requestParameters(topic, message) {
+      this._pendingRequests.push(message);
+      if (this._groupReady)
+         this._answerRequests();
+   }
+
+   _answerRequests() {
+      for (let r of this._pendingRequests)
+         MessageBus.page.publish("dcc/select-parameters/" + r, {
+            variable: this.variable,
+            states: this.states,
+            styles: this.styles
+         });
+      this._pendingRequests = [];
+   }
+
+   /*
+   requestVariable(topic, message) {
+      
+      MessageBus.page.publish(MessageBus.buildResponseTopic(topic, message),
+                              this.variable);
+      // MessageBus.page.publish("dcc/select-variable/" + message, this.variable);
+   }
    
    requestStates(topic, message) {
-      MessageBus.page.publish("dcc/select-states/" + message, this.states);
+      MessageBus.page.publish(MessageBus.buildResponseTopic(topic, message),
+                              this.states);
+      // MessageBus.page.publish("dcc/select-states/" + message, this.states);
    }   
-   
-   requestVariable(topic, message) {
-      MessageBus.page.publish("dcc/select-variable/" + message, this.variable);
+
+   requestStyles(topic, message) {
+      MessageBus.page.publish(MessageBus.buildResponseTopic(topic, message),
+                              this.styles);
    }
-   
+   */
+
    /*
     * Property handling
     */
@@ -333,6 +412,14 @@ class DCCGroupSelect extends DCCBlock {
 
    set vocabularies(newValue) {
       this.setAttribute("vocabularies", newValue);
+   }
+
+   get styles() {
+      return this._styles;
+   }
+
+   set styles(newValue) {
+      this._styles = newValue;
    }
 
    async _renderInterface() {
