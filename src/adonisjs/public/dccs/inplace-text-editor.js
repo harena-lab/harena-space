@@ -245,7 +245,7 @@ class EditDCCText {
    async _loadSelectOptions() {
       const range = this._quill.getSelection(true);
       let context =
-         await Context.instance.loadContext("http://purl.org/versum/evidence/");
+         await Context.instance.loadResource("evidence:findingRelevance");
       this._highlightOptions = {};
       for (let c in context.states)
          this._highlightOptions[context.states[c]["@id"]] =
