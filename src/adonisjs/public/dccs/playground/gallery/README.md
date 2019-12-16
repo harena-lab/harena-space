@@ -13,6 +13,11 @@
 ![Microworld](cell/replication-vanish-microworld.png)
 [Microworld](../presenter.html?source=cell/replication-vanish-microworld)
 
+## Movement and Influence
+
+![Cluster Colors](cell/movement-influence-colors.png)
+[Cluster Colors](../presenter.html?source=cell/movement-influence-colors)
+
 ## Movement, Replication, and Vanish
 
 ![Tiny Earth](cell/movement-replication-vanish-tinyearth.png)
