@@ -56,8 +56,6 @@ class DCCTimer extends DCCBase {
    }
 
    notify(topic, message) {
-      console.log("=== timer notify");
-      console.log(message);
       if (message.role) {
          switch (message.role.toLowerCase()) {
             case "reset": this.reset(); break;

@@ -56,26 +56,22 @@ _#_________________________________________#_
 
 <dcc-cell-color type="#" label="glass" color="#0000ff"></dcc-cell-color>
 
-<dcc-cell-color type="." label="sand" color="#ff0000">
-   <rule-dcc-cell-neighbor label="fall vertical"
-      probability="100" new-source="_" old-target="_" new-target=".">
-   ___
-   ___
-   _*_
-   </rule-dcc-cell-neighbor>
-   <rule-dcc-cell-neighbor label="fall oblique"
-      probability="90" new-source="_" old-target="_" new-target=".">
-   ___
-   ___
-   *_*
-   </rule-dcc-cell-neighbor>
-   <rule-dcc-cell-neighbor label="roll"
-      probability="40" new-source="_" old-target="_" new-target=".">
-   ___
-   *_*
-   ___
-   </rule-dcc-cell-neighbor>
-</dcc-cell-color>
+<dcc-cell-color type="." label="sand" color="#ff0000"></dcc-cell-color>
+<rule-dcc-cell-neighbor label="fall vertical" probability="100" transition="._>_.">
+___
+___
+_*_
+</rule-dcc-cell-neighbor>
+<rule-dcc-cell-neighbor label="fall oblique" probability="90" transition="._>_.">
+___
+___
+*_*
+</rule-dcc-cell-neighbor>
+<rule-dcc-cell-neighbor label="roll" probability="40" transition="._>_.">
+___
+*_*
+___
+</rule-dcc-cell-neighbor>
 
 <dcc-trigger label="Next" action="state/next"></dcc-trigger>
 <dcc-trigger label="Play" action="timer/start"></dcc-trigger>

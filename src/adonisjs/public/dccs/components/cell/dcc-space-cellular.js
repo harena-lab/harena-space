@@ -192,10 +192,18 @@ class DCCSpaceCellular extends DCCBase {
    }
 
    ruleRegister(topic, rule) {
-      if (!this._rules[rule.oldSource])
-         this._rules[rule.oldSource] = [rule];
-      else
-         this._rules[rule.oldSource].push(rule);
+      if (rule.transition[0] == "?" || rule.transition[0] == "!") {
+         for (let r in this._cellTypes)
+            if (!this._rules[r])
+               this._rules[r] = [rule];
+            else
+               this._rules[r].push(rule);
+      } else {
+         if (!this._rules[rule.transition[0]])
+            this._rules[rule.transition[0]] = [rule];
+         else
+            this._rules[rule.transition[0]].push(rule);
+      }
    }
 
    computeCoordinates(col, row) {
@@ -225,6 +233,8 @@ class DCCSpaceCellular extends DCCBase {
    }
 
    stateNext() {
+      const vtypes = Object.keys(this._cellTypes);
+      const ntypes = vtypes.length;
       let changed = this._changeControl();
       const nrows = this._state.length;
       for (let r = 0; r < nrows; r++) {
@@ -247,29 +257,45 @@ class DCCSpaceCellular extends DCCBase {
                      }
                      if (nr >= 0 && nr < nrows &&
                          nc >= 0 && nc < ncols) {
+                        const oldSource = rule.transition[0];
+                        const oldTarget = rule.transition[1];
+                        const newSource = rule.transition[3];
+                        const newTarget = rule.transition[4];
                         const expectedTarget = (this._state[nr][nc] == null)
                            ? "_" : this._state[nr][nc].dcc.type;
-                        if (expectedTarget == rule.oldTarget) {
+                        if (expectedTarget == oldTarget ||
+                            ((oldTarget == "?" || oldTarget == "!") && expectedTarget != "_")) {
                            triggered = true;
+                           const valueTarget = (!"?!@".includes(newTarget)) ? newTarget
+                              : ((newTarget == "@")
+                                 ? vtypes[Math.floor(Math.random() * ntypes)]
+                                 : ((oldSource == newTarget) ? cell.dcc.type : expectedTarget));
                            if (this._state[nr][nc] == null ||
-                               rule.newTarget != this._state[nr][nc].dcc.type) {
+                               valueTarget != this._state[nr][nc].dcc.type) {
                               if (this._state[nr][nc] != null)
                                  this._cells.removeChild(this._state[nr][nc].element);
-                              if (rule.newTarget != "_") {
+                              if (valueTarget != "_") {
                                  this._state[nr][nc] =
-                                    this._cellTypes[rule.newTarget].createIndividual(nc+1, nr+1);
+                                    this._cellTypes[valueTarget].createIndividual(nc+1, nr+1);
                                  this._cells.appendChild(this._state[nr][nc].element);
                               } else
                                  this._state[nr][nc] = null;
                               changed[nr][nc] = true;
                            }
-                           if (this._state[r][c] == null ||
-                               rule.newSource != this._state[r][c].dcc.type) {
-                              if (this._state[r][c] != null)
-                                 this._cells.removeChild(this._state[r][c].element);
-                              if (rule.newSource != "_") {
+                           const valueSource = (!"?!@".includes(newSource)) ? newSource
+                              : ((newSource == "@")
+                                 ? vtypes[Math.floor(Math.random() * ntypes)]
+                                 : ((oldSource == newSource) ? cell.dcc.type : expectedTarget));
+                           console.log("=== nr and nc");
+                           console.log(r + "," + c + "," + nr + "," + nc);
+                           if ((this._state[r][c] == null ||
+                                newSource != this._state[r][c].dcc.type) &&
+                               (nr != r || nc != c)) {
+                              if (cell != null)
+                                 this._cells.removeChild(cell.element);
+                              if (valueSource != "_") {
                                  this._state[r][c] =
-                                    this._cellTypes[rule.newSource].createIndividual(c+1, r+1);
+                                    this._cellTypes[valueSource].createIndividual(c+1, r+1);
                                  this._cells.appendChild(this._state[r][c].element);
                               } else
                                  this._state[r][c] = null;

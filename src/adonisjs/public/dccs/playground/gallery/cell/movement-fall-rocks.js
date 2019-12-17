@@ -1,7 +1,7 @@
 (function() {
 insertSource(
 "Falling Rocks (simple movement)",
-`<dcc-space-cellular id="cellular-space" grid>
+`<dcc-space-cellular id="cellular-space" cell-width="50" cell-height="50" grid>
 r__r_r
 __r_r_
 ______
@@ -10,12 +10,12 @@ t_t__t
 </dcc-space-cellular>
 
 <dcc-cell-image type="r" label="rock" image="images/cell/rock01.svg">
-   <rule-dcc-cell-neighbor label="fall" probability="100" new-source="_" old-target="_" new-target="r">
-   ___
-   ___
-   _*_
-   </rule-dcc-cell-neighbor>
 </dcc-cell-image>
+<rule-dcc-cell-neighbor label="fall" probability="100" transition="r_>_r">
+___
+___
+_*_
+</rule-dcc-cell-neighbor>
 
 <dcc-cell-image type="t" label="tree" image="images/cell/tree01.svg"></dcc-cell-image>
 

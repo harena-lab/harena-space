@@ -13,11 +13,14 @@ class RuleDCCCellNeighbor extends HTMLElement {
 
       if (!this.hasAttribute("probability")) this.probability = "100";
       this._decimalProbability = parseInt(this.probability) / 100;
+      if (!this.hasAttribute("transition")) this.transition = "?_>_?";
+      /*
       if (!this.hasAttribute("new-source")) this.newSource = "_";
       if (!this.hasAttribute("old-target")) this.oldTarget = "_";
       if (!this.hasAttribute("old-source") && this.parentNode && this.parentNode.type)
          this.oldSource = this.parentNode.type;
       if (!this.hasAttribute("new-target")) this.newTarget = this.oldSource;
+      */
       MessageBus.page.publish("dcc/rule-cell/register", this);
    }
 
@@ -26,7 +29,7 @@ class RuleDCCCellNeighbor extends HTMLElement {
    
    static get observedAttributes() {
       return DCCVisual.observedAttributes.concat(
-         ["label", "neighbors", "probability", "old-source", "new-source", "old-target", "new-target"]);
+         ["label", "neighbors", "probability", "transition"]);
    }
 
    get label() {
@@ -61,6 +64,15 @@ class RuleDCCCellNeighbor extends HTMLElement {
       return this._decimalProbability;
    }
 
+   get transition() {
+      return this.getAttribute("transition");
+   }
+
+   set transition(newValue) {
+      this.setAttribute("transition", newValue);
+   }
+
+   /*
    get oldSource() {
       return this.getAttribute("old-source");
    }
@@ -92,6 +104,7 @@ class RuleDCCCellNeighbor extends HTMLElement {
    set newTarget(newValue) {
       this.setAttribute("new-target", newValue);
    }
+   */
 }
 
 (function() {
