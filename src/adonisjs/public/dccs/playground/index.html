@@ -45,11 +45,11 @@
    <script src="../../dccs/components/dcc-compute.js"></script>
    <script src="../../dccs/components/dcc-report.js"></script>
 
-   <script src="../../dccs/components/cellular/dcc-space-cellular.js"></script>
-   <script src="../../dccs/components/cellular/dcc-cell.js"></script>
-   <script src="../../dccs/components/cellular/dcc-cell-color.js"></script>
-   <script src="../../dccs/components/cellular/dcc-cell-image.js"></script>
-   <script src="../../dccs/components/cellular/rule-dcc-cell-neighbor.js"></script>
+   <script src="../../dccs/components/cell/dcc-space-cellular.js"></script>
+   <script src="../../dccs/components/cell/dcc-cell.js"></script>
+   <script src="../../dccs/components/cell/dcc-cell-color.js"></script>
+   <script src="../../dccs/components/cell/dcc-cell-image.js"></script>
+   <script src="../../dccs/components/cell/rule-dcc-cell-neighbor.js"></script>
 
    <script>
       function start() {
@@ -74,7 +74,7 @@
 
       function insertSource(name, source) {
          document.querySelector("#editor").value = source;
-         this.render();
+         render();
       }
 
       function showJson(topic, message) {

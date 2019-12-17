@@ -13,51 +13,36 @@ _____c______t_______
 _h_____r______hc____
 </dcc-space-cellular>
 
-<dcc-cell-color type="w" color="#0000ff"></dcc-cell-color>
-<dcc-cell-image type="r" image="images/cell/rock01.svg"></dcc-cell-image>
-<dcc-cell-image type="t" image="images/cell/tree01.svg"></dcc-cell-image>
-
 <dcc-cell-image type="c" label="carnivore" image="images/cell/carnivorous-dinosaur.svg">
-   <rule-dcc-cell-neighbor label="carnivore eatd and replicates"
-      probability="30" new-source="c" old-target="h" new-target="c">
-   ***
-   *_*
-   ***
-   </rule-dcc-cell-neighbor>
-   <rule-dcc-cell-neighbor label="carnivore moves"
-      probability="50" new-source="_" old-target="_" new-target="c">
-   ***
-   *_*
-   ***
-   </rule-dcc-cell-neighbor>
-   <rule-dcc-cell-neighbor label="carnivore dies"
-      probability="10" new-source="_" old-target="c" new-target="_">
-   ___
-   _*_
-   ___
-   </rule-dcc-cell-neighbor>
 </dcc-cell-image>
 
 <dcc-cell-image type="h" label="herbivore" image="images/cell/brontosaurus.svg">
-   <rule-dcc-cell-neighbor label="herbivore replicates"
-      probability="50" new-source="h" old-target="_" new-target="h">
+</dcc-cell-image>
+
+<rule-dcc-cell-neighbor label="carnivore eat and replicates" probability="30" transition="ch>cc">
    ***
    *_*
    ***
-   </rule-dcc-cell-neighbor>
-   <rule-dcc-cell-neighbor label="herbivore moves"
-      probability="50" new-source="_" old-target="_" new-target="h">
+</rule-dcc-cell-neighbor>
+<rule-dcc-cell-neighbor label="herbivore replicates" probability="50" transition="h_>hh">
    ***
    *_*
    ***
-   </rule-dcc-cell-neighbor>
-   <rule-dcc-cell-neighbor label="herbivore dies"
-      probability="10" new-source="_" old-target="h" new-target="_">
+</rule-dcc-cell-neighbor>
+<rule-dcc-cell-neighbor label="moves" probability="50" transition="?_>_?">
+   ***
+   *_*
+   ***
+</rule-dcc-cell-neighbor>
+<rule-dcc-cell-neighbor label="dies" probability="10" transition="??>__">
    ___
    _*_
    ___
-   </rule-dcc-cell-neighbor>
-</dcc-cell-image>
+</rule-dcc-cell-neighbor>
+
+<dcc-cell-color type="w" label="water" color="#0000ff"></dcc-cell-color>
+<dcc-cell-image type="r" label="rock" image="images/cell/rock01.svg"></dcc-cell-image>
+<dcc-cell-image type="t" label="tree"image="images/cell/tree01.svg"></dcc-cell-image>
 
 <dcc-trigger label="Next" action="state/next"></dcc-trigger>
 <dcc-trigger label="Play" action="timer/start"></dcc-trigger>
