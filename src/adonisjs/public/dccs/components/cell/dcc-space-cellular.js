@@ -237,7 +237,6 @@ class DCCSpaceCellular extends DCCBase {
 
    stateNext() {
       const vtypes = Object.keys(this._cellTypes);
-      const ntypes = vtypes.length;
       let changed = this._changeControl();
       const nrows = this._state.length;
       for (let r = 0; r < nrows; r++) {
@@ -247,77 +246,83 @@ class DCCSpaceCellular extends DCCBase {
             let cell = row[c];
             if (cell != null && !changed[r][c] && this._rules[cell.dcc.type]) {
                let triggered = false;
-               for (let m = 0; m < this._rules[cell.dcc.type].length && !triggered; m++) {
-                  let rule = this._rules[cell.dcc.type][m];
-                  if (Math.random() <= rule.decimalProbability) {
-                     const trans = rule.transition;
-                     const oldSource = trans[0];
-                     const oldTarget = trans[1];
-                     const newSource = trans[3];
-                     const newTarget = trans[4];
-                     let nb = rule.ruleNeighbors.slice();
-                     let ruleTriggered = false;
-                     while (nb.length > 0 && !ruleTriggered) {
-                        const neighbor = Math.floor(Math.random() * nb.length);
-                        let nr = r + nb[neighbor][0];
-                        let nc = c + nb[neighbor][1];
-                        nb.splice(neighbor, 1);
-                        if (this._infinite) {
-                           nr = (nr < 0) ? nrows - 1 : nr % nrows;
-                           nc = (nc < 0) ? ncols - 1 : nc % ncols;
-                        }
-                        if (nr >= 0 && nr < nrows &&
-                            nc >= 0 && nc < ncols) {
-                           const expectedTarget = (this._state[nr][nc] == null)
-                              ? "_" : this._state[nr][nc].dcc.type;
-                           if (expectedTarget == oldTarget ||
-                               ((oldTarget == "?" || oldTarget == "!") && expectedTarget != "_")) {
-                              ruleTriggered = true;
-                              triggered = true;
-                              const valueTarget = (!"?!@".includes(newTarget)) ? newTarget
-                                 : ((newTarget == "@")
-                                    ? vtypes[Math.floor(Math.random() * ntypes)]
-                                    : ((oldSource == newTarget) ? cell.dcc.type : expectedTarget));
-                              if (this._state[nr][nc] == null ||
-                                  valueTarget != this._state[nr][nc].dcc.type) {
-                                 if (this._state[nr][nc] != null)
-                                    this._cells.removeChild(this._state[nr][nc].element);
-                                 if (valueTarget != "_") {
-                                    this._state[nr][nc] =
-                                       this._cellTypes[valueTarget].createIndividual(nc+1, nr+1);
-                                    this._cells.appendChild(this._state[nr][nc].element);
-                                 } else
-                                    this._state[nr][nc] = null;
-                                 changed[nr][nc] = true;
-                              }
-                              const valueSource = (!"?!@".includes(newSource)) ? newSource
-                                 : ((newSource == "@")
-                                    ? vtypes[Math.floor(Math.random() * ntypes)]
-                                    : ((oldSource == newSource) ? cell.dcc.type : expectedTarget));
-                              console.log("=== nr and nc");
-                              console.log(r + "," + c + "," + nr + "," + nc);
-                              if ((this._state[r][c] == null ||
-                                   newSource != this._state[r][c].dcc.type) &&
-                                  (nr != r || nc != c)) {
-                                 if (cell != null)
-                                    this._cells.removeChild(cell.element);
-                                 if (valueSource != "_") {
-                                    this._state[r][c] =
-                                       this._cellTypes[valueSource].createIndividual(c+1, r+1);
-                                    this._cells.appendChild(this._state[r][c].element);
-                                 } else
-                                    this._state[r][c] = null;
-                                 changed[r][c] = true;
-                              }
-                           }
-                        }
-                     }
+               for (let m = 0; m < this._rules[cell.dcc.type].length && !triggered; m++)
+                  triggered = this._rules[cell.dcc.type][m].computeRule(
+                     this._state, ncols, nrows, this._infinite,
+                     this._cells, this._cellTypes, vtypes, c, r, changed);
+            }
+         }
+      }
+   }
+
+   /*
+   computeRule() {
+      if (Math.random() <= rule.decimalProbability) {
+         const trans = rule.transition;
+         const oldSource = trans[0];
+         const oldTarget = trans[1];
+         const newSource = trans[3];
+         const newTarget = trans[4];
+         let nb = rule.ruleNeighbors.slice();
+         let ruleTriggered = false;
+         while (nb.length > 0 && !ruleTriggered) {
+            const neighbor = Math.floor(Math.random() * nb.length);
+            let nr = r + nb[neighbor][0];
+            let nc = c + nb[neighbor][1];
+            nb.splice(neighbor, 1);
+            if (this._infinite) {
+               nr = (nr < 0) ? nrows - 1 : nr % nrows;
+               nc = (nc < 0) ? ncols - 1 : nc % ncols;
+            }
+            if (nr >= 0 && nr < nrows &&
+                nc >= 0 && nc < ncols) {
+               const expectedTarget = (this._state[nr][nc] == null)
+                  ? "_" : this._state[nr][nc].dcc.type;
+               if (expectedTarget == oldTarget ||
+                   ((oldTarget == "?" || oldTarget == "!") && expectedTarget != "_")) {
+                  ruleTriggered = true;
+                  triggered = true;
+                  const valueTarget = (!"?!@".includes(newTarget)) ? newTarget
+                     : ((newTarget == "@")
+                        ? vtypes[Math.floor(Math.random() * ntypes)]
+                        : ((oldSource == newTarget) ? cell.dcc.type : expectedTarget));
+                  if (this._state[nr][nc] == null ||
+                      valueTarget != this._state[nr][nc].dcc.type) {
+                     if (this._state[nr][nc] != null)
+                        this._cells.removeChild(this._state[nr][nc].element);
+                     if (valueTarget != "_") {
+                        this._state[nr][nc] =
+                           this._cellTypes[valueTarget].createIndividual(nc+1, nr+1);
+                        this._cells.appendChild(this._state[nr][nc].element);
+                     } else
+                        this._state[nr][nc] = null;
+                     changed[nr][nc] = true;
+                  }
+                  const valueSource = (!"?!@".includes(newSource)) ? newSource
+                     : ((newSource == "@")
+                        ? vtypes[Math.floor(Math.random() * ntypes)]
+                        : ((oldSource == newSource) ? cell.dcc.type : expectedTarget));
+                  console.log("=== nr and nc");
+                  console.log(r + "," + c + "," + nr + "," + nc);
+                  if ((this._state[r][c] == null ||
+                       newSource != this._state[r][c].dcc.type) &&
+                      (nr != r || nc != c)) {
+                     if (cell != null)
+                        this._cells.removeChild(cell.element);
+                     if (valueSource != "_") {
+                        this._state[r][c] =
+                           this._cellTypes[valueSource].createIndividual(c+1, r+1);
+                        this._cells.appendChild(this._state[r][c].element);
+                     } else
+                        this._state[r][c] = null;
+                     changed[r][c] = true;
                   }
                }
             }
          }
       }
    }
+   */
 }
 
 (function() {

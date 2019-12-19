@@ -23,8 +23,7 @@ class SubscribeDCC extends HTMLElement {
       **********/
    
    static get observedAttributes() {
-      return DCCVisual.observedAttributes.concat(
-         ["target", "message", "role"]);
+      return ["target", "message", "role"];
    }
 
    get target() {

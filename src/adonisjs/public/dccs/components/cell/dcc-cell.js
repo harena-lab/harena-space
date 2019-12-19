@@ -3,6 +3,11 @@
  */
 
 class DCCCell extends DCCBase {
+   constructor() {
+      super();
+      this._properties = {};
+   }
+
    connectedCallback() {
       if (this.type)
          MessageBus.page.publish("dcc/cell-type/register", this);
@@ -37,6 +42,10 @@ class DCCCell extends DCCBase {
       this._space = newValue;
    }
 
+   attachProperty(name, initial) {
+      this._properties[name] = initial;
+   }
+
    createSVGElement(type, col, row) {
       let coordinates;
       if (this.space != null)
@@ -50,28 +59,31 @@ class DCCCell extends DCCBase {
       element.setAttribute("height", coordinates.height);
       return element;
    }
+
+   repositionElement(element, col, row) {
+      let coordinates;
+      if (this.space != null)
+         coordinates = this.space.computeCoordinates(col, row);
+      else
+         coordinates = DCCSpaceCellular.computeDefaultCoordinates(col, row);
+      element.setAttribute("x", coordinates.x);
+      element.setAttribute("y", coordinates.y);
+   }
 }
 
 class DCCCellLight {
    constructor(dcc, element) {
       this.dcc = dcc;
       this.element = element;
-   }
-
-   get dcc() {
-      return this._dcc;
-   }
-   
-   set dcc(newValue) {
-      this._dcc = newValue;
-   }
-
-   get element() {
-      return this._element;
-   }
-   
-   set element(newValue) {
-      this._element = newValue;
+      if (dcc.properties != null) {
+         const props = Object.keys(dcc.properties);
+         if (props.length !== 0) {
+            if (props.length == 1 && dcc.properties.value)
+               this.value = dcc.properties.value;
+            else
+               this.properties = dcc.properties;
+         }
+      }
    }
 }
 

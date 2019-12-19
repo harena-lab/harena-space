@@ -1,43 +1,38 @@
 /* DCC Rule Cell Neighbor
   ***********************/
 
-class RuleDCCCellNeighbor extends HTMLElement {
+class RuleDCCCellNeighbor extends RuleDCCCell {
    connectedCallback() {
       if (!this.neighbors) this.neighbors = this.innerHTML.replace(/[ \r\n]/g, "");
       this.innerHTML = "";
-      const neighbors = this.neighbors;
-      this._ruleNeighbors = [];
-      for (let n = 0; n < neighbors.length; n++)
-         if (neighbors[n] != "_")
-            this._ruleNeighbors.push([Math.floor(n/3)-1, n%3-1]);
+      this._ruleNeighbors = this.buildNeighborList(this.neighbors);
 
       if (!this.hasAttribute("probability")) this.probability = "100";
       this._decimalProbability = parseInt(this.probability) / 100;
-      if (!this.hasAttribute("transition")) this.transition = "?_>_?";
-      /*
-      if (!this.hasAttribute("new-source")) this.newSource = "_";
-      if (!this.hasAttribute("old-target")) this.oldTarget = "_";
-      if (!this.hasAttribute("old-source") && this.parentNode && this.parentNode.type)
-         this.oldSource = this.parentNode.type;
-      if (!this.hasAttribute("new-target")) this.newTarget = this.oldSource;
-      */
+      if (!this.hasAttribute("transition"))
+         this.transition = "?_>_?";
+      else
+         this._decomposeTransition(this.transition);
       MessageBus.page.publish("dcc/rule-cell/register", this);
+   }
+
+   buildNeighborList(map) {
+      map = map.replace(/[ \r\n]/g, "");
+      const size = Math.ceil(Math.sqrt(map.length));
+      const shift = Math.floor((size-1)/2);
+      let neighborList = [];
+      for (let n = 0; n < map.length; n++)
+         if (map[n] != "_")
+            neighborList.push([Math.floor(n/size)-shift, n%size-shift]);
+      return neighborList;
    }
 
    /* Properties
       **********/
    
    static get observedAttributes() {
-      return DCCVisual.observedAttributes.concat(
-         ["label", "neighbors", "probability", "transition"]);
-   }
-
-   get label() {
-      return this.getAttribute("label");
-   }
-   
-   set label(newValue) {
-      this.setAttribute("label", newValue);
+      return RuleDCCCell.observedAttributes.concat(
+         ["neighbors", "probability", "transition"]);
    }
 
    get neighbors() {
@@ -70,43 +65,165 @@ class RuleDCCCellNeighbor extends HTMLElement {
 
    set transition(newValue) {
       this.setAttribute("transition", newValue);
+      this._decomposeTransition(newValue);
    }
 
-   /*
-   get oldSource() {
-      return this.getAttribute("old-source");
-   }
-   
-   set oldSource(newValue) {
-      this.setAttribute("old-source", newValue);
-   }
+   _decomposeTransition(transition) {
+      this._oldSource = transition[0];
+      this._oldTarget = transition[1];
+      this._newSource = transition[3];
+      this._newTarget = transition[4];
 
-   get newSource() {
-      return this.getAttribute("new-source");
-   }
-   
-   set newSource(newValue) {
-      this.setAttribute("new-source", newValue);
-   }
+      this._transMap = [
+         (transition[3] == "_") ? 0
+            : ((transition[3] == transition[0])
+               ? 1 : ((transition[3] == transition[1] && transition[3] != transition[4]) ? 2 : 0)),
+         (transition[4] == "_") ? 0
+            : ((transition[4] == transition[0] && transition[4] != transition[3])
+               ? 1 : ((transition[4] == transition[1]) ? 2 : 0))
+      ];
+      this._maintainSource = this._transMap.includes(1);
+      this._maintainTarget = this._transMap.includes(2);
 
-   get oldTarget() {
-      return this.getAttribute("old-target");
+      console.log("=== transition map");
+      console.log(this.transition);
+      console.log(this._transMap);
+      console.log(this._maintainSource);
+      console.log(this._maintainTarget);
    }
-   
-   set oldTarget(newValue) {
-      this.setAttribute("old-target", newValue);
-   }
+}
 
-   get newTarget() {
-      return this.getAttribute("new-target");
+class RuleDCCCellPair extends RuleDCCCellNeighbor {
+   computeRule(state, ncols, nrows, infinite, cells, cellTypes, vtypes, col, row, changed) {
+      let triggered = false;
+      if (Math.random() <= this._decimalProbability) {
+         let nb = this._ruleNeighbors.slice();
+         let ruleTriggered = false;
+         while (nb.length > 0 && !ruleTriggered) {
+            const neighbor = Math.floor(Math.random() * nb.length);
+            let nr = row + nb[neighbor][0];
+            let nc = col + nb[neighbor][1];
+            nb.splice(neighbor, 1);
+            if (infinite) {
+               nr = (nr < 0) ? nrows - 1 : nr % nrows;
+               nc = (nc < 0) ? ncols - 1 : nc % ncols;
+            }
+            if (nr >= 0 && nr < nrows &&
+                nc >= 0 && nc < ncols) {
+               const expectedTarget = (state[nr][nc] == null)
+                  ? "_" : state[nr][nc].dcc.type;
+               if (expectedTarget == this._oldTarget ||
+                   ((this._oldTarget == "?" || this._oldTarget == "!") && expectedTarget != "_")) {
+                  ruleTriggered = true;
+                  triggered = true;
+
+                  const valueTarget = (!"?!@".includes(this._newTarget)) ? this._newTarget
+                     : ((this._newTarget == "@")
+                        ? vtypes[Math.floor(Math.random() * vtypes.length)]
+                        : ((this._oldSource == this._newTarget) ? 
+                           state[row][col].dcc.type : expectedTarget));
+                  const valueSource = (!"?!@".includes(this._newSource)) ? this._newSource
+                     : ((this._newSource == "@")
+                        ? vtypes[Math.floor(Math.random() * vtypes.length)]
+                        : ((this._oldSource == this._newSource)
+                           ? state[row][col].dcc.type : expectedTarget));
+
+                  /*
+                  if (this._newSource == "@" || this._newTarget == "@") {
+                     console.log("=== transition");
+                     console.log(this.transition);
+                     console.log(this._transMap);
+                     console.log(valueSource);
+                     console.log(valueTarget);
+                     console.log("maintain source: " + this._maintainSource);
+                     console.log("maintain target: " + this._maintainTarget);
+                  }
+                  */
+
+                  if (!this._maintainSource && state[row][col] != null && (nr != row || nc != col)){
+                     cells.removeChild(state[row][col].element);
+                     state[row][col] = null;
+                  }
+                  if (!this._maintainTarget && state[nr][nc] != null) {
+                     cells.removeChild(state[nr][nc].element);
+                     state[nr][nc] = null;
+                  }
+
+                  switch (this._transMap[1]) {
+                     case 0:
+                        if (valueTarget != "_") {
+                           state[nr][nc] =
+                              cellTypes[valueTarget].createIndividual(nc+1, nr+1);
+                           cells.appendChild(state[nr][nc].element);
+                        } else
+                           state[nr][nc] = null;
+                        changed[nr][nc] = true;
+                        break;
+                     case 1:
+                        state[nr][nc] = state[row][col];
+                        cellTypes[valueTarget].repositionElement(
+                           state[row][col].element, nc+1 , nr+1);
+                        changed[nr][nc] = true;
+                        break;
+                  }
+                  /*
+                  if (state[nr][nc] == null ||
+                      valueTarget != state[nr][nc].dcc.type) {
+                     if (state[nr][nc] != null)
+                        cells.removeChild(state[nr][nc].element);
+                     if (valueTarget != "_") {
+                        state[nr][nc] =
+                           cellTypes[valueTarget].createIndividual(nc+1, nr+1);
+                        cells.appendChild(state[nr][nc].element);
+                     } else
+                        state[nr][nc] = null;
+                     changed[nr][nc] = true;
+                  }
+                  */
+                  if (nr != row || nc != col)
+                     switch (this._transMap[0]) {
+                        case 0:
+                           if (valueSource != "_") {
+                              state[row][col] =
+                                 cellTypes[valueSource].createIndividual(col+1, row+1);
+                              cells.appendChild(state[row][col].element);
+                           } else
+                              state[row][col] = null;
+                           changed[row][col] = true;
+                           break;
+                        case 2:
+                           state[row][col] = state[nr][nc];
+                           cellTypes[valueSource].repositionElement(
+                              state[nr][nc].element, col+1 , row+1);
+                           changed[row][col] = true;
+                           break;
+                     }
+                  /*
+                  if ((state[row][col] == null ||
+                       this._newSource != state[row][col].dcc.type) &&
+                      (nr != row || nc != col)) {
+                     if (state[row][col] != null)
+                        cells.removeChild(state[row][col].element);
+                     if (valueSource != "_") {
+                        state[row][col] =
+                           cellTypes[valueSource].createIndividual(col+1, row+1);
+                        cells.appendChild(state[row][col].element);
+                     } else
+                        state[row][col] = null;
+                     changed[row][col] = true;
+                  }
+                  */
+               }
+            }
+         }
+      }
+      return triggered;
    }
-   
-   set newTarget(newValue) {
-      this.setAttribute("new-target", newValue);
-   }
-   */
+}
+
+class RuleDCCCellFlow extends RuleDCCCellNeighbor {
 }
 
 (function() {
-   customElements.define("rule-dcc-cell-neighbor", RuleDCCCellNeighbor);
+   customElements.define("rule-dcc-cell-pair", RuleDCCCellPair);
 })();
