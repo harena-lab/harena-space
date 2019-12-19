@@ -13,23 +13,23 @@ insertSource(
 
 <dcc-cell-image type="c" label="cyanobacteria" image="images/cell/cyanobacteria.svg">
 </dcc-cell-image>
-<rule-dcc-cell-neighbor label="cyanobacteria replication" probability="30" transition="c_>cc">
+<rule-dcc-cell-pair label="cyanobacteria replication" probability="30" transition="c_>cc">
    ***
    *_*
    ***
-</rule-dcc-cell-neighbor>
+</rule-dcc-cell-pair>
 
 <dcc-cell-image type="a" label="amoeba" image="images/cell/amoeba.svg"></dcc-cell-image>
-<rule-dcc-cell-neighbor label="amoeba replication" probability="5" transition="a_>aa">
+<rule-dcc-cell-pair label="amoeba replication" probability="5" transition="a_>aa">
    ***
    *_*
    ***
-</rule-dcc-cell-neighbor>
-<rule-dcc-cell-neighbor label="eat"probability="50" transition="ac>_a">
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair label="eat"probability="50" transition="ac>_a">
    ***
    *_*
    ***
-</rule-dcc-cell-neighbor>
+</rule-dcc-cell-pair>
 
 <dcc-trigger label="Next" action="state/next"></dcc-trigger>
 <dcc-trigger label="Play" action="timer/start"></dcc-trigger>

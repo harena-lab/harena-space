@@ -19,26 +19,26 @@ _h_____r______hc____
 <dcc-cell-image type="h" label="herbivore" image="images/cell/brontosaurus.svg">
 </dcc-cell-image>
 
-<rule-dcc-cell-neighbor label="carnivore eat and replicates" probability="30" transition="ch>cc">
+<rule-dcc-cell-pair label="carnivore eat and replicates" probability="30" transition="ch>cc">
    ***
    *_*
    ***
-</rule-dcc-cell-neighbor>
-<rule-dcc-cell-neighbor label="herbivore replicates" probability="50" transition="h_>hh">
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair label="herbivore replicates" probability="50" transition="h_>hh">
    ***
    *_*
    ***
-</rule-dcc-cell-neighbor>
-<rule-dcc-cell-neighbor label="moves" probability="50" transition="?_>_?">
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair label="moves" probability="50" transition="?_>_?">
    ***
    *_*
    ***
-</rule-dcc-cell-neighbor>
-<rule-dcc-cell-neighbor label="dies" probability="10" transition="??>__">
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair label="dies" probability="10" transition="??>__">
    ___
    _*_
    ___
-</rule-dcc-cell-neighbor>
+</rule-dcc-cell-pair>
 
 <dcc-cell-color type="w" label="water" color="#0000ff"></dcc-cell-color>
 <dcc-cell-image type="r" label="rock" image="images/cell/rock01.svg"></dcc-cell-image>

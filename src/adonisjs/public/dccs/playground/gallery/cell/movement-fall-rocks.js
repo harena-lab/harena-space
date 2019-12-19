@@ -11,11 +11,11 @@ t_t__t
 
 <dcc-cell-image type="r" label="rock" image="images/cell/rock01.svg">
 </dcc-cell-image>
-<rule-dcc-cell-neighbor label="fall" probability="100" transition="r_>_r">
+<rule-dcc-cell-pair label="fall" probability="100" transition="r_>_r">
 ___
 ___
 _*_
-</rule-dcc-cell-neighbor>
+</rule-dcc-cell-pair>
 
 <dcc-cell-image type="t" label="tree" image="images/cell/tree01.svg"></dcc-cell-image>
 
