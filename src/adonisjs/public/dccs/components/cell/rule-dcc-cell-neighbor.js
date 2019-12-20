@@ -84,12 +84,13 @@ class RuleDCCCellNeighbor extends RuleDCCCell {
       ];
       this._maintainSource = this._transMap.includes(1);
       this._maintainTarget = this._transMap.includes(2);
-
+      /*
       console.log("=== transition map");
       console.log(this.transition);
       console.log(this._transMap);
       console.log(this._maintainSource);
       console.log(this._maintainTarget);
+      */
    }
 }
 
@@ -141,6 +142,16 @@ class RuleDCCCellPair extends RuleDCCCellNeighbor {
                   */
 
                   if (!this._maintainSource && state[row][col] != null && (nr != row || nc != col)){
+                     /*
+                     console.log("=== transition");
+                     console.log(this.transition);
+                     console.log(this._transMap);
+                     console.log(valueSource);
+                     console.log(valueTarget);
+                     console.log("maintain source: " + this._maintainSource);
+                     console.log("maintain target: " + this._maintainTarget);
+                     console.log(state[row][col]);
+                     */
                      cells.removeChild(state[row][col].element);
                      state[row][col] = null;
                   }
@@ -148,6 +159,8 @@ class RuleDCCCellPair extends RuleDCCCellNeighbor {
                      cells.removeChild(state[nr][nc].element);
                      state[nr][nc] = null;
                   }
+
+                  const newState = state[nr][nc];
 
                   switch (this._transMap[1]) {
                      case 0:
@@ -192,9 +205,9 @@ class RuleDCCCellPair extends RuleDCCCellNeighbor {
                            changed[row][col] = true;
                            break;
                         case 2:
-                           state[row][col] = state[nr][nc];
+                           state[row][col] = newState;
                            cellTypes[valueSource].repositionElement(
-                              state[nr][nc].element, col+1 , row+1);
+                              state[row][col].element, col+1 , row+1);
                            changed[row][col] = true;
                            break;
                      }
@@ -222,6 +235,99 @@ class RuleDCCCellPair extends RuleDCCCellNeighbor {
 }
 
 class RuleDCCCellFlow extends RuleDCCCellNeighbor {
+   computeRule(state, ncols, nrows, infinite, cells, cellTypes, vtypes, col, row, changed) {
+      let triggered = false;
+      if (Math.random() <= this._decimalProbability) {
+         let nb = this._ruleNeighbors.slice();
+         let ruleTriggered = false;
+         while (nb.length > 0 && !ruleTriggered) {
+            const neighbor = Math.floor(Math.random() * nb.length);
+            let nr = row + nb[neighbor][0];
+            let nc = col + nb[neighbor][1];
+            nb.splice(neighbor, 1);
+            if (infinite) {
+               nr = (nr < 0) ? nrows - 1 : nr % nrows;
+               nc = (nc < 0) ? ncols - 1 : nc % ncols;
+            }
+            if (nr >= 0 && nr < nrows &&
+                nc >= 0 && nc < ncols) {
+               const propSource = (state[row][col].value) ? state[row][col].value
+                  : (state[row][col].properties && state[row][col].properties.value)
+                    ? state[row][col].properties.value : null;
+               const propTarget = (state[nr][nc].value) ? state[nr][nc].value
+                  : (state[nr][nc].properties && state[nr][nc].properties.value)
+                    ? state[nr][nc].properties.value : null;
+               if ((propSource == null || propTarget == null ||
+                    propSource > propTarget)) {
+                  const expectedTarget = (state[nr][nc] == null)
+                     ? "_" : state[nr][nc].dcc.type;
+                  if (expectedTarget == this._oldTarget ||
+                      ((this._oldTarget == "?" || this._oldTarget == "!") && expectedTarget != "_")) {
+                     ruleTriggered = true;
+                     triggered = true;
+
+                     const valueTarget = (!"?!@".includes(this._newTarget)) ? this._newTarget
+                        : ((this._newTarget == "@")
+                           ? vtypes[Math.floor(Math.random() * vtypes.length)]
+                           : ((this._oldSource == this._newTarget) ? 
+                              state[row][col].dcc.type : expectedTarget));
+                     const valueSource = (!"?!@".includes(this._newSource)) ? this._newSource
+                        : ((this._newSource == "@")
+                           ? vtypes[Math.floor(Math.random() * vtypes.length)]
+                           : ((this._oldSource == this._newSource)
+                              ? state[row][col].dcc.type : expectedTarget));
+
+                     if (!this._maintainSource && state[row][col] != null && (nr != row || nc != col)){
+                        cells.removeChild(state[row][col].element);
+                        state[row][col] = null;
+                     }
+                     if (!this._maintainTarget && state[nr][nc] != null) {
+                        cells.removeChild(state[nr][nc].element);
+                        state[nr][nc] = null;
+                     }
+
+                     switch (this._transMap[1]) {
+                        case 0:
+                           if (valueTarget != "_") {
+                              state[nr][nc] =
+                                 cellTypes[valueTarget].createIndividual(nc+1, nr+1);
+                              cells.appendChild(state[nr][nc].element);
+                           } else
+                              state[nr][nc] = null;
+                           changed[nr][nc] = true;
+                           break;
+                        case 1:
+                           state[nr][nc] = state[row][col];
+                           cellTypes[valueTarget].repositionElement(
+                              state[row][col].element, nc+1 , nr+1);
+                           changed[nr][nc] = true;
+                           break;
+                     }
+                     if (nr != row || nc != col)
+                        switch (this._transMap[0]) {
+                           case 0:
+                              if (valueSource != "_") {
+                                 state[row][col] =
+                                    cellTypes[valueSource].createIndividual(col+1, row+1);
+                                 cells.appendChild(state[row][col].element);
+                              } else
+                                 state[row][col] = null;
+                              changed[row][col] = true;
+                              break;
+                           case 2:
+                              state[row][col] = state[nr][nc];
+                              cellTypes[valueSource].repositionElement(
+                                 state[nr][nc].element, col+1 , row+1);
+                              changed[row][col] = true;
+                              break;
+                        }
+                  }
+               }
+            }
+         }
+      }
+      return triggered;
+   }
 }
 
 (function() {
