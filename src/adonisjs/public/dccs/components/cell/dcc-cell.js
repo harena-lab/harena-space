@@ -9,8 +9,18 @@ class DCCCell extends DCCBase {
    }
 
    connectedCallback() {
-      if (this.type)
-         MessageBus.page.publish("dcc/cell-type/register", this);
+      // Fetch all the children of that are not defined yet.
+      let undefinedProps = this.querySelectorAll(':not(:defined)');
+
+      let promises = [...undefinedProps].map(property => {
+        return customElements.whenDefined(property.localName);
+      });
+
+      // Wait for all the properties are ready
+      Promise.all(promises).then(() => {
+         if (this.type)
+            MessageBus.page.publish("dcc/cell-type/register", this);
+      });
    }
 
    static get observedAttributes() {
@@ -42,7 +52,16 @@ class DCCCell extends DCCBase {
       this._space = newValue;
    }
 
+   get properties() {
+      return this._properties;
+   }
+
    attachProperty(name, initial) {
+      /*
+      console.log("=== property attached");
+      console.log(name);
+      console.log(initial);
+      */
       this._properties[name] = initial;
    }
 
@@ -69,14 +88,26 @@ class DCCCell extends DCCBase {
       element.setAttribute("x", coordinates.x);
       element.setAttribute("y", coordinates.y);
    }
+
+   updateElementState(element, properties) {
+      /* generic method to be refined in descendents */
+   }
 }
 
 class DCCCellLight {
    constructor(dcc, element) {
       this.dcc = dcc;
       this.element = element;
+      /*
+      console.log("=== dcc properties");
+      console.log(JSON.stringify(dcc.properties));
+      */
       if (dcc.properties != null) {
          const props = Object.keys(dcc.properties);
+         /*
+         console.log("=== props");
+         console.log(JSON.stringify(props));
+         */
          if (props.length !== 0) {
             if (props.length == 1 && dcc.properties.value)
                this.value = dcc.properties.value;
@@ -84,6 +115,10 @@ class DCCCellLight {
                this.properties = dcc.properties;
          }
       }
+      /*
+      console.log("=== cell light");
+      console.log(this);
+      */
    }
 }
 
