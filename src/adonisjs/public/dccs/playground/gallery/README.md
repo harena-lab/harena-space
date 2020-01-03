@@ -25,4 +25,4 @@
 
 ## Water Flow
 ![Water Flow](cell/flow-water.png)
-[Tiny Earth](../presenter.html?source=cell/flow-water)
+[Water Flow](../presenter.html?source=cell/flow-water)
