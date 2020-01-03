@@ -13,6 +13,10 @@ _____c______t_______
 _h_____r______hc____
 </dcc-space-cellular>
 
+<dcc-cell-color type="w" label="water" color="#0000ff"></dcc-cell-color>
+<dcc-cell-image type="r" label="rock" image="images/cell/rock01.svg"></dcc-cell-image>
+<dcc-cell-image type="t" label="tree"image="images/cell/tree01.svg"></dcc-cell-image>
+
 <dcc-cell-image type="c" label="carnivore" image="images/cell/carnivorous-dinosaur.svg">
 </dcc-cell-image>
 
@@ -29,20 +33,26 @@ _h_____r______hc____
    *_*
    ***
 </rule-dcc-cell-pair>
-<rule-dcc-cell-pair label="moves" probability="50" transition="?_>_?">
+<rule-dcc-cell-pair label="herbivore moves" probability="50" transition="h_>_h">
    ***
    *_*
    ***
 </rule-dcc-cell-pair>
-<rule-dcc-cell-pair label="dies" probability="10" transition="??>__">
+<rule-dcc-cell-pair label="carnivore moves" probability="50" transition="c_>_c">
+   ***
+   *_*
+   ***
+</rule-dcc-cell-pair>
+<rule-dcc-cell-pair label="herbivore dies" probability="10" transition="h?>_?">
    ___
    _*_
    ___
 </rule-dcc-cell-pair>
-
-<dcc-cell-color type="w" label="water" color="#0000ff"></dcc-cell-color>
-<dcc-cell-image type="r" label="rock" image="images/cell/rock01.svg"></dcc-cell-image>
-<dcc-cell-image type="t" label="tree"image="images/cell/tree01.svg"></dcc-cell-image>
+<rule-dcc-cell-pair label="carnivore dies" probability="10" transition="c?>_?">
+   ___
+   _*_
+   ___
+</rule-dcc-cell-pair>
 
 <dcc-trigger label="Next" action="state/next"></dcc-trigger>
 <dcc-trigger label="Play" action="timer/start"></dcc-trigger>

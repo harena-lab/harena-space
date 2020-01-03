@@ -7,6 +7,12 @@ class PropertyDCC extends HTMLElement {
          this._targetObj = (this.hasAttribute("target"))
             ? document.querySelector("#" + this.target) : this.parentNode;
 
+         /*
+         console.log("=== attaching value");
+         console.log(this._targetObj);
+         console.log(this.initial);
+         */
+
          this._targetObj.attachProperty(this.name,
             (this.hasAttribute("initial")) ? this.initial : null);
       }

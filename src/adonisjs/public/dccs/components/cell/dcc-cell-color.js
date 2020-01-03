@@ -5,7 +5,7 @@
 class DCCCellColor extends DCCCell {
    static get observedAttributes() {
       return DCCBase.observedAttributes.concat(
-         ["color"]);
+         ["color", "opacity"]);
    }
 
    get color() {
@@ -16,10 +16,26 @@ class DCCCellColor extends DCCCell {
       this.setAttribute("color", newValue);
    }
 
+   get opacity() {
+      return this.getAttribute("opacity");
+   }
+   
+   set opacity(newValue) {
+      this.setAttribute("opacity", newValue);
+   }
+
    createIndividual(col, row) {
       let element = this.createSVGElement("rect", col, row);
       element.setAttribute("style", "fill:" + this.color);
+      if (this.hasAttribute("opacity") && this._properties.value)
+         element.setAttribute("fill-opacity",
+            this._properties.value / this.opacity);
       return new DCCCellLight(this, element);
+   }
+
+   updateElementState(element, properties) {
+      if (this.hasAttribute("opacity") && properties.value)
+         element.setAttribute("fill-opacity", properties.value / this.opacity);
    }
 }
 
