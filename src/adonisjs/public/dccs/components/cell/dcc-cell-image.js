@@ -16,8 +16,8 @@ class DCCCellImage extends DCCCell {
       this.setAttribute("image", newValue);
    }
 
-   createIndividual(col, row) {
-      let element = this.createSVGElement("image", col, row);
+   createIndividual(row, col) {
+      let element = this.createSVGElement("image", row, col);
       element.setAttribute("href", this.image);
       return new DCCCellLight(this, element);
    }

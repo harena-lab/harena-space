@@ -11,7 +11,6 @@ class DCCSpaceCellular extends DCCBase {
       this.notify = this.notify.bind(this);
       
       this._cellTypes = {};
-      // this._requiredTypes = []; // types registered and found in rules
       this._rules = {};
       this._wildcardRules = [];
       this._stateTypes = [];
@@ -53,6 +52,7 @@ class DCCSpaceCellular extends DCCBase {
                          .replace(/\[height\]/g, this.rows * this.cellHeight + "px")
                          .replace(/\[background-color\]/g, this.backgroundColor)
                          .replace(/\[grid\]/g, (this.grid) ? ";stroke-width:2;stroke:#646464" : "");
+      this._cellGrid = this.querySelector("#cell-grid");
       this._cells = this.querySelector("#cells");
 
       if (!this._state && this._checkAllTypes())
@@ -145,10 +145,6 @@ class DCCSpaceCellular extends DCCBase {
    cellTypeRegister(topic, cellType) {
       cellType.space = this;
       this._cellTypes[cellType.type] = cellType;
-      /*
-      if (!this._requiredTypes.includes(cellType.type))
-         this._requiredTypes.push(cellType.type);
-      */
       if (!this._rules[cellType.type])
          this._rules[cellType.type] = this._wildcardRules.slice();
       if (!this._state && this._checkAllTypes())
@@ -170,7 +166,7 @@ class DCCSpaceCellular extends DCCBase {
             for (let c = 0; c < this._stateStr[r].length; c++) {
                if (this._cellTypes[this._stateStr[r][c]]) {
                   this._state[r][c] =
-                     this._cellTypes[this._stateStr[r][c]].createIndividual(c+1, parseInt(r)+1);
+                     this._cellTypes[this._stateStr[r][c]].createIndividual(parseInt(r)+1, c+1);
                   this._cells.appendChild(this._state[r][c].element);
                }
             }
@@ -214,7 +210,7 @@ class DCCSpaceCellular extends DCCBase {
       }
    }
 
-   computeCoordinates(col, row) {
+   computeCoordinates(row, col) {
       return {
          x: (col-1) * this.cellWidth,
          y: (row-1) * this.cellHeight,
@@ -223,7 +219,7 @@ class DCCSpaceCellular extends DCCBase {
       };
    }
 
-   static computeDefaultCoordinates(col, row) {
+   static computeDefaultCoordinates(row, col) {
       return {
          x: col *  DCCSpaceCellular.defaultCellDimensions.width,
          y: row * DCCSpaceCellular.defaultCellDimensions.height,
@@ -265,22 +261,88 @@ class DCCSpaceCellular extends DCCBase {
    }
 }
 
+class DCCSpaceCellularEditor extends DCCSpaceCellular {
+   constructor() {
+      super();
+      this._editType = "_";
+      this.cellClicked = this.cellClicked.bind(this);
+   }
+
+   connectedCallback() {
+      super.connectedCallback();
+      this._gridCoord = this._cellGrid.getBoundingClientRect();
+      this.activateEditor();
+   }
+
+   activateEditor() {
+      this._activeEditor = true;
+      this._cellGrid.addEventListener("click", this.cellClicked, false);
+   }
+
+   cellClicked(event) {
+      const cell = this.computeCell(event.clientX - this._gridCoord.x,
+                                    event.clientY - this._gridCoord.y);
+      this.changeState(this._editType, cell.row, cell.col);
+   }
+
+   computeCell(x, y) {
+      return {
+         row: Math.floor(y / this.cellHeight) + 1,
+         col: Math.floor(x / this.cellWidth) + 1
+      };
+   }
+
+   changeState(type, row, col) {
+      let r = row - 1;
+      let c = col - 1;
+      if (this._state[r][c] != null && this._state[r][c].dcc.type != type) {
+            this._cells.removeChild(this._state[r][c].element);
+            this._state[r][c] = null;
+      }
+      if ((this._state[r][c] == null || this._state[r][c].dcc.type != type) &&
+          this._cellTypes[type]) {
+         this._state[r][c] =
+            this._cellTypes[type].createIndividual(row, col);
+         this._cells.appendChild(this._state[r][c].element);
+      }
+   }
+
+   notify(topic, message) {
+      super.notify(topic, message);
+      if (message.role) {
+         switch (message.role.toLowerCase()) {
+            case "type": let tLabel = MessageBus.extractLevel(topic, 2);
+                         if (tLabel.toLowerCase() == "empty")
+                            this._editType = "_";
+                         else
+                            for (let t in this._cellTypes)
+                               if (this._cellTypes[t].label.toLowerCase() == tLabel.toLowerCase())
+                                  this._editType = t;
+                         break;
+         }
+      }
+   }
+}
+
 (function() {
    DCCSpaceCellular.svgTemplate =
 `<div width="[width]" height="[height]">
 <svg width="[width]" height="[height]">
 <def>
-  <pattern id="cell-grid" width="[cell-width]" height="[cell-height]" patternUnits="userSpaceOnUse">
+  <pattern id="grid" width="[cell-width]" height="[cell-height]" patternUnits="userSpaceOnUse">
     <rect width="[cell-width]" height="[cell-height]"
      style="fill:[background-color][grid]"/>
   </pattern>
 </def>
-<rect fill="url(#cell-grid)" x="0" y="0" width="[width]" height="[height]"/>
-<g id="cells"/>
+<g id="cell-grid">
+   <rect fill="url(#grid)" x="0" y="0" width="[width]" height="[height]"/>
+   <g id="cells"/>
+</g>
 </svg>
 </div>`;
 
    DCCSpaceCellular.defaultCellDimensions = {width: 20, height: 20};
 
    customElements.define("dcc-space-cellular", DCCSpaceCellular);
+   customElements.define("dcc-space-cellular-editor", DCCSpaceCellularEditor);
 })();
