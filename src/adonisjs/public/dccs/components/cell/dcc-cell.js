@@ -57,20 +57,15 @@ class DCCCell extends DCCBase {
    }
 
    attachProperty(name, initial) {
-      /*
-      console.log("=== property attached");
-      console.log(name);
-      console.log(initial);
-      */
       this._properties[name] = initial;
    }
 
-   createSVGElement(type, col, row) {
+   createSVGElement(type, row, col) {
       let coordinates;
       if (this.space != null)
-         coordinates = this.space.computeCoordinates(col, row);
+         coordinates = this.space.computeCoordinates(row, col);
       else
-         coordinates = DCCSpaceCellular.computeDefaultCoordinates(col, row);
+         coordinates = DCCSpaceCellular.computeDefaultCoordinates(row, col);
       let element = document.createElementNS("http://www.w3.org/2000/svg", type);
       element.setAttribute("x", coordinates.x);
       element.setAttribute("y", coordinates.y);
@@ -82,7 +77,7 @@ class DCCCell extends DCCBase {
    repositionElement(element, col, row) {
       let coordinates;
       if (this.space != null)
-         coordinates = this.space.computeCoordinates(col, row);
+         coordinates = this.space.computeCoordinates(row, col);
       else
          coordinates = DCCSpaceCellular.computeDefaultCoordinates(col, row);
       element.setAttribute("x", coordinates.x);

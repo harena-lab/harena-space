@@ -135,16 +135,6 @@ class RuleDCCCellPair extends RuleDCCCellNeighbor {
                   ? spaceState.vtypes[Math.floor(Math.random() * spaceState.vtypes.length)]
                   : ((this._oldSource == this._newTarget) ? 
                      state[row][col].dcc.type : expectedTarget));
-            /*
-            console.log("=== rule");
-            console.log(this._newTarget);
-            if (this._newTarget == "@") {
-               console.log("=== random");
-               console.log(expectedTarget);
-               console.log(valueTarget);
-            }
-            */
-
             const valueSource = (!"?!@".includes(this._newSource)) ? this._newSource
                : ((this._newSource == "@")
                   ? spaceState.vtypes[Math.floor(Math.random() * spaceState.vtypes.length)]
@@ -167,7 +157,7 @@ class RuleDCCCellPair extends RuleDCCCellNeighbor {
                case 0:
                   if (valueTarget != "_") {
                      state[nr][nc] =
-                        spaceState.cellTypes[valueTarget].createIndividual(nc+1, nr+1);
+                        spaceState.cellTypes[valueTarget].createIndividual(nr+1, nc+1);
                      spaceState.cells.appendChild(state[nr][nc].element);
                   } else
                      state[nr][nc] = null;
@@ -186,7 +176,7 @@ class RuleDCCCellPair extends RuleDCCCellNeighbor {
                   case 0:
                      if (valueSource != "_") {
                         state[row][col] =
-                           spaceState.cellTypes[valueSource].createIndividual(col+1, row+1);
+                           spaceState.cellTypes[valueSource].createIndividual(row+1, col+1);
                         spaceState.cells.appendChild(state[row][col].element);
                      } else
                         state[row][col] = null;

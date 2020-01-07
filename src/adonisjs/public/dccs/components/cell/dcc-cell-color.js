@@ -24,8 +24,8 @@ class DCCCellColor extends DCCCell {
       this.setAttribute("opacity", newValue);
    }
 
-   createIndividual(col, row) {
-      let element = this.createSVGElement("rect", col, row);
+   createIndividual(row, col) {
+      let element = this.createSVGElement("rect", row, col);
       element.setAttribute("style", "fill:" + this.color);
       if (this.hasAttribute("opacity") && this._properties.value)
          element.setAttribute("fill-opacity",
