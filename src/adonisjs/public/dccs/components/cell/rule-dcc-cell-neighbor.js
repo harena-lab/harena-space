@@ -9,15 +9,9 @@ class RuleDCCCellNeighbor extends RuleDCCCell {
 
       if (!this.hasAttribute("probability")) this.probability = "100";
       this._decimalProbability = parseInt(this.probability) / 100;
-      /*
-      console.log("=== probability");
-      console.log(this.label);
-      console.log(this._decimalProbability);
-      */
       if (!this.hasAttribute("transition"))
          this.transition = "?_>_?";
-      else
-         this._decomposeTransition(this.transition);
+      this._decomposeTransition(this.transition);
       MessageBus.page.publish("dcc/rule-cell/register", this);
    }
 
@@ -96,11 +90,6 @@ class RuleDCCCellNeighbor extends RuleDCCCell {
 class RuleDCCCellPair extends RuleDCCCellNeighbor {
    computeRule(spaceState, row, col) {
       let triggered = false;
-      /*
-      console.log("=== rule to compute");
-      console.log(this.label);
-      console.log(this._decimalProbability);
-      */
       if (Math.random() <= this._decimalProbability) {
          let nb = this._ruleNeighbors.slice();
          while (nb.length > 0 && !triggered) {
@@ -121,86 +110,106 @@ class RuleDCCCellPair extends RuleDCCCellNeighbor {
    }
 
    _computeTransition(spaceState, row, col, nr, nc) {
-         let triggered = false;
-         let state = spaceState.state;
-         const expectedTarget = (state[nr][nc] == null)
-            ? "_" : state[nr][nc].dcc.type;
-         if (expectedTarget == this._oldTarget ||
-             ((this._oldTarget == "?" || this._oldTarget == "!") && expectedTarget != "_")) {
-            triggered = true;
+      let triggered = false;
+      let state = spaceState.state;
+      const expectedTarget = (state[nr][nc] == null)
+         ? "_" : state[nr][nc].dcc.type;
+      if (expectedTarget == this._oldTarget ||
+          ((this._oldTarget == "?" || this._oldTarget == "!") && expectedTarget != "_")) {
+         triggered = true;
 
-            // computes the new value of the target
-            const valueTarget = (!"?!@".includes(this._newTarget)) ? this._newTarget
-               : ((this._newTarget == "@")
-                  ? spaceState.vtypes[Math.floor(Math.random() * spaceState.vtypes.length)]
-                  : ((this._oldSource == this._newTarget) ? 
-                     state[row][col].dcc.type : expectedTarget));
-            const valueSource = (!"?!@".includes(this._newSource)) ? this._newSource
-               : ((this._newSource == "@")
-                  ? spaceState.vtypes[Math.floor(Math.random() * spaceState.vtypes.length)]
-                  : ((this._oldSource == this._newSource)
-                     ? state[row][col].dcc.type : expectedTarget));
+         // computes the new value of the target
+         const valueTarget = (!"?!@".includes(this._newTarget)) ? this._newTarget
+            : ((this._newTarget == "@")
+               ? spaceState.vtypes[Math.floor(Math.random() * spaceState.vtypes.length)]
+               : ((this._oldSource == this._newTarget) ? 
+                  state[row][col].dcc.type : expectedTarget));
+         const valueSource = (!"?!@".includes(this._newSource)) ? this._newSource
+            : ((this._newSource == "@")
+               ? spaceState.vtypes[Math.floor(Math.random() * spaceState.vtypes.length)]
+               : ((this._oldSource == this._newSource)
+                  ? state[row][col].dcc.type : expectedTarget));
 
-            if (!this._maintainSource && state[row][col] != null &&
-                (nr != row || nc != col)){
-               spaceState.cells.removeChild(state[row][col].element);
-               state[row][col] = null;
-            }
-            if (!this._maintainTarget && state[nr][nc] != null) {
-               spaceState.cells.removeChild(state[nr][nc].element);
-               state[nr][nc] = null;
-            }
-
-            const newState = state[nr][nc];
-
-            switch (this._transMap[1]) {
-               case 0:
-                  if (valueTarget != "_") {
-                     state[nr][nc] =
-                        spaceState.cellTypes[valueTarget].createIndividual(nr+1, nc+1);
-                     spaceState.cells.appendChild(state[nr][nc].element);
-                  } else
-                     state[nr][nc] = null;
-                  spaceState.changed[nr][nc] = true;
-                  break;
-               case 1:
-                  state[nr][nc] = state[row][col];
-                  spaceState.cellTypes[valueTarget].repositionElement(
-                     state[row][col].element, nc+1 , nr+1);
-                  spaceState.changed[nr][nc] = true;
-                  break;
-            }
-
-            if (nr != row || nc != col)
-               switch (this._transMap[0]) {
-                  case 0:
-                     if (valueSource != "_") {
-                        state[row][col] =
-                           spaceState.cellTypes[valueSource].createIndividual(row+1, col+1);
-                        spaceState.cells.appendChild(state[row][col].element);
-                     } else
-                        state[row][col] = null;
-                     spaceState.changed[row][col] = true;
-                     break;
-                  case 2:
-                     state[row][col] = newState;
-                     spaceState.cellTypes[valueSource].repositionElement(
-                        state[row][col].element, col+1 , row+1);
-                     spaceState.changed[row][col] = true;
-                     break;
-               }
+         if (!this._maintainSource && state[row][col] != null &&
+             (nr != row || nc != col)){
+            spaceState.cells.removeChild(state[row][col].element);
+            state[row][col] = null;
          }
-         return triggered;
+         if (!this._maintainTarget && state[nr][nc] != null) {
+            spaceState.cells.removeChild(state[nr][nc].element);
+            state[nr][nc] = null;
+         }
+
+         const newState = state[nr][nc];
+
+         switch (this._transMap[1]) {
+            case 0:
+               if (valueTarget != "_") {
+                  state[nr][nc] =
+                     spaceState.cellTypes[valueTarget].createIndividual(nr+1, nc+1);
+                  spaceState.cells.appendChild(state[nr][nc].element);
+               } else
+                  state[nr][nc] = null;
+               spaceState.changed[nr][nc] = true;
+               break;
+            case 1:
+               state[nr][nc] = state[row][col];
+               spaceState.cellTypes[valueTarget].repositionElement(
+                  state[row][col].element, nc+1 , nr+1);
+               spaceState.changed[nr][nc] = true;
+               break;
+         }
+
+         if (nr != row || nc != col)
+            switch (this._transMap[0]) {
+               case 0:
+                  if (valueSource != "_") {
+                     state[row][col] =
+                        spaceState.cellTypes[valueSource].createIndividual(row+1, col+1);
+                     spaceState.cells.appendChild(state[row][col].element);
+                  } else
+                     state[row][col] = null;
+                  spaceState.changed[row][col] = true;
+                  break;
+               case 2:
+                  state[row][col] = newState;
+                  spaceState.cellTypes[valueSource].repositionElement(
+                     state[row][col].element, col+1 , row+1);
+                  spaceState.changed[row][col] = true;
+                  break;
+            }
+      }
+      return triggered;
    }
 }
 
 class RuleDCCCellFlow extends RuleDCCCellPair {
+   connectedCallback() {
+      super.connectedCallback();
+      if (!this.hasAttribute("flow"))
+         this.flow = "-+";
+   }
+
+   /* Properties
+      **********/
+   
+   static get observedAttributes() {
+      return RuleDCCCellPair.observedAttributes.concat(["flow"]);
+   }
+
+   get flow() {
+      return this.getAttribute("flow");
+   }
+   
+   set flow(newValue) {
+      this.setAttribute("flow", newValue);
+   }
+
    computeRule(spaceState, row, col) {
       let triggered = false;
       if (Math.random() <= this._decimalProbability) {
          // order neighbors by value
          let nb = [];
-         // console.log("=== nb (0)");
          for (let n of this._ruleNeighbors) {
             if (row + n[0] >= 0 && row + n[0] < spaceState.nrows &&
                 col + n[1] >= 0 && col + n[1] < spaceState.ncols) {
@@ -210,11 +219,8 @@ class RuleDCCCellFlow extends RuleDCCCellPair {
                for (p = 0; p < nb.length && value > nb[p][2]; p++)
                   /* nothing */;
                nb.splice(p, 0, [row + n[0], col + n[1], value]);
-               // console.log(JSON.stringify(nb));
             }
          }
-         // console.log("=== nb (1)");
-         // console.log(JSON.stringify(nb));
 
          // randomize neighbors with the same value
          let last = 0;
@@ -233,36 +239,6 @@ class RuleDCCCellFlow extends RuleDCCCellPair {
                }
             }
          }
-         // console.log("=== nb (2)");
-         // console.log(JSON.stringify(nb));
-
-         /*
-         let spaceValue = [[-1, -1, -1], [-1, -1, -1], [-1, -1, -1]];
-         const rowLimit = (row + 1 < spaceState.nrows) ? 1 : 0;
-         const colLimit = (col + 1 < spaceState.ncols) ? 1 : 0;
-         for (let r = (row>0) ? -1 : 0; r < rowLimit; r++)
-            for (let c = (col>0) > -1 : 0; c < colLimit; c++) {
-               let cell = spaceState.state[row+r][col+c];
-               spaceValue[r][c] = (cell.value) ? cell.value
-                  : (cell.properties && cell.properties.value) ? cell.properties.value : 0;
-            }
-         */
-
-         /*
-         while (nb.length > 0 && !triggered) {
-            const neighbor = Math.floor(Math.random() * nb.length);
-            let nr = row + nb[neighbor][0];
-            let nc = col + nb[neighbor][1];
-            nb.splice(neighbor, 1);
-            if (spaceState.infinite) {
-               nr = (nr < 0) ? spaceState.nrows - 1 : nr % spaceState.nrows;
-               nc = (nc < 0) ? spaceState.ncols - 1 : nc % spaceState.ncols;
-            }
-            if (nr >= 0 && nr < spaceState.nrows &&
-                nc >= 0 && nc < spaceState.ncols) 
-               triggered = this._computeTransition(spaceState, row, col, nr, nc);
-         }
-         */
 
          let trig = false;
          for (let n = 0; n < nb.length; n++) {
@@ -272,12 +248,6 @@ class RuleDCCCellFlow extends RuleDCCCellPair {
                triggered = true;
          }
       }
-      /*
-      if (triggered) {
-         console.log("=== matrix");
-         console.log(spaceState);
-      }
-      */
       return triggered;
    }
 
@@ -293,11 +263,20 @@ class RuleDCCCellFlow extends RuleDCCCellPair {
          }
       }
       return val;
-      /*
-      return (cell == null) ? null
-            : (cell.value) ? cell
-            : (cell.properties && cell.properties.value) ? cell.properties : null;
-      */
+   }
+
+   _defineValue(cell, value) {
+      let val = null;
+      if (cell != null) {
+         if (cell.properties && cell.properties.value) {
+            cell.properties.value = parseInt(value);
+            val = cell.properties;
+         } else {
+            cell.value = parseInt(value);
+            val = cell;
+         }
+      }
+      return val;
    }
 
    _computeTransition(spaceState, row, col, nr, nc) {
@@ -308,33 +287,116 @@ class RuleDCCCellFlow extends RuleDCCCellPair {
       let propSource = this._retrieveValue(state[row][col]);
       let vSource = (propSource == null) ? 0 : parseInt(propSource.value);
       /*
-      console.log("=== vSource");
-      console.log(vSource);
-      console.log(state[row][col]);
-      */
       if (vSource > 1) {
-         triggered = super._computeTransition(spaceState, row, col, nr, nc);
          let propTarget = this._retrieveValue(state[nr][nc]);
          let vTarget = (propTarget == null) ? 0 : parseInt(propTarget.value);
-         if (triggered && state[row][col].dcc.type == state[nr][nc].dcc.type &&
-             preSource != null) {
-            // transfers one unit for the same type
-            if (preSource == preTarget && propTarget != null &&
-                vSource > vTarget) {
-               propSource.value--;
-               propTarget.value++;
+         triggered = super._computeTransition(spaceState, row, col, nr, nc);
+         if (triggered && preSource != null) {
+            switch (this.flow) {
+               case "-+": 
+                  if (propTarget != null && vSource > vTarget) {
+                     propSource.value--;
+                     propTarget.value++;
+                  }
+                  break;
+               case "-1":
+                  propSource.value--;
+                  propTarget.value = 1;
+                  break;
+               case "0=":
+                  if (vSource > vTarget) {
+                     propTarget = this._defineValue(state[nr][nc], propSource.value);
+                     delete propSource.value;
+                  }
+                  break;
+               case "0-":
+                  if (vSource > vTarget)
+                     propTarget = this._defineValue(state[nr][nc], propSource.value-1);
+                  break;
+               case "==": 
+                  if (vSource > vTarget)
+                     propTarget = this._defineValue(state[nr][nc], propSource.value);
+                  break;
             }
-            // gives a unit for a new generated flow
-            else if (preSource != preTarget && preSource == state[row][col].dcc.type) {
-               propSource.value--;
-               propTarget.value = 1;
-            }
+            */
+
+         let propTarget = this._retrieveValue(state[nr][nc]);
+         let vTarget = (propTarget == null) ? 0 : parseInt(propTarget.value);
+         switch (this.flow) {
+            case "-+": 
+               if (vSource > 1 && vSource > vTarget && propTarget != null) {
+                  triggered = super._computeTransition(spaceState, row, col, nr, nc);
+                  if (triggered) {
+                     propSource.value--;
+                     propTarget.value++;
+                  }
+               }
+               break;
+            case "+-": 
+               if (propSource != null && vTarget > 0) {
+                  triggered = super._computeTransition(spaceState, row, col, nr, nc);
+                  if (triggered) {
+                     propSource.value++;
+                     propTarget.value--;
+                  }
+               }
+               break;
+            case "-1":
+               if (vSource > 1 && vSource > vTarget) {
+                  triggered = super._computeTransition(spaceState, row, col, nr, nc);
+                  if (triggered) {
+                     propSource.value--;
+                     propTarget = this._defineValue(state[nr][nc], 1);
+                  }
+               }
+               break;
+            case "=":
+               if (vSource > 0 && vSource > vTarget) {
+                  triggered = super._computeTransition(spaceState, row, col, nr, nc);
+                  if (triggered)
+                     propTarget = this._defineValue(state[nr][nc], vSource);
+               }
+               break;
+            case "-":
+               if (vSource > 1 && vSource > vTarget) {
+                  triggered = super._computeTransition(spaceState, row, col, nr, nc);
+                  if (triggered)
+                     propTarget = this._defineValue(state[nr][nc], vSource-1);
+               }
+               break;
+            case "+":
+               if (propSource != null && vSource+1 >= vTarget) {
+                  triggered = super._computeTransition(spaceState, row, col, nr, nc);
+                  if (triggered)
+                     propTarget = this._defineValue(state[nr][nc], vSource+1);
+               }
+               break;
+            case "==":
+               if (vSource > 0 && vSource > vTarget) {
+                  triggered = super._computeTransition(spaceState, row, col, nr, nc);
+                  if (triggered) {
+                     propSource = this._defineValue(state[row][col], vSource);
+                     propTarget = this._defineValue(state[nr][nc], vSource);
+                  }
+               }
+               break;
+            case "0":
+               if (vSource == 0)
+                  triggered = super._computeTransition(spaceState, row, col, nr, nc);
+               break;
+            case "1":
+               if (vSource == 1)
+                  triggered = super._computeTransition(spaceState, row, col, nr, nc);
+               break;
+         }
+         if (triggered) {
             state[row][col].dcc.updateElementState(
                state[row][col].element, propSource);
             state[nr][nc].dcc.updateElementState(
                state[nr][nc].element, propTarget);
          }
-      }
+      // }
+      // }
       return triggered;
    }
 }

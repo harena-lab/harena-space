@@ -29,12 +29,12 @@ _____________########
   <property-dcc name="value" initial="500"></property-dcc>
 </dcc-cell-color>
 <dcc-cell-color type="#" label="wall" color="#aaaaaa"></dcc-cell-color>
-<rule-dcc-cell-flow label="spread random 1" probability="100" transition="w_>ww">
+<rule-dcc-cell-flow label="spread random 1" probability="100" transition="w_>ww" flow="-1">
    ***
    *_*
    ***
 </rule-dcc-cell-flow>
-<rule-dcc-cell-flow label="spread random 2" probability="100" transition="ww>ww">
+<rule-dcc-cell-flow label="spread random 2" probability="100" transition="ww>ww" flow="-+">
    ***
    *_*
    ***
