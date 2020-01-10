@@ -27,6 +27,10 @@
 ![Water Flow](cell/flow-water.png)
 [Water Flow](../presenter.html?source=cell/flow-water)
 
+## Energy
+![Water Flow](cell/energy.png)
+[Water Flow](../presenter.html?source=cell/energy)
+
 # Editor
 
 ## Movement

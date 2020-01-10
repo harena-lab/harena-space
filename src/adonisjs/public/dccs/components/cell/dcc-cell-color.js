@@ -34,7 +34,7 @@ class DCCCellColor extends DCCCell {
    }
 
    updateElementState(element, properties) {
-      if (this.hasAttribute("opacity") && properties.value)
+      if (this.hasAttribute("opacity") && properties && properties.value)
          element.setAttribute("fill-opacity", properties.value / this.opacity);
    }
 }
