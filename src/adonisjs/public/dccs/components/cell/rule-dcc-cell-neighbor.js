@@ -279,6 +279,15 @@ class RuleDCCCellFlow extends RuleDCCCellPair {
       return val;
    }
 
+   _removeValue(cell) {
+      if (cell != null) {
+         if (cell.properties && cell.properties.value)
+            delete cell.properties.value;
+         if (cell.value)
+            delete cell.value;
+      }
+   }
+
    _computeTransition(spaceState, row, col, nr, nc) {
       let triggered = false;
       let state = spaceState.state;
@@ -350,25 +359,34 @@ class RuleDCCCellFlow extends RuleDCCCellPair {
                   }
                }
                break;
-            case "=":
+            case "_=":
                if (vSource > 0 && vSource > vTarget) {
                   triggered = super._computeTransition(spaceState, row, col, nr, nc);
-                  if (triggered)
+                  if (triggered) {
                      propTarget = this._defineValue(state[nr][nc], vSource);
+                     if (this._transMap[1] != 1)
+                        propSource = this._removeValue(state[row][col]);
+                  }
                }
                break;
-            case "-":
+            case "_-":
                if (vSource > 1 && vSource > vTarget) {
                   triggered = super._computeTransition(spaceState, row, col, nr, nc);
-                  if (triggered)
+                  if (triggered) {
                      propTarget = this._defineValue(state[nr][nc], vSource-1);
+                     if (this._transMap[1] != 1)
+                        propSource = this._removeValue(state[row][col]);
+                  }
                }
                break;
-            case "+":
+            case "_+":
                if (propSource != null && vSource+1 >= vTarget) {
                   triggered = super._computeTransition(spaceState, row, col, nr, nc);
-                  if (triggered)
+                  if (triggered) {
                      propTarget = this._defineValue(state[nr][nc], vSource+1);
+                     if (this._transMap[1] != 1)
+                        propSource = this._removeValue(state[row][col]);
+                  }
                }
                break;
             case "==":
@@ -377,6 +395,24 @@ class RuleDCCCellFlow extends RuleDCCCellPair {
                   if (triggered) {
                      propSource = this._defineValue(state[row][col], vSource);
                      propTarget = this._defineValue(state[nr][nc], vSource);
+                  }
+               }
+               break;
+            case "=-":
+               if (vSource > 1 && vSource > vTarget) {
+                  triggered = super._computeTransition(spaceState, row, col, nr, nc);
+                  if (triggered) {
+                     propSource = this._defineValue(state[row][col], vSource);
+                     propTarget = this._defineValue(state[nr][nc], vSource-1);
+                  }
+               }
+               break;
+            case "=+":
+               if (propSource != null && vSource+1 >= vTarget) {
+                  triggered = super._computeTransition(spaceState, row, col, nr, nc);
+                  if (triggered) {
+                     propSource = this._defineValue(state[row][col], vSource);
+                     propTarget = this._defineValue(state[nr][nc], vSource+1);
                   }
                }
                break;
