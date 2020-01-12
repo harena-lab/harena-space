@@ -278,10 +278,10 @@ class RuleDCCCellFlow extends RuleDCCCellPair {
    _retrieveValue(cell) {
       let val = null;
       if (cell != null) {
-         if (cell.value) {
+         if (cell.value != null) {
             cell.value = parseInt(cell.value);
             val = cell;
-         } else if (cell.properties && cell.properties.value) {
+         } else if (cell.properties != null && cell.properties.value != null) {
             cell.properties.value = parseInt(cell.properties.value);
             val = cell.properties;
          }
@@ -322,18 +322,25 @@ class RuleDCCCellFlow extends RuleDCCCellPair {
       let propTarget = this._retrieveValue(state[nr][nc]);
       let vTarget = (propTarget == null) ? 0 : parseInt(propTarget.value);
       switch (this.flow) {
-         case "-+": 
+         case "-+":
+            // console.log("=== propTarget");
+            // console.log(propTarget);
             if (vSource > 1 && vSource > vTarget && propTarget != null) {
                triggered = super._computeTransition(spaceState, row, col, nr, nc);
                propSource.value--;
                propTarget.value++;
             }
             break;
-         case "+-": 
+         case "+-":
             if (propSource != null && vTarget > 0) {
                triggered = super._computeTransition(spaceState, row, col, nr, nc);
                propSource.value++;
                propTarget.value--;
+               /*
+               console.log("=== get");
+               console.log(propSource.value);
+               console.log(propTarget.value);
+               */
             }
             break;
          case "-1":
