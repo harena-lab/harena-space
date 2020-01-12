@@ -258,7 +258,7 @@ class RuleDCCCellFlow extends RuleDCCCellPair {
             }
          }
 
-         if (this.flow == "_/" || this.flow == "=/") {
+         if (this.flow == "-/" || this.flow == "=/") {
             const ps = this._retrieveValue(spaceState.state[row][col]);
             const vs = (ps == null) ? 0 : parseInt(ps.value);
             this._transferRate = (nb.length == 0) ? 0 : Math.floor(vs / nb.length);
@@ -367,20 +367,11 @@ class RuleDCCCellFlow extends RuleDCCCellPair {
                   propSource = this._removeValue(state[row][col]);
             }
             break;
-         case "_/":
-         case "=/":
-            if (this._transferRate > 0 && this._transferRate > vTarget) {
+         case "-/":
+            if (this._transferRate > 0 && vSource - this._transferRate >= vTarget) {
                triggered = super._computeTransition(spaceState, row, col, nr, nc);
-               propTarget = this._defineValue(state[nr][nc], this._transferRate);
-               if (this.flow == "=/")
-                  propSource = this._defineValue(state[row][col], vSource);
-               else if (this._transMap[1] != 1) {
-                  const remainder = vSource - this._transferRate;
-                  if (remainder == 0)
-                     propSource = this._removeValue(state[row][col]);
-                  else
-                     propSource = this._defineValue(state[row][col], remainder);
-               }
+               propSource.value -= this._transferRate;
+               propTarget = this._defineValue(state[nr][nc], vTarget + this._transferRate);
             }
             break;
          case "==":
@@ -402,6 +393,13 @@ class RuleDCCCellFlow extends RuleDCCCellPair {
                triggered = super._computeTransition(spaceState, row, col, nr, nc);
                propSource = this._defineValue(state[row][col], vSource);
                propTarget = this._defineValue(state[nr][nc], vSource+1);
+            }
+            break;
+         case "=/":
+            if (this._transferRate > 0 && vSource - this._transferRate >= vTarget) {
+               triggered = super._computeTransition(spaceState, row, col, nr, nc);
+               propSource = this._defineValue(state[row][col], vSource);
+               propTarget = this._defineValue(state[nr][nc], vTarget + this._transferRate);
             }
             break;
          case "0":
