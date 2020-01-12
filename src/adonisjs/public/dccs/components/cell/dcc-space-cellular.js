@@ -174,6 +174,16 @@ class DCCSpaceCellular extends DCCBase {
       }
    }
 
+   serializeState() {
+      let str = "";
+      for (let r in this._state) {
+         for (let c in this._state[r])
+            str += (this._state[r][c] == null) ? "_" : this._state[r][c].dcc.type;
+         str += "\n";
+      }
+      console.log(str);
+   }
+
    _createEmptyState() {
       let state = [];
       for (let r = 0; r < this.rows; r++) {
@@ -232,6 +242,7 @@ class DCCSpaceCellular extends DCCBase {
       if (message.role) {
          switch (message.role.toLowerCase()) {
             case "next": this.stateNext(); break;
+            case "serialize": this.serializeState(); break;
          }
       }
    }
@@ -270,7 +281,6 @@ class DCCSpaceCellularEditor extends DCCSpaceCellular {
 
    connectedCallback() {
       super.connectedCallback();
-      this._gridCoord = this._cellGrid.getBoundingClientRect();
       this.activateEditor();
    }
 
@@ -280,8 +290,9 @@ class DCCSpaceCellularEditor extends DCCSpaceCellular {
    }
 
    cellClicked(event) {
-      const cell = this.computeCell(event.clientX - this._gridCoord.x,
-                                    event.clientY - this._gridCoord.y);
+      const gc = this._cellGrid.getBoundingClientRect();
+      const cell = this.computeCell(event.clientX - gc.x,
+                                    event.clientY - gc.y);
       this.changeState(this._editType, cell.row, cell.col);
    }
 

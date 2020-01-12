@@ -4,7 +4,7 @@
 class DCCTimer extends DCCBase {
    constructor() {
       super();
-      this.notify = this.notify.bind(this);
+      // this.notify = this.notify.bind(this);
       this.next = this.next.bind(this);
 
       this.reset();
