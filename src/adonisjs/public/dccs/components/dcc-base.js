@@ -29,4 +29,9 @@ class DCCBase extends HTMLElement {
    editProperties() {
       /* nothing */
    }
+
+   // serializes the component in HTML
+   toHTML() {
+      return this.outerHTML();
+   }
 }

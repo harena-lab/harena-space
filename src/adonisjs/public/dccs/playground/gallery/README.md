@@ -49,3 +49,7 @@
 ## Water Flow
 ![Water Flow](cell/flow-water.png)
 [Water Flow](../presenter.html?source=cell/flow-water-editor)
+
+## Ecology
+![Ecology](cell/ecology-editor.png)
+[Ecology](../presenter.html?source=cell/ecology-editor)

@@ -52,6 +52,7 @@ class RuleDCCCellNeighbor extends RuleDCCCell {
 
    set probability(newValue) {
       this.setAttribute("probability", newValue);
+      this._decimalProbability = parseInt(newValue) / 100;
    }
 
    get decimalProbability() {
@@ -85,6 +86,14 @@ class RuleDCCCellNeighbor extends RuleDCCCell {
       this._maintainSource = this._transMap.includes(1);
       this._maintainTarget = this._transMap.includes(2);
    }
+
+   notify(topic, message) {
+      if (message.role) {
+         switch (message.role.toLowerCase()) {
+            case "probability": this.probability = message.body.value; break;
+         }
+      }
+   }
 }
 
 class RuleDCCCellPair extends RuleDCCCellNeighbor {
@@ -107,6 +116,14 @@ class RuleDCCCellPair extends RuleDCCCellNeighbor {
          }
       }
       return triggered;
+   }
+
+   // <NOTE> repeats the _computeTransition verification for performance reasons
+   _checkTransition(spaceState, row, col, nr, nc) {
+      const expectedTarget = (spaceState.state[nr][nc] == null)
+         ? "_" : spaceState.state[nr][nc].dcc.type;
+      return (expectedTarget == this._oldTarget ||
+          ((this._oldTarget == "?" || this._oldTarget == "!") && expectedTarget != "_"));
    }
 
    _computeTransition(spaceState, row, col, nr, nc) {
@@ -212,7 +229,8 @@ class RuleDCCCellFlow extends RuleDCCCellPair {
          let nb = [];
          for (let n of this._ruleNeighbors) {
             if (row + n[0] >= 0 && row + n[0] < spaceState.nrows &&
-                col + n[1] >= 0 && col + n[1] < spaceState.ncols) {
+                col + n[1] >= 0 && col + n[1] < spaceState.ncols &&
+                this._checkTransition(spaceState, row, col, row + n[0], col + n[1])) {
                const prp = this._retrieveValue(spaceState.state[row + n[0]][col + n[1]]);
                let value = (prp == null) ? 0 : parseInt(prp.value);
                let p;
@@ -238,6 +256,12 @@ class RuleDCCCellFlow extends RuleDCCCellPair {
                   reorder.splice(ex, 1);
                }
             }
+         }
+
+         if (this.flow == "_/" || this.flow == "=/") {
+            const ps = this._retrieveValue(spaceState.state[row][col]);
+            const vs = (ps == null) ? 0 : parseInt(ps.value);
+            this._transferRate = (nb.length == 0) ? 0 : Math.floor(vs / nb.length);
          }
 
          let trig = false;
@@ -295,144 +319,108 @@ class RuleDCCCellFlow extends RuleDCCCellPair {
       let preTarget = (state[nr][nc] == null) ? null : state[nr][nc].dcc.type;
       let propSource = this._retrieveValue(state[row][col]);
       let vSource = (propSource == null) ? 0 : parseInt(propSource.value);
-      /*
-      if (vSource > 1) {
-         let propTarget = this._retrieveValue(state[nr][nc]);
-         let vTarget = (propTarget == null) ? 0 : parseInt(propTarget.value);
-         triggered = super._computeTransition(spaceState, row, col, nr, nc);
-         if (triggered && preSource != null) {
-            switch (this.flow) {
-               case "-+": 
-                  if (propTarget != null && vSource > vTarget) {
-                     propSource.value--;
-                     propTarget.value++;
-                  }
-                  break;
-               case "-1":
-                  propSource.value--;
-                  propTarget.value = 1;
-                  break;
-               case "0=":
-                  if (vSource > vTarget) {
-                     propTarget = this._defineValue(state[nr][nc], propSource.value);
-                     delete propSource.value;
-                  }
-                  break;
-               case "0-":
-                  if (vSource > vTarget)
-                     propTarget = this._defineValue(state[nr][nc], propSource.value-1);
-                  break;
-               case "==": 
-                  if (vSource > vTarget)
-                     propTarget = this._defineValue(state[nr][nc], propSource.value);
-                  break;
+      let propTarget = this._retrieveValue(state[nr][nc]);
+      let vTarget = (propTarget == null) ? 0 : parseInt(propTarget.value);
+      switch (this.flow) {
+         case "-+": 
+            if (vSource > 1 && vSource > vTarget && propTarget != null) {
+               triggered = super._computeTransition(spaceState, row, col, nr, nc);
+               propSource.value--;
+               propTarget.value++;
             }
-            */
-
-         let propTarget = this._retrieveValue(state[nr][nc]);
-         let vTarget = (propTarget == null) ? 0 : parseInt(propTarget.value);
-         switch (this.flow) {
-            case "-+": 
-               if (vSource > 1 && vSource > vTarget && propTarget != null) {
-                  triggered = super._computeTransition(spaceState, row, col, nr, nc);
-                  if (triggered) {
-                     propSource.value--;
-                     propTarget.value++;
-                  }
+            break;
+         case "+-": 
+            if (propSource != null && vTarget > 0) {
+               triggered = super._computeTransition(spaceState, row, col, nr, nc);
+               propSource.value++;
+               propTarget.value--;
+            }
+            break;
+         case "-1":
+            if (vSource > 1 && vSource > vTarget) {
+               triggered = super._computeTransition(spaceState, row, col, nr, nc);
+               propSource.value--;
+               propTarget = this._defineValue(state[nr][nc], 1);
+            }
+            break;
+         case "_=":
+            if (vSource > 0 && vSource > vTarget) {
+               triggered = super._computeTransition(spaceState, row, col, nr, nc);
+               propTarget = this._defineValue(state[nr][nc], vSource);
+               if (this._transMap[1] != 1)
+                  propSource = this._removeValue(state[row][col]);
+            }
+            break;
+         case "_-":
+            if (vSource > 1 && vSource > vTarget) {
+               triggered = super._computeTransition(spaceState, row, col, nr, nc);
+               propTarget = this._defineValue(state[nr][nc], vSource-1);
+               if (this._transMap[1] != 1)
+                  propSource = this._removeValue(state[row][col]);
+            }
+            break;
+         case "_+":
+            if (propSource != null && vSource+1 >= vTarget) {
+               triggered = super._computeTransition(spaceState, row, col, nr, nc);
+               propTarget = this._defineValue(state[nr][nc], vSource+1);
+               if (this._transMap[1] != 1)
+                  propSource = this._removeValue(state[row][col]);
+            }
+            break;
+         case "_/":
+         case "=/":
+            if (this._transferRate > 0 && this._transferRate > vTarget) {
+               triggered = super._computeTransition(spaceState, row, col, nr, nc);
+               propTarget = this._defineValue(state[nr][nc], this._transferRate);
+               if (this.flow == "=/")
+                  propSource = this._defineValue(state[row][col], vSource);
+               else if (this._transMap[1] != 1) {
+                  const remainder = vSource - this._transferRate;
+                  if (remainder == 0)
+                     propSource = this._removeValue(state[row][col]);
+                  else
+                     propSource = this._defineValue(state[row][col], remainder);
                }
-               break;
-            case "+-": 
-               if (propSource != null && vTarget > 0) {
-                  triggered = super._computeTransition(spaceState, row, col, nr, nc);
-                  if (triggered) {
-                     propSource.value++;
-                     propTarget.value--;
-                  }
-               }
-               break;
-            case "-1":
-               if (vSource > 1 && vSource > vTarget) {
-                  triggered = super._computeTransition(spaceState, row, col, nr, nc);
-                  if (triggered) {
-                     propSource.value--;
-                     propTarget = this._defineValue(state[nr][nc], 1);
-                  }
-               }
-               break;
-            case "_=":
-               if (vSource > 0 && vSource > vTarget) {
-                  triggered = super._computeTransition(spaceState, row, col, nr, nc);
-                  if (triggered) {
-                     propTarget = this._defineValue(state[nr][nc], vSource);
-                     if (this._transMap[1] != 1)
-                        propSource = this._removeValue(state[row][col]);
-                  }
-               }
-               break;
-            case "_-":
-               if (vSource > 1 && vSource > vTarget) {
-                  triggered = super._computeTransition(spaceState, row, col, nr, nc);
-                  if (triggered) {
-                     propTarget = this._defineValue(state[nr][nc], vSource-1);
-                     if (this._transMap[1] != 1)
-                        propSource = this._removeValue(state[row][col]);
-                  }
-               }
-               break;
-            case "_+":
-               if (propSource != null && vSource+1 >= vTarget) {
-                  triggered = super._computeTransition(spaceState, row, col, nr, nc);
-                  if (triggered) {
-                     propTarget = this._defineValue(state[nr][nc], vSource+1);
-                     if (this._transMap[1] != 1)
-                        propSource = this._removeValue(state[row][col]);
-                  }
-               }
-               break;
-            case "==":
-               if (vSource > 0 && vSource > vTarget) {
-                  triggered = super._computeTransition(spaceState, row, col, nr, nc);
-                  if (triggered) {
-                     propSource = this._defineValue(state[row][col], vSource);
-                     propTarget = this._defineValue(state[nr][nc], vSource);
-                  }
-               }
-               break;
-            case "=-":
-               if (vSource > 1 && vSource > vTarget) {
-                  triggered = super._computeTransition(spaceState, row, col, nr, nc);
-                  if (triggered) {
-                     propSource = this._defineValue(state[row][col], vSource);
-                     propTarget = this._defineValue(state[nr][nc], vSource-1);
-                  }
-               }
-               break;
-            case "=+":
-               if (propSource != null && vSource+1 >= vTarget) {
-                  triggered = super._computeTransition(spaceState, row, col, nr, nc);
-                  if (triggered) {
-                     propSource = this._defineValue(state[row][col], vSource);
-                     propTarget = this._defineValue(state[nr][nc], vSource+1);
-                  }
-               }
-               break;
-            case "0":
-               if (vSource == 0)
-                  triggered = super._computeTransition(spaceState, row, col, nr, nc);
-               break;
-            case "1":
-               if (vSource == 1)
-                  triggered = super._computeTransition(spaceState, row, col, nr, nc);
-               break;
-         }
-         if (triggered) {
+            }
+            break;
+         case "==":
+            if (vSource > 0 && vSource > vTarget) {
+               triggered = super._computeTransition(spaceState, row, col, nr, nc);
+               propSource = this._defineValue(state[row][col], vSource);
+               propTarget = this._defineValue(state[nr][nc], vSource);
+            }
+            break;
+         case "=-":
+            if (vSource > 1 && vSource > vTarget) {
+               triggered = super._computeTransition(spaceState, row, col, nr, nc);
+               propSource = this._defineValue(state[row][col], vSource);
+               propTarget = this._defineValue(state[nr][nc], vSource-1);
+            }
+            break;
+         case "=+":
+            if (propSource != null && vSource+1 >= vTarget) {
+               triggered = super._computeTransition(spaceState, row, col, nr, nc);
+               propSource = this._defineValue(state[row][col], vSource);
+               propTarget = this._defineValue(state[nr][nc], vSource+1);
+            }
+            break;
+         case "0":
+            if (vSource == 0)
+               triggered = super._computeTransition(spaceState, row, col, nr, nc);
+            break;
+         case "1":
+            if (vSource == 1)
+               triggered = super._computeTransition(spaceState, row, col, nr, nc);
+            break;
+      }
+      if (triggered) {
+         if (state[row][col] != null)
             state[row][col].dcc.updateElementState(
                state[row][col].element, propSource);
+         if (state[nr][nc] != null)
             state[nr][nc].dcc.updateElementState(
                state[nr][nc].element, propTarget);
-         }
-      // }
-      // }
+      }
       return triggered;
    }
 }
