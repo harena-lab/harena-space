@@ -93,16 +93,8 @@ class DCCCellLight {
    constructor(dcc, element) {
       this.dcc = dcc;
       this.element = element;
-      /*
-      console.log("=== dcc properties");
-      console.log(JSON.stringify(dcc.properties));
-      */
       if (dcc.properties != null) {
          const props = Object.keys(dcc.properties);
-         /*
-         console.log("=== props");
-         console.log(JSON.stringify(props));
-         */
          if (props.length !== 0) {
             if (props.length == 1 && dcc.properties.value)
                this.value = dcc.properties.value;
@@ -110,10 +102,6 @@ class DCCCellLight {
                this.properties = dcc.properties;
          }
       }
-      /*
-      console.log("=== cell light");
-      console.log(this);
-      */
    }
 }
 

@@ -81,6 +81,9 @@ _____h______________
    <dcc-trigger label="Próximo" action="state/next"></dcc-trigger>
    <dcc-trigger label="Play" action="timer/start"></dcc-trigger>
    <dcc-trigger label="Stop" action="timer/stop"></dcc-trigger>
+   <dcc-trigger label="Gravar" action="state/save"></dcc-trigger>
+   <dcc-trigger label="Ler" action="state/load"></dcc-trigger>
+   <dcc-trigger label="Baixar" action="state/download"></dcc-trigger>
 </div>
 </div>
 
@@ -169,7 +172,7 @@ Selecione abaixo a chance de cada um dos eventos:
    </div>
 </div>
 
-<dcc-timer cycles="1000" interval="500" publish="state/next">
+<dcc-timer cycles="100000" interval="500" publish="state/next">
    <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
    <subscribe-dcc message="timer/stop" role="stop"></subscribe-dcc>
 </dcc-timer>
@@ -187,6 +190,9 @@ Selecione abaixo a chance de cada um dos eventos:
 <subscribe-dcc target="carnivore-dies" message="var/carnivore_dies/changed" role="probability">
 </subscribe-dcc>
 <subscribe-dcc target="cellular-space" message="type/#" role="type"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" message="state/save" role="save"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" message="state/load" role="load"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" message="state/download" role="download"></subscribe-dcc>
 
 </div>
 </div>`

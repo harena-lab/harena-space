@@ -28,8 +28,8 @@
 [Water Flow](../presenter.html?source=cell/flow-water)
 
 ## Energy
-![Water Flow](cell/energy.png)
-[Water Flow](../presenter.html?source=cell/energy)
+![Energy](cell/energy.png)
+[Energy](../presenter.html?source=cell/energy)
 
 # Editor
 
@@ -38,7 +38,7 @@
 ![Falling Rocks](cell/movement-fall-rocks.png)
 [Falling Rocks](../presenter.html?source=cell/movement-fall-rocks-editor)
 
-![Sand Clock](cell/movement-sand-clock.png)
+![Sand Clock](cell/movement-sand-clock-editor.png)
 [Sand Clock](../presenter.html?source=cell/movement-sand-clock-editor)
 
 ## Movement, Replication, and Vanish
@@ -47,7 +47,7 @@
 [Tiny Earth](../presenter.html?source=cell/movement-replication-vanish-tinyearth-editor)
 
 ## Water Flow
-![Water Flow](cell/flow-water.png)
+![Water Flow](cell/flow-water-editor.png)
 [Water Flow](../presenter.html?source=cell/flow-water-editor)
 
 ## Ecology
