@@ -54,9 +54,9 @@ _#_________________________________________#_
 #############################################
 </dcc-space-cellular>
 
-<dcc-cell-color type="#" label="glass" color="#0000ff"></dcc-cell-color>
+<dcc-cell-color type="#" label="glass" color="#57c86e"></dcc-cell-color>
 
-<dcc-cell-color type="." label="sand" color="#ff0000"></dcc-cell-color>
+<dcc-cell-color type="." label="sand" color="#7f8395"></dcc-cell-color>
 <rule-dcc-cell-pair label="fall vertical" probability="100" transition="._>_.">
 ___
 ___

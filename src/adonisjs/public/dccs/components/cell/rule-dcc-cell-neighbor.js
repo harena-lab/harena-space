@@ -323,8 +323,6 @@ class RuleDCCCellFlow extends RuleDCCCellPair {
       let vTarget = (propTarget == null) ? 0 : parseInt(propTarget.value);
       switch (this.flow) {
          case "-+":
-            // console.log("=== propTarget");
-            // console.log(propTarget);
             if (vSource > 1 && vSource > vTarget && propTarget != null) {
                triggered = super._computeTransition(spaceState, row, col, nr, nc);
                propSource.value--;
@@ -336,11 +334,6 @@ class RuleDCCCellFlow extends RuleDCCCellPair {
                triggered = super._computeTransition(spaceState, row, col, nr, nc);
                propSource.value++;
                propTarget.value--;
-               /*
-               console.log("=== get");
-               console.log(propSource.value);
-               console.log(propTarget.value);
-               */
             }
             break;
          case "-1":
@@ -352,6 +345,14 @@ class RuleDCCCellFlow extends RuleDCCCellPair {
             break;
          case "_=":
             if (vSource > 0 && vSource > vTarget) {
+               triggered = super._computeTransition(spaceState, row, col, nr, nc);
+               propTarget = this._defineValue(state[nr][nc], vSource);
+               if (this._transMap[1] != 1)
+                  propSource = this._removeValue(state[row][col]);
+            }
+            break;
+         case "_*":
+            if (vSource > 0) {
                triggered = super._computeTransition(spaceState, row, col, nr, nc);
                propTarget = this._defineValue(state[nr][nc], vSource);
                if (this._transMap[1] != 1)

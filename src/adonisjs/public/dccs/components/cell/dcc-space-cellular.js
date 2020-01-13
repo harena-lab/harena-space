@@ -23,6 +23,16 @@ class DCCSpaceCellular extends DCCBase {
          if (![" ", "_", "\r", "\n"].includes(c) && !this._stateTypes.includes(c))
             this._stateTypes.push(c);
 
+      this._buildInnerHTML();
+
+      if (!this._state && this._checkAllTypes())
+         this._createIndividuals();
+
+      MessageBus.page.subscribe("dcc/cell-type/register", this.cellTypeRegister);
+      MessageBus.page.subscribe("dcc/rule-cell/register", this.ruleRegister);
+   }
+
+   _buildInnerHTML() {
       if (this._stateStr.length > 0) {
          this._stateStr = this._stateStr.split(/[\r\n]+/gm);
          for (let s in this._stateStr)
@@ -54,12 +64,6 @@ class DCCSpaceCellular extends DCCBase {
                          .replace(/\[grid\]/g, (this.grid) ? ";stroke-width:2;stroke:#646464" : "");
       this._cellGrid = this.querySelector("#cell-grid");
       this._cells = this.querySelector("#cells");
-
-      if (!this._state && this._checkAllTypes())
-         this._createIndividuals();
-
-      MessageBus.page.subscribe("dcc/cell-type/register", this.cellTypeRegister);
-      MessageBus.page.subscribe("dcc/rule-cell/register", this.ruleRegister);
    }
 
    disconnectedCallback() {
@@ -174,16 +178,6 @@ class DCCSpaceCellular extends DCCBase {
       }
    }
 
-   serializeState() {
-      let str = "";
-      for (let r in this._state) {
-         for (let c in this._state[r])
-            str += (this._state[r][c] == null) ? "_" : this._state[r][c].dcc.type;
-         str += "\n";
-      }
-      console.log(str);
-   }
-
    _createEmptyState() {
       let state = [];
       for (let r = 0; r < this.rows; r++) {
@@ -242,7 +236,6 @@ class DCCSpaceCellular extends DCCBase {
       if (message.role) {
          switch (message.role.toLowerCase()) {
             case "next": this.stateNext(); break;
-            case "serialize": this.serializeState(); break;
          }
       }
    }
@@ -307,8 +300,8 @@ class DCCSpaceCellularEditor extends DCCSpaceCellular {
       let r = row - 1;
       let c = col - 1;
       if (this._state[r][c] != null && this._state[r][c].dcc.type != type) {
-            this._cells.removeChild(this._state[r][c].element);
-            this._state[r][c] = null;
+         this._cells.removeChild(this._state[r][c].element);
+         this._state[r][c] = null;
       }
       if ((this._state[r][c] == null || this._state[r][c].dcc.type != type) &&
           this._cellTypes[type]) {
@@ -316,6 +309,44 @@ class DCCSpaceCellularEditor extends DCCSpaceCellular {
             this._cellTypes[type].createIndividual(row, col);
          this._cells.appendChild(this._state[r][c].element);
       }
+   }
+
+   serializeState() {
+      let str = "";
+      for (let r in this._state) {
+         for (let c in this._state[r])
+            str += (this._state[r][c] == null) ? "_" : this._state[r][c].dcc.type;
+         str += "\n";
+      }
+      return str;
+   }
+
+   // <TODO> provisory
+   saveState() {
+      localStorage.setItem(DCCSpaceCellular.storeId, this.serializeState());
+   }
+
+   // <TODO> provisory
+   loadState() {
+      this._stateStr = localStorage.getItem(DCCSpaceCellular.storeId);
+      this._buildInnerHTML();
+      this._createIndividuals();
+   }
+
+   // <TODO> provisory
+   downloadState() {
+      const a = document.createElement("a");
+      a.style.display = "none";
+      document.body.appendChild(a);
+      a.href = window.URL.createObjectURL(
+         new Blob([this.serializeState()], {type: "text/plain"})
+      );
+      a.setAttribute("download", "cenario.txt");
+
+      a.click();
+
+      window.URL.revokeObjectURL(a.href);
+      document.body.removeChild(a);
    }
 
    notify(topic, message) {
@@ -330,6 +361,9 @@ class DCCSpaceCellularEditor extends DCCSpaceCellular {
                                if (this._cellTypes[t].label.toLowerCase() == tLabel.toLowerCase())
                                   this._editType = t;
                          break;
+            case "save": this.saveState(); break;
+            case "load": this.loadState(); break;
+            case "download": this.downloadState(); break;
          }
       }
    }
@@ -353,6 +387,8 @@ class DCCSpaceCellularEditor extends DCCSpaceCellular {
 </div>`;
 
    DCCSpaceCellular.defaultCellDimensions = {width: 20, height: 20};
+
+   DCCSpaceCellular.storeId = "harena-dcc-cell-space-state";
 
    customElements.define("dcc-space-cellular", DCCSpaceCellular);
    customElements.define("dcc-space-cellular-editor", DCCSpaceCellularEditor);

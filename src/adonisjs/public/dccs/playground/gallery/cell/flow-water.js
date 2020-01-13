@@ -28,7 +28,7 @@ _____________########
 <dcc-cell-color type="w" label="water" color="#0000ff" opacity="10">
   <property-dcc name="value" initial="500"></property-dcc>
 </dcc-cell-color>
-<dcc-cell-color type="#" label="wall" color="#aaaaaa"></dcc-cell-color>
+<dcc-cell-color type="#" label="wall" color="#9b3234"></dcc-cell-color>
 <rule-dcc-cell-flow label="spread random 1" probability="100" transition="w_>ww" flow="-1">
    ***
    *_*
