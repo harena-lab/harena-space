@@ -33,19 +33,21 @@ class DCCSpaceCellular extends DCCBase {
    }
 
    _buildInnerHTML() {
+      this._stateLines = [];
+
       if (this._stateStr.length > 0) {
-         this._stateStr = this._stateStr.split(/[\r\n]+/gm);
-         for (let s in this._stateStr)
-            this._stateStr[s] = this._stateStr[s].trim();
+         this._stateLines = this._stateStr.split(/[\r\n]+/gm);
+         for (let s in this._stateLines)
+            this._stateLines[s] = this._stateLines[s].trim();
       }
 
       if (!this.rows)
-         this.rows = (this._stateStr.length > 0) ? this._stateStr.length : 10;
+         this.rows = (this._stateLines.length > 0) ? this._stateLines.length : 10;
       if (!this.cols)
-         if (this._stateStr.length > 0) {
-            let maior = this._stateStr[0].length;
-            for (let s in this._stateStr)
-               maior = (this._stateStr[s].length > maior) ? this._stateStr[s].length : maior;
+         if (this._stateLines.length > 0) {
+            let maior = this._stateLines[0].length;
+            for (let s in this._stateLines)
+               maior = (this._stateLines[s].length > maior) ? this._stateLines[s].length : maior;
             this.cols = maior;
          } else
             this.cols = 10;
@@ -165,12 +167,12 @@ class DCCSpaceCellular extends DCCBase {
 
    _createIndividuals() {
       this._state = this._createEmptyState();
-      if (this._stateStr.length > 0) {
-         for (let r in this._stateStr) {
-            for (let c = 0; c < this._stateStr[r].length; c++) {
-               if (this._cellTypes[this._stateStr[r][c]]) {
+      if (this._stateLines.length > 0) {
+         for (let r in this._stateLines) {
+            for (let c = 0; c < this._stateLines[r].length; c++) {
+               if (this._cellTypes[this._stateLines[r][c]]) {
                   this._state[r][c] =
-                     this._cellTypes[this._stateStr[r][c]].createIndividual(parseInt(r)+1, c+1);
+                     this._cellTypes[this._stateLines[r][c]].createIndividual(parseInt(r)+1, c+1);
                   this._cells.appendChild(this._state[r][c].element);
                }
             }
@@ -270,6 +272,7 @@ class DCCSpaceCellularEditor extends DCCSpaceCellular {
       super();
       this._editType = "_";
       this.cellClicked = this.cellClicked.bind(this);
+      MessageBus.page.subscribe("dcc/rules/clear", this.rulesClear);
    }
 
    connectedCallback() {
@@ -322,15 +325,28 @@ class DCCSpaceCellularEditor extends DCCSpaceCellular {
    }
 
    // <TODO> provisory
+   resetState() {
+      this._buildInnerHTML();
+      this._createIndividuals();
+      this.activateEditor();
+   }
+
+   // <TODO> provisory
    saveState() {
-      localStorage.setItem(DCCSpaceCellular.storeId, this.serializeState());
+      this._stateStr = this.serializeState();
+      localStorage.setItem(DCCSpaceCellular.storeId, this._stateStr);
    }
 
    // <TODO> provisory
    loadState() {
       this._stateStr = localStorage.getItem(DCCSpaceCellular.storeId);
-      this._buildInnerHTML();
-      this._createIndividuals();
+      this.resetState();
+   }
+
+   rulesClear(topic, message) {
+      this._rules = {};
+      this._wildcardRules = [];
+      MessageBus.page.publish(MessageBus.buildResponseTopic(topic, message), true);
    }
 
    // <TODO> provisory
@@ -361,8 +377,9 @@ class DCCSpaceCellularEditor extends DCCSpaceCellular {
                                if (this._cellTypes[t].label.toLowerCase() == tLabel.toLowerCase())
                                   this._editType = t;
                          break;
-            case "save": this.saveState(); break;
-            case "load": this.loadState(); break;
+            case "reset": this.resetState(); break;
+            case "save":  this.saveState(); break;
+            case "load":  this.loadState(); break;
             case "download": this.downloadState(); break;
          }
       }
