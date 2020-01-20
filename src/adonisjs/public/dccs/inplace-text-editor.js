@@ -25,12 +25,17 @@ Quill.register(AnnotationBlot);
 class SelectBlot extends Inline {
    static create(value) {
       let node = super.create();
-      if (value.variable)
-         node.setAttribute("variable", value.variable);
-      if (value.answer)
-         node.setAttribute("answer", value.answer);
+      if (value != null) {
+         if (value.variable)
+            node.setAttribute("variable", value.variable);
+         if (value.answer)
+            node.setAttribute("answer", value.answer);
+      }
+      /*
       console.log("=== value");
       console.log(value);
+      console.log(node);
+      */
       // if (value.style)
       //    node.classList.add(value.style);
       // else if (EditDCCText.metadataStyle[value.type])
@@ -40,10 +45,14 @@ class SelectBlot extends Inline {
 
   static formats(node) {
      let value = {};
+     // console.log("=== formats node");
+     // console.log(node);
      if (node.getAttribute("variable") != null)
         value.variable = node.getAttribute("variable");
      if (node.getAttribute("answer") != null)
         value.answer = node.getAttribute("answer");
+     // console.log("=== return value");
+     // console.log(value);
      return value;
   }
 }
@@ -53,8 +62,8 @@ Quill.register(SelectBlot);
 
 class EditDCCText {
    constructor(obj, element, svg) {
-      console.log("=== obj to edit");
-      console.log(obj);
+      // console.log("=== obj to edit");
+      // console.log(obj);
 
       this._objProperties = obj;
       this._handleHighlighter = this._handleHighlighter.bind(this);
@@ -179,8 +188,8 @@ class EditDCCText {
    _buildQuillEditor(selectOptions) {
       let inplaceContent = this._editor.querySelector("#inplace-content");
       const html = Translator.instance.objToHTML(this._objProperties, -1);
-      console.log("=== Initial HTML");
-      console.log(html);
+      // console.log("=== Initial HTML");
+      // console.log(html);
       inplaceContent.innerHTML = html;
 
       this._quill = new Quill(inplaceContent, 
@@ -200,8 +209,8 @@ class EditDCCText {
          });
       this._editor.classList.add("inplace-editor");
 
-      console.log("=== Initial Delta");
-      console.log(this._quill.getContents());
+      // console.log("=== Initial Delta");
+      // console.log(this._quill.getContents());
 
       // this._quill.setContents(this._translateObjToDelta(this._objProperties));
 
@@ -218,11 +227,27 @@ class EditDCCText {
          EditDCCText.buttonCancelSVG;
    }
 
+   _formatSelectOptions() {
+      // transforms the highlight select options in HTML
+      const selectOptions =
+         document.querySelectorAll(".ql-hl-select .ql-picker-item");
+      const selectItems = Array.prototype.slice.call(selectOptions);
+      selectItems.forEach(item => item.textContent = item.dataset.label);
+
+      this._hlSelect = document.querySelector(
+         ".ql-hl-select .ql-picker-label");
+      this._hlSelectHTML = this._hlSelect.innerHTML;
+      this._hlSelect.innerHTML =
+         "<span style='color:lightgray'>diagnostics</span>" +
+         this._hlSelectHTML;
+   }
+
    _removeEditor() {
       this._container.removeChild(this._editorToolbar);
       this._container.removeChild(this._editor);
    }
 
+   /*
    _buildAnnotationPanel() {
       let editorAnnotation = document.createElement("div");
       editorAnnotation.classList.add("inplace-editor-floating");
@@ -241,11 +266,61 @@ class EditDCCText {
 
       return editorAnnotation;
    }
+   */
 
-   async _loadSelectOptions() {
+   /*
+    * Relative positions defined in percent are automatically adjusted with resize
+    */
+
+   _transformRelativeX(x) {
+      return (x * 100 / this._containerRect.width) + "%";
+   }
+
+   _transformRelativeY(y) {
+      return (y * 100 / this._containerRect.height) + "%";
+   }
+
+   /*
+    * Positions transformed to the viewport size
+    */
+
+   _transformViewportX(x) {
+      return (x * Basic.referenceViewport.width / this._containerRect.width);
+   }
+
+   _transformViewportY(y) {
+      return (y * Basic.referenceViewport.height / this._containerRect.height);
+   }
+
+   async _handleAnnotation() {
+      const range = this._quill.getSelection();
+      let buttonClicked =
+         await this._handleExtendedPanel(EditDCCText.annotationTemplate);
+      if (buttonClicked == "confirm")
+         this._quill.formatText(range.index, range.length,
+                                {annotation: this._extendedSub.content.value});
+   }
+
+   async _handleHighlighter() {
+      const ctxList = Context.instance.listSelectVocabularies();
+      this._contextList = EditDCCText.headerTemplate + "<select id='ext-content'>";
+      for (let c in ctxList)
+         this._contextList +=
+            "<option value='" + ctxList[c][0] + "'>" +
+               ctxList[c][1] + "</option>";
+      this._contextList += "</select>";
+      let buttonClicked = await this._handleExtendedPanel(this._contextList);
+      if (buttonClicked == "confirm") {
+         let vocabulary = this._extendedSub.content.value;
+         const first = await this._loadSelectOptions(vocabulary);
+         this._handleHlSelect(first, true);
+      }
+   }
+
+   async _loadSelectOptions(vocabulary) {
       const range = this._quill.getSelection(true);
       let context =
-         await Context.instance.loadResource("evidence:findingRelevance");
+         await Context.instance.loadResource(vocabulary);
       this._highlightOptions = {};
       for (let c in context.states)
          this._highlightOptions[context.states[c]["@id"]] =
@@ -272,49 +347,12 @@ class EditDCCText {
       return first;
    }
 
-   _formatSelectOptions() {
-      // transforms the highlight select options in HTML
-      const selectOptions =
-         document.querySelectorAll(".ql-hl-select .ql-picker-item");
-      const selectItems = Array.prototype.slice.call(selectOptions);
-      selectItems.forEach(item => item.textContent = item.dataset.label);
-
-      this._hlSelect = document.querySelector(
-         ".ql-hl-select .ql-picker-label");
-      this._hlSelectHTML = this._hlSelect.innerHTML;
-      this._hlSelect.innerHTML =
-         "<span style='color:lightgray'>diagnostics</span>" +
-         this._hlSelectHTML;
-   }
-
-   /*
-    * Relative positions defined in percent are automatically adjusted with resize
-    */
-
-   _transformRelativeX(x) {
-      return (x * 100 / this._containerRect.width) + "%";
-   }
-
-   _transformRelativeY(y) {
-      return (y * 100 / this._containerRect.height) + "%";
-   }
-
-   /*
-    * Positions transformed to the viewport size
-    */
-
-   _transformViewportX(x) {
-      return (x * Basic.referenceViewport.width / this._containerRect.width);
-   }
-
-   _transformViewportY(y) {
-      return (y * Basic.referenceViewport.height / this._containerRect.height);
-   }
-
    _handleHlSelect(hlSelect, maintainSelect) {
+      const range = this._quill.getSelection(true);
       this._hlSelect.innerHTML = this._highlightOptions[hlSelect].label +
                                  this._hlSelectHTML;
-      const range = this._quill.getSelection(true);
+      // console.log("=== range");
+      // console.log(range);
       this._quill.formatText(range.index, range.length, {
          select: {answer: this._highlightOptions[hlSelect].symbol}
       });
@@ -323,37 +361,44 @@ class EditDCCText {
          this._quill.setSelection(range.index + range.length, 0);
    }
 
-   async _handleAnnotation() {
-      const range = this._quill.getSelection();
-
-      this._editorAnnotation = this._buildAnnotationPanel();
-      this._container.appendChild(this._editorAnnotation);
+   async _handleExtendedPanel(html) {
+      // this._editorAnnotation = this._buildAnnotationPanel();
+      this._editorExtended = this._buildExtendedPanel(html);
+      this._container.appendChild(this._editorExtended);
 
       let promise = new Promise((resolve, reject) => {
          const callback = function(button) { resolve(button); };
-         this._buttonAnConfirm.onclick = function(e) {
+         this._extendedSub.confirm.onclick = function(e) {
             callback("confirm");
          };
-         this._buttonAnCancel.onclick = function(e) {
+         this._extendedSub.cancel.onclick = function(e) {
             callback("cancel");
          };
       });
       let buttonClicked = await promise;
-      this._container.removeChild(this._editorAnnotation);
-
-      if (buttonClicked == "confirm")
-         this._quill.formatText(range.index, range.length, {annotation: this._anContent.value});
+      this._container.removeChild(this._editorExtended);
+      return buttonClicked;
    }
 
-   async _handleHighlighter() {
-      /*
-      this._quill.formatText(range.index, range.length, {
-         metadata: {type: "select"}
-      });
-      */
-      const first = await this._loadSelectOptions();
-      this._handleHlSelect(first, true);
-      // document.querySelector(".ql-hl-select").style.display = "initial";
+   _buildExtendedPanel(html) {
+      let editorExtended = document.createElement("div");
+      editorExtended.classList.add("inplace-editor-floating");
+      editorExtended.innerHTML = html;
+
+      const toolbarRect = this._editorToolbar.getBoundingClientRect();
+      editorExtended.style.left = this._transformRelativeX(
+         this._elementRect.left - this._containerRect.left);
+      editorExtended.style.bottom = this._transformRelativeY(
+         this._containerRect.height -
+            (this._elementRect.top - this._containerRect.top));
+
+      this._extendedSub = {
+         confirm: editorExtended.querySelector("#ext-confirm"),
+         cancel:  editorExtended.querySelector("#ext-cancel"),
+         content: editorExtended.querySelector("#ext-content")
+      };
+
+      return editorExtended;
    }
 
    _handleConfirm() {
@@ -365,8 +410,8 @@ class EditDCCText {
       console.log("=== Quill HTML");
       console.log(htmlContent);
       */
-      console.log("=== Quill Delta");
-      console.log(this._quill.getContents());
+      // console.log("=== Quill Delta");
+      // console.log(this._quill.getContents());
       /*
       this._objProperties.content =
          Translator.instance.htmlToMarkdown(htmlContent).trimEnd();
@@ -377,8 +422,8 @@ class EditDCCText {
       this._objProperties.type    = obj.type;
       this._objProperties._source = obj._source;
       this._objProperties.content = obj.content;
-      console.log("=== propriedades");
-      console.log(this._objProperties);
+      // console.log("=== propriedades");
+      // console.log(this._objProperties);
       MessageBus.ext.publish("control/knot/update");
 
       // MessageBus.ext.publish("properties/apply");
@@ -435,7 +480,7 @@ class EditDCCText {
             console.log(ec.insert);
             */
             ec.insert = ec.insert.replace(/\n\n/g, "\n<br>\n").replace(/\n/g, "\n\n");
-            console.log(ec.insert);
+            // console.log(ec.insert);
             if (ec.attributes) {
                const attr = ec.attributes;
                if (attr.bold)
@@ -456,8 +501,8 @@ class EditDCCText {
       let unity = {_source: content.trimEnd()};
       Translator.instance._compileUnityMarkdown(unity);
       Translator.instance._compileMerge(unity);
-      console.log("=== translator");
-      console.log(unity);
+      // console.log("=== translator");
+      // console.log(unity);
       return unity.content[0];
    }
 }
@@ -511,16 +556,18 @@ svg:
 </svg>`
 };
 
-EditDCCText.annotationTemplate =
+EditDCCText.headerTemplate =
 `<div class="annotation-bar">Annotation
     <div class="annotation-buttons">` +
-`      <div id="an-confirm" style="width:24px">` +
+`      <div id="ext-confirm" style="width:24px">` +
           EditDCCText.buttonConfirmSVG + `</div>` +
-`      <div id="an-cancel" style="width:28px">` +
+`      <div id="ext-cancel" style="width:28px">` +
           EditDCCText.buttonCancelSVG + `</div>` +
 `   </div>
-</div>
-<textarea id="an-content" rows="3" cols="20"></textarea>`;
+</div>`;
+
+EditDCCText.annotationTemplate = EditDCCText.headerTemplate +
+`<textarea id="ext-content" rows="3" cols="20"></textarea>`;
 
 EditDCCText.metadataStyle = {
    annotation: "dcc-text-annotation",

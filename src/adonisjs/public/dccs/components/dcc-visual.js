@@ -20,7 +20,7 @@ class DCCVisual extends DCCBase {
       }
    }
 
-   selectListener() {
+   selectListener(event) {
       MessageBus.ext.publish("control/element/" + this.id + "/selected");
    }
 
@@ -39,22 +39,30 @@ class DCCMultiVisual extends DCCVisual {
       this._presentationSet = [];
    }
 
-   _storePresentation(presentation) {
+   _storePresentation(presentation, role) {
       super._storePresentation(presentation);
-      if (presentation != null)
+      if (presentation != null) {
+         if (role)
+            presentation.subRole = role;
          this._presentationSet.push(presentation);
+      }
    }
 
    checkActivateAuthor() {
       if (this.author) {
          for (let pr in this._presentationSet) {
-            this._presentationSet[pr].style.cursor = "pointer";
-            this._presentationSet[pr].dccid = this.id;
-            this._presentationSet[pr].addEventListener("click",
-               function(){
-                  MessageBus.ext.publish("control/element/" + this.dccid + "/selected");
-               }
-            );
+            if (this._presentationSet[pr].style.cursor != "pointer") {
+               this._presentationSet[pr].style.cursor = "pointer";
+               this._presentationSet[pr].dccid = this.id;
+               this._presentationSet[pr].addEventListener("click",
+                  function() {
+                     if (this.subRole)
+                        MessageBus.ext.publish("control/element/" + this.dccid + "/selected", this.subRole);
+                     else
+                        MessageBus.ext.publish("control/element/" + this.dccid + "/selected");
+                  }
+               );
+            }
          }
       }
    }

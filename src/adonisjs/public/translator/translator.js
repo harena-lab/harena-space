@@ -1926,7 +1926,7 @@ class Translator {
          mark: /~[ \t]*(\w+)?[ \t]*([+\-*/=])[ \t]*(\d+(?:\.\d+)?)$/im,
          },
       "context-open": {
-         mark: /\{\{([\w \t\+\-\*\."=\:%]+)?(?:\/([\w \t\.]+)\/)?[\f\n\r]/im },
+         mark: /\{\{([\w \t\+\-\*\."=\:%]+)?(?:\/([\w \t\.\:]+)\/)?[\f\n\r]/im },
       "context-close": {
          mark: /\}\}/im },
       select: {

@@ -86,23 +86,15 @@ class DCCEntity extends DCCBlock {
       if (this.hasAttribute("xstyle") && this.xstyle.startsWith("out")) {
          await this._applyRender(this.entity,
                                  (this.xstyle == "out-image") ? "title" : "innerHTML",
-                                 "");
-         // if (presentation != null)
-         //    this._presentationEntity.push(this._presentation);
+                                 "entity");
             
-         if (this.image) {
-            await this._applyRender(this.image, "image", "-image");
-            // if (presentation != null)
-            //    this._presentationEntity.push(this._presentation);
-         }
+         if (this.image)
+            await this._applyRender(this.image, "image", "image");
          
-         if (this._speech) {
+         if (this._speech)
             await this._applyRender(this._speech,
                                     (this.xstyle == "out-image") ? "title" : "innerHTML",
-                                    "-text");
-            // if (presentation != null)
-            //    this._presentationEntity.push(this._presentation);
-         }
+                                    "text");
       } else {
          let html = (this.hasAttribute("image"))
             ? DCCEntity.templateElements.image.replace("[image]", this.image) : "";

@@ -22,7 +22,12 @@ class Context {
    }
 
    async loadResource(id) {
+      console.log("=== id");
+      console.log(id);
       const uri = this.resolveNS(id);
+      console.log("=== uri");
+      console.log(uri);
+      console.log(this._contextIndex);
       let resource =
          await MessageBus.int.request("data/context/" +
             this._contextIndex[uri].label + "/get",
@@ -32,6 +37,8 @@ class Context {
 
    resolveNS(id) {
       let nf = null;
+      console.log("=== namespaces");
+      console.log(this._namespaces);
       for (let ns in this._namespaces)
          if (id.startsWith(ns + ":"))
             nf = ns;

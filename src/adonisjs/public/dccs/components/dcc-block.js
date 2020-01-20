@@ -122,7 +122,10 @@ class DCCBlock extends DCCMultiVisual {
    /*
     * Finds the outer target interface or creates an internal interface
     */
-   async _applyRender(html, outTarget, sufix) {
+   async _applyRender(html, outTarget, role) {
+      const sufix = (role && role.length > 0)
+         ? ((DCCBlock.defaultRoles.includes(role)) ? "" : "-" + role) : "";
+
       let presentation = null;
       // location #in to indicate the location is not absent
       if (this.xstyle.startsWith("out") &&
@@ -130,8 +133,7 @@ class DCCBlock extends DCCMultiVisual {
          /*
           * outer target interface
           */
-         presentation = document.querySelector("#" + this.location +
-                                                     ((sufix) ? sufix : ""));
+         presentation = document.querySelector("#" + this.location + sufix);
          if (presentation != null) {
             if (sufix == "-image" && this.hasAttribute("image")) {
                // <TODO> image works for SVG but not for HTML
@@ -179,8 +181,11 @@ class DCCBlock extends DCCMultiVisual {
          host.appendChild(template.content.cloneNode(true));
          presentation = host.querySelector("#presentation-dcc");
       }
+      if (role)
+         this._storePresentation(presentation, role);
+      else
+         this._storePresentation(presentation);
       this.checkActivateAuthor();
-      this._storePresentation(presentation);
       return presentation;
    }
 }
@@ -188,6 +193,9 @@ class DCCBlock extends DCCMultiVisual {
 (function() {
    DCCBlock.elementTag = "dcc-block";
    DCCBlock.locationType = "role";
+
+   // roles that does not require sufix
+   DCCBlock.defaultRoles = ["entity", "input", "slider"];
 
    customElements.define(DCCBlock.elementTag, DCCBlock);
 })();

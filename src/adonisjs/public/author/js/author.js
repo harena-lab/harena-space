@@ -113,7 +113,7 @@ class AuthorManager {
       else if (MessageBus.matchFilter(topic, "control/group/+/selected"))
          this.groupSelected(topic, message);
       else if (MessageBus.matchFilter(topic, "control/element/+/selected"))
-         this.elementSelected(topic);
+         this.elementSelected(topic, message);
       else if (MessageBus.matchFilter(topic, "control/element/+/new"))
          this.elementNew(topic);
       else switch (topic) {
@@ -492,9 +492,10 @@ class AuthorManager {
             this._editableDCCs[elements[e].id] = elements[e];
    }
 
-   elementSelected(topic) {
+   elementSelected(topic, message) {
       const dccId = MessageBus.extractLevel(topic, 3);
 
+      // removes selection border of the previous element
       if (this._previousEditedDCC) {
          if (this._previousBorderStyle) {
             if (this._previousBorderStyle instanceof Array) {
@@ -510,6 +511,7 @@ class AuthorManager {
             this._previousEditedDCC.style.border = null;
       }
 
+      // sets border style to the selected elements
       let presentation = this._editableDCCs[dccId].presentation;
       if (presentation instanceof Array) {
          this._previousBorderStyle = [];
@@ -536,8 +538,12 @@ class AuthorManager {
         /* nothing */;
       if (el != -1) {
          this._elementSelected = el;
-         Properties.s.editElementProperties(
-            this._knots[this._knotSelected].content[el], presentation);
+         if (message)
+            Properties.s.editElementProperties(
+               this._knots[this._knotSelected].content[el], presentation, message);
+         else
+            Properties.s.editElementProperties(
+               this._knots[this._knotSelected].content[el], presentation);
        }
    }
 
