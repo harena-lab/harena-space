@@ -272,6 +272,7 @@ class DCCSpaceCellularEditor extends DCCSpaceCellular {
       super();
       this._editType = "_";
       this.cellClicked = this.cellClicked.bind(this);
+      this.rulesClear = this.rulesClear.bind(this);
       MessageBus.page.subscribe("dcc/rules/clear", this.rulesClear);
    }
 
