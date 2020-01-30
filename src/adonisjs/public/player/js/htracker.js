@@ -1,10 +1,5 @@
-/**
- * 
- */
-
 class Tracker {
    constructor() {
-      // this._server = server;
       this._variables = {};
       this._mandatoryFilled = {};
       this._groupInput = null;
@@ -44,13 +39,9 @@ class Tracker {
    groupinputReady(topic, message) {
       this._updateVariable(topic, {});
       this._groupInput = MessageBus.extractLevel(topic, 2);
-      // console.log("input: " + message.context);
    }
    
    subinputReady(topic, message) {
-      // console.log("variables");
-      // console.log(this._variables);
-
       if (this._groupInput != null) {
          const id = MessageBus.extractLevel(topic, 2);
          this._variables[this._groupInput][id] =
@@ -60,12 +51,10 @@ class Tracker {
    
    inputTyped(topic, message) {
       this._updateVariable(topic, message.value);
-      // console.log("input: " + message.value);
    }
    
    inputChanged(topic, message) {
       this._updateVariable(topic, message.value);
-      // console.log("input: " + message.value);
    }
    
    stateChanged(topic, message) {
@@ -73,16 +62,11 @@ class Tracker {
          const id = MessageBus.extractLevel(topic, 2);
          this._variables[this._groupInput][id].state = message.state;
       }
-      
-      // console.log("variables");
-      // console.log(this._variables);
    }
    
    submitVariables(topic, message) {
       for (let v in this._variables)
          MessageBus.ext.publish("var/" + v + "/set", this._variables[v]);
-      // console.log("variavel: " + v + " -- " + this._variables[v]);
-      // this._server.recordInput(v, this._variables[v]);
    }
    
    _updateVariable(topic, value) {

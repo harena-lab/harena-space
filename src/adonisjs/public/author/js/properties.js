@@ -37,13 +37,11 @@ class Properties {
       this.editProperties(obj);
    }
 
-   editElementProperties(obj, element) {
-      /*
+   editElementProperties(obj, element, role) {
       console.log("=== obj");
       console.log(obj);
       console.log("=== element");
       console.log(element);
-      */
       if (this._knotOriginalTitle)
          delete this._knotOriginalTitle;
       this.editProperties(obj);
@@ -54,8 +52,17 @@ class Properties {
          case "text": 
          case "text-block": this._editor = new EditDCCText(obj, element, svg);
                             break;
-         case "entity": this._editor = new EditDCCImage(obj, element);
-                      break;
+         case "entity": if (role)
+                           switch (role) {
+                              case "text":
+                              case "entity": this._editor = new EditDCCText(obj, element, svg);
+                                             break;
+                              case "image":  this._editor = new EditDCCImage(obj, element);
+                                             break;
+                           }
+                        else
+                           this._editor = new EditDCCText(obj, element, svg);
+                        break;
       }
    }
 

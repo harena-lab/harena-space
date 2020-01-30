@@ -102,10 +102,10 @@ class DCCInputTyped extends DCCInput {
       // === presentation setup (DCC Block)
       let presentation;
       if (this.hasAttribute("xstyle") && this.xstyle.startsWith("out")) {
-         await this._applyRender(this._statement, "innerHTML", "-text");
-         presentation = await this._applyRender(html, "innerHTML");
+         await this._applyRender(this._statement, "innerHTML", "text");
+         presentation = await this._applyRender(html, "innerHTML", "input");
       } else
-         presentation = await this._applyRender(html, "innerHTML");
+         presentation = await this._applyRender(html, "innerHTML", "input");
 
       // === post presentation setup
       const selector = "#" + this.variable.replace(/\./g, "\\.");

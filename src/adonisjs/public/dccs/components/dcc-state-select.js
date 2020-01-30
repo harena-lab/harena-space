@@ -4,36 +4,24 @@ class DCCStateSelect extends DCCVisual {
    constructor() {
      super();
      
-     // this._pendingRequests = 0;
-     
      this.selectionIndex = 0;
      this._stateVisible = false;
-     
-     // Without shadow - not working
-     /*
-     const text = this.innerHTML;
-     this.innerHTML = DCCStateSelect.templateElements;
-     this.querySelector("#presentation-text").innerHTML = text;
-     this._presentation = this.querySelector("#presentation-dcc");
-     this._presentationState = this.querySelector("#presentation-state");
-     */
      
      this._showState = this._showState.bind(this);
      this._hideState = this._hideState.bind(this);
      this._changeState = this._changeState.bind(this);
-     // this.defineStates = this.defineStates.bind(this);
 
-     this.variable = null;
-     this.states = null;
-     this.styles = null;
+     // this.variable = null;
+     // this.states = null;
+     // this.styles = null;
    }
    
    createdCallback() {
-     this._renderInterface();
+      this._renderInterface();
    }
 
    attributeChangedCallback(name, oldValue, newValue) {
-     this._renderInterface();
+      this._renderInterface();
    }
    
    async connectedCallback() {
@@ -62,13 +50,12 @@ class DCCStateSelect extends DCCVisual {
       this.completeId = this.id; 
 
       // <TODO> limited: considers only one group per page
-      if (!this.hasAttribute("states") &&
-          MessageBus.page.hasSubscriber("dcc/request/select-parameters")) {
+      if (this.hasAttribute("states"))
+         this._statesArr = this.states.split(",");
+      else if (MessageBus.page.hasSubscriber("dcc/request/select-parameters")) {
          let parametersM = await MessageBus.page.request(
             "dcc/request/select-parameters", this.id, "dcc/select-parameters/" + this.id);
          const parameters = parametersM.message;
-         console.log("=== parameters");
-         console.log(parameters);
 
          if (parameters.variable) {
             this.variable = parameters.variable;
@@ -86,12 +73,14 @@ class DCCStateSelect extends DCCVisual {
          */
       }
 
+      /*
       console.log("=== variable");
       console.log(this.variable);
       console.log("=== states");
       console.log(this.states);
       console.log("=== styles");
       console.log(this.styles);
+      */
       
       this._render();
 
@@ -219,22 +208,21 @@ class DCCStateSelect extends DCCVisual {
    }
    
    _renderInterface() {
-     if (this._presentation != null) {
-       if (this._presentationState != null) {
-          if (this._stateVisible && this.states != null) {
-             // const statesArr = this.states.split(",");
-             this._presentationState.innerHTML =
-                "[" + ((this.selection == null) ? " " : this.selection) + "]";
-          } else
-             this._presentationState.innerHTML = "";
-       }
-       if (this.styles && this.selectionIndex < this.styles.length)
-          this._presentation.className = this.styles[this.selectionIndex];
-       else
-          this._presentation.className =
-             DCCStateSelect.elementTag + "-template " +
-             DCCStateSelect.elementTag + "-" + this.selectionIndex + "-template";
-     }
+      if (this._presentation != null) {
+        if (this._presentationState != null) {
+           if (this._stateVisible && this.states != null)
+              this._presentationState.innerHTML =
+                 "[" + ((this.selection == null) ? " " : this.selection) + "]";
+           else
+              this._presentationState.innerHTML = "";
+        }
+        if (this.styles && this.selectionIndex < this.styles.length)
+           this._presentation.className = this.styles[this.selectionIndex];
+        else
+           this._presentation.className =
+              DCCStateSelect.elementTag + "-template " +
+              DCCStateSelect.elementTag + "-" + this.selectionIndex + "-template";
+      }
    }
    
    /* Event handling */
@@ -273,7 +261,7 @@ class DCCGroupSelect extends DCCBlock {
       this.requestStates = this.requestStates.bind(this);
       this.requestStyles = this.requestStyles.bind(this);
       */
-      this.styles = null;
+      // this.styles = null;
       this._groupReady = false;
       this._pendingRequests = [];
       MessageBus.page.subscribe("dcc/request/select-parameters", this.requestParameters);
