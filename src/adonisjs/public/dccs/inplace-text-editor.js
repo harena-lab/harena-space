@@ -312,6 +312,14 @@ class EditDCCText {
       let buttonClicked = await this._handleExtendedPanel(this._contextList);
       if (buttonClicked == "confirm") {
          let vocabulary = this._extendedSub.content.value;
+
+         /*
+         MessageBus.ext.publish("control/element/input/new/unique",
+            {type: "input",
+             subtype: "group select",
+             vocabularies: [vocabulary]});
+         */
+
          const first = await this._loadSelectOptions(vocabulary);
          this._handleHlSelect(first, true);
       }

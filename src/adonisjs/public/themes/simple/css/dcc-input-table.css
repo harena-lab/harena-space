@@ -1,0 +1,16 @@
+@charset "UTF-8";
+
+/* Input Table DCC */
+
+.dcc-input-table-template table {
+   border: 1px solid darkgray;
+}
+
+.dcc-input-table-template th {
+   border: 1px solid darkgray;
+   background-color: lightgray;
+}
+
+.dcc-input-table-template td {
+   border: 1px solid darkgray;
+}

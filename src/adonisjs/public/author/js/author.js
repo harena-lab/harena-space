@@ -116,6 +116,8 @@ class AuthorManager {
          this.elementSelected(topic, message);
       else if (MessageBus.matchFilter(topic, "control/element/+/new"))
          this.elementNew(topic);
+      else if (MessageBus.matchFilter(topic, "control/element/+/new/unique"))
+         this.elementNewUnique(topic, message);
       else switch (topic) {
          case "control/case/new":  this.caseNew();
                                    break;
@@ -547,9 +549,26 @@ class AuthorManager {
        }
    }
 
-   elementNew(topic) {
+   // creates an element if there is no element of the same type
+   elementNewUnique(topic, message) {
       const elementType = MessageBus.extractLevel(topic, 3);
-      let newElement = Translator.objTemplates[elementType];
+      let exists = false;
+      for (let el of this._knots[this._knotSelected].content)
+         if (el.type == elementType &&
+             (message == null || message.subtype == null ||
+              el.subtype == message.subtype))
+            exists = true;
+      if (!exists)
+         this.elementNew(topic, message);
+   }
+
+   elementNew(topic, message) {
+      const elementType = MessageBus.extractLevel(topic, 3);
+      console.log("=== creating");
+      console.log(topic);
+      console.log(message);
+      let newElement = (message == null)
+         ? Translator.objTemplates[elementType] : message;
       newElement.seq = this._knots[this._knotSelected].content[
          this._knots[this._knotSelected].content.length-1].seq + 1;
       this._knots[this._knotSelected].content.push(newElement);
@@ -564,28 +583,10 @@ class AuthorManager {
 
          // finding the next nonblank node
          let pos;
-         if (position = "previous") {
-            /*
-            pos = (contentSel[elSel-1].type == "text" &&
-               Basic.service.isBlank(contentSel[elSel-1].content)) ? elSel-2 : elSel-1;
-            */
+         if (position = "previous")
             pos = (contentSel[elSel-1].type == "linefeed") ? elSel-2 : elSel-1;
-            /*
-            if (pos > 0 && contentSel[pos-1] != "text")
-               contentSel[pos]._source = "\n\n" + contentSel[pos]._source;
-            */
-         }
-         else {
-            /*
-            pos = (contentSel[elSel+1].type == "text" &&
-               Basic.service.isBlank(contentSel[elSel+1].content)) ? elSel+2 : elSel+1;
-            */
+         else
             pos = (contentSel[elSel+1].type == "linefeed") ? elSel+2 : elSel+1;
-            /*
-            if (pos < contentSel.length-1 && contentSel[pos+1] != "text")
-               contentSel[pos]._source += "\n\n";
-            */
-         }
 
          // exchanging sequence ids
          const elSeq = contentSel[elSel].seq;
@@ -610,10 +611,6 @@ class AuthorManager {
    }
 
    async knotUpdate() {
-      /*
-      console.log("=== knot update");
-      console.log(this._knots);
-      */
       if (this._knotSelected != null) {
          this._htmlKnot = await Translator.instance.generateHTML(
             this._knots[this._knotSelected]);

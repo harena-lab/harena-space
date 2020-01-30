@@ -1681,7 +1681,8 @@ class Translator {
          short: "input",
          text: "input",
          "group select": "group-select",
-         slider: "slider"
+         slider: "slider",
+         table: "input-table"
       };
       const subtype = (obj.subtype)
          ? subtypeMap[obj.subtype] : subtypeMap.short;
@@ -1964,7 +1965,7 @@ class Translator {
 
    Translator.fieldSet = ["vocabularies", "answers", "states", "labels"];
 
-   Translator.inputSubtype = ["short", "text", "group select"];
+   Translator.inputSubtype = ["short", "text", "group select", "table"];
 
    Translator.globalFields = ["theme", "title", "role"];
 
