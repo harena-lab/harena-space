@@ -10,10 +10,6 @@ class DCCStateSelect extends DCCVisual {
      this._showState = this._showState.bind(this);
      this._hideState = this._hideState.bind(this);
      this._changeState = this._changeState.bind(this);
-
-     // this.variable = null;
-     // this.states = null;
-     // this.styles = null;
    }
    
    createdCallback() {
@@ -65,23 +61,8 @@ class DCCStateSelect extends DCCVisual {
             this.states = parameters.states;
          if (parameters.styles)
             this.styles = parameters.styles;
-         
-         /*
-         MessageBus.page.subscribe("dcc/select-states/" + this.id, this.defineStates);
-         MessageBus.page.publish("dcc/request/select-states", this.id);
-         this._pendingRequests++;
-         */
       }
 
-      /*
-      console.log("=== variable");
-      console.log(this.variable);
-      console.log("=== states");
-      console.log(this.states);
-      console.log("=== styles");
-      console.log(this.styles);
-      */
-      
       this._render();
 
       MessageBus.int.publish("var/" + this.completeId + "/subinput/ready",

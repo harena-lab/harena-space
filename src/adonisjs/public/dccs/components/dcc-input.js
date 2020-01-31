@@ -11,7 +11,7 @@ class DCCInput extends DCCBlock {
    connectedCallback() {
       this._statement = (this.hasAttribute("statement"))
          ? this.statement : this.innerHTML;
-      this.innerHTML = "";
+      // this.innerHTML = "";
 
       super.connectedCallback();
 
