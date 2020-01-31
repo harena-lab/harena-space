@@ -11,6 +11,7 @@ class DCCInputTyped extends DCCInput {
    
    connectedCallback() {
       super.connectedCallback();
+      this.innerHTML = "";
       
       MessageBus.int.publish("var/" + this.variable + "/input/ready",
                              DCCInputTyped.elementTag);

@@ -19,6 +19,7 @@ class DCCInputTable extends DCCInput {
             this.cols = 2;
 
       super.connectedCallback();
+      this.innerHTML = "";
 
       MessageBus.int.publish("var/" + this.variable + "/input/ready",
                              DCCInputTable.elementTag);
