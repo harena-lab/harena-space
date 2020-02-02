@@ -9,14 +9,14 @@ class DCCCell extends DCCBase {
    }
 
    connectedCallback() {
-      // Fetch all the children of that are not defined yet.
+      // Fetch all the children that are not defined yet
       let undefinedProps = this.querySelectorAll(':not(:defined)');
 
       let promises = [...undefinedProps].map(property => {
         return customElements.whenDefined(property.localName);
       });
 
-      // Wait for all the properties are ready
+      // Wait for all the options be ready
       Promise.all(promises).then(() => {
          if (this.type)
             MessageBus.page.publish("dcc/cell-type/register", this);
