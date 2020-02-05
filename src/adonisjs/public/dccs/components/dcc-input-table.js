@@ -5,18 +5,22 @@
 class DCCInputTable extends DCCInput {
    constructor() {
       super();
-      this.inputTyped = this.inputTyped.bind(this);
       this.inputChanged = this.inputChanged.bind(this);
    }
    
    connectedCallback() {
       if (!this.hasAttribute("rows"))
          this.rows = 2;
+
       if (!this.hasAttribute("cols"))
          if (this.hasAttribute("schema"))
             this.cols = this.schema.split(",").length;
          else
             this.cols = 2;
+
+      this._value = [];
+      for (let r = 0; r < this.rows; r++)
+         this._value.push(new Array(parseInt(this.cols)).fill(null));
 
       super.connectedCallback();
       this.innerHTML = "";
@@ -25,13 +29,20 @@ class DCCInputTable extends DCCInput {
                              DCCInputTable.elementTag);
    }
 
+   disconnectedCallback() {
+      if (this._inputSet != null)
+         for (let i of this._inputSet)
+            if (i != null)
+               i.removeEventListener("change", this.inputChanged);
+   }
+
    /*
     * Property handling
     */
 
    static get observedAttributes() {
       return DCCInput.observedAttributes.concat(
-         ["rows", "cols", "schema"]);
+         ["rows", "cols", "schema", "player"]);
    }
 
    get rows() {
@@ -58,22 +69,30 @@ class DCCInputTable extends DCCInput {
       this.setAttribute("schema", newValue);
    }
    
-   /* Event handling */
-   
-   inputTyped() {
-      this.changed = true;
-      this.value = this._inputVariable.value;
-      MessageBus.ext.publish("var/" + this.variable + "/typed",
-                             {sourceType: DCCInputTyped.elementTag,
-                              value: this.value});
+   get player() {
+      return this.getAttribute("player");
+    }
+
+   set player(newValue) {
+      this.setAttribute("player", newValue);
    }
 
-   inputChanged() {
+   /* Event handling */
+   
+   inputChanged(event) {
       this.changed = true;
-      this.value = this._inputVariable.value;
+
+      let id = event.target.id;
+      let p = id.lastIndexOf("_");
+      const col = parseInt(id.substring(p + 1)) - 1;
+      id = id.substring(0, p);
+      p = id.lastIndexOf("_");
+      const row = parseInt(id.substring(p + 1)) - 1;
+      this._value[row][col] = event.target.value;
+
       MessageBus.ext.publish("var/" + this.variable + "/changed",
-                             {sourceType: DCCInputTyped.elementTag,
-                              value: this.value});
+                             {sourceType: DCCInputTable.elementTag,
+                              value: this._value});
    }
    
    /* Rendering */
@@ -110,12 +129,27 @@ class DCCInputTable extends DCCInput {
             content += "<th>" + s.trim() + "</th>";
          content += "</tr>";
       }
+
+      if (this.hasAttribute("player")) {
+         let value = await MessageBus.ext.request(
+               "var/" + this.player + "/get/sub", this.innerHTML);
+         console.log("=== return value");
+         console.log(value);
+         const input = value.message;
+         const nr = (input.length < value.length) ? input.length : value.length;
+         const nc = (input[0].length < value[0].length) ? input[0].length : value[0].length;
+         for (let r = 0; r < nr; r++)
+            for (let c = 0; c < nc; c++)
+               this._value[r][c] = input[r][c];
+      }
+
       for (let r = 1; r <= this.rows; r++) {
          content += "<tr>";
-         console.log("cols: " + this.cols);
          for (let c = 1; c <= this.cols; c++)
             content += "<td><input type='text' id='" +
-                       this.variable + "_" + r + "_" + c + "'></input></td>";
+                       this.variable + "_" + r + "_" + c + "'>" +
+                       ((this._value[r-1][c-1] == null) ? "" : this._value[r-1][c-1]) +
+                       "</input></td>";
          content += "</tr>";
       }
 
@@ -134,12 +168,16 @@ class DCCInputTable extends DCCInput {
          presentation = await this._applyRender(html, "innerHTML", "input");
 
       // === post presentation setup
-      /*
-      const selector = "#" + this.variable.replace(/\./g, "\\.");
-      this._inputVariable = presentation.querySelector(selector);
-      this._inputVariable.addEventListener("input", this.inputTyped);
-      this._inputVariable.addEventListener("change", this.inputChanged);
-      */
+      if (presentation != null) {
+         this._inputSet = [];
+         for (let r = 1; r <= this.rows; r++) {
+            for (let c = 1; c <= this.cols; c++) {
+               let v = document.getElementById(this.variable + "_" + r + "_" + c);
+               v.addEventListener("change", this.inputChanged);
+               this._inputSet.push(v);
+            }
+         }
+      }
    }
 }
 

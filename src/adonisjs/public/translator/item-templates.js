@@ -55,7 +55,7 @@ mention:
 input:
 `<dcc-[dcc] id='dcc[seq]'[author][extra]>[statement]</dcc-[dcc]>`,
 output:
-`<dcc-expression id='dcc[seq]'[author] expression='[variable]'[variant]></dcc-expression>`,
+`<dcc-expression id='dcc[seq]'[author] expression='[variable][index]'[variant]></dcc-expression>`,
 compute:
 `<dcc-compute instruction='[instruction]'></dcc-compute>`,
 domain:

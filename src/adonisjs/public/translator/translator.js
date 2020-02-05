@@ -1676,7 +1676,7 @@ class Translator {
    _inputObjToHTML(obj) {
       // core attributes are not straight mapped
       const coreAttributes = ["seq", "author", "type", "subtype", "text",
-                              "_source", "_modified"];
+                              "show", "_source", "_modified"];
       const subtypeMap = {
          short: "input",
          text: "input",
@@ -1688,6 +1688,16 @@ class Translator {
          ? subtypeMap[obj.subtype] : subtypeMap.short;
 
       const statement = (obj.text) ? obj.text : "";
+
+      // <TODO> provisory - weak strategy (only one per case)
+      let answer="";
+      if (this._playerInputShow || this.authoringRender) {
+         if (this._playerInputShow == "#answer" || this.authoringRender)
+            answer = " answer='" + obj.value + "'";
+         else
+            answer = " player='" + this._playerInputShow + "'";
+      }
+
 
       let extraAttr = "";
       for (let atr in obj)
@@ -1706,12 +1716,12 @@ class Translator {
       if (obj.subtype == "group select") {
          // <TODO> weak strategy -- improve
          // indicates how related selects will behave
-         this._inputSelectShow = null;
+         this._playerInputShow = null;
          if (obj.show)
             if (obj.show == "answer")
-               this._inputSelectShow = "#answer";
+               this._playerInputShow = "#answer";
             else
-               this._inputSelectShow = obj.variable;
+               this._playerInputShow = obj.variable;
       }
 
       return input;
@@ -1726,7 +1736,9 @@ class Translator {
          variable: matchArray[1].trim().replace(/ /igm, "_")
       };
       if (matchArray[2] != null)
-         output.variant = matchArray[2].trim();
+         output.index = parseInt(matchArray[2].trim());
+      if (matchArray[3] != null)
+         output.variant = matchArray[3].trim();
       return output;
    }
 
@@ -1734,13 +1746,12 @@ class Translator {
     * Output Obj to HTML
     */
    _outputObjToHTML(obj) {
-      const variant = (obj.variant != null) ? obj.variant : "";
-
       return Translator.htmlTemplates.output
                 .replace("[seq]", obj.seq)
                 .replace("[author]", this.authorAttr)
                 .replace("[variable]", obj.variable)
-                .replace("[variant]", variant);
+                .replace("[index]", (obj.index != null) ? "[" + obj.index + "]" : "")
+                .replace("[variant]", (obj.variant != null) ? " " + obj.variant : "");
    }
 
    /*
@@ -1857,11 +1868,11 @@ class Translator {
          ? authorRender : this.authoringRender;
       */
       let answer="";
-      if (this._inputSelectShow || this.authoringRender) {
-         if (this._inputSelectShow == "#answer" || this.authoringRender)
+      if (this._playerInputShow || this.authoringRender) {
+         if (this._playerInputShow == "#answer" || this.authoringRender)
             answer = " answer='" + obj.value + "'";
          else
-            answer = " player='" + this._inputSelectShow + "'";
+            answer = " player='" + this._playerInputShow + "'";
       }
 
       // let result = obj.expression;
@@ -1921,7 +1932,7 @@ class Translator {
          subimage: true,
          subtext:  "text" },
       "output": {
-         mark: /\^([\w \t\.]+)(?:\(([\w \t]+)\))?\^/im,
+         mark: /\^([\w \t\.]+)(?:\[([\w \t]+)\])?(?:\(([\w \t]+)\))?\^/im,
          inline: true },
       compute: {
          mark: /~[ \t]*(\w+)?[ \t]*([+\-*/=])[ \t]*(\d+(?:\.\d+)?)$/im,

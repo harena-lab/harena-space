@@ -32,6 +32,11 @@ class DCCInputOption extends DCCInput {
                                  content: this.value});
    }
 
+   disconnectedCallback() {
+      if (parent == null)
+         this._presentation.removeEventListener("change", this.inputChanged);
+   }
+
    /*
     * Property handling
     */
@@ -96,11 +101,10 @@ class DCCInputOption extends DCCInput {
                .replace("[statement]", statement);
         
          // === presentation setup (DCC Block)
-         let presentation;
-         presentation = await this._applyRender(html, "innerHTML", "input");
+         this._presentation = await this._applyRender(html, "innerHTML", "input");
 
          // === post presentation setup
-         presentation.addEventListener("change", this.inputChanged);
+         this._presentation.addEventListener("change", this.inputChanged);
       }
    }
 }
@@ -135,6 +139,13 @@ class DCCInputChoice extends DCCInput {
       // <TODO> align with dcc-state-select
       MessageBus.int.publish("var/" + this.variable + "/group_input/ready",
                              DCCInputChoice.elementTag);
+   }
+
+   disconnectedCallback() {
+      if (this._options != null)
+         for (let o of this._options)
+            if (o.presentation != null)
+               o.presentation.removeEventListener("change", this.inputChanged);
    }
 
    /*
@@ -208,12 +219,17 @@ class DCCInputChoice extends DCCInput {
          presentation = await this._applyRender(html, "innerHTML", "input");
 
       // === post presentation setup
-      if (presentation != null)
-         for (v = 1; v <= this._options.length; v++) {
+      if (presentation != null) {
+         v = 1;
+         for (let o of this._options) {
             let op = presentation.querySelector("#" + this.variable + v);
-            if (op != null)
+            if (op != null) {
                op.addEventListener("change", this.inputChanged);
+               o.presentation = op;
+            }
+            v++;
          }
+      }
    }
 }
 
