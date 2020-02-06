@@ -2,5 +2,9 @@
    "http://purl.org/versum/evidence/findingRelevance": {
       "label": "finding relevance",
       "resource": "local/findingRelevance.jsonld"
+   },
+   "http://purl.org/versum/evidence/findingRelated": {
+      "label": "finding related",
+      "resource": "local/findingRelated.jsonld"
    }
 }

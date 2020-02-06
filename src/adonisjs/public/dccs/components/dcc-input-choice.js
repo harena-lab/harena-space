@@ -9,31 +9,32 @@
 class DCCInputOption extends DCCInput {
    constructor() {
       super();
-      // this.inputTyped = this.inputTyped.bind(this);
-      // this.inputChanged = this.inputChanged.bind(this);
+      this.inputChanged = this.inputChanged.bind(this);
    }
    
    connectedCallback() {
       this._parent = (this.hasAttribute("parent"))
-         ? document.querySelector("#" + this.parent) : this.parentNode;
-
-      if (this._parent != null) {
-         if (!this.hasAttribute("variable") && this._parent.hasAttribute("variable"))
-            this.variable = this._parent.variable;
-        if (!this.hasAttribute("exclusive") && this._parent.hasAttribute("exclusive"))
-            this.exclusive = this._parent.exclusive;
-      }
-
-      if (!this.hasAttribute("value"))
-         this.value = this._statement.trim();
+         ? document.querySelector("#" + this.parent)
+         : (this.parentNode != null && this.parentNode.elementTag != null &&
+            this.parentNode.elementTag == DCCInputChoice.elementTag)
+           ? this.parentNode : null;
 
       super.connectedCallback();
       this.innerHTML = "";
 
+      if (!this.hasAttribute("value"))
+         this.value = this._statement.trim();
+
       // <TODO> align with dcc-state-select
-      MessageBus.int.publish("var/" + this.variable + "/subinput/ready",
-                             {sourceType: DCCInputOption.elementTag,
-                              content: this.value});
+      if (this._parent == null && this.hasAttribute("variable"))
+         MessageBus.int.publish("var/" + this.variable + "/input/ready",
+                                {sourceType: DCCInputOption.elementTag,
+                                 content: this.value});
+   }
+
+   disconnectedCallback() {
+      if (parent == null)
+         this._presentation.removeEventListener("change", this.inputChanged);
    }
 
    /*
@@ -66,23 +67,12 @@ class DCCInputOption extends DCCInput {
 
    /* Event handling */
    
-   /*
-   inputTyped() {
-      this.changed = true;
-      this.value = this._inputVariable.value;
-      MessageBus.ext.publish("var/" + this.variable + "/typed",
-                             {sourceType: DCCInputTyped.elementTag,
-                              value: this.value});
-   }
-
    inputChanged() {
       this.changed = true;
-      this.value = this._inputVariable.value;
       MessageBus.ext.publish("var/" + this.variable + "/changed",
-                             {sourceType: DCCInputTyped.elementTag,
+                             {sourceType: DCCInputOption.elementTag,
                               value: this.value});
    }
-   */
    
    /* Rendering */
    
@@ -96,30 +86,26 @@ class DCCInputOption extends DCCInput {
 
    // _injectDCC(presentation, render) {
    async _renderInterface() {
-      // === pre presentation setup
-      // <TODO> review this sentence (copied from dcc-input-typed but not analysed)
-      const statement =
-         (this.hasAttribute("xstyle") && this.xstyle.startsWith("out"))
-         ? "" : this._statement;
+      if (this._parent == null) {
+         // === pre presentation setup
+         // <TODO> review this sentence (copied from dcc-input-typed but not analysed)
+         const statement =
+            (this.hasAttribute("xstyle") && this.xstyle.startsWith("out"))
+            ? "" : this._statement;
 
-      let html = 
-         "<input id='presentation-dcc' type='[exclusive]' name='[variable]' value='[value]'>[statement]</input><br>"
-            .replace("[exclusive]", (this.hasAttribute("exclusive") ? "radio" : "checkbox"))
-            .replace("[variable]", this.variable)
-            .replace("[value]", this.value)
-            .replace("[statement]", statement);
-     
-      // === presentation setup (DCC Block)
-      let presentation;
-      presentation = await this._applyRender(html, "innerHTML", "input");
+         let html = 
+            "<input id='presentation-dcc' type='[exclusive]' name='[variable]' value='[value]'>[statement]</input><br>"
+               .replace("[exclusive]", (this.hasAttribute("exclusive") ? "radio" : "checkbox"))
+               .replace("[variable]", this.variable)
+               .replace("[value]", this.value)
+               .replace("[statement]", statement);
+        
+         // === presentation setup (DCC Block)
+         this._presentation = await this._applyRender(html, "innerHTML", "input");
 
-      // === post presentation setup
-      /*
-      const selector = "#" + this.variable.replace(/\./g, "\\.");
-      this._inputVariable = presentation.querySelector(selector);
-      this._inputVariable.addEventListener("input", this.inputTyped);
-      this._inputVariable.addEventListener("change", this.inputChanged);
-      */
+         // === post presentation setup
+         this._presentation.addEventListener("change", this.inputChanged);
+      }
    }
 }
 
@@ -130,19 +116,36 @@ class DCCInputOption extends DCCInput {
 class DCCInputChoice extends DCCInput {
    constructor() {
       super();
-      // this.inputTyped = this.inputTyped.bind(this);
-      // this.inputChanged = this.inputChanged.bind(this);
+      this._options = [];
+      this.inputChanged = this.inputChanged.bind(this);
    }
    
    connectedCallback() {
-      // <TODO> provisory (I must adjust the innerHTML = "" effect)
-      super.connectedCallback();
-      // this._statement = (this.hasAttribute("statement"))
-      //    ? this.statement : "";
+      // Fetch all the children that are not defined yet
+      let undefinedOptions = this.querySelectorAll(':not(:defined)');
+
+      let promises = [...undefinedOptions].map(option => {
+        return customElements.whenDefined(option.localName);
+      });
+
+      // Wait for all the options be ready
+      Promise.all(promises).then(() => {
+         let options = this.querySelectorAll(DCCInputOption.elementTag);
+         for (let o of options)
+            this._options.push({value: o.value, statement: o._statement});
+         super.connectedCallback();
+      });
 
       // <TODO> align with dcc-state-select
       MessageBus.int.publish("var/" + this.variable + "/group_input/ready",
                              DCCInputChoice.elementTag);
+   }
+
+   disconnectedCallback() {
+      if (this._options != null)
+         for (let o of this._options)
+            if (o.presentation != null)
+               o.presentation.removeEventListener("change", this.inputChanged);
    }
 
    /*
@@ -167,23 +170,12 @@ class DCCInputChoice extends DCCInput {
 
    /* Event handling */
    
-   /*
-   inputTyped() {
+   inputChanged(event) {
       this.changed = true;
-      this.value = this._inputVariable.value;
-      MessageBus.ext.publish("var/" + this.variable + "/typed",
-                             {sourceType: DCCInputTyped.elementTag,
-                              value: this.value});
-   }
-
-   inputChanged() {
-      this.changed = true;
-      this.value = this._inputVariable.value;
       MessageBus.ext.publish("var/" + this.variable + "/changed",
-                             {sourceType: DCCInputTyped.elementTag,
-                              value: this.value});
+                             {sourceType: DCCInputChoice.elementTag,
+                              value: event.target.value});
    }
-   */
    
    /* Rendering */
    
@@ -203,24 +195,41 @@ class DCCInputChoice extends DCCInput {
          (this.hasAttribute("xstyle") && this.xstyle.startsWith("out"))
          ? "" : this._statement;
 
-      let html = 
-         "<form><slot></slot></form>";
-     
+      let html = "<div id='presentation-dcc'>";
+      let v = 1;
+      for (let o of this._options) {
+         html +=
+         "<input id='[id]' type='[exclusive]' name='[variable]' value='[value]'>[statement]</input><br>"
+               .replace("[id]", this.variable + v)
+               .replace("[exclusive]",
+                  (this.hasAttribute("exclusive") ? "radio" : "checkbox"))
+               .replace("[variable]", this.variable)
+               .replace("[value]", o.value)
+               .replace("[statement]", o.statement);
+         v++;
+      }
+      html += "</div>";
+
       // === presentation setup (DCC Block)
       let presentation;
       if (this.hasAttribute("xstyle") && this.xstyle.startsWith("out")) {
          await this._applyRender(this._statement, "innerHTML", "text");
          presentation = await this._applyRender(html, "innerHTML", "input");
       } else
-         presentation = await this._applyRender(html, "innerHTML", "input");   
+         presentation = await this._applyRender(html, "innerHTML", "input");
 
       // === post presentation setup
-      /*
-      const selector = "#" + this.variable.replace(/\./g, "\\.");
-      this._inputVariable = presentation.querySelector(selector);
-      this._inputVariable.addEventListener("input", this.inputTyped);
-      this._inputVariable.addEventListener("change", this.inputChanged);
-      */
+      if (presentation != null) {
+         v = 1;
+         for (let o of this._options) {
+            let op = presentation.querySelector("#" + this.variable + v);
+            if (op != null) {
+               op.addEventListener("change", this.inputChanged);
+               o.presentation = op;
+            }
+            v++;
+         }
+      }
    }
 }
 

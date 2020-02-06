@@ -9,6 +9,7 @@
 .dcc-input-table-template th {
    border: 1px solid darkgray;
    background-color: lightgray;
+   font-weight: bold;
 }
 
 .dcc-input-table-template td {

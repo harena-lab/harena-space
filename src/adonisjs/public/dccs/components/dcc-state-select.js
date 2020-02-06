@@ -21,8 +21,6 @@ class DCCStateSelect extends DCCVisual {
    }
    
    async connectedCallback() {
-      // const theme = await MessageBus.ext.request("control/_current_theme_name/get");
-
       DCCStateSelect.templateElements =
       "<style> @import '" +
          Basic.service.themeStyleResolver("dcc-state-select.css") +
@@ -34,8 +32,6 @@ class DCCStateSelect extends DCCVisual {
 
       let template = document.createElement("template");
       template.innerHTML = DCCStateSelect.templateElements;
-
-      // Basic.service.replaceStyle(template, null, newValue, "dcc-state-select.css");
 
       this._shadow = this.attachShadow({mode: "open"});
       this._shadow.appendChild(template.content.cloneNode(true));
@@ -82,15 +78,6 @@ class DCCStateSelect extends DCCVisual {
       /* nothing */
    }
 
-   /*
-   defineStates(topic, message) {
-      MessageBus.page.unsubscribe("dcc/select-states/" + this.id, this.defineStates);
-      this.states = message;
-      this._pendingRequests--;
-      this._checkRender();
-   }
-   */
-   
    /*
     * Property handling
     */
@@ -145,7 +132,7 @@ class DCCStateSelect extends DCCVisual {
    set player(newValue) {
       this.setAttribute("player", newValue);
    }
-   
+
    get selection() {
       return this.getAttribute("selection");
     }
@@ -171,7 +158,6 @@ class DCCStateSelect extends DCCVisual {
 
    async _render() {
       if (this.states != null) {
-         // const statesArr = this.states.split(",");
          if (this.hasAttribute("answer") || this.author)
             this.selection = this.answer;
          else if (this.hasAttribute("player")) {
@@ -220,11 +206,11 @@ class DCCStateSelect extends DCCVisual {
    
    _changeState() {
      if (this.states != null) {
-       // const statesArr = this.states.split(",");
        this.selectionIndex = (this.selectionIndex + 1) % this._statesArr.length;
        MessageBus.ext.publish("var/" + this.completeId + "/state_changed",
              {sourceType: DCCStateSelect.elementTag,
-              state: this.selection});
+              state: this.selection,
+              value: this.innerHTML});
      }
      this._renderInterface();
    }
@@ -237,12 +223,6 @@ class DCCGroupSelect extends DCCBlock {
    constructor() {
       super();
       this.requestParameters = this.requestParameters.bind(this);
-      /*
-      this.requestVariable = this.requestVariable.bind(this); 
-      this.requestStates = this.requestStates.bind(this);
-      this.requestStyles = this.requestStyles.bind(this);
-      */
-      // this.styles = null;
       this._groupReady = false;
       this._pendingRequests = [];
       MessageBus.page.subscribe("dcc/request/select-parameters", this.requestParameters);
@@ -272,23 +252,12 @@ class DCCGroupSelect extends DCCBlock {
       this._groupReady = true;
       this._answerRequests();
 
-      /*
-      MessageBus.page.subscribe("dcc/request/select-variable", this.requestVariable);
-      MessageBus.page.subscribe("dcc/request/select-states", this.requestStates);
-      MessageBus.page.subscribe("dcc/request/select-styles", this.requestStyles);
-      */
-      
       MessageBus.int.publish("var/" + this.variable + "/group_input/ready",
                              DCCGroupSelect.elementTag);
    }
 
    disconnectedCallback() {
       MessageBus.page.unsubscribe("dcc/request/select-parameters", this.requestParameters);
-      /*
-      MessageBus.page.unsubscribe("dcc/request/select-variable", this.requestVariable);
-      MessageBus.page.unsubscribe("dcc/request/select-states", this.requestStates);
-      MessageBus.page.unsubscribe("dcc/request/select-styles", this.requestStyles);
-      */
    }
    
    requestParameters(topic, message) {
@@ -306,26 +275,6 @@ class DCCGroupSelect extends DCCBlock {
          });
       this._pendingRequests = [];
    }
-
-   /*
-   requestVariable(topic, message) {
-      
-      MessageBus.page.publish(MessageBus.buildResponseTopic(topic, message),
-                              this.variable);
-      // MessageBus.page.publish("dcc/select-variable/" + message, this.variable);
-   }
-   
-   requestStates(topic, message) {
-      MessageBus.page.publish(MessageBus.buildResponseTopic(topic, message),
-                              this.states);
-      // MessageBus.page.publish("dcc/select-states/" + message, this.states);
-   }   
-
-   requestStyles(topic, message) {
-      MessageBus.page.publish(MessageBus.buildResponseTopic(topic, message),
-                              this.styles);
-   }
-   */
 
    /*
     * Property handling
@@ -403,17 +352,6 @@ class DCCGroupSelect extends DCCBlock {
 
 (async function() {
 
-/*
-DCCStateSelect.templateElements = 
-`<style>
-   @import "css/dcc-state-select.css"
-</style>
-<span id="presentation-dcc">
-   <span id="presentation-text"><slot></slot></span>
-   <span id="presentation-state"></span>
-</span>`;
-*/
-  
 DCCStateSelect.elementTag = "dcc-state-select";
 customElements.define(DCCStateSelect.elementTag, DCCStateSelect);
 
