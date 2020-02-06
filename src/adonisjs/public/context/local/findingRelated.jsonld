@@ -1,0 +1,24 @@
+{
+   "@context": {
+      "@vocab": "http://purl.org/versum/evidence/",
+      "versum": "http://purl.org/versum/",
+      "evidence": "http://purl.org/versum/evidence/",
+      "title": "http://purl.org/dc/elements/1.1/title",
+      "states": {
+         "@id": "versum:StatesVocabulary",
+         "@container": "@index"
+      }
+   },
+   "@id": "evidence:findingRelated",
+   "title": "finding related",
+   "states": {
+      "undefined": {
+         "@id": "versum:undefined",
+         "style": "dcc-state-select-undefined",
+         "symbol": " "},
+      "corroborates": {
+         "@id": "evidence:corroborateFinding",
+         "style": "dcc-state-select-positive",
+         "symbol": "+"}
+   }
+}

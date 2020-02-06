@@ -209,7 +209,8 @@ class DCCStateSelect extends DCCVisual {
        this.selectionIndex = (this.selectionIndex + 1) % this._statesArr.length;
        MessageBus.ext.publish("var/" + this.completeId + "/state_changed",
              {sourceType: DCCStateSelect.elementTag,
-              state: this.selection});
+              state: this.selection,
+              value: this.innerHTML});
      }
      this._renderInterface();
    }

@@ -7,27 +7,46 @@ class DCCExpression extends DCCVisual {
    
    async connectedCallback() {
       // <TODO> provisory solution due to message ordering
-      this._updated = false
+      this._updated = false;
 
       // <TODO> provisory - replace by a stronger expression representation
-      let variable = this.expression;
-      if (variable.indexOf("[") > 0) {
+      this._variable = this.expression;
+      if (this._variable.indexOf("[") > 0) {
          this._index = parseInt(
-            variable.substring(variable.indexOf("[") + 1, variable.indexOf("]")));
-         variable = variable.substring(0, variable.indexOf("["));
+            this._variable.substring(this._variable.indexOf("[") + 1,
+                                     this._variable.indexOf("]")));
+         this._variable = this._variable.substring(0, this._variable.indexOf("["));
       }
 
       if (this.active) {
          this.variableUpdated = this.variableUpdated.bind(this);
          MessageBus.ext.subscribe(
-            "var/" + variable + "/set", this.variableUpdated);
+            "var/" + this._variable + "/set", this.variableUpdated);
+
+         // <TODO> provisory - overlaps with htracker.js and state.js
+         //                    also monitors all messages
+         this.stateChanged = this.stateChanged.bind(this);
+         MessageBus.ext.subscribe("var/+/state_changed", this.stateChanged);
+         this._stateValues = {};
       }
 
-      let result = await MessageBus.ext.request("var/" + variable + "/get");
-      if (this._index == null)
-         result = result.message;
-      else
-         result = result.message[this._index-1];
+      let result = await MessageBus.ext.request("var/" + this._variable + "/get");
+      if (result.message == null)
+         result = ""
+      else {
+         if (this._index == null) {
+            // <TODO> provisory unfold
+            if (typeof result.message === "object") {
+               let values = [];
+               for (let v in result.message)
+                  if (result.message[v].state == "+")
+                     values.push(result.message[v].content)
+               result = this._valuesToHTML(values);
+            } else
+               result = result.message;
+         } else
+            result = result.message[this._index-1];
+      }
 
       // <TODO> provisory solution due to message ordering
       if (!this._updated)
@@ -53,7 +72,7 @@ class DCCExpression extends DCCVisual {
       this.setAttribute("expression", newValue);
    }
 
-   // defines if the displey is activelly updated
+   // defines if the display is activelly updated
    get active() {
       return this.hasAttribute("active");
    }
@@ -74,6 +93,30 @@ class DCCExpression extends DCCVisual {
          this.innerHTML = message;
       else
          this.innerHTML = message[this._index-1];
+   }
+
+   stateChanged(topic, message) {
+      const id = MessageBus.extractLevel(topic, 2);
+
+      if (id.startsWith(this._variable)) {
+         const subid = id.substring(this._variable.length + 1);
+
+         if (message.state == "+")
+            this._stateValues[subid] = message.value;
+         else
+            if (this._stateValues[subid] != null)
+               delete this._stateValues[subid];
+
+         this.innerHTML = this._valuesToHTML(this._stateValues);
+      }
+   }
+
+   _valuesToHTML(values) {
+      let html = "<ul>";
+      for (let v in values)
+         html += "<li>" + values[v] + "</li>";
+      html += "</ul>";
+      return html;
    }
 }
 

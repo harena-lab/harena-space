@@ -42,7 +42,8 @@
 }
 
 .styt-main, .styt-button, input[type="text"], textarea {
-   font-size: 4vmin;
+   /* font-size: 4vmin; */
+   font-size: 3vmin;
 }
 
 .styt-main-text {
