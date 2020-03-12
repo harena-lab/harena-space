@@ -31,6 +31,8 @@ class DCCExpression extends DCCVisual {
       }
 
       let result = await MessageBus.ext.request("var/" + this._variable + "/get");
+      console.log("=== result field");
+      console.log(result.message);
       if (result.message == null)
          result = ""
       else {

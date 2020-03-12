@@ -74,6 +74,8 @@ class PlayerManager {
                                          : (DCCPlayerServer.localEnv)
                                            ? DCCPlayerServer.playerObj.start
                                            : this._compiledCase.start;
+                                     console.log("=== start");
+                                     console.log(startKnot);
                                      this._state.historyRecord(startKnot);
                                      this.knotLoad(startKnot);
                                      break;

@@ -31,28 +31,15 @@ class SelectBlot extends Inline {
          if (value.answer)
             node.setAttribute("answer", value.answer);
       }
-      /*
-      console.log("=== value");
-      console.log(value);
-      console.log(node);
-      */
-      // if (value.style)
-      //    node.classList.add(value.style);
-      // else if (EditDCCText.metadataStyle[value.type])
-      //    node.classList.add(EditDCCText.metadataStyle[value.type]);
       return node;
    }
 
   static formats(node) {
      let value = {};
-     // console.log("=== formats node");
-     // console.log(node);
      if (node.getAttribute("variable") != null)
         value.variable = node.getAttribute("variable");
      if (node.getAttribute("answer") != null)
         value.answer = node.getAttribute("answer");
-     // console.log("=== return value");
-     // console.log(value);
      return value;
   }
 }
@@ -62,9 +49,6 @@ Quill.register(SelectBlot);
 
 class EditDCCText {
    constructor(obj, element, svg) {
-      // console.log("=== obj to edit");
-      // console.log(obj);
-
       this._objProperties = obj;
       this._handleHighlighter = this._handleHighlighter.bind(this);
       this._handleAnnotation = this._handleAnnotation.bind(this);
@@ -76,7 +60,6 @@ class EditDCCText {
       this._toolbarControls = EditDCCText.toolbarTemplate +
                               EditDCCText.toolbarTemplateHighlighter +
                               EditDCCText.toolbarTemplateConfirm;
-      // this._toolbarControls = EditDCCText.toolbarTemplateConfirm;
       this._buildEditor(false);
    }
 
@@ -109,12 +92,6 @@ class EditDCCText {
       }
 
       this._elementRect = elementWrapper.getBoundingClientRect();
-      /*
-      this._elementRect = this._editElement.getBoundingClientRect();
-      this._elementRect = (this._editElement.parentNode != null)
-         ? this._editElement.parentNode.getBoundingClientRect()
-         : this._editElement.getBoundingClientRect();
-      */
 
       this._editorToolbar = this._buildToolbarPanel();
       this._container.appendChild(this._editorToolbar);
@@ -153,13 +130,6 @@ class EditDCCText {
       editor.style.width = this._transformRelativeX(this._elementRect.width);
       editor.style.height =
          this._transformRelativeY(this._elementRect.height);
-      /*
-      editor.style.height = this._transformRelativeY(
-         (this._elementRect.height < this._containerRect.height)
-            ? this._elementRect.height : this._containerRect.height);
-      editor.style.height = this._transformRelativeY(
-         this._containerRect.height);
-      */
       if (this._svgDraw)
          editor.innerHTML =
             EditDCCText.editorTemplate.svg
@@ -167,29 +137,46 @@ class EditDCCText {
                   this._transformViewportX(this._elementRect.width))
                .replace("[height]",
                   this._transformViewportY(this._elementRect.height));
-               // .replace("[content]",
-               //    this._editElement.innerHTML);
       else
          editor.innerHTML =
             EditDCCText.editorTemplate.html;
-               // .replace("[content]", this._editElement.innerHTML);
       let inplaceContent = editor.querySelector("#inplace-content");
       const elementStyle = window.getComputedStyle(this._editElement, null);
+      const transferFont = ["font-size", "font-family", "font-weight"];
+      for (let tf of transferFont)
+         inplaceContent.style.setProperty(tf, elementStyle.getPropertyValue(tf));
+
+      const par = this._editElement.querySelector("p");
+      if (par != null) {
+         const transferMargin = ["margin-top", "margin-right",
+                                 "margin-bottom", "margin-left"];
+         const parStyle = window.getComputedStyle(par, null);
+         const sty = document.createElement("style");
+         let styStr = "#inplace-content p {";
+         for (let tm of transferMargin)
+            styStr += tm + ":" + parStyle.getPropertyValue(tm) + ";";
+         styStr + "}";
+         sty.innerHTML = styStr;
+         document.body.appendChild(sty);
+      }
+
+      /*
       inplaceContent.style.fontSize =
          elementStyle.getPropertyValue("font-size");
       inplaceContent.style.fontFamily =
          elementStyle.getPropertyValue("font-family");
       inplaceContent.style.fontWeight =
          elementStyle.getPropertyValue("font-weight");
+      */
+
       return editor;
    }
 
    // builds a Quill editor
    _buildQuillEditor(selectOptions) {
       let inplaceContent = this._editor.querySelector("#inplace-content");
-      const html = Translator.instance.objToHTML(this._objProperties, -1);
-      // console.log("=== Initial HTML");
-      // console.log(html);
+      const html = Translator.instance.markdownToHTML(
+         Translator.instance.objToHTML(this._objProperties, -1));
       inplaceContent.innerHTML = html;
 
       this._quill = new Quill(inplaceContent, 
@@ -209,18 +196,14 @@ class EditDCCText {
          });
       this._editor.classList.add("inplace-editor");
 
-      // console.log("=== Initial Delta");
-      // console.log(this._quill.getContents());
-
-      // this._quill.setContents(this._translateObjToDelta(this._objProperties));
-
       // toolbar customization
+      document.querySelector(".ql-image").innerHTML =
+         EditDCCText.buttonImageSVG;
       document.querySelector(".ql-annotation").innerHTML =
          EditDCCText.buttonAnnotationSVG;
       if (!selectOptions)
          document.querySelector(".ql-highlighter").innerHTML =
             EditDCCText.buttonHighlightSVG;
-      // document.querySelector(".ql-hl-select").style.display = "none";
       document.querySelector(".ql-confirm").innerHTML =
          EditDCCText.buttonConfirmSVG;
       document.querySelector(".ql-cancel").innerHTML =
@@ -359,8 +342,6 @@ class EditDCCText {
       const range = this._quill.getSelection(true);
       this._hlSelect.innerHTML = this._highlightOptions[hlSelect].label +
                                  this._hlSelectHTML;
-      // console.log("=== range");
-      // console.log(range);
       this._quill.formatText(range.index, range.length, {
          select: {answer: this._highlightOptions[hlSelect].symbol}
       });
@@ -409,32 +390,21 @@ class EditDCCText {
       return editorExtended;
    }
 
-   _handleConfirm() {
+   async _handleConfirm() {
       Panels.s.unlockNonEditPanels();
-      // const editorText = this._quill.getText();
-      // this._objProperties.content = editorText.substring(0, editorText.length - 1);
-      // const htmlContent = document.querySelector(".ql-editor").innerHTML;
-      /*
-      console.log("=== Quill HTML");
-      console.log(htmlContent);
-      */
-      // console.log("=== Quill Delta");
-      // console.log(this._quill.getContents());
-      /*
-      this._objProperties.content =
-         Translator.instance.htmlToMarkdown(htmlContent).trimEnd();
-      */
 
-      const obj = this._translateContent(this._quill.getContents());
+      const obj = await this._translateContent(this._quill.getContents());
 
       this._objProperties.type    = obj.type;
       this._objProperties._source = obj._source;
-      this._objProperties.content = obj.content;
-      // console.log("=== propriedades");
-      // console.log(this._objProperties);
+      if (obj.content)
+         this._objProperties.content = obj.content;
+      if (obj.natural)
+         this._objProperties.natural = obj.natural;
+      if (obj.formal)
+         this._objProperties.formal = obj.formal;
       MessageBus.ext.publish("control/knot/update");
 
-      // MessageBus.ext.publish("properties/apply");
       this._removeEditor();
    }
 
@@ -444,79 +414,63 @@ class EditDCCText {
       this._removeEditor();
    }
 
-   /* Translators */
-
-   /*
-   _translateObjToDelta(obj) {
-      this._hiddenQuillElement = document.createElement("div");
-      this._hiddenQuillElement.innerHTML = "<b>Testando</b>";
-      this._hiddenQuill = new Quill(this._hiddenQuillElement);
-      console.log("=== teste hidden Quill");
-      console.log(this._hiddenQuill.getContents());
-      this._markdownTranslator = new showdown.Converter();
-      const delta = this._itemObjToDelta(obj);
-      console.log("=== converted to delta");
-      console.log(delta);
-      return delta;
-   }
-
-   _itemObjToDelta(obj) {
-      let delta = null;
-      switch (obj.type) {
-         case "text" : delta = this._textObjToDelta(obj);
-                       break;
-      }
-      return delta;
-   }
-
-   _textObjToDelta(obj) {
-      this._hiddenQuillElement.innerHTML = this._markdownTranslator.makeHtml(obj.content);
-      const delta = new Delta([
-         { insert: this._hiddenQuill.get }
-      ]);
-      return this._hiddenQuill.getContents();
-   }
-   */
-   
-   _translateContent(editContent) {
+   async _translateContent(editContent) {
       let content = "";
       for (let e in editContent.ops) {
          let ec = editContent.ops[e];
          if (ec.insert) {
-            /*
-            console.log("=== insert");
-            console.log(ec.insert);
-            */
-            ec.insert = ec.insert.replace(/\n\n/g, "\n<br>\n").replace(/\n/g, "\n\n");
-            // console.log(ec.insert);
-            if (ec.attributes) {
-               const attr = ec.attributes;
-               if (attr.bold)
-                  content += "**" + ec.insert + "**";
-               else if (attr.italic)
-                  content += "*" + ec.insert + "*";
-               else if (attr.annotation || attr.select) {
-                  content += "{" + ec.insert + "}";
-                  if (attr.annotation && attr.annotation.length > 0)
-                     content += "(" + attr.annotation.replace(/\(/, "\(").replace(/\)/, "\)") + ")";
-                  if (attr.select && attr.select.answer && attr.select.answer.length > 0)
-                     content += "/" + attr.select.answer + "/";
+            if (typeof ec.insert === "string") {
+               ec.insert = ec.insert.replace(/\n\n/g, "\n<br>\n").replace(/\n/g, "\n\n");
+               if (ec.attributes) {
+                  const attr = ec.attributes;
+                  if (attr.bold)
+                     content += "**" + ec.insert + "**";
+                  else if (attr.italic)
+                     content += "*" + ec.insert + "*";
+                  else if (attr.annotation || attr.select) {
+                     content += "{" + ec.insert + "}";
+                     if (attr.annotation && attr.annotation.length > 0)
+                        content += "(" + attr.annotation
+                           .replace(/\(/, "\(")
+                           .replace(/\)/, "\)") + ")";
+                     if (attr.select && attr.select.answer && attr.select.answer.length > 0)
+                        content += "/" + attr.select.answer + "/";
+                  }
+               } else
+                  content += ec.insert;
+            } else if (ec.insert.image) {
+               let imageURL = ec.insert.image;
+               if (imageURL.startsWith("data:")) {
+                  const asset = await
+                     MessageBus.ext.request("data/asset//new",
+                          {b64: imageURL,
+                           caseid: Basic.service.currentCaseId});
+                  imageURL = asset.message;
                }
-            } else
-               content += ec.insert;
+               content += "![" +
+                  ((ec.attributes.alt) ? ec.attributes.alt : "") + "](" +
+                  imageURL + ")\n";
+            }
          }
       }
-      let unity = {_source: content.trimEnd()};
+      content = content.trimEnd();
+      content = content.replace(/[\n]+$/g, "") + "\n";
+      let unity = {_source: content};
       Translator.instance._compileUnityMarkdown(unity);
       Translator.instance._compileMerge(unity);
-      // console.log("=== translator");
-      // console.log(unity);
       return unity.content[0];
    }
 }
 
 (function() {
 /* icons from Font Awesome, license: https://fontawesome.com/license */
+
+// image https://fontawesome.com/icons/image?style=regular
+EditDCCText.buttonImageSVG =
+`<svg viewBox="0 0 512 512">
+<path fill="currentColor" d="M464 64H48C21.49 64 0 85.49 0 112v288c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm-6 336H54a6 6 0 0 1-6-6V118a6 6 0 0 1 6-6h404a6 6 0 0 1 6 6v276a6 6 0 0 1-6 6zM128 152c-22.091 0-40 17.909-40 40s17.909 40 40 40 40-17.909 40-40-17.909-40-40-40zM96 352h320v-80l-87.515-87.515c-4.686-4.686-12.284-4.686-16.971 0L192 304l-39.515-39.515c-4.686-4.686-12.284-4.686-16.971 0L96 304v48z">
+</path></svg>`;
+
 // comment-alt https://fontawesome.com/icons/comment-alt?style=regular
 EditDCCText.buttonAnnotationSVG =
 `<svg viewBox="0 0 512 512">
@@ -544,6 +498,7 @@ EditDCCText.buttonCancelSVG =
 EditDCCText.toolbarTemplate =
 `<button class="ql-bold"></button>
 <button class="ql-italic"></button>
+<button class="ql-image"></button>
 <button class="ql-annotation"></button>`;
 
 EditDCCText.toolbarTemplateHighlighter =
