@@ -563,6 +563,7 @@ class Translator {
             }
             if (merge) {
                compiled[pr]._source += "\n" + compiled[c]._source;
+               // transfers the linefeed of the last line of the block to the block
                compiled[pr].mergeLine =
                   Translator.element[compiled[c].type] &&
                   Translator.isLine.includes(compiled[c].type);
@@ -884,13 +885,7 @@ class Translator {
                ? this.objToHTML(content[kc], ss)
                : "@@" + content[kc].seq + "@@";
 
-         // converts to HTML
-         html = this._markdownTranslator.makeHtml(preDoc);
-
-         // inserts Markdown DCCs in authoring mode
-         html = html.replace(/<p><dcc-markdown id='dcc(\d+)'( author)?><\/p>/igm,
-                             "<dcc-markdown id='dcc$1'$2>")
-                    .replace(/<p><\/dcc-markdown><\/p>/igm, "</dcc-markdown>");
+         html = this.markdownToHTML(preDoc);
 
          // replaces the marks
          let current = 0;
@@ -914,6 +909,16 @@ class Translator {
          html = html.replace(Translator.contextHTML.close,
                              this._contextSelectHTMLAdjust);
       }
+      return html;
+   }
+
+   // converts markdown to HTML and adjusts a <dcc-markdown> wrong conversion
+   markdownToHTML(markdown) {
+      let html = this._markdownTranslator.makeHtml(markdown);
+
+      html = html.replace(/<p><dcc-markdown id='dcc(\d+)'( author)?><\/p>/igm,
+                          "<dcc-markdown id='dcc$1'$2>")
+                 .replace(/<p><\/dcc-markdown><\/p>/igm, "</dcc-markdown>");
       return html;
    }
 
@@ -997,10 +1002,12 @@ class Translator {
                        knotType.line !== undefined &&
                        knotType.line) ? "\n" : ""));
                */
+
+               // linefeed of the merged block (if block), otherwise linefeed of the content
                md += content._source +
                      (((content.mergeLine === undefined &&
-                       Translator.isLine.includes(content.type)) ||
-                      (content.mergeLine !== undefined &&
+                        Translator.isLine.includes(content.type)) ||
+                       (content.mergeLine !== undefined &&
                         content.mergeLine))
                       ? "\n" : "");
 
@@ -1138,6 +1145,8 @@ class Translator {
    _textObjToHTML(obj, superseq) {
       // return this._markdownTranslator.makeHtml(obj.content);
       let result = obj.content;
+      console.log("=== Translated content");
+      console.log(obj.content);
       if (this.authoringRender && superseq == -1)
          result = Translator.htmlTemplatesEditable.text
                     .replace("[seq]", this._subSeq(superseq, obj.seq))
@@ -1269,6 +1278,9 @@ class Translator {
     * Annotation Md to Obj
     */
    _annotationMdToObj(matchArray) {
+      console.log("--- annotation match array");
+      console.log(matchArray);
+
       let annotation = {
          type: "annotation",
          natural: this._annotationInsideMdToObj(
@@ -1307,6 +1319,8 @@ class Translator {
     * Annotation Obj to HTML
     */
    _annotationObjToHTML(obj, superseq) {
+      console.log("=== annotation");
+      console.log(obj);
       return (this.authoringRender)
          ? Translator.htmlTemplates.annotation
                      .replace("[seq]", this._subSeq(superseq, obj.seq))
