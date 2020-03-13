@@ -446,7 +446,7 @@ class Translator {
             }
          }
 
-      // second cycle - aggregates texts, mentions, annotations and selects
+      // second cycle - aggregates texts, mentions, annotations, selects and images
       let tblock;
       let tblockSeq;
       for (let c = 0; c < compiled.length; c++) {
@@ -1054,6 +1054,18 @@ class Translator {
          case "entity": element._source = this._entityObjToMd(element);
                         break;
       }
+
+      // linefeed of the merged block (if block), otherwise linefeed of the content
+      /*
+      element._source += (((element.mergeLine === undefined &&
+               Translator.isLine.includes(element.type)) ||
+              (element.mergeLine !== undefined &&
+               element.mergeLine))
+             ? "\n" : "");
+      console.log("=== element");
+      console.log(element);
+      */
+
       // element._source += "\n\n";
    }
    
@@ -1985,7 +1997,7 @@ class Translator {
    Translator.subordinatorElement = ["entity"];
    Translator.isLine = ["knot", "field", "item", "option", "divert-script", "entity", "input",
                         "compute", "context-open"];
-   Translator.textBlockCandidate = ["select", "annotation", "text", "mention"];
+   Translator.textBlockCandidate = ["select", "annotation", "text", "mention", "image"];
    Translator.scriptable = ["compute", "divert-script"];
 
    Translator.fieldSet = ["vocabularies", "answers", "states", "labels"];

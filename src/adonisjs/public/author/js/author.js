@@ -118,6 +118,8 @@ class AuthorManager {
          this.elementNew(topic);
       else if (MessageBus.matchFilter(topic, "control/element/+/new/unique"))
          this.elementNewUnique(topic, message);
+      else if (MessageBus.matchFilter(topic, "control/element/insert"))
+         this.elementInsert(message);
       else switch (topic) {
          case "control/case/new":  this.caseNew();
                                    break;
@@ -569,6 +571,17 @@ class AuthorManager {
       console.log(message);
       let newElement = (message == null)
          ? Translator.objTemplates[elementType] : message;
+      newElement.seq = this._knots[this._knotSelected].content[
+         this._knots[this._knotSelected].content.length-1].seq + 1;
+      this._knots[this._knotSelected].content.push(newElement);
+      Translator.instance.updateElementMarkdown(newElement);
+      MessageBus.ext.publish("control/knot/update");
+   }
+
+   elementInsert(message) {
+      console.log("=== inserting");
+      console.log(message);
+      let newElement = message;
       newElement.seq = this._knots[this._knotSelected].content[
          this._knots[this._knotSelected].content.length-1].seq + 1;
       this._knots[this._knotSelected].content.push(newElement);

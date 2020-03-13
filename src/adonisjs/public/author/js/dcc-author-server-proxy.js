@@ -189,25 +189,19 @@ class DCCAuthorServer {
       let contentType = block[0].split(":")[1];
       let b64Data = block[1].split(",")[1];
 
-      console.log("=== type");
-      console.log(contentType);
-      console.log(b64Data);
-
-      contentType = contentType || '';
       let sliceSize = 1024;
 
-      var byteCharacters = atob(b64Data);
-      var byteArrays = [];
+      let byteCharacters = atob(b64Data);
+      let byteArrays = [];
 
-      for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-         var slice = byteCharacters.slice(offset, offset + sliceSize);
+      for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+         let slice = byteCharacters.slice(offset, offset + sliceSize);
 
-         var byteNumbers = new Array(slice.length);
-         for (var i = 0; i < slice.length; i++) {
+         let byteNumbers = new Array(slice.length);
+         for (var i = 0; i < slice.length; i++)
              byteNumbers[i] = slice.charCodeAt(i);
-         }
 
-         var byteArray = new Uint8Array(byteNumbers);
+         let byteArray = new Uint8Array(byteNumbers);
 
          byteArrays.push(byteArray);
       }
@@ -221,7 +215,7 @@ class DCCAuthorServer {
       if (message.file)
          data.append("file", message.file);
       else if (message.b64)
-         data.append("picture", this.b64toBlob(message.b64))
+         data.append("image", this.b64toBlob(message.b64))
       data.append("case_uuid", message.caseid);
       let header = {
          "async": true,
@@ -242,6 +236,8 @@ class DCCAuthorServer {
       // console.log(header);
       const response =
          await fetch(DCCCommonServer.managerAddressAPI + "artifact", header);
+      console.log("=== response");
+      console.log(response);
       const jsonResponse = await response.json();
       MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
                              jsonResponse.filename);

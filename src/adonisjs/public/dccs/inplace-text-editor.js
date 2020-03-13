@@ -51,6 +51,7 @@ class EditDCCText {
    constructor(obj, element, svg) {
       this._objProperties = obj;
       this._handleHighlighter = this._handleHighlighter.bind(this);
+      this._handleImageUpload = this._handleImageUpload.bind(this);
       this._handleAnnotation = this._handleAnnotation.bind(this);
       this._handleHlSelect = this._handleHlSelect.bind(this);
       this._handleConfirm = this._handleConfirm.bind(this);
@@ -185,6 +186,7 @@ class EditDCCText {
              toolbar: {
                container: this._editorToolbar,
                handlers: {
+                  "image"       : this._handleImageUpload,
                   "highlighter" : this._handleHighlighter,
                   "annotation"  : this._handleAnnotation,
                   "hl-select"   : this._handleHlSelect,
@@ -273,6 +275,20 @@ class EditDCCText {
 
    _transformViewportY(y) {
       return (y * Basic.referenceViewport.height / this._containerRect.height);
+   }
+
+   async _handleImageUpload() {
+      const range = this._quill.getSelection();
+      let buttonClicked =
+         await this._handleExtendedPanel(EditDCCText.imageBrowseTemplate);
+      if (buttonClicked == "confirm" && this._extendedSub.content.files[0]) {
+         const asset = await
+            MessageBus.ext.request("data/asset//new",
+                 {file: this._extendedSub.content.files[0],
+                  caseid: Basic.service.currentCaseId});
+         this._quill.insertEmbed(
+            range.index, "image", Basic.service.imageResolver(asset.message));
+      }
    }
 
    async _handleAnnotation() {
@@ -393,8 +409,9 @@ class EditDCCText {
    async _handleConfirm() {
       Panels.s.unlockNonEditPanels();
 
-      const obj = await this._translateContent(this._quill.getContents());
+      const objSet = await this._translateContent(this._quill.getContents());
 
+      let obj = objSet[0];
       this._objProperties.type    = obj.type;
       this._objProperties._source = obj._source;
       if (obj.content)
@@ -403,6 +420,10 @@ class EditDCCText {
          this._objProperties.natural = obj.natural;
       if (obj.formal)
          this._objProperties.formal = obj.formal;
+
+      for (let o = 1; o < objSet.length; o++)
+         MessageBus.ext.publish("control/element/insert", objSet[o]);
+
       MessageBus.ext.publish("control/knot/update");
 
       this._removeEditor();
@@ -448,17 +469,21 @@ class EditDCCText {
                   imageURL = asset.message;
                }
                content += "![" +
-                  ((ec.attributes.alt) ? ec.attributes.alt : "") + "](" +
-                  imageURL + ")\n";
+                  ((ec.attributes && ec.attributes.alt) ? ec.attributes.alt : "image") + "](" +
+                  Basic.service.imageAbsoluteToRelative(imageURL) + ")\n";
             }
          }
       }
       content = content.trimEnd();
       content = content.replace(/[\n]+$/g, "") + "\n";
+      console.log("=== content");
+      console.log(content);
       let unity = {_source: content};
       Translator.instance._compileUnityMarkdown(unity);
       Translator.instance._compileMerge(unity);
-      return unity.content[0];
+      console.log("=== unity");
+      console.log(unity);
+      return unity.content;
    }
 }
 
@@ -531,6 +556,10 @@ EditDCCText.headerTemplate =
 
 EditDCCText.annotationTemplate = EditDCCText.headerTemplate +
 `<textarea id="ext-content" rows="3" cols="20"></textarea>`;
+
+EditDCCText.imageBrowseTemplate = EditDCCText.headerTemplate +
+`<input type="file" id="ext-content" name="ext-content"
+        accept="image/png, image/jpeg, image/svg">`;
 
 EditDCCText.metadataStyle = {
    annotation: "dcc-text-annotation",

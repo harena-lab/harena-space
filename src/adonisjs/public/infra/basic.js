@@ -228,6 +228,15 @@ class Basic {
       return result;
    }
 
+   imageAbsoluteToRelative(path) {
+      const absoluteImagePrefix = DCCCommonServer.managerAddress + "artifacts/cases/" +
+                                  ((this.host != null) ? this.currentCaseId + "/" : "");
+      let relative = path;
+      if (path.startsWith(absoluteImagePrefix))
+         relative = path.substring(absoluteImagePrefix.length);
+      return relative;
+   }
+
    themeStyleResolver(cssFile) {
       return this._rootPath + "themes/" + this.currentThemeFamily +
              "/css/" + cssFile;
