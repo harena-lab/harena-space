@@ -446,7 +446,7 @@ class Translator {
             }
          }
 
-      // second cycle - aggregates texts, mentions, annotations, selects and images
+      // second cycle - aggregates texts, mentions, annotations, selects, and images
       let tblock;
       let tblockSeq;
       for (let c = 0; c < compiled.length; c++) {
@@ -670,22 +670,6 @@ class Translator {
                        (compiled[c-1].type != "text" &&
                         compiled[c-1].type != "text-block" &&
                         Translator.isLine.includes(compiled[c-1].type))) {
-                        /*
-                        Translator.element[compiled[c-1].type].line
-                            !== undefined &&
-                        Translator.element[compiled[c-1].type].line)) {
-                        */
-
-               /*
-               console.log("=== types");
-               if (c > 0) {
-                  console.log(compiled[c-1].type);
-                  console.log(compiled[c-1]._source);
-               }
-               console.log(compiled[c].type);
-               console.log(compiled[c]._source);
-               */
-
                if (compiled[c].content.length > 1) {
                   // console.log("--- reduz");
                   compiled[c].content = compiled[c].content.substring(1);
