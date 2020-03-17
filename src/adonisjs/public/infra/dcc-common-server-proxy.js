@@ -58,8 +58,16 @@ class DCCCommonServer {
                                   "password": message.password})
       }
 
+      console.log("=== login request");
+      console.log(DCCCommonServer.managerAddressAPI + "user/login");
+      console.log(header);
+
       const response = await fetch(
          DCCCommonServer.managerAddressAPI + "user/login", header);
+
+      console.log("=== login response");
+      console.log(response);
+
       const jsonResponse = await response.json();
       const busResponse = {
          userid: jsonResponse.id,
