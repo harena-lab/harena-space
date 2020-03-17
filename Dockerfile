@@ -9,4 +9,9 @@ COPY ./src/adonisjs .
 
 RUN npm install
 
-CMD [ "npm", "start"]
+RUN git clone https://github.com/datasci4health/harena-manager.git harena-manager
+
+USER node
+
+ENTRYPOINT ["tail", "-f", "/dev/null"]
+#CMD [ "npm", "start"]

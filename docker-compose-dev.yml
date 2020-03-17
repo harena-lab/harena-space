@@ -3,7 +3,7 @@ version: '3'
 services:
 
   harena-space:
-    image: datasci4health/harena-space:v1
+    image: space2
     ports:
       - "10010:10010"
     environment:
@@ -25,9 +25,11 @@ services:
     restart: always
     networks:
       - harena-space
+    volumes:
+      - ./src/adonisjs:/app
 
   harena-manager:
-    image: datasci4health/harena-manager:latest
+    image: manager2
     ports:
       - "10020:10020"
     environment:
@@ -52,7 +54,7 @@ services:
     networks:
       - harena-space
     volumes:
-      - ../manager2/src/adonisjs:/app
+      - ./harena-manager:/app
 
   harena-manager-database:
     image: mysql:5.7
