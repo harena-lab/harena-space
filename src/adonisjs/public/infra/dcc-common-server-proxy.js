@@ -100,7 +100,7 @@ class DCCCommonServer {
       let busResponse = [];
       for (let c in jsonResponse)
          busResponse.push({
-            id:   jsonResponse[c].uuid,
+            id:   jsonResponse[c].id,
             name: jsonResponse[c].name,
             icon: Basic.service.rootPath + "resources/icons/mono-slide.svg",
             svg : jsonResponse[c].svg
@@ -131,8 +131,16 @@ class DCCCommonServer {
                "Authorization": "Bearer " + this.token
              }
          };
+
+         console.log("=== load case request");
+         console.log(DCCCommonServer.managerAddressAPI + "case/" + caseId);
+         console.log(header);
+
          const response =
             await fetch(DCCCommonServer.managerAddressAPI + "case/" + caseId, header);
+
+         console.log("=== load case response");
+         console.log(response);
 
          const jsonResponse = await response.json();
          caseObj = {name: jsonResponse.name,

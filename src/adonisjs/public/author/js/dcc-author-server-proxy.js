@@ -113,7 +113,7 @@ class DCCAuthorServer {
       console.log(response);
       const jsonResponse = await response.json();
       MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-                             jsonResponse.uuid);
+                             jsonResponse.id);
    }
 
    async saveCase(topic, message) {
