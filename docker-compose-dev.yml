@@ -27,7 +27,7 @@ services:
       - harena-space
 
   harena-manager:
-    image: datasci4health/harena-manager:latest
+    image: manager
     ports:
       - "10020:10020"
     environment:
@@ -52,7 +52,8 @@ services:
     networks:
       - harena-space
     volumes:
-      - ../manager2/src/adonisjs:/app
+      - ../harena-manager/src/adonisjs:/app
+      - /app/node_modules
 
   harena-manager-database:
     image: mysql:5.7
