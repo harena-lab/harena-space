@@ -3,7 +3,7 @@ version: '3'
 services:
 
   harena-space:
-    image: space2
+    image: space
     ports:
       - "10010:10010"
     environment:
@@ -27,9 +27,10 @@ services:
       - harena-space
     volumes:
       - ./src/adonisjs:/app
+      - /app/node_modules
 
   harena-manager:
-    image: manager2
+    image: manager
     ports:
       - "10020:10020"
     environment:
@@ -53,8 +54,8 @@ services:
     restart: always  
     networks:
       - harena-space
-    volumes:
-      - ./harena-manager:/app
+    #volumes:
+      #- ../manager/src/adonisjs:/app
 
   harena-manager-database:
     image: mysql:5.7
