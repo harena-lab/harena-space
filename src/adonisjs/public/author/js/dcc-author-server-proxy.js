@@ -104,11 +104,16 @@ class DCCAuthorServer {
           "body": JSON.stringify({name: message.name,
                                   source: message.source})
       };
+      console.log("=== request:");
+      console.log(DCCCommonServer.managerAddressAPI + "case");
+      console.log(header);
       const response =
          await fetch(DCCCommonServer.managerAddressAPI + "case", header);
+      console.log("=== response:")
+      console.log(response);
       const jsonResponse = await response.json();
       MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-                             jsonResponse.uuid);
+                             jsonResponse.id);
    }
 
    async saveCase(topic, message) {
@@ -177,6 +182,9 @@ class DCCAuthorServer {
             "Content-Type": "text/plain",
           }
       }
+      console.log("=== template request");
+      console.log("../templates/" + templatePath + ".md");
+      console.log(header);
       const response = await fetch("../templates/" + templatePath +
                                    ".md", header);
       let textResponse = await response.text();

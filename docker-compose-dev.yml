@@ -54,8 +54,6 @@ services:
     restart: always  
     networks:
       - harena-space
-    #volumes:
-      #- ../manager/src/adonisjs:/app
 
   harena-manager-database:
     image: mysql:5.7
