@@ -41,24 +41,30 @@ The link below starts the authoring environment running in our cloud
 If you want to contribute to harena-space, we provide a Docker container to develop environments. 
 This is the recomended way of run the harena-manager code, since it guarantees the default configuration of the development environment, dispensing a manual configuration.
 
-Clone the repository and get into it:
+Clone the harena manager repository, get into it, checkout development branch, and build the manager docker image:
+```bash
+git clone https://github.com/datasci4health/harena-manager.git
+cd harena-manager
+git checkout -b bugfix/refactoring_migration
+git pull origin bugfix/refactoring_migration
 
+docker build . -t manager
+cd ..
+```
+
+Clone the harena space repository, get into it and checkout development branch, and build the space docker image:
 ```bash
 git clone https://github.com/datasci4health/harena-space.git
 cd harena-space
-```
-
-Then, checkout to development branch and get the latest code version:
-
-```bash
-git checkout -b bugfix/refactoring_migration
-git pull origin bugfix/refactoring_migration
-```
-
-Then, build and up the docker<sup>1</sup> container:
-
-```bash
+git checkout -b bugfix/fixing-docker-compose-dev
+git pull origin bugfix/fixing-docker-compose-dev
 docker build . -t space
+
+```
+
+Then, up the docker<sup>1</sup> container:
+
+```bash
 docker-compose -f docker-compose-dev.yml up
 ```
 <sub><sup>1</sup>Make sure you have [docker](https://docs.docker.com/install/) and [docker-compose command](https://docs.docker.com/compose/install/) already installed on your system.</sub>
