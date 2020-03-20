@@ -14,4 +14,5 @@ RUN npm install
 USER node
 
 #ENTRYPOINT ["tail", "-f", "/dev/null"]
-CMD [ "npm", "start"]
+#CMD [ "npm", "start"]
+ENTRYPOINT ["./bootstrap.sh"]

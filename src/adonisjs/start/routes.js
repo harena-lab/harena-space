@@ -16,7 +16,7 @@
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use("Route");
 
-Route.get('/', () => { return 'Hello from the harena-manager1'} )
+Route.get('/', () => { return 'Hello from the harena-space'} )
 
 /*
 let harenaManagerUrl =
