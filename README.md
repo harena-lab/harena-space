@@ -45,20 +45,20 @@ Clone the repository and get into it:
 
 ```bash
 git clone https://github.com/datasci4health/harena-space.git
-cd harena-manager
+cd harena-space
 ```
 
 Then, checkout to development branch and get the latest code version:
 
 ```bash
-git checkout -b development
-git pull origin development
+git checkout -b bugfix/refactoring_migration
+git pull origin bugfix/refactoring_migration
 ```
 
 Then, run the command to start the docker<sup>1</sup> container:
 
 ```bash
-docker-compose up
+docker-compose -f docker-compose-dev.yml up
 ```
 <sub><sup>1</sup>Make sure you have [docker](https://docs.docker.com/install/) and [docker-compose command](https://docs.docker.com/compose/install/) already installed on your system.</sub>
 
@@ -67,7 +67,7 @@ After starting the container, go to http://localhost:10010/author to see the aut
 If you want to get the command line of the container, then run the command:
 
 ```bash
-docker exec -it adonisjs_harena-space_1 bash
+docker exec -it harena-space_harena-space_1 bash
 ```
 
 #### Just run the docker container
@@ -75,7 +75,7 @@ docker exec -it adonisjs_harena-space_1 bash
 If you do not want get the code, just run the docker container, then :
 
 ```bash
-sudo docker-compose --url https://github.com/datasci4health/case-notebook/blob/master/docker-compose.yml up
+docker-compose --url https://github.com/datasci4health/case-notebook/blob/master/docker-compose-dev.yml up
 ```
 
 After starting the container, go to http://localhost:10010/author to see the authoring environment.
