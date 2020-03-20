@@ -55,9 +55,10 @@ git checkout -b bugfix/refactoring_migration
 git pull origin bugfix/refactoring_migration
 ```
 
-Then, run the command to start the docker<sup>1</sup> container:
+Then, build and up the docker<sup>1</sup> container:
 
 ```bash
+docker build . -t space
 docker-compose -f docker-compose-dev.yml up
 ```
 <sub><sup>1</sup>Make sure you have [docker](https://docs.docker.com/install/) and [docker-compose command](https://docs.docker.com/compose/install/) already installed on your system.</sub>
