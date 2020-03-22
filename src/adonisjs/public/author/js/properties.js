@@ -38,10 +38,6 @@ class Properties {
    }
 
    editElementProperties(obj, element, role) {
-      console.log("=== obj");
-      console.log(obj);
-      console.log("=== element");
-      console.log(element);
       if (this._knotOriginalTitle)
          delete this._knotOriginalTitle;
       this.editProperties(obj);
