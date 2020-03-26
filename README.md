@@ -45,8 +45,8 @@ Clone the harena manager repository, get into it, checkout development branch, a
 ```bash
 git clone https://github.com/datasci4health/harena-manager.git
 cd harena-manager
-git checkout -b bugfix/refactoring_migration
-git pull origin bugfix/refactoring_migration
+git checkout -b development
+git pull origin development
 
 docker build . -t manager
 cd ..
@@ -56,8 +56,8 @@ Clone the harena space repository, get into it and checkout development branch, 
 ```bash
 git clone https://github.com/datasci4health/harena-space.git
 cd harena-space
-git checkout -b bugfix/fixing-docker-compose-dev
-git pull origin bugfix/fixing-docker-compose-dev
+git checkout -b development
+git pull origin development
 docker build . -t space
 
 ```
