@@ -143,6 +143,10 @@ class DCCCommonServer {
          console.log(response);
 
          const jsonResponse = await response.json();
+
+         console.log("=== load case json");
+         console.log(jsonResponse);
+
          caseObj = {name: jsonResponse.name,
                     source: jsonResponse.source};
       }

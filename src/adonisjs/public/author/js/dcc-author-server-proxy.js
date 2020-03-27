@@ -130,8 +130,12 @@ class DCCAuthorServer {
              "body": JSON.stringify({name: message.name,
                                      source: message.source})
          };
+         console.log("=== save request");
+         console.log(DCCCommonServer.managerAddressAPI + "case/" + caseId)
          const response =
             await fetch(DCCCommonServer.managerAddressAPI + "case/" + caseId, header);
+         console.log("=== save response");
+         console.log(response);
          const jsonResponse = await response.json();
          MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
                                 jsonResponse.source);

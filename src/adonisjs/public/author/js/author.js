@@ -544,10 +544,10 @@ class AuthorManager {
          this._elementSelected = el;
          if (message)
             Properties.s.editElementProperties(
-               this._knots[this._knotSelected].content[el], presentation, message);
+               this._knots[this._knotSelected].content, el, presentation, message);
          else
             Properties.s.editElementProperties(
-               this._knots[this._knotSelected].content[el], presentation);
+               this._knots[this._knotSelected].content, el, presentation);
        }
    }
 
@@ -627,6 +627,9 @@ class AuthorManager {
       if (this._knotSelected != null) {
          this._htmlKnot = await Translator.instance.generateHTML(
             this._knots[this._knotSelected]);
+         console.log("=== knot html");
+         console.log(this._htmlKnot);
+
          this._renderKnot();
          this._collectEditableDCCs();
       }

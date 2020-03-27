@@ -6,7 +6,6 @@ Description (detailed)
 
 Present the case here.
 
-
 * -> Generate hypothesis
 
 Generate hypothesis (input)
@@ -41,8 +40,8 @@ EKG Cycle
 Final
 =====
 
-## Report (detailed,end)
-------------------------
+Report (detailed,end)
+---------------------
 
 Congratulations, my young Dr., you could helped your patient providing his diagnosis.
 
