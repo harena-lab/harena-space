@@ -48,8 +48,9 @@ SelectBlot.tagName = "dcc-state-select";
 Quill.register(SelectBlot);
 
 class EditDCCText {
-   constructor(obj, element, svg) {
-      this._objProperties = obj;
+   constructor(knotContent, el, element, svg) {
+      this._knotContent = knotContent;
+      this._element = el;
       this._handleHighlighter = this._handleHighlighter.bind(this);
       this._handleImageUpload = this._handleImageUpload.bind(this);
       this._handleAnnotation = this._handleAnnotation.bind(this);
@@ -177,7 +178,7 @@ class EditDCCText {
    _buildQuillEditor(selectOptions) {
       let inplaceContent = this._editor.querySelector("#inplace-content");
       const html = Translator.instance.markdownToHTML(
-         Translator.instance.objToHTML(this._objProperties, -1));
+         Translator.instance.objToHTML(this._knotContent[this._element], -1));
       inplaceContent.innerHTML = html;
 
       this._quill = new Quill(inplaceContent, 
@@ -187,7 +188,7 @@ class EditDCCText {
                container: this._editorToolbar,
                handlers: {
                   "image"       : this._handleImageUpload,
-                  "highlighter" : this._handleHighlighter,
+                  // "highlighter" : this._handleHighlighter, <HIGHLIGHTER>
                   "annotation"  : this._handleAnnotation,
                   "hl-select"   : this._handleHlSelect,
                   "confirm"     : this._handleConfirm,
@@ -203,9 +204,11 @@ class EditDCCText {
          EditDCCText.buttonImageSVG;
       document.querySelector(".ql-annotation").innerHTML =
          EditDCCText.buttonAnnotationSVG;
+      /* <HIGHLIGHTER>
       if (!selectOptions)
          document.querySelector(".ql-highlighter").innerHTML =
             EditDCCText.buttonHighlightSVG;
+      */
       document.querySelector(".ql-confirm").innerHTML =
          EditDCCText.buttonConfirmSVG;
       document.querySelector(".ql-cancel").innerHTML =
@@ -280,7 +283,7 @@ class EditDCCText {
    async _handleImageUpload() {
       const range = this._quill.getSelection();
       let buttonClicked =
-         await this._handleExtendedPanel(EditDCCText.imageBrowseTemplate);
+         await this._handleExtendedPanel(EditDCCText.imageBrowseTemplate, true);
       if (buttonClicked == "confirm" && this._extendedSub.content.files[0]) {
          const asset = await
             MessageBus.ext.request("data/asset//new",
@@ -366,16 +369,24 @@ class EditDCCText {
          this._quill.setSelection(range.index + range.length, 0);
    }
 
-   async _handleExtendedPanel(html) {
+   async _handleExtendedPanel(html, imageBrowser) {
       // this._editorAnnotation = this._buildAnnotationPanel();
-      this._editorExtended = this._buildExtendedPanel(html);
+      this._editorExtended =
+         this._buildExtendedPanel(html, (imageBrowser) ? true : false);
       this._container.appendChild(this._editorExtended);
 
       let promise = new Promise((resolve, reject) => {
          const callback = function(button) { resolve(button); };
-         this._extendedSub.confirm.onclick = function(e) {
-            callback("confirm");
-         };
+         if (this._extendedSub.confirm)
+            this._extendedSub.confirm.onclick = function(e) {
+               callback("confirm");
+            };
+         else if (this._extendedSub.image) {
+            this._extendedSub.image.onchange = function(e) {
+               callback("confirm");
+            };
+            console.log("--- activating image");
+         }
          this._extendedSub.cancel.onclick = function(e) {
             callback("cancel");
          };
@@ -385,7 +396,7 @@ class EditDCCText {
       return buttonClicked;
    }
 
-   _buildExtendedPanel(html) {
+   _buildExtendedPanel(html, imageBrowser) {
       let editorExtended = document.createElement("div");
       editorExtended.classList.add("inplace-editor-floating");
       editorExtended.innerHTML = html;
@@ -398,10 +409,13 @@ class EditDCCText {
             (this._elementRect.top - this._containerRect.top));
 
       this._extendedSub = {
-         confirm: editorExtended.querySelector("#ext-confirm"),
          cancel:  editorExtended.querySelector("#ext-cancel"),
          content: editorExtended.querySelector("#ext-content")
       };
+      if (imageBrowser)
+         this._extendedSub.image = editorExtended.querySelector("#ext-content");
+      else
+         this._extendedSub.confirm = editorExtended.querySelector("#ext-confirm");
 
       return editorExtended;
    }
@@ -411,18 +425,57 @@ class EditDCCText {
 
       const objSet = await this._translateContent(this._quill.getContents());
 
+      console.log("=== antes");
+      console.log(this._knotContent);
+
+      // removes extra linfeeds
+      if (objSet[objSet.length-1].type == "linefeed")
+         objSet.pop();
+      /*
+      if (this._element+1 < this._knotContent.length &&
+          this._knotContent[this._element+1].type == "linefeed" &&
+          objSet[objSet.length-1].type == "linefeed") {
+         if (objSet[objSet.length-1].content.length >
+             this._knotContent[this._element+1].content.length) {
+            this._knotContent[this._element+1]._source =
+               objSet[objSet.length-1]._source;
+            this._knotContent[this._element+1].content =
+               objSet[objSet.length-1].content;
+         }
+         objSet.pop();
+      }
+      */
+
+      // redefines the sequence according to the new elements
+      const seq = this._knotContent[this._element].seq;
+      const shift = objSet.length - 1;
+      for (let s = this._element + 1; s < this._knotContent.length; s++)
+         this._knotContent[s].seq += shift;
+
+      // removes the previous element and insert the new one
+      this._knotContent.splice(this._element, 1);
+      for (let o = 0; o < objSet.length; o++) {
+         objSet[o].seq = seq + o;
+         this._knotContent.splice(this._element + o, 0, objSet[o]);
+      }
+
+      console.log("=== depois");
+      console.log(this._knotContent);
+
+      /*
       let obj = objSet[0];
-      this._objProperties.type    = obj.type;
-      this._objProperties._source = obj._source;
+      this._knotContent[this._element].type    = obj.type;
+      this._knotContent[this._element]._source = obj._source;
       if (obj.content)
-         this._objProperties.content = obj.content;
+         this._knotContent[this._element].content = obj.content;
       if (obj.natural)
-         this._objProperties.natural = obj.natural;
+         this._knotContent[this._element].natural = obj.natural;
       if (obj.formal)
-         this._objProperties.formal = obj.formal;
+         this._knotContent[this._element].formal = obj.formal;
 
       for (let o = 1; o < objSet.length; o++)
          MessageBus.ext.publish("control/element/insert", objSet[o]);
+      */
 
       MessageBus.ext.publish("control/knot/update");
 
@@ -437,11 +490,17 @@ class EditDCCText {
 
    async _translateContent(editContent) {
       let content = "";
+      console.log("=== edit content");
+      console.log(editContent);
       for (let e in editContent.ops) {
          let ec = editContent.ops[e];
          if (ec.insert) {
             if (typeof ec.insert === "string") {
-               ec.insert = ec.insert.replace(/\n\n/g, "\n<br>\n").replace(/\n/g, "\n\n");
+               /*
+               ec.insert = ec.insert.replace(/\n\n/g, "\n<br>\n").
+                           replace(/\n/g, "\n\n");
+               */
+               ec.insert = ec.insert.replace(/\n/g, "\n\n");
                if (ec.attributes) {
                   const attr = ec.attributes;
                   if (attr.bold)
@@ -526,8 +585,11 @@ EditDCCText.toolbarTemplate =
 <button class="ql-image"></button>
 <button class="ql-annotation"></button>`;
 
+/* <HIGHLIGHTER>
 EditDCCText.toolbarTemplateHighlighter =
 `<button class="ql-highlighter"></button>`;
+*/
+EditDCCText.toolbarTemplateHighlighter = "";
 
 EditDCCText.toolbarTemplateConfirm =
 `<button class="ql-confirm"></button>
@@ -546,20 +608,26 @@ svg:
 
 EditDCCText.headerTemplate =
 `<div class="annotation-bar">Annotation
-    <div class="annotation-buttons">` +
-`      <div id="ext-confirm" style="width:24px">` +
-          EditDCCText.buttonConfirmSVG + `</div>` +
+   <div class="annotation-buttons">
+      <div id="ext-confirm" style="width:24px">` +
+          EditDCCText.buttonConfirmSVG + "</div>" +
 `      <div id="ext-cancel" style="width:28px">` +
-          EditDCCText.buttonCancelSVG + `</div>` +
+          EditDCCText.buttonCancelSVG + "</div>" +
 `   </div>
 </div>`;
 
 EditDCCText.annotationTemplate = EditDCCText.headerTemplate +
 `<textarea id="ext-content" rows="3" cols="20"></textarea>`;
 
-EditDCCText.imageBrowseTemplate = EditDCCText.headerTemplate +
-`<input type="file" id="ext-content" name="ext-content"
-        accept="image/png, image/jpeg, image/svg">`;
+EditDCCText.imageBrowseTemplate =
+`<div class="annotation-bar">Annotation
+   <div class="annotation-buttons">
+      <div id="ext-cancel" style="width:28px">` +
+          EditDCCText.buttonCancelSVG + "</div>" +
+`   </div>
+</div>
+<input type="file" id="ext-content" name="ext-content"
+       accept="image/png, image/jpeg, image/svg">`;
 
 EditDCCText.metadataStyle = {
    annotation: "dcc-text-annotation",

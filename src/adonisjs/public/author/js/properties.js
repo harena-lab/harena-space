@@ -37,7 +37,8 @@ class Properties {
       this.editProperties(obj);
    }
 
-   editElementProperties(obj, element, role) {
+   editElementProperties(knotContent, el, element, role) {
+      let obj = knotContent[el];
       if (this._knotOriginalTitle)
          delete this._knotOriginalTitle;
       this.editProperties(obj);
@@ -46,7 +47,7 @@ class Properties {
          includes(Basic.service.currentThemeFamily);
       switch (obj.type) {
          case "text": 
-         case "text-block": this._editor = new EditDCCText(obj, element, svg);
+         case "text-block": this._editor = new EditDCCText(knotContent, el, element, svg);
                             break;
          case "entity": if (role)
                            switch (role) {

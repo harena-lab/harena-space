@@ -451,9 +451,13 @@ class Translator {
       let tblockSeq;
       for (let c = 0; c < compiled.length; c++) {
          if (Translator.textBlockCandidate.includes(compiled[c].type)) {
-            if (c == 0 || compiled[c-1].type != "text-block") {
-               if (c < compiled.length-1 &&
-                   Translator.textBlockCandidate.includes(compiled[c+1].type)) {
+            const pr = (c > 1 && compiled[c-1].type == "linefeed") ? c-2 : c-1;
+            const nx = (c+2 < compiled.length && compiled[c+1].type == "linefeed")
+               ? c+2 : c+1;
+            if (c == 0 || compiled[pr].type != "text-block") {
+               // creates a new text-block
+               if (nx < compiled.length &&
+                   Translator.textBlockCandidate.includes(compiled[nx].type)) {
                   tblockSeq = 1;
                   compiled[c].seq = 1;
                   tblock = this._initializeObject(
@@ -465,19 +469,26 @@ class Translator {
                   compiled[c] = tblock;
                }
             } else {
-               tblockSeq++;
-               compiled[c].seq = tblockSeq;
-               tblock.content.push(compiled[c]);
-               tblock._source += compiled[c]._source;
-               compiled.splice(c, 1);
-               c--;
+               // adds element and previous linefeed (if exists)
+               console.log("=== pr: " + pr);
+               console.log("=== c: " + c);
+               for (let e = pr+1; e <= c; e++) {
+                  tblockSeq++;
+                  compiled[e].seq = tblockSeq;
+                  if (compiled[e].type == "linefeed")
+                     compiled[e].render = true;
+                  tblock.content.push(compiled[e]);
+                  tblock._source += compiled[e]._source;
+               }
+               compiled.splice(pr+1, c-pr);
+               c -= c-pr;
             }
          }
          if (c >= 0)
             compiled[c].seq = c + 1;
       }
 
-      // third cycle - aggregates text blocks separated by line feeds
+      // third cycle - removes extra linefeeds
       this._compileMergeLinefeeds(unity);
 
       // fourth cycle - computes field hierarchy
@@ -632,9 +643,12 @@ class Translator {
 
    }
 
+   // merges texts separated by linefeeds and
+   // removes extra linfefeeds when the element embeds it
    _compileMergeLinefeeds(unity) {
       let compiled = unity.content;
       for (let c = 0; c < compiled.length; c++) {
+         // <TODO> remove?
          if (c > 0) {
             const pr =
                (c > 1 && compiled[c-1].type == "linefeed") ? c-2 : c-1;
@@ -642,6 +656,7 @@ class Translator {
                compiled[c].subordinate = true;
          }
 
+         /*
          if (compiled[c].type == "linefeed") {
             if (c > 0 && compiled[c-1].type == "text" &&
                 c < compiled.length-1 && compiled[c+1].type == "text" &&
@@ -666,28 +681,30 @@ class Translator {
                                             compiled[c+1]._source;
                compiled.splice(c, 2);
                c--;
-            } else if (c == 0 ||
-                       (compiled[c-1].type != "text" &&
-                        compiled[c-1].type != "text-block" &&
-                        Translator.isLine.includes(compiled[c-1].type))) {
+            } 
+              else */
+         // removes extra linefeeds when the element embeds it
+         if (compiled[c].type == "linefeed" &&
+             (c == 0 ||
+              // (compiled[c-1].type != "text" &&
+              //compiled[c-1].type != "text-block" &&
+              Translator.isLine.includes(compiled[c-1].type))) {
                if (compiled[c].content.length > 1) {
-                  // console.log("--- reduz");
                   compiled[c].content = compiled[c].content.substring(1);
                   compiled[c]._source = compiled[c]._source.substring(1);
                } else {
-                  // console.log("--- splice");
                   compiled.splice(c, 1);
                   c--;
                }
-               // console.log(compiled[c]._source);
-            }
          }
          if (c >= 0)
             compiled[c].seq = c + 1;
       }
+      /*
       for (let c = 0; c < compiled.length; c++)
          if (compiled[c].type == "text-block")
             this._compileMergeLinefeeds(compiled[c]);
+      */
    }
 
    /*
@@ -1195,7 +1212,7 @@ class Translator {
     * Line feed Obj to HTML
     */
    _linefeedObjToHTML(obj) {
-      return (obj.render) ? obj.content.replace(/[\f\n\r]/im, "<br>") : "";
+      return (obj.render) ? obj.content.replace(/[\f\n\r][\f\n\r]/igm, "<br>") : "";
    }
 
    /*

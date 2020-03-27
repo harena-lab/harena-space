@@ -17,6 +17,7 @@ class DCCSlider extends DCCInput {
          this.value = Math.round(this.min + this.max) / 2;
 
       super.connectedCallback();
+      this.innerHTML = "";
       
       MessageBus.int.publish("var/" + this.variable + "/input/ready",
                              DCCSlider.elementTag);
