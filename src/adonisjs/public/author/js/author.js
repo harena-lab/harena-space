@@ -627,9 +627,6 @@ class AuthorManager {
       if (this._knotSelected != null) {
          this._htmlKnot = await Translator.instance.generateHTML(
             this._knots[this._knotSelected]);
-         console.log("=== knot html");
-         console.log(this._htmlKnot);
-
          this._renderKnot();
          this._collectEditableDCCs();
       }

@@ -470,8 +470,6 @@ class Translator {
                }
             } else {
                // adds element and previous linefeed (if exists)
-               console.log("=== pr: " + pr);
-               console.log("=== c: " + c);
                for (let e = pr+1; e <= c; e++) {
                   tblockSeq++;
                   compiled[e].seq = tblockSeq;
@@ -1158,8 +1156,6 @@ class Translator {
    _textObjToHTML(obj, superseq) {
       // return this._markdownTranslator.makeHtml(obj.content);
       let result = obj.content;
-      console.log("=== Translated content");
-      console.log(obj.content);
       if (this.authoringRender && superseq == -1)
          result = Translator.htmlTemplatesEditable.text
                     .replace("[seq]", this._subSeq(superseq, obj.seq))
@@ -1234,7 +1230,7 @@ class Translator {
    /*
     * Image Obj to HTML
     */
-   _imageObjToHTML(obj) {
+   _imageObjToHTML(obj, superseq) {
       /*
       const aRender = (authorRender)
          ? authorRender : this.authoringRender;
@@ -1243,7 +1239,7 @@ class Translator {
       if (this.authoringRender)
          result = Translator.htmlTemplatesEditable.image
             .replace("[seq]", obj.seq)
-            .replace("[author]", this.authorAttr)
+            .replace("[author]", this._authorAttrSub(superseq))
             .replace("[path]", obj.path)
             .replace("[alternative]", obj.alternative)
             .replace("[title]", (obj.title)
@@ -1291,9 +1287,6 @@ class Translator {
     * Annotation Md to Obj
     */
    _annotationMdToObj(matchArray) {
-      console.log("--- annotation match array");
-      console.log(matchArray);
-
       let annotation = {
          type: "annotation",
          natural: this._annotationInsideMdToObj(
@@ -1332,8 +1325,6 @@ class Translator {
     * Annotation Obj to HTML
     */
    _annotationObjToHTML(obj, superseq) {
-      console.log("=== annotation");
-      console.log(obj);
       return (this.authoringRender)
          ? Translator.htmlTemplates.annotation
                      .replace("[seq]", this._subSeq(superseq, obj.seq))
