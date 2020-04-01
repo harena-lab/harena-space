@@ -496,24 +496,27 @@ class Translator {
       for (let c = 0; c < compiled.length; c++) {
          if (compiled[c].type == "field") {
             if (lastRoot == null || !compiled[c].subordinate) {
+               if (compiled[c].value == null)
+                  compiled[c].value = {};
                lastRoot = compiled[c];
-               lastField = compiled[c];
+               lastField = compiled[c].value;
             } else {
                while (lastField != null &&
                       lastField.level && compiled[c].level <= lastField.level)
                   lastField = hierarchy.pop();
                if (lastField == null) {
+                  if (compiled[c].value == null)
+                     compiled[c].value = {};
                   lastRoot = compiled[c];
-                  lastField = compiled[c];
+                  lastField = compiled[c].value;
                } else {
-                  if (!lastField.value)
-                     lastField.value = {};
-                  else if (typeof lastField.value !== "object")
-                     lastField.value = {value: lastField.value};
-                  lastField.value[compiled[c].field] = compiled[c].value;
+                  if (typeof lastField !== "object")
+                     lastField = {value: lastField};
+                  lastField[compiled[c].field] =
+                     (compiled[c].value == null) ? {} : compiled[c].value;
                   lastRoot._source += "\n" + compiled[c]._source;
                   hierarchy.push(lastField);
-                  lastField = compiled[c];
+                  lastField = lastField[compiled[c].field];
                   compiled.splice(c, 1);
                   c--;
                }
@@ -970,63 +973,65 @@ class Translator {
          md += compiledCase.knots[kn]._source;
       */
       for (let kn in compiledCase.knots) {
-         // <TODO> toCompile verification temporarily deactivated
-         /*
+         // toCompile indicates a part generated only with markdown (by newKnot)
+         // and cannot inversely generate markdown
          if (compiledCase.knots[kn].toCompile) {
+            /*
             const lastType = Translator.element[compiledCase.knots[kn].content[
                compiledCase.knots[kn].content.length-1].type];
             md += compiledCase.knots[kn]._source +
                   ((lastType !== undefined &&
                     lastType.line !== undefined &&
                     lastType.line) ? "\n" : "");
+            */
+            md += compiledCase.knots[kn]._source;
          } else {
-         */
-         md += compiledCase.knots[kn]._sourceHead + "\n";
-         if (compiledCase.knots[kn].inheritance)
-            md += "\n";
-         else
-            for (let ct in compiledCase.knots[kn].content) {
-               /*
-               let knotType =
-                  Translator.element[compiledCase.knots[kn].content[ct].type];
-               */
-               const content = compiledCase.knots[kn].content[ct];
-               // const knotType = Translator.element[content.type];
-               /*
-               console.log("=== knot type");
-               console.log(compiledCase.knots[kn].content[ct].type);
-               console.log(knotType);
-               console.log(compiledCase.knots[kn].content[ct]._source +
-                     ((knotType !== undefined &&
-                       knotType.line !== undefined &&
-                       knotType.line) ? "\n" : ""));
-               */
+            md += compiledCase.knots[kn]._sourceHead + "\n";
+            if (compiledCase.knots[kn].inheritance)
+               md += "\n";
+            else
+               for (let ct in compiledCase.knots[kn].content) {
+                  /*
+                  let knotType =
+                     Translator.element[compiledCase.knots[kn].content[ct].type];
+                  */
+                  const content = compiledCase.knots[kn].content[ct];
+                  // const knotType = Translator.element[content.type];
+                  /*
+                  console.log("=== knot type");
+                  console.log(compiledCase.knots[kn].content[ct].type);
+                  console.log(knotType);
+                  console.log(compiledCase.knots[kn].content[ct]._source +
+                        ((knotType !== undefined &&
+                          knotType.line !== undefined &&
+                          knotType.line) ? "\n" : ""));
+                  */
 
-               // linefeed of the merged block (if block), otherwise linefeed of the content
-               md += content._source +
-                     (((content.mergeLine === undefined &&
-                        Translator.isLine.includes(content.type)) ||
-                       (content.mergeLine !== undefined &&
-                        content.mergeLine))
-                      ? "\n" : "");
+                  // linefeed of the merged block (if block), otherwise linefeed of the content
+                  md += content._source +
+                        (((content.mergeLine === undefined &&
+                           Translator.isLine.includes(content.type)) ||
+                          (content.mergeLine !== undefined &&
+                           content.mergeLine))
+                         ? "\n" : "");
 
-               /*
-               md += content._source +
-                     (((knotType !== undefined &&
-                        content.mergeLine === undefined &&
-                        knotType.line !== undefined &&
-                        knotType.line) ||
-                       (content.mergeLine !== undefined &&
-                        content.mergeLine))
-                     ? "\n" : "");
-               */
-               /*
-               console.log((knotType !== undefined &&
-                       knotType.line !== undefined &&
-                       knotType.line));
-               */
+                  /*
+                  md += content._source +
+                        (((knotType !== undefined &&
+                           content.mergeLine === undefined &&
+                           knotType.line !== undefined &&
+                           knotType.line) ||
+                          (content.mergeLine !== undefined &&
+                           content.mergeLine))
+                        ? "\n" : "");
+                  */
+                  /*
+                  console.log((knotType !== undefined &&
+                          knotType.line !== undefined &&
+                          knotType.line));
+                  */
+               }
             }
-         //}
       }
       
       for (let l in compiledCase.layers)
@@ -1996,7 +2001,7 @@ class Translator {
 
    Translator.inputSubtype = ["short", "text", "group select", "table"];
 
-   Translator.globalFields = ["theme", "title", "role"];
+   Translator.globalFields = ["theme", "title", "role", "templates"];
 
    Translator.reservedNavigation = ["case.next", "knot.previous", "knot.next",
                                     "flow.next", "session.close"];
