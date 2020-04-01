@@ -70,12 +70,17 @@ class EditDCCText {
 
       this._container = document;
       if (window.parent && window.parent.document) {
+         console.log("=== parent node");
          const cont = window.parent.document.querySelector(
             "#inplace-editor-wrapper");
          if (cont != null)
             this._container = cont;
       }
+      console.log("=== result parent");
+      console.log(this._container);
       this._containerRect = this._container.getBoundingClientRect();
+      console.log("=== rectangle");
+      console.log(JSON.stringify(this._containerRect));
 
       // find the wrapper
       // looks for a knot-wrapper or equivalent
@@ -177,8 +182,15 @@ class EditDCCText {
    // builds a Quill editor
    _buildQuillEditor(selectOptions) {
       let inplaceContent = this._editor.querySelector("#inplace-content");
-      const html = Translator.instance.markdownToHTML(
+      let html = Translator.instance.markdownToHTML(
          Translator.instance.objToHTML(this._knotContent[this._element], -1));
+
+      // add a prefix in the ids to avoid conflits with the original
+      html = html.replace(/(<[^<]*(?=id)id=['"])([^'"]+['"][^>]*>)/igm,
+                          "$1ed_$2");
+
+      console.log("=== html");
+      console.log(html);
       inplaceContent.innerHTML = html;
 
       this._quill = new Quill(inplaceContent, 
@@ -385,7 +397,6 @@ class EditDCCText {
             this._extendedSub.image.onchange = function(e) {
                callback("confirm");
             };
-            console.log("--- activating image");
          }
          this._extendedSub.cancel.onclick = function(e) {
             callback("cancel");
@@ -425,9 +436,6 @@ class EditDCCText {
 
       const objSet = await this._translateContent(this._quill.getContents());
 
-      console.log("=== antes");
-      console.log(this._knotContent);
-
       // removes extra linfeeds
       if (objSet[objSet.length-1].type == "linefeed")
          objSet.pop();
@@ -459,9 +467,6 @@ class EditDCCText {
          this._knotContent.splice(this._element + o, 0, objSet[o]);
       }
 
-      console.log("=== depois");
-      console.log(this._knotContent);
-
       /*
       let obj = objSet[0];
       this._knotContent[this._element].type    = obj.type;
@@ -490,8 +495,6 @@ class EditDCCText {
 
    async _translateContent(editContent) {
       let content = "";
-      console.log("=== edit content");
-      console.log(editContent);
       for (let e in editContent.ops) {
          let ec = editContent.ops[e];
          if (ec.insert) {
@@ -535,13 +538,9 @@ class EditDCCText {
       }
       content = content.trimEnd();
       content = content.replace(/[\n]+$/g, "") + "\n";
-      console.log("=== content");
-      console.log(content);
       let unity = {_source: content};
       Translator.instance._compileUnityMarkdown(unity);
       Translator.instance._compileMerge(unity);
-      console.log("=== unity");
-      console.log(unity);
       return unity.content;
    }
 }

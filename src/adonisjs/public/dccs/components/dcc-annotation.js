@@ -8,8 +8,11 @@ class DCCAnnotation extends DCCVisual {
             Basic.service.themeStyleResolver("dcc-annotation.css") +
          "' </style>" +
          "<span class='dcc-text-annotation'><slot></slot></span>";
-      let shadow = this.attachShadow({mode: "open"});
-      shadow.appendChild(template.content.cloneNode(true));
+      // <FUTURE> Quill editor call connectCallback twice - this is a temporary fix
+      if (!this.shadowRoot) {
+         let shadow = this.attachShadow({mode: "open"});
+         shadow.appendChild(template.content.cloneNode(true));
+      }
       super.connectedCallback();
    }
 

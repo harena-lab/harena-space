@@ -132,20 +132,26 @@ class DCCCommonServer {
              }
          };
 
+         /*
          console.log("=== load case request");
          console.log(DCCCommonServer.managerAddressAPI + "case/" + caseId);
          console.log(header);
+         */
 
          const response =
             await fetch(DCCCommonServer.managerAddressAPI + "case/" + caseId, header);
 
+         /*
          console.log("=== load case response");
          console.log(response);
+         */
 
          const jsonResponse = await response.json();
 
+         /*
          console.log("=== load case json");
          console.log(jsonResponse);
+         */
 
          caseObj = {name: jsonResponse.name,
                     source: jsonResponse.source};

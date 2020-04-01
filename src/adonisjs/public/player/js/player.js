@@ -282,15 +282,31 @@ class PlayerManager {
                  this._state.metaparameter == content[c].field)) {
                flow = [];
                for (let f in content[c].value) {
-                  let t = {target: f.replace(/ /g, "_")};
-                  if (content[c].value)
-                     t.parameter = content[c].value;
-                  flow.push(t);
+                  if (f == "_sequential_") {
+                     let lastLevel = 0;
+                     let lastK = null;
+                     for (let k in this._knots) {
+                        if (this._knots[k].level > lastLevel)
+                           lastK = k;
+                        else {
+                           flow.push({target: lastK});
+                           lastK = k;
+                        }
+                        lastLevel = this._knots[k].level;
+                     }
+                     if (lastK != null)
+                        flow.push({target: lastK});
+                  } else {
+                     let t = {target: f.replace(/ /g, "_")};
+                     if (f.value)
+                        t.parameter = f.value;
+                     flow.push(t);
+                  }
                }
             }
             c++;
          }
-         if (flow != null)
+         if (flow != null && flow.length > 0)
             this._state.flow = flow;
       }
    }

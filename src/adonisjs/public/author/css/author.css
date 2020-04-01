@@ -118,6 +118,14 @@
    border-radius: 5px;
 }
 
+.sty-menu-floating {
+   position: absolute;
+   background-color: white;
+   border-radius: 1px;
+   box-shadow: 0px 0px 0px 5px rgba(0,0,0,0.5);
+   margin: 5px;
+}
+
 .sty-editable-asset:hover {
    border: 5px;
    border-color: black;
