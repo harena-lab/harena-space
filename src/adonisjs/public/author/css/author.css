@@ -26,13 +26,6 @@
    flex-direction: row;
 }
 
-.control-button {
-   flex: 10%;
-   max-width: 48px;
-   max-height: 48px;
-   margin-right: 10px;
-}
-
 .sty-message-space {
    flex: 25%;
    max-width: 25%;

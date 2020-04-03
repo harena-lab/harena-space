@@ -257,10 +257,13 @@ class DCCSpaceCellular extends DCCBase {
          spaceState.ncols = row.length;
          for (let c = 0; c < spaceState.ncols; c++) {
             let cell = row[c];
-            if (cell != null && !spaceState.changed[r][c] && this._rules[cell.dcc.type]) {
+            if (cell != null && !spaceState.changed[r][c] &&
+                this._rules[cell.dcc.type]) {
                let triggered = false;
-               for (let m = 0; m < this._rules[cell.dcc.type].length && !triggered; m++)
-                  triggered = this._rules[cell.dcc.type][m].computeRule(spaceState, r, c);
+               for (let m = 0; m < this._rules[cell.dcc.type].length &&
+                    !triggered; m++)
+                  triggered = this._rules[cell.dcc.type][m]
+                                 .computeRule(spaceState, r, c);
             }
          }
       }
