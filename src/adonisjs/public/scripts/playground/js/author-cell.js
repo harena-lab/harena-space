@@ -60,18 +60,20 @@ class AuthorCellManager {
 
    _updateVisibility() {
       const states = (this._editMode)
-         ? ["none","none","none","initial","initial","none","initial"]
-         : ["initial","initial","initial","none","none","initial","none"];
+         ? ["none","none","none","none","initial","initial","none","initial"]
+         : ["initial","none","initial","initial","none","none","initial","none"];
       document.querySelector("#play-button").style.display = states[0];
-      document.querySelector("#restart-button").style.display = states[1];
-      document.querySelector("#next-button").style.display = states[2];
-      document.querySelector("#types-panel").style.display = states[3];
-      document.querySelector("#script-panel").style.display = states[4];
-      document.querySelector("#editor-button").style.display = states[5];
-      document.querySelector("#execute-button").style.display = states[6];
+      document.querySelector("#stop-button").style.display = states[1];
+      document.querySelector("#restart-button").style.display = states[2];
+      document.querySelector("#next-button").style.display = states[3];
+      document.querySelector("#types-panel").style.display = states[4];
+      document.querySelector("#script-panel").style.display = states[5];
+      document.querySelector("#editor-button").style.display = states[6];
+      document.querySelector("#execute-button").style.display = states[7];
    }
 
    async switchEditor() {
+      MessageBus.ext.publish("timer/stop");
       this._editMode = !this._editMode;
       this._updateVisibility();
 

@@ -11,8 +11,11 @@ See below some examples in our scripts gallery:
 ![Balão](images/movement-fly-balloon.png)
 [Balão](editor.html?source=cell/movement-fly-balloon)
 
-![Balão, Avião e Nuvem](images/movement-fly-balloon.png)
+![Balão, Avião e Nuvem](images/movement-fly-balloon-cloud-plane.png)
 [Balão, Avião e Nuvem](editor.html?source=cell/movement-fly-balloon-cloud-plane)
+
+![Relógio de Areia](images/movement-sand-clock.png)
+[Relógio de Areia](editor.html?source=cell/movement-sand-clock)
 
 ## Imported images
 

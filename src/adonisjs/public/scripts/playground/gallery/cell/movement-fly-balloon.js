@@ -6,7 +6,7 @@ AuthorCellManager.instance.insertSource(
  ["tree", "t", {src: "images/cell/tree01.svg", width: 25, height: 25, alt: "árvore"}]],
 `<block type="neighbor"></block>
 <block type="action"></block>`,
-`<dcc-space-cellular-editor id="cellular-space" cell-width="50" cell-height="50" grid>
+`<dcc-space-cellular-editor id="cellular-space" cell-width="50" cell-height="50" background-color="#d6f0ffff" grid>
 ______
 ______
 ______
@@ -43,7 +43,7 @@ _____t
    </div>
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
       <dcc-trigger label="Nada" action="type/empty"
-                   image="images/cell/cell-yellow.svg">
+                   image="images/cell/cell-blue.svg">
       </dcc-trigger>
    </div>
 </div>`
