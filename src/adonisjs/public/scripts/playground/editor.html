@@ -2,7 +2,7 @@
 <html>
 <head>
    <meta charset="utf-8">
-   <title>Script Presenter</title>
+   <title>Simulador em Espaço Celular</title>
 
    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
 
@@ -61,73 +61,10 @@
    <script src="../../dccs/components/cell/rule-dcc-cell.js"></script>
    <script src="../../dccs/components/cell/rule-dcc-cell-neighbor.js"></script>
 
-   <script>
-      var source = null;
-      var playground;
-      var editor = false;
-
-      function start() {
-         MessageBus.ext.subscribe("control/editor/switch", switchEditor);
-
-         let parameters = window.location.search.substr(1);
-         if (parameters != null && parameters.length > 0) {
-            const sourceMatch = parameters.match(/source=([\w-\/]+)/i);
-            if (sourceMatch != null) {
-               source = sourceMatch[1];
-               let caseScript = document.createElement("script");
-               caseScript.src = "gallery/" + source + ".js";
-               document.head.appendChild(caseScript);
-            }
-         }
-      }
-
-      function insertSource(name, types, blocks, source, buttonTypes) {
-         ScriptBlocks.create(types);
-
-         document.querySelector("#xml-toolbox").innerHTML =
-             `<xml xmlns="https://developers.google.com/blockly/xml" id="toolbox" style="display: none">` +
-             blocks +
-             `</xml>`;
-
-         playground = Blockly.inject("script-panel",
-            {media: "../../lib/blockly-ba6dfd8/media/",
-             toolbox: document.getElementById("toolbox")});
-         document.querySelector("#script-panel").style.display = "none";
-
-         document.querySelector("#source-name").innerHTML = name;
-         document.querySelector("#render-panel").innerHTML = source;
-         document.querySelector("#types-panel").innerHTML = buttonTypes;
-      }
-
-      async function switchEditor() {
-         editor = !editor;
-         const states = (editor)
-          ? ["none","none","none","none","initial","initial","none","initial"]
-          : ["initial","initial","initial","initial","none","none","initial","none"];
-         document.querySelector("#play-button").style.display = states[0];
-         document.querySelector("#stop-button").style.display = states[1];
-         document.querySelector("#restart-button").style.display = states[2];
-         document.querySelector("#next-button").style.display = states[3];
-         document.querySelector("#types-panel").style.display = states[4];
-         document.querySelector("#script-panel").style.display = states[5];
-         document.querySelector("#editor-button").style.display = states[6];
-         document.querySelector("#execute-button").style.display = states[7];
-      }
-
-      async function applyRules() {
-         await MessageBus.page.request("dcc/rules/clear");
-         document.querySelector("#rules-panel").innerHTML = Blockly.JavaScript.workspaceToCode(playground);
-      }
-   </script>
-
+   <script src="js/author-cell.js"></script>   
 </head>
 
-<body onload="start()">
-   <script>
-      MessageBus.page = new MessageBus(false);
-      Basic.service.rootPath = "../../";
-   </script>
-
+<body onload="AuthorCellManager.instance.start()">
   <main role="main">
     <div class="d-flex flex-column vh-100 hidden-overflow">
       <div class="align-items-stretch col-12">
@@ -137,20 +74,20 @@
               <div class="col-3">
                 <dcc-trigger id="editor-button" action="control/editor/switch" label="EDITOR" xstyle="in">
                 </dcc-trigger>
-                <dcc-trigger id="execute-button" action="control/editor/switch" label="EXECUTAR" xstyle="in" style="display:none">
+                <dcc-trigger id="execute-button" action="control/editor/switch" label="OPERAÇÃO" xstyle="in">
                 </dcc-trigger>
               </div>
               <div id="operation-panel" class="d-flex col-3">
                 <div class="control-button">
-                  <dcc-trigger id="play-button" label="Play" action="timer/start"
+                  <dcc-trigger id="play-button" label="Play" action="control/space/play"
                                image="images/icon/play.svg"></dcc-trigger>
                 </div>
                 <div class="control-button">
-                  <dcc-trigger id="stop-button" label="Stop" action="timer/stop"
-                               image="images/icon/stop.svg"></dcc-trigger>
+                  <dcc-trigger id="stop-button" label="Stop" action="control/space/stop"
+                               image="images/icon/stop.svg" style="display:none"></dcc-trigger>
                 </div>
                 <div id="restart-button" class="control-button">
-                  <dcc-trigger label="Restart" action="state/reset"
+                  <dcc-trigger label="Restart" action="control/space/restart"
                                image="images/icon/restart.svg"></dcc-trigger>
                 </div>
                 <div id="next-button" class="control-button">
@@ -163,7 +100,7 @@
              <div class="d-flex col-3 flex-column align-items-stretch">
                 <div>
                   <div id="render-panel"></div>
-                  <div id="types-panel" style="display:none"></div>
+                  <div id="types-panel"></div>
                 </div>
                 <div id="rules-panel"></div>
              </div>

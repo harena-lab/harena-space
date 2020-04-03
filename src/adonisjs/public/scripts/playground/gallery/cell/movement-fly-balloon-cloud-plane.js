@@ -1,23 +1,29 @@
 (function() {
 AuthorCellManager.instance.insertSource(
-"Balões Voadores",
+"Balões, Aviões e Nuvens",
 [["empty", "_", {src: "images/cell/cell-blue.svg", width: 25, height: 25, alt: "vazio"}],
  ["balloon", "b", {src: "images/cell/balloon01.svg", width: 25, height: 25, alt: "balão"}],
+ ["plane", "p", {src: "images/cell/plane01.svg", width: 25, height: 25, alt: "avião"}],
+ ["cloud", "c", {src: "images/cell/cloud01.svg", width: 25, height: 25, alt: "nuvem"}],
  ["tree", "t", {src: "images/cell/tree01.svg", width: 25, height: 25, alt: "árvore"}]],
 `<block type="neighbor"></block>
 <block type="action"></block>`,
-`<dcc-space-cellular-editor id="cellular-space" cell-width="50" cell-height="50" grid>
-______
-______
-______
-______
-______
-___b__
-_____t
+`<dcc-space-cellular-editor id="cellular-space" cell-width="50" cell-height="50" background-color="#d6f0ffff" grid>
+__________
+__________
+__________
+__________
+__________
+__________
+__________
+__________
+__________
+t_________
 </dcc-space-cellular-editor>
 
-<dcc-cell-image type="b" label="balloon" image="images/cell/balloon01.svg">
-</dcc-cell-image>
+<dcc-cell-image type="b" label="balloon" image="images/cell/balloon01.svg"></dcc-cell-image>
+<dcc-cell-image type="p" label="plane" image="images/cell/plane01.svg"></dcc-cell-image>
+<dcc-cell-image type="c" label="cloud" image="images/cell/cloud01.svg"></dcc-cell-image>
 <dcc-cell-image type="t" label="tree" image="images/cell/tree01.svg"></dcc-cell-image>
 
 <dcc-timer cycles="100000" interval="1000" publish="state/next">
@@ -42,8 +48,18 @@ _____t
       </dcc-trigger>
    </div>
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
+      <dcc-trigger label="Avião" action="type/plane"
+                   image="images/cell/plane01.svg">
+      </dcc-trigger>
+   </div>
+   <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
+      <dcc-trigger label="Nuvem" action="type/cloud"
+                   image="images/cell/cloud01.svg">
+      </dcc-trigger>
+   </div>
+   <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
       <dcc-trigger label="Nada" action="type/empty"
-                   image="images/cell/cell-yellow.svg">
+                   image="images/cell/cell-blue.svg">
       </dcc-trigger>
    </div>
 </div>`
