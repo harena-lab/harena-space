@@ -63,7 +63,8 @@ class DCCSpaceCellular extends DCCBase {
                          .replace(/\[width\]/g, this.cols * this.cellWidth + "px")
                          .replace(/\[height\]/g, this.rows * this.cellHeight + "px")
                          .replace(/\[background-color\]/g, this.backgroundColor)
-                         .replace(/\[grid\]/g, (this.grid) ? ";stroke-width:2;stroke:#646464" : "");
+                         .replace(/\[grid\]/g, (this.grid) ? 
+                           " stroke-width='2' stroke='#646464'" : "");
       this._cellGrid = this.querySelector("#cell-grid");
       this._cells = this.querySelector("#cells");
    }
@@ -393,13 +394,13 @@ class DCCSpaceCellularEditor extends DCCSpaceCellular {
 (function() {
    DCCSpaceCellular.svgTemplate =
 `<div width="[width]" height="[height]">
-<svg width="[width]" height="[height]">
-<def>
+<svg width="[width]" height="[height]" xmlns="http://www.w3.org/2000/svg">
+<defs>
   <pattern id="grid" width="[cell-width]" height="[cell-height]" patternUnits="userSpaceOnUse">
     <rect width="[cell-width]" height="[cell-height]"
-     style="fill:[background-color][grid]"/>
+     fill="[background-color]"[grid]/>
   </pattern>
-</def>
+</defs>
 <g id="cell-grid">
    <rect fill="url(#grid)" x="0" y="0" width="[width]" height="[height]"/>
    <g id="cells"/>

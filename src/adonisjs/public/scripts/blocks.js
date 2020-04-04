@@ -9,13 +9,21 @@ class ScriptBlocks {
 
    constructor(types) {
       this._selectTypes = [];
-      for (let t of types)
-         this._selectTypes.push([t[2], t[0]]);
+      let emptyPos = -1;
+      for (let t in types)
+         if (types[t][0] == "empty")
+            emptyPos = t;
+         else
+            this._selectTypes.push([types[t][2], types[t][0]]);
       this._allSelectTypes = this._selectTypes.slice();
-      this._allSelectTypes.unshift([ScriptBlocks.emptyType[2], ScriptBlocks.emptyType[0]]);
+      this._allSelectTypes.unshift(
+         (emptyPos > -1)
+           ? [types[emptyPos][2], types[emptyPos][0]]
+           : [ScriptBlocks.emptyType[2], ScriptBlocks.emptyType[0]]);
 
       this._types = {};
-      this._types[ScriptBlocks.emptyType[0]] = ScriptBlocks.emptyType[1];
+      if (emptyPos == -1)
+         this._types[ScriptBlocks.emptyType[0]] = ScriptBlocks.emptyType[1];
       for (let t of types)
          this._types[t[0]] = t[1];
 
