@@ -1701,8 +1701,8 @@ class Translator {
       const coreAttributes = ["seq", "author", "type", "subtype", "text",
                               "show", "_source", "_modified"];
       const subtypeMap = {
-         short: "input",
-         text: "input",
+         short: "input-typed",
+         text: "input-typed",
          "group select": "group-select",
          slider: "slider",
          table: "input-table"

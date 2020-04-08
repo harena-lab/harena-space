@@ -1,25 +1,27 @@
 /* Editor for DCC Images
   **********************/
 
-class EditDCCImage {
+class EditDCCImage extends EditDCC {
    constructor(obj, element) {
+      super(element);
       this._objProperties = obj;
-      this._editElement = element;
+      // this._editElement = element;
+      // this._commons = new EditDCC(element);
       this._buildImageSelector();
    }
 
    _buildImageSelector() {
-      this._container = document;
+      /*
+      this._editorWrapper = document;
       if (window.parent && window.parent.document) {
          const cont = window.parent.document.querySelector("#inplace-editor-wrapper");
          if (cont != null)
-            this._container = cont;
+            this._editorWrapper = cont;
       }
-      this._containerRect = this._container.getBoundingClientRect();
-      this._elementRect = this._editElement.getBoundingClientRect();
-
+      */
+      
       this._editor = this._buildEditorPanel();
-      this._container.appendChild(this._editor);
+      this._editorWrapper.appendChild(this._editor);
    }
 
    _buildEditorPanel() {
@@ -52,13 +54,14 @@ class EditDCCImage {
          this._objProperties.image.path = asset.message;
       }
       MessageBus.ext.publish("properties/apply");
-      this._container.removeChild(this._editor);
+      this._editorWrapper.removeChild(this._editor);
    }
 
    /*
     * Relative positions defined in percent are automatically adjusted with resize
     */
 
+   /*
    _transformRelativeX(x) {
       return (x * 100 / this._containerRect.width) + "%";
    }
@@ -66,11 +69,13 @@ class EditDCCImage {
    _transformRelativeY(y) {
       return (y * 100 / this._containerRect.height) + "%";
    }
+   */
 
    /*
     * Positions transformed to the viewport size
     */
 
+   /*
    _transformViewportX(x) {
       return (x * Basic.referenceViewport.width / this._containerRect.width);
    }
@@ -78,7 +83,9 @@ class EditDCCImage {
    _transformViewportY(y) {
       return (y * Basic.referenceViewport.height / this._containerRect.height);
    }
+   */
 
+   /*
    _handleHlSelect(hlSelect) {
       this._hlSelect.innerHTML = this._highlightOptions[hlSelect].label +
                                  this._hlSelectHTML;
@@ -89,6 +96,7 @@ class EditDCCImage {
                     style: this._highlightOptions[hlSelect].style}
       });
    }
+   */
 }
 
 (function() {

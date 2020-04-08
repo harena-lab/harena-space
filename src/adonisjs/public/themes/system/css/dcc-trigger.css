@@ -2,7 +2,7 @@
 
 /* Trigger DCC */
 
-.dcc-trigger-template {
+.dcc-trigger-theme {
    color: #ffffff;
    background-color: #a6a6a6;
    font-weight: bold;
@@ -23,14 +23,14 @@
    margin: .5rem;
 }
 
-.dcc-trigger-template:hover {
+.dcc-trigger-theme:hover {
    color: #fff;
    background-color: #5a6268;
    border-color: #545b62;
    cursor: pointer;
 }
 
-.dcc-trigger-image-template {
+.dcc-trigger-image-theme {
    max-width: 100%;
    max-height: 100%;
    cursor: pointer;

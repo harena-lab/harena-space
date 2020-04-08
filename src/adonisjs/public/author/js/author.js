@@ -551,6 +551,11 @@ class AuthorManager {
    }
 
    elementSelected(topic, message) {
+      console.log("=== topic edit");
+      console.log(topic);
+      console.log("=== message edit");
+      console.log(message);
+
       const dccId = MessageBus.extractLevel(topic, 3);
 
       // removes selection border of the previous element
@@ -594,6 +599,9 @@ class AuthorManager {
       for (el = 0; el < this._knots[this._knotSelected].content.length &&
                    this._knots[this._knotSelected].content[el].seq != elSeq; el++)
         /* nothing */;
+
+      console.log("=== original presentation");
+      console.log(presentation);
       if (el != -1) {
          this._elementSelected = el;
          if (message)

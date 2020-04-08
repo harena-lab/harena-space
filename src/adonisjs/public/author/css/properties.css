@@ -29,23 +29,39 @@
    padding: 5px;
 }
 
+.styp-properties-control {
+   flex: 5%;
+   width: auto;
+   height: 5%;
+   display: flex;
+   flex-direction: row;
+   padding: 5px;
+   background-color: #a6a6a6;
+}
+
 .styp-field-row {
    width: 100%;
    display: flex;
-   flex-direction: row;
+   flex-direction: column;
    flex-wrap: nowrap;
 }
 
 .styp-field-label {
-   font-weight: bold;
-   background-color: lightgray;
-   flex: 25%;
-   font-size: 12pt;
+   font-size: 1rem;
+   font-weight: 400;
+   color: #212529;
+   margin-left: 3px;
+   margin-bottom: .5rem;
 }
 
 .styp-field-value {
-   flex: 75%;
-   font-size: 12pt;
+   font-size: 1rem;
+   font-weight: 400;
+   color: #495057;
+   border: 1px solid #ced4da;
+   border-radius: .25rem;
+   padding: .375rem .75rem;
+   margin-bottom: 1rem;
 }
 
 .styp-field-highlight {

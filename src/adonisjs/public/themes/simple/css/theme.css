@@ -41,7 +41,8 @@
    }
 }
 
-.styt-main, .styt-button, input[type="text"], textarea {
+/* .styt-main, .styt-button, input[type="text"], textarea { */
+.styt-main, .styt-button {
    /* font-size: 4vmin; */
    font-size: 3vmin;
 }
@@ -89,3 +90,23 @@
    }
 }
 
+/* Public styles for DCCs - subscribed by shadow ones */
+
+.dcc-input-typed-theme label {
+   font-size: 1rem;
+   font-weight: 400;
+   color: #212529;
+   margin-left: 3px;
+   margin-bottom: .5rem;
+}
+
+.dcc-input-typed-theme input textarea {
+   font-size: 1rem;
+   font-weight: 400;
+   color: #6c757d;
+   border: 1px solid #ced4da;
+   border-radius: .25rem;
+   padding: .375rem .75rem;
+   width: 100%;
+   margin-bottom: 1rem;
+}

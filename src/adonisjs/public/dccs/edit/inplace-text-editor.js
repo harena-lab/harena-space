@@ -47,8 +47,9 @@ SelectBlot.blotName = "select";
 SelectBlot.tagName = "dcc-state-select";
 Quill.register(SelectBlot);
 
-class EditDCCText {
+class EditDCCText extends EditDCC {
    constructor(knotContent, el, element, svg) {
+      super(element);
       this._knotContent = knotContent;
       this._element = el;
       this._handleHighlighter = this._handleHighlighter.bind(this);
@@ -57,7 +58,8 @@ class EditDCCText {
       this._handleHlSelect = this._handleHlSelect.bind(this);
       this._handleConfirm = this._handleConfirm.bind(this);
       this._handleCancel = this._handleCancel.bind(this);
-      this._editElement = element;
+      // this._editElement = element;
+      // this._commons = new EditDCC(element);
       this._svgDraw = svg;
       this._toolbarControls = EditDCCText.toolbarTemplate +
                               EditDCCText.toolbarTemplateHighlighter +
@@ -68,24 +70,23 @@ class EditDCCText {
    _buildEditor(selectOptions) {
       Panels.s.lockNonEditPanels();
 
-      this._container = document;
+      /*
+      this._editorWrapper = document;
       if (window.parent && window.parent.document) {
-         console.log("=== parent node");
          const cont = window.parent.document.querySelector(
             "#inplace-editor-wrapper");
          if (cont != null)
-            this._container = cont;
+            this._editorWrapper = cont;
       }
-      console.log("=== result parent");
-      console.log(this._container);
-      this._containerRect = this._container.getBoundingClientRect();
-      console.log("=== rectangle");
-      console.log(JSON.stringify(this._containerRect));
+      */
 
-      // find the wrapper
-      // looks for a knot-wrapper or equivalent
+      /*
       let elementWrapper = this._editElement;
+      console.log("=== elementWrapper");
+      console.log(elementWrapper);
       let ew = elementWrapper.parentNode;
+      console.log("=== ew");
+      console.log(ew);
       while (ew != null && (!ew.id || !ew.id.endsWith("-wrapper")))
          ew = ew.parentNode;
       // otherwise, finds the element outside dccs
@@ -97,14 +98,14 @@ class EditDCCText {
                 elementWrapper.parentNode != null)
             elementWrapper = elementWrapper.parentNode;
       }
+      */
 
-      this._elementRect = elementWrapper.getBoundingClientRect();
-
-      this._editorToolbar = this._buildToolbarPanel();
-      this._container.appendChild(this._editorToolbar);
+      // this._editorToolbar = this._buildToolbarPanel();
+      // this._editorWrapper.appendChild(this._editorToolbar);
+      this._buildToolbarPanel(this._toolbarControls);
 
       this._editor = this._buildEditorPanel();
-      this._container.appendChild(this._editor);
+      this._editorWrapper.appendChild(this._editor);
 
       this._buildQuillEditor(selectOptions);
 
@@ -114,6 +115,7 @@ class EditDCCText {
          this._formatSelectOptions();
    }
 
+   /*
    _buildToolbarPanel() {
       let editorToolbar = document.createElement("div");
       editorToolbar.classList.add("inplace-editor-floating");
@@ -126,6 +128,7 @@ class EditDCCText {
             (this._elementRect.top - this._containerRect.top));
       return editorToolbar;
    }
+   */
 
    _buildEditorPanel() {
       let editor = document.createElement("div");
@@ -200,7 +203,7 @@ class EditDCCText {
                container: this._editorToolbar,
                handlers: {
                   "image"       : this._handleImageUpload,
-                  // "highlighter" : this._handleHighlighter, <HIGHLIGHTER>
+                  "highlighter" : this._handleHighlighter, // <HIGHLIGHTER>
                   "annotation"  : this._handleAnnotation,
                   "hl-select"   : this._handleHlSelect,
                   "confirm"     : this._handleConfirm,
@@ -217,14 +220,14 @@ class EditDCCText {
       document.querySelector(".ql-annotation").innerHTML =
          EditDCCText.buttonAnnotationSVG;
       /* <HIGHLIGHTER>
+      */
       if (!selectOptions)
          document.querySelector(".ql-highlighter").innerHTML =
             EditDCCText.buttonHighlightSVG;
-      */
       document.querySelector(".ql-confirm").innerHTML =
-         EditDCCText.buttonConfirmSVG;
+         EditDCC.buttonConfirmSVG;
       document.querySelector(".ql-cancel").innerHTML =
-         EditDCCText.buttonCancelSVG;
+         EditDCC.buttonCancelSVG;
    }
 
    _formatSelectOptions() {
@@ -243,8 +246,9 @@ class EditDCCText {
    }
 
    _removeEditor() {
-      this._container.removeChild(this._editorToolbar);
-      this._container.removeChild(this._editor);
+      // this._editorWrapper.removeChild(this._editorToolbar);
+      this._removeToolbarPanel();
+      this._editorWrapper.removeChild(this._editor);
    }
 
    /*
@@ -272,6 +276,7 @@ class EditDCCText {
     * Relative positions defined in percent are automatically adjusted with resize
     */
 
+   /*
    _transformRelativeX(x) {
       return (x * 100 / this._containerRect.width) + "%";
    }
@@ -279,11 +284,13 @@ class EditDCCText {
    _transformRelativeY(y) {
       return (y * 100 / this._containerRect.height) + "%";
    }
+   */
 
    /*
     * Positions transformed to the viewport size
     */
 
+    /*
    _transformViewportX(x) {
       return (x * Basic.referenceViewport.width / this._containerRect.width);
    }
@@ -291,15 +298,16 @@ class EditDCCText {
    _transformViewportY(y) {
       return (y * Basic.referenceViewport.height / this._containerRect.height);
    }
+   */
 
    async _handleImageUpload() {
       const range = this._quill.getSelection();
-      let buttonClicked =
-         await this._handleExtendedPanel(EditDCCText.imageBrowseTemplate, true);
-      if (buttonClicked == "confirm" && this._extendedSub.content.files[0]) {
+      let ep = await this._extendedPanel(
+            EditDCCText.imageBrowseTemplate, true);
+      if (ep.clicked == "confirm" && ep.content.files[0]) {
          const asset = await
             MessageBus.ext.request("data/asset//new",
-                 {file: this._extendedSub.content.files[0],
+                 {file: ep.content.files[0],
                   caseid: Basic.service.currentCaseId});
          this._quill.insertEmbed(
             range.index, "image", Basic.service.imageResolver(asset.message));
@@ -308,11 +316,11 @@ class EditDCCText {
 
    async _handleAnnotation() {
       const range = this._quill.getSelection();
-      let buttonClicked =
-         await this._handleExtendedPanel(EditDCCText.annotationTemplate);
-      if (buttonClicked == "confirm")
+      let ep =
+         await this._extendedPanel(EditDCCText.annotationTemplate);
+      if (ep.clicked == "confirm")
          this._quill.formatText(range.index, range.length,
-                                {annotation: this._extendedSub.content.value});
+                                {annotation: ep.content.value});
    }
 
    async _handleHighlighter() {
@@ -323,9 +331,9 @@ class EditDCCText {
             "<option value='" + ctxList[c][0] + "'>" +
                ctxList[c][1] + "</option>";
       this._contextList += "</select>";
-      let buttonClicked = await this._handleExtendedPanel(this._contextList);
-      if (buttonClicked == "confirm") {
-         let vocabulary = this._extendedSub.content.value;
+      let ep = await this._extendedPanel(this._contextList);
+      if (ep.clicked == "confirm") {
+         let vocabulary = ep.content.value;
 
          /*
          MessageBus.ext.publish("control/element/input/new/unique",
@@ -381,11 +389,12 @@ class EditDCCText {
          this._quill.setSelection(range.index + range.length, 0);
    }
 
+   /*
    async _handleExtendedPanel(html, imageBrowser) {
       // this._editorAnnotation = this._buildAnnotationPanel();
       this._editorExtended =
          this._buildExtendedPanel(html, (imageBrowser) ? true : false);
-      this._container.appendChild(this._editorExtended);
+      this._editorWrapper.appendChild(this._editorExtended);
 
       let promise = new Promise((resolve, reject) => {
          const callback = function(button) { resolve(button); };
@@ -403,7 +412,7 @@ class EditDCCText {
          };
       });
       let buttonClicked = await promise;
-      this._container.removeChild(this._editorExtended);
+      this._editorWrapper.removeChild(this._editorExtended);
       return buttonClicked;
    }
 
@@ -430,6 +439,7 @@ class EditDCCText {
 
       return editorExtended;
    }
+   */
 
    async _handleConfirm() {
       Panels.s.unlockNonEditPanels();
@@ -566,29 +576,17 @@ EditDCCText.buttonHighlightSVG =
 <path fill="currentColor" d="M0 479.98L99.92 512l35.45-35.45-67.04-67.04L0 479.98zm124.61-240.01a36.592 36.592 0 0 0-10.79 38.1l13.05 42.83-50.93 50.94 96.23 96.23 50.86-50.86 42.74 13.08c13.73 4.2 28.65-.01 38.15-10.78l35.55-41.64-173.34-173.34-41.52 35.44zm403.31-160.7l-63.2-63.2c-20.49-20.49-53.38-21.52-75.12-2.35L190.55 183.68l169.77 169.78L530.27 154.4c19.18-21.74 18.15-54.63-2.35-75.13z">
 </path></svg>`;
 
-// check-square https://fontawesome.com/icons/check-square?style=regular
-EditDCCText.buttonConfirmSVG =
-`<svg viewBox="0 0 448 512">
-<path fill="currentColor" d="M400 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V80c0-26.51-21.49-48-48-48zm0 400H48V80h352v352zm-35.864-241.724L191.547 361.48c-4.705 4.667-12.303 4.637-16.97-.068l-90.781-91.516c-4.667-4.705-4.637-12.303.069-16.971l22.719-22.536c4.705-4.667 12.303-4.637 16.97.069l59.792 60.277 141.352-140.216c4.705-4.667 12.303-4.637 16.97.068l22.536 22.718c4.667 4.706 4.637 12.304-.068 16.971z">
-</path></svg>`;
-
-// window-close https://fontawesome.com/icons/window-close?style=regular
-EditDCCText.buttonCancelSVG =
-`<svg viewBox="0 0 512 512">
-<path fill="currentColor" d="M464 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h416c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48zm0 394c0 3.3-2.7 6-6 6H54c-3.3 0-6-2.7-6-6V86c0-3.3 2.7-6 6-6h404c3.3 0 6 2.7 6 6v340zM356.5 194.6L295.1 256l61.4 61.4c4.6 4.6 4.6 12.1 0 16.8l-22.3 22.3c-4.6 4.6-12.1 4.6-16.8 0L256 295.1l-61.4 61.4c-4.6 4.6-12.1 4.6-16.8 0l-22.3-22.3c-4.6-4.6-4.6-12.1 0-16.8l61.4-61.4-61.4-61.4c-4.6-4.6-4.6-12.1 0-16.8l22.3-22.3c4.6-4.6 12.1-4.6 16.8 0l61.4 61.4 61.4-61.4c4.6-4.6 12.1-4.6 16.8 0l22.3 22.3c4.7 4.6 4.7 12.1 0 16.8z">
-</path></svg>`;
-
 EditDCCText.toolbarTemplate =
 `<button class="ql-bold"></button>
 <button class="ql-italic"></button>
 <button class="ql-image"></button>
 <button class="ql-annotation"></button>`;
 
-/* <HIGHLIGHTER>
 EditDCCText.toolbarTemplateHighlighter =
 `<button class="ql-highlighter"></button>`;
-*/
+/* <HIGHLIGHTER>
 EditDCCText.toolbarTemplateHighlighter = "";
+*/
 
 EditDCCText.toolbarTemplateConfirm =
 `<button class="ql-confirm"></button>
@@ -609,9 +607,9 @@ EditDCCText.headerTemplate =
 `<div class="annotation-bar">Annotation
    <div class="annotation-buttons">
       <div id="ext-confirm" style="width:24px">` +
-          EditDCCText.buttonConfirmSVG + "</div>" +
+          EditDCC.buttonConfirmSVG + "</div>" +
 `      <div id="ext-cancel" style="width:28px">` +
-          EditDCCText.buttonCancelSVG + "</div>" +
+          EditDCC.buttonCancelSVG + "</div>" +
 `   </div>
 </div>`;
 
@@ -622,7 +620,7 @@ EditDCCText.imageBrowseTemplate =
 `<div class="annotation-bar">Annotation
    <div class="annotation-buttons">
       <div id="ext-cancel" style="width:28px">` +
-          EditDCCText.buttonCancelSVG + "</div>" +
+          EditDCC.buttonCancelSVG + "</div>" +
 `   </div>
 </div>
 <input type="file" id="ext-content" name="ext-content"

@@ -15,15 +15,18 @@ class Properties {
       this._propertiesPanel = document.querySelector("#properties-panel");
       this._propertiesButtons = document.querySelector("#properties-buttons");
 
+      /*
       this.expandClicked = this.expandClicked.bind(this);
       MessageBus.ext.subscribe("control/properties/expand", this.expandClicked);
       this.retractClicked = this.retractClicked.bind(this);
       MessageBus.ext.subscribe("control/properties/retract", this.retractClicked);
+      */
 
       this.applyProperties = this.applyProperties.bind(this);
       MessageBus.ext.subscribe("properties/apply", this.applyProperties);
    }
 
+   /*
    async expandClicked(topic, message) {
       Panels.s.setupPropertiesExpand();
    }
@@ -31,6 +34,7 @@ class Properties {
    async retractClicked(topic, message) {
       Panels.s.setupPropertiesRetract();
    }
+   */
 
    editKnotProperties(obj, knotId) {
       this._knotOriginalTitle = obj.title;
@@ -38,28 +42,39 @@ class Properties {
    }
 
    editElementProperties(knotContent, el, element, role) {
+      console.log("=== parameter element");
+      console.log(element);
       let obj = knotContent[el];
       if (this._knotOriginalTitle)
          delete this._knotOriginalTitle;
-      this.editProperties(obj);
+      const htmlProp = this.editProperties(obj);
       // <TODO> Provisory
       const svg = ["jacinto", "simple-svg"].
          includes(Basic.service.currentThemeFamily);
       switch (obj.type) {
          case "text": 
-         case "text-block": this._editor = new EditDCCText(knotContent, el, element, svg);
-                            break;
-         case "entity": if (role)
-                           switch (role) {
-                              case "text":
-                              case "entity": this._editor = new EditDCCText(obj, element, svg);
-                                             break;
-                              case "image":  this._editor = new EditDCCImage(obj, element);
-                                             break;
-                           }
-                        else
-                           this._editor = new EditDCCText(obj, element, svg);
-                        break;
+         case "text-block":
+            this._editor = new EditDCCText(knotContent, el, element, svg);
+            break;
+         case "entity": 
+            if (role)
+               switch (role) {
+                  case "text":
+                  case "entity": this._editor = 
+                                    new EditDCCText(knotContent, el, element, svg);
+                                 break;
+                  case "image":  this._editor = new EditDCCImage(obj, element);
+                                 break;
+               }
+            else
+               this._editor = new EditDCCText(knotContent, el, element, svg);
+            break;
+         case "option":
+            if (obj.image)
+               this._editor = new EditDCCImage(obj, element);
+            else
+               this._editor = new EditDCCPlain(obj, element, htmlProp);
+            break;
       }
    }
 
@@ -71,23 +86,31 @@ class Properties {
 
       const profile = Properties.elProfiles[obj.type];
       let seq = 1;
-      let html = "";
+      let htmlV = "";
+      let htmlP = "";
       for (let p in profile) {
          if (!profile[p].composite) {
-            html += this._editSingleProperty(
+            let html = this._editSingleProperty(
                profile[p], ((obj[p]) ? obj[p] : ""), seq);
+            htmlV += html;
+            if (profile[p].visual == "panel")
+               htmlP += html;
             seq++;
          } else {
             for (let s in profile[p].composite) {
-               html += this._editSingleProperty(
+               html = this._editSingleProperty(
                   profile[p].composite[s],
                   ((obj[p] && obj[p][s]) ? obj[p][s] : ""), seq);
+               htmlV += html;
+               if (profile[p].visual == "panel")
+                  htmlP += html;
                seq++;
             }
          }
       }
-      this._propertiesPanel.innerHTML = html;
+      this._propertiesPanel.innerHTML = htmlV;
       this._propertiesButtons.style.display = "flex";
+      return htmlP;
    }
 
    _editSingleProperty(property, value, seq) {
@@ -215,11 +238,11 @@ class Properties {
 Properties.elProfiles = {
 knot: {
    title: {type: "shortStr",
-           label: "title"},
+           label: "Title"},
    categories: {type: "shortStrArray",
-                label: "categories"},
+                label: "Categories"},
    level: {type: "shortStr",
-               label: "level"}
+               label: "Level"}
 },
 text: {
 //   content: {type: "text",
@@ -233,9 +256,11 @@ image: {
 },
 option: {
    label: {type: "shortStr",
-           label: "label"},
+           label: "Label",
+           visual: "inline"},
    target: {type:  "shortStr",
-            label: "target"}
+            label: "Target",
+            visual: "panel"}
 },
 entity: {
    entity: {type: "shortStr",
@@ -266,15 +291,17 @@ input: {
 Properties.fieldTypes = {
 shortStr:
 `<div class="styp-field-row">
-   <div class="styp-field-label std-border">[label]</div>
+   <label class="styp-field-label">[label]</label>
    <input type="text" id="pfield[n]" class="styp-field-value" size="10" value="[value]">
 </div>`,
 text:
 `<div class="styp-field-row">
+   <label class="styp-field-label">[label]</label>
    <textarea style="height:100%" id="pfield[n]" class="styp-field-value" size="10">[value]</textarea>
 </div>`,
 shortStrArray:
 `<div class="styp-field-row">
+   <label for="pfield[n]" class="styp-field-label">[label]</label>
    <textarea style="height:100%" id="pfield[n]" class="styp-field-value" size="10">[value]</textarea>
 </div>`,
 image:
