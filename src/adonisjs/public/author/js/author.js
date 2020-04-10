@@ -85,7 +85,13 @@ class AuthorManager {
 
       // build singletons
       Panels.start();
-      Properties.start(this);
+      // Properties.start(this);
+
+      Properties.s.attachPanelDetails(
+         document.querySelector("#properties-panel"),
+         document.querySelector("#properties-buttons"),
+         this
+      );
 
       this._mainPanel = document.querySelector("#main-panel");
       this._navigationPanel = document.querySelector("#navigation-panel");
@@ -141,6 +147,8 @@ class AuthorManager {
                                    break;
          case "control/knot/markdown": this.knotMarkdown();
                                        break;
+         case "control/knot/rename": this.knotRename(message);
+                                     break;
          case "control/element/selected/down":
             this.elementSelectedMove("next");
             break;
@@ -265,6 +273,8 @@ class AuthorManager {
       while (k < knotIds.length && !this._knots[knotIds[k]].render)
          k++;
       
+      console.log('=== knot selected');
+      console.log(knotIds[k]);
       MessageBus.ext.publish("control/knot/" + knotIds[k] + "/selected");
    }
    
@@ -694,9 +704,9 @@ class AuthorManager {
       }
    }
 
-   knotRename(previousTitle, newTitle) {
+   knotRename(newTitle) {
       const last = this._knotSelected.lastIndexOf(".");
-      const newIndex = this._knotSelected.substring(0, last) +
+      const newIndex = this._knotSelected.substring(0, last+1) +
                        newTitle.replace(/ /g, "_");
 
       let newKnotSet = {};

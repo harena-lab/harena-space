@@ -5,36 +5,25 @@
  */
 
 class Properties {
-   static start(author) {
-      Properties.s = new Properties(author);
-   }
-
-   constructor(author) {
-      this._author = author;
-
-      this._propertiesPanel = document.querySelector("#properties-panel");
-      this._propertiesButtons = document.querySelector("#properties-buttons");
+   constructor() {
+      // this._author = author;
 
       /*
-      this.expandClicked = this.expandClicked.bind(this);
-      MessageBus.ext.subscribe("control/properties/expand", this.expandClicked);
-      this.retractClicked = this.retractClicked.bind(this);
-      MessageBus.ext.subscribe("control/properties/retract", this.retractClicked);
+      this._panelDetails = document.querySelector("#properties-panel");
+      this._panelDetailsButtons = document.querySelector("#properties-buttons");
       */
 
-      this.applyProperties = this.applyProperties.bind(this);
-      MessageBus.ext.subscribe("properties/apply", this.applyProperties);
+      this.applyPropertiesDetails = this.applyPropertiesDetails.bind(this);
+      MessageBus.ext.subscribe("properties/apply/details",
+         this.applyPropertiesDetails);
+      this.applyPropertiesShort = this.applyPropertiesShort.bind(this);
+      MessageBus.ext.subscribe("properties/apply/short",
+         this.applyPropertiesShort);
    }
 
-   /*
-   async expandClicked(topic, message) {
-      Panels.s.setupPropertiesExpand();
+   attachPanelDetails(panel) {
+      this._panelDetails = panel;
    }
-
-   async retractClicked(topic, message) {
-      Panels.s.setupPropertiesRetract();
-   }
-   */
 
    editKnotProperties(obj, knotId) {
       this._knotOriginalTitle = obj.title;
@@ -86,31 +75,31 @@ class Properties {
 
       const profile = Properties.elProfiles[obj.type];
       let seq = 1;
-      let htmlV = "";
-      let htmlP = "";
+      let htmlD = "";
+      let htmlS = "";
       for (let p in profile) {
          if (!profile[p].composite) {
             let html = this._editSingleProperty(
                profile[p], ((obj[p]) ? obj[p] : ""), seq);
-            htmlV += html;
+            htmlD += html.details;
             if (profile[p].visual == "panel")
-               htmlP += html;
+               htmlS += html.short;
             seq++;
          } else {
             for (let s in profile[p].composite) {
                html = this._editSingleProperty(
                   profile[p].composite[s],
                   ((obj[p] && obj[p][s]) ? obj[p][s] : ""), seq);
-               htmlV += html;
+               htmlD += html.details;
                if (profile[p].visual == "panel")
-                  htmlP += html;
+                  htmlS += html.short;
                seq++;
             }
          }
       }
-      this._propertiesPanel.innerHTML = htmlV;
-      this._propertiesButtons.style.display = "flex";
-      return htmlP;
+      this._panelDetails.innerHTML = htmlD;
+      // this._panelDetailsButtons.style.display = "flex";
+      return htmlS;
    }
 
    _editSingleProperty(property, value, seq) {
@@ -131,12 +120,10 @@ class Properties {
       let fields = null;
       if (property.type != "select")
          fields = Properties.fieldTypes[property.type]
-                            .replace(/\[n\]/igm, seq)
                             .replace(/\[label\]/igm, property.label)
                             .replace(/\[value\]/igm, value);
       else {
          fields = Properties.fieldTypes.selectOpen
-                            .replace(/\[n\]/igm, seq)
                             .replace(/\[label\]/igm, property.label);
          for (let o in property.options) {
             const opvalue = (typeof property.options[o] === "string")
@@ -152,33 +139,64 @@ class Properties {
          fields += Properties.fieldTypes.selectClose;
       }
 
-      return fields;
+      return {details: fields.replace(/\[n\]/igm, seq + "_d"),
+              short:   fields.replace(/\[n\]/igm, seq + "_s")};
    }
 
+   /*
    clearProperties() {
-      this._propertiesPanel.innerHTML = "";
-      this._propertiesButtons.style.display = "none";
+      this._panelDetails.innerHTML = "";
+      this._panelDetailsButtons.style.display = "none";
+   }
+   */
+
+   async applyPropertiesDetails(topic, message) {
+      this._applyProperties(topic, message, true);
    }
 
-   async applyProperties() {
+   async applyPropertiesShort(topic, message) {
+      console.log("=== apply properties short");
+      console.log(topic);
+      console.log(message);
+      this._applyProperties(topic, message, false);
+   }
+
+   async _applyProperties(topic, message, details) {
+      console.log("=== this editor");
+      console.log(JSON.stringify(this._editor));
+      const sufix = (details) ? "_d" : "_s";
+      const panel = (details)
+         ? this._panelDetails : this._editor.editorExtended;
+      console.log("=== this editor extended");
+      console.log(this._editor.editorExtended);
       if (this._objProperties) {
          const profile = Properties.elProfiles[this._objProperties.type];
          let seq = 1;
          for (let p in profile) {
+            console.log("=== trial");
+            console.log(p);
+            console.log(details);
+            console.log(profile[p]);
             if (!profile[p].composite) {
-               const objProperty = await this._applySingleProperty(profile[p], seq);
-               if (objProperty != null)
-                  this._objProperties[p] = objProperty;
+               if (details || profile[p].visual == "panel") {
+                  const objProperty =
+                     await this._applySingleProperty(profile[p], seq, panel, sufix);
+                  if (objProperty != null)
+                     this._objProperties[p] = objProperty;
+               }
                seq++;
             } else {
                for (let s in profile[p].composite) {
-                  const objProperty =
-                     await this._applySingleProperty(profile[p].composite[s], seq);
-                  if (objProperty != null &&
-                      (typeof objProperty != "string" || objProperty.trim().length > 0)) {
-                     if (!this._objProperties[p])
-                        this._objProperties[p] = {};
-                     this._objProperties[p][s] = objProperty;
+                  if (details || profile[p].visual == "panel") {
+                     const objProperty = await this._applySingleProperty(
+                        profile[p].composite[s], seq, panel, sufix);
+                     if (objProperty != null &&
+                         (typeof objProperty != "string" ||
+                           objProperty.trim().length > 0)) {
+                        if (!this._objProperties[p])
+                           this._objProperties[p] = {};
+                        this._objProperties[p][s] = objProperty;
+                     }
                   }
                   seq++;
                }
@@ -188,20 +206,34 @@ class Properties {
 
          Translator.instance.updateElementMarkdown(this._objProperties);
 
-         if (this._knotOriginalTitle && this._author) {
+         if (this._knotOriginalTitle &&
+             this._knotOriginalTitle != this._objProperties.title) {
+            console.log("=== rename knot");
+            console.log(this._knotOriginalTitle);
+            /*
             this._author.knotRename(this._knotOriginalTitle,
                                     this._objProperties.title);
+            */
+            MessageBus.ext.publish("control/knot/rename",
+                                   this._objProperties.title);
             delete this._knotOriginalTitle;
          }
 
          delete this._objProperties;
          MessageBus.ext.publish("control/knot/update");
+         console.log("=== response");
+         console.log(MessageBus.buildResponseTopic(topic, message));
+         if (!details)
+            MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message));
      }
    }
 
-   async _applySingleProperty(property, seq) {
+   async _applySingleProperty(property, seq, panel, sufix) {
       let objProperty = null;
-      let field = this._propertiesPanel.querySelector("#pfield" + seq);
+      console.log("=== field");
+      console.log("#pfield" + seq + sufix);
+      let field =
+         panel.querySelector("#pfield" + seq + sufix);
       switch (property.type) {
          case "shortStr" :
          case "text":
@@ -329,5 +361,7 @@ Properties.buttonApply =
    </dcc-trigger>
 </div>`;
 */
+
+Properties.s = new Properties();
 
 })();

@@ -1,24 +1,5 @@
 @charset "UTF-8";
 
-.styp-elements-block {
-   flex: 20%;
-   min-width: 20%;
-   max-width: 100%;
-   height: 100%;
-   overflow: hidden;
-   display: flex;
-   flex-direction: column;
-}
-
-.styp-properties-block {
-   flex: 95%;
-   width: auto;
-   height: 95%;
-   overflow: hidden;
-   display: flex;
-   flex-direction: column;
-}
-
 .styp-properties-panel {
    flex: 95%;
    width: auto;
@@ -27,16 +8,6 @@
    display: flex;
    flex-direction: column;
    padding: 5px;
-}
-
-.styp-properties-control {
-   flex: 5%;
-   width: auto;
-   height: 5%;
-   display: flex;
-   flex-direction: row;
-   padding: 5px;
-   background-color: #a6a6a6;
 }
 
 .styp-field-row {

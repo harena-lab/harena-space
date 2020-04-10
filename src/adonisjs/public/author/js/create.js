@@ -42,7 +42,7 @@ TemplateManager.templateBox =
    </div>
    <div class="draft-case-title">[title]</div>
    <div class="draft-author-description">[description]</div>
-   <div class="d-flex"><div id="[id]" class="author-case-buttons">NEW</div></div>
+   <div class="d-flex"><div id="[id]" class="author-panel-button">NEW</div></div>
 </div>`;
 
 })();

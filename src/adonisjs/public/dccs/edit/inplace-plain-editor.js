@@ -12,23 +12,31 @@ class EditDCCPlain extends EditDCC {
    }
 
    async _buildEditor(htmlProp) {
-      this._buildToolbarPanel(EditDCCPlain.toolbarTemplate);
+      this._originalEdit = this._editElement.innerHTML;
       this._editElement.contentEditable = true;
       let ep = await this._extendedPanel(
             EditDCCPlain.propertiesTemplate.replace("[properties]", htmlProp), false);
+      this._editElement.contentEditable = false;
+      console.log("=== ep");
+      console.log(ep);
+      if (ep.clicked == "confirm")
+         await MessageBus.ext.request("properties/apply/short");
+      else
+         this._editElement.innerHTML = this._originalEdit;
+      this._removeExtendedPanel();
    }
 
-   async _updateProperties() {
-      if (this._imageField.files[0]) {
-         const asset = await
-            MessageBus.ext.request("data/asset//new",
-                 {file: this._imageField.files[0],
-                  caseid: Basic.service.currentCaseId});
-         this._objProperties.image.path = asset.message;
-      }
-      MessageBus.ext.publish("properties/apply");
-      this._editorWrapper.removeChild(this._editor);
+   /*
+   async _handleConfirm() {
+      this._editElement.contentEditable = false;
+      MessageBus.ext.publish("properties/apply/short");
    }
+
+   async _handleCancel() {
+      this._editElement.contentEditable = false;
+      this._editElement.contentEditable.innerHTML = this._originalEdit;
+   }
+   */
 }
 
 (function() {

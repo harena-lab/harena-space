@@ -311,7 +311,10 @@ class Translator {
    _defineCategorySettings(categories) {
       let focusCategory = null;
       // when there is more than one category, priority in reverse order
-      if (categories != null) {
+      if (this._categorySettings)
+         delete this._categorySettings;
+
+      if (categories != null && this._themeSettings != null) {
          let cat = categories.length - 1;
          while (focusCategory == null && cat >= 0 &&
                 !this._themeSettings[categories[cat]])
@@ -320,13 +323,10 @@ class Translator {
             focusCategory = categories[cat];
          else
             focusCategory = "knot";
+         if (this._themeSettings[focusCategory])
+            this._categorySettings =
+               this._themeSettings[focusCategory];
       }
-      if (this._themeSettings &&
-          this._themeSettings[focusCategory])
-         this._categorySettings =
-            this._themeSettings[focusCategory];
-      else if (this._categorySettings)
-         delete this._categorySettings;
    }
 
    /*

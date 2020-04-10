@@ -9,6 +9,13 @@ class EditDCC {
       this._containerRect = this._editorWrapper.getBoundingClientRect();
       this._elementWrapper = this._fetchElementWrapper();
       this._elementRect = this._elementWrapper.getBoundingClientRect();
+      this._editorExtended = null;
+   }
+
+   get editorExtended() {
+      console.log("=== editor extended");
+      console.log(this._editorExtended);
+      return this._editorExtended;
    }
 
    // fetches the editor wrapper
@@ -106,35 +113,39 @@ class EditDCC {
          };
       });
       let buttonClicked = await promise;
-      this._editorWrapper.removeChild(this._editorExtended);
+      console.log("=== promise");
       return {
          clicked: buttonClicked,
          content: this._extendedSub.content
       };
    }
 
-   _buildExtendedPanel(html, imageBrowser) {
-      let editorExtended = document.createElement("div");
-      editorExtended.classList.add("inplace-editor-floating");
-      editorExtended.innerHTML = html;
+   _removeExtendedPanel() {
+      this._editorWrapper.removeChild(this._editorExtended);
+   }
 
-      const toolbarRect = this._editorToolbar.getBoundingClientRect();
-      editorExtended.style.left = this._transformRelativeX(
+   _buildExtendedPanel(html, imageBrowser) {
+      let panelExtended = document.createElement("div");
+      panelExtended.classList.add("inplace-editor-floating");
+      panelExtended.innerHTML = html;
+
+      // const toolbarRect = this._editorToolbar.getBoundingClientRect();
+      panelExtended.style.left = this._transformRelativeX(
          this._elementRect.left - this._containerRect.left);
-      editorExtended.style.bottom = this._transformRelativeY(
+      panelExtended.style.bottom = this._transformRelativeY(
          this._containerRect.height -
             (this._elementRect.top - this._containerRect.top));
 
       this._extendedSub = {
-         cancel:  editorExtended.querySelector("#ext-cancel"),
-         content: editorExtended.querySelector("#ext-content")
+         cancel:  panelExtended.querySelector("#ext-cancel"),
+         content: panelExtended.querySelector("#ext-content")
       };
       if (imageBrowser)
-         this._extendedSub.image = editorExtended.querySelector("#ext-content");
+         this._extendedSub.image = panelExtended.querySelector("#ext-content");
       else
-         this._extendedSub.confirm = editorExtended.querySelector("#ext-confirm");
+         this._extendedSub.confirm = panelExtended.querySelector("#ext-confirm");
 
-      return editorExtended;
+      return panelExtended;
    }
 }
 
