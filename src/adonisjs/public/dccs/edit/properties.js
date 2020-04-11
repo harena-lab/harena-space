@@ -30,16 +30,34 @@ class Properties {
       this.editProperties(obj);
    }
 
-   editElementProperties(knotContent, el, element, role) {
-      console.log("=== parameter element");
-      console.log(element);
+   editElementProperties(knots, knotid, el, dcc, role) {
+      this._knots = knots;
+      const knotContent = knots[knotid].content;
+      const element = dcc.currentPresentation();
       let obj = knotContent[el];
       if (this._knotOriginalTitle)
          delete this._knotOriginalTitle;
-      const htmlProp = this.editProperties(obj);
+      const editp = this.editProperties(obj);
       // <TODO> Provisory
       const svg = ["jacinto", "simple-svg"].
          includes(Basic.service.currentThemeFamily);
+      if (editp.inlineProperty != null) {
+         switch (editp.inlineProfile.type) {
+            case "text":
+               this._editor = new EditDCCText(knotContent, el, dcc, svg);
+               break;
+            case "shortStr":
+               console.log("=== inline property");
+               console.log(editp.inlineProperty);
+               this._editor = new EditDCCPlain(obj, editp.inlineProperty,
+                                               dcc, editp.htmls);
+               break;
+            case "image":
+               this._editor = new EditDCCImage(obj, element);
+               break;
+         }
+      }
+      /*
       switch (obj.type) {
          case "text": 
          case "text-block":
@@ -62,9 +80,10 @@ class Properties {
             if (obj.image)
                this._editor = new EditDCCImage(obj, element);
             else
-               this._editor = new EditDCCPlain(obj, element, htmlProp);
+               this._editor = new EditDCCPlain(obj, "label", dcc, htmlProp);
             break;
       }
+      */
    }
 
    /*
@@ -77,7 +96,13 @@ class Properties {
       let seq = 1;
       let htmlD = "";
       let htmlS = "";
+      let inlineProperty = null;
+      let inlineProfile = null;
       for (let p in profile) {
+         if (profile[p].visual == "inline") {
+            inlineProperty = p;
+            inlineProfile = profile[p];
+         }
          if (!profile[p].composite) {
             let html = this._editSingleProperty(
                profile[p], ((obj[p]) ? obj[p] : ""), seq);
@@ -99,7 +124,9 @@ class Properties {
       }
       this._panelDetails.innerHTML = htmlD;
       // this._panelDetailsButtons.style.display = "flex";
-      return htmlS;
+      return {inlineProperty: inlineProperty,
+              inlineProfile:  inlineProfile,
+              htmls: htmlS};
    }
 
    _editSingleProperty(property, value, seq) {
@@ -114,6 +141,16 @@ class Properties {
          switch (property.options) {
             case "selectVocabulary":
                property.options = Context.instance.listSelectVocabularies();
+               property.options.unshift(["", ""]);
+               break;
+            case "selectKnot":
+               property.options = [];
+               const knotList = Object.keys(this._knots);
+               for (let k = 0; k < knotList.length; k++) {
+                  if (k == knotList.length-1 ||
+                      !knotList[k+1].startsWith(knotList[k]))
+                  property.options.push([knotList[k], knotList[k]]);
+               }
                break;
          }
       }
@@ -155,28 +192,17 @@ class Properties {
    }
 
    async applyPropertiesShort(topic, message) {
-      console.log("=== apply properties short");
-      console.log(topic);
-      console.log(message);
       this._applyProperties(topic, message, false);
    }
 
    async _applyProperties(topic, message, details) {
-      console.log("=== this editor");
-      console.log(JSON.stringify(this._editor));
       const sufix = (details) ? "_d" : "_s";
       const panel = (details)
          ? this._panelDetails : this._editor.editorExtended;
-      console.log("=== this editor extended");
-      console.log(this._editor.editorExtended);
       if (this._objProperties) {
          const profile = Properties.elProfiles[this._objProperties.type];
          let seq = 1;
          for (let p in profile) {
-            console.log("=== trial");
-            console.log(p);
-            console.log(details);
-            console.log(profile[p]);
             if (!profile[p].composite) {
                if (details || profile[p].visual == "panel") {
                   const objProperty =
@@ -201,19 +227,12 @@ class Properties {
                   seq++;
                }
             }
-            // console.log(this._objProperties[p]);
          }
 
          Translator.instance.updateElementMarkdown(this._objProperties);
 
          if (this._knotOriginalTitle &&
              this._knotOriginalTitle != this._objProperties.title) {
-            console.log("=== rename knot");
-            console.log(this._knotOriginalTitle);
-            /*
-            this._author.knotRename(this._knotOriginalTitle,
-                                    this._objProperties.title);
-            */
             MessageBus.ext.publish("control/knot/rename",
                                    this._objProperties.title);
             delete this._knotOriginalTitle;
@@ -221,8 +240,6 @@ class Properties {
 
          delete this._objProperties;
          MessageBus.ext.publish("control/knot/update");
-         console.log("=== response");
-         console.log(MessageBus.buildResponseTopic(topic, message));
          if (!details)
             MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message));
      }
@@ -230,8 +247,6 @@ class Properties {
 
    async _applySingleProperty(property, seq, panel, sufix) {
       let objProperty = null;
-      console.log("=== field");
-      console.log("#pfield" + seq + sufix);
       let field =
          panel.querySelector("#pfield" + seq + sufix);
       switch (property.type) {
@@ -249,6 +264,9 @@ class Properties {
                   categories[c] = categories[c].trim();
                objProperty = categories;
             }
+            break;
+         case "select":
+            objProperty = field.value;
             break;
          case "image":
             // uploads the image
@@ -277,8 +295,14 @@ knot: {
                label: "Level"}
 },
 text: {
-//   content: {type: "text",
-//             label: "text"}
+   content: {type: "text",
+             label: "Text",
+             visual: "inline"}
+},
+"text-block": {
+   content: {type: "text",
+             label: "Text",
+             visual: "inline"}
 },
 image: {
    alternative: {type: "shortStr",
@@ -290,7 +314,8 @@ option: {
    label: {type: "shortStr",
            label: "Label",
            visual: "inline"},
-   target: {type:  "shortStr",
+   target: {type:  "select",
+            options: "selectKnot",
             label: "Target",
             visual: "panel"}
 },
@@ -311,12 +336,18 @@ entity: {
 input: {
    subtype: {type: "select",
              options: Translator.inputSubtype,
-             label: "type"},
+             label: "Type",
+             visual: "panel"},
+   text:    {type: "shortStr",
+             label: "Statement",
+             visual: "inline"},
    variable: {type: "variable",
-              label: "variable"},
+              label: "Variable",
+              visual: "panel"},
    vocabularies: {type: "select",
                   options: "selectVocabulary",
-                  label: "vocabularies"}
+                  label: "Vocabularies",
+                  visual: "panel"}
 }
 };
 
@@ -344,8 +375,8 @@ image:
 </div>`,
 selectOpen:
 `<div class="styp-field-row">
-   <div class="styp-field-label std-border">[label]</div>
-   <select id='pfield[n]'>`,
+   <div class="styp-field-label">[label]</div>
+   <select id="pfield[n]" class="styp-field-value">`,
 selectOption:
 `    <option value="[opvalue]"[selected]>[oplabel]</option>`,
 selectClose:

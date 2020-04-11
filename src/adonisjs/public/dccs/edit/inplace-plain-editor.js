@@ -2,12 +2,10 @@
   ***************************/
 
 class EditDCCPlain extends EditDCC {
-   constructor(obj, element, htmlProp) {
-      super(element);
+   constructor(obj, field, dcc, htmlProp) {
+      super(dcc);
       this._objProperties = obj;
-      // this._commons = new EditDCC(element);
-      // this._handleConfirm = this._handleConfirm.bind(this);
-      // this._handleCancel = this._handleCancel.bind(this);
+      this._objField = field;
       this._buildEditor(htmlProp);
    }
 
@@ -17,26 +15,19 @@ class EditDCCPlain extends EditDCC {
       let ep = await this._extendedPanel(
             EditDCCPlain.propertiesTemplate.replace("[properties]", htmlProp), false);
       this._editElement.contentEditable = false;
-      console.log("=== ep");
-      console.log(ep);
-      if (ep.clicked == "confirm")
+      if (ep.clicked == "confirm") {
+         this._objProperties[this._objField] =
+            this._editElement.innerHTML.trim().replace(/<br>$/i, "");
+         console.log("=== new obj");
+         console.log(this._objField);
+         console.log(this._objProperties);
          await MessageBus.ext.request("properties/apply/short");
-      else
+      } else {
          this._editElement.innerHTML = this._originalEdit;
+         this._editDCC.reactivateAuthor();
+      }
       this._removeExtendedPanel();
    }
-
-   /*
-   async _handleConfirm() {
-      this._editElement.contentEditable = false;
-      MessageBus.ext.publish("properties/apply/short");
-   }
-
-   async _handleCancel() {
-      this._editElement.contentEditable = false;
-      this._editElement.contentEditable.innerHTML = this._originalEdit;
-   }
-   */
 }
 
 (function() {

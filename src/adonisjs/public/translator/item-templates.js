@@ -110,7 +110,9 @@ image:
 option:
 `{subtype}{label} -> {target}`,
 entity:
-`@{entity}`
+`@{entity}`,
+input:
+`? {variable}{statement}{subtype}{extra}`
 };
 
 Translator.objTemplates = {

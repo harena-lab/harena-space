@@ -3,6 +3,11 @@
  */
 
 class DCCVisual extends DCCBase {
+   constructor() {
+      super();
+      this.selectListener = this.selectListener.bind(this);
+   }
+
    static get observedAttributes() {
       return DCCBase.observedAttributes;
    }
@@ -12,19 +17,47 @@ class DCCVisual extends DCCBase {
    }
 
    checkActivateAuthor() {
-      if (this.author && this._presentation) {
-         this._presentation.style.cursor = "pointer";
-         this._presentation.dccid = this.id;
-         this.selectListener = this.selectListener.bind(this);
-         this._presentation.addEventListener("click", this.selectListener);
-      }
+      if (this.author && this._presentation)
+         this._activateAuthorPresentation(this._presentation);
+   }
+
+   _activateAuthorPresentation(presentation) {
+      presentation.style.cursor = "pointer";
+      presentation.dccid = this.id;
+      presentation.addEventListener("click", this.selectListener);
+   }
+
+   // ignores role argument
+   edit() {
+      this._editPresentation(this._presentation);
+   }
+
+   _editPresentation(presentation) {
+      presentation.removeEventListener("click", this.selectListener);
+      presentation.style.cursor = "default";
+      if (presentation.style.border)
+         this._originalBorderStyle = presentation.style.border;
+      presentation.style.border = DCCVisual.selectedBorderStyle;
+   }
+
+   reactivateAuthor() {
+      this._reactivateAuthorPresentation(this._presentation);
+   }
+
+   _reactivateAuthorPresentation(presentation) {
+      if (this._originalBorderStyle) {
+         presentation.style.border = this._originalBorderStyle;
+         delete this._originalBorderStyle;
+      } else
+         presentation.style.border = "none";
+      this.checkActivateAuthor();
    }
 
    selectListener(event) {
       MessageBus.ext.publish("control/element/" + this.id + "/selected");
    }
 
-   get presentation() {
+   currentPresentation() {
       return (this._presentation) ? this._presentation : null;
    }
 
@@ -36,6 +69,7 @@ class DCCVisual extends DCCBase {
 class DCCMultiVisual extends DCCVisual {
    constructor() {
       super();
+      this.selectListener = this.selectListener.bind(this);
       this._presentationSet = [];
    }
 
@@ -49,21 +83,38 @@ class DCCMultiVisual extends DCCVisual {
    }
 
    checkActivateAuthor() {
-      if (this.author) {
-         for (let pr in this._presentationSet) {
-            if (this._presentationSet[pr].style.cursor != "pointer") {
-               this._presentationSet[pr].style.cursor = "pointer";
-               this._presentationSet[pr].dccid = this.id;
-               this._presentationSet[pr].addEventListener("click",
-                  function() {
-                     if (this.subRole)
-                        MessageBus.ext.publish("control/element/" + this.dccid + "/selected", this.subRole);
-                     else
-                        MessageBus.ext.publish("control/element/" + this.dccid + "/selected");
-                  }
-               );
-            }
+      if (this.author)
+         for (let pr of this._presentationSet)
+            this._activateAuthorPresentation(pr);
+   }
+
+   selectListener(event) {
+      if (event.target.subRole)
+         MessageBus.ext.publish(
+            "control/element/" + event.target.dccid + "/selected", event.target.subRole);
+      else
+         MessageBus.ext.publish(
+            "control/element/" + event.target.dccid + "/selected");
+   }
+
+   edit(role) {
+      for (let pr of this._presentationSet)
+         if (pr.subRole == role) {
+            this._editedPresentation = pr;
+            this._editPresentation(pr);
          }
-      }
+   }
+
+   reactivateAuthor() {
+      this._activateAuthorPresentation(this._editedPresentation);
+      delete this._editedPresentation;
+   }
+
+   currentPresentation() {
+      return (this._editedPresentation) ? this._editedPresentation : null;
    }
 }
+
+(function() {
+   DCCVisual.selectedBorderStyle = "3px dashed #000000";
+})();

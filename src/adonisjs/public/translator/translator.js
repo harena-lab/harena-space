@@ -1057,6 +1057,8 @@ class Translator {
                         break;
          case "entity": element._source = this._entityObjToMd(element);
                         break;
+         case "input": element._source = this._inputObjToMd(element);
+                        break;
       }
 
       // linefeed of the merged block (if block), otherwise linefeed of the content
@@ -1408,8 +1410,10 @@ class Translator {
    }
 
    _optionObjToMd(obj) {
+      console.log("=== option markdown");
+      console.log(obj);
       return Translator.markdownTemplates.option
-                .replace("{subtype}", (obj.subtype = "_") ? "" : obj.subtype)
+                .replace("{subtype}", (obj.subtype == "_") ? "" : obj.subtype+" ")
                 .replace("{label}", (obj.label) ? obj.label : "")
                 .replace("{target}", obj.target);
    }
@@ -1529,7 +1533,7 @@ class Translator {
          .replace("[seq]", obj.seq)
          .replace("[author]", this.authorAttr)
          .replace("[target]",
-            this.this._transformNavigationMessage(obj.contextTarget))
+            this._transformNavigationMessage(obj.contextTarget))
          .replace("[display]", obj.label);
    }
 
@@ -1699,7 +1703,7 @@ class Translator {
    _inputObjToHTML(obj) {
       // core attributes are not straight mapped
       const coreAttributes = ["seq", "author", "type", "subtype", "text",
-                              "show", "_source", "_modified"];
+                              "show", "_source", "_modified", "mergeLine"];
       const subtypeMap = {
          short: "input-typed",
          text: "input-typed",
@@ -1720,7 +1724,6 @@ class Translator {
          else
             answer = " player='" + this._playerInputShow + "'";
       }
-
 
       let extraAttr = "";
       for (let atr in obj)
@@ -1748,6 +1751,31 @@ class Translator {
       }
 
       return input;
+   }
+
+  /*
+    * Input Obj to Md
+    */
+   _inputObjToMd(obj) {
+      // core attributes are not straight mapped
+      const coreAttributes = ["seq", "author", "variable", "type", "subtype", "text",
+                              "_source", "_modified", "mergeLine"];
+      let extraAttr = "";
+      for (let atr in obj)
+         if (!coreAttributes.includes(atr))
+            extraAttr += this._mdSubField(atr, obj[atr]);
+
+      return Translator.markdownTemplates.input
+                          .replace("{variable}", obj.variable)
+                          .replace("{statement}", (obj.text) ? "\n  " + obj.text : "")
+                          .replace("{subtype}",
+                             (obj.subtype && obj.subtype != "short")
+                                ? this._mdSubField("type", obj.subtype) : "")
+                          .replace("{extra}", extraAttr);
+   }
+
+   _mdSubField(label, value) {
+      return "\n  * " + label + ": " + value;
    }
 
    /*

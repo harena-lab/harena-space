@@ -16,8 +16,12 @@ class Context {
    // <TODO> filter only select vocabularies of the context
    listSelectVocabularies() {
       let list = [];
+      console.log("=== namespaces");
+      console.log(this._namespaces);
       for (let c in this._contextIndex)
-         list.push([c, this._contextIndex[c].label]);
+         list.push([this.toNS(c), this._contextIndex[c].label]);
+      console.log("=== list");
+      console.log(list);
       return list;
    }
 
@@ -37,12 +41,23 @@ class Context {
 
    resolveNS(id) {
       let nf = null;
-      console.log("=== namespaces");
-      console.log(this._namespaces);
       for (let ns in this._namespaces)
          if (id.startsWith(ns + ":"))
             nf = ns;
       return (nf == null) ? id : id.replace(nf + ":", this._namespaces[nf]);
+   }
+
+   toNS(uri) {
+      console.log("=== uri");
+      console.log(uri);
+      let nf = null;
+      for (let ns in this._namespaces)
+         if (uri.startsWith(this._namespaces[ns]) &&
+             (nf == null || this._namespaces[ns].length > this._namespaces[nf].length))
+            nf = ns;
+      console.log("=== nf");
+      console.log(nf);
+      return (nf == null) ? uri : uri.replace(this._namespaces[nf], nf + ":");
    }
 
    addNamespace(namespace, uri) {

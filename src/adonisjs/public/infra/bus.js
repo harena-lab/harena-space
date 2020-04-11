@@ -75,8 +75,6 @@ class MessageBus {
                }
              });
              const status = await response.json();
-            // console.log("--- topic: " + extTopic);
-            // console.log(extMessage);
           }
 
           parent.postMessage({topic: topic, message: message}, "*");
@@ -123,16 +121,11 @@ class MessageBus {
          MessageBus._stamp++;
       }
 
-      console.log("=== rt");
-      console.log(rt);
-
       let promise = new Promise((resolve, reject) => {
          const callback = function(topic, message) {
             resolve({topic: topic, message: message, callback: callback});
          };
          this.subscribe(rt, callback);
-         console.log("=== listeners");
-         console.log(this._listeners);
          this.publish(requestTopic, rm);
       });
       

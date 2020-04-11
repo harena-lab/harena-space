@@ -48,8 +48,8 @@ SelectBlot.tagName = "dcc-state-select";
 Quill.register(SelectBlot);
 
 class EditDCCText extends EditDCC {
-   constructor(knotContent, el, element, svg) {
-      super(element);
+   constructor(knotContent, el, dcc, svg) {
+      super(dcc);
       this._knotContent = knotContent;
       this._element = el;
       this._handleHighlighter = this._handleHighlighter.bind(this);

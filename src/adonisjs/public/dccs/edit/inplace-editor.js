@@ -3,8 +3,11 @@
  */
 
 class EditDCC {
-   constructor(editElement) {
-      this._editElement = editElement;
+   constructor(dcc) {
+      this._editDCC = dcc;
+      this._editElement = dcc.currentPresentation();
+      console.log("=== edit element");
+      console.log(this._editElement);
       this._editorWrapper = this._fetchEditorWrapper();
       this._containerRect = this._editorWrapper.getBoundingClientRect();
       this._elementWrapper = this._fetchElementWrapper();
@@ -13,8 +16,6 @@ class EditDCC {
    }
 
    get editorExtended() {
-      console.log("=== editor extended");
-      console.log(this._editorExtended);
       return this._editorExtended;
    }
 
@@ -34,10 +35,14 @@ class EditDCC {
    _fetchElementWrapper() {
       // looks for a knot-wrapper or equivalent
       let elWrapper = this._editElement;
+      console.log("=== element wrapper 1");
+      console.log(elWrapper);
       if (this._editElement != null) {
          let ew = elWrapper.parentNode;
          while (ew != null && (!ew.id || !ew.id.endsWith("-wrapper")))
             ew = ew.parentNode;
+         console.log("=== element wrapper 2");
+         console.log(elWrapper);
          // otherwise, finds the element outside dccs
          if (ew != null && ew.id && ew.id != "inplace-editor-wrapper")
             elWrapper = ew;
@@ -47,6 +52,8 @@ class EditDCC {
                    elWrapper.parentNode != null)
                elWrapper = elWrapper.parentNode;
          }
+         console.log("=== element wrapper 3");
+         console.log(elWrapper);
       }
       return elWrapper;
    }
@@ -113,7 +120,6 @@ class EditDCC {
          };
       });
       let buttonClicked = await promise;
-      console.log("=== promise");
       return {
          clicked: buttonClicked,
          content: this._extendedSub.content
@@ -129,12 +135,19 @@ class EditDCC {
       panelExtended.classList.add("inplace-editor-floating");
       panelExtended.innerHTML = html;
 
-      // const toolbarRect = this._editorToolbar.getBoundingClientRect();
       panelExtended.style.left = this._transformRelativeX(
          this._elementRect.left - this._containerRect.left);
-      panelExtended.style.bottom = this._transformRelativeY(
-         this._containerRect.height -
+
+      // tests the middle of the element against the middle of the container
+      if (this._elementRect.top + (this._elementRect.height / 2) >
+          this._containerRect.top + (this._containerRect.height / 2))
+         panelExtended.style.bottom = this._transformRelativeY(
+            this._containerRect.height -
             (this._elementRect.top - this._containerRect.top));
+      else
+         panelExtended.style.top = this._transformRelativeY(
+            this._containerRect.height -
+            (this._elementRect.bottom - this._containerRect.top));
 
       this._extendedSub = {
          cancel:  panelExtended.querySelector("#ext-cancel"),
