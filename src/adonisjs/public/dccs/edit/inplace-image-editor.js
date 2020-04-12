@@ -28,17 +28,17 @@ class EditDCCImage extends EditDCC {
       let editor = document.createElement("div");
       editor.style.position = "absolute";
       editor.style.left = this._transformRelativeX(
-         this._elementRect.left - this._containerRect.left);
+         this._elementWrapperRect.left - this._containerRect.left);
       editor.style.top = this._transformRelativeY(
-         this._elementRect.top - this._containerRect.top);
-      editor.style.width = this._transformRelativeX(this._elementRect.width);
-      editor.style.height = this._transformRelativeY(this._elementRect.height);
+         this._elementWrapperRect.top - this._containerRect.top);
+      editor.style.width = this._transformRelativeX(this._elementWrapperRect.width);
+      editor.style.height = this._transformRelativeY(this._elementWrapperRect.height);
       editor.style.fontSize =
          window.getComputedStyle(this._editElement, null).getPropertyValue("font-size");
       editor.innerHTML =
          EditDCCImage.editorTemplate
-            .replace("[width]", this._transformViewportX(this._elementRect.width))
-            .replace("[height]", this._transformViewportY(this._elementRect.height));
+            .replace("[width]", this._transformViewportX(this._elementWrapperRect.width))
+            .replace("[height]", this._transformViewportY(this._elementWrapperRect.height));
       this._updateImage = this._updateImage.bind(this);
       this._imageField = editor.querySelector("#pfieldimage");
       this._imageField.addEventListener("change", this._updateImage);

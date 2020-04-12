@@ -18,9 +18,6 @@ class EditDCCPlain extends EditDCC {
       if (ep.clicked == "confirm") {
          this._objProperties[this._objField] =
             this._editElement.innerHTML.trim().replace(/<br>$/i, "");
-         console.log("=== new obj");
-         console.log(this._objField);
-         console.log(this._objProperties);
          await MessageBus.ext.request("properties/apply/short");
       } else {
          this._editElement.innerHTML = this._originalEdit;

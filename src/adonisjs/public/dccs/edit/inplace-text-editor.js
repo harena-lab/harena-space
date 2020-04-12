@@ -122,10 +122,10 @@ class EditDCCText extends EditDCC {
       editorToolbar.innerHTML = this._toolbarControls;
 
       editorToolbar.style.left = this._transformRelativeX(
-         this._elementRect.left - this._containerRect.left);
+         this._elementWrapperRect.left - this._containerRect.left);
       editorToolbar.style.bottom = this._transformRelativeY(
          this._containerRect.height - 
-            (this._elementRect.top - this._containerRect.top));
+            (this._elementWrapperRect.top - this._containerRect.top));
       return editorToolbar;
    }
    */
@@ -134,19 +134,19 @@ class EditDCCText extends EditDCC {
       let editor = document.createElement("div");
       editor.style.position = "absolute";
       editor.style.left = this._transformRelativeX(
-         this._elementRect.left - this._containerRect.left);
+         this._elementWrapperRect.left - this._containerRect.left);
       editor.style.top = this._transformRelativeY(
-         this._elementRect.top - this._containerRect.top);
-      editor.style.width = this._transformRelativeX(this._elementRect.width);
+         this._elementWrapperRect.top - this._containerRect.top);
+      editor.style.width = this._transformRelativeX(this._elementWrapperRect.width);
       editor.style.height =
-         this._transformRelativeY(this._elementRect.height);
+         this._transformRelativeY(this._elementWrapperRect.height);
       if (this._svgDraw)
          editor.innerHTML =
             EditDCCText.editorTemplate.svg
                .replace("[width]",
-                  this._transformViewportX(this._elementRect.width))
+                  this._transformViewportX(this._elementWrapperRect.width))
                .replace("[height]",
-                  this._transformViewportY(this._elementRect.height));
+                  this._transformViewportY(this._elementWrapperRect.height));
       else
          editor.innerHTML =
             EditDCCText.editorTemplate.html;
@@ -259,10 +259,10 @@ class EditDCCText extends EditDCC {
 
       const toolbarRect = this._editorToolbar.getBoundingClientRect();
       editorAnnotation.style.left = this._transformRelativeX(
-         this._elementRect.left - this._containerRect.left);
+         this._elementWrapperRect.left - this._containerRect.left);
       editorAnnotation.style.bottom = this._transformRelativeY(
          this._containerRect.height -
-            (this._elementRect.top - this._containerRect.top));
+            (this._elementWrapperRect.top - this._containerRect.top));
 
       this._buttonAnConfirm = editorAnnotation.querySelector("#an-confirm");
       this._buttonAnCancel  = editorAnnotation.querySelector("#an-cancel");
@@ -423,10 +423,10 @@ class EditDCCText extends EditDCC {
 
       const toolbarRect = this._editorToolbar.getBoundingClientRect();
       editorExtended.style.left = this._transformRelativeX(
-         this._elementRect.left - this._containerRect.left);
+         this._elementWrapperRect.left - this._containerRect.left);
       editorExtended.style.bottom = this._transformRelativeY(
          this._containerRect.height -
-            (this._elementRect.top - this._containerRect.top));
+            (this._elementWrapperRect.top - this._containerRect.top));
 
       this._extendedSub = {
          cancel:  editorExtended.querySelector("#ext-cancel"),

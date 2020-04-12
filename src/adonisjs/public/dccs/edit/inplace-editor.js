@@ -11,7 +11,8 @@ class EditDCC {
       this._editorWrapper = this._fetchEditorWrapper();
       this._containerRect = this._editorWrapper.getBoundingClientRect();
       this._elementWrapper = this._fetchElementWrapper();
-      this._elementRect = this._elementWrapper.getBoundingClientRect();
+      this._elementWrapperRect = this._elementWrapper.getBoundingClientRect();
+      this._elementRect = this._editElement.getBoundingClientRect();
       this._editorExtended = null;
    }
 
@@ -64,10 +65,10 @@ class EditDCC {
       this._editorToolbar.innerHTML = html;
 
       this._editorToolbar.style.left = this._transformRelativeX(
-         this._elementRect.left - this._containerRect.left);
+         this._elementWrapperRect.left - this._containerRect.left);
       this._editorToolbar.style.bottom = this._transformRelativeY(
          this._containerRect.height - 
-            (this._elementRect.top - this._containerRect.top));
+            (this._elementWrapperRect.top - this._containerRect.top));
       this._editorWrapper.appendChild(this._editorToolbar);
    }
 
@@ -145,9 +146,8 @@ class EditDCC {
             this._containerRect.height -
             (this._elementRect.top - this._containerRect.top));
       else
-         panelExtended.style.top = this._transformRelativeY(
-            this._containerRect.height -
-            (this._elementRect.bottom - this._containerRect.top));
+         panelExtended.style.top =
+            this._transformRelativeY(this._elementRect.bottom - this._containerRect.top);
 
       this._extendedSub = {
          cancel:  panelExtended.querySelector("#ext-cancel"),

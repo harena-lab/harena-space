@@ -47,8 +47,6 @@ class Properties {
                this._editor = new EditDCCText(knotContent, el, dcc, svg);
                break;
             case "shortStr":
-               console.log("=== inline property");
-               console.log(editp.inlineProperty);
                this._editor = new EditDCCPlain(obj, editp.inlineProperty,
                                                dcc, editp.htmls);
                break;
@@ -92,7 +90,7 @@ class Properties {
    editProperties(obj) {
       this._objProperties = obj;
 
-      const profile = Properties.elProfiles[obj.type];
+      const profile = this._typeProfile(obj);
       let seq = 1;
       let htmlD = "";
       let htmlS = "";
@@ -129,6 +127,15 @@ class Properties {
               htmls: htmlS};
    }
 
+   _typeProfile(obj) {
+      let profile = Properties.elProfiles[obj.type];
+      if (Properties.hasSubtypes.includes(obj.type)) {
+         profile = profile[
+            (obj.subtype) ? obj.subtype : Properties.defaultSubtype[obj.type]];
+      }
+      return profile;
+   }
+
    _editSingleProperty(property, value, seq) {
       if (property.type == "shortStrArray" && value.length > 0)
          value = value.join(",");
@@ -162,17 +169,25 @@ class Properties {
       else {
          fields = Properties.fieldTypes.selectOpen
                             .replace(/\[label\]/igm, property.label);
+         let hasSelection = false;
          for (let o in property.options) {
             const opvalue = (typeof property.options[o] === "string")
                             ? property.options[o] : property.options[o][0];
             const oplabel = (typeof property.options[o] === "string")
                             ? property.options[o] : property.options[o][1];
             const selected = (value == opvalue) ? " selected" : "";
+            if (value == opvalue)
+               hasSelection = true;
             fields += Properties.fieldTypes.selectOption
                                 .replace(/\[opvalue\]/igm, opvalue)
                                 .replace(/\[oplabel\]/igm, oplabel)
                                 .replace(/\[selected\]/igm, selected);
          }
+         if (!hasSelection)
+            fields += Properties.fieldTypes.selectOption
+                                .replace(/\[opvalue\]/igm, value)
+                                .replace(/\[oplabel\]/igm, value)
+                                .replace(/\[selected\]/igm, " selected");
          fields += Properties.fieldTypes.selectClose;
       }
 
@@ -200,7 +215,7 @@ class Properties {
       const panel = (details)
          ? this._panelDetails : this._editor.editorExtended;
       if (this._objProperties) {
-         const profile = Properties.elProfiles[this._objProperties.type];
+         const profile = this._typeProfile(this._objProperties);
          let seq = 1;
          for (let p in profile) {
             if (!profile[p].composite) {
@@ -334,20 +349,44 @@ entity: {
             label: "text"}
    },
 input: {
-   subtype: {type: "select",
-             options: Translator.inputSubtype,
-             label: "Type",
-             visual: "panel"},
-   text:    {type: "shortStr",
-             label: "Statement",
-             visual: "inline"},
-   variable: {type: "variable",
-              label: "Variable",
+   short: {
+      /*
+      subtype: {type: "select",
+                options: Translator.inputSubtype,
+                label: "Type",
+                visual: "panel"},
+      */
+      text:    {type: "shortStr",
+                label: "Statement",
+                visual: "inline"},
+      variable: {type: "variable",
+                 label: "Variable",
+                 visual: "panel"},
+      vocabularies: {type: "select",
+                     options: "selectVocabulary",
+                     label: "Vocabularies",
+                     visual: "panel"}
+   },
+   slider: {
+      text:    {type: "shortStr",
+                label: "Statement",
+                visual: "inline"},
+      variable: {type: "variable",
+                 label: "Variable",
+                 visual: "panel"},
+      min: {type: "shortStr",
+            label: "Min",
+            visual: "panel"},
+      max: {type: "shortStr",
+            label: "Max",
+            visual: "panel"},
+      value: {type: "shortStr",
+              label: "Value",
               visual: "panel"},
-   vocabularies: {type: "select",
-                  options: "selectVocabulary",
-                  label: "Vocabularies",
-                  visual: "panel"}
+      index: {type: "shortStr",
+              label: "Index",
+              visual: "panel"}
+   }
 }
 };
 
@@ -392,6 +431,9 @@ Properties.buttonApply =
    </dcc-trigger>
 </div>`;
 */
+
+Properties.hasSubtypes = ["input"];
+Properties.defaultSubtype = {input: "short"};
 
 Properties.s = new Properties();
 

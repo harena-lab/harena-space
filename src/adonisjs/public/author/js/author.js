@@ -553,45 +553,9 @@ class AuthorManager {
    elementSelected(topic, message) {
       const dccId = MessageBus.extractLevel(topic, 3);
 
-      // removes selection border of the previous element
-      /*
-      if (this._previousEditedDCC) {
-         if (this._previousBorderStyle) {
-            if (this._previousBorderStyle instanceof Array) {
-               for (let b in this._previousBorderStyle) {
-                  this._previousEditedDCC[b].style.border =
-                     this._previousBorderStyle[b];
-               }
-            } else
-               this._previousEditedDCC.style.border =
-                  this._previousBorderStyle;
-            delete this._previousBorderStyle;
-          } else
-            this._previousEditedDCC.style.border = null;
-      }
-      */
-
       if (this._previousEditedDCC)
          this._previousEditedDCC.reactivateAuthor();
 
-      // sets border style to the selected elements
-      /*
-      let presentation = this._editableDCCs[dccId].presentation;
-      if (presentation instanceof Array) {
-         this._previousBorderStyle = [];
-         for (let p in presentation) {
-            if (presentation[p].style.border)
-               this._previousBorderStyle.push(presentation[p].style.border);
-            else
-               this._previousBorderStyle.push("none");
-            presentation[p].style.border = "5px solid #00ffff";
-         }
-      } else {
-         if (presentation.style.border)
-            this._previousBorderStyle = presentation.style.border;
-         presentation.style.border = "5px solid #00ffff";
-      }
-      */
       this._editableDCCs[dccId].edit(message);
 
       this._previousEditedDCC = this._editableDCCs[dccId];

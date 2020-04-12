@@ -1769,13 +1769,13 @@ class Translator {
                           .replace("{variable}", obj.variable)
                           .replace("{statement}", (obj.text) ? "\n  " + obj.text : "")
                           .replace("{subtype}",
-                             (obj.subtype && obj.subtype != "short")
-                                ? this._mdSubField("type", obj.subtype) : "")
+                             (obj.subtype) ? this._mdSubField("type", obj.subtype) : "")
                           .replace("{extra}", extraAttr);
    }
 
    _mdSubField(label, value) {
-      return "\n  * " + label + ": " + value;
+      return (value == null || value.length == 0) ? "" :
+         "\n  * " + label + ": " + value;
    }
 
    /*

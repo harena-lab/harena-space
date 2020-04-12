@@ -50,7 +50,7 @@ class DCCVisual extends DCCBase {
          delete this._originalBorderStyle;
       } else
          presentation.style.border = "none";
-      this.checkActivateAuthor();
+      this._activateAuthorPresentation(presentation);
    }
 
    selectListener(event) {
@@ -89,6 +89,8 @@ class DCCMultiVisual extends DCCVisual {
    }
 
    selectListener(event) {
+      console.log("=== event");
+      console.log(event);
       if (event.target.subRole)
          MessageBus.ext.publish(
             "control/element/" + event.target.dccid + "/selected", event.target.subRole);
@@ -106,8 +108,12 @@ class DCCMultiVisual extends DCCVisual {
    }
 
    reactivateAuthor() {
-      this._activateAuthorPresentation(this._editedPresentation);
-      delete this._editedPresentation;
+      console.log("=== reactivate");
+      console.log(this._editedPresentation);
+      if (this._editedPresentation) {
+         this._reactivateAuthorPresentation(this._editedPresentation);
+         delete this._editedPresentation;
+      }
    }
 
    currentPresentation() {
