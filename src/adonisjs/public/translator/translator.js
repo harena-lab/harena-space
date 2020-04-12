@@ -492,7 +492,9 @@ class Translator {
       // fourth cycle - computes field hierarchy
       let lastRoot = null;
       let lastField = null;
+      let lastLevel = 0;
       let hierarchy = [];
+      let levelHierarchy = [];
       for (let c = 0; c < compiled.length; c++) {
          if (compiled[c].type == "field") {
             if (lastRoot == null || !compiled[c].subordinate) {
@@ -500,15 +502,19 @@ class Translator {
                   compiled[c].value = {};
                lastRoot = compiled[c];
                lastField = compiled[c].value;
+               lastLevel = compiled[c].level;
             } else {
                while (lastField != null &&
-                      lastField.level && compiled[c].level <= lastField.level)
+                      compiled[c].level <= lastLevel) {
                   lastField = hierarchy.pop();
+                  lastLevel = levelHierarchy.pop();
+               }
                if (lastField == null) {
                   if (compiled[c].value == null)
                      compiled[c].value = {};
                   lastRoot = compiled[c];
                   lastField = compiled[c].value;
+                  lastLevel = compiled[c].level;
                } else {
                   if (typeof lastField !== "object")
                      lastField = {value: lastField};
@@ -516,7 +522,9 @@ class Translator {
                      (compiled[c].value == null) ? {} : compiled[c].value;
                   lastRoot._source += "\n" + compiled[c]._source;
                   hierarchy.push(lastField);
+                  levelHierarchy.push(lastLevel);
                   lastField = lastField[compiled[c].field];
+                  lastLevel = compiled[c].level;
                   compiled.splice(c, 1);
                   c--;
                }

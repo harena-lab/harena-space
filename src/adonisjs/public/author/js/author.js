@@ -556,6 +556,9 @@ class AuthorManager {
       if (this._previousEditedDCC)
          this._previousEditedDCC.reactivateAuthor();
 
+      console.log("=== dcc id");
+      console.log(dccId);
+
       this._editableDCCs[dccId].edit(message);
 
       this._previousEditedDCC = this._editableDCCs[dccId];

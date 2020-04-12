@@ -6,8 +6,6 @@ class EditDCC {
    constructor(dcc) {
       this._editDCC = dcc;
       this._editElement = dcc.currentPresentation();
-      console.log("=== edit element");
-      console.log(this._editElement);
       this._editorWrapper = this._fetchEditorWrapper();
       this._containerRect = this._editorWrapper.getBoundingClientRect();
       this._elementWrapper = this._fetchElementWrapper();
@@ -36,14 +34,10 @@ class EditDCC {
    _fetchElementWrapper() {
       // looks for a knot-wrapper or equivalent
       let elWrapper = this._editElement;
-      console.log("=== element wrapper 1");
-      console.log(elWrapper);
       if (this._editElement != null) {
          let ew = elWrapper.parentNode;
          while (ew != null && (!ew.id || !ew.id.endsWith("-wrapper")))
             ew = ew.parentNode;
-         console.log("=== element wrapper 2");
-         console.log(elWrapper);
          // otherwise, finds the element outside dccs
          if (ew != null && ew.id && ew.id != "inplace-editor-wrapper")
             elWrapper = ew;
@@ -53,8 +47,6 @@ class EditDCC {
                    elWrapper.parentNode != null)
                elWrapper = elWrapper.parentNode;
          }
-         console.log("=== element wrapper 3");
-         console.log(elWrapper);
       }
       return elWrapper;
    }

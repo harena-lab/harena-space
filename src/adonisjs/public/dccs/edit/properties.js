@@ -37,18 +37,21 @@ class Properties {
       let obj = knotContent[el];
       if (this._knotOriginalTitle)
          delete this._knotOriginalTitle;
-      const editp = this.editProperties(obj);
+      const editp = this.editProperties(obj, role);
       // <TODO> Provisory
       const svg = ["jacinto", "simple-svg"].
          includes(Basic.service.currentThemeFamily);
       if (editp.inlineProperty != null) {
          switch (editp.inlineProfile.type) {
+            case "void":
+               this._editor = new EditDCCPlain(obj, dcc, editp.htmls);
+               break;
             case "text":
                this._editor = new EditDCCText(knotContent, el, dcc, svg);
                break;
             case "shortStr":
-               this._editor = new EditDCCPlain(obj, editp.inlineProperty,
-                                               dcc, editp.htmls);
+               this._editor = new EditDCCPlain(obj, dcc, editp.htmls,
+                                               editp.inlineProperty);
                break;
             case "image":
                this._editor = new EditDCCImage(obj, element);
@@ -87,7 +90,7 @@ class Properties {
    /*
     * Structure of the editable object
     */
-   editProperties(obj) {
+   editProperties(obj, role) {
       this._objProperties = obj;
 
       const profile = this._typeProfile(obj);
@@ -97,26 +100,28 @@ class Properties {
       let inlineProperty = null;
       let inlineProfile = null;
       for (let p in profile) {
-         if (profile[p].visual == "inline") {
+         if (profile[p].visual == "inline" && profile[p].role == role) {
             inlineProperty = p;
             inlineProfile = profile[p];
          }
-         if (!profile[p].composite) {
-            let html = this._editSingleProperty(
-               profile[p], ((obj[p]) ? obj[p] : ""), seq);
-            htmlD += html.details;
-            if (profile[p].visual == "panel")
-               htmlS += html.short;
-            seq++;
-         } else {
-            for (let s in profile[p].composite) {
-               html = this._editSingleProperty(
-                  profile[p].composite[s],
-                  ((obj[p] && obj[p][s]) ? obj[p][s] : ""), seq);
+         if (profile[p].type != "void") {
+            if (!profile[p].composite) {
+               let html = this._editSingleProperty(
+                  profile[p], ((obj[p]) ? obj[p] : ""), seq);
                htmlD += html.details;
                if (profile[p].visual == "panel")
                   htmlS += html.short;
                seq++;
+            } else {
+               for (let s in profile[p].composite) {
+                  html = this._editSingleProperty(
+                     profile[p].composite[s],
+                     ((obj[p] && obj[p][s]) ? obj[p][s] : ""), seq);
+                  htmlD += html.details;
+                  if (profile[p].visual == "panel")
+                     htmlS += html.short;
+                  seq++;
+               }
             }
          }
       }
@@ -218,28 +223,30 @@ class Properties {
          const profile = this._typeProfile(this._objProperties);
          let seq = 1;
          for (let p in profile) {
-            if (!profile[p].composite) {
-               if (details || profile[p].visual == "panel") {
-                  const objProperty =
-                     await this._applySingleProperty(profile[p], seq, panel, sufix);
-                  if (objProperty != null)
-                     this._objProperties[p] = objProperty;
-               }
-               seq++;
-            } else {
-               for (let s in profile[p].composite) {
+            if (profile[p].type != "void") {
+               if (!profile[p].composite) {
                   if (details || profile[p].visual == "panel") {
-                     const objProperty = await this._applySingleProperty(
-                        profile[p].composite[s], seq, panel, sufix);
-                     if (objProperty != null &&
-                         (typeof objProperty != "string" ||
-                           objProperty.trim().length > 0)) {
-                        if (!this._objProperties[p])
-                           this._objProperties[p] = {};
-                        this._objProperties[p][s] = objProperty;
-                     }
+                     const objProperty =
+                        await this._applySingleProperty(profile[p], seq, panel, sufix);
+                     if (objProperty != null)
+                        this._objProperties[p] = objProperty;
                   }
                   seq++;
+               } else {
+                  for (let s in profile[p].composite) {
+                     if (details || profile[p].visual == "panel") {
+                        const objProperty = await this._applySingleProperty(
+                           profile[p].composite[s], seq, panel, sufix);
+                        if (objProperty != null &&
+                            (typeof objProperty != "string" ||
+                              objProperty.trim().length > 0)) {
+                           if (!this._objProperties[p])
+                              this._objProperties[p] = {};
+                           this._objProperties[p][s] = objProperty;
+                        }
+                     }
+                     seq++;
+                  }
                }
             }
          }
@@ -356,9 +363,13 @@ input: {
                 label: "Type",
                 visual: "panel"},
       */
+      input:  {type: "void",
+                visual: "inline",
+                role: "input"},
       text:    {type: "shortStr",
                 label: "Statement",
-                visual: "inline"},
+                visual: "inline",
+                role: "text"},
       variable: {type: "variable",
                  label: "Variable",
                  visual: "panel"},
@@ -368,9 +379,13 @@ input: {
                      visual: "panel"}
    },
    slider: {
+      slider:  {type: "void",
+                visual: "inline",
+                role: "slider"},
       text:    {type: "shortStr",
                 label: "Statement",
-                visual: "inline"},
+                visual: "inline",
+                role: "text"},
       variable: {type: "variable",
                  label: "Variable",
                  visual: "panel"},

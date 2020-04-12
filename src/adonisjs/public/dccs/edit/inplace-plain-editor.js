@@ -2,27 +2,33 @@
   ***************************/
 
 class EditDCCPlain extends EditDCC {
-   constructor(obj, field, dcc, htmlProp) {
+   constructor(obj, dcc, htmlProp, field) {
       super(dcc);
       this._objProperties = obj;
-      this._objField = field;
+      if (field != null)
+         this._objField = field;
       this._buildEditor(htmlProp);
    }
 
    async _buildEditor(htmlProp) {
-      this._originalEdit = this._editElement.innerHTML;
-      this._editElement.contentEditable = true;
+      if (this._objField != null) {
+         this._originalEdit = this._editElement.innerHTML;
+         this._editElement.contentEditable = true;
+      }
       let ep = await this._extendedPanel(
             EditDCCPlain.propertiesTemplate.replace("[properties]", htmlProp), false);
-      this._editElement.contentEditable = false;
-      if (ep.clicked == "confirm") {
-         this._objProperties[this._objField] =
-            this._editElement.innerHTML.trim().replace(/<br>$/i, "");
-         await MessageBus.ext.request("properties/apply/short");
-      } else {
-         this._editElement.innerHTML = this._originalEdit;
-         this._editDCC.reactivateAuthor();
+      if (this._objField != null) {
+         this._editElement.contentEditable = false;
+         if (ep.clicked == "confirm")
+            this._objProperties[this._objField] =
+               this._editElement.innerHTML.trim().replace(/<br>$/i, "");
+         else
+            this._editElement.innerHTML = this._originalEdit;
       }
+      if (ep.clicked == "confirm")
+         await MessageBus.ext.request("properties/apply/short");
+      else
+         this._editDCC.reactivateAuthor();
       this._removeExtendedPanel();
    }
 }
