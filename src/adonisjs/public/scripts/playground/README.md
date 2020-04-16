@@ -17,6 +17,35 @@ See below some examples in our scripts gallery:
 ![Relógio de Areia](images/movement-sand-clock.png)
 [Relógio de Areia](editor.html?source=cell/movement-sand-clock)
 
+# Zombie
+
+# Training
+
+[![Zombie Training](images/zombie-wall.png)](harena/scripts/playground/editor.html?source=cell/zombie-wall&mode=no-script)
+
+[![Zombie Training Hidden](images/zombie-wall-hidden.png)](harena/scripts/playground/editor.html?source=cell/zombie-wall-hidden&mode=no-script)
+
+# One Wall (Challenge)
+
+[![Zombie Challenge 1](images/zombie-wall-challenge1.png)](harena/scripts/playground/editor.html?source=cell/zombie-wall-hidden-challenge1&mode=no-script)
+
+* [Answer](harena/scripts/playground/editor.html?source=cell/zombie-wall-challenge1&mode=no-script).
+Click only after solving the challenge.
+
+# Two Walls (Challenge)
+
+[![Zombie Challenge 2](images/zombie-wall-challenge2.png)](harena/scripts/playground/editor.html?source=cell/zombie-wall-hidden-challenge2&mode=no-script)
+
+* [Answer](harena/scripts/playground/editor.html?source=cell/zombie-wall-challenge2&mode=no-script).
+Click only after solving the challenge.
+
+# Quantas Paredes? (Desafio)
+
+[![Zombie Challenge 3](images/zombie-wall-challenge3.png)](harena/scripts/playground/editor.html?source=cell/zombie-wall-hidden-challenge3&mode=no-script)
+
+* [Answer](harena/scripts/playground/editor.html?source=cell/zombie-wall-challenge3&mode=no-script).
+Click only after solving the challenge.
+
 ## Imported images
 
 * [Rocha](https://pixabay.com/vectors/rocks-stones-mining-soil-pebbles-155635/)

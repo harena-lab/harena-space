@@ -27,6 +27,8 @@ class AuthorCellManager {
       MessageBus.ext.subscribe("control/space/stop", this.stopSpace);
       MessageBus.ext.subscribe("control/space/restart", this.restartSpace);
 
+      this._scriptsActive = true;
+
       let parameters = window.location.search.substr(1);
       if (parameters != null && parameters.length > 0) {
          const sourceMatch = parameters.match(/source=([\w-\/]+)/i);
@@ -36,20 +38,26 @@ class AuthorCellManager {
             caseScript.src = "gallery/" + this.source + ".js";
             document.head.appendChild(caseScript);
          }
+
+         const scriptMatch = parameters.match(/mode=([\w-]+)/i);
+         if (scriptMatch != null && scriptMatch[1] == "no-script")
+            this._scriptsActive = false;
       }
    }
 
    insertSource(name, types, blocks, source, buttonTypes) {
-      ScriptBlocks.create(types);
+      if (this._scriptsActive) {
+         ScriptBlocks.create(types);
 
-      document.querySelector("#xml-toolbox").innerHTML =
-          `<xml xmlns="https://developers.google.com/blockly/xml" id="toolbox" style="display: none">` +
-          blocks +
-          `</xml>`;
+         document.querySelector("#xml-toolbox").innerHTML =
+             `<xml xmlns="https://developers.google.com/blockly/xml" id="toolbox" style="display: none">` +
+             blocks +
+             `</xml>`;
 
-      this._playground = Blockly.inject("script-panel",
-         {media: "../../lib/blockly-ba6dfd8/media/",
-          toolbox: document.getElementById("toolbox")});
+         this._playground = Blockly.inject("script-panel",
+            {media: "../../lib/blockly-ba6dfd8/media/",
+             toolbox: document.getElementById("toolbox")});
+      }
 
       document.querySelector("#source-name").innerHTML = name;
       document.querySelector("#render-panel").innerHTML = source;
@@ -60,7 +68,9 @@ class AuthorCellManager {
 
    _updateVisibility() {
       const states = (this._editMode)
-         ? ["none","none","none","none","initial","initial","none","initial"]
+         ? ["none","none","none","none","initial",
+            (this._scriptsActive) ? "initial" : "none",
+            "none","initial"]
          : ["initial","none","initial","initial","none","none","initial","none"];
       document.querySelector("#play-button").style.display = states[0];
       document.querySelector("#stop-button").style.display = states[1];
@@ -88,9 +98,11 @@ class AuthorCellManager {
 	      }
 	  } else {
         MessageBus.ext.publish("state/save");
-        await MessageBus.page.request("dcc/rules/clear");
-        document.querySelector("#rules-panel").innerHTML =
-           Blockly.JavaScript.workspaceToCode(this._playground);
+        if (this._scriptsActive) {
+           await MessageBus.page.request("dcc/rules/clear");
+           document.querySelector("#rules-panel").innerHTML =
+              Blockly.JavaScript.workspaceToCode(this._playground);
+        }
 	  }
    }
 
