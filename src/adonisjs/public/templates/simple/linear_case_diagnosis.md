@@ -45,3 +45,4 @@ ___ Data ___
 * templates:
   * categories:
     * detailed: simple/description
+    * input: simple/input
