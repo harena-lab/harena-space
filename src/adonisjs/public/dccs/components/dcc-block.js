@@ -104,13 +104,13 @@ class DCCBlock extends DCCMultiVisual {
          // styles imported by the DCC
          case "in"  : 
          case "theme": if (this.hasAttribute("image"))
-                          render = this.elementTag() + "-image-template";
+                          render = this.elementTag() + "-image-theme";
                        else
-                          render = this.elementTag() + "-template";
+                          render = this.elementTag() + "-theme";
                        break;
          // styles defined by the theme
          case "out-image":
-         case "out":  render = this.elementTag() + "-template";
+         case "out":  render = this.elementTag() + "-theme";
                       break;
          // style defined directly in the attribute xstyle
          default:     render = this.xstyle;

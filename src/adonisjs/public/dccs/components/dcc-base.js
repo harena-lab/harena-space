@@ -3,6 +3,11 @@
  */
 
 class DCCBase extends HTMLElement {
+   constructor() {
+      super();
+      this.edit = this.edit.bind(this);
+   }
+
    static get observedAttributes() {
       return ["id", "author"];
    }
@@ -26,7 +31,7 @@ class DCCBase extends HTMLElement {
          this.removeAttribute("author");
    }
 
-   editProperties() {
+   edit() {
       /* nothing */
    }
 

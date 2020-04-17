@@ -5,7 +5,7 @@
 
 /* Trigger DCC */
 
-.dcc-trigger-template {
+.dcc-trigger-theme {
    border: 1px solid lightgray;
    border-radius: 5px;
    margin: 5px;
@@ -15,7 +15,7 @@
    text-decoration: none;
    display: inline-block;
 }
-.dcc-trigger-template:hover {
+.dcc-trigger-theme:hover {
    color: #ffff;
    font-weight: bold;
    cursor: pointer;
@@ -23,7 +23,7 @@
 
 /* Input DCC */
 
-.dcc-input-template {
+.dcc-input-theme {
    font-size:28px;
    font-family:Tahoma, Geneva, sans-serif;
    fill:#707070;
@@ -32,22 +32,22 @@
 
 /* Selector DCC */
 
-.dcc-state-select-template:hover {
+.dcc-state-select-theme:hover {
    cursor: pointer;
 }
 
-.dcc-state-select-0-template {
+.dcc-state-select-0-theme {
    background-color: lightgrey;
 }
 
-.dcc-state-select-1-template {
+.dcc-state-select-1-theme {
    background-color: green;
 }
 
-.dcc-state-select-2-template {
+.dcc-state-select-2-theme {
    background-color: blue;
 }
 
-.dcc-state-select-3-template {
+.dcc-state-select-3-theme {
    background-color: red;
 }

@@ -187,8 +187,8 @@ class DCCStateSelect extends DCCVisual {
            this._presentation.className = this.styles[this.selectionIndex];
         else
            this._presentation.className =
-              DCCStateSelect.elementTag + "-template " +
-              DCCStateSelect.elementTag + "-" + this.selectionIndex + "-template";
+              DCCStateSelect.elementTag + "-theme " +
+              DCCStateSelect.elementTag + "-" + this.selectionIndex + "-theme";
       }
    }
    

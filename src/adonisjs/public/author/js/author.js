@@ -85,7 +85,13 @@ class AuthorManager {
 
       // build singletons
       Panels.start();
-      Properties.start(this);
+      // Properties.start(this);
+
+      Properties.s.attachPanelDetails(
+         document.querySelector("#properties-panel"),
+         document.querySelector("#properties-buttons"),
+         this
+      );
 
       this._mainPanel = document.querySelector("#main-panel");
       this._navigationPanel = document.querySelector("#navigation-panel");
@@ -141,6 +147,8 @@ class AuthorManager {
                                    break;
          case "control/knot/markdown": this.knotMarkdown();
                                        break;
+         case "control/knot/rename": this.knotRename(message);
+                                     break;
          case "control/element/selected/down":
             this.elementSelectedMove("next");
             break;
@@ -272,11 +280,6 @@ class AuthorManager {
     * ACTION: control-save
     */
    async caseSave() {
-      /*
-      console.log("=== case save");
-      console.log(this._knots);
-      */
-
       if (Basic.service.currentCaseId != null && this._compiledCase != null) {
          this._checkKnotModification(this._renderState);
 
@@ -334,8 +337,6 @@ class AuthorManager {
       // this._editor = new Quill("#editor-space", {});
       /*
       this._editor.clipboard.addMatcher(Node.TEXT_NODE, function(node, delta) {
-         console.log("=== clipboard:");
-         console.log(node.data);
          return new Delta().insert(node.data);
       });
       */
@@ -401,7 +402,8 @@ class AuthorManager {
     */
    async knotSelected(topic, message) {
       this._removeFloatingMenu();
-      const knotid = MessageBus.extractLevel(topic, 3);
+      let knotid = MessageBus.extractLevel(topic, 3);
+      knotid = ("") ? this._knotSelected : knotid;
       if (knotid != null) {
          console.log("=== miniatureF");
          console.log("#mini-" + knotid.replace(/\./g, "_"));
@@ -421,14 +423,21 @@ class AuthorManager {
                         this._templateNewKnot =
                            this._compiledCase.templates.categories[temp];
             }
-            console.log("=== template");
-            console.log(this._templateNewKnot);
-            if (this._templateNewKnot != null) {
+            const extra =
+               ((this._templateNewKnot == null) ? "" :
+                  "<dcc-trigger action='control/knot/new' label='Add' xstyle='in'>" +
+                        "</dcc-trigger>") +
+               "<dcc-trigger action='control/knot/remove' label='Remove' xstyle='in'>" +
+                     "</dcc-trigger>";
+
+            // Properties.s.editKnotProperties(this._knots[this._knotSelected],
+            //                                 this._knotSelected, miniature, extra);
+            // if (this._templateNewKnot != null) {
                const miniBox = miniature.getBoundingClientRect();
                this._buildFloatingMenu(miniBox.left, miniBox.top,
                   "<dcc-trigger action='control/knot/new' label='Add' xstyle='in'>" +
                   "</dcc-trigger>");
-            }
+            // }
          } else {
             if (this._miniPrevious)
                this._miniPrevious.classList.remove("sty-selected-knot");
@@ -445,8 +454,6 @@ class AuthorManager {
                this._htmlKnot = await Translator.instance.generateHTML(
                                         this._knots[this._knotSelected]);
                this._renderKnot();
-               Properties.s.editKnotProperties(this._knots[this._knotSelected],
-                                               this._knotSelected);
                this._collectEditableDCCs();
             }
             delete this._elementSelected;
@@ -487,11 +494,16 @@ class AuthorManager {
     async knotNew() {
       this._removeFloatingMenu();
       // <TODO> reactivate in the future
-      // let template = await this._templateSelect("knot");
+      let template = await this._templateSelect("knot");
 
-      if (this._templateNewKnot != null) {
+      // if (this._templateNewKnot != null) {
+      if (template != null) {
+         /*
          let markdown = await MessageBus.ext.request("data/template/" +
                               this._templateNewKnot.replace("/", ".") + "/get");
+         */
+         let markdown = await MessageBus.ext.request("data/template/" +
+                              template.replace("/", ".") + "/get");
 
          let last = 1;
          for (let k in this._knots) {
@@ -553,55 +565,32 @@ class AuthorManager {
    elementSelected(topic, message) {
       const dccId = MessageBus.extractLevel(topic, 3);
 
-      // removes selection border of the previous element
-      if (this._previousEditedDCC) {
-         if (this._previousBorderStyle) {
-            if (this._previousBorderStyle instanceof Array) {
-               for (let b in this._previousBorderStyle) {
-                  this._previousEditedDCC[b].style.border =
-                     this._previousBorderStyle[b];
-               }
-            } else
-               this._previousEditedDCC.style.border =
-                  this._previousBorderStyle;
-            delete this._previousBorderStyle;
-          } else
-            this._previousEditedDCC.style.border = null;
-      }
+      if (this._previousEditedDCC)
+         this._previousEditedDCC.reactivateAuthor();
 
-      // sets border style to the selected elements
-      let presentation = this._editableDCCs[dccId].presentation;
-      if (presentation instanceof Array) {
-         this._previousBorderStyle = [];
-         for (let p in presentation) {
-            if (presentation[p].style.border)
-               this._previousBorderStyle.push(presentation[p].style.border);
-            else
-               this._previousBorderStyle.push("none");
-            presentation[p].style.border = "5px solid #00ffff";
-         }
-      } else {
-         if (presentation.style.border)
-            this._previousBorderStyle = presentation.style.border;
-         presentation.style.border = "5px solid #00ffff";
-      }
-      this._editableDCCs[dccId].editProperties();
+      console.log("=== dcc id");
+      console.log(dccId);
 
-      this._previousEditedDCC = presentation;
+      this._editableDCCs[dccId].edit(message);
+
+      this._previousEditedDCC = this._editableDCCs[dccId];
 
       const elSeq = parseInt(dccId.substring(3));
       let el = -1;
       for (el = 0; el < this._knots[this._knotSelected].content.length &&
                    this._knots[this._knotSelected].content[el].seq != elSeq; el++)
         /* nothing */;
+
       if (el != -1) {
          this._elementSelected = el;
          if (message)
             Properties.s.editElementProperties(
-               this._knots[this._knotSelected].content, el, presentation, message);
+               this._knots, this._knotSelected, el,
+                  this._editableDCCs[dccId], message);
          else
             Properties.s.editElementProperties(
-               this._knots[this._knotSelected].content, el, presentation);
+               this._knots, this._knotSelected, el,
+                  this._editableDCCs[dccId]);
        }
    }
 
@@ -620,9 +609,6 @@ class AuthorManager {
 
    elementNew(topic, message) {
       const elementType = MessageBus.extractLevel(topic, 3);
-      console.log("=== creating");
-      console.log(topic);
-      console.log(message);
       let newElement = (message == null)
          ? Translator.objTemplates[elementType] : message;
       newElement.seq = this._knots[this._knotSelected].content[
@@ -633,8 +619,6 @@ class AuthorManager {
    }
 
    elementInsert(message) {
-      console.log("=== inserting");
-      console.log(message);
       let newElement = message;
       newElement.seq = this._knots[this._knotSelected].content[
          this._knots[this._knotSelected].content.length-1].seq + 1;
@@ -686,9 +670,9 @@ class AuthorManager {
       }
    }
 
-   knotRename(previousTitle, newTitle) {
+   knotRename(newTitle) {
       const last = this._knotSelected.lastIndexOf(".");
-      const newIndex = this._knotSelected.substring(0, last) +
+      const newIndex = this._knotSelected.substring(0, last+1) +
                        newTitle.replace(/ /g, "_");
 
       let newKnotSet = {};

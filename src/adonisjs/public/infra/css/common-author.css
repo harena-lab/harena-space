@@ -18,6 +18,7 @@ div {
 nav.navbar {
   margin-bottom: 1rem;
 }
+
 /* author draft css start*/
 .draft-scroll-container{
   padding-bottom: 2%;
@@ -33,14 +34,15 @@ nav.navbar {
   border-style: solid;
   border-radius: 5px;
   border-width: 2px;
-
 }
+
 .draft-author-description{
   font-size: 12px;
   color: #808080;
   margin-right: 3%;
   margin-left: 3%;
 }
+
 .draft-case-title{
   font-size: 18px;
   font-weight: bold;
@@ -48,11 +50,13 @@ nav.navbar {
   margin-right: 3%;
   margin-left: 3%;
 }
+
 .draft-case-image{
   background-color: #e6e6e6;
   margin-top: 7%;
 }
-.author-case-buttons{
+
+.author-panel-button {
   width: 33%;
   background-color: #a2a2a2;
   color: #ffffff;
@@ -65,6 +69,14 @@ nav.navbar {
   margin-left: 1.5%;
   margin-right: 1.5%;
   cursor: pointer;
+}
+
+.control-button {
+   flex: 10%;
+   max-width: 48px;
+   max-height: 48px;
+   margin-right: 10px;
+   color: #495057;
 }
 
 /* author draft css ended*/

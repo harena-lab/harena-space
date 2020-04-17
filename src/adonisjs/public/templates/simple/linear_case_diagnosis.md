@@ -42,6 +42,3 @@ ___ Data ___
 * theme: simple
 * namespaces:
   * evidence: http://purl.org/versum/evidence/
-* templates:
-  * categories:
-    * detailed: simple/description

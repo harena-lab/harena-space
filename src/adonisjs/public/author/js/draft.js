@@ -100,14 +100,14 @@ DraftManager.caseBox =
    <div class="draft-case-title">[title]</div>
    <div class="draft-author-description">Brief description of the case.</div>
    <div class="d-flex">
-      <div id="e[id]" class="author-case-buttons">EDIT</div>
-      <div id="p[id]" class="author-case-buttons">PREVIEW</div>
-      <div id="d[id]" class="author-case-buttons">DELETE</div>[download]
+      <div id="e[id]" class="author-panel-button">EDIT</div>
+      <div id="p[id]" class="author-panel-button">PREVIEW</div>
+      <div id="d[id]" class="author-panel-button">DELETE</div>[download]
    </div>
 </div>`;
 
 DraftManager.caseDownload =
 `
-      <div id="w[id]" class="author-case-buttons">DOWNLOAD</div>`;
+      <div id="w[id]" class="author-panel-button">DOWNLOAD</div>`;
 
 })();

@@ -36,6 +36,7 @@ class DCCNoticeInput extends DCCVisual {
                right: 0;
                bottom: 0;
                left: 0;
+               z-index: 100;
                width: [width]px;
                height: [height]px;
                overflow: hidden;

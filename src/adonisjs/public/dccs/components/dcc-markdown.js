@@ -13,12 +13,6 @@ class DCCMarkdown extends DCCVisual {
    static get observedAttributes() {
       return DCCVisual.observedAttributes();
    }
-
-   editProperties() {
-      delete this._presentation.style.cursor;
-      this._presentation.removeEventListener("click", this.selectListener);
-      // this._editor = new EditDCCText(this._presentation);
-   }
 }
 
 (function() {

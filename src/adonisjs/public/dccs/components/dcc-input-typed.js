@@ -120,11 +120,11 @@ class DCCInputTyped extends DCCInput {
    // <TODO> temporary (size = 50)
    // <TODO> transfer the definition of font to CSS
    DCCInputTyped.templateElements = {
-      text: "[statement]<input type='text' id='[variable]' class='[render]' [itype] style='border-color:darkgray'></input>",
-      area: "[statement]<textarea rows='[rows]' id='[variable]' class='[render]'></textarea>"
+      text: "<div class='[render]'><label>[statement]</label><input type='text' id='[variable]' [itype]></input></div>",
+      area: "<div class='[render]'><label>[statement]</label><textarea rows='[rows]' id='[variable]'></textarea></div>"
    };
 
-   DCCInputTyped.elementTag = "dcc-input";
+   DCCInputTyped.elementTag = "dcc-input-typed";
    DCCInputTyped.editableCode = false;
    customElements.define(DCCInputTyped.elementTag, DCCInputTyped);
 })();

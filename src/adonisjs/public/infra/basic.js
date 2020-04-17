@@ -8,7 +8,7 @@ class Basic {
       this._rootPath = "../";
 
       // initial values of shared states
-      this.currentThemeFamily = Basic.standardThemeFamily;
+      this._currentThemeFamily = Basic.standardThemeFamily;
       this._currentThemeCSS = null;
       this.currentCaseId = null;
 

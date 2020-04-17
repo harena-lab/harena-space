@@ -30,6 +30,13 @@ class Panels {
       this._elementsMain = document.querySelector("#elements-main");
 
       this._setupKnotHeight();
+
+      this.setupPropertiesExpand = this.setupPropertiesExpand.bind(this);
+      MessageBus.ext.subscribe("control/properties/expand",
+         this.setupPropertiesExpand);
+      this.setupPropertiesRetract = this.setupPropertiesRetract.bind(this);
+      MessageBus.ext.subscribe("control/properties/retract",
+         this.setupPropertiesRetract);
    }
 
    _setupKnotHeight() {

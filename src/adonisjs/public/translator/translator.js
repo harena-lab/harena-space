@@ -311,7 +311,10 @@ class Translator {
    _defineCategorySettings(categories) {
       let focusCategory = null;
       // when there is more than one category, priority in reverse order
-      if (categories != null) {
+      if (this._categorySettings)
+         delete this._categorySettings;
+
+      if (categories != null && this._themeSettings != null) {
          let cat = categories.length - 1;
          while (focusCategory == null && cat >= 0 &&
                 !this._themeSettings[categories[cat]])
@@ -320,13 +323,10 @@ class Translator {
             focusCategory = categories[cat];
          else
             focusCategory = "knot";
+         if (this._themeSettings[focusCategory])
+            this._categorySettings =
+               this._themeSettings[focusCategory];
       }
-      if (this._themeSettings &&
-          this._themeSettings[focusCategory])
-         this._categorySettings =
-            this._themeSettings[focusCategory];
-      else if (this._categorySettings)
-         delete this._categorySettings;
    }
 
    /*
@@ -492,7 +492,9 @@ class Translator {
       // fourth cycle - computes field hierarchy
       let lastRoot = null;
       let lastField = null;
+      let lastLevel = 0;
       let hierarchy = [];
+      let levelHierarchy = [];
       for (let c = 0; c < compiled.length; c++) {
          if (compiled[c].type == "field") {
             if (lastRoot == null || !compiled[c].subordinate) {
@@ -500,15 +502,19 @@ class Translator {
                   compiled[c].value = {};
                lastRoot = compiled[c];
                lastField = compiled[c].value;
+               lastLevel = compiled[c].level;
             } else {
                while (lastField != null &&
-                      lastField.level && compiled[c].level <= lastField.level)
+                      compiled[c].level <= lastLevel) {
                   lastField = hierarchy.pop();
+                  lastLevel = levelHierarchy.pop();
+               }
                if (lastField == null) {
                   if (compiled[c].value == null)
                      compiled[c].value = {};
                   lastRoot = compiled[c];
                   lastField = compiled[c].value;
+                  lastLevel = compiled[c].level;
                } else {
                   if (typeof lastField !== "object")
                      lastField = {value: lastField};
@@ -516,7 +522,9 @@ class Translator {
                      (compiled[c].value == null) ? {} : compiled[c].value;
                   lastRoot._source += "\n" + compiled[c]._source;
                   hierarchy.push(lastField);
+                  levelHierarchy.push(lastLevel);
                   lastField = lastField[compiled[c].field];
+                  lastLevel = compiled[c].level;
                   compiled.splice(c, 1);
                   c--;
                }
@@ -1057,6 +1065,8 @@ class Translator {
                         break;
          case "entity": element._source = this._entityObjToMd(element);
                         break;
+         case "input": element._source = this._inputObjToMd(element);
+                        break;
       }
 
       // linefeed of the merged block (if block), otherwise linefeed of the content
@@ -1408,8 +1418,10 @@ class Translator {
    }
 
    _optionObjToMd(obj) {
+      console.log("=== option markdown");
+      console.log(obj);
       return Translator.markdownTemplates.option
-                .replace("{subtype}", (obj.subtype = "_") ? "" : obj.subtype)
+                .replace("{subtype}", (obj.subtype == "_") ? "" : obj.subtype+" ")
                 .replace("{label}", (obj.label) ? obj.label : "")
                 .replace("{target}", obj.target);
    }
@@ -1529,7 +1541,7 @@ class Translator {
          .replace("[seq]", obj.seq)
          .replace("[author]", this.authorAttr)
          .replace("[target]",
-            this.this._transformNavigationMessage(obj.contextTarget))
+            this._transformNavigationMessage(obj.contextTarget))
          .replace("[display]", obj.label);
    }
 
@@ -1699,10 +1711,10 @@ class Translator {
    _inputObjToHTML(obj) {
       // core attributes are not straight mapped
       const coreAttributes = ["seq", "author", "type", "subtype", "text",
-                              "show", "_source", "_modified"];
+                              "show", "_source", "_modified", "mergeLine"];
       const subtypeMap = {
-         short: "input",
-         text: "input",
+         short: "input-typed",
+         text: "input-typed",
          "group select": "group-select",
          slider: "slider",
          table: "input-table"
@@ -1720,7 +1732,6 @@ class Translator {
          else
             answer = " player='" + this._playerInputShow + "'";
       }
-
 
       let extraAttr = "";
       for (let atr in obj)
@@ -1748,6 +1759,31 @@ class Translator {
       }
 
       return input;
+   }
+
+  /*
+    * Input Obj to Md
+    */
+   _inputObjToMd(obj) {
+      // core attributes are not straight mapped
+      const coreAttributes = ["seq", "author", "variable", "type", "subtype", "text",
+                              "_source", "_modified", "mergeLine"];
+      let extraAttr = "";
+      for (let atr in obj)
+         if (!coreAttributes.includes(atr))
+            extraAttr += this._mdSubField(atr, obj[atr]);
+
+      return Translator.markdownTemplates.input
+                          .replace("{variable}", obj.variable)
+                          .replace("{statement}", (obj.text) ? "\n  " + obj.text : "")
+                          .replace("{subtype}",
+                             (obj.subtype) ? this._mdSubField("type", obj.subtype) : "")
+                          .replace("{extra}", extraAttr);
+   }
+
+   _mdSubField(label, value) {
+      return (value == null || value.length == 0) ? "" :
+         "\n  * " + label + ": " + value;
    }
 
    /*
