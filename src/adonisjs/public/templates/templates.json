@@ -37,5 +37,20 @@
    {"description": "Description of a case or report.",
     "path": "simple/description",
     "icon": "simple/images/description.png",
+    "scope": "knot"},
+ "Input":
+   {"description": "Question with a text input.",
+    "path": "simple/input",
+    "icon": "simple/images/description.png",
+    "scope": "knot"},
+ "Input with Certainty":
+   {"description": "Question with a text input and certainty.",
+    "path": "simple/input_certainty",
+    "icon": "simple/images/description.png",
+    "scope": "knot"},
+ "Exam Image":
+   {"description": "Exam with image zoom.",
+    "path": "simple/exam_zoom",
+    "icon": "simple/images/description.png",
     "scope": "knot"}
 }

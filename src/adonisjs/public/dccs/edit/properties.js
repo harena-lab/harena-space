@@ -25,9 +25,11 @@ class Properties {
       this._panelDetails = panel;
    }
 
-   editKnotProperties(obj, knotId) {
+   editKnotProperties(obj, knotId, presentation, extra) {
       this._knotOriginalTitle = obj.title;
-      this.editProperties(obj);
+      const editp = this.editProperties(obj);
+      this._editor = new EditDCCProperties(null, presentation,
+         editp.htmls + extra);
    }
 
    editElementProperties(knots, knotid, el, dcc, role) {
@@ -41,10 +43,6 @@ class Properties {
       // <TODO> Provisory
       const svg = ["jacinto", "simple-svg"].
          includes(Basic.service.currentThemeFamily);
-      console.log("=== inline");
-      console.log(editp.inlineProperty);
-      console.log(editp.inlineProfile.type);
-      console.log(obj);
       if (editp.inlineProperty != null) {
          switch (editp.inlineProfile.type) {
             case "void":
@@ -61,7 +59,8 @@ class Properties {
                this._editor = new EditDCCImage(obj, dcc, editp.htmls);
                break;
          }
-      }
+      } else
+         this._editor = new EditDCCProperties(dcc, editp.htmls);
       /*
       switch (obj.type) {
          case "text": 
@@ -320,11 +319,12 @@ class Properties {
 Properties.elProfiles = {
 knot: {
    title: {type: "shortStr",
-           label: "Title"},
+           label: "Title",
+           visual: "panel"},
    categories: {type: "shortStrArray",
                 label: "Categories"},
    level: {type: "shortStr",
-               label: "Level"}
+           label: "Level"}
 },
 text: {
    content: {type: "text",

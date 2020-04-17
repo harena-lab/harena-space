@@ -3,19 +3,34 @@
  */
 
 class EditDCC {
-   constructor(dcc) {
+   constructor(dcc, presentation) {
       this._editDCC = dcc;
-      this._editElement = dcc.currentPresentation();
+      this._editElement = presentation;
+      this._editorExtended = null;
       this._editorWrapper = this._fetchEditorWrapper();
       this._containerRect = this._editorWrapper.getBoundingClientRect();
       this._elementWrapper = this._fetchElementWrapper();
       this._elementWrapperRect = this._elementWrapper.getBoundingClientRect();
       this._elementRect = this._editElement.getBoundingClientRect();
-      this._editorExtended = null;
    }
 
    get editorExtended() {
       return this._editorExtended;
+   }
+
+   async _buildEditor(htmlProp) {
+      let ep = await this._extendedPanel(
+            EditDCC.propertiesTemplate.replace("[properties]", htmlProp),
+               "properties");
+      return ep;
+   }
+
+   async _handleEditorAction(action) {
+      if (action == "confirm")
+         await MessageBus.ext.request("properties/apply/short");
+      else if (this._editDCC != null)
+         this._editDCC.reactivateAuthor();
+      this._removeExtendedPanel();
    }
 
    // fetches the editor wrapper
@@ -170,6 +185,18 @@ class EditDCC {
    }
 }
 
+class EditDCCProperties extends EditDCC {
+   constructor(dcc, presentation, htmlProp) {
+      super(dcc, presentation);
+      this._componentEditor(htmlProp);
+   }
+
+   async _componentEditor(htmlProp) {
+      let ep = await this._buildEditor(htmlProp);
+      this._handleEditorAction(ep.clicked);
+   }
+}
+
 (function() {
 /* icons from Font Awesome, license: https://fontawesome.com/license */
 
@@ -184,6 +211,17 @@ EditDCC.buttonCancelSVG =
 `<svg viewBox="0 0 512 512">
 <path fill="currentColor" d="M464 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h416c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48zm0 394c0 3.3-2.7 6-6 6H54c-3.3 0-6-2.7-6-6V86c0-3.3 2.7-6 6-6h404c3.3 0 6 2.7 6 6v340zM356.5 194.6L295.1 256l61.4 61.4c4.6 4.6 4.6 12.1 0 16.8l-22.3 22.3c-4.6 4.6-12.1 4.6-16.8 0L256 295.1l-61.4 61.4c-4.6 4.6-12.1 4.6-16.8 0l-22.3-22.3c-4.6-4.6-4.6-12.1 0-16.8l61.4-61.4-61.4-61.4c-4.6-4.6-4.6-12.1 0-16.8l22.3-22.3c4.6-4.6 12.1-4.6 16.8 0l61.4 61.4 61.4-61.4c4.6-4.6 12.1-4.6 16.8 0l22.3 22.3c4.7 4.6 4.7 12.1 0 16.8z">
 </path></svg>`;
+
+EditDCC.propertiesTemplate =
+`<div class="annotation-bar">Properties
+   <div class="annotation-buttons">
+      <div id="ext-confirm" style="width:24px">` +
+          EditDCC.buttonConfirmSVG + "</div>" +
+`      <div id="ext-cancel" style="width:28px">` +
+          EditDCC.buttonCancelSVG + "</div>" +
+`   </div>
+</div>
+<div class="styp-properties-panel">[properties]</div>`;
 
 EditDCC.imageBrowseTemplate =
 `<div class="annotation-bar">Select Image

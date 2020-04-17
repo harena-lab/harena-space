@@ -49,7 +49,7 @@ Quill.register(SelectBlot);
 
 class EditDCCText extends EditDCC {
    constructor(knotContent, el, dcc, svg) {
-      super(dcc);
+      super(dcc, dcc.currentPresentation());
       this._knotContent = knotContent;
       this._element = el;
       this._handleHighlighter = this._handleHighlighter.bind(this);

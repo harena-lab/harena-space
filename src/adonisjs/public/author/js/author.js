@@ -423,12 +423,21 @@ class AuthorManager {
                         this._templateNewKnot =
                            this._compiledCase.templates.categories[temp];
             }
-            if (this._templateNewKnot != null) {
+            const extra =
+               ((this._templateNewKnot == null) ? "" :
+                  "<dcc-trigger action='control/knot/new' label='Add' xstyle='in'>" +
+                        "</dcc-trigger>") +
+               "<dcc-trigger action='control/knot/remove' label='Remove' xstyle='in'>" +
+                     "</dcc-trigger>";
+
+            // Properties.s.editKnotProperties(this._knots[this._knotSelected],
+            //                                 this._knotSelected, miniature, extra);
+            // if (this._templateNewKnot != null) {
                const miniBox = miniature.getBoundingClientRect();
                this._buildFloatingMenu(miniBox.left, miniBox.top,
                   "<dcc-trigger action='control/knot/new' label='Add' xstyle='in'>" +
                   "</dcc-trigger>");
-            }
+            // }
          } else {
             if (this._miniPrevious)
                this._miniPrevious.classList.remove("sty-selected-knot");
@@ -445,8 +454,6 @@ class AuthorManager {
                this._htmlKnot = await Translator.instance.generateHTML(
                                         this._knots[this._knotSelected]);
                this._renderKnot();
-               Properties.s.editKnotProperties(this._knots[this._knotSelected],
-                                               this._knotSelected);
                this._collectEditableDCCs();
             }
             delete this._elementSelected;
@@ -487,11 +494,16 @@ class AuthorManager {
     async knotNew() {
       this._removeFloatingMenu();
       // <TODO> reactivate in the future
-      // let template = await this._templateSelect("knot");
+      let template = await this._templateSelect("knot");
 
-      if (this._templateNewKnot != null) {
+      // if (this._templateNewKnot != null) {
+      if (template != null) {
+         /*
          let markdown = await MessageBus.ext.request("data/template/" +
                               this._templateNewKnot.replace("/", ".") + "/get");
+         */
+         let markdown = await MessageBus.ext.request("data/template/" +
+                              template.replace("/", ".") + "/get");
 
          let last = 1;
          for (let k in this._knots) {
