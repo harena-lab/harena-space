@@ -1,19 +1,19 @@
 (function() {
 AuthorCellManager.instance.insertSource(
-"Zombie Venom Treino",
+"Zombie Venom Desafio 2",
 [],
 `<block type="neighbor"></block>
 <block type="action"></block>`,
 `<dcc-space-cellular-editor id="cellular-space" cell-width="50" cell-height="50"
-  background-image="images/cell/house-background.svg" cover-image="images/cell/house-cover.svg"
-  cover-opacity="0" grid>
-______1__a
+  background-image="images/cell/house-background-numbers.svg" cover-image="images/cell/house-cover.svg"
+  cover-opacity="100" grid>
+_________a
 __________
-__________
-__________
-2_________
-__________
-__________
+__w_______
+___w______
+____w_____
+_____w____
+______w___
 __________
 __________
 b_________
@@ -101,7 +101,7 @@ Configure a transparência do teto:
 <div style="flex:48px; max-height:48px; display:flex; flex-direction:row">
    <img src="images/icon/opacity.svg" style="flex:10%; max-width:48px; max-height:48px">
    <div style="flex:50%; max-height:48px; margin-right:10px">
-      <dcc-slider variable="cover_opacity" value="0" index></dcc-slider>
+      <dcc-slider variable="cover_opacity" value="100" index></dcc-slider>
    </div>
 </div>
 <subscribe-dcc target="cellular-space" message="var/cover_opacity/changed" role="cover-opacity">
