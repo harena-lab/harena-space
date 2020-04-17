@@ -41,6 +41,10 @@ class Properties {
       // <TODO> Provisory
       const svg = ["jacinto", "simple-svg"].
          includes(Basic.service.currentThemeFamily);
+      console.log("=== inline");
+      console.log(editp.inlineProperty);
+      console.log(editp.inlineProfile.type);
+      console.log(obj);
       if (editp.inlineProperty != null) {
          switch (editp.inlineProfile.type) {
             case "void":
@@ -54,7 +58,7 @@ class Properties {
                                                editp.inlineProperty);
                break;
             case "image":
-               this._editor = new EditDCCImage(obj, element);
+               this._editor = new EditDCCImage(obj, dcc, editp.htmls);
                break;
          }
       }
@@ -100,7 +104,8 @@ class Properties {
       let inlineProperty = null;
       let inlineProfile = null;
       for (let p in profile) {
-         if (profile[p].visual == "inline" && profile[p].role == role) {
+         if (profile[p].visual == "inline" &&
+             (role == null || profile[p].role == role)) {
             inlineProperty = p;
             inlineProfile = profile[p];
          }
@@ -114,7 +119,12 @@ class Properties {
                seq++;
             } else {
                for (let s in profile[p].composite) {
-                  html = this._editSingleProperty(
+                  if (profile[p].composite[s].visual == "inline" &&
+                      (role == null || profile[p].composite[s].role == role)) {
+                     inlineProperty = p;
+                     inlineProfile = profile[p].composite[s];
+                  }
+                  let html = this._editSingleProperty(
                      profile[p].composite[s],
                      ((obj[p] && obj[p][s]) ? obj[p][s] : ""), seq);
                   htmlD += html.details;
@@ -328,9 +338,10 @@ text: {
 },
 image: {
    alternative: {type: "shortStr",
-                 label: "label"},
+                 label: "Label"},
    path: {type:  "image",
-          label: "image"}
+          label: "Image",
+          visual: "inline"}
 },
 option: {
    label: {type: "shortStr",
@@ -349,7 +360,9 @@ entity: {
          alternative: {type: "shortStr",
                        label: "alternative"},
          path: {type:  "image",
-                label: "image"}
+                label: "Image",
+                visual: "inline",
+                role: "image"}
       }
    },
    speech: {type: "text",

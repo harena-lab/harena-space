@@ -92,9 +92,9 @@ class EditDCC {
       return (y * Basic.referenceViewport.height / this._containerRect.height);
    }
 
-   async _extendedPanel(html, imageBrowser) {
+   async _extendedPanel(html, modality) {
       this._editorExtended =
-         this._buildExtendedPanel(html, (imageBrowser) ? true : false);
+         this._buildExtendedPanel(html, modality);
       this._editorWrapper.appendChild(this._editorExtended);
 
       let promise = new Promise((resolve, reject) => {
@@ -123,7 +123,7 @@ class EditDCC {
       this._editorWrapper.removeChild(this._editorExtended);
    }
 
-   _buildExtendedPanel(html, imageBrowser) {
+   _buildExtendedPanel(html, modality) {
       let panelExtended = document.createElement("div");
       panelExtended.classList.add("inplace-editor-floating");
       panelExtended.innerHTML = html;
@@ -132,8 +132,9 @@ class EditDCC {
          this._elementRect.left - this._containerRect.left);
 
       // tests the middle of the element against the middle of the container
-      if (this._elementRect.top + (this._elementRect.height / 2) >
-          this._containerRect.top + (this._containerRect.height / 2))
+      if (modality != "properties" ||
+          (this._elementRect.top + (this._elementRect.height / 2) >
+           this._containerRect.top + (this._containerRect.height / 2)))
          panelExtended.style.bottom = this._transformRelativeY(
             this._containerRect.height -
             (this._elementRect.top - this._containerRect.top));
@@ -145,12 +146,27 @@ class EditDCC {
          cancel:  panelExtended.querySelector("#ext-cancel"),
          content: panelExtended.querySelector("#ext-content")
       };
-      if (imageBrowser)
+      if (modality == "image")
          this._extendedSub.image = panelExtended.querySelector("#ext-content");
       else
          this._extendedSub.confirm = panelExtended.querySelector("#ext-confirm");
 
       return panelExtended;
+   }
+
+   async _imageUploadPanel() {
+      let ep = await this._extendedPanel(
+            EditDCC.imageBrowseTemplate, "image");
+      let path = null;
+      if (ep.clicked == "confirm" && ep.content.files[0]) {
+         const asset = await
+            MessageBus.ext.request("data/asset//new",
+                 {file: ep.content.files[0],
+                  caseid: Basic.service.currentCaseId});
+         path = asset.message;
+      }
+      this._removeExtendedPanel();
+      return path;
    }
 }
 
@@ -168,4 +184,15 @@ EditDCC.buttonCancelSVG =
 `<svg viewBox="0 0 512 512">
 <path fill="currentColor" d="M464 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h416c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48zm0 394c0 3.3-2.7 6-6 6H54c-3.3 0-6-2.7-6-6V86c0-3.3 2.7-6 6-6h404c3.3 0 6 2.7 6 6v340zM356.5 194.6L295.1 256l61.4 61.4c4.6 4.6 4.6 12.1 0 16.8l-22.3 22.3c-4.6 4.6-12.1 4.6-16.8 0L256 295.1l-61.4 61.4c-4.6 4.6-12.1 4.6-16.8 0l-22.3-22.3c-4.6-4.6-4.6-12.1 0-16.8l61.4-61.4-61.4-61.4c-4.6-4.6-4.6-12.1 0-16.8l22.3-22.3c4.6-4.6 12.1-4.6 16.8 0l61.4 61.4 61.4-61.4c4.6-4.6 12.1-4.6 16.8 0l22.3 22.3c4.7 4.6 4.7 12.1 0 16.8z">
 </path></svg>`;
+
+EditDCC.imageBrowseTemplate =
+`<div class="annotation-bar">Select Image
+   <div class="annotation-buttons">
+      <div id="ext-cancel" style="width:28px">` +
+          EditDCC.buttonCancelSVG + "</div>" +
+`   </div>
+</div>
+<input type="file" id="ext-content" name="ext-content"
+       accept="image/png, image/jpeg, image/svg">`;
+
 })();

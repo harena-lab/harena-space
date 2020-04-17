@@ -16,7 +16,8 @@ class EditDCCPlain extends EditDCC {
          this._editElement.contentEditable = true;
       }
       let ep = await this._extendedPanel(
-            EditDCCPlain.propertiesTemplate.replace("[properties]", htmlProp), false);
+            EditDCCPlain.propertiesTemplate.replace("[properties]", htmlProp),
+               "properties");
       if (this._objField != null) {
          this._editElement.contentEditable = false;
          if (ep.clicked == "confirm")

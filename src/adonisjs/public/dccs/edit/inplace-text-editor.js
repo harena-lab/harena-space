@@ -302,8 +302,13 @@ class EditDCCText extends EditDCC {
 
    async _handleImageUpload() {
       const range = this._quill.getSelection();
+      let imagePath = await this._imageUploadPanel();
+      this._quill.insertEmbed(
+            range.index, "image", Basic.service.imageResolver(imagePath));
+      /*
+      const range = this._quill.getSelection();
       let ep = await this._extendedPanel(
-            EditDCCText.imageBrowseTemplate, true);
+            EditDCC.imageBrowseTemplate, "image");
       if (ep.clicked == "confirm" && ep.content.files[0]) {
          const asset = await
             MessageBus.ext.request("data/asset//new",
@@ -312,15 +317,18 @@ class EditDCCText extends EditDCC {
          this._quill.insertEmbed(
             range.index, "image", Basic.service.imageResolver(asset.message));
       }
+      this._removeExtendedPanel();
+      */
    }
 
    async _handleAnnotation() {
       const range = this._quill.getSelection();
       let ep =
-         await this._extendedPanel(EditDCCText.annotationTemplate);
+         await this._extendedPanel(EditDCCText.annotationTemplate, "annotation");
       if (ep.clicked == "confirm")
          this._quill.formatText(range.index, range.length,
                                 {annotation: ep.content.value});
+      this._removeExtendedPanel();
    }
 
    async _handleHighlighter() {
@@ -331,7 +339,7 @@ class EditDCCText extends EditDCC {
             "<option value='" + ctxList[c][0] + "'>" +
                ctxList[c][1] + "</option>";
       this._contextList += "</select>";
-      let ep = await this._extendedPanel(this._contextList);
+      let ep = await this._extendedPanel(this._contextList, "annotation");
       if (ep.clicked == "confirm") {
          let vocabulary = ep.content.value;
 
@@ -345,6 +353,7 @@ class EditDCCText extends EditDCC {
          const first = await this._loadSelectOptions(vocabulary);
          this._handleHlSelect(first, true);
       }
+      this._removeExtendedPanel();
    }
 
    async _loadSelectOptions(vocabulary) {
@@ -615,16 +624,6 @@ EditDCCText.headerTemplate =
 
 EditDCCText.annotationTemplate = EditDCCText.headerTemplate +
 `<textarea id="ext-content" rows="3" cols="20"></textarea>`;
-
-EditDCCText.imageBrowseTemplate =
-`<div class="annotation-bar">Annotation
-   <div class="annotation-buttons">
-      <div id="ext-cancel" style="width:28px">` +
-          EditDCC.buttonCancelSVG + "</div>" +
-`   </div>
-</div>
-<input type="file" id="ext-content" name="ext-content"
-       accept="image/png, image/jpeg, image/svg">`;
 
 EditDCCText.metadataStyle = {
    annotation: "dcc-text-annotation",

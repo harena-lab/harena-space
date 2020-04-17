@@ -2,28 +2,37 @@
   **********************/
 
 class EditDCCImage extends EditDCC {
-   constructor(obj, element) {
-      super(element);
-      this._objProperties = obj;
+   constructor(obj, dcc) {
+      super(dcc);
+      // this._objProperties = obj;
       // this._editElement = element;
       // this._commons = new EditDCC(element);
-      this._buildImageSelector();
+      // this._buildImageSelector();
+      this._buildEditor(obj);
    }
 
-   _buildImageSelector() {
-      /*
+   async _buildEditor(obj) {
+      obj.image.path = await this._imageUploadPanel();
+      console.log("=== obj");
+      console.log(obj);
+      MessageBus.ext.publish("properties/apply/details");
+   }
+
+   /*
+   _buildImageSelector(htmlProp) {
       this._editorWrapper = document;
       if (window.parent && window.parent.document) {
          const cont = window.parent.document.querySelector("#inplace-editor-wrapper");
          if (cont != null)
             this._editorWrapper = cont;
       }
-      */
       
       this._editor = this._buildEditorPanel();
       this._editorWrapper.appendChild(this._editor);
    }
+   */
 
+   /*
    _buildEditorPanel() {
       let editor = document.createElement("div");
       editor.style.position = "absolute";
@@ -44,8 +53,14 @@ class EditDCCImage extends EditDCC {
       this._imageField.addEventListener("change", this._updateImage);
       return editor;
    }
+   */
 
+   /*
    async _updateImage() {
+      this._objProperties.image.path = await this._imageUploadPanel();
+      MessageBus.ext.publish("properties/apply");
+   */
+      /*
       if (this._imageField.files[0]) {
          const asset = await
             MessageBus.ext.request("data/asset//new",
@@ -55,7 +70,8 @@ class EditDCCImage extends EditDCC {
       }
       MessageBus.ext.publish("properties/apply");
       this._editorWrapper.removeChild(this._editor);
-   }
+      */
+   // }
 
    /*
     * Relative positions defined in percent are automatically adjusted with resize
@@ -99,6 +115,7 @@ class EditDCCImage extends EditDCC {
    */
 }
 
+/*
 (function() {
 EditDCCImage.editorTemplate =
 `<foreignObject width="100%" height="100%">
@@ -109,3 +126,4 @@ EditDCCImage.editorTemplate =
 </foreignObject>`;
 
 })();
+*/
