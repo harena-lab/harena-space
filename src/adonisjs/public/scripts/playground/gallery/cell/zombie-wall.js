@@ -4,85 +4,62 @@ AuthorCellManager.instance.insertSource(
 [],
 `<block type="neighbor"></block>
 <block type="action"></block>`,
-`<dcc-space-cellular-editor id="cellular-space" cell-width="50" cell-height="50" background-color="#aaffaa" grid>
-_____1___
-_ttttttt_
-_trrrrrt_
-_trrrrrt_
-2trrrwrt_
-_trrrrrt_
-_trrrrrt_
-_ttttttt_
-_________
+`<dcc-space-cellular-editor id="cellular-space" cell-width="50" cell-height="50"
+  background-image="images/cell/house-background.svg" cover-image="images/cell/house-cover.svg"
+  cover-opacity="0" grid>
+______1__a
+__________
+__________
+__________
+2_________
+__________
+__________
+__________
+__________
+b_________
 </dcc-space-cellular-editor>
 
 <dcc-cell-image type="1" label="zombie1" image="images/cell/zumbi_10.png">
 </dcc-cell-image>
-<dcc-cell-image type="a" label="zombie1r" image="images/cell/zumbi_10.png">
-</dcc-cell-image>
 <dcc-cell-image type="2" label="zombie2" image="images/cell/zumbi_3.png">
 </dcc-cell-image>
-<dcc-cell-image type="b" label="zombie2r" image="images/cell/zumbi_3.png">
+<dcc-cell-image type="a" label="cursor1" image="images/cell/glass-red.svg">
+</dcc-cell-image>
+<dcc-cell-image type="b" label="cursor1" image="images/cell/glass.svg">
 </dcc-cell-image>
 <dcc-cell-image type="w" label="wall" image="images/cell/wall.svg"></dcc-cell-image>
-<dcc-cell-image type="r" label="roof" image="images/cell/cell-tile.svg"></dcc-cell-image>
-<dcc-cell-image type="t" label="border" image="images/cell/cell-tile.svg"></dcc-cell-image>
 
-<rule-dcc-cell-pair label="walk4" probability="100" transition="1t>_a">
+<rule-dcc-cell-pair label="walk1" probability="100" transition="1_>_1">
 ___
 ___
 _*_
 </rule-dcc-cell-pair>
 
-<rule-dcc-cell-pair label="walk4" probability="100" transition="ar>ra">
+<rule-dcc-cell-pair label="walka" probability="100" transition="a_>_a">
 ___
 ___
 _*_
 </rule-dcc-cell-pair>
 
-<rule-dcc-cell-pair label="walk3" probability="100" transition="at>ta">
+<rule-dcc-cell-pair label="walka" probability="100" transition="ab>_a">
 ___
 ___
 _*_
-</rule-dcc-cell-pair>
-
-<rule-dcc-cell-pair label="walk3" probability="100" transition="a_>t1">
-___
-___
-_*_
-</rule-dcc-cell-pair>
-
-<rule-dcc-cell-pair label="walk3" probability="100" transition="1_>_1">
-___
-___
-_*_
-</rule-dcc-cell-pair>
-
-<rule-dcc-cell-pair label="walk2" probability="100" transition="2t>_b">
-___
-__*
-___
-</rule-dcc-cell-pair>
-
-<rule-dcc-cell-pair label="walk2" probability="100" transition="br>rb">
-___
-__*
-___
-</rule-dcc-cell-pair>
-
-<rule-dcc-cell-pair label="walk1" probability="100" transition="bt>tb">
-___
-__*
-___
-</rule-dcc-cell-pair>
-
-<rule-dcc-cell-pair label="walk1" probability="100" transition="b_>t2">
-___
-__*
-___
 </rule-dcc-cell-pair>
 
 <rule-dcc-cell-pair label="walk2" probability="100" transition="2_>_2">
+___
+__*
+___
+</rule-dcc-cell-pair>
+
+<rule-dcc-cell-pair label="walkb" probability="100" transition="b_>_b">
+___
+__*
+___
+</rule-dcc-cell-pair>
+
+<rule-dcc-cell-pair label="walka" probability="100" transition="ba>_b">
 ___
 __*
 ___
@@ -115,15 +92,19 @@ ___
       </dcc-trigger>
    </div>
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
-      <dcc-trigger label="Telhado" action="type/roof"
-                   image="images/cell/cell-tile.svg">
-      </dcc-trigger>
-   </div>
-   <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
       <dcc-trigger label="Nada" action="type/empty"
                    image="images/cell/cell-green.svg">
       </dcc-trigger>
    </div>
-</div>`
+</div>
+Configure a transparência do teto:
+<div style="flex:48px; max-height:48px; display:flex; flex-direction:row">
+   <img src="images/icon/opacity.svg" style="flex:10%; max-width:48px; max-height:48px">
+   <div style="flex:50%; max-height:48px; margin-right:10px">
+      <dcc-slider variable="cover_opacity" value="0" index></dcc-slider>
+   </div>
+</div>
+<subscribe-dcc target="cellular-space" message="var/cover_opacity/changed" role="cover-opacity">
+</subscribe-dcc>`
 );
 })();

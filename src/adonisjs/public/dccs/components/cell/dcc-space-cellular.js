@@ -55,16 +55,28 @@ class DCCSpaceCellular extends DCCBase {
       if (!this.cellWidth) this.cellWidth = DCCSpaceCellular.defaultCellDimensions.width;
       if (!this.cellHeight) this.cellHeight = DCCSpaceCellular.defaultCellDimensions.height;
 
-      if (!this.backgroundColor) this.backgroundColor = "#ffffc8";
+      if (!this.backgroundColor)
+         this.backgroundColor = (!this.backgroundImage) ? "#ffffc8" : "#ffffff00";
 
+      const width = this.cols * this.cellWidth + "px";
+      const height = this.rows * this.cellHeight + "px";
       this.innerHTML = DCCSpaceCellular.svgTemplate
                          .replace(/\[cell-width\]/g, this.cellWidth + "px")
                          .replace(/\[cell-height\]/g, this.cellHeight + "px")
-                         .replace(/\[width\]/g, this.cols * this.cellWidth + "px")
-                         .replace(/\[height\]/g, this.rows * this.cellHeight + "px")
+                         .replace(/\[width\]/g, width)
+                         .replace(/\[height\]/g, height)
                          .replace(/\[background-color\]/g, this.backgroundColor)
+                         .replace(/\[background-image\]/g,
+                           (this.backgroundImage == null) ? "" :
+                              "<image href='" + this.backgroundImage + "' width='" + width +
+                                 "' height='" + height + "'/>")
                          .replace(/\[grid\]/g, (this.grid) ? 
-                           " stroke-width='2' stroke='#646464'" : "");
+                           " stroke-width='2' stroke='#646464'" : "")
+                         .replace(/\[cover-image\]/g,
+                           (this.coverImage == null) ? "" :
+                              "<image id='cover-image' href='" + this.coverImage + "' width='" + width +
+                                 "' height='" + height + "'"+
+                              ((this.coverOpacity) ? " opacity='" + this.coverOpacity + "'" : "") + "/>");
       this._cellGrid = this.querySelector("#cell-grid");
       this._cells = this.querySelector("#cells");
    }
@@ -75,8 +87,8 @@ class DCCSpaceCellular extends DCCBase {
 
    static get observedAttributes() {
       return DCCBase.observedAttributes.concat(
-         ["label", "cols", "rows", "cell-width", "cell-height", "background-color", "grid",
-          "infinite"]);
+         ["label", "cols", "rows", "cell-width", "cell-height", "background-color", 
+          "background-image", "cover-image", "cover-opacity", "grid", "infinite"]);
    }
 
    get label() {
@@ -125,6 +137,30 @@ class DCCSpaceCellular extends DCCBase {
    
    set backgroundColor(newValue) {
       this.setAttribute("background-color", newValue);
+   }
+
+   get backgroundImage() {
+      return this.getAttribute("background-image");
+   }
+   
+   set backgroundImage(newValue) {
+      this.setAttribute("background-image", newValue);
+   }
+
+   get coverImage() {
+      return this.getAttribute("cover-image");
+   }
+   
+   set coverImage(newValue) {
+      this.setAttribute("cover-image", newValue);
+   }
+
+   get coverOpacity() {
+      return this.getAttribute("cover-opacity");
+   }
+   
+   set coverOpacity(newValue) {
+      this.setAttribute("cover-opacity", newValue);
    }
 
    get grid() {
@@ -236,9 +272,15 @@ class DCCSpaceCellular extends DCCBase {
    }
 
    notify(topic, message) {
+      console.log("=== space messsage");
+      console.log(message);
       if (message.role) {
          switch (message.role.toLowerCase()) {
             case "next": this.stateNext(); break;
+            case "cover-opacity":
+               this.coverOpacity = parseInt(message.body.value) / 100;
+               this.querySelector("#cover-image").setAttribute("opacity", this.coverOpacity);
+               break;
          }
       }
    }
@@ -402,8 +444,10 @@ class DCCSpaceCellularEditor extends DCCSpaceCellular {
   </pattern>
 </defs>
 <g id="cell-grid">
+   [background-image]
    <rect fill="url(#grid)" x="0" y="0" width="[width]" height="[height]"/>
    <g id="cells"/>
+   [cover-image]
 </g>
 </svg>
 </div>`;
