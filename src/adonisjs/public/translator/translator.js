@@ -1986,7 +1986,7 @@ class Translator {
          mark: /@(?:(\w+)|"([\w \t]*)")/im,
          inline: true },
       input: {
-         mark: /^\?[ \t]+([\w \t.]+)$/im,
+         mark: /^\?[ \t]+([^\t\n\r\f]+)$/im,
          subfield: true,
          subimage: true,
          subtext:  "text" },
