@@ -43,6 +43,10 @@ class AuthorCellManager {
          if (scriptMatch != null && scriptMatch[1] == "no-script")
             this._scriptsActive = false;
       }
+      if (this._scriptsActive)
+         document.querySelector("#action-panels").innerHTML = AuthorCellManager.scriptPanel;
+      else
+         document.querySelector("#action-panels").innerHTML = AuthorCellManager.noScriptPanel;
    }
 
    insertSource(name, types, blocks, source, buttonTypes) {
@@ -126,5 +130,28 @@ class AuthorCellManager {
 }
 
 (function() {
-   AuthorCellManager.instance = new AuthorCellManager();
+AuthorCellManager.instance = new AuthorCellManager();
+
+AuthorCellManager.scriptPanel =
+`<div class="d-flex col-6 flex-column align-items-stretch">
+   <div>
+      <div id="render-panel"></div>
+      <div id="types-panel"></div>
+   </div>
+   <div id="rules-panel"></div>
+</div>
+<div class="d-flex col-6 flex-column align-items-stretch">
+   <div id="script-panel" class="h-100 w-100"></div>
+</div>`;
+
+AuthorCellManager.noScriptPanel =
+`<div class="d-flex col-6 flex-column align-items-stretch">
+   <div id="render-panel"></div>
+</div>
+<div class="d-flex col-6 flex-column align-items-stretch">
+   <div id="types-panel" class="h-100 w-100"></div>
+   <div id="script-panel"></div>
+   <div id="rules-panel"></div>
+</div>`;
+
 })();
