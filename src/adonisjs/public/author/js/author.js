@@ -265,15 +265,23 @@ class AuthorManager {
       console.log(this._compiledCase);
    }
 
-   async _showCase() {
+   async _showCase(selectKnot) {
+      console.log("=== select knot (show case)");
+      console.log(selectKnot);
       await this._navigator.mountTreeCase(this, this._compiledCase.knots);
       
-      const knotIds = Object.keys(this._knots);
-      let k = 0;
-      while (k < knotIds.length && !this._knots[knotIds[k]].render)
-         k++;
+      let sk;
+      if (selectKnot != null)
+         sk = selectKnot;
+      else {
+         const knotIds = Object.keys(this._knots);
+         let k = 0;
+         while (k < knotIds.length && !this._knots[knotIds[k]].render)
+            k++;
+         sk = knotIds[k];
+      }
       
-      MessageBus.ext.publish("control/knot/" + knotIds[k] + "/selected");
+      MessageBus.ext.publish("control/knot/" + sk + "/selected");
    }
    
    /*
@@ -403,7 +411,7 @@ class AuthorManager {
    async knotSelected(topic, message) {
       this._removeFloatingMenu();
       let knotid = MessageBus.extractLevel(topic, 3);
-      knotid = ("") ? this._knotSelected : knotid;
+      knotid = (knotid == "") ? this._knotSelected : knotid;
       if (knotid != null) {
          console.log("=== miniatureF");
          console.log("#mini-" + knotid.replace(/\./g, "_"));
@@ -535,15 +543,27 @@ class AuthorManager {
          this._knots = newKnotSet;
 
          const md = Translator.instance.assembleMarkdown(this._compiledCase);
-         this._compile(md);
+         await this._compile(md);
+
+         let newSelected = null;
+         const kl = Object.keys(this._knots);
+         console.log("=== knot list");
+         console.log(kl);
+         const ki = kl.indexOf(this._knotSelected);
+         if (ki > -1 && ki+1 < kl.length)
+            newSelected = kl[ki+1];
+
+
+         console.log("=== new knot");
+         console.log(newSelected);
 
          // this._knotSelected = knotId;
-         const ki = this._knotSelected;
-         this._knotSelected = null;
+         // const ki = this._knotSelected;
+         // this._knotSelected = null;
 
-         this._htmlKnot = await Translator.instance.generateHTML(this._knots[knotId]);
-         await this._showCase();
-         MessageBus.ext.publish("control/knot/" + ki + "/selected");
+         // this._htmlKnot = await Translator.instance.generateHTML(this._knots[this._knotSelected]);
+         await this._showCase(newSelected);
+         // MessageBus.ext.publish("control/knot/" + ki + "/selected");
       }
     }
 
