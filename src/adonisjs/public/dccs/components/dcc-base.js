@@ -9,7 +9,7 @@ class DCCBase extends HTMLElement {
    }
 
    static get observedAttributes() {
-      return ["id", "author"];
+      return ["id", "role", "author"];
    }
 
    get id() {
@@ -18,6 +18,15 @@ class DCCBase extends HTMLElement {
    
    set id(newValue) {
       this.setAttribute("id", newValue);
+   }
+   
+   // role of the component inside compositions
+   get role() {
+      return this.getAttribute("role");
+   }
+   
+   set role(newValue) {
+      this.setAttribute("role", newValue);
    }
    
    get author() {

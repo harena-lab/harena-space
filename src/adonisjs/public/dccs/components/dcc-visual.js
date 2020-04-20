@@ -27,6 +27,14 @@ class DCCVisual extends DCCBase {
       presentation.addEventListener("click", listener.selectListener);
    }
 
+   hide() {
+      this._presentation.style.display = "none";
+   }
+
+   show() {
+      this._presentation.style.display = "initial";
+   }
+
    // ignores role argument
    edit() {
       this._editPresentation(this._presentation, this);
@@ -87,6 +95,16 @@ class DCCMultiVisual extends DCCVisual {
       if (this.author)
          for (let pr of this._presentationSet)
             this._activateAuthorPresentation(pr._presentation, pr);
+   }
+
+   hide() {
+      for (let pr of this._presentationSet)
+         pr.style.display = "none";
+   }
+
+   show() {
+      for (let pr of this._presentationSet)
+         pr.style.display = "initial";
    }
 
    edit(role) {

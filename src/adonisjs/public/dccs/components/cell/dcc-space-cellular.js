@@ -20,7 +20,8 @@ class DCCSpaceCellular extends DCCBase {
       this._stateStr = this.innerHTML.trim();
 
       for (let c of this._stateStr)
-         if (![" ", "_", "\r", "\n"].includes(c) && !this._stateTypes.includes(c))
+         if (![" ", "_", "\r", "\n"].includes(c) &&
+             !this._stateTypes.includes(c))
             this._stateTypes.push(c);
 
       this._buildInnerHTML();
