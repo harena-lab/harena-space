@@ -51,7 +51,7 @@ class AuthorCellManager {
 
    insertSource(name, types, blocks, source, buttonTypes) {
       if (this._scriptsActive) {
-         ScriptBlocks.create(types);
+         ScriptBlocksCell.create(types);
 
          document.querySelector("#xml-toolbox").innerHTML =
              `<xml xmlns="https://developers.google.com/blockly/xml" id="toolbox" style="display: none">` +
