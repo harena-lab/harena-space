@@ -5,6 +5,8 @@
 class DCCVisual extends DCCBase {
    constructor() {
       super();
+      this._presentationReady = false;
+      this._pendingTrigger = [];
       this.selectListener = this.selectListener.bind(this);
    }
 
@@ -33,6 +35,34 @@ class DCCVisual extends DCCBase {
 
    show() {
       this._presentation.style.display = "initial";
+   }
+
+   attachTrigger(event, trigger) {
+      if (this._presentationReady)
+         this._attachTriggerReady(event, trigger);
+      else
+         this._pendingTrigger.push([event, trigger]);
+   }
+
+   _attachTriggerReady(event, trigger) {
+      this._attachTriggerPresentation(event, trigger, this._presentation);
+   }
+
+   _attachTriggerPresentation(event, trigger, presentation) {
+      if (event == "click")
+         presentation.style.cursor = "pointer";
+      presentation.addEventListener(event, trigger);
+   }
+
+   removeTrigger(event, trigger) {
+      this._presentation.removeEventListener(event, trigger);
+   }
+
+   _presentationIsReady() {
+      this._presentationReady = true;
+      for (let t of this._pendingTrigger)
+         this._attachTriggerReady(t[0], t[1]);
+      this._pendingTrigger = null;
    }
 
    // ignores role argument
@@ -81,6 +111,9 @@ class DCCMultiVisual extends DCCVisual {
    }
 
    _storePresentation(presentation, role) {
+      console.log("=== store presentation");
+      console.log(presentation);
+      console.log(role);
       super._storePresentation(presentation);
       if (presentation != null)
          this._presentationSet.push(
@@ -99,12 +132,30 @@ class DCCMultiVisual extends DCCVisual {
 
    hide() {
       for (let pr of this._presentationSet)
-         pr.style.display = "none";
+         pr._presentation.style.display = "none";
    }
 
    show() {
       for (let pr of this._presentationSet)
-         pr.style.display = "initial";
+         pr._presentation.style.display = "initial";
+   }
+
+   _attachTriggerReady(event, trigger) {
+      console.log("=== attach trigger");
+      console.log(event);
+      console.log(trigger);
+      console.log(this._presentationReady);
+      console.log(JSON.stringify(this._presentationSet));
+      for (let pr of this._presentationSet)
+         this._attachTriggerPresentation(event, trigger, pr._presentation);
+   }
+
+   removeTrigger(event, trigger) {
+      for (let pr of this._presentationSet) {
+         if (event == "click")
+            pr._presentation.style.cursor = "default";
+         pr._presentation.removeEventListener(event, trigger);
+      }
    }
 
    edit(role) {

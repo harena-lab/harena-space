@@ -117,6 +117,8 @@ class DCCSlider extends DCCInput {
       this._inputVariable.oninput = this.inputChanged;
       if (this.hasAttribute("index"))
          this._inputIndex = presentation.querySelector(selector + "-index");
+
+      this._presentationIsReady();
    }
 }
 

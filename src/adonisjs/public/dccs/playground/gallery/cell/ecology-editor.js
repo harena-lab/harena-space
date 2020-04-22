@@ -173,26 +173,26 @@ Selecione abaixo a chance de cada um dos eventos:
 </div>
 
 <dcc-timer cycles="100000" interval="500" publish="state/next">
-   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
-   <subscribe-dcc message="timer/stop" role="stop"></subscribe-dcc>
+   <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc topic="timer/stop" role="stop"></subscribe-dcc>
 </dcc-timer>
 
-<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
-<subscribe-dcc target="plant-replicates" message="var/plant_replicates/changed" role="probability">
+<subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="plant-replicates" topic="var/plant_replicates/changed" role="probability">
 </subscribe-dcc>
-<subscribe-dcc target="plant-dies" message="var/plant_dies/changed" role="probability"></subscribe-dcc>
-<subscribe-dcc target="herbivore-replicates" message="var/herbivore_replicates/changed" role="probability">
+<subscribe-dcc target="plant-dies" topic="var/plant_dies/changed" role="probability"></subscribe-dcc>
+<subscribe-dcc target="herbivore-replicates" topic="var/herbivore_replicates/changed" role="probability">
 </subscribe-dcc>
-<subscribe-dcc target="herbivore-dies" message="var/herbivore_dies/changed" role="probability">
+<subscribe-dcc target="herbivore-dies" topic="var/herbivore_dies/changed" role="probability">
 </subscribe-dcc>
-<subscribe-dcc target="carnivore-replicates" message="var/carnivore_replicates/changed" role="probability">
+<subscribe-dcc target="carnivore-replicates" topic="var/carnivore_replicates/changed" role="probability">
 </subscribe-dcc>
-<subscribe-dcc target="carnivore-dies" message="var/carnivore_dies/changed" role="probability">
+<subscribe-dcc target="carnivore-dies" topic="var/carnivore_dies/changed" role="probability">
 </subscribe-dcc>
-<subscribe-dcc target="cellular-space" message="type/#" role="type"></subscribe-dcc>
-<subscribe-dcc target="cellular-space" message="state/save" role="save"></subscribe-dcc>
-<subscribe-dcc target="cellular-space" message="state/load" role="load"></subscribe-dcc>
-<subscribe-dcc target="cellular-space" message="state/download" role="download"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="type/#" role="type"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/save" role="save"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/load" role="load"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/download" role="download"></subscribe-dcc>
 
 </div>
 </div>`

@@ -4,14 +4,14 @@
 class SubscribeDCC extends HTMLElement {
    connectedCallback() {
       this.publishWithRole = this.publishWithRole.bind(this);
-      if (this.hasAttribute("message")) {
+      if (this.hasAttribute("topic")) {
          this._targetObj = (this.hasAttribute("target"))
             ? document.querySelector("#" + this.target) : this.parentNode;
 
          if (!this.hasAttribute("role"))
-            MessageBus.ext.subscribe(this.message, this._targetObj.notify);
+            MessageBus.ext.subscribe(this.topic, this._targetObj.notify);
          else
-            MessageBus.ext.subscribe(this.message, this.publishWithRole);
+            MessageBus.ext.subscribe(this.topic, this.publishWithRole);
       }
    }
 
@@ -23,7 +23,7 @@ class SubscribeDCC extends HTMLElement {
       **********/
    
    static get observedAttributes() {
-      return ["target", "message", "role"];
+      return ["target", "topic", "role"];
    }
 
    get target() {
@@ -34,12 +34,12 @@ class SubscribeDCC extends HTMLElement {
       this.setAttribute("target", newValue);
    }
    
-   get message() {
-      return this.getAttribute("message");
+   get topic() {
+      return this.getAttribute("topic");
    }
    
-   set message(newValue) {
-      this.setAttribute("message", newValue);
+   set topic(newValue) {
+      this.setAttribute("topic", newValue);
    }
 
    get role() {

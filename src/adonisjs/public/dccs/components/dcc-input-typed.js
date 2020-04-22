@@ -113,6 +113,8 @@ class DCCInputTyped extends DCCInput {
       this._inputVariable = presentation.querySelector(selector);
       this._inputVariable.addEventListener("input", this.inputTyped);
       this._inputVariable.addEventListener("change", this.inputChanged);
+
+      this._presentationIsReady();
    }
 }
 

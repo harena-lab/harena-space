@@ -3,213 +3,63 @@
  */
 
 class ScriptBlocksDCC {
-   static create(types) {
-      ScriptBlocksDCC.s = new ScriptBlocksDCC(types);
+   static create() {
+      ScriptBlocksDCC.s = new ScriptBlocksDCC();
    }
 
-   constructor(types) {
-      this._selectTypes = [];
-      let emptyPos = -1;
-      for (let t in types)
-         if (types[t][0] == "empty")
-            emptyPos = t;
-         else
-            this._selectTypes.push([types[t][2], types[t][0]]);
-      this._allSelectTypes = this._selectTypes.slice();
-      this._allSelectTypes.unshift(
-         (emptyPos > -1)
-           ? [types[emptyPos][2], types[emptyPos][0]]
-           : [ScriptBlocksDCC.emptyType[2], ScriptBlocksDCC.emptyType[0]]);
-
-      this._types = {};
-      if (emptyPos == -1)
-         this._types[ScriptBlocksDCC.emptyType[0]] = ScriptBlocksDCC.emptyType[1];
-      for (let t of types)
-         this._types[t[0]] = t[1];
-
+   constructor() {
       this._buildBlocks();
-      this._codeGenerator();
    }
 
    _buildBlocks() {
-      Blockly.Blocks["neighbor"] = {
+      Blockly.Blocks["image"] = {
         init: function() {
           this.jsonInit({
-            "message0": "context %1 \n encontra %2 então %3",
+            "message0": "image %1",
             "args0": [
                {
-                 "type": "field_dropdown",
-                 "name": "origin",
-                 "options": ScriptBlocksDCC.s._allSelectTypes
-               },
-               {
-                 "type": "field_dropdown",
-                 "name": "target",
-                 "options": ScriptBlocksDCC.s._allSelectTypes
-               },
-               {
-                 "type": "input_value",
-                 "name": "action",
-                 "check": "Action"
+                 "type": "field_image",
+                 "src": "images/cell/carnivorous-dinosaur.svg",
+                 "width": 32,
+                 "height": 32,
+                 "alt": "carnivorous dinosaur"
                }
             ],
-            "message1": "%1 %2 %3",
-            "args1": [
-              {
-                "type": "field_checkbox",
-                "name": "upLeft",
-                "check": "Boolean"
-              },
-              {
-                "type": "field_checkbox",
-                "name": "up",
-                "check": "Boolean"
-              },
-              {
-                "type": "field_checkbox",
-                "name": "upRight",
-                "check": "Boolean"
-              }
-            ],
-            "message2": "%1 %2 %3 direção",
-            "args2": [
-              {
-                "type": "field_checkbox",
-                "name": "left",
-                "check": "Boolean"
-              },
-              {
-                "type": "field_image",
-                "src":  "../icons/arrows.png",
-                "width": 22,
-                "height": 22
-              },
-              {
-                "type": "field_checkbox",
-                "name": "right",
-                "check": "Boolean"
-              }
-            ],
-            "message3": "%1 %2 %3",
-            "args3": [
-              {
-                "type": "field_checkbox",
-                "name": "downLeft",
-                "check": "Boolean"
-              },
-              {
-                "type": "field_checkbox",
-                "name": "down",
-                "check": "Boolean"
-              },
-              {
-                "type": "field_checkbox",
-                "name": "downRight",
-                "check": "Boolean"
-              }
-            ],
-            "colour": 160,
-            "tooltip": "Checks neighborhood."
+            "colour": 200,
+            "tooltip": "A Dinosaur image.",
+            "previousStatement": "Image"
           });
         }
       };
-
-      Blockly.Blocks["action"] = {
+      Blockly.Blocks["state"] = {
         init: function() {
           this.jsonInit({
-            "message0": "ação %1",
+            "message0": "variable %1 rotate %2 image %3",
             "args0": [
                {
-                 "type": "field_dropdown",
-                 "name": "action",
-                 "options": [
-                    ["movimenta", "move"],
-                    ["duplica", "duplicate"]
-                 ]
+                 "type": "field_variable",
+                 "name": "variable",
+                 "variable": "x"
                },
-            ],
-            "message1": "chance %1",
-            "args1": [
-              {
-                "type": "field_number",
-                "name": "probability",
-                "value": 100,
-                "min": 0,
-                "max": 100
-              }
-            ],
-            "colour": 230,
-            "tooltip": "Action.",
-            "output": "Action"
-          });
-        }
-      };
-
-      Blockly.Blocks["disapear"] = {
-        init: function() {
-          this.jsonInit({
-            "message0": "%1 desaparecer",
-            "args0": [
                {
-                 "type": "field_dropdown",
-                 "name": "action",
-                 "options": ScriptBlocksDCC.s._selectTypes
+                 "type": "field_checkbox",
+                 "name": "rotate",
+                 "check": "Boolean"
                },
-            ],
-            "message1": "chance %1",
-            "args1": [
-              {
-                "type": "field_number",
-                "name": "probability",
-                "value": 100,
-                "min": 0,
-                "max": 100
-              }
+               {
+                 "type": "input_statement",
+                 "name": "image",
+                 "check": "Image"
+               }
             ],
             "colour": 200,
-            "tooltip": "Disapear."
+            "tooltip": "A State DCC."
           });
         }
       };
-   }
 
-   _codeGenerator() {
-      Blockly.JavaScript["neighbor"] = function(block) {
-         return "<rule-dcc-cell-pair " +
-                Blockly.JavaScript.statementToCode(block, "action")
-                   .replace(/_o/g, ScriptBlocksDCC.s._types[block.getFieldValue("origin")])
-                   .replace(/_t/g, ScriptBlocksDCC.s._types[block.getFieldValue("target")]) +
-                ">\n" +
-                ((block.getFieldValue("upLeft") == "TRUE") ? "*" : "_") +
-                ((block.getFieldValue("up") == "TRUE") ? "*" : "_") +
-                ((block.getFieldValue("upRight") == "TRUE") ? "*" : "_") + "\n" +
-                ((block.getFieldValue("left") == "TRUE") ? "*" : "_") + "_" +
-                ((block.getFieldValue("right") == "TRUE") ? "*" : "_") + "\n" +
-                ((block.getFieldValue("downLeft") == "TRUE") ? "*" : "_") +
-                ((block.getFieldValue("down") == "TRUE") ? "*" : "_") +
-                ((block.getFieldValue("downRight") == "TRUE") ? "*" : "_") + "\n" +
-                "</rule-dcc-cell-pair>";
-      };
-      Blockly.JavaScript["action"] = function(block) {
-         return " probability='" + block.getFieldValue("probability") + "'" +
-                " transition='" + ScriptBlocksDCC.transitions[block.getFieldValue("action")] + "'";
-      };
-
-/*
-<rule-dcc-cell-pair label="fall vertical" probability="100" transition="._>_.">
-___
-___
-_*_
-</rule-dcc-cell-pair>
-*/
    }
 }
 
 (function() {
-   ScriptBlocksDCC.emptyType = ["empty", "_", "vazio"];
-
-   ScriptBlocksDCC.transitions = {
-      "move":      "_o_t>_t_o",
-      "duplicate": "_o_t>_o_o"
-   };
 })();

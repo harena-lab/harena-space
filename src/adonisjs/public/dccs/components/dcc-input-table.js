@@ -178,6 +178,8 @@ class DCCInputTable extends DCCInput {
             }
          }
       }
+
+      this._presentationIsReady();
    }
 }
 

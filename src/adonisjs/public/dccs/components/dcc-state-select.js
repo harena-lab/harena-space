@@ -189,6 +189,7 @@ class DCCStateSelect extends DCCVisual {
            this._presentation.className =
               DCCStateSelect.elementTag + "-theme " +
               DCCStateSelect.elementTag + "-" + this.selectionIndex + "-theme";
+        this._presentationIsReady();
       }
    }
    
@@ -343,7 +344,8 @@ class DCCGroupSelect extends DCCBlock {
    async _renderInterface() {
       // === presentation setup (DCC Block)
       this._applyRender(this._statement, "innerHTML");
-   }
+      this._presentationIsReady();
+  }
 
    externalLocationType() {
       return "input";

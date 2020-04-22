@@ -112,6 +112,8 @@ class DCCTrigger extends DCCBlock {
          if (!this.author)
             this._presentation.addEventListener("click", this._computeTrigger);
       }
+
+      this._presentationIsReady();
    }
    
    /* Rendering */

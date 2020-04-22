@@ -105,6 +105,8 @@ class DCCInputOption extends DCCInput {
 
          // === post presentation setup
          this._presentation.addEventListener("change", this.inputChanged);
+
+         this._presentationIsReady();
       }
    }
 }
@@ -230,6 +232,8 @@ class DCCInputChoice extends DCCInput {
             v++;
          }
       }
+
+      this._presentationIsReady();
    }
 }
 

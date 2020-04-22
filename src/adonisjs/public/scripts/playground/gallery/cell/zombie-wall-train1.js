@@ -66,14 +66,14 @@ ___
 </rule-dcc-cell-pair>
 
 <dcc-timer cycles="100000" interval="1000" publish="state/next">
-   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
-   <subscribe-dcc message="timer/stop" role="stop"></subscribe-dcc>
+   <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc topic="timer/stop" role="stop"></subscribe-dcc>
 </dcc-timer>
 
-<subscribe-dcc target="cellular-space" message="type/#" role="type"></subscribe-dcc>
-<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
-<subscribe-dcc target="cellular-space" message="state/save" role="save"></subscribe-dcc>
-<subscribe-dcc target="cellular-space" message="state/reset" role="reset"></subscribe-dcc>`,
+<subscribe-dcc target="cellular-space" topic="type/#" role="type"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/save" role="save"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/reset" role="reset"></subscribe-dcc>`,
 `Selecione um dos ícones abaixo para editar o ambiente:
 <div style="flex:48px; max-height:48px; display:flex; flex-direction:row; border:2px">
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
@@ -104,7 +104,7 @@ Configure a transparência do teto:
       <dcc-slider variable="cover_opacity" value="0" index></dcc-slider>
    </div>
 </div>
-<subscribe-dcc target="cellular-space" message="var/cover_opacity/changed" role="cover-opacity">
+<subscribe-dcc target="cellular-space" topic="var/cover_opacity/changed" role="cover-opacity">
 </subscribe-dcc>`
 );
 })();
