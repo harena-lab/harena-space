@@ -9,6 +9,7 @@ class ScriptBlocksDCC {
 
    constructor() {
       this._buildBlocks();
+      this._codeGenerator();
    }
 
    _buildBlocks() {
@@ -19,6 +20,7 @@ class ScriptBlocksDCC {
             "args0": [
                {
                  "type": "field_image",
+                 "name": "src",
                  "src": "images/cell/carnivorous-dinosaur.svg",
                  "width": 32,
                  "height": 32,
@@ -27,7 +29,7 @@ class ScriptBlocksDCC {
             ],
             "colour": 200,
             "tooltip": "A Dinosaur image.",
-            "previousStatement": "Image"
+            "output": "lists_create_with_item"
           });
         }
       };
@@ -47,9 +49,9 @@ class ScriptBlocksDCC {
                  "check": "Boolean"
                },
                {
-                 "type": "input_statement",
+                 "type": "input_value",
                  "name": "image",
-                 "check": "Image"
+                 "check": "Array"
                }
             ],
             "colour": 200,
@@ -58,6 +60,22 @@ class ScriptBlocksDCC {
         }
       };
 
+   }
+
+   _codeGenerator() {
+      Blockly.JavaScript["image"] = function(block) {
+         return "<dcc-image image='" +
+                block.getFieldValue("src") + "'>\n" +
+                "</dcc-image>";
+      };
+      Blockly.JavaScript["state"] = function(block) {
+         return "<dcc-state variable='" +
+                block.getFieldValue("variable") + "'" +
+                ((block.getFieldValue("rotate") == "TRUE") ? " rotate" : "") +
+                // Blockly.JavaScript.valueToCode(block, "image") +
+                ">\n" +
+                "</dcc-state>";
+      };
    }
 }
 

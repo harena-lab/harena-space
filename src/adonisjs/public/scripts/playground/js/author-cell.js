@@ -59,7 +59,7 @@ class AuthorCellManager {
              `</xml>`;
 
          this._playground = Blockly.inject("script-panel",
-            {media: "../../lib/blockly-ba6dfd8/media/",
+            {media: "../../lib/blockly-07762ff/media/",
              toolbox: document.getElementById("toolbox")});
       }
 
