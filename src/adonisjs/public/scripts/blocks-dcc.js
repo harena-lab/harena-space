@@ -73,7 +73,7 @@ class ScriptBlocksDCC {
           this.setStyle('list_blocks');
           this.itemCount_ = 2;
           this.updateShape_();
-          this.setOutput(true, 'Array');
+          // this.setOutput(true, 'Array');
           this.setMutator(new Blockly.Mutator(['lists_create_with_item']));
           this.setTooltip(Blockly.Msg['LISTS_CREATE_WITH_TOOLTIP']);
         },
@@ -170,35 +170,25 @@ class ScriptBlocksDCC {
             this.appendDummyInput('EMPTY')
                 .appendField(Blockly.Msg['LISTS_CREATE_EMPTY_TITLE']);
           }
-          /*
-          this.appendDummyInput()
-              .appendField("variable");
-              .appendField(new Blockly.FieldLabel());
-          */
 
           // Add new inputs.
           for (var i = 0; i < this.itemCount_; i++) {
             if (!this.getInput('ADD' + i)) {
-              var input = this.appendValueInput('ADD' + i)
-                  .setAlign(Blockly.ALIGN_RIGHT);
+              let input = this.appendValueInput('ADD' + i).setAlign();
               switch (i) {
-                 case 0: input.appendField("State"); break;
-                 case 1: input.appendField("variable");
+                 // case 0: input.appendField("State"); break;
+                 case 0: input.appendField("variable");
                          input.appendField(
                            new Blockly.FieldTextInput("value"), "variable");
                          break;
-                 case 2: input.appendField("rotate");
+                 case 1: input.appendField("rotate");
                          input.appendField(
                             new Blockly.FieldCheckbox(true), "rotate");
                          break;
               }
             }
           }
-          if (this.itemCount_ < 3) {
-              input.appendField("rotate");
-              input.appendField(
-                 new Blockly.FieldCheckbox(true), "rotate");
-          }
+
           // Remove deleted inputs.
           while (this.getInput('ADD' + i)) {
             this.removeInput('ADD' + i);
@@ -216,12 +206,15 @@ class ScriptBlocksDCC {
       };
 
       Blockly.JavaScript["state"] = function(block) {
-         return "<dcc-state variable='" +
-                block.getFieldValue("variable") + "'" +
-                ((block.getFieldValue("rotate") == "TRUE") ? " rotate" : "") +
-                ">\n" +
-                Blockly.JavaScript.statementToCode(block, "image") +
-                "</dcc-state>";
+         let code = "<dcc-state variable='" +
+            block.getFieldValue("variable") + "'" +
+            ((block.getFieldValue("rotate") == "TRUE") ? " rotate" : "") +
+            ">\n";
+         for (let i = 0; i < block.itemCount_; i++)
+            code += Blockly.JavaScript.statementToCode(block, "ADD" + i);
+          // Blockly.JavaScript.statementToCode(block, "image") +
+          code += "</dcc-state>";
+          return code;
       };
 
       Blockly.JavaScript["lists_create_with"] = function(block) {
