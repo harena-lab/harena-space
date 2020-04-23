@@ -71,7 +71,7 @@ class ScriptBlocksDCC {
         init: function() {
           this.setHelpUrl(Blockly.Msg['LISTS_CREATE_WITH_HELPURL']);
           this.setStyle('list_blocks');
-          this.itemCount_ = 3;
+          this.itemCount_ = 2;
           this.updateShape_();
           this.setOutput(true, 'Array');
           this.setMutator(new Blockly.Mutator(['lists_create_with_item']));
@@ -185,7 +185,7 @@ class ScriptBlocksDCC {
                  case 0: input.appendField("State"); break;
                  case 1: input.appendField("variable");
                          input.appendField(
-                           new Blockly.FieldTextInput(), "variable");
+                           new Blockly.FieldTextInput("value"), "variable");
                          break;
                  case 2: input.appendField("rotate");
                          input.appendField(
@@ -193,6 +193,11 @@ class ScriptBlocksDCC {
                          break;
               }
             }
+          }
+          if (this.itemCount_ < 3) {
+              input.appendField("rotate");
+              input.appendField(
+                 new Blockly.FieldCheckbox(true), "rotate");
           }
           // Remove deleted inputs.
           while (this.getInput('ADD' + i)) {
