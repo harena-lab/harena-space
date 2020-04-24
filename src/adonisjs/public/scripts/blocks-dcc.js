@@ -173,8 +173,8 @@ class ScriptBlocksDCC {
 
           // Add new inputs.
           for (var i = 0; i < this.itemCount_; i++) {
-            if (!this.getInput('ADD' + i)) {
-              let input = this.appendValueInput('ADD' + i).setAlign();
+            if (!this.getInput("ADD" + i)) {
+              let input = this.appendValueInput("ADD" + i);
               switch (i) {
                  // case 0: input.appendField("State"); break;
                  case 0: input.appendField("variable");
