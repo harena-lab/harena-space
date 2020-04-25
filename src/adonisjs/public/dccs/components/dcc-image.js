@@ -3,11 +3,15 @@
 
 class DCCImage extends DCCVisual {
    connectedCallback() {
-      this.innerHTML = "<img id='presentation-dcc' src='" +
-                         Basic.service.imageResolver(this.image) + "'" +
-                         ((this.hasAttribute("title"))
-                            ? " alt='" + this.title + "'>"
-                            : ">");
+      let html = "<img id='presentation-dcc' src='" +
+                    Basic.service.imageResolver(this.image) + "'" +
+                    ((this.hasAttribute("title"))
+                    ? " alt='" + this.title : "");
+      for (let ra of DCCImage.replicatedAttributes)
+         if (this.hasAttribute(ra))
+            html += " " + ra + "='" + this[ra] + "'";
+      this.innerHTML = html + ">";
+
       this._presentation = this.querySelector("#presentation-dcc");
       this._presentationIsReady();
       super.connectedCallback();

@@ -11,9 +11,21 @@ class DCCVisual extends DCCBase {
    }
 
    static get observedAttributes() {
-      return DCCBase.observedAttributes;
+      return DCCBase.observedAttributes.concat(["style"]);
    }
 
+   static get replicatedAttributes() {
+      return DCCBase.replicatedAttributes.concat(["style"]);
+   }
+
+   get style() {
+      return this.getAttribute("style");
+   }
+   
+   set style(newValue) {
+      this.setAttribute("style", newValue);
+   }
+   
    connectedCallback() {
       this.checkActivateAuthor();
    }
