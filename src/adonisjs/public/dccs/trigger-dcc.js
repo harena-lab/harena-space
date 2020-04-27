@@ -22,8 +22,13 @@ class TriggerDCC extends HTMLElement {
       console.log("=== trigger notified");
       console.log(event);
       let message = (this.hasAttribute("role")) ? {role: this.role} : {};
-      if (this.hasAttribute("property"))
-         message.body[this.property] = this._sourceObj[this.property];
+      if (this.hasAttribute("property") || this.hasAttribute("value")) {
+         message.body = {};
+         if (this.hasAttribute("property"))
+            message.body[this.property] = this._sourceObj[this.property];
+         if (this.hasAttribute("value"))
+            message.body.value = this.value;
+      }
       if (this._targetObj != null)
          this._targetObj.notify(this.publish, message);
       if (this.hasAttribute("publish"))
@@ -36,7 +41,7 @@ class TriggerDCC extends HTMLElement {
       **********/
    
    static get observedAttributes() {
-      return ["source", "event", "target", "role", "publish", "property"];
+      return ["source", "event", "target", "role", "publish", "property", "value"];
    }
 
    get source() {
@@ -85,6 +90,14 @@ class TriggerDCC extends HTMLElement {
    
    set property(newValue) {
       this.setAttribute("property", newValue);
+   }
+
+   get value() {
+      return this.getAttribute("value");
+   }
+   
+   set value(newValue) {
+      this.setAttribute("value", newValue);
    }
 }
 
