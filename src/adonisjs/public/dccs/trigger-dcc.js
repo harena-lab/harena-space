@@ -3,6 +3,7 @@
 
 class TriggerDCC extends HTMLElement {
    connectedCallback() {
+      console.log("=== trigger dcc");
       this.notifyTrigger = this.notifyTrigger.bind(this);
       if (this.hasAttribute("event")) {
          this._sourceObj = (this.hasAttribute("source"))

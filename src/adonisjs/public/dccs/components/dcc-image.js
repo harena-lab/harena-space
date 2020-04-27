@@ -10,9 +10,10 @@ class DCCImage extends DCCVisual {
       for (let ra of DCCImage.replicatedAttributes)
          if (this.hasAttribute(ra))
             html += " " + ra + "='" + this[ra] + "'";
-      this.innerHTML = html + ">";
+      html += ">";
 
-      this._presentation = this.querySelector("#presentation-dcc");
+      // this._presentation = this.querySelector("#presentation-dcc");
+      this._presentation = this._shadowHTML(html);
       this._presentationIsReady();
       super.connectedCallback();
    }

@@ -7,6 +7,7 @@ class DCCVisual extends DCCBase {
       super();
       this._presentationReady = false;
       this._pendingTrigger = [];
+      this._pendingHide = false;
       this.selectListener = this.selectListener.bind(this);
    }
 
@@ -30,6 +31,14 @@ class DCCVisual extends DCCBase {
       this.checkActivateAuthor();
    }
 
+   _shadowHTML(html) {
+      let template = document.createElement("template");
+      template.innerHTML = html;
+      let shadow = this.attachShadow({mode: "open"});
+      shadow.appendChild(template.content.cloneNode(true));
+      return shadow.querySelector("#presentation-dcc");
+   }
+
    checkActivateAuthor() {
       if (this.author && this._presentation)
          this._activateAuthorPresentation(this._presentation, this);
@@ -42,6 +51,13 @@ class DCCVisual extends DCCBase {
    }
 
    hide() {
+      if (this._presentationReady)
+         this._hideReady();
+      else
+         this._pendingHide = true;
+   }
+
+   _hideReady() {
       this._presentation.style.display = "none";
    }
 
@@ -75,6 +91,10 @@ class DCCVisual extends DCCBase {
       for (let t of this._pendingTrigger)
          this._attachTriggerReady(t[0], t[1]);
       this._pendingTrigger = null;
+      if (this._pendingHide) {
+         this._pendingHide = false;
+         this._hideReady();
+      }
    }
 
    // ignores role argument
@@ -142,9 +162,14 @@ class DCCMultiVisual extends DCCVisual {
             this._activateAuthorPresentation(pr._presentation, pr);
    }
 
-   hide() {
-      for (let pr of this._presentationSet)
+   _hideReady() {
+      console.log("=== hide");
+      console.log(JSON.stringify(this._presentationSet));
+      for (let pr of this._presentationSet) {
+         console.log("--- pr");
+         console.log(pr._presentation);
          pr._presentation.style.display = "none";
+      }
    }
 
    show() {
