@@ -62,15 +62,26 @@
    <script src="../../dccs/components/cell/rule-dcc-cell.js"></script>
    <script src="../../dccs/components/cell/rule-dcc-cell-neighbor.js"></script>
 
+   <script src="gallery/mv/mechanical-ventilator-images.js"></script>   
+
    <script>
       var playground;
 
       function start() {
          ScriptBlocksDCC.create();
+         let imageBlocks = startInsertImageBlocks();
+         imageBlocks.push("group", "state");
+
+         let toolbox = document.querySelector("#toolbox");
+         let xmlBlocks = "";
+         for (let ib of imageBlocks) {
+            xmlBlocks += "<block type='" + ib + "'></block>";
+         }
+         toolbox.innerHTML = xmlBlocks;
 
          playground = Blockly.inject("block-panel",
             {media: "../../lib/blockly-07762ff/media/",
-             toolbox: document.getElementById("toolbox")});
+             toolbox: toolbox});
 
          document.querySelector("#json-message").value = "";
          MessageBus.ext.subscribe("control/code/generate", generate);
@@ -155,7 +166,7 @@
     </div>
 
     <xml xmlns="https://developers.google.com/blockly/xml" id="toolbox" style="display: none">
-      <block type="image"></block>
+      <block type="image_front_base"></block>
       <block type="state"></block>
       <!-- <block type="lists_create_with"></block> -->
     </xml>
