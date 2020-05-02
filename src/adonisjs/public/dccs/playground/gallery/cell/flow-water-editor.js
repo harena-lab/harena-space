@@ -75,15 +75,15 @@ Selecione um dos ícones abaixo para editar o ambiente:
 </div>
 
 <dcc-timer cycles="500" interval="100" publish="state/next">
-   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
-   <subscribe-dcc message="timer/stop" role="stop"></subscribe-dcc>
+   <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc topic="timer/stop" role="stop"></subscribe-dcc>
 </dcc-timer>
 
-<subscribe-dcc target="cellular-space" message="type/#" role="type"></subscribe-dcc>
-<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
-<subscribe-dcc target="cellular-space" message="state/save" role="save"></subscribe-dcc>
-<subscribe-dcc target="cellular-space" message="state/load" role="load"></subscribe-dcc>
-<subscribe-dcc target="cellular-space" message="state/download" role="download"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="type/#" role="type"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/save" role="save"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/load" role="load"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/download" role="download"></subscribe-dcc>
 
 </div>
 </div>`

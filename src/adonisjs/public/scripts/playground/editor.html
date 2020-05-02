@@ -17,16 +17,16 @@
    <script src="../../lib/popper-1-15-0/popper.min.js"></script>
    <script src="../../lib/bootstrap-4-3-1/js/bootstrap.min.js"></script>
 
-   <script src="../../lib/blockly-ba6dfd8/blockly_compressed.js"></script>
-   <script src="../../lib/blockly-ba6dfd8/blocks_compressed.js"></script>
-   <script src="../../lib/blockly-ba6dfd8/msg/js/pt-br.js"></script>
-   <script src="../../lib/blockly-ba6dfd8/javascript_compressed.js"></script>
+   <script src="../../lib/blockly-07762ff/blockly_compressed.js"></script>
+   <script src="../../lib/blockly-07762ff/blocks_compressed.js"></script>
+   <script src="../../lib/blockly-07762ff/msg/js/pt-br.js"></script>
+   <script src="../../lib/blockly-07762ff/javascript_compressed.js"></script>
 
    <script src="../../infra/bus.js"></script>
    <script src="../../infra/basic.js"></script>
    <script src="../../infra/dcc-common-server-proxy.js"></script>
 
-   <script src="../blocks.js"></script>
+   <script src="../blocks-cell.js"></script>
 
    <script src="../../dccs/subscribe-dcc.js"></script>
    <script src="../../dccs/property-dcc.js"></script>
@@ -72,19 +72,23 @@
            <div class="d-flex panel-label">
               <span class="col-6" id="source-name">Result</span>
               <div class="col-3">
-                <dcc-trigger id="editor-button" action="control/editor/switch" label="EDITOR" xstyle="in">
-                </dcc-trigger>
-                <dcc-trigger id="execute-button" action="control/editor/switch" label="OPERAÇÃO" xstyle="in">
-                </dcc-trigger>
+                <div id="editor-button">
+                   <dcc-trigger action="control/editor/switch" label="EDITOR" xstyle="in">
+                   </dcc-trigger>
+                </div>
+                <div id="execute-button">
+                   <dcc-trigger action="control/editor/switch" label="OPERAÇÃO" xstyle="in">
+                   </dcc-trigger>
+                </div>
               </div>
               <div id="operation-panel" class="d-flex col-3">
-                <div class="control-button">
-                  <dcc-trigger id="play-button" label="Play" action="control/space/play"
+                <div id="play-button" class="control-button">
+                  <dcc-trigger label="Play" action="control/space/play"
                                image="images/icon/play.svg"></dcc-trigger>
                 </div>
-                <div class="control-button">
-                  <dcc-trigger id="stop-button" label="Stop" action="control/space/stop"
-                               image="images/icon/stop.svg" style="display:none"></dcc-trigger>
+                <div id="stop-button" class="control-button">
+                  <dcc-trigger label="Stop" action="control/space/stop"
+                               image="images/icon/stop.svg"></dcc-trigger>
                 </div>
                 <div id="restart-button" class="control-button">
                   <dcc-trigger label="Restart" action="control/space/restart"

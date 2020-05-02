@@ -23,9 +23,9 @@ _*_
 <dcc-trigger label="Play" action="timer/start"></dcc-trigger>
 
 <dcc-timer cycles="10" interval="1000" publish="state/next">
-   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
 </dcc-timer>
 
-<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>`
+<subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>`
 );
 })();

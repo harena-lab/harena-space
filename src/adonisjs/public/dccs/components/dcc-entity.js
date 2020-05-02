@@ -109,6 +109,7 @@ class DCCEntity extends DCCBlock {
          //    this._presentationEntity.push(this._presentation);
       }
 
+      this._presentationIsReady();
       this.checkActivateAuthor();
    }
    

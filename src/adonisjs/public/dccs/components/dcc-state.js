@@ -7,7 +7,7 @@ class DCCState extends DCCBlock {
       super();
       this._computeTrigger = this._computeTrigger.bind(this);
       this._stateDCCs = {};
-      this._presentation = null;
+      // this._previousPresentation = null;
       this._changed = false;
    }
 
@@ -29,10 +29,12 @@ class DCCState extends DCCBlock {
                 c.role) {
                if (c.role != this.value)
                   c.hide();
-               else
-                  this._presentationHandler(c.currentPresentation());
+               // else
+                  // this._presentationHandler(c.currentPresentation());
                this._stateDCCs[c.role] = c;
+               this._storePresentation(c.currentPresentation(), c.role);
             }
+         this._presentationIsReady();
       });
    }
 
@@ -115,29 +117,31 @@ class DCCState extends DCCBlock {
       this._changed = newValue;
    }
 
+   /*
    _presentationHandler(presentation) {
       if (this._presentation != null) {
          this._presentation.style.cursor = "default";
          this._presentation.removeEventListener(
             "click", this._computeTrigger);
       }
-      this._presentation = presentation;
+      this._previousPresentation = presentation;
       if (this._presentation != null) {
          this._presentation.style.cursor = "pointer";
          this._presentation.addEventListener(
             "click", this._computeTrigger);
       }
    }
+   */
 
    next() {
-      this.changeState(1);
+      this.shiftState(1);
    }
 
    previous() {
-      this.changeState(-1);
+      this.shiftState(-1);
    }
 
-   changeState(shift) {
+   shiftState(shift) {
       const allStates = Object.keys(this._stateDCCs);
       let s = allStates.indexOf(this.value);
       if (s >= 0) {
@@ -147,11 +151,24 @@ class DCCState extends DCCBlock {
             ? ((this.rotate) ? allStates.length-1 : s)
             : ((n < allStates.length) ? n
                : ((this.rotate) ? 0 : s));
+         this.changeState(allStates[n]);
+         /*
          this._stateDCCs[this.value].hide();
          this.value = allStates[n];
          this._stateDCCs[this.value].show();
-         this._presentationHandler(
-            this._stateDCCs[this.value].currentPresentation());
+         if (this.hasAttribute("variable"))
+            MessageBus.ext.publish("var/" + this.variable + "/changed",
+                                   {sourceType: DCCState.elementTag,
+                                    value: this.value});
+         */
+      }
+   }
+
+   changeState(newState) {
+      if (this._stateDCCs[newState]) {
+         this._stateDCCs[this.value].hide();
+         this.value = newState;
+         this._stateDCCs[this.value].show();
          if (this.hasAttribute("variable"))
             MessageBus.ext.publish("var/" + this.variable + "/changed",
                                    {sourceType: DCCState.elementTag,
@@ -161,7 +178,10 @@ class DCCState extends DCCBlock {
 
    notify(topic, message) {
       if (message.role)
-         this._computeAction(message.role.toLowerCase());
+         if (message.body)
+            this._computeAction(message.role.toLowerCase(), message.body);
+         else
+            this._computeAction(message.role.toLowerCase());
    }
 
    _computeTrigger() {
@@ -169,10 +189,13 @@ class DCCState extends DCCBlock {
          this._computeAction(this.action);
    }
 
-   _computeAction(action) {
-      switch (action) {
+   _computeAction(action, parameter) {
+      switch (action.toLowerCase()) {
          case "next": this.next(); break;
          case "previous": this.previous(); break;
+         case "state": if (parameter)
+                          this.changeState(parameter.value);
+                       break;
       }
    }
 

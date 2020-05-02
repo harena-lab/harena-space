@@ -18,16 +18,16 @@
    <script src="../../lib/bootstrap-4-3-1/js/bootstrap.min.js"></script>
    <script src="../../lib/quill-1-3-7/quill.min.js"></script>
 
-   <script src="../../lib/blockly-ba6dfd8/blockly_compressed.js"></script>
-   <script src="../../lib/blockly-ba6dfd8/blocks_compressed.js"></script>
-   <script src="../../lib/blockly-ba6dfd8/msg/js/pt-br.js"></script>
-   <script src="../../lib/blockly-ba6dfd8/javascript_compressed.js"></script>
+   <script src="../../lib/blockly-07762ff/blockly_compressed.js"></script>
+   <script src="../../lib/blockly-07762ff/blocks_compressed.js"></script>
+   <script src="../../lib/blockly-07762ff/msg/js/pt-br.js"></script>
+   <script src="../../lib/blockly-07762ff/javascript_compressed.js"></script>
 
    <script src="../../infra/bus.js"></script>
    <script src="../../infra/basic.js"></script>
    <script src="../../infra/dcc-common-server-proxy.js"></script>
 
-   <script src="../blocks.js"></script>
+   <script src="../blocks-cell.js"></script>
 
    <script src="../../dccs/subscribe-dcc.js"></script>
    <script src="../../dccs/property-dcc.js"></script>
@@ -66,13 +66,13 @@
       var playground;
 
       function start() {
-         ScriptBlocks.create(
+         ScriptBlocksCell.create(
             [["sand",  ".", "areia"],
              ["glass", "#", "vidro"]]
          );
 
          playground = Blockly.inject("block-panel",
-            {media: "../../lib/blockly-ba6dfd8/media/",
+            {media: "../../lib/blockly-07762ff/media/",
              toolbox: document.getElementById("toolbox")});
 
          document.querySelector("#json-message").value = "";

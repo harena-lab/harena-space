@@ -47,7 +47,7 @@ class MessageBus {
             found = true;
          }
    }
-   
+
    async publish(topic, message) {
       for (let l in this._listeners)
          if (this.matchTopic(l, topic))
@@ -78,14 +78,25 @@ class MessageBus {
           }
 
           parent.postMessage({topic: topic, message: message}, "*");
-
-          /*
-          if (parent.IPython != null)
-             parent.IPython.notebook.kernel.execute(
-                'Component.notify("' + topic + '", "' + message + '")');
-         */
       }
    }
+   
+   /*
+   connect(callback) {
+      const connection = MessageBus._connection;
+      this.subscribe("connection/" + connection, callback);
+      MessageBus._connection++;
+      return connection;
+   }
+
+   disconnect(connection, callback) {
+      this.unsubscribe("connection/" + connection, callback);
+   }
+
+   send(connection, message) {
+      this.publish("connection/" + connection, message);
+   }
+   */
    
    /* Checks if this topic has a subscriber */
    hasSubscriber(topic) {
@@ -191,6 +202,7 @@ class MessageBus {
 
 (function() {
    MessageBus._stamp = 1;
+   MessageBus._connection = 1;
 
    MessageBus.int = new MessageBus(false);
    MessageBus.ext = new MessageBus(true);

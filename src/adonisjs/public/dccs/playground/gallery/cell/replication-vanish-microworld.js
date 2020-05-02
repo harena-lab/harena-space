@@ -36,10 +36,10 @@ insertSource(
 <dcc-trigger label="Stop" action="timer/stop"></dcc-trigger>
 
 <dcc-timer cycles="100" interval="500" publish="state/next">
-   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
-   <subscribe-dcc message="timer/stop" role="stop"></subscribe-dcc>
+   <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc topic="timer/stop" role="stop"></subscribe-dcc>
 </dcc-timer>
 
-<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>`
+<subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>`
 );
 })();

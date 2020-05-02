@@ -109,6 +109,7 @@ class DCCCharacter extends DCCVisual {
       
       this._presentation = shadow.querySelector("#presentation-dcc");
       this._recordImages = shadow.querySelector("#record-images");
+      this._presentationIsReady();
 
       super.connectedCallback();
    }

@@ -151,6 +151,8 @@ class DCCLivelyTalk extends DCCVisual {
       
       this._presentation.innerHTML = (directionWeb == "left") ? imageHTML + speechHTML : speechHTML + imageHTML;
       this._presentation.querySelector("img").addEventListener("load", this._imageLoaded);
+
+      this._presentationIsReady();
    }
    
    disconnectedCallback() {

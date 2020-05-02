@@ -68,10 +68,10 @@ ___r___l___d__d__l_____u____ll__rr__uu__dd__l__r__l__d___d__l_
 <dcc-trigger label="Stop" action="timer/stop"></dcc-trigger>
 
 <dcc-timer cycles="10000" interval="100" publish="state/next">
-   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
-   <subscribe-dcc message="timer/stop" role="stop"></subscribe-dcc>
+   <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc topic="timer/stop" role="stop"></subscribe-dcc>
 </dcc-timer>
 
-<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>`
+<subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>`
 );
 })();

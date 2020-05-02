@@ -2,9 +2,9 @@
  * Customized blocks for Blockly
  */
 
-class ScriptBlocks {
+class ScriptBlocksCell {
    static create(types) {
-      ScriptBlocks.inst = new ScriptBlocks(types);
+      ScriptBlocksCell.s = new ScriptBlocksCell(types);
    }
 
    constructor(types) {
@@ -19,11 +19,11 @@ class ScriptBlocks {
       this._allSelectTypes.unshift(
          (emptyPos > -1)
            ? [types[emptyPos][2], types[emptyPos][0]]
-           : [ScriptBlocks.emptyType[2], ScriptBlocks.emptyType[0]]);
+           : [ScriptBlocksCell.emptyType[2], ScriptBlocksCell.emptyType[0]]);
 
       this._types = {};
       if (emptyPos == -1)
-         this._types[ScriptBlocks.emptyType[0]] = ScriptBlocks.emptyType[1];
+         this._types[ScriptBlocksCell.emptyType[0]] = ScriptBlocksCell.emptyType[1];
       for (let t of types)
          this._types[t[0]] = t[1];
 
@@ -40,12 +40,12 @@ class ScriptBlocks {
                {
                  "type": "field_dropdown",
                  "name": "origin",
-                 "options": ScriptBlocks.inst._allSelectTypes
+                 "options": ScriptBlocksCell.s._allSelectTypes
                },
                {
                  "type": "field_dropdown",
                  "name": "target",
-                 "options": ScriptBlocks.inst._allSelectTypes
+                 "options": ScriptBlocksCell.s._allSelectTypes
                },
                {
                  "type": "input_value",
@@ -128,8 +128,18 @@ class ScriptBlocks {
                  ]
                },
             ],
-            "message1": "chance %1",
+            "message1": "passo %1",
             "args1": [
+              {
+                "type": "field_number",
+                "name": "step",
+                "value": 1,
+                "min": 0,
+                "max": 100
+              }
+            ],
+            "message2": "chance %1",
+            "args2": [
               {
                 "type": "field_number",
                 "name": "probability",
@@ -153,7 +163,7 @@ class ScriptBlocks {
                {
                  "type": "field_dropdown",
                  "name": "action",
-                 "options": ScriptBlocks.inst._selectTypes
+                 "options": ScriptBlocksCell.s._selectTypes
                },
             ],
             "message1": "chance %1",
@@ -177,8 +187,8 @@ class ScriptBlocks {
       Blockly.JavaScript["neighbor"] = function(block) {
          return "<rule-dcc-cell-pair " +
                 Blockly.JavaScript.statementToCode(block, "action")
-                   .replace(/_o/g, ScriptBlocks.inst._types[block.getFieldValue("origin")])
-                   .replace(/_t/g, ScriptBlocks.inst._types[block.getFieldValue("target")]) +
+                   .replace(/_o/g, ScriptBlocksCell.s._types[block.getFieldValue("origin")])
+                   .replace(/_t/g, ScriptBlocksCell.s._types[block.getFieldValue("target")]) +
                 ">\n" +
                 ((block.getFieldValue("upLeft") == "TRUE") ? "*" : "_") +
                 ((block.getFieldValue("up") == "TRUE") ? "*" : "_") +
@@ -192,7 +202,8 @@ class ScriptBlocks {
       };
       Blockly.JavaScript["action"] = function(block) {
          return " probability='" + block.getFieldValue("probability") + "'" +
-                " transition='" + ScriptBlocks.transitions[block.getFieldValue("action")] + "'";
+                " step='" + block.getFieldValue("step") + "'" +
+                " transition='" + ScriptBlocksCell.transitions[block.getFieldValue("action")] + "'";
       };
 
 /*
@@ -206,9 +217,9 @@ _*_
 }
 
 (function() {
-   ScriptBlocks.emptyType = ["empty", "_", "vazio"];
+   ScriptBlocksCell.emptyType = ["empty", "_", "vazio"];
 
-   ScriptBlocks.transitions = {
+   ScriptBlocksCell.transitions = {
       "move":      "_o_t>_t_o",
       "duplicate": "_o_t>_o_o"
    };

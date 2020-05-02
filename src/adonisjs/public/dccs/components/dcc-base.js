@@ -12,6 +12,10 @@ class DCCBase extends HTMLElement {
       return ["id", "role", "author"];
    }
 
+   static get replicatedAttributes() {
+      return [];
+   }
+
    get id() {
       return this.getAttribute("id");
    }

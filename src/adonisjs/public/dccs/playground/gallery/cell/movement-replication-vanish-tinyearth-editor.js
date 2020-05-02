@@ -66,11 +66,11 @@ _h_____r______hc____
 <dcc-trigger label="Herbivore" action="type/herbivore"></dcc-trigger>
 
 <dcc-timer cycles="1000" interval="500" publish="state/next">
-   <subscribe-dcc message="timer/start" role="start"></subscribe-dcc>
-   <subscribe-dcc message="timer/stop" role="stop"></subscribe-dcc>
+   <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc topic="timer/stop" role="stop"></subscribe-dcc>
 </dcc-timer>
 
-<subscribe-dcc target="cellular-space" message="state/next" role="next"></subscribe-dcc>
-<subscribe-dcc target="cellular-space" message="type/#" role="type"></subscribe-dcc>`
+<subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="type/#" role="type"></subscribe-dcc>`
 );
 })();
