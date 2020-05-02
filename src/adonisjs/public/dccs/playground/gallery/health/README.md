@@ -1,9 +1,25 @@
 # DCC Gallery
 
-## Eletro Image Marker
+## Electro Image Marker
 
-[![Eletro](exam/eletro.png)](../../presenter.html?source=health/exam/eletro)
+Interactively marks the electrocardiogram.
+
+[![Electro](exam/electro-marker.png)](../../presenter.html?source=health/exam/electro-marker)
+
+Interactively presents the analysis of the electrocardiogram.
+
+[![Electro](exam/electro-analysis.png)](../../presenter.html?source=health/exam/electro-analysis)
+
+## Anamnesis Marker
+
+Fragments independently highlighted.
+
+[![Anamnesis](exam/anamnesis.png)](../../presenter.html?source=health/exam/anamnesis)
+
+Fragments highlighted in a group.
+
+[![Anamnesis](exam/anamnesis.png)](../../presenter.html?source=health/exam/anamnesis-group)
 
 ## Mechanical Ventilator
 
-[![MV](exam/mv.png)](../../presenter.html?source=health/mv/mv)
+[![MV](exam/mv/mv.png)](../../presenter.html?source=health/mv/mv)
