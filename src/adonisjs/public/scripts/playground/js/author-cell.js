@@ -21,13 +21,17 @@ class AuthorCellManager {
       this.playSpace = this.playSpace.bind(this);
       this.stopSpace = this.stopSpace.bind(this);
       this.restartSpace = this.restartSpace.bind(this);
+      this.scriptExpand = this.scriptExpand.bind(this);
+      this.scriptRetract = this.scriptRetract.bind(this);
 
       MessageBus.ext.subscribe("control/editor/switch", this.switchEditor);
       MessageBus.ext.subscribe("control/space/play", this.playSpace);
       MessageBus.ext.subscribe("control/space/stop", this.stopSpace);
       MessageBus.ext.subscribe("control/space/restart", this.restartSpace);
+      MessageBus.ext.subscribe("control/script/expand", this.scriptExpand);
+      MessageBus.ext.subscribe("control/script/retract", this.scriptRetract);
 
-      this._scriptsActive = true;
+      this._scriptActive = true;
 
       let parameters = window.location.search.substr(1);
       if (parameters != null && parameters.length > 0) {
@@ -40,17 +44,22 @@ class AuthorCellManager {
          }
 
          const scriptMatch = parameters.match(/mode=([\w-]+)/i);
-         if (scriptMatch != null && scriptMatch[1] == "no-script")
-            this._scriptsActive = false;
+         if (scriptMatch != null && scriptMatch[1] == "no-script") {
+            this._scriptActive = false;
+            AuthorCellManager.stateVis["script-panel"][0] = 0;
+         }
       }
-      if (this._scriptsActive)
-         document.querySelector("#action-panels").innerHTML = AuthorCellManager.scriptPanel;
-      else
-         document.querySelector("#action-panels").innerHTML = AuthorCellManager.noScriptPanel;
+      if (this._scriptActive) {
+         document.querySelector("#action-panels").innerHTML =
+            AuthorCellManager.scriptPanel;
+         document.querySelector("#button-retract").hide();
+      } else
+         document.querySelector("#action-panels").innerHTML =
+            AuthorCellManager.noScriptPanel;
    }
 
    insertSource(name, types, blocks, source, buttonTypes) {
-      if (this._scriptsActive) {
+      if (this._scriptActive) {
          ScriptBlocksCell.create(types);
 
          document.querySelector("#xml-toolbox").innerHTML =
@@ -71,19 +80,14 @@ class AuthorCellManager {
    }
 
    _updateVisibility() {
-      const states = (this._editMode)
-         ? ["none","none","none","none","initial",
-            (this._scriptsActive) ? "initial" : "none",
-            "none","initial"]
-         : ["initial","none","initial","initial","none","none","initial","none"];
-      document.querySelector("#play-button").style.display = states[0];
-      document.querySelector("#stop-button").style.display = states[1];
-      document.querySelector("#restart-button").style.display = states[2];
-      document.querySelector("#next-button").style.display = states[3];
-      document.querySelector("#types-panel").style.display = states[4];
-      document.querySelector("#script-panel").style.display = states[5];
-      document.querySelector("#editor-button").style.display = states[6];
-      document.querySelector("#execute-button").style.display = states[7];
+      for (let sv in AuthorCellManager.stateVis) {
+         let s = document.querySelector("#" + sv);
+         if (s != null) {
+            const vis = 
+              AuthorCellManager.stateVis[sv][(this._editMode) ? 0 : 1];
+            s.style.display = ((vis == 0) ? "none" : "initial");
+         }
+      }
    }
 
    async switchEditor() {
@@ -102,7 +106,7 @@ class AuthorCellManager {
 	      }
 	  } else {
         MessageBus.ext.publish("state/save");
-        if (this._scriptsActive) {
+        if (this._scriptActive) {
            await MessageBus.page.request("dcc/rules/clear");
            document.querySelector("#rules-panel").innerHTML =
               Blockly.JavaScript.workspaceToCode(this._playground);
@@ -127,21 +131,80 @@ class AuthorCellManager {
       MessageBus.ext.publish("timer/stop");
       MessageBus.ext.publish("state/reset");
    }
+
+   scriptExpand() {
+      document.querySelector("#render-panel").style.display = "none";
+      document.querySelector("#types-panel").style.display = "none";
+      document.querySelector("#composition-block").classList.remove("col-6");
+      let sb = document.querySelector("#script-block");
+      sb.classList.remove("col-6");
+      sb.classList.add("col-12");
+      document.querySelector("#button-retract").show();
+      document.querySelector("#button-expand").hide();
+      this.resizeWorkspace();
+   }
+
+   scriptRetract() {
+      document.querySelector("#render-panel").style.display = "initial";
+      document.querySelector("#types-panel").style.display = "initial";
+      document.querySelector("#composition-block").classList.add("col-6");
+      let sb = document.querySelector("#script-block");
+      sb.classList.remove("col-12");
+      sb.classList.add("col-6");
+      document.querySelector("#button-retract").hide();
+      document.querySelector("#button-expand").show();
+      this.resizeWorkspace();
+   }
+
+   resizeWorkspace() {
+      let toolbox = document.getElementById("toolbox");
+      let sp = document.querySelector("#script-panel");
+      let x = 0;
+      let y = 0;
+      do {
+         x += sp.offsetLeft;
+         y += sp.offsetTop;
+         sp = sp.offsetParent;
+      } while (sp);
+      toolbox.style.left = x + 'px';
+      toolbox.style.top = y + 'px';
+      toolbox.style.width = toolbox.offsetWidth + 'px';
+      toolbox.style.height = toolbox.offsetHeight + 'px';
+      Blockly.svgResize(this._playground);
+   }
+
 }
 
 (function() {
 AuthorCellManager.instance = new AuthorCellManager();
 
+AuthorCellManager.stateVis = {
+   "play-button":    [0, 1],
+   "stop-button":    [0, 0],
+   "restart-button": [0, 1],
+   "next-button":    [0, 1],
+   "types-panel":    [1, 0],
+   "script-panel":   [1, 0],
+   "editor-button":  [0, 1],
+   "execute-button": [1, 0]
+};
+
 AuthorCellManager.scriptPanel =
-`<div class="d-flex col-6 flex-column align-items-stretch">
+`<div id="composition-block" class="d-flex col-6 flex-column align-items-stretch">
    <div>
       <div id="render-panel"></div>
       <div id="types-panel"></div>
    </div>
    <div id="rules-panel"></div>
 </div>
-<div class="d-flex col-6 flex-column align-items-stretch">
-   <div id="script-panel" class="h-100 w-100"></div>
+<div id="script-block" class="d-flex col-6 flex-column align-items-stretch">
+   <div id="properties-expansion" class="sty-navigation-expansion">
+       <dcc-trigger id="button-expand" action="control/script/expand" label="Expand" image="images/icon/icon-expansion-left.svg"></dcc-trigger>
+       <dcc-trigger id="button-retract" action="control/script/retract" label="Retract" image="images/icon/icon-expansion-right.svg"></dcc-trigger>
+   </div>
+   <div class="h-100 w-100" style="padding-left:.800rem">
+      <div class="h-100 w-100" id="script-panel"></div>
+   </div>
 </div>`;
 
 AuthorCellManager.noScriptPanel =

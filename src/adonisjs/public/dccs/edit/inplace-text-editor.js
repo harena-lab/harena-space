@@ -514,6 +514,8 @@ class EditDCCText extends EditDCC {
 
    async _translateContent(editContent) {
       let content = "";
+      console.log("=== content");
+      console.log(editContent);
       for (let e in editContent.ops) {
          let ec = editContent.ops[e];
          if (ec.insert) {
@@ -588,6 +590,7 @@ EditDCCText.buttonHighlightSVG =
 EditDCCText.toolbarTemplate =
 `<button class="ql-bold"></button>
 <button class="ql-italic"></button>
+<button type="button" class="ql-align" value="center"></button>
 <button class="ql-image"></button>
 <button class="ql-annotation"></button>`;
 

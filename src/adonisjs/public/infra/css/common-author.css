@@ -243,3 +243,8 @@ nav.navbar {
   background-color: #a6a6a6;
   padding-left: .5rem;
 }
+
+.sty-navigation-expansion {
+   width: .700rem;
+   height: .963rem;
+}

@@ -119,7 +119,7 @@ class DCCGroupMarker extends DCCBase {
       MessageBus.int.publish("var/" + this.context + "/group_input/ready",
                              DCCGroupMarker.elementTag);
 
-      if (this.hasAttribute("edit")) {
+      if (this.hasAttribute("editor")) {
          this._editState = 0;
          this._imageG.addEventListener("click", this.imageClicked, false);
          this._imageG.addEventListener("mousemove", this.mouseMoved, false);
@@ -146,7 +146,7 @@ class DCCGroupMarker extends DCCBase {
     */
 
    static get observedAttributes() {
-      return ["image", "context", "label", "states", "edit"];
+      return ["image", "context", "label", "states", "editor"];
    }
 
    get image() {
@@ -181,15 +181,15 @@ class DCCGroupMarker extends DCCBase {
       this.setAttribute("states", newValue);
    }
 
-   get edit() {
-      return this.hasAttribute('hidden');
+   get editor() {
+      return this.hasAttribute("editor");
    }
 
-   set edit(isEdit) {
-      if (isEdit) {
-         this.setAttribute("edit", "");
+   set editor(isEditor) {
+      if (isEditor) {
+         this.setAttribute("editor", "");
       } else {
-         this.removeAttribute("edit");
+         this.removeAttribute("editor");
       }
    }
    

@@ -128,8 +128,18 @@ class ScriptBlocksCell {
                  ]
                },
             ],
-            "message1": "chance %1",
+            "message1": "passo %1",
             "args1": [
+              {
+                "type": "field_number",
+                "name": "step",
+                "value": 1,
+                "min": 0,
+                "max": 100
+              }
+            ],
+            "message2": "chance %1",
+            "args2": [
               {
                 "type": "field_number",
                 "name": "probability",
@@ -192,6 +202,7 @@ class ScriptBlocksCell {
       };
       Blockly.JavaScript["action"] = function(block) {
          return " probability='" + block.getFieldValue("probability") + "'" +
+                " step='" + block.getFieldValue("step") + "'" +
                 " transition='" + ScriptBlocksCell.transitions[block.getFieldValue("action")] + "'";
       };
 

@@ -21,9 +21,9 @@ See below some examples in our scripts gallery:
 
 # Training
 
-[![Zombie Training](images/zombie-wall.png)](harena/scripts/playground/editor.html?source=cell/zombie-wall&mode=no-script)
+[![Zumbi Train 1](images/zombie-wall.png)](harena/scripts/playground/editor.html?source=cell/zombie-wall-train1&mode=no-script)
 
-[![Zombie Training Hidden](images/zombie-wall-hidden.png)](harena/scripts/playground/editor.html?source=cell/zombie-wall-hidden&mode=no-script)
+[![Zumbi Train 2](images/zombie-wall.png)](harena/scripts/playground/editor.html?source=cell/zombie-wall-train2&mode=no-script)
 
 # One Wall (Challenge)
 

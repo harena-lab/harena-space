@@ -3,12 +3,15 @@
 
 class RuleDCCCellNeighbor extends RuleDCCCell {
    connectedCallback() {
+      this._rounds = 0;
+
       if (!this.neighbors) this.neighbors = this.innerHTML.replace(/[ \r\n]/g, "");
       this.innerHTML = "";
       this._ruleNeighbors = this.buildNeighborList(this.neighbors);
 
       if (!this.hasAttribute("probability")) this.probability = "100";
       this._decimalProbability = parseInt(this.probability) / 100;
+      this._step = (this.hasAttribute("step")) ? parseInt(this.step) : 1;
       if (!this.hasAttribute("transition"))
          this.transition = "?_>_?";
       this._decomposeTransition(this.transition);
@@ -31,7 +34,7 @@ class RuleDCCCellNeighbor extends RuleDCCCell {
    
    static get observedAttributes() {
       return RuleDCCCell.observedAttributes.concat(
-         ["neighbors", "probability", "transition"]);
+         ["neighbors", "probability", "step", "transition"]);
    }
 
    get neighbors() {
@@ -57,6 +60,15 @@ class RuleDCCCellNeighbor extends RuleDCCCell {
 
    get decimalProbability() {
       return this._decimalProbability;
+   }
+
+   get step() {
+      return this.getAttribute("step");
+   }
+
+   set step(newValue) {
+      this.setAttribute("step", newValue);
+      this._step = parseInt(step);
    }
 
    get transition() {
@@ -98,8 +110,10 @@ class RuleDCCCellNeighbor extends RuleDCCCell {
 
 class RuleDCCCellPair extends RuleDCCCellNeighbor {
    computeRule(spaceState, row, col) {
+      this._rounds++;
       let triggered = false;
-      if (Math.random() <= this._decimalProbability) {
+      if (Math.random() <= this._decimalProbability &&
+          this._rounds % this._step == 0) {
          let nb = this._ruleNeighbors.slice();
          while (nb.length > 0 && !triggered) {
             const neighbor = Math.floor(Math.random() * nb.length);
