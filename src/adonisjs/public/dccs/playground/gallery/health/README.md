@@ -22,4 +22,4 @@ Fragments highlighted in a group.
 
 ## Mechanical Ventilator
 
-[![MV](exam/mv/mv.png)](../../presenter.html?source=health/mv/mv)
+[![MV](mv/mv.png)](../../presenter.html?source=health/mv/mv)
