@@ -67,7 +67,7 @@ class EditDCCText extends EditDCC {
       this._buildEditor(false);
    }
 
-   _buildEditor(selectOptions) {
+   _buildEditor(selectOptions, oldDelta) {
       Panels.s.lockNonEditPanels();
 
       /*
@@ -107,7 +107,7 @@ class EditDCCText extends EditDCC {
       this._editor = this._buildEditorPanel();
       this._editorWrapper.appendChild(this._editor);
 
-      this._buildQuillEditor(selectOptions);
+      this._buildQuillEditor(selectOptions, oldDelta);
 
       this._editElement.style.display = "none";
 
@@ -183,18 +183,20 @@ class EditDCCText extends EditDCC {
    }
 
    // builds a Quill editor
-   _buildQuillEditor(selectOptions) {
+   _buildQuillEditor(selectOptions, oldDelta) {
       let inplaceContent = this._editor.querySelector("#inplace-content");
-      let html = Translator.instance.markdownToHTML(
-         Translator.instance.objToHTML(this._knotContent[this._element], -1));
+      if (!selectOptions) {
+         let html = Translator.instance.markdownToHTML(
+            Translator.instance.objToHTML(this._knotContent[this._element], -1));
 
-      // add a prefix in the ids to avoid conflits with the original
-      html = html.replace(/(<[^<]*(?=id)id=['"])([^'"]+['"][^>]*>)/igm,
-                          "$1ed_$2");
+         // add a prefix in the ids to avoid conflits with the original
+         html = html.replace(/(<[^<]*(?=id)id=['"])([^'"]+['"][^>]*>)/igm,
+                             "$1ed_$2");
 
-      console.log("=== html");
-      console.log(html);
-      inplaceContent.innerHTML = html;
+         console.log("=== html");
+         console.log(html);
+         inplaceContent.innerHTML = html;
+      }
 
       this._quill = new Quill(inplaceContent, 
          {theme: "snow",
@@ -212,7 +214,10 @@ class EditDCCText extends EditDCC {
              }
           }
          });
+      if (selectOptions)
+         this._quill.setContents(oldDelta);
       this._editor.classList.add("inplace-editor");
+
 
       // toolbar customization
       document.querySelector(".ql-image").innerHTML =
@@ -247,8 +252,10 @@ class EditDCCText extends EditDCC {
 
    _removeEditor() {
       // this._editorWrapper.removeChild(this._editorToolbar);
+      let oldDelta = this._quill.getContents();
       this._removeToolbarPanel();
       this._editorWrapper.removeChild(this._editor);
+      return oldDelta;
    }
 
    /*
@@ -379,8 +386,8 @@ class EditDCCText extends EditDCC {
       this._toolbarControls += "</select>" +
                                EditDCCText.toolbarTemplateConfirm;
       Panels.s.unlockNonEditPanels();
-      this._removeEditor();
-      this._buildEditor(true);
+      let oldDelta = this._removeEditor();
+      this._buildEditor(true, oldDelta);
       if (range && range.length > 0)
          this._quill.setSelection(range);
       return first;
@@ -524,24 +531,33 @@ class EditDCCText extends EditDCC {
                ec.insert = ec.insert.replace(/\n\n/g, "\n<br>\n").
                            replace(/\n/g, "\n\n");
                */
-               ec.insert = ec.insert.replace(/\n/g, "\n\n");
+               let md = ec.insert.replace(/\n/g, "\n\n");
                if (ec.attributes) {
                   const attr = ec.attributes;
                   if (attr.bold)
-                     content += "**" + ec.insert + "**";
-                  else if (attr.italic)
-                     content += "*" + ec.insert + "*";
-                  else if (attr.annotation || attr.select) {
-                     content += "{" + ec.insert + "}";
+                     md = "**" + md + "**";
+                  if (attr.italic)
+                     md = "*" + md + "*";
+                  if (attr.annotation || attr.select) {
+                     md = "{" + md + "}";
                      if (attr.annotation && attr.annotation.length > 0)
-                        content += "(" + attr.annotation
+                        md += "(" + attr.annotation
                            .replace(/\(/, "\(")
                            .replace(/\)/, "\)") + ")";
-                     if (attr.select && attr.select.answer && attr.select.answer.length > 0)
-                        content += "/" + attr.select.answer + "/";
+                     if (attr.select && attr.select.answer &&
+                         attr.select.answer.length > 0)
+                        md += "/" + attr.select.answer + "/";
                   }
-               } else
-                  content += ec.insert;
+                  if (attr.align == "center") {
+                     if (content.includes("\n")) {
+                        const cut = content.lastIndexOf("\n");
+                        content = content.substring(0, cut+1) + "<div align='center'>" +
+                                  content.substring(cut+1) + "</div>";
+                     } else
+                        content = "<div align='center'>" + content + "</div>";
+                  }
+               }
+               content += md;
             } else if (ec.insert.image) {
                let imageURL = ec.insert.image;
                if (imageURL.startsWith("data:")) {
