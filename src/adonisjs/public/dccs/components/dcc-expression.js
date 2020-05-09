@@ -30,6 +30,8 @@ class DCCExpression extends DCCVisual {
          this._stateValues = {};
       }
 
+      DCCExpression.expressionCompile(this.expression);
+
       let result = await MessageBus.ext.request("var/" + this._variable + "/get");
       console.log("=== result field");
       console.log(result.message);
@@ -57,6 +59,37 @@ class DCCExpression extends DCCVisual {
       this._presentationIsReady();
 
       super.connectedCallback();
+   }
+
+   static expressionCompile(expression) {
+      console.log("=== expression");
+      console.log(expression);
+      let compiled = [];
+      let mdfocus = expression;
+      let matchStart;
+      do {
+         matchStart = -1;
+         let selected = "";
+         for (let el in DCCExpression.element) {
+            let pos = mdfocus.search(DCCExpression.element[el]);
+            if (pos > -1 && (matchStart == -1 || pos < matchStart)) {
+               selected = el;
+               matchStart = pos;
+            }
+         }
+         if (matchStart > -1) {
+            let matchContent = mdfocus.match(DCCExpression.element[selected])[0];
+            console.log("=== selected");
+            console.log(selected);
+            console.log("=== content");
+            console.log(matchContent);
+            let matchSize = matchContent.length;
+            if (matchStart + matchSize >= mdfocus.length)
+               matchStart = -1;
+            else
+               mdfocus = mdfocus.substring(matchStart + matchSize);
+         }
+      } while (matchStart > -1);
    }
 
    /*
@@ -127,4 +160,21 @@ class DCCExpression extends DCCVisual {
 (function() {
    DCCExpression.elementTag = "dcc-expression";
    customElements.define(DCCExpression.elementTag, DCCExpression);
+
+   DCCExpression.precedence = {
+      "-": 2,
+      "+": 2,
+      "/": 3,
+      "*": 3,
+      "^": 4,
+      "(": 5
+   }
+
+   DCCExpression.element = {
+      number: /([\d]*.[\d]+)|([\d]+)/im,
+      aritmetic: /\+|-|\*|\/|\^\(/im,
+      closeParentheses: /\)/im,
+      function: /[\w \t\.]+(?=\()/im,
+      variable: /[\w \t\.]+(?!\()/im
+   }
 })();
