@@ -65,6 +65,7 @@ class DCCExpression extends DCCVisual {
       console.log("=== expression");
       console.log(expression);
       let compiled = [];
+      let stack = [];
       let mdfocus = expression;
       let matchStart;
       do {
@@ -79,10 +80,47 @@ class DCCExpression extends DCCVisual {
          }
          if (matchStart > -1) {
             let matchContent = mdfocus.match(DCCExpression.element[selected])[0];
-            console.log("=== selected");
-            console.log(selected);
-            console.log("=== content");
-            console.log(matchContent);
+            console.log("=== " + selected + ": " + matchContent);
+
+            /*
+            1 - number
+            2 - arithmetic
+            3 - variable
+            4 - function
+            */
+            switch (selected) {
+               case "number":
+                  compiled.push([1, parseInt(matchContent)]);
+                  break;
+               case "arithmetic":
+                  const pri = DCCExpression.precedence[matchContent];
+                  while (stack.length > 0 && pri <= stack[stack.length-1][1])
+                     compiled.push([2, stack.pop()[0]]);
+                  stack.push([matchContent, pri]);
+                  break;
+               case "power":
+                  stack.push([matchContent, DCCExpression.precedence(matchContent)]);
+                  break;
+               case "openParentheses":
+                  stack.push([matchContent, 1]);
+                  break;
+               case "closeParentheses":
+                  while (stack.length > 0 && stack[stack.length-1][0] != "(")
+                     compiled.push([2, stack.pop()[0]]);
+                  if (stack.length > 0) {
+                     stack.pop();
+                     if (stack.length > 0 && stack[stack.length-1][1] == 10)
+                        compiled.push([4, stack.pop()[0]]);
+                  }
+                  break;
+               case "variable":
+                  compiled.push([3, matchContent]);
+                  break;
+               case "function":
+                  stack.push([matchContent, 10]);
+                  break;
+            }
+
             let matchSize = matchContent.length;
             if (matchStart + matchSize >= mdfocus.length)
                matchStart = -1;
@@ -90,6 +128,17 @@ class DCCExpression extends DCCVisual {
                mdfocus = mdfocus.substring(matchStart + matchSize);
          }
       } while (matchStart > -1);
+      console.log("=== stack");
+      console.log(JSON.stringify(stack));
+      const size = stack.length;
+      for (let s = 0; s < size; s++) {
+         let op = stack.pop();
+         compiled.push([(op[1] == 10) ? 4 : 2, op[0]]);
+      }
+      console.log("=== stack");
+      console.log(JSON.stringify(stack));
+      console.log("=== compiled");
+      console.log(compiled);
    }
 
    /*
@@ -166,13 +215,14 @@ class DCCExpression extends DCCVisual {
       "+": 2,
       "/": 3,
       "*": 3,
-      "^": 4,
-      "(": 5
+      "^": 4
    }
 
    DCCExpression.element = {
-      number: /([\d]*.[\d]+)|([\d]+)/im,
-      aritmetic: /\+|-|\*|\/|\^\(/im,
+      number: /([\d]*\.[\d]+)|([\d]+)/im,
+      arithmetic: /[\+\-*/(]/im,
+      power: /\^/im,
+      openParentheses: /\(/im,
       closeParentheses: /\)/im,
       function: /[\w \t\.]+(?=\()/im,
       variable: /[\w \t\.]+(?!\()/im
