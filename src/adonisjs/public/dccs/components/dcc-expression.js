@@ -30,7 +30,8 @@ class DCCExpression extends DCCVisual {
          this._stateValues = {};
       }
 
-      DCCExpression.expressionCompile(this.expression);
+      let compiled = DCCExpression.compileExpression(this.expression);
+      console.log("=== result: " + DCCExpression.computeExpression(compiled));
 
       let result = await MessageBus.ext.request("var/" + this._variable + "/get");
       console.log("=== result field");
@@ -61,7 +62,12 @@ class DCCExpression extends DCCVisual {
       super.connectedCallback();
    }
 
-   static expressionCompile(expression) {
+   /*
+    * Compiles an expression and converts it to a polish reverse notation
+    * * caseSensitive - converts all field in lower case
+    *                   (avoid transformations during its execution)
+    */
+   static compileExpression(expression, caseSensitive) {
       console.log("=== expression");
       console.log(expression);
       let compiled = [];
@@ -82,42 +88,41 @@ class DCCExpression extends DCCVisual {
             let matchContent = mdfocus.match(DCCExpression.element[selected])[0];
             console.log("=== " + selected + ": " + matchContent);
 
-            /*
-            1 - number
-            2 - arithmetic
-            3 - variable
-            4 - function
-            */
             switch (selected) {
                case "number":
-                  compiled.push([1, parseInt(matchContent)]);
+                  compiled.push([DCCExpression.role["number"], parseInt(matchContent)]);
                   break;
                case "arithmetic":
                   const pri = DCCExpression.precedence[matchContent];
                   while (stack.length > 0 && pri <= stack[stack.length-1][1])
-                     compiled.push([2, stack.pop()[0]]);
+                     compiled.push([DCCExpression.role["arithmetic"], stack.pop()[0]]);
                   stack.push([matchContent, pri]);
                   break;
                case "power":
-                  stack.push([matchContent, DCCExpression.precedence(matchContent)]);
+                  stack.push([matchContent, DCCExpression.precedence[matchContent]]);
                   break;
                case "openParentheses":
-                  stack.push([matchContent, 1]);
+                  stack.push([matchContent, DCCExpression.precedence[matchContent]]);
                   break;
                case "closeParentheses":
                   while (stack.length > 0 && stack[stack.length-1][0] != "(")
-                     compiled.push([2, stack.pop()[0]]);
+                     compiled.push([DCCExpression.role["arithmetic"], stack.pop()[0]]);
                   if (stack.length > 0) {
                      stack.pop();
-                     if (stack.length > 0 && stack[stack.length-1][1] == 10)
-                        compiled.push([4, stack.pop()[0]]);
+                     if (stack.length > 0 && stack[stack.length-1][1] ==
+                           DCCExpression.precedence["function"]) {
+                        let label = stack.pop()[0];
+                        compiled.push([DCCExpression.role["function"], 
+                           (caseSensitive) ? label : label.toLowerCase()]);
+                     }
                   }
                   break;
                case "variable":
-                  compiled.push([3, matchContent]);
+                  compiled.push([DCCExpression.role["variable"],
+                     (caseSensitive) ? matchContent : matchContent.toLowerCase(), 0]);
                   break;
                case "function":
-                  stack.push([matchContent, 10]);
+                  stack.push([matchContent, DCCExpression.precedence["function"]]);
                   break;
             }
 
@@ -128,17 +133,53 @@ class DCCExpression extends DCCVisual {
                mdfocus = mdfocus.substring(matchStart + matchSize);
          }
       } while (matchStart > -1);
-      console.log("=== stack");
-      console.log(JSON.stringify(stack));
       const size = stack.length;
       for (let s = 0; s < size; s++) {
          let op = stack.pop();
-         compiled.push([(op[1] == 10) ? 4 : 2, op[0]]);
+         compiled.push([(op[1] == DCCExpression.precedence["function"])
+            ? DCCExpression.role["function"] : DCCExpression.role["arithmetic"],
+            (caseSensitive) ? op[0] : op[0].toLowerCase()]);
       }
-      console.log("=== stack");
-      console.log(JSON.stringify(stack));
       console.log("=== compiled");
       console.log(compiled);
+      return compiled;
+   }
+
+   /*
+   number: 1
+   arithmetic: 2
+   variable: 3
+   function: 4
+   */
+   static computeExpression(compiled) {
+      let stack = [];
+      for (let c of compiled) {
+         switch (c[0]) {
+            case 1: stack.push(c[1]); break;
+            case 2: const b = stack.pop();
+                    const a = stack.pop();
+                    switch (c[1]) {
+                       case "+": stack.push(a + b); break;
+                       case "-": stack.push(a - b); break;
+                       case "*": stack.push(a * b); break;
+                       case "/": stack.push(a / b); break;
+                       case "^": stack.push(Math.pow(a, b)); break;
+                    }
+                    break;
+            case 3: stack.push(c[2]); break;
+            case 4: switch (c[1]) {
+                       case "sin":
+                          let angle = stack.pop();
+                          console.log("=== angle");
+                          console.log(angle);
+                          console.log(angle * Math.PI / 180)
+                          stack.push(Math.sin(angle * Math.PI / 180)); break;
+                       case "cos":
+                          stack.push(Math.cos(stack.pop() * Math.PI / 180)); break;
+                    }
+         }
+      }
+      return stack.pop();
    }
 
    /*
@@ -210,17 +251,26 @@ class DCCExpression extends DCCVisual {
    DCCExpression.elementTag = "dcc-expression";
    customElements.define(DCCExpression.elementTag, DCCExpression);
 
+   DCCExpression.role = {
+      "number": 1,
+      "arithmetic": 2,
+      "variable": 3,
+      "function": 4
+   };
+
    DCCExpression.precedence = {
+      "(": 1,
       "-": 2,
       "+": 2,
       "/": 3,
       "*": 3,
-      "^": 4
+      "^": 4,
+      "function": 5
    }
 
    DCCExpression.element = {
       number: /([\d]*\.[\d]+)|([\d]+)/im,
-      arithmetic: /[\+\-*/(]/im,
+      arithmetic: /[\+\-*/]/im,
       power: /\^/im,
       openParentheses: /\(/im,
       closeParentheses: /\)/im,
