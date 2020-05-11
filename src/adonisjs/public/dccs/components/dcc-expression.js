@@ -30,8 +30,11 @@ class DCCExpression extends DCCVisual {
          this._stateValues = {};
       }
 
-      let compiled = DCCExpression.compileExpression(this.expression);
-      console.log("=== result: " + DCCExpression.computeExpression(compiled));
+      let compiled = DCCExpression.compileStatementSet(this.expression);
+      console.log("=== compiled:");
+      console.log(compiled);
+      for (let c of compiled)
+         console.log("=== result: " + DCCExpression.computeExpression(c[1]));
 
       let result = await MessageBus.ext.request("var/" + this._variable + "/get");
       console.log("=== result field");
@@ -62,12 +65,37 @@ class DCCExpression extends DCCVisual {
       super.connectedCallback();
    }
 
+   static compileStatementSet(statementSet) {
+      console.log("=== statement set");
+      console.log(statementSet);
+      const statementLines = statementSet.split(/;\r?\n?|\r?\n/);
+      console.log("=== statement lines");
+      console.log(statementLines);
+      let compiledSet = [];
+      for (let l of statementLines)
+         compiledSet.push(DCCExpression.compileStatement(l));
+      return compiledSet;
+   }
+
+   static compileStatement(statement) {
+      console.log("=== compile");
+      console.log(statement);
+      let compiled = [];
+      const assign = statement.match(DCCExpression.assignment);
+      if (assign != null) {
+         compiled[0] = assign[1].trim();
+         compiled[1] =
+            DCCExpression.compileExpression(statement.substring(assign[0].length));
+      }
+      return compiled;
+   }
+
    /*
     * Compiles an expression and converts it to a polish reverse notation
     * * caseSensitive - converts all field in lower case
     *                   (avoid transformations during its execution)
     */
-   static compileExpression(expression, caseSensitive) {
+   static compileExpression(expression) {
       console.log("=== expression");
       console.log(expression);
       let compiled = [];
@@ -112,14 +140,12 @@ class DCCExpression extends DCCVisual {
                      if (stack.length > 0 && stack[stack.length-1][1] ==
                            DCCExpression.precedence["function"]) {
                         let label = stack.pop()[0];
-                        compiled.push([DCCExpression.role["function"], 
-                           (caseSensitive) ? label : label.toLowerCase()]);
+                        compiled.push([DCCExpression.role["function"], label]);
                      }
                   }
                   break;
                case "variable":
-                  compiled.push([DCCExpression.role["variable"],
-                     (caseSensitive) ? matchContent : matchContent.toLowerCase(), 0]);
+                  compiled.push([DCCExpression.role["variable"], matchContent, 0]);
                   break;
                case "function":
                   stack.push([matchContent, DCCExpression.precedence["function"]]);
@@ -137,8 +163,7 @@ class DCCExpression extends DCCVisual {
       for (let s = 0; s < size; s++) {
          let op = stack.pop();
          compiled.push([(op[1] == DCCExpression.precedence["function"])
-            ? DCCExpression.role["function"] : DCCExpression.role["arithmetic"],
-            (caseSensitive) ? op[0] : op[0].toLowerCase()]);
+            ? DCCExpression.role["function"] : DCCExpression.role["arithmetic"], op[0]]);
       }
       console.log("=== compiled");
       console.log(compiled);
@@ -282,4 +307,6 @@ class DCCExpression extends DCCVisual {
       function: /[\w \t\.]+(?=\()/im,
       variable: /[\w \t\.]+(?!\()/im
    }
+
+   DCCExpression.assignment = /([\w \t\.]+)=/im;
 })();

@@ -7,7 +7,7 @@ class RuleDCCCellExpression extends RuleDCCTransition {
 
       this._compiled = null;
       if (this.hasAttribute("expression"))
-         this._compiled = DCCExpression.compileExpression(this.expression, false);
+         this._compiled = DCCExpression.compileStatementSet(this.expression.toLowerCase());
    }
 
    /* Properties
@@ -42,15 +42,19 @@ class RuleDCCCellExpression extends RuleDCCTransition {
       }
 
       const varRole = DCCExpression.role["variable"];
+      let triggered = false;
       if (this._compiled != null) {
          // sets variable values
-         for (let c of this._compiled)
-            if (c[0] == varRole) {
-               if (RuleDCCCellExpression.internalVar.includes(c[1]))
-                  c[3] = cstate.properties[c[1]];
-            }
-
-         
+         for (let l of this._compiled) {
+            for (let c of l[1])
+               if (c[0] == varRole) {
+                  if (RuleDCCCellExpression.internalVar.includes(c[1]))
+                     c[3] = cstate.properties[c[1]];
+               }
+            if (RuleDCCCellExpression.internalVar.includes(l[0]))
+               cstate.properties[l[0]] = DCCExpression.computeExpression(l[1]);
+         }
+         triggered = this._computeTransition(spaceState, row, col, Math.round(y), Math.round(x));
       }
    }
 }
