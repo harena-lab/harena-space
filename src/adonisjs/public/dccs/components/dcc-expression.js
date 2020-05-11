@@ -169,13 +169,18 @@ class DCCExpression extends DCCVisual {
             case 3: stack.push(c[2]); break;
             case 4: switch (c[1]) {
                        case "sin":
-                          let angle = stack.pop();
-                          console.log("=== angle");
-                          console.log(angle);
-                          console.log(angle * Math.PI / 180)
-                          stack.push(Math.sin(angle * Math.PI / 180)); break;
+                          stack.push(
+                             Math.round(
+                                Math.sin(stack.pop() / 180 * Math.PI) * 1000) / 1000);
+                          break;
                        case "cos":
-                          stack.push(Math.cos(stack.pop() * Math.PI / 180)); break;
+                          stack.push(
+                             Math.round(
+                                Math.cos(stack.pop() / 180 * Math.PI) * 1000) / 1000);
+                          break;
+                       case "sqrt":
+                          stack.push(Math.sqrt(stack.pop()));
+                          break;
                     }
          }
       }

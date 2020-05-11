@@ -49,6 +49,8 @@ class RuleDCCCellExpression extends RuleDCCTransition {
                if (RuleDCCCellExpression.internalVar.includes(c[1]))
                   c[3] = cstate.properties[c[1]];
             }
+
+         
       }
    }
 }
