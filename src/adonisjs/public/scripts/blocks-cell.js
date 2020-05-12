@@ -35,7 +35,7 @@ class ScriptBlocksCell {
       Blockly.Blocks["neighbor"] = {
         init: function() {
           this.jsonInit({
-            "message0": "se %1 \n encontra %2 então %3",
+            "message0": "se %1 encontra %2 então %3",
             "args0": [
                {
                  "type": "field_dropdown",
@@ -114,6 +114,40 @@ class ScriptBlocksCell {
         }
       };
 
+      Blockly.Blocks["expression"] = {
+        init: function() {
+          this.jsonInit({
+            "message0": "se %1 encontra %2 então",
+            "args0": [
+               {
+                 "type": "field_dropdown",
+                 "name": "origin",
+                 "options": ScriptBlocksCell.s._allSelectTypes
+               },
+               {
+                 "type": "field_dropdown",
+                 "name": "target",
+                 "options": ScriptBlocksCell.s._allSelectTypes
+               }
+            ],
+            "message1": "expressão %1 %2",
+            "args1": [
+              {
+                "type": "field_input",
+                "name": "expression"
+              },
+              {
+                "type": "input_value",
+                "name": "action",
+                "check": "Action"
+              }
+            ],
+            "colour": 170,
+            "tooltip": "Computes expression."
+          });
+        }
+      };
+
       Blockly.Blocks["action"] = {
         init: function() {
           this.jsonInit({
@@ -124,7 +158,8 @@ class ScriptBlocksCell {
                  "name": "action",
                  "options": [
                     ["movimenta", "move"],
-                    ["duplica", "duplicate"]
+                    ["duplica", "duplicate"],
+                    ["rastro", "trail"]
                  ]
                },
             ],
@@ -200,6 +235,18 @@ class ScriptBlocksCell {
                 ((block.getFieldValue("downRight") == "TRUE") ? "*" : "_") + "\n" +
                 "</rule-dcc-cell-pair>";
       };
+      Blockly.JavaScript["expression"] = function(block) {
+         let result = "<rule-dcc-cell-expression " +
+                "expression='" + block.getFieldValue("expression") + "' " +
+                Blockly.JavaScript.statementToCode(block, "action")
+                   .replace(/_o/g, ScriptBlocksCell.s._types[block.getFieldValue("origin")])
+                   .replace(/_t/g, ScriptBlocksCell.s._types[block.getFieldValue("target")]) +
+                ">\n" +
+                "</rule-dcc-cell-expression>";
+         console.log("=== rule");
+         console.log(result);
+         return result;
+      };
       Blockly.JavaScript["action"] = function(block) {
          return " probability='" + block.getFieldValue("probability") + "'" +
                 " step='" + block.getFieldValue("step") + "'" +
@@ -221,6 +268,7 @@ _*_
 
    ScriptBlocksCell.transitions = {
       "move":      "_o_t>_t_o",
-      "duplicate": "_o_t>_o_o"
+      "duplicate": "_o_t>_o_o",
+      "trail":     "_o_t>#_o"
    };
 })();
