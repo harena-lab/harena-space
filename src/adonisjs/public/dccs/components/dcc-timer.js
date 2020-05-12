@@ -62,6 +62,7 @@ class DCCTimer extends DCCBase {
             case "start": this.start(); break;
             case "stop" : this.stop(); break;
             case "step" : this.step(); break;
+            case "interval": this.interval = message.body.value; break;
          }
       }
    }
