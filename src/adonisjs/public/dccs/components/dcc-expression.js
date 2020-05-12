@@ -118,7 +118,9 @@ class DCCExpression extends DCCVisual {
 
             switch (selected) {
                case "number":
-                  compiled.push([DCCExpression.role["number"], parseInt(matchContent)]);
+                  compiled.push([DCCExpression.role["number"],
+                     (matchContent.includes("."))
+                        ? parseFloat(matchContent) : parseInt(matchContent)]);
                   break;
                case "arithmetic":
                   const pri = DCCExpression.precedence[matchContent];

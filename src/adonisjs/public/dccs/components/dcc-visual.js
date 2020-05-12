@@ -143,9 +143,6 @@ class DCCMultiVisual extends DCCVisual {
    }
 
    _storePresentation(presentation, role) {
-      console.log("=== store presentation");
-      console.log(presentation);
-      console.log(role);
       super._storePresentation(presentation);
       if (presentation != null)
          this._presentationSet.push(
@@ -163,13 +160,8 @@ class DCCMultiVisual extends DCCVisual {
    }
 
    _hideReady() {
-      console.log("=== hide");
-      console.log(JSON.stringify(this._presentationSet));
-      for (let pr of this._presentationSet) {
-         console.log("--- pr");
-         console.log(pr._presentation);
+      for (let pr of this._presentationSet)
          pr._presentation.style.display = "none";
-      }
    }
 
    show() {
@@ -178,11 +170,6 @@ class DCCMultiVisual extends DCCVisual {
    }
 
    _attachTriggerReady(event, trigger) {
-      console.log("=== attach trigger");
-      console.log(event);
-      console.log(trigger);
-      console.log(this._presentationReady);
-      console.log(JSON.stringify(this._presentationSet));
       for (let pr of this._presentationSet)
          this._attachTriggerPresentation(event, trigger, pr._presentation);
    }
@@ -204,8 +191,6 @@ class DCCMultiVisual extends DCCVisual {
    }
 
    reactivateAuthor() {
-      console.log("=== reactivate");
-      console.log(this._editedPresentation);
       if (this._editedPresentation) {
          this._reactivateAuthorPresentation(this._editedPresentation._presentation,
                                             this._editedPresentation);

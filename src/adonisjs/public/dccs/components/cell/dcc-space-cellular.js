@@ -273,8 +273,6 @@ class DCCSpaceCellular extends DCCBase {
    }
 
    notify(topic, message) {
-      console.log("=== space messsage");
-      console.log(message);
       if (message.role) {
          switch (message.role.toLowerCase()) {
             case "next": this.stateNext(); break;
