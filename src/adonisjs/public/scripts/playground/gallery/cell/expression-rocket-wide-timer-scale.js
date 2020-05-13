@@ -13,20 +13,21 @@ AuthorCellManager.instance.insertSource(
 `<block type="neighbor"></block>
 <block type="action"></block>
 <block type="expression"></block>`,
-`<dcc-space-cellular-editor id="cellular-space" cols="80" rows="80"
-                            cell-width="7" cell-height="7" background-color="#d6f0ffff" grid>
+`<dcc-space-cellular-editor id="cellular-space" cols="950" rows="600"
+                            cell-width="1" cell-height="1" background-color="#d6f0ffff" grid>
 </dcc-space-cellular-editor>
 
-<dcc-cell-color type="b" label="balloon" color="#ffff00"></dcc-cell-color>
-<dcc-cell-color type="1" label="plane1" color="#333333"></dcc-cell-color>
-<dcc-cell-color type="2" label="plane2" color="#666666"></dcc-cell-color>
-<dcc-cell-color type="3" label="plane3" color="#999999"></dcc-cell-color>
-<dcc-cell-color type="r" label="rocket" color="#ff0000"></dcc-cell-color>
-<dcc-cell-color type="f" label="flagr" color="#ff00ff"></dcc-cell-color>
-<dcc-cell-color type="#" label="cloud" color="#0000ff"></dcc-cell-color>
-<dcc-cell-color type="t" label="tree" color="#00ff00"></dcc-cell-color>
+<dcc-cell-image type="b" label="balloon" image="images/cell/balloon01.svg"></dcc-cell-image>
+<dcc-cell-image type="1" label="plane1" image="images/cell/plane01.svg"></dcc-cell-image>
+<dcc-cell-image type="2" label="plane2" image="images/cell/plane02.svg"></dcc-cell-image>
+<dcc-cell-image type="3" label="plane3" image="images/cell/plane03.svg"></dcc-cell-image>
+<dcc-cell-image type="r" label="rocket" image="images/cell/rocket01.svg"></dcc-cell-image>
+<dcc-cell-image type="f" label="flagr" image="images/cell/flag-red.svg"></dcc-cell-image>
+<dcc-cell-image type="c" label="cloud" image="images/cell/cloud01.svg"></dcc-cell-image>
+<dcc-cell-image type="t" label="tree" image="images/cell/tree01.svg"></dcc-cell-image>
+<dcc-cell-image type="#" label="cloudb" image="images/cell/cloud01-black.svg"></dcc-cell-image>
 
-<dcc-timer cycles="100000" interval="1000" publish="state/next">
+<dcc-timer cycles="100000" interval="1" publish="state/next">
    <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
    <subscribe-dcc topic="timer/stop" role="stop"></subscribe-dcc>
    <subscribe-dcc topic="var/timer_interval/changed" role="interval"></subscribe-dcc>

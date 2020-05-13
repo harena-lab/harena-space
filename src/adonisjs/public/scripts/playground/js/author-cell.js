@@ -23,6 +23,8 @@ class AuthorCellManager {
       this.restartSpace = this.restartSpace.bind(this);
       this.scriptExpand = this.scriptExpand.bind(this);
       this.scriptRetract = this.scriptRetract.bind(this);
+      this.cellsExpand = this.cellsExpand.bind(this);
+      this.cellsRetract = this.cellsRetract.bind(this);
 
       MessageBus.ext.subscribe("control/editor/switch", this.switchEditor);
       MessageBus.ext.subscribe("control/space/play", this.playSpace);
@@ -30,6 +32,8 @@ class AuthorCellManager {
       MessageBus.ext.subscribe("control/space/restart", this.restartSpace);
       MessageBus.ext.subscribe("control/script/expand", this.scriptExpand);
       MessageBus.ext.subscribe("control/script/retract", this.scriptRetract);
+      MessageBus.ext.subscribe("control/cells/expand", this.cellsExpand);
+      MessageBus.ext.subscribe("control/cells/retract", this.cellsRetract);
 
       this._scriptActive = true;
 
@@ -52,7 +56,8 @@ class AuthorCellManager {
       if (this._scriptActive) {
          document.querySelector("#action-panels").innerHTML =
             AuthorCellManager.scriptPanel;
-         document.querySelector("#button-retract").hide();
+         document.querySelector("#button-retract-script").hide();
+         document.querySelector("#button-retract-cells").hide();
       } else
          document.querySelector("#action-panels").innerHTML =
             AuthorCellManager.noScriptPanel;
@@ -139,8 +144,20 @@ class AuthorCellManager {
       let sb = document.querySelector("#script-block");
       sb.classList.remove("col-6");
       sb.classList.add("col-12");
-      document.querySelector("#button-retract").show();
-      document.querySelector("#button-expand").hide();
+      document.querySelector("#button-retract-script").show();
+      document.querySelector("#button-expand-script").hide();
+      document.querySelector("#button-expand-cells").hide();
+      this.resizeWorkspace();
+   }
+
+   cellsExpand() {
+      document.querySelector("#script-block").classList.remove("col-6");
+      let cb = document.querySelector("#composition-block");
+      cb.classList.remove("col-6");
+      cb.classList.add("col-12");
+      document.querySelector("#button-retract-cells").show();
+      document.querySelector("#button-expand-script").hide();
+      document.querySelector("#button-expand-cells").hide();
       this.resizeWorkspace();
    }
 
@@ -151,8 +168,20 @@ class AuthorCellManager {
       let sb = document.querySelector("#script-block");
       sb.classList.remove("col-12");
       sb.classList.add("col-6");
-      document.querySelector("#button-retract").hide();
-      document.querySelector("#button-expand").show();
+      document.querySelector("#button-retract-script").hide();
+      document.querySelector("#button-expand-script").show();
+      document.querySelector("#button-expand-cells").show();
+      this.resizeWorkspace();
+   }
+
+   cellsRetract() {
+      document.querySelector("#script-block").classList.add("col-6");
+      let cb = document.querySelector("#composition-block");
+      cb.classList.remove("col-12");
+      cb.classList.add("col-6");
+      document.querySelector("#button-retract-cells").hide();
+      document.querySelector("#button-expand-script").show();
+      document.querySelector("#button-expand-cells").show();
       this.resizeWorkspace();
    }
 
@@ -198,9 +227,13 @@ AuthorCellManager.scriptPanel =
    <div id="rules-panel"></div>
 </div>
 <div id="script-block" class="d-flex col-6 flex-column align-items-stretch">
-   <div id="properties-expansion" class="sty-navigation-expansion">
-       <dcc-trigger id="button-expand" action="control/script/expand" label="Expand" image="images/icon/icon-expansion-left.svg"></dcc-trigger>
-       <dcc-trigger id="button-retract" action="control/script/retract" label="Retract" image="images/icon/icon-expansion-right.svg"></dcc-trigger>
+   <div class="sty-navigation-expansion">
+       <dcc-trigger id="button-expand-script" action="control/script/expand" label="Expand" image="images/icon/icon-expansion-left.svg"></dcc-trigger>
+       <dcc-trigger id="button-retract-script" action="control/script/retract" label="Retract" image="images/icon/icon-expansion-right.svg"></dcc-trigger>
+   </div>
+   <div class="sty-navigation-expansion">
+       <dcc-trigger id="button-retract-cells" action="control/cells/retract" label="Expand" image="images/icon/icon-expansion-left.svg"></dcc-trigger>
+       <dcc-trigger id="button-expand-cells" action="control/cells/expand" label="Retract" image="images/icon/icon-expansion-right.svg"></dcc-trigger>
    </div>
    <div class="h-100 w-100" style="padding-left:.800rem">
       <div class="h-100 w-100" id="script-panel"></div>
