@@ -13,12 +13,13 @@ class DCCSpaceCellular extends DCCBase {
       this._cellTypes = {};
       this._rules = {};
       this._wildcardRules = [];
-      this._stateTypes = [];
+      this._stateTypes = null;
    }
 
    connectedCallback() {
       this._stateStr = this.innerHTML.trim();
 
+      this._stateTypes = [];
       for (let c of this._stateStr)
          if (![" ", "_", "\r", "\n"].includes(c) &&
              !this._stateTypes.includes(c))
@@ -64,6 +65,8 @@ class DCCSpaceCellular extends DCCBase {
       this.innerHTML = DCCSpaceCellular.svgTemplate
                          .replace(/\[cell-width\]/g, this.cellWidth + "px")
                          .replace(/\[cell-height\]/g, this.cellHeight + "px")
+                         .replace(/\[width-div\]/g, this.cols * this.cellWidth + 12 + "px")
+                         .replace(/\[height-div\]/g, this.rows * this.cellHeight + 12 + "px")
                          .replace(/\[width\]/g, width)
                          .replace(/\[height\]/g, height)
                          .replace(/\[background-color\]/g, this.backgroundColor)
@@ -71,7 +74,7 @@ class DCCSpaceCellular extends DCCBase {
                            (this.backgroundImage == null) ? "" :
                               "<image href='" + this.backgroundImage + "' width='" + width +
                                  "' height='" + height + "'/>")
-                         .replace(/\[grid\]/g, (this.grid) ? 
+                         .replace(/\[grid\]/g, (this.grid && this.cellWidth >= 5) ? 
                            " stroke-width='2' stroke='#646464'" : "")
                          .replace(/\[cover-image\]/g,
                            (this.coverImage == null) ? "" :
@@ -80,6 +83,29 @@ class DCCSpaceCellular extends DCCBase {
                               ((this.coverOpacity) ? " opacity='" + this.coverOpacity + "'" : "") + "/>");
       this._cellGrid = this.querySelector("#cell-grid");
       this._cells = this.querySelector("#cells");
+      this._svgSpace = this.querySelector("#svg-space");
+      this._gridRect = this.querySelector("#grid-rect");
+      this._scaleSpace();
+   }
+
+   _scaleSpace() {
+      if (this.hasAttribute("scale")) {
+         if (this.grid) {
+            if (this.cellWidth * this.scale < 5) {
+               if (this._gridRect.hasAttribute("stroke-width")) {
+                  this._gridRect.removeAttribute("stroke-width");
+                  this._gridRect.removeAttribute("stroke");
+               }
+            } else {
+               this._gridRect.setAttribute("stroke-width", 2 / this.scale);
+               this._gridRect.setAttribute("stroke", "#646464");
+            }
+         }
+
+         this._cellGrid.setAttribute("transform", "scale(" + this.scale + " " + this.scale + ")");
+         this._svgSpace.setAttribute("width", this.cols * this.cellWidth * this.scale + "px");
+         this._svgSpace.setAttribute("height", this.rows * this.cellHeight * this.scale + "px");
+      }
    }
 
    disconnectedCallback() {
@@ -88,7 +114,7 @@ class DCCSpaceCellular extends DCCBase {
 
    static get observedAttributes() {
       return DCCBase.observedAttributes.concat(
-         ["label", "cols", "rows", "cell-width", "cell-height", "background-color", 
+         ["label", "cols", "rows", "cell-width", "cell-height", "scale", "background-color", 
           "background-image", "cover-image", "cover-opacity", "grid", "infinite"]);
    }
 
@@ -130,6 +156,14 @@ class DCCSpaceCellular extends DCCBase {
    
    set cellHeight(newValue) {
       this.setAttribute("cell-height", newValue);
+   }
+
+   get scale() {
+      return this.getAttribute("scale");
+   }
+   
+   set scale(newValue) {
+      this.setAttribute("scale", newValue);
    }
 
    get backgroundColor() {
@@ -181,9 +215,9 @@ class DCCSpaceCellular extends DCCBase {
 
    set infinite(isInfinite) {
       if (hasGrid)
-         this.setAttribute("grid", "");
+         this.setAttribute("infinite", "");
       else
-         this.removeAttribute("grid");
+         this.removeAttribute("infinite");
    }
 
    cellTypeRegister(topic, cellType) {
@@ -196,7 +230,7 @@ class DCCSpaceCellular extends DCCBase {
    }
 
    _checkAllTypes() {
-      let all = (this._stateTypes.length > 0) ? true : false;
+      let all = (this._stateTypes != null) ? true : false;
       for (let s in this._stateTypes)
          if (!this._cellTypes[this._stateTypes[s]])
             all = false;
@@ -226,6 +260,8 @@ class DCCSpaceCellular extends DCCBase {
             row.push(null);
          state.push(row);
       }
+      console.log("=== state");
+      console.log(state);
       return state;
    }
 
@@ -280,6 +316,10 @@ class DCCSpaceCellular extends DCCBase {
                this.coverOpacity = parseInt(message.body.value) / 100;
                this.querySelector("#cover-image").setAttribute("opacity", this.coverOpacity);
                break;
+            case "scale":
+               this.scale = parseInt(message.body.value);
+               this._scaleSpace();
+               break;
          }
       }
    }
@@ -333,8 +373,9 @@ class DCCSpaceCellularEditor extends DCCSpaceCellular {
 
    cellClicked(event) {
       const gc = this._cellGrid.getBoundingClientRect();
-      const cell = this.computeCell(event.clientX - gc.x,
-                                    event.clientY - gc.y);
+      const scale = (this.scale) ? this.scale : 1;
+      const cell = this.computeCell(Math.round((event.clientX - gc.x) / scale),
+                                    Math.round((event.clientY - gc.y) / scale));
       this.changeState(this._editType, cell.row, cell.col);
    }
 
@@ -434,11 +475,11 @@ class DCCSpaceCellularEditor extends DCCSpaceCellular {
 
 (function() {
    DCCSpaceCellular.svgTemplate =
-`<div width="[width]" height="[height]">
-<svg width="[width]" height="[height]" xmlns="http://www.w3.org/2000/svg">
+`<div style="overflow:scroll;width:[width-div];height:[height-div]">
+<svg id="svg-space" width="[width]" height="[height]" xmlns="http://www.w3.org/2000/svg">
 <defs>
   <pattern id="grid" width="[cell-width]" height="[cell-height]" patternUnits="userSpaceOnUse">
-    <rect width="[cell-width]" height="[cell-height]"
+    <rect id="grid-rect" width="[cell-width]" height="[cell-height]"
      fill="[background-color]"[grid]/>
   </pattern>
 </defs>
