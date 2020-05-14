@@ -105,6 +105,7 @@ class DCCSpaceCellular extends DCCBase {
          this._cellGrid.setAttribute("transform", "scale(" + this.scale + " " + this.scale + ")");
          this._svgSpace.setAttribute("width", this.cols * this.cellWidth * this.scale + "px");
          this._svgSpace.setAttribute("height", this.rows * this.cellHeight * this.scale + "px");
+         this._svgSpace.scrollIntoView({block: "end"});
       }
    }
 
@@ -374,8 +375,8 @@ class DCCSpaceCellularEditor extends DCCSpaceCellular {
    cellClicked(event) {
       const gc = this._cellGrid.getBoundingClientRect();
       const scale = (this.scale) ? this.scale : 1;
-      const cell = this.computeCell(Math.round((event.clientX - gc.x) / scale),
-                                    Math.round((event.clientY - gc.y) / scale));
+      const cell = this.computeCell(Math.trunc((event.clientX - gc.x) / scale),
+                                    Math.trunc((event.clientY - gc.y) / scale));
       this.changeState(this._editType, cell.row, cell.col);
    }
 
@@ -387,6 +388,9 @@ class DCCSpaceCellularEditor extends DCCSpaceCellular {
    }
 
    changeState(type, row, col) {
+      console.log("=== change state");
+      console.log(row);
+      console.log(col);
       let r = row - 1;
       let c = col - 1;
       if (this._state[r][c] != null && this._state[r][c].dcc.type != type) {
@@ -475,7 +479,7 @@ class DCCSpaceCellularEditor extends DCCSpaceCellular {
 
 (function() {
    DCCSpaceCellular.svgTemplate =
-`<div style="overflow:scroll;width:[width-div];height:[height-div]">
+`<div id="grid-wrapper" style="overflow:scroll;width:[width-div];height:[height-div]">
 <svg id="svg-space" width="[width]" height="[height]" xmlns="http://www.w3.org/2000/svg">
 <defs>
   <pattern id="grid" width="[cell-width]" height="[cell-height]" patternUnits="userSpaceOnUse">

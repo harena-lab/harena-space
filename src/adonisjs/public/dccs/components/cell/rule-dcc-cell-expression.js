@@ -6,6 +6,8 @@ class RuleDCCCellExpression extends RuleDCCTransition {
       super.connectedCallback();
 
       this._rounds = 0;
+      if (!this.hasAttribute("time-rate"))
+         this.timeRate = 1;
 
       this._compiled = null;
       if (this.hasAttribute("expression"))
@@ -18,7 +20,7 @@ class RuleDCCCellExpression extends RuleDCCTransition {
       **********/
    
    static get observedAttributes() {
-      return RuleDCCTransition.observedAttributes.concat(["expression"]);
+      return RuleDCCTransition.observedAttributes.concat(["expression", "time-rate"]);
    }
 
    get expression() {
@@ -30,8 +32,25 @@ class RuleDCCCellExpression extends RuleDCCTransition {
       this._decomposeTransition(newValue);
    }
 
+   get timeRate() {
+      return this.getAttribute("time-rate");
+   }
+
+   set timeRate(newValue) {
+      this.setAttribute("time-rate", newValue);
+   }
+
    /* Methods
       *******/
+   notify(topic, message) {
+      if (message.role) {
+         switch (message.role.toLowerCase()) {
+            case "time-rate": this.timeRate = message.body.value; break;
+            case "time-mili": this.timeRate = 1 / message.body.value; break;
+         }
+      }
+   }
+
    computeRule(spaceState, row, col) {
       this._rounds++;
       
@@ -47,7 +66,7 @@ class RuleDCCCellExpression extends RuleDCCTransition {
          cstate.properties.y = row;
       }
 
-      cstate.properties.t = this._rounds;
+      cstate.properties.t = this._rounds * this.timeRate;
 
       console.log("=== cstate");
       console.log(cstate);
