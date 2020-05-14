@@ -10,8 +10,11 @@ AuthorCellManager.instance.insertSource(
  ["flagr", "f", {src: "images/cell/flag-red.svg", width: 25, height: 25, alt: "bandeira vermelha"}],
  ["cloud", "#", {src: "images/cell/cloud01.svg", width: 25, height: 25, alt: "nuvem"}],
  ["tree", "t", {src: "images/cell/tree01.svg", width: 25, height: 25, alt: "árvore"}]],
-`<block type="neighbor"></block>
-<block type="action"></block>
+`<block type="condition"></block>
+<block type="conditionpre"></block>
+<block type="velocity"></block>
+<block type="acceleration"></block>
+<block type="action_agent"></block>
 <block type="expression"></block>`,
 `<dcc-space-cellular-editor id="cellular-space" cols="950" rows="600"
                             cell-width="1" cell-height="1" background-color="#d6f0ffff" grid>
@@ -53,7 +56,7 @@ AuthorCellManager.instance.insertSource(
            src="images/icon/zoom.svg">
    </div>
    <div style="flex:50%; max-height:48px; margin-right:10px">
-      <dcc-slider variable="space_scale" min="1" max="30" value="1" index></dcc-slider>
+      <dcc-slider variable="space_scale" min="1" max="100" value="1" index></dcc-slider>
    </div>
 </div>`,
 `Selecione um dos ícones abaixo para editar o ambiente:

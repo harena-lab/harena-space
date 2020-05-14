@@ -148,6 +148,220 @@ class ScriptBlocksCell {
         }
       };
 
+      Blockly.Blocks["conditionpre"] = {
+        init: function() {
+          this.jsonInit({
+            "message0": "se %1 encontra %2 então",
+            "args0": [
+               {
+                 "type": "field_dropdown",
+                 "name": "origin",
+                 "options": ScriptBlocksCell.s._allSelectTypes
+               },
+               {
+                 "type": "field_dropdown",
+                 "name": "target",
+                 "options": ScriptBlocksCell.s._allSelectTypes
+               }
+            ],
+            "message1": "ângulo de inclinação %1",
+            "args1": [
+               {
+                 "type": "field_number",
+                 "name": "angle",
+                 "value": 90,
+                 "min": 0,
+                 "max": 360
+               }
+            ],
+            "message2": "detalhe %1",
+            "args2": [
+               {
+                 "type": "field_number",
+                 "name": "time_rate",
+                 "value": 0.1,
+                 "min": 0.01,
+                 "max": 10
+               }
+            ],
+            /*
+            "args2": [
+               {
+                 "type": "field_dropdown",
+                 "name": "time_rate",
+                 "options": [
+                    ["Pouco", "1"],
+                    ["Médio", "0.5"],
+                    ["Muito", "0.1"]
+                 ]
+               },
+            ],
+            */
+            "message3": "velocidade inicial %1",
+            "args3": [
+               {
+                 "type": "input_value",
+                 "name": "initial_velocity",
+                 "check": "Velocity",
+                 "align": "RIGHT"
+               }
+            ],
+            "message4": "gravidade %1",
+            "args4": [
+               {
+                 "type": "input_value",
+                 "name": "gravity",
+                 "check": "Acceleration",
+                 "align": "RIGHT"
+               }
+            ],
+            "message5": "ação %1",
+            "args5": [
+               {
+                 "type": "input_value",
+                 "name": "action",
+                 "check": "Action",
+                 "align": "RIGHT"
+               }
+            ],
+            "colour": 170,
+            "tooltip": "Computes expression."
+          });
+        }
+      };
+
+      Blockly.Blocks["condition"] = {
+        init: function() {
+          this.jsonInit({
+            "message0": "se %1 encontra %2 então",
+            "args0": [
+               {
+                 "type": "field_dropdown",
+                 "name": "origin",
+                 "options": ScriptBlocksCell.s._allSelectTypes
+               },
+               {
+                 "type": "field_dropdown",
+                 "name": "target",
+                 "options": ScriptBlocksCell.s._allSelectTypes
+               }
+            ],
+            "message1": "ângulo de inclinação %1",
+            "args1": [
+               {
+                 "type": "field_number",
+                 "name": "angle",
+                 "value": 90,
+                 "min": 0,
+                 "max": 360
+               }
+            ],
+            "message2": "detalhe %1",
+            "args2": [
+               {
+                 "type": "field_dropdown",
+                 "name": "time_rate",
+                 "options": [
+                    ["Pouco", "1"],
+                    ["Médio", "0.5"],
+                    ["Muito", "0.1"]
+                 ]
+               },
+            ],
+            "message3": "velocidade inicial %1",
+            "args3": [
+               {
+                 "type": "input_value",
+                 "name": "initial_velocity",
+                 "check": "Velocity",
+                 "align": "RIGHT"
+               }
+            ],
+            "message4": "gravidade %1",
+            "args4": [
+               {
+                 "type": "input_value",
+                 "name": "gravity",
+                 "check": "Acceleration",
+                 "align": "RIGHT"
+               }
+            ],
+            "message5": "ação %1",
+            "args5": [
+               {
+                 "type": "input_value",
+                 "name": "action",
+                 "check": "Action",
+                 "align": "RIGHT"
+               }
+            ],
+            "colour": 170,
+            "tooltip": "Computes expression."
+          });
+        }
+      };
+
+      Blockly.Blocks["velocity"] = {
+        init: function() {
+          this.jsonInit({
+            "message0": "%1 m/s",
+            "args0": [
+               {
+                "type": "field_number",
+                "name": "velocity",
+                "value": 1,
+                "min": 0
+               }
+            ],
+            "colour": 200,
+            "tooltip": "Velocity.",
+            "output": "Velocity"
+          });
+        }
+      };
+
+      Blockly.Blocks["acceleration"] = {
+        init: function() {
+          this.jsonInit({
+            "message0": "%1 m/s²",
+            "args0": [
+               {
+                 "type": "field_dropdown",
+                 "name": "acceleration",
+                 "options": [
+                    ["Terra - 9,8 m/s²", "0.98"],
+                    ["Lua - 1,62 m/s²", "0.162"],
+                    ["Júpiter - 24,79", "2.479"]
+                 ]
+               },
+            ],
+            "colour": 240,
+            "tooltip": "Acceleration.",
+            "output": "Acceleration"
+          });
+        }
+      };
+
+      Blockly.Blocks["action_agent"] = {
+        init: function() {
+          this.jsonInit({
+            "message0": "ação %1",
+            "args0": [
+               {
+                 "type": "field_dropdown",
+                 "name": "action",
+                 "options": [
+                    ["rastro", "trail"],
+                    ["movimenta", "move"]
+                 ]
+               },
+            ],"colour": 260,
+            "tooltip": "Action.",
+            "output": "Action"
+          });
+        }
+      };
+
       Blockly.Blocks["action"] = {
         init: function() {
           this.jsonInit({
@@ -247,9 +461,75 @@ class ScriptBlocksCell {
          console.log(result);
          return result;
       };
+
+      Blockly.JavaScript["conditionpre"] = function(block) {
+         console.log("=== generating condition");
+         let expX = "x=x0";
+         let expY = "y=y0";
+         const angle = block.getFieldValue("angle");
+         let v0 = Blockly.JavaScript.statementToCode(block, "initial_velocity").trim();
+         if (v0.length > 0) {
+            expX += "+" + v0 + "*cos(" + angle + ")*t";
+            expY += "-" + v0 + "*sin(" + angle + ")*t";
+         }
+         let a = Blockly.JavaScript.statementToCode(block, "gravity").trim();
+         if (a.length > 0)
+            expY += "+" + a + "*(t^2/2)";
+         let result = "<rule-dcc-cell-expression " +
+                "expression='" + expX + ";" + expY + "' " +
+                "time-rate='" + block.getFieldValue("time_rate") + "' " +
+                Blockly.JavaScript.statementToCode(block, "action")
+                   .replace(/_o/g, ScriptBlocksCell.s._types[block.getFieldValue("origin")])
+                   .replace(/_t/g, ScriptBlocksCell.s._types[block.getFieldValue("target")]) +
+                ">\n" +
+                "</rule-dcc-cell-expression>";
+         console.log("=== rule");
+         console.log(result);
+         return result;
+      };
+
+      Blockly.JavaScript["condition"] = function(block) {
+         console.log("=== generating condition");
+         let expX = "x=x0";
+         let expY = "y=y0";
+         const angle = block.getFieldValue("angle");
+         let v0 = Blockly.JavaScript.statementToCode(block, "initial_velocity").trim();
+         if (v0.length > 0) {
+            expX += "+" + v0 + "*cos(" + angle + ")*t";
+            expY += "-" + v0 + "*sin(" + angle + ")*t";
+         }
+         let a = Blockly.JavaScript.statementToCode(block, "gravity").trim();
+         if (a.length > 0)
+            expY += "+" + a + "*(t^2/2)";
+         let result = "<rule-dcc-cell-expression " +
+                "expression='" + expX + ";" + expY + "' " +
+                "time-rate='" + block.getFieldValue("time_rate") + "' " +
+                Blockly.JavaScript.statementToCode(block, "action")
+                   .replace(/_o/g, ScriptBlocksCell.s._types[block.getFieldValue("origin")])
+                   .replace(/_t/g, ScriptBlocksCell.s._types[block.getFieldValue("target")]) +
+                ">\n" +
+                "</rule-dcc-cell-expression>";
+         console.log("=== rule");
+         console.log(result);
+         return result;
+      };
+
+      Blockly.JavaScript["velocity"] = function(block) {
+         return "" + block.getFieldValue("velocity");
+      };
+
+      Blockly.JavaScript["acceleration"] = function(block) {
+         return "" + block.getFieldValue("acceleration");
+      };
+
       Blockly.JavaScript["action"] = function(block) {
          return " probability='" + block.getFieldValue("probability") + "'" +
                 " step='" + block.getFieldValue("step") + "'" +
+                " transition='" + ScriptBlocksCell.transitions[block.getFieldValue("action")] + "'";
+      };
+
+      Blockly.JavaScript["action_agent"] = function(block) {
+         return " probability='100' " +
                 " transition='" + ScriptBlocksCell.transitions[block.getFieldValue("action")] + "'";
       };
 
