@@ -13,13 +13,47 @@ class AuthorFlowManager {
 
       this._editor.use(ConnectionPlugin.default);
 
-      //  this._editor.use(ConnectionPathPlugin.default,
-      //    {options: {vertical: true, curvature: 0.4}});
-      
       this._editor.use(VueRenderPlugin.default);
 
-      this._editor.use(ContextMenuPlugin.default);
+      // this._editor.use(ContextMenuPlugin.default);
 
+      this._editor.use(ContextMenuPlugin.default, {
+          searchBar: false,
+          delay: 100,
+          allocate(component) {
+              return ["Submenu"];
+          },
+          rename(component) {
+              return component.name;
+          },
+          items: {
+              'Click me'(){ console.log('Works!') }
+          }
+      });
+
+      this._editor.use(AreaPlugin, {
+         background: false,
+         snap: false,
+         scaleExtent: {min: 0.1, max: 1},
+         translateExtent: {width: 5000, height: 4000}
+      });
+      
+      this._editor.use(AutoArrangePlugin.default,
+                       {margin: {x: 50, y: 50 }, depth: 0});
+
+      // <TO ADD>
+      /*
+      this._editor.use(CommentPlugin.default);
+      this._editor.use(HistoryPlugin);
+      this._editor.use(ConnectionMasteryPlugin.default);
+      */
+
+      // <TODO> vertical feature: presenting an error, probably a version issue
+      /*
+      this._editor.use(ConnectionPathPlugin.default,
+         {options: {vertical: true, curvature: 0.4}});
+      */
+     
       this._engine = new Rete.Engine("demo@0.1.0");
 
       this._editor.on("process nodecreated noderemoved connectioncreated connectionremoved", async () => {
@@ -27,29 +61,25 @@ class AuthorFlowManager {
         await this._engine.process(this._editor.toJSON());
       });
       this._editor.view.resize();
-      AreaPlugin.zoomAt(this._editor);
       this._editor.trigger("process");
 
-      this.addKnot("First", 10, 10);
-      this.addKnot("Second", 10, 100);
+      let first = await this.addKnot("First");
+      let second = await this.addKnot("Second");
+      this._editor.connect(first.outputs.get("flw"), second.inputs.get("flw"));
+
+      this._editor.trigger("arrange");
+
+      AreaPlugin.zoomAt(this._editor);
    }
 
-   async addKnot(title, x, y) {
+   async addKnot(title) {
       let knot = new KnotComponent(title);
       this._editor.register(knot);
       this._engine.register(knot);
 
       let k = await knot.createNode();
-      const coord = this.adjustCoordinates(x, y);
-      k.position = [coord.x, coord.y];
       this._editor.addNode(k);
-   }
-
-   adjustCoordinates(x, y) {
-      return {
-         x: x - (this._editorWidth / 2),
-         y: y - (this._editorHeight / 2)
-      };
+      return k;
    }
 }
 

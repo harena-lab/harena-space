@@ -2,17 +2,37 @@
 
 ## rete.js
 
-rete 1.4.3
-https://www.jsdelivr.com/package/npm/rete?path=build
+### Plugins documentation
 
-vue 2.6.11
-https://www.jsdelivr.com/package/npm/vue?path=dist
+* Tutorial
+  https://rete.js.org/#/docs/plugins
+* Reference
+  https://rete.readthedocs.io/en/latest/Plugins/
 
-vue render plugin 0.5.0
-https://www.jsdelivr.com/package/npm/rete-vue-render-plugin?path=build
+### Plugins CDN - jsDelivr
+https://www.jsdelivr.com
 
-connection-plugin 0.9.0
-https://www.jsdelivr.com/package/npm/rete-connection-plugin?path=build
+* rete 1.4.3
+  https://www.jsdelivr.com/package/npm/rete?path=build
 
-connection-path-plugin 0.3.1
-https://www.jsdelivr.com/package/npm/rete-connection-path-plugin?path=build
+* vue 2.6.11
+  https://www.jsdelivr.com/package/npm/vue?path=dist
+
+* vue render plugin 0.5.0
+  https://www.jsdelivr.com/package/npm/rete-vue-render-plugin?path=build
+
+* connection-plugin 0.9.0
+  https://www.jsdelivr.com/package/npm/rete-connection-plugin?path=build
+
+* connection-path-plugin 0.3.1
+  It is not working in this plugins version combination.
+  https://www.jsdelivr.com/package/npm/rete-connection-path-plugin?path=build
+
+* auto-arrange-plugin 0.4.0
+  https://www.jsdelivr.com/package/npm/rete-auto-arrange-plugin?path=build
+
+* area-plugin 0.2.1
+  https://www.jsdelivr.com/package/npm/rete-area-plugin?path=build
+
+* context-menu-plugin 0.6.0
+  https://www.jsdelivr.com/package/npm/rete-context-menu-plugin?path=build

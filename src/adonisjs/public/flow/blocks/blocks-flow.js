@@ -3,6 +3,7 @@ const flowSocket = new Rete.Socket("Flow");
 class KnotComponent extends Rete.Component {
    constructor(title){
       super(title);
+      this.contextMenuName = "Flow";
    }
 
    builder(node) {
@@ -15,5 +16,9 @@ class KnotComponent extends Rete.Component {
 
    worker(node, inputs, outputs) {
       outputs["flw"] = node.data.flw;
+   }
+
+   rename(component) {
+      return component.contextMenuName || component.name;
    }
 }
