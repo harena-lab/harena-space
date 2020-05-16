@@ -17,6 +17,7 @@ class AuthorFlowManager {
 
       // this._editor.use(ContextMenuPlugin.default);
 
+      /*
       this._editor.use(ContextMenuPlugin.default, {
           searchBar: false,
           delay: 100,
@@ -28,6 +29,38 @@ class AuthorFlowManager {
           },
           items: {
               'Click me'(){ console.log('Works!') }
+          }
+      });
+      */
+
+      this._editor.use(ContextMenuPlugin.default, {
+          searchBar: false, // true by default
+          searchKeep: title => true, // leave item when searching, optional. For example, title => ['Refresh'].includes(title)
+          delay: 100,
+          allocate(component) {
+              return ['Submenu'];
+          },
+          rename(component) {
+              return component.name;
+          },
+          items: {
+              'Click me'(){ console.log('Works!') }
+          },
+          nodeItems: {
+              'Click me'(){ console.log('Works for node!') },
+              'Delete': false, // don't show Delete item
+              'Clone': false // or Clone item
+          },
+          // OR
+          nodeItems: node => {
+              if (node.name === 'Add') {
+                  return {
+                      'Only for Add nodes'(){ console.log('Works for add node!') }
+                  };
+              }
+              return { 
+                  'Click me'(){ console.log('Works for node!') }
+              }
           }
       });
 

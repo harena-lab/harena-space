@@ -34,5 +34,5 @@ https://www.jsdelivr.com
 * area-plugin 0.2.1
   https://www.jsdelivr.com/package/npm/rete-area-plugin?path=build
 
-* context-menu-plugin 0.6.0
+* context-menu-plugin 0.6.0 RC1
   https://www.jsdelivr.com/package/npm/rete-context-menu-plugin?path=build
