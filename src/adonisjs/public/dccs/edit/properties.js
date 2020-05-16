@@ -153,11 +153,10 @@ class Properties {
    _editSingleProperty(property, value, seq) {
       if (property.type == "shortStrArray" && value.length > 0)
          value = value.join(",");
-      else if (property.type == "variable") {
-         value = (value.indexOf(".") == -1)
-                  ? value : value.substring(value.lastIndexOf(".")+1);
-         property.type = "shortStr";
-      } else if (property.type == "select" &&
+      else if (property.type == "variable")
+         value = (value.includes("."))
+                  ? value.substring(value.lastIndexOf(".")+1) : value;
+      else if (property.type == "select" &&
                  typeof property.options === "string") {
          switch (property.options) {
             case "selectVocabulary":
@@ -420,6 +419,11 @@ input: {
 
 Properties.fieldTypes = {
 shortStr:
+`<div class="styp-field-row">
+   <label class="styp-field-label">[label]</label>
+   <input type="text" id="pfield[n]" class="styp-field-value" size="10" value="[value]">
+</div>`,
+variable:
 `<div class="styp-field-row">
    <label class="styp-field-label">[label]</label>
    <input type="text" id="pfield[n]" class="styp-field-value" size="10" value="[value]">

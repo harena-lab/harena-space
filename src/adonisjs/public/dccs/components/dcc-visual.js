@@ -144,6 +144,10 @@ class DCCMultiVisual extends DCCVisual {
 
    _storePresentation(presentation, role) {
       super._storePresentation(presentation);
+      console.log("=== store prensentation");
+      console.log(presentation);
+      console.log(this.id);
+      console.log(role);
       if (presentation != null)
          this._presentationSet.push(
             new PresentationDCC(presentation, this.id, role));
