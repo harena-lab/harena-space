@@ -561,6 +561,8 @@ class EditDCCText extends EditDCC {
                                   content.substring(cut+1) + "</div>";
                      } else
                         content = "<div align='center'>" + content + "</div>";
+                     if (md.endsWith("\n"))
+                        md = md.substring(0, md.length-1);
                   }
                }
                content += md;
@@ -581,6 +583,8 @@ class EditDCCText extends EditDCC {
       }
       content = content.trimEnd();
       content = content.replace(/[\n]+$/g, "") + "\n";
+      console.log("=== html");
+      console.log(content);
       let unity = {_source: content};
       Translator.instance._compileUnityMarkdown(unity);
       Translator.instance._compileMerge(unity);

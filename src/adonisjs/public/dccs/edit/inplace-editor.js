@@ -10,6 +10,9 @@ class EditDCC {
       this._editorWrapper = this._fetchEditorWrapper();
       this._containerRect = this._editorWrapper.getBoundingClientRect();
       this._elementWrapper = this._fetchElementWrapper();
+      console.log("=== element wrapper");
+      console.log(this._editElement);
+      console.log(this._elementWrapper);
       this._elementWrapperRect = this._elementWrapper.getBoundingClientRect();
       this._elementRect = this._editElement.getBoundingClientRect();
    }
