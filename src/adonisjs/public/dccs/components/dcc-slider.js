@@ -14,7 +14,7 @@ class DCCSlider extends DCCInput {
       if (!this.hasAttribute("max"))
          this.max = DCCSlider.defaultValueMax;
       if (!this.hasAttribute("value"))
-         this.value = Math.round(this.min + this.max) / 2;
+         this.value = Math.round((parseInt("" + this.min) + parseInt("" + this.max)) / 2);
 
       super.connectedCallback();
       this.innerHTML = "";
