@@ -11,6 +11,7 @@ class DCCVisual extends DCCBase {
       this.selectListener = this.selectListener.bind(this);
    }
 
+   /*
    static get observedAttributes() {
       return DCCBase.observedAttributes.concat(["style"]);
    }
@@ -26,6 +27,7 @@ class DCCVisual extends DCCBase {
    set style(newValue) {
       this.setAttribute("style", newValue);
    }
+   */
    
    connectedCallback() {
       this.checkActivateAuthor();

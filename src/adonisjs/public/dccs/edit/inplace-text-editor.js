@@ -49,6 +49,10 @@ Quill.register(SelectBlot);
 
 class EditDCCText extends EditDCC {
    constructor(knotContent, el, dcc, svg) {
+      console.log("=== knot content");
+      console.log(knotContent);
+      console.log(el);
+
       super(dcc, dcc.currentPresentation());
       this._knotContent = knotContent;
       this._element = el;
@@ -188,6 +192,8 @@ class EditDCCText extends EditDCC {
       if (!selectOptions) {
          let html = Translator.instance.markdownToHTML(
             Translator.instance.objToHTML(this._knotContent[this._element], -1));
+         console.log("=== quill html");
+         console.log(html);
 
          // add a prefix in the ids to avoid conflits with the original
          html = html.replace(/(<[^<]*(?=id)id=['"])([^'"]+['"][^>]*>)/igm,
