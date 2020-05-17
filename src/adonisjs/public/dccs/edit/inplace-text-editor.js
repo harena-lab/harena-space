@@ -49,6 +49,10 @@ Quill.register(SelectBlot);
 
 class EditDCCText extends EditDCC {
    constructor(knotContent, el, dcc, svg) {
+      console.log("=== knot content");
+      console.log(knotContent);
+      console.log(el);
+
       super(dcc, dcc.currentPresentation());
       this._knotContent = knotContent;
       this._element = el;
@@ -188,6 +192,8 @@ class EditDCCText extends EditDCC {
       if (!selectOptions) {
          let html = Translator.instance.markdownToHTML(
             Translator.instance.objToHTML(this._knotContent[this._element], -1));
+         console.log("=== quill html");
+         console.log(html);
 
          // add a prefix in the ids to avoid conflits with the original
          html = html.replace(/(<[^<]*(?=id)id=['"])([^'"]+['"][^>]*>)/igm,
@@ -555,6 +561,8 @@ class EditDCCText extends EditDCC {
                                   content.substring(cut+1) + "</div>";
                      } else
                         content = "<div align='center'>" + content + "</div>";
+                     if (md.endsWith("\n"))
+                        md = md.substring(0, md.length-1);
                   }
                }
                content += md;
@@ -575,6 +583,8 @@ class EditDCCText extends EditDCC {
       }
       content = content.trimEnd();
       content = content.replace(/[\n]+$/g, "") + "\n";
+      console.log("=== html");
+      console.log(content);
       let unity = {_source: content};
       Translator.instance._compileUnityMarkdown(unity);
       Translator.instance._compileMerge(unity);

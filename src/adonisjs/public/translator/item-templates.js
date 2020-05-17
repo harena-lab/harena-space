@@ -35,7 +35,7 @@ divert:
 "divert-script":
 `-&gt; [target][parameter]<br>`,
 entity:
-`<dcc-entity id='dcc[seq]'[author] entity='[entity]'[image][alternative][title]>[speech]</dcc-entity>`,
+`<dcc-entity id='dcc[seq]'[author] entity='[entity]'[image][alternative][title]>[text]</dcc-entity>`,
 mention:
 `<b>[entity]: </b>`,
 /*
@@ -80,7 +80,7 @@ select:
 
 Translator.htmlFlatTemplates = {
 entity:
-`<p><b>[entity]: </b>[speech]</p>`
+`<p><b>[entity]: </b>[text]</p>`
 };
 
 Translator.htmlTemplatesEditable = {

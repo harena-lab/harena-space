@@ -43,6 +43,11 @@ class Properties {
       // <TODO> Provisory
       const svg = ["jacinto", "simple-svg"].
          includes(Basic.service.currentThemeFamily);
+      console.log("=== todos");
+      console.log(knotContent);
+      console.log(el);
+      console.log(dcc);
+
       if (editp.inlineProperty != null) {
          switch (editp.inlineProfile.type) {
             case "void":
@@ -60,7 +65,7 @@ class Properties {
                break;
          }
       } else
-         this._editor = new EditDCCProperties(dcc, editp.htmls);
+         this._editor = new EditDCCProperties(obj, dcc, editp.htmls);
       /*
       switch (obj.type) {
          case "text": 
@@ -153,11 +158,10 @@ class Properties {
    _editSingleProperty(property, value, seq) {
       if (property.type == "shortStrArray" && value.length > 0)
          value = value.join(",");
-      else if (property.type == "variable") {
-         value = (value.indexOf(".") == -1)
-                  ? value : value.substring(value.lastIndexOf(".")+1);
-         property.type = "shortStr";
-      } else if (property.type == "select" &&
+      else if (property.type == "variable")
+         value = (value.includes("."))
+                  ? value.substring(value.lastIndexOf(".")+1) : value;
+      else if (property.type == "select" &&
                  typeof property.options === "string") {
          switch (property.options) {
             case "selectVocabulary":
@@ -354,20 +358,24 @@ option: {
 },
 entity: {
    entity: {type: "shortStr",
-            label: "entity"},
+            label: "Entity",
+            visual: "inline",
+            role: "entity"},
    image: {
       composite: {
          alternative: {type: "shortStr",
-                       label: "alternative"},
+                       label: "Alternative"},
          path: {type:  "image",
                 label: "Image",
                 visual: "inline",
                 role: "image"}
       }
    },
-   speech: {type: "text",
-            label: "text"}
-   },
+   text: {type: "text",
+          label: "Text",
+          visual: "inline",
+          role: "text"}
+},
 input: {
    short: {
       /*
@@ -377,8 +385,8 @@ input: {
                 visual: "panel"},
       */
       input:  {type: "void",
-                visual: "inline",
-                role: "input"},
+               visual: "inline",
+               role: "input"},
       text:    {type: "shortStr",
                 label: "Statement",
                 visual: "inline",
@@ -420,6 +428,11 @@ input: {
 
 Properties.fieldTypes = {
 shortStr:
+`<div class="styp-field-row">
+   <label class="styp-field-label">[label]</label>
+   <input type="text" id="pfield[n]" class="styp-field-value" size="10" value="[value]">
+</div>`,
+variable:
 `<div class="styp-field-row">
    <label class="styp-field-label">[label]</label>
    <input type="text" id="pfield[n]" class="styp-field-value" size="10" value="[value]">

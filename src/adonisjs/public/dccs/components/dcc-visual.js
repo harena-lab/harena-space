@@ -11,6 +11,7 @@ class DCCVisual extends DCCBase {
       this.selectListener = this.selectListener.bind(this);
    }
 
+   /*
    static get observedAttributes() {
       return DCCBase.observedAttributes.concat(["style"]);
    }
@@ -26,6 +27,7 @@ class DCCVisual extends DCCBase {
    set style(newValue) {
       this.setAttribute("style", newValue);
    }
+   */
    
    connectedCallback() {
       this.checkActivateAuthor();
@@ -144,6 +146,10 @@ class DCCMultiVisual extends DCCVisual {
 
    _storePresentation(presentation, role) {
       super._storePresentation(presentation);
+      console.log("=== store prensentation");
+      console.log(presentation);
+      console.log(this.id);
+      console.log(role);
       if (presentation != null)
          this._presentationSet.push(
             new PresentationDCC(presentation, this.id, role));

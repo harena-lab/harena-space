@@ -10,7 +10,7 @@ class DCCEntity extends DCCBlock {
    }
    
    async connectedCallback() {
-      this._speech = (this.hasAttribute("speech")) ? this.speech : this.innerHTML;
+      this._text = (this.hasAttribute("text")) ? this.text : this.innerHTML;
       this.innerHTML = "";
 
       super.connectedCallback();
@@ -44,7 +44,7 @@ class DCCEntity extends DCCBlock {
    
    static get observedAttributes() {
       return DCCVisual.observedAttributes.concat(
-         ["sequence", "character", "speech", "xstyle"]);
+         ["sequence", "entity", "text", "xstyle"]);
    }
 
    get sequence() {
@@ -63,12 +63,12 @@ class DCCEntity extends DCCBlock {
       this.setAttribute("entity", newValue);
    }
    
-   get speech() {
-      return this.getAttribute("speech");
+   get text() {
+      return this.getAttribute("text");
    }
    
-   set speech(newValue) {
-      this.setAttribute("speech", newValue);
+   set text(newValue) {
+      this.setAttribute("text", newValue);
    }
    
    get xstyle() {
@@ -91,8 +91,8 @@ class DCCEntity extends DCCBlock {
          if (this.image)
             await this._applyRender(this.image, "image", "image");
          
-         if (this._speech)
-            await this._applyRender(this._speech,
+         if (this._text)
+            await this._applyRender(this._text,
                                     (this.xstyle == "out-image") ? "title" : "innerHTML",
                                     "text");
       } else {
@@ -102,7 +102,7 @@ class DCCEntity extends DCCBlock {
             (this.hasAttribute("title")) ? " alt='" + this.title + "'" : "");
          html += DCCEntity.templateElements.text
             .replace("[entity]", this.entity)
-            .replace("[speech]", ((this._speech) ? this._speech : ""));
+            .replace("[text]", ((this._text) ? this._text : ""));
          await this._applyRender(html, "innerHTML");
          // this._storePresentation(presentation);
          // if (this._presentation != null)
@@ -140,7 +140,7 @@ class DCCEntity extends DCCBlock {
                flex-direction: column;
              }
            }
-          .dcc-speech {
+          .dcc-text {
              flex-basis: 100%;
           }
       </style>
@@ -149,7 +149,7 @@ class DCCEntity extends DCCBlock {
          
    DCCEntity.templateElements = {
       image: "<div><img id='dcc-entity-image' src='[image]'[alternative] width='100px'></div>",
-      text:  "<div><div id='dcc-entity-text' class='dcc-speech'>[speech]</div></div>"
+      text:  "<div><div id='dcc-entity-text' class='dcc-text'>[text]</div></div>"
    };
    
    DCCEntity.elementTag = "dcc-entity";
