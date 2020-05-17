@@ -1591,15 +1591,15 @@ class Translator {
       const setting = this._fieldCategorySetting("entity");
       const template = (setting == "flat")
          ? Translator.htmlFlatTemplates : Translator.htmlTemplates;
-      let speech = (obj.speech == null)
-         ? "" : ((Array.isArray(obj.speech))
-            ? this.generateKnotHTML(obj.speech) : obj.speech);
-      speech = speech.replace(/^<p>(.*)<\/p>$/im, "$1");
+      let text = (obj.text == null)
+         ? "" : ((Array.isArray(obj.text))
+            ? this.generateKnotHTML(obj.text) : obj.text);
+      text = text.replace(/^<p>(.*)<\/p>$/im, "$1");
       return template.entity
                 .replace("[seq]", obj.seq)
                 .replace("[author]", this.authorAttr)
                 .replace("[entity]", obj.entity)
-                .replace("[speech]", speech)
+                .replace("[text]", text)
                 .replace("[image]", path)
                 .replace("[alternative]", alternative)
                 .replace("[title]", title);
@@ -1608,8 +1608,8 @@ class Translator {
    _entityObjToMd(obj) {
       let entity = Translator.markdownTemplates.entity
                 .replace("{entity}", obj.entity);
-      if (obj.speech)
-         entity += "\n  " + obj.speech;
+      if (obj.text)
+         entity += "\n  " + obj.text;
       if (obj.image)
          entity += "\n  " + this._imageObjToMd(obj.image);
 
@@ -1981,7 +1981,7 @@ class Translator {
          mark: /@(?:(\w[\w \t]*)|"([\w \t]*)")(?:$|:[ \t]*)/im,
          subfield: true,
          subimage: true,
-         subtext:  "speech" },
+         subtext:  "text" },
       mention: {
          mark: /@(?:(\w+)|"([\w \t]*)")/im,
          inline: true },

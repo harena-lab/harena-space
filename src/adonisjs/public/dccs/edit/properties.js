@@ -43,6 +43,11 @@ class Properties {
       // <TODO> Provisory
       const svg = ["jacinto", "simple-svg"].
          includes(Basic.service.currentThemeFamily);
+      console.log("=== todos");
+      console.log(knotContent);
+      console.log(el);
+      console.log(dcc);
+
       if (editp.inlineProperty != null) {
          switch (editp.inlineProfile.type) {
             case "void":
@@ -60,7 +65,7 @@ class Properties {
                break;
          }
       } else
-         this._editor = new EditDCCProperties(dcc, editp.htmls);
+         this._editor = new EditDCCProperties(obj, dcc, editp.htmls);
       /*
       switch (obj.type) {
          case "text": 
@@ -353,20 +358,24 @@ option: {
 },
 entity: {
    entity: {type: "shortStr",
-            label: "entity"},
+            label: "Entity",
+            visual: "inline",
+            role: "entity"},
    image: {
       composite: {
          alternative: {type: "shortStr",
-                       label: "alternative"},
+                       label: "Alternative"},
          path: {type:  "image",
                 label: "Image",
                 visual: "inline",
                 role: "image"}
       }
    },
-   speech: {type: "text",
-            label: "text"}
-   },
+   text: {type: "text",
+          label: "Text",
+          visual: "inline",
+          role: "text"}
+},
 input: {
    short: {
       /*
@@ -376,8 +385,8 @@ input: {
                 visual: "panel"},
       */
       input:  {type: "void",
-                visual: "inline",
-                role: "input"},
+               visual: "inline",
+               role: "input"},
       text:    {type: "shortStr",
                 label: "Statement",
                 visual: "inline",
