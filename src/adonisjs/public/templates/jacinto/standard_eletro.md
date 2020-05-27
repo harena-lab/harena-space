@@ -5,11 +5,14 @@ Begin (start, presentation_3)
 -------------------
   ![Emergency room](theme/background-emergency-room-1.png)
 
-@NURSE: Present the case.
+@NURSE
+  Present the case.
 
-@PATIENT: Details about the patient.
+@PATIENT
+  Details about the patient.
 
-@SYSTEM: What do you want to do?
+@SYSTEM
+  What do you want to do?
 
 * -> Generate hypothesis
 * -> More information
@@ -18,9 +21,8 @@ Begin (start, presentation_3)
 Generate hypothesis (input)
 ---------------------------
 
-@SYSTEM: What is your main diagnostic hypothesis?
-
 ? hypothesis
+  What is your main diagnostic hypothesis?
 
 * Submit hypothesis -> Check hypothesis
 
@@ -30,9 +32,8 @@ More information (information)
 
 <b>MORE INFORMATION</b> <br> More information about the patient.
 
-@PATIENT Jakob
-
-@SYSTEM: What do you want to do?
+@SYSTEM
+  What do you want to do?
 
 * Back to the case -> Cycle 1.Begin
 
@@ -70,9 +71,8 @@ Nurse: @Nurse - {symptom}/=/.
 Review hypothesis (input)
 -------------------------
 
-@SYSTEM: If you want to review your hypothesis, type below the new hypothesis.
-
 ? hypothesis
+  If you want to review your hypothesis, type below the new hypothesis.
 
 * Submit -> Cycle 2.Order EKG
 
@@ -89,7 +89,9 @@ Information related to the EKG.
 
 * Magnify -> Magnify EKG
 
-@SYSTEM: What do you want to do?
+@SYSTEM
+  What do you want to do?
+
 * -> Generate hypothesis
 * -> More information
 * -> Call the supervisor
@@ -102,9 +104,8 @@ Information related to the EKG.
 
 ## Generate hypothesis (input)
 
-@SYSTEM: What is your main diagnostic hypothesis?
-
 ? hypothesis
+  What is your main diagnostic hypothesis?
 
 * Submit hypothesis -> Check hypothesis
 
@@ -131,7 +132,9 @@ supra ST in DI, DII, DIII, avF, V2-V6 leads
 
 * Analyze EKG -> EKG Analysis
 
-@SYSTEM: What do you want to do?
+@SYSTEM
+  What do you want to do?
+
 * Back -> Order EKG
 
 ## EKG Analysis (notice_wide)
@@ -149,19 +152,21 @@ Supervisor explanation.
 
 @EKG
 
-@SYSTEM: What do you want to do?
+@SYSTEM
+  What do you want to do?
+
 * Back -> Order EKG
 
-## Check hypothesis (marker_exam)
+## Check hypothesis (exam_wide)
 
 ![EKG Description](template/ekg-template.svg)
 
 * Submit -> Review hypothesis
 
 ## Review hypothesis (input)
-@SYSTEM: If you want to review your hypothesis, type below the new hypothesis.
 
 ? hypothesis
+  If you want to review your hypothesis, type below the new hypothesis.
 
 * Submit -> Final.Report
 
@@ -173,7 +178,8 @@ Report (detailed)
 
 Congratulations, my young Dr. you could helped your patient providing his diagnosis. Now, Let's review all levels of this case.
 
-@Computer: Select a final report level:
+@SYSTEM
+  Select a final report level:
 
 * -> Level 1
 

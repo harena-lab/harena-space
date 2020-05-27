@@ -457,7 +457,9 @@ class Translator {
             if (c == 0 || compiled[pr].type != "text-block") {
                // creates a new text-block
                if (nx < compiled.length &&
-                   Translator.textBlockCandidate.includes(compiled[nx].type)) {
+                   Translator.textBlockCandidate.includes(compiled[nx].type) &&
+                   ((compiled[c].subordinate && compiled[nx].subordinate) ||
+                    (!compiled[c].subordinate && !compiled[nx].subordinate))) {
                   tblockSeq = 1;
                   compiled[c].seq = 1;
                   tblock = this._initializeObject(
@@ -468,7 +470,9 @@ class Translator {
                      tblock.subordinate = compiled[c].subordinate;
                   compiled[c] = tblock;
                }
-            } else {
+            } else if (c > 0 &&
+                       ((compiled[c].subordinate && compiled[pr].subordinate) ||
+                        (!compiled[c].subordinate && !compiled[pr].subordinate))) {
                // adds element and previous linefeed (if exists)
                for (let e = pr+1; e <= c; e++) {
                   tblockSeq++;
@@ -541,6 +545,8 @@ class Translator {
          const pr = (c > 1 && compiled[c-1].type == "linefeed") ? c-2 : c-1;
          if (c > 0 && compiled[c].subordinate &&
              Translator.element[compiled[pr].type]) {
+            // console.log("=== subordinate");
+            // console.log(JSON.stringify(compiled[c]));
             let merge = false;
             if (compiled[c].type == "field" &&
                 Translator.element[compiled[pr].type].subfield !== undefined &&
@@ -572,13 +578,19 @@ class Translator {
                merge = true;
             } else if ((compiled[c].type == "text" ||
                         compiled[c].type == "text-block") &&
-                       Translator.element[compiled[pr].type].subtext !== undefined) {
+                       Translator.element[compiled[pr].type].subtext !== undefined &&
+                       compiled[pr][Translator.element[compiled[pr].type].subtext] == null &&
+                       compiled[c].subordinate) {
+               compiled[pr][Translator.element[compiled[pr].type].subtext] =
+                     compiled[c].content;
+               /*
                if (compiled[pr][Translator.element[compiled[pr].type].subtext] == null)
                   compiled[pr][Translator.element[compiled[pr].type].subtext] =
                      compiled[c].content;
                else
                   compiled[pr][Translator.element[compiled[pr].type].subtext] += "\n" +
                      compiled[c].content;
+               */
                merge = true;
             }
             if (merge) {
@@ -1978,7 +1990,7 @@ class Translator {
          mark: /(?:(\w+)|"([^"]+)")(?:[ \t])*-(?:(?:&gt;)|>)[ \t]*(?:(\w[\w.]*)|"([^"]*)")/im,
          inline: true },
       entity: {
-         mark: /@(?:(\w[\w \t]*)|"([\w \t]*)")(?:$|:[ \t]*)/im,
+         mark: /@(?:(\w[\w \t]*)|"([\w \t]*)")(?::[ \t]*)?$/im,
          subfield: true,
          subimage: true,
          subtext:  "text" },
