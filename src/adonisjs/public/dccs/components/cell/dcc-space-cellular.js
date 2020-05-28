@@ -325,16 +325,12 @@ class DCCSpaceCellular extends DCCBase {
       };
    }
 
+   /*
    computeClickedCell(x, y) {
       const mapped = this.mapCoordinatesToSpace(x, y);
       return this.computeCell(mapped.x, mapped.y);
-      /*
-      const gc = this._cellGrid.getBoundingClientRect();
-      const scale = (this.scale) ? this.scale : 1;
-      return this.computeCell(Math.trunc((x - gc.x) / scale),
-                              Math.trunc((y - gc.y) / scale));
-      */
    }
+   */
 
    mapCoordinatesToSpace(x, y) {
       const gc = this._cellGrid.getBoundingClientRect();
@@ -429,7 +425,9 @@ class DCCSpaceCellularEditor extends DCCSpaceCellular {
    */
 
    cellClicked(event) {
-      const cell = this.computeClickedCell(event.clientX, event.clientY);
+      // const cell = this.computeClickedCell(event.clientX, event.clientY);
+      const mapped = this.mapCoordinatesToSpace(event.clientX, event.clientY);
+      const cell = this.computeCell(mapped.x, mapped.y);
       this.changeState(this._editType, cell.row, cell.col);
    }
 
