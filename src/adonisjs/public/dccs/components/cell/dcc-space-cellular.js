@@ -15,6 +15,7 @@ class DCCSpaceCellular extends DCCBase {
       this._rules = {};
       this._wildcardRules = [];
       this._stateTypes = null;
+      this._tools = [];
    }
 
    connectedCallback() {
@@ -305,6 +306,13 @@ class DCCSpaceCellular extends DCCBase {
 
    toolRegister(topic, tool) {
       tool.space = this;
+      this._tools.push(tool);
+   }
+
+   toolActive() {
+   }
+
+   toolInactive() {
    }
 
    computeCoordinates(row, col) {
@@ -414,6 +422,17 @@ class DCCSpaceCellularEditor extends DCCSpaceCellular {
       this._cellGrid.removeEventListener("click", this.cellClicked);
    }
 
+   toolActive() {
+      this._editorWasActive = this._activeEditor;
+      if (this._activeEditor)
+         this.deactivateEditor();
+   }
+
+   toolInactive() {
+      if (this._editorWasActive)
+         this.activateEditor();
+   }
+
    /*
    cellClicked(event) {
       const gc = this._cellGrid.getBoundingClientRect();
@@ -508,6 +527,8 @@ class DCCSpaceCellularEditor extends DCCSpaceCellular {
                             for (let t in this._cellTypes)
                                if (this._cellTypes[t].label.toLowerCase() == tLabel.toLowerCase())
                                   this._editType = t;
+                         for (let t of this._tools)
+                            t.inactivateTool();
                          break;
             case "reset": this.resetState(); break;
             case "edit": this.activateEditor(); break;

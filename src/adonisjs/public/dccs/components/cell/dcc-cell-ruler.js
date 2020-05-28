@@ -60,22 +60,32 @@ class DCCCellRuler extends DCCBase {
    notify(topic, message) {
       if (message.role)
         switch (message.role.toLowerCase()) {
-          case "activate": this.activateRuler();
+          case "activate": this.activateTool();
                            break;
-          case "reset": this.resetRuler();
+          case "inactivate": this.inactivateTool();
+                             break;
+          case "reset": this.resetTool();
                         break;
       }
    }
 
-   activateRuler() {
-      if (this._space != null)
+   activateTool() {
+      if (this._space != null) {
+         this._space.toolActive();
          this._space.cellGrid.addEventListener("click", this.cellClicked, false);
+      }
       this._state = 0;
    }
 
-   resetRuler() {
-      if (this._space != null)
+   inactivateTool() {
+      if (this._space != null) {
          this._space.cellGrid.removeEventListener("click", this.cellClicked);
+         this._space.toolInactive();
+      }
+   }
+
+   resetTool() {
+      this.inactivateTool();
       let cells = this._space.cells;
       for (let rs of this._rulerSet) {
          cells.removeChild(rs.origin);
