@@ -61,9 +61,13 @@ class DCCCell extends DCCBase {
    }
 
    createSVGElement(type, row, col) {
+      return DCCCell.createSVGElement(type, row, col, this.space);
+   }
+
+   static createSVGElement(type, row, col, space) {
       let coordinates;
-      if (this.space != null)
-         coordinates = this.space.computeCoordinates(row, col);
+      if (space != null)
+         coordinates = space.computeCoordinates(row, col);
       else
          coordinates = DCCSpaceCellular.computeDefaultCoordinates(row, col);
       let element = document.createElementNS("http://www.w3.org/2000/svg", type);
