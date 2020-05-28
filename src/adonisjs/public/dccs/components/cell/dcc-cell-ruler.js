@@ -11,6 +11,7 @@ class DCCCellRuler extends DCCBase {
       this._state = 0;
       this._rulerSet = [];
       this._proportion = (this.hasAttribute("proportion")) ? parseInt(this.proportion) : 1;
+      this._unit = (this.hasAttribute("unit")) ? this.unit : "";
    }
 
    connectedCallback() {
@@ -36,6 +37,7 @@ class DCCCellRuler extends DCCBase {
    
    set unit(newValue) {
       this.setAttribute("unit", newValue);
+      this._unit = newValue;
    }
 
    get proportion() {
@@ -84,11 +86,11 @@ class DCCCellRuler extends DCCBase {
    }
 
    cellClicked(event) {
-      const cell = this._space.computeClickedCell(event.clientX, event.clientY);
+      const mapped = this._space.mapCoordinatesToSpace(event.clientX, event.clientY);
+      const cell = this._space.computeCell(mapped.x, mapped.y);
       let element = DCCCell.createSVGElement("image", cell.row, cell.col, this._space);
       element.setAttribute("href", this.image);
       this._space.cells.appendChild(element);
-      const mapped = this._space.mapCoordinatesToSpace(event.clientX, event.clientY);
       switch (this._state) {
          case 0: this._rulerOrigin = {
                     element: element,
@@ -96,71 +98,77 @@ class DCCCellRuler extends DCCBase {
                     y: mapped.y + (this._space.cellHeight / 2),
                     row: cell.row,
                     col: cell.col};
+                 this.createSVGRuler(this._rulerOrigin);
                  this._space.cellGrid.addEventListener("mousemove", this.rulerMoved, false);
                  this._state = 1;
                  break;
          case 1: this._space.cellGrid.removeEventListener("mousemove", this.rulerMoved);
-                 this._rulerTarget = {
-                    element: element,
-                    x: mapped.x + (this._space.cellWidth / 2),
-                    y: mapped.y + (this._space.cellHeight / 2),
-                    row: cell.row,
-                    col: cell.col};
-                 this.attachMeasures();
+                 this._rulerSet.push({origin : this._rulerOrigin.element,
+                                      target: element,
+                                      ruler: this._currentRuler.ruler});
                  this._state = 0;
                  break;
       }
    }
 
-   attachMeasures() {
+   createSVGRuler(origin) {
       let g = document.createElementNS("http://www.w3.org/2000/svg", "g");
-      this._space.cells.removeChild(this._currentLine);
-      g.appendChild(this._currentLine);
-      this._currentLine = null;
+
+      let line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      line.setAttribute("x1", origin.x);
+      line.setAttribute("y1", origin.y);
+      line.setAttribute("x2", origin.x);
+      line.setAttribute("y2", origin.y);
+      line.setAttribute("style",
+         "stroke:rgb(255,0,0);stroke-width:" + (2 / this._space.scale));
+
+      g.appendChild(line);
+
       let gt = document.createElementNS("http://www.w3.org/2000/svg", "g");
-      gt.setAttribute("transform", "translate(" + 
-          ((this._rulerTarget.x + this._rulerOrigin.x) / 2) + " " +
-          ((this._rulerTarget.y + this._rulerOrigin.y) / 2) + ")");
+      gt.setAttribute("transform", "translate(" + origin.x + " " + origin.y + ")");
 
       const scale = "scale(" + (1/this._space.scale) + " " + (1/this._space.scale) + ")";
-
-      let content = 
-         (Math.round(100 *
-            Math.sqrt((Math.pow((this._rulerTarget.row - this._rulerOrigin.row), 2) +
-                       Math.pow((this._rulerTarget.col - this._rulerOrigin.col), 2))) / this._proportion)
-          / 100) + (this.hasAttribute("unit") ? this.unit : "");
 
       let textC = document.createElementNS("http://www.w3.org/2000/svg", "text");
       textC.setAttribute("style", "stroke:white; stroke-width:0.6em");
       textC.setAttribute("transform", scale);
-      textC.appendChild(document.createTextNode(content));
+      let contentC = document.createTextNode("0" + this._unit);
+      textC.appendChild(contentC);
 
       let text = document.createElementNS("http://www.w3.org/2000/svg", "text");
       text.setAttribute("fill", "red");
       text.setAttribute("transform", scale);
-      text.appendChild(document.createTextNode(content));
+      let content = document.createTextNode("0" + this._unit);
+      text.appendChild(content);
 
       gt.appendChild(textC);
       gt.appendChild(text);
       g.appendChild(gt);
       this._space.cells.appendChild(g);
-      this._rulerSet.push({origin : this._rulerOrigin.element,
-                           target: this._rulerTarget.element,
-                           ruler: g});
+      this._currentRuler = {ruler: g,
+                            line: line,
+                            textG: gt,
+                            text: content,
+                            textContour: contentC};
    }
 
    rulerMoved(event) {
-      if (this._currentLine != null)
-         this._space.cells.removeChild(this._currentLine);
-      this._currentLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
       const mapped = this._space.mapCoordinatesToSpace(event.clientX, event.clientY);
-      this._currentLine.setAttribute("x1", this._rulerOrigin.x);
-      this._currentLine.setAttribute("y1", this._rulerOrigin.y);
-      this._currentLine.setAttribute("x2", mapped.x + (this._space.cellWidth / 2));
-      this._currentLine.setAttribute("y2", mapped.y + (this._space.cellHeight / 2));
-      this._currentLine.setAttribute("style",
-         "stroke:rgb(255,0,0);stroke-width:" + (2 / this._space.scale));
-      this._space.cells.appendChild(this._currentLine);
+      const cell = this._space.computeCell(mapped.x, mapped.y);
+
+      let cr = this._currentRuler;
+      cr.line.setAttribute("x2", mapped.x + (this._space.cellWidth / 2));
+      cr.line.setAttribute("y2", mapped.y + (this._space.cellHeight / 2));
+
+      cr.textG.setAttribute("transform", "translate(" + 
+         ((mapped.x + this._rulerOrigin.x) / 2) + " " +
+         ((mapped.y + this._rulerOrigin.y) / 2) + ")");
+
+      cr.text.nodeValue = (Math.round(100 *
+         Math.sqrt((Math.pow((cell.row - this._rulerOrigin.row), 2) +
+                    Math.pow((cell.col - this._rulerOrigin.col), 2))) / this._proportion) / 100) +
+         this._unit;
+      cr.textContour.nodeValue = cr.text.nodeValue;
    }
 }
 
