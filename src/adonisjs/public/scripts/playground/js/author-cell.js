@@ -109,6 +109,7 @@ class AuthorCellManager {
 	         if (decision == "Voltar ao Original")
 	         	MessageBus.ext.publish("state/reset");
 	      }
+         MessageBus.ext.publish("space/edit");
 	  } else {
         MessageBus.ext.publish("state/save");
         if (this._scriptActive) {
@@ -116,6 +117,7 @@ class AuthorCellManager {
            document.querySelector("#rules-panel").innerHTML =
               Blockly.JavaScript.workspaceToCode(this._playground);
         }
+        MessageBus.ext.publish("space/view");
 	  }
    }
 

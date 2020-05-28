@@ -413,6 +413,11 @@ class DCCSpaceCellularEditor extends DCCSpaceCellular {
       this._cellGrid.addEventListener("click", this.cellClicked, false);
    }
 
+   deactivateEditor() {
+      this._activeEditor = false;
+      this._cellGrid.removeEventListener("click", this.cellClicked);
+   }
+
    /*
    cellClicked(event) {
       const gc = this._cellGrid.getBoundingClientRect();
@@ -507,6 +512,8 @@ class DCCSpaceCellularEditor extends DCCSpaceCellular {
                                   this._editType = t;
                          break;
             case "reset": this.resetState(); break;
+            case "edit": this.activateEditor(); break;
+            case "view": this.deactivateEditor(); break;
             case "save":  this.saveState(); break;
             case "load":  this.loadState(); break;
             case "download": this.downloadState(); break;
