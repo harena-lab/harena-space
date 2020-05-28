@@ -1,13 +1,11 @@
 /**
- * Static Cell Ruler
+ * DCC Ruler Cell
  */
 
 class DCCCellRuler extends DCCBase {
    constructor() {
       super();
       this.notify = this.notify.bind(this);
-      this.activateRuler = this.activateRuler.bind(this);
-      this.resetRuler = this.resetRuler.bind(this);
       this.cellClicked = this.cellClicked.bind(this);
       this.rulerMoved = this.rulerMoved.bind(this);
       this._state = 0;
@@ -16,8 +14,6 @@ class DCCCellRuler extends DCCBase {
 
    connectedCallback() {
       MessageBus.page.publish("dcc/tool-cell/register", this);
-      MessageBus.ext.subscribe("dcc/cell-ruler/activate", this.activateRuler);
-      MessageBus.ext.subscribe("dcc/cell-ruler/reset", this.resetRuler);
    }
 
    static get observedAttributes() {
@@ -127,8 +123,6 @@ class DCCCellRuler extends DCCBase {
       text.setAttribute("transform", scale);
       text.appendChild(document.createTextNode(content));
 
-      // <text x="150" y="105" style="stroke:white; stroke-width:0.6em">Hello World!</text>
-  
       gt.appendChild(textC);
       gt.appendChild(text);
       g.appendChild(gt);
