@@ -11,7 +11,6 @@ AuthorCellManager.instance.insertSource(
  ["cloud", "#", {src: "images/cell/cloud01.svg", width: 25, height: 25, alt: "nuvem"}],
  ["tree", "t", {src: "images/cell/tree01.svg", width: 25, height: 25, alt: "árvore"}]],
 `<block type="condition"></block>
-<block type="conditionpre"></block>
 <block type="velocity"></block>
 <block type="acceleration"></block>
 <block type="action_agent"></block>

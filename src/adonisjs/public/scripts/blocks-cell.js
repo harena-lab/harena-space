@@ -462,6 +462,7 @@ class ScriptBlocksCell {
          return result;
       };
 
+      /*
       Blockly.JavaScript["conditionpre"] = function(block) {
          console.log("=== generating condition");
          let expX = "x=x0";
@@ -487,6 +488,7 @@ class ScriptBlocksCell {
          console.log(result);
          return result;
       };
+      */
 
       Blockly.JavaScript["condition"] = function(block) {
          console.log("=== generating condition");

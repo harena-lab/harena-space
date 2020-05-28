@@ -89,11 +89,28 @@ class RuleDCCCellExpression extends RuleDCCTransition {
             // console.log(l[0]);
             // console.log(JSON.stringify(l[1]));
          }
-         const nr = Math.round(cstate.properties.y);
-         const nc = Math.round(cstate.properties.x)
+         let nr = Math.round(cstate.properties.y);
+         let nc = Math.round(cstate.properties.x)
          if (nr >= 0 && nr < spaceState.nrows &&
              nc >= 0 && nc < spaceState.ncols)
             triggered = this._computeTransition(spaceState, row, col, nr, nc);
+         else {
+            const difr = nr - row;
+            const difc = nc - col;
+            if (nr < 0 || nr >= spaceState.nrows) {
+               nr = (nr < 0) ? 0 : spaceState.nrows - 1;
+               nc = col + (difc / difr) * (nr - row);
+            } else {
+               nc = (nc < 0) ? 0 : spaceState.ncols - 1;
+               nr = row + (difr / difc) * (nc - col);
+            }
+            console.log("=== nr e nc");
+            console.log(nr);
+            console.log(nc);
+            if (nr >= 0 && nr < spaceState.nrows &&
+                nc >= 0 && nc < spaceState.ncols)
+               triggered = this._computeTransition(spaceState, row, col, nr, nc);
+         }
       }
       return triggered;
    }
