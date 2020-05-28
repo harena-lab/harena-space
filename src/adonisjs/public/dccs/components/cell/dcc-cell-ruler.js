@@ -10,6 +10,7 @@ class DCCCellRuler extends DCCBase {
       this.rulerMoved = this.rulerMoved.bind(this);
       this._state = 0;
       this._rulerSet = [];
+      this._proportion = (this.hasAttribute("proportion")) ? parseInt(this.proportion) : 1;
    }
 
    connectedCallback() {
@@ -18,7 +19,7 @@ class DCCCellRuler extends DCCBase {
 
    static get observedAttributes() {
       return DCCBase.observedAttributes.concat(
-         ["image"]);
+         ["image", "proportion", "unit"]);
    }
 
    get image() {
@@ -27,6 +28,23 @@ class DCCCellRuler extends DCCBase {
    
    set image(newValue) {
       this.setAttribute("image", newValue);
+   }
+
+   get unit() {
+      return this.getAttribute("unit");
+   }
+   
+   set unit(newValue) {
+      this.setAttribute("unit", newValue);
+   }
+
+   get proportion() {
+      return this.getAttribute("proportion");
+   }
+   
+   set proportion(newValue) {
+      this.setAttribute("proportion", newValue);
+      this._proportion = parseInt(newValue);
    }
 
    get space() {
@@ -107,11 +125,10 @@ class DCCCellRuler extends DCCBase {
       const scale = "scale(" + (1/this._space.scale) + " " + (1/this._space.scale) + ")";
 
       let content = 
-         "desl. x: " + Math.abs(this._rulerTarget.col - this._rulerOrigin.col) +
-         "; desl. y: " + Math.abs(this._rulerTarget.row - this._rulerOrigin.row) +
-         "; desl. total: " + Math.sqrt(
-                                (Math.pow((this._rulerTarget.row - this._rulerOrigin.row), 2) +
-                                 Math.pow((this._rulerTarget.col - this._rulerOrigin.col), 2)));
+         (Math.round(100 *
+            Math.sqrt((Math.pow((this._rulerTarget.row - this._rulerOrigin.row), 2) +
+                       Math.pow((this._rulerTarget.col - this._rulerOrigin.col), 2))) / this._proportion)
+          / 100) + (this.hasAttribute("unit") ? this.unit : "");
 
       let textC = document.createElementNS("http://www.w3.org/2000/svg", "text");
       textC.setAttribute("style", "stroke:white; stroke-width:0.6em");

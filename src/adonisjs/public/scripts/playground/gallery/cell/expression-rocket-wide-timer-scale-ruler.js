@@ -30,7 +30,7 @@ AuthorCellManager.instance.insertSource(
 <dcc-cell-image type="t" label="tree" image="images/cell/tree01.svg"></dcc-cell-image>
 <dcc-cell-image type="#" label="cloudb" image="images/cell/cloud01-black.svg"></dcc-cell-image>
 
-<dcc-cell-ruler image="images/icon/target.svg">
+<dcc-cell-ruler image="images/icon/target.svg" proportion="10" unit="m">
    <subscribe-dcc topic="ruler/activate" role="activate"></subscribe-dcc>
    <subscribe-dcc topic="ruler/reset" role="reset"></subscribe-dcc>
 </dcc-cell-ruler>
