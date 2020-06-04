@@ -415,7 +415,19 @@ class Translator {
    _compileMerge(unity) {
       let compiled = unity.content;
 
-      // first cycle - define the identity of each item: field or list
+      // first cycle - transforms blockquote elements in attributes
+      for (let c = 0; c < compiled.length; c++) {
+          if (compiled[c].type == "blockquote") {
+             if (c + 1 < compiled.length) {
+                compiled[c+1].blockquote = true;
+                compiled[c+1]._source = compiled[c]._source + compiled[c+1]._source;
+                compiled.splice(c, 1);
+                c--;
+             }
+          }
+      }
+
+      // second cycle - define the identity of each item: field or list
       for (let c = 1; c < compiled.length; c++)
          if (compiled[c].type == "item") {
             let u = c-1;
@@ -446,7 +458,7 @@ class Translator {
             }
          }
 
-      // second cycle - aggregates texts, mentions, annotations, selects, and images
+      // third cycle - aggregates texts, mentions, annotations, selects, and images
       let tblock;
       let tblockSeq;
       for (let c = 0; c < compiled.length; c++) {
@@ -468,11 +480,15 @@ class Translator {
                      }, compiled[c]._source);
                   if (compiled[c].subordinate)
                      tblock.subordinate = compiled[c].subordinate;
+                  if (compiled[c].blockquote)
+                     tblock.blockquote = compiled[c].blockquote;
                   compiled[c] = tblock;
                }
             } else if (c > 0 &&
                        ((compiled[c].subordinate && compiled[pr].subordinate) ||
-                        (!compiled[c].subordinate && !compiled[pr].subordinate))) {
+                        (!compiled[c].subordinate && !compiled[pr].subordinate) ||
+                        (compiled[c].blockquote == null && compiled[pr].blockquote == null) ||
+                        (compiled[c].blockquote && compiled[pr].blockquote))) {
                // adds element and previous linefeed (if exists)
                for (let e = pr+1; e <= c; e++) {
                   tblockSeq++;
@@ -490,10 +506,10 @@ class Translator {
             compiled[c].seq = c + 1;
       }
 
-      // third cycle - removes extra linefeeds
+      // fourth cycle - removes extra linefeeds
       this._compileMergeLinefeeds(unity);
 
-      // fourth cycle - computes field hierarchy
+      // fifith cycle - computes field hierarchy
       let lastRoot = null;
       let lastField = null;
       let lastLevel = 0;
@@ -540,7 +556,7 @@ class Translator {
          }
       }
 
-      // fifith cycle - computes subordinate elements
+      // sixth cycle - computes subordinate elements
       for (let c = 0; c < compiled.length; c++) {
          const pr = (c > 1 && compiled[c-1].type == "linefeed") ? c-2 : c-1;
          if (c > 0 && compiled[c].subordinate &&
@@ -580,7 +596,7 @@ class Translator {
                         compiled[c].type == "text-block") &&
                        Translator.element[compiled[pr].type].subtext !== undefined &&
                        compiled[pr][Translator.element[compiled[pr].type].subtext] == null &&
-                       compiled[c].subordinate) {
+                       compiled[c].subordinate || compiled[c].blockquote) {
                compiled[pr][Translator.element[compiled[pr].type].subtext] =
                      compiled[c].content;
                /*
@@ -592,6 +608,17 @@ class Translator {
                      compiled[c].content;
                */
                merge = true;
+            } else if (compiled[c].type == "input" && compiled[pr].blockquote) {
+               console.log("=== will merge");
+               console.log(compiled[c].content);
+               console.log(c);
+               console.log(pr);
+               compiled[c][Translator.element[compiled[c].type].subtext] =
+                     compiled[pr].content;
+               compiled[c]._source = compiled[pr]._source + "\n" + compiled[c]._source;
+               const shift = c - pr;
+               compiled.splice(pr, shift);
+               c -= shift;
             }
             if (merge) {
                compiled[pr]._source += "\n" + compiled[c]._source;
@@ -623,7 +650,7 @@ class Translator {
             compiled[c].seq = c + 1;
       }
 
-      // sixth cycle - joins script sentences
+      // seventh cycle - joins script sentences
       // <TODO> quite similar to text-block (join?)
       let script;
       let scriptSeq;
@@ -799,6 +826,7 @@ class Translator {
       let obj;
       switch(mdType) {
          case "knot"   : obj = this._knotMdToObj(match); break;
+         case "blockquote": obj = this._blockquoteMdToObj(match); break;
          case "image"  : obj = this._imageMdToObj(match); break;
          case "option" : obj = this._optionMdToObj(match); break;
          case "item"   : obj = this._itemMdToObj(match); break;
@@ -899,7 +927,7 @@ class Translator {
       let preDoc = "";
       let html = "";
       const preDocSet = ["text", "text-block", "script", "field",
-                         "context-open", "context-close"]
+                         "context-open", "context-close", "linefeed"];
       if (content != null) {
          // produces a pretext with object slots to process markdown
          for (let kc in content)
@@ -950,6 +978,7 @@ class Translator {
          html = "";
       else
          switch(obj.type) {
+            case "blockquote": html = this._blockquoteObjToHTML(obj); break;
             case "text"   : html = this._textObjToHTML(obj, superseq); break;
             case "text-block": html = this._textBlockObjToHTML(obj, superseq);
                                break;
@@ -1166,6 +1195,24 @@ class Translator {
                       ? ": " + obj.inheritance : "");
    }
    
+   /*
+    * Blockquote Md to Obj
+    */
+   _blockquoteMdToObj(matchArray) {
+      return {
+         type: "blockquote",
+         content: matchArray[0],
+         blockquote: true
+      };
+   }
+
+   /*
+    * Blockquote Obj to HTML
+    */
+   _blockquoteObjToHTML(obj) {
+      return obj.content;
+   }
+
    /*
     * Text Raw to Obj
     */
@@ -1969,6 +2016,9 @@ class Translator {
          mark: /(?:^[ \t]*(#+)[ \t]*([^\( \t\n\r\f\:][^\(\n\r\f\:]*)(?:\((\w[\w \t,]*)\))?[ \t]*(?:\:[ \t]*([^\(\n\r\f][^\(\n\r\f\t]*))?[ \t]*#*[ \t]*$)|(?:^[ \t]*([^\( \t\n\r\f\:][^\(\n\r\f\:]*)(?:\((\w[\w \t,]*)\))?[ \t]*(?:\:[ \t]*([^\(\n\r\f][^\(\n\r\f\t]*))?[ \t]*[\f\n\r][\n\r]?(==+|--+)$)/im,
          subfield: true,
          subimage: true },
+      blockquote: {
+         mark: /^[ \t]*>[ \t]*/im,
+      },
       image: {
          mark: /([ \t]*)!\[([\w \t]*)\]\(([\w:.\/\?&#\-~]+)[ \t]*(?:"([\w ]*)")?\)/im,
          inline: true },
