@@ -559,10 +559,8 @@ class Translator {
       // sixth cycle - computes subordinate elements
       for (let c = 0; c < compiled.length; c++) {
          const pr = (c > 1 && compiled[c-1].type == "linefeed") ? c-2 : c-1;
-         if (c > 0 && compiled[c].subordinate &&
+         if (c > 0 && (compiled[c].subordinate || compiled[c].blockquote) &&
              Translator.element[compiled[pr].type]) {
-            // console.log("=== subordinate");
-            // console.log(JSON.stringify(compiled[c]));
             let merge = false;
             if (compiled[c].type == "field" &&
                 Translator.element[compiled[pr].type].subfield !== undefined &&
@@ -608,17 +606,6 @@ class Translator {
                      compiled[c].content;
                */
                merge = true;
-            } else if (compiled[c].type == "input" && compiled[pr].blockquote) {
-               console.log("=== will merge");
-               console.log(compiled[c].content);
-               console.log(c);
-               console.log(pr);
-               compiled[c][Translator.element[compiled[c].type].subtext] =
-                     compiled[pr].content;
-               compiled[c]._source = compiled[pr]._source + "\n" + compiled[c]._source;
-               const shift = c - pr;
-               compiled.splice(pr, shift);
-               c -= shift;
             }
             if (merge) {
                compiled[pr]._source += "\n" + compiled[c]._source;
@@ -636,9 +623,23 @@ class Translator {
                compiled.splice(c - shift + 1, shift);
                c -= shift;
             }
-         } // manages elements subordinated to the knot
-           else if (c == 0 && compiled[c].subordinate &&
-                    compiled[c].type == "image") {
+         } 
+         // previous blockquotes for inputs
+         else if (compiled[c].type == "input" && compiled[pr].blockquote) {
+            console.log("=== will merge");
+            console.log(compiled[c].content);
+            console.log(c);
+            console.log(pr);
+            compiled[c][Translator.element[compiled[c].type].subtext] =
+                  compiled[pr].content;
+            compiled[c]._source = compiled[pr]._source + "\n" + compiled[c]._source;
+            const shift = c - pr;
+            compiled.splice(pr, shift);
+            c -= shift;
+         }
+         // manages elements subordinated to the knot
+         else if (c == 0 && compiled[c].subordinate &&
+                  compiled[c].type == "image") {
             unity.background = {
                alternative: compiled[c].alternative,
                path:  compiled[c].path };
