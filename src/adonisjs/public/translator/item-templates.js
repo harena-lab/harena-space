@@ -112,7 +112,7 @@ option:
 entity:
 `@{entity}`,
 input:
-`? {variable}{statement}{subtype}{extra}`
+`{statement}? {variable}{subtype}{extra}`
 };
 
 Translator.objTemplates = {

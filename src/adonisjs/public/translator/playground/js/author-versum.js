@@ -8,6 +8,7 @@ class AuthorVersumManager {
    constructor() {
    	MessageBus.page = new MessageBus(false);
       Basic.service.rootPath = "../../";
+      DCCCommonServer.instance.local = true;
    }
 
    start() {
@@ -20,6 +21,9 @@ class AuthorVersumManager {
 
    async translate(topic, message) {
       Translator.instance.authoringRender = false;
+
+      Basic.service.currentThemeFamily = "zombie";
+      DCCCommonServer.instance.local = true;
 
       let compiled = await Translator.instance.compileMarkdown(
                                    "test", document.querySelector("#editor").value);

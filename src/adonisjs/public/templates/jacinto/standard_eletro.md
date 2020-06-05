@@ -6,13 +6,15 @@ Begin (start, presentation_3)
   ![Emergency room](theme/background-emergency-room-1.png)
 
 @NURSE
-  Present the case.
+> Present the case.
 
 @PATIENT
-  Details about the patient.
+> Details about the patient.
+
+Details about the case.
 
 @SYSTEM
-  What do you want to do?
+> What do you want to do?
 
 * -> Generate hypothesis
 * -> More information
@@ -21,8 +23,8 @@ Begin (start, presentation_3)
 Generate hypothesis (input)
 ---------------------------
 
+> What is your main diagnostic hypothesis?
 ? hypothesis
-  What is your main diagnostic hypothesis?
 
 * Submit hypothesis -> Check hypothesis
 
@@ -33,7 +35,7 @@ More information (information)
 <b>MORE INFORMATION</b> <br> More information about the patient.
 
 @SYSTEM
-  What do you want to do?
+> What do you want to do?
 
 * Back to the case -> Cycle 1.Begin
 
@@ -56,8 +58,8 @@ Supervisor explanation.
 Check hypothesis (detailed_role)
 --------------------------------
 
+> Let us check out your hypothesis. Highlight in green the key findings, in blue the findings that corroborate your hypothesis; in yellow those that are neutral; and in red the ones speaking against your hypothesis.
 ? contribution to diagnostics
-  Let us check out your hypothesis. Highlight in green the key findings, in blue the findings that corroborate your hypothesis; in yellow those that are neutral; and in red the ones speaking against your hypothesis.
   * type: group select
   * states: _, k, +, =, -
   * labels: empty, key, contibutes, indiferent, against
@@ -71,8 +73,8 @@ Nurse: @Nurse - {symptom}/=/.
 Review hypothesis (input)
 -------------------------
 
+> If you want to review your hypothesis, type below the new hypothesis.
 ? hypothesis
-  If you want to review your hypothesis, type below the new hypothesis.
 
 * Submit -> Cycle 2.Order EKG
 
@@ -90,7 +92,7 @@ Information related to the EKG.
 * Magnify -> Magnify EKG
 
 @SYSTEM
-  What do you want to do?
+> What do you want to do?
 
 * -> Generate hypothesis
 * -> More information
@@ -104,8 +106,8 @@ Information related to the EKG.
 
 ## Generate hypothesis (input)
 
+> What is your main diagnostic hypothesis?
 ? hypothesis
-  What is your main diagnostic hypothesis?
 
 * Submit hypothesis -> Check hypothesis
 
@@ -133,7 +135,7 @@ supra ST in DI, DII, DIII, avF, V2-V6 leads
 * Analyze EKG -> EKG Analysis
 
 @SYSTEM
-  What do you want to do?
+> What do you want to do?
 
 * Back -> Order EKG
 
@@ -153,7 +155,7 @@ Supervisor explanation.
 @EKG
 
 @SYSTEM
-  What do you want to do?
+> What do you want to do?
 
 * Back -> Order EKG
 
@@ -165,8 +167,8 @@ Supervisor explanation.
 
 ## Review hypothesis (input)
 
+> If you want to review your hypothesis, type below the new hypothesis.
 ? hypothesis
-  If you want to review your hypothesis, type below the new hypothesis.
 
 * Submit -> Final.Report
 
@@ -179,7 +181,7 @@ Report (detailed)
 Congratulations, my young Dr. you could helped your patient providing his diagnosis. Now, Let's review all levels of this case.
 
 @SYSTEM
-  Select a final report level:
+> Select a final report level:
 
 * -> Level 1
 
