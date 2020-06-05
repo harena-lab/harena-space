@@ -415,7 +415,32 @@ class Translator {
    _compileMerge(unity) {
       let compiled = unity.content;
 
-      // first cycle - define the identity of each item: field or list
+      // first cycle - transforms blockquote elements in attributes
+      for (let c = 0; c < compiled.length; c++) {
+         if (compiled[c].type == "blockquote") {
+            if (c + 1 < compiled.length) {
+               compiled[c+1].blockquote = true;
+               compiled[c+1]._source = compiled[c]._source + compiled[c+1]._source;
+               compiled.splice(c, 1);
+               c--;
+            }
+         }
+      }
+
+      // second cycle - aggregates blockquoted linefeeds
+      for (let c = 0; c < compiled.length-1; c++) {
+         if (compiled[c+1].type == "linefeed" && compiled[c+1].blockquote &&
+             compiled[c].type == "linefeed" &&
+             (compiled[c].blockquote || compiled[c].content.length == 1)) {
+            compiled[c].blockquote = true;
+            compiled[c].content = compiled[c].content + compiled[c+1].content;
+            compiled[c]._source = compiled[c]._source + compiled[c+1]._source;
+            compiled.splice(c+1, 1);
+            c--;
+         }
+      }
+
+      // third cycle - define the identity of each item: field or list
       for (let c = 1; c < compiled.length; c++)
          if (compiled[c].type == "item") {
             let u = c-1;
@@ -446,7 +471,7 @@ class Translator {
             }
          }
 
-      // second cycle - aggregates texts, mentions, annotations, selects, and images
+      // fourth cycle - aggregates texts, mentions, annotations, selects, and images
       let tblock;
       let tblockSeq;
       for (let c = 0; c < compiled.length; c++) {
@@ -458,8 +483,10 @@ class Translator {
                // creates a new text-block
                if (nx < compiled.length &&
                    Translator.textBlockCandidate.includes(compiled[nx].type) &&
-                   ((compiled[c].subordinate && compiled[nx].subordinate) ||
-                    (!compiled[c].subordinate && !compiled[nx].subordinate))) {
+                   ((compiled[c].blockquote && compiled[nx].blockquote) ||
+                    ((compiled[c].blockquote == null && compiled[nx].blockquote == null) &&
+                     ((compiled[c].subordinate && compiled[nx].subordinate) ||
+                      (!compiled[c].subordinate && !compiled[nx].subordinate))))) {
                   tblockSeq = 1;
                   compiled[c].seq = 1;
                   tblock = this._initializeObject(
@@ -468,11 +495,15 @@ class Translator {
                      }, compiled[c]._source);
                   if (compiled[c].subordinate)
                      tblock.subordinate = compiled[c].subordinate;
+                  if (compiled[c].blockquote)
+                     tblock.blockquote = compiled[c].blockquote;
                   compiled[c] = tblock;
                }
             } else if (c > 0 &&
-                       ((compiled[c].subordinate && compiled[pr].subordinate) ||
-                        (!compiled[c].subordinate && !compiled[pr].subordinate))) {
+                       ((compiled[c].blockquote && compiled[pr].blockquote) ||
+                        ((compiled[c].blockquote == null && compiled[pr].blockquote == null) &&
+                         ((compiled[c].subordinate && compiled[pr].subordinate) ||
+                          (!compiled[c].subordinate && !compiled[pr].subordinate))))) {
                // adds element and previous linefeed (if exists)
                for (let e = pr+1; e <= c; e++) {
                   tblockSeq++;
@@ -490,10 +521,16 @@ class Translator {
             compiled[c].seq = c + 1;
       }
 
-      // third cycle - removes extra linefeeds
-      this._compileMergeLinefeeds(unity);
+      // fifith cycle - compute subordinated elements based on subordinators
+      // <TODO> remove?
+      for (let c = 1; c < compiled.length; c++) {
+         const pr =
+            (c > 1 && compiled[c-1].type == "linefeed") ? c-2 : c-1;
+         if (Translator.subordinatorElement.includes(compiled[pr].type))
+            compiled[c].subordinate = true;
+      }
 
-      // fourth cycle - computes field hierarchy
+      // sixth cycle - computes field hierarchy
       let lastRoot = null;
       let lastField = null;
       let lastLevel = 0;
@@ -540,13 +577,13 @@ class Translator {
          }
       }
 
-      // fifith cycle - computes subordinate elements
+      // seventh cycle - computes subordinate elements
       for (let c = 0; c < compiled.length; c++) {
          const pr = (c > 1 && compiled[c-1].type == "linefeed") ? c-2 : c-1;
-         if (c > 0 && compiled[c].subordinate &&
+         // later blockquotes and subordinates (excluding knot subordinates)
+         if ((c > 0 && (c > 1 || compiled[c-1].type != "linefeed")) &&
+             (compiled[c].subordinate || compiled[c].blockquote) &&
              Translator.element[compiled[pr].type]) {
-            // console.log("=== subordinate");
-            // console.log(JSON.stringify(compiled[c]));
             let merge = false;
             if (compiled[c].type == "field" &&
                 Translator.element[compiled[pr].type].subfield !== undefined &&
@@ -580,7 +617,7 @@ class Translator {
                         compiled[c].type == "text-block") &&
                        Translator.element[compiled[pr].type].subtext !== undefined &&
                        compiled[pr][Translator.element[compiled[pr].type].subtext] == null &&
-                       compiled[c].subordinate) {
+                       (compiled[c].subordinate || compiled[c].blockquote)) {
                compiled[pr][Translator.element[compiled[pr].type].subtext] =
                      compiled[c].content;
                /*
@@ -609,9 +646,20 @@ class Translator {
                compiled.splice(c - shift + 1, shift);
                c -= shift;
             }
-         } // manages elements subordinated to the knot
-           else if (c == 0 && compiled[c].subordinate &&
-                    compiled[c].type == "image") {
+         } 
+         // previous blockquotes for inputs
+         else if (compiled[c].type == "input" && compiled[pr].blockquote) {
+            compiled[c][Translator.element[compiled[c].type].pretext] =
+                  compiled[pr].content;
+            compiled[c]._source = compiled[pr]._source + "\n" + compiled[c]._source;
+            const shift = c - pr;
+            compiled.splice(pr, shift);
+            c -= shift;
+         }
+         // manages elements subordinated to the knot
+         else if ((c == 0 || (c == 1 && compiled[c-1].type == "linefeed")) &&
+                  compiled[c].subordinate && compiled[c].type == "image") {
+            console.log("=== image back");
             unity.background = {
                alternative: compiled[c].alternative,
                path:  compiled[c].path };
@@ -623,7 +671,7 @@ class Translator {
             compiled[c].seq = c + 1;
       }
 
-      // sixth cycle - joins script sentences
+      // eighth cycle - joins script sentences
       // <TODO> quite similar to text-block (join?)
       let script;
       let scriptSeq;
@@ -662,6 +710,7 @@ class Translator {
             compiled[c].seq = c + 1;
       }
 
+      this._compileMergeLinefeeds(unity);
    }
 
    // merges texts separated by linefeeds and
@@ -670,12 +719,14 @@ class Translator {
       let compiled = unity.content;
       for (let c = 0; c < compiled.length; c++) {
          // <TODO> remove?
+         /*
          if (c > 0) {
             const pr =
                (c > 1 && compiled[c-1].type == "linefeed") ? c-2 : c-1;
             if (Translator.subordinatorElement.includes(compiled[pr].type))
                compiled[c].subordinate = true;
          }
+         */
 
          /*
          if (compiled[c].type == "linefeed") {
@@ -799,6 +850,7 @@ class Translator {
       let obj;
       switch(mdType) {
          case "knot"   : obj = this._knotMdToObj(match); break;
+         case "blockquote": obj = this._blockquoteMdToObj(match); break;
          case "image"  : obj = this._imageMdToObj(match); break;
          case "option" : obj = this._optionMdToObj(match); break;
          case "item"   : obj = this._itemMdToObj(match); break;
@@ -899,7 +951,7 @@ class Translator {
       let preDoc = "";
       let html = "";
       const preDocSet = ["text", "text-block", "script", "field",
-                         "context-open", "context-close"]
+                         "context-open", "context-close", "linefeed"];
       if (content != null) {
          // produces a pretext with object slots to process markdown
          for (let kc in content)
@@ -950,6 +1002,7 @@ class Translator {
          html = "";
       else
          switch(obj.type) {
+            case "blockquote": html = this._blockquoteObjToHTML(obj); break;
             case "text"   : html = this._textObjToHTML(obj, superseq); break;
             case "text-block": html = this._textBlockObjToHTML(obj, superseq);
                                break;
@@ -1167,6 +1220,24 @@ class Translator {
    }
    
    /*
+    * Blockquote Md to Obj
+    */
+   _blockquoteMdToObj(matchArray) {
+      return {
+         type: "blockquote",
+         content: matchArray[0],
+         blockquote: true
+      };
+   }
+
+   /*
+    * Blockquote Obj to HTML
+    */
+   _blockquoteObjToHTML(obj) {
+      return obj.content;
+   }
+
+   /*
     * Text Raw to Obj
     */
    _textMdToObj(markdown) {
@@ -1193,7 +1264,7 @@ class Translator {
    }
 
    _textObjToMd(obj) {
-      return obj.content;
+      return ((obj.blockquote) ? "> " : "") + obj.content;
    }
 
    /*
@@ -1786,8 +1857,8 @@ class Translator {
             extraAttr += this._mdSubField(atr, obj[atr]);
 
       return Translator.markdownTemplates.input
+                          .replace("{statement}", (obj.text) ? "> " + obj.text + "\n" : "")
                           .replace("{variable}", obj.variable)
-                          .replace("{statement}", (obj.text) ? "\n  " + obj.text : "")
                           .replace("{subtype}",
                              (obj.subtype) ? this._mdSubField("type", obj.subtype) : "")
                           .replace("{extra}", extraAttr);
@@ -1969,6 +2040,9 @@ class Translator {
          mark: /(?:^[ \t]*(#+)[ \t]*([^\( \t\n\r\f\:][^\(\n\r\f\:]*)(?:\((\w[\w \t,]*)\))?[ \t]*(?:\:[ \t]*([^\(\n\r\f][^\(\n\r\f\t]*))?[ \t]*#*[ \t]*$)|(?:^[ \t]*([^\( \t\n\r\f\:][^\(\n\r\f\:]*)(?:\((\w[\w \t,]*)\))?[ \t]*(?:\:[ \t]*([^\(\n\r\f][^\(\n\r\f\t]*))?[ \t]*[\f\n\r][\n\r]?(==+|--+)$)/im,
          subfield: true,
          subimage: true },
+      blockquote: {
+         mark: /^[ \t]*>[ \t]*/im,
+      },
       image: {
          mark: /([ \t]*)!\[([\w \t]*)\]\(([\w:.\/\?&#\-~]+)[ \t]*(?:"([\w ]*)")?\)/im,
          inline: true },
@@ -2001,7 +2075,7 @@ class Translator {
          mark: /^\?[ \t]+([^\t\n\r\f]+)$/im,
          subfield: true,
          subimage: true,
-         subtext:  "text" },
+         pretext: "text" },
       "output": {
          mark: /\^([\w \t\.]+)(?:\[([\w \t]+)\])?(?:\(([\w \t]+)\))?\^/im,
          inline: true },
@@ -2009,7 +2083,7 @@ class Translator {
          mark: /~[ \t]*(\w+)?[ \t]*([+\-*/=])[ \t]*(\d+(?:\.\d+)?)$/im,
          },
       "context-open": {
-         mark: /\{\{([\w \t\+\-\*\."=\:%]+)?(?:\/([\w \t\.\:]+)\/)?[\f\n\r]/im },
+         mark: /\{\{([\w \t\+\-\*\."=\:%]+)?(?:\/([\w \t\.\:]+)\/)?$/im },
       "context-close": {
          mark: /\}\}/im },
       select: {

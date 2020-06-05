@@ -9,12 +9,12 @@ Apresente a descrição do caso aqui.
 
 ## Diagnóstico (input)
 
+> Qual a sua principal hipótese de diagnóstico?
 ? hypothesis
-  Qual a sua principal hipótese de diagnóstico?
   * vocabularies: mesh
 
+> Quão certo você está do seu diagnóstico?
 ? confidence
-  Quão certo você está do seu diagnóstico?
   * type: slider
   * min: 0
   * max: 100

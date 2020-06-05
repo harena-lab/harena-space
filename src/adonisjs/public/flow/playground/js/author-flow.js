@@ -15,8 +15,6 @@ class AuthorFlowManager {
 
       this._editor.use(VueRenderPlugin.default);
 
-      // this._editor.use(ContextMenuPlugin.default);
-
       /*
       this._editor.use(ContextMenuPlugin.default, {
           searchBar: false,
@@ -33,6 +31,8 @@ class AuthorFlowManager {
       });
       */
 
+      this._editor.use(ContextMenuPlugin.default);
+      /*
       this._editor.use(ContextMenuPlugin.default, {
          searchBar: false,
          delay: 100,
@@ -53,6 +53,7 @@ class AuthorFlowManager {
             'Clone': false // or Clone item
          }
       });
+      */
 
       this._editor.use(AreaPlugin, {
          background: false,
@@ -62,7 +63,7 @@ class AuthorFlowManager {
       });
       
       this._editor.use(AutoArrangePlugin.default,
-                       {margin: {x: 50, y: 50 }, depth: 0});
+                       {vertical: true, margin: {x: 50, y: 50 }, depth: 0});
 
       // <TO ADD>
       /*
@@ -71,28 +72,25 @@ class AuthorFlowManager {
       this._editor.use(ConnectionMasteryPlugin.default);
       */
 
-      // <TODO> vertical feature: presenting an error, probably a version issue
-      /*
       this._editor.use(ConnectionPathPlugin.default,
          {options: {vertical: true, curvature: 0.4}});
-      */
      
       this._engine = new Rete.Engine("demo@0.1.0");
-
-      this._editor.on("process nodecreated noderemoved connectioncreated connectionremoved", async () => {
-        await this._engine.abort();
-        await this._engine.process(this._editor.toJSON());
-      });
-      this._editor.view.resize();
-      this._editor.trigger("process");
 
       let first = await this.addKnot("First");
       let second = await this.addKnot("Second");
       this._editor.connect(first.outputs.get("flw"), second.inputs.get("flw"));
 
+      this._editor.on("process nodecreated noderemoved connectioncreated connectionremoved", async () => {
+        await this._engine.abort();
+        await this._engine.process(this._editor.toJSON());
+      });
+
+      this._editor.view.resize();
       this._editor.trigger("arrange");
 
       AreaPlugin.zoomAt(this._editor);
+      this._editor.trigger("process");
    }
 
    async addKnot(title) {
