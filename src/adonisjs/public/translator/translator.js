@@ -927,6 +927,8 @@ class Translator {
       const backPath = (knot.background !== undefined)
          ? Basic.service.imageResolver(knot.background.path) : "";
       const backAlt = (knot.background !== undefined) ? knot.background.alternative : "";
+      console.log("=== before theme");
+      console.log(finalHTML);
       for (let tp = themes.length-1; tp >= 0; tp--)
          finalHTML = this._themeSet[themes[tp]]
             .replace(/{knot}/igm, finalHTML)

@@ -30,7 +30,8 @@ class AuthorVersumManager {
       document.querySelector("#object-results").value = JSON.stringify(compiled, null, 3);
       let html = "";
       for (let knot in compiled.knots) {
-         let mkHTML = await Translator.instance.generateKnotHTML(compiled.knots[knot].content);
+         // let mkHTML = await Translator.instance.generateKnotHTML(compiled.knots[knot].content);
+         let mkHTML = await Translator.instance.generateHTML(compiled.knots[knot]);
          html += mkHTML;
       }
       document.querySelector("#html-panel").value = html;
