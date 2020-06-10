@@ -258,7 +258,8 @@ class DCCSpaceCellular extends DCCBase {
             for (let c = 0; c < this._stateLines[r].length; c++) {
                if (this._cellTypes[this._stateLines[r][c]]) {
                   this._state[r][c] =
-                     this._cellTypes[this._stateLines[r][c]].createIndividual(parseInt(r)+1, c+1);
+                     this._cellTypes[this._stateLines[r][c]].
+                        createIndividualInitial(parseInt(r)+1, c+1, null);
                   this._cells.appendChild(this._state[r][c].element);
                }
             }
@@ -274,8 +275,10 @@ class DCCSpaceCellular extends DCCBase {
             row.push(null);
          state.push(row);
       }
+      /*
       console.log("=== state");
       console.log(state);
+      */
       return state;
    }
 
@@ -322,6 +325,13 @@ class DCCSpaceCellular extends DCCBase {
          width : this.cellWidth,
          height: this.cellHeight
       };
+   }
+
+   computeCellCenter(row, col) {
+      return {
+         x: Math.round((col-0.5) * this.cellWidth),
+         y: Math.round((row-0.5) * this.cellHeight)
+      }
    }
 
    static computeDefaultCoordinates(row, col) {
@@ -460,7 +470,8 @@ class DCCSpaceCellularEditor extends DCCSpaceCellular {
       if ((this._state[r][c] == null || this._state[r][c].dcc.type != type) &&
           this._cellTypes[type]) {
          this._state[r][c] =
-            this._cellTypes[type].createIndividual(row, col);
+            this._cellTypes[type].createIndividualInitial(row, col,
+               (this._editProps) ? this._editProps : null);
          this._cells.appendChild(this._state[r][c].element);
       }
    }
@@ -527,6 +538,10 @@ class DCCSpaceCellularEditor extends DCCSpaceCellular {
                             for (let t in this._cellTypes)
                                if (this._cellTypes[t].label.toLowerCase() == tLabel.toLowerCase())
                                   this._editType = t;
+                         if (message.body.value)
+                            this._editProps = this.extractProperties(message.body.value);
+                         else
+                            this._editProps = null;
                          for (let t of this._tools)
                             t.inactivateTool();
                          break;
@@ -538,6 +553,18 @@ class DCCSpaceCellularEditor extends DCCSpaceCellular {
             case "download": this.downloadState(); break;
          }
       }
+   }
+
+   extractProperties(propsStr) {
+      let props = {};
+      const propsv = propsStr.split(";");
+      for (let p of propsv)
+         if (p.includes(":")) {
+            const pv = p.split(":");
+            props[pv[0].trim()] = pv[1].trim();
+         } else
+            props[p.trim()] = "";
+      return props;
    }
 }
 

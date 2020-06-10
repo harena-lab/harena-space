@@ -148,7 +148,7 @@ class ScriptBlocksCell {
         }
       };
 
-      Blockly.Blocks["conditionpre"] = {
+      Blockly.Blocks["boid"] = {
         init: function() {
           this.jsonInit({
             "message0": "se %1 encontra %2 então",
@@ -164,68 +164,16 @@ class ScriptBlocksCell {
                  "options": ScriptBlocksCell.s._allSelectTypes
                }
             ],
-            "message1": "ângulo de inclinação %1",
+            "message1": "ação %1",
             "args1": [
-               {
-                 "type": "field_number",
-                 "name": "angle",
-                 "value": 90,
-                 "min": 0,
-                 "max": 360
-               }
-            ],
-            "message2": "detalhe %1",
-            "args2": [
-               {
-                 "type": "field_number",
-                 "name": "time_rate",
-                 "value": 0.1,
-                 "min": 0.01,
-                 "max": 10
-               }
-            ],
-            /*
-            "args2": [
-               {
-                 "type": "field_dropdown",
-                 "name": "time_rate",
-                 "options": [
-                    ["Pouco", "1"],
-                    ["Médio", "0.5"],
-                    ["Muito", "0.1"]
-                 ]
-               },
-            ],
-            */
-            "message3": "velocidade inicial %1",
-            "args3": [
-               {
-                 "type": "input_value",
-                 "name": "initial_velocity",
-                 "check": "Velocity",
-                 "align": "RIGHT"
-               }
-            ],
-            "message4": "gravidade %1",
-            "args4": [
-               {
-                 "type": "input_value",
-                 "name": "gravity",
-                 "check": "Acceleration",
-                 "align": "RIGHT"
-               }
-            ],
-            "message5": "ação %1",
-            "args5": [
-               {
-                 "type": "input_value",
-                 "name": "action",
-                 "check": "Action",
-                 "align": "RIGHT"
-               }
+              {
+                "type": "input_value",
+                "name": "action",
+                "check": "Action"
+              }
             ],
             "colour": 170,
-            "tooltip": "Computes expression."
+            "tooltip": "Boid agent."
           });
         }
       };
@@ -457,38 +405,27 @@ class ScriptBlocksCell {
                    .replace(/_t/g, ScriptBlocksCell.s._types[block.getFieldValue("target")]) +
                 ">\n" +
                 "</rule-dcc-cell-expression>";
+         /*
          console.log("=== rule");
          console.log(result);
+         */
          return result;
       };
 
-      /*
-      Blockly.JavaScript["conditionpre"] = function(block) {
-         console.log("=== generating condition");
-         let expX = "x=x0";
-         let expY = "y=y0";
-         const angle = block.getFieldValue("angle");
-         let v0 = Blockly.JavaScript.statementToCode(block, "initial_velocity").trim();
-         if (v0.length > 0) {
-            expX += "+" + v0 + "*cos(" + angle + ")*t";
-            expY += "-" + v0 + "*sin(" + angle + ")*t";
-         }
-         let a = Blockly.JavaScript.statementToCode(block, "gravity").trim();
-         if (a.length > 0)
-            expY += "+" + a + "*(t^2/2)";
-         let result = "<rule-dcc-cell-expression " +
-                "expression='" + expX + ";" + expY + "' " +
-                "time-rate='" + block.getFieldValue("time_rate") + "' " +
+      Blockly.JavaScript["boid"] = function(block) {
+         // console.log("=== generating boid");
+         let result = "<rule-dcc-cell-agent " +
                 Blockly.JavaScript.statementToCode(block, "action")
                    .replace(/_o/g, ScriptBlocksCell.s._types[block.getFieldValue("origin")])
                    .replace(/_t/g, ScriptBlocksCell.s._types[block.getFieldValue("target")]) +
                 ">\n" +
-                "</rule-dcc-cell-expression>";
+                "</rule-dcc-cell-agent>";
+         /*
          console.log("=== rule");
          console.log(result);
+         */
          return result;
       };
-      */
 
       Blockly.JavaScript["condition"] = function(block) {
          console.log("=== generating condition");

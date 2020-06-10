@@ -104,9 +104,6 @@ class RuleDCCCellExpression extends RuleDCCTransition {
                nc = (nc < 0) ? 0 : spaceState.ncols - 1;
                nr = row + (difr / difc) * (nc - col);
             }
-            console.log("=== nr e nc");
-            console.log(nr);
-            console.log(nc);
             if (nr >= 0 && nr < spaceState.nrows &&
                 nc >= 0 && nc < spaceState.ncols)
                triggered = this._computeTransition(spaceState, row, col, nr, nc);
@@ -116,7 +113,105 @@ class RuleDCCCellExpression extends RuleDCCTransition {
    }
 }
 
+class RuleDCCCellAgent extends RuleDCCTransition {
+   connectedCallback() {
+      super.connectedCallback();
+      MessageBus.page.publish("dcc/rule-cell/register", this);
+   }
+
+   computeRule(spaceState, row, col) {
+      let triggered = false;
+      let cstate = spaceState.state[row][col];
+
+      /*
+      console.log("=== state");
+      console.log(cstate.properties);
+      */
+
+      if (!cstate.properties)
+         cstate.properties = {rotate:"0"};
+      else if (!cstate.properties.rotate)
+         cstate.properties.rotate = "0";
+
+      const movement = RuleDCCCellAgent.movement[cstate.properties.rotate];
+
+      /*
+      console.log("=== matrix");
+      console.log(movement);
+      */
+
+      let nr = row + movement[0];
+      let nc = col + movement[1];
+
+      /*
+      console.log("=== row col (before)");
+      console.log(row + "," + col + "," + nr + "," + nc);
+      */
+
+      if (spaceState.infinite) {
+         nr = (nr < 0) ? spaceState.nrows - 1 : nr % spaceState.nrows;
+         nc = (nc < 0) ? spaceState.ncols - 1 : nc % spaceState.ncols;
+      }
+
+      /*
+      console.log("=== row col (after)");
+      console.log(row + "," + col + "," + nr + "," + nc);
+      */
+
+      if (nr >= 0 && nr < spaceState.nrows &&
+          nc >= 0 && nc < spaceState.ncols) {
+         triggered = this._computeTransition(spaceState, row, col, nr, nc);
+         if (triggered) {
+            if (spaceState.state[nr][nc] != null)
+               spaceState.state[nr][nc].dcc.updateElementState(
+                  spaceState.state[nr][nc].element,
+                  spaceState.state[nr][nc].properties, nr+1, nc+1);
+            row = nr;
+            col = nc;
+         }
+      }
+
+      nr = row + movement[0];
+      nc = col + movement[1];
+      if (spaceState.infinite) {
+         nr = (nr < 0) ? spaceState.nrows - 1 : nr % spaceState.nrows;
+         nc = (nc < 0) ? spaceState.ncols - 1 : nc % spaceState.ncols;
+      }
+      if (nr >= 0 && nr < spaceState.nrows &&
+          nc >= 0 && nc < spaceState.ncols) {
+         if (spaceState.state[nr][nc] != null &&
+             spaceState.state[nr][nc].properties &&
+             spaceState.state[nr][nc].properties.rotate) {
+            let rotateOrigin = parseInt(spaceState.state[row][col].properties.rotate);
+            let rotateTarget = parseInt(spaceState.state[nr][nc].properties.rotate);
+            if (rotateOrigin > rotateTarget)
+               spaceState.state[row][col].properties.rotate = "" + (rotateOrigin - 45);
+            else if (rotateOrigin < rotateTarget)
+               spaceState.state[row][col].properties.rotate = "" + (rotateOrigin + 45);
+            spaceState.state[row][col].dcc.updateElementState(
+                  spaceState.state[row][col].element,
+                  spaceState.state[row][col].properties, row+1, col+1);
+         }
+      }
+
+      return triggered;
+   }
+}
+
 (function() {
    RuleDCCCellExpression.internalVar = ["x", "y", "x0", "y0", "t"];
+
+   RuleDCCCellAgent.movement = {
+      "0":   [-1, 0],
+      "45":  [-1, 1],
+      "90":  [ 0, 1],
+      "135": [ 1, 1],
+      "180": [ 1, 0],
+      "225": [ 1,-1],
+      "270": [ 0,-1],
+      "315": [-1,-1]
+   };
+
    customElements.define("rule-dcc-cell-expression", RuleDCCCellExpression);
+   customElements.define("rule-dcc-cell-agent", RuleDCCCellAgent);
 })();
