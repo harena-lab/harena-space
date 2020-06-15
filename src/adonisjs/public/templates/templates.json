@@ -13,6 +13,11 @@
     "path": "simple/case/quiz_sequence",
     "icon": "simple/case/quiz_sequence.png",
     "scope": "case"},
+ "Challenge":
+   {"description": "A week challenge.",
+    "path": "simple/case/challenge",
+    "icon": "simple/case/challenge.png",
+    "scope": "case"},
  "Linear Description-EKG":
    {"description": "Linear description of the case followed by an EKG.",
     "path": "simple/case/linear_details_ekg",

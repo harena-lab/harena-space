@@ -527,12 +527,7 @@ class AuthorManager {
       
       let template = await this._templateSelect("knot", this._templateNewKnot);
 
-      // if (this._templateNewKnot != null) {
       if (template != null) {
-         /*
-         let markdown = await MessageBus.ext.request("data/template/" +
-                              this._templateNewKnot.replace("/", ".") + "/get");
-         */
          let markdown = await MessageBus.ext.request("data/template/" +
                               template.replace(/\//g, ".") + "/get");
 
