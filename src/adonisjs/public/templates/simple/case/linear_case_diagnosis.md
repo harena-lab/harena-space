@@ -44,5 +44,5 @@ ___ Data ___
   * evidence: http://purl.org/versum/evidence/
 * templates:
   * categories:
-    * input: simple/input
-    * detailed: simple/description
+    * input: simple/knot/input
+    * detailed: simple/knot/description

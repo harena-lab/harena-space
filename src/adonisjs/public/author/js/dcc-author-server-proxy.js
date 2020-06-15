@@ -177,7 +177,8 @@ class DCCAuthorServer {
    }
    
    async loadTemplate(topic, message) {
-      let templatePath = MessageBus.extractLevel(topic, 3).replace(".", "/");
+      let templatePath =
+         MessageBus.extractLevel(topic, 3).replace(/\./g, "/");
       let header = {
          "async": true,
          "crossDomain": true,
@@ -186,9 +187,6 @@ class DCCAuthorServer {
             "Content-Type": "text/plain",
           }
       }
-      console.log("=== template request");
-      console.log("../templates/" + templatePath + ".md");
-      console.log(header);
       const response = await fetch("../templates/" + templatePath +
                                    ".md", header);
       let textResponse = await response.text();

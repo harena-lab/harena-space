@@ -42,7 +42,7 @@
 }
 
 /* .styt-main, .styt-button, input[type="text"], textarea { */
-.styt-main, .styt-button {
+.styt-main, .styt-button, .styt-button-option {
    /* font-size: 4vmin; */
    font-size: 3vmin;
 }
@@ -59,7 +59,7 @@
    width: 100%;
 }
 
-.styt-button {
+.styt-button, .styt-button-option {
    /* vertical center */
    display: flex;
    flex-direction: column;
@@ -74,6 +74,10 @@
    color: white;
    /* padding: 12px 0px 0px 0px; */
    border-radius: 10px;
+}
+
+.styt-button-option {
+   margin-bottom: .5rem;
 }
 
 @media (orientation: landscape) {

@@ -229,7 +229,7 @@ class AuthorManager {
 
       const templateMd =
          await MessageBus.ext.request(
-            "data/template/" + template.replace("/", ".") + "/get");
+            "data/template/" + template.replace(/\//g, ".") + "/get");
 
       const caseId = await MessageBus.ext.request("data/case//new",
                                                   {format: "markdown",
@@ -266,8 +266,6 @@ class AuthorManager {
    }
 
    async _showCase(selectKnot) {
-      console.log("=== select knot (show case)");
-      console.log(selectKnot);
       await this._navigator.mountTreeCase(this, this._compiledCase.knots);
       
       let sk;
@@ -408,10 +406,14 @@ class AuthorManager {
                templateList.push(ts);
          }
       }
+      for (let tl of templateList)
+         tl.icon = Basic.service.imageResolver(tl.icon);
       const template = await DCCNoticeInput.displayNotice(
          "Select a template for your knot.",
          "list", "Select", "Cancel", templateList);
-      return template;
+      console.log("=== template selected");
+      console.log(template);
+      return (template == "Cancel") ? null : template;
    }
    
    /*
@@ -434,20 +436,23 @@ class AuthorManager {
             if (this._knots[knotid].categories &&
                 this._compiledCase.templates &&
                 this._compiledCase.templates.categories) {
-               console.log("=== templates");
                const templateCats = Object.keys(
                   this._compiledCase.templates.categories);
+               this._templateNewKnot = [];
                for (let cat of this._knots[knotid].categories)
-                  if (templateCats.includes(cat))
-                     this._templateNewKnot =
-                           this._compiledCase.templates.categories[cat];
+                  if (templateCats.includes(cat) &&
+                      !this._templateNewKnot.includes(
+                        this._compiledCase.templates.categories[cat]))
+                     this._templateNewKnot.push(
+                        this._compiledCase.templates.categories[cat]);
+               // deduplicate
                /*
-               for (let cat of this._knots[knotid].categories)
-                  for (let temp in this._compiledCase.templates.categories)
-                     if (cat == temp)
-                     this._templateNewKnot =
-                           this._compiledCase.templates.categories[temp];
+               this._templateNewKnot =
+                  this._templateNewKnot.filter(
+                     (item, pos) => c.indexOf(item) === pos);
                */
+               if (this._templateNewKnot.length == 0)
+                  this._templateNewKnot = null;
             }
             const extra =
                ((this._templateNewKnot == null) ? "" :
@@ -529,7 +534,7 @@ class AuthorManager {
                               this._templateNewKnot.replace("/", ".") + "/get");
          */
          let markdown = await MessageBus.ext.request("data/template/" +
-                              template.replace("/", ".") + "/get");
+                              template.replace(/\//g, ".") + "/get");
 
          let last = 1;
          for (let k in this._knots) {
@@ -565,15 +570,9 @@ class AuthorManager {
 
          let newSelected = null;
          const kl = Object.keys(this._knots);
-         console.log("=== knot list");
-         console.log(kl);
          const ki = kl.indexOf(this._knotSelected);
          if (ki > -1 && ki+1 < kl.length)
             newSelected = kl[ki+1];
-
-
-         console.log("=== new knot");
-         console.log(newSelected);
 
          // this._knotSelected = knotId;
          // const ki = this._knotSelected;
@@ -605,9 +604,6 @@ class AuthorManager {
 
       if (this._previousEditedDCC)
          this._previousEditedDCC.reactivateAuthor();
-
-      console.log("=== dcc id");
-      console.log(dccId);
 
       this._editableDCCs[dccId].edit(message);
 

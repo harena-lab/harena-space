@@ -1,56 +1,56 @@
-{"Starting Minimal":
-   {"description": "Minimal template.",
-    "path": "basic/starting_minimal",
-    "icon": "basic/images/picture_up_left.png",
+{"Linear Case-Diagnosis":
+   {"description": "Presents the description and requests the diagnosis.",
+    "path": "simple/case/linear_case_diagnosis",
+    "icon": "simple/images/linear_case_diagnosis.png",
     "scope": "case"},
- "Picture Up-Left":
-   {"description": "Template with a picture in the up-left corner.",
-    "path": "basic/picture_up_left",
-    "icon": "basic/images/picture_up_left.png",
-    "scope": "knot"},
- "Picture Up-Right":
-   {"description": "Template with a picture in the up-right corner.",
-    "path": "basic/picture_up_right",
-    "icon": "basic/images/picture_up_right.png",
-    "scope": "knot"},
+ "Quiz":
+   {"description": "Single question quiz with four options.",
+    "path": "simple/case/quiz",
+    "icon": "simple/case/quiz.png",
+    "scope": "case"},
+ "Quiz Sequence":
+   {"description": "A sequence of questions.",
+    "path": "simple/case/quiz_sequence",
+    "icon": "simple/case/quiz_sequence.png",
+    "scope": "case"},
+ "Linear Description-EKG":
+   {"description": "Linear description of the case followed by an EKG.",
+    "path": "simple/case/linear_details_ekg",
+    "icon": "simple/images/linear_details_ekg.png",
+    "scope": "case"},
  "Jacinto Standard EKG":
    {"description": "Standard cycle with an EKG.",
     "path": "jacinto/standard_eletro",
     "icon": "jacinto/images/standard_eletro.png",
     "scope": "case"},
- "Jacinto Supervisor":
-   {"description": "Standard supervisor assistance.",
-    "path": "jacinto/standard_supervisor",
-    "icon": "jacinto/images/standard_supervisor.png",
+ "Question":
+   {"description": "Single question quiz with four options.",
+    "path": "simple/knot/quiz_question",
+    "icon": "simple/knot/quiz_question.png",
     "scope": "knot"},
- "Linear Description-EKG":
-   {"description": "Linear description of the case followed by an EKG.",
-    "path": "simple/linear_details_ekg",
-    "icon": "simple/images/linear_details_ekg.png",
-    "scope": "case"},
- "Linear Case-Diagnosis":
-   {"description": "Presents the description and requests the diagnosis.",
-    "path": "simple/linear_case_diagnosis",
-    "icon": "simple/images/linear_case_diagnosis.png",
-    "scope": "case"},
  "Description":
    {"description": "Description of a case or report.",
-    "path": "simple/description",
+    "path": "simple/knot/description",
     "icon": "simple/images/description.png",
     "scope": "knot"},
  "Input":
    {"description": "Question with a text input.",
-    "path": "simple/input",
+    "path": "simple/knot/input",
     "icon": "simple/images/description.png",
     "scope": "knot"},
  "Input with Certainty":
    {"description": "Question with a text input and certainty.",
-    "path": "simple/input_certainty",
+    "path": "simple/knot/input_certainty",
     "icon": "simple/images/description.png",
     "scope": "knot"},
  "Exam Image":
    {"description": "Exam with image zoom.",
-    "path": "simple/exam_zoom",
+    "path": "simple/knot/exam_zoom",
     "icon": "simple/images/description.png",
+    "scope": "knot"},
+ "Jacinto Supervisor":
+   {"description": "Standard supervisor assistance.",
+    "path": "jacinto/standard_supervisor",
+    "icon": "jacinto/images/standard_supervisor.png",
     "scope": "knot"}
 }
