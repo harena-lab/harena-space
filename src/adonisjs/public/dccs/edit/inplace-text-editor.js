@@ -190,8 +190,10 @@ class EditDCCText extends EditDCC {
    _buildQuillEditor(selectOptions, oldDelta) {
       let inplaceContent = this._editor.querySelector("#inplace-content");
       if (!selectOptions) {
+         Translator.instance.authoringRender = false;
          let html = Translator.instance.markdownToHTML(
             Translator.instance.objToHTML(this._knotContent[this._element], -1));
+         Translator.instance.authoringRender = true;
          console.log("=== quill html");
          console.log(html);
 

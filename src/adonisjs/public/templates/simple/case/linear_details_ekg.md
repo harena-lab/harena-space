@@ -66,4 +66,4 @@ ___ Data ___
   * evidence: http://purl.org/versum/evidence/
 * templates:
   * categories:
-    * detailed: simple/description
+    * detailed: simple/knot/description

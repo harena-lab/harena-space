@@ -443,12 +443,18 @@ class Translator {
       // third cycle - define the identity of each item: field or list
       for (let c = 1; c < compiled.length; c++)
          if (compiled[c].type == "item") {
+            console.log("=== item");
+            console.log(compiled);
+            console.log(c);
             let u = c-1;
-            while (u >= 0 && compiled[u].type == "linefeed" ||
-                   (!Translator.element[compiled[u].type].subfield &&
-                    compiled[u].subordinate))
+            while (u >= 0 && (compiled[u].type == "linefeed" ||
+                   (Translator.element[compiled[u].type] &&
+                    !Translator.element[compiled[u].type].subfield &&
+                    compiled[u].subordinate)))
                u--;
-            if (u >= 0 && Translator.element[compiled[u].type].subfield) {
+            if (u >= 0 &&
+                (Translator.element[compiled[u].type] &&
+                 Translator.element[compiled[u].type].subfield)) {
                let field = {
                   type: "field",
                   presentation: compiled[c].presentation,
@@ -538,6 +544,13 @@ class Translator {
       let levelHierarchy = [];
       for (let c = 0; c < compiled.length; c++) {
          if (compiled[c].type == "field") {
+            /*
+            console.log("=== field");
+            console.log(lastRoot);
+            console.log(lastField);
+            console.log(lastLevel);
+            console.log(compiled[c]);
+            */
             if (lastRoot == null || !compiled[c].subordinate) {
                if (compiled[c].value == null)
                   compiled[c].value = {};
@@ -570,10 +583,6 @@ class Translator {
                   c--;
                }
             }
-         } else {
-            lastRoot = null;
-            lastField = null;
-            hierarchy = [];
          }
       }
 
@@ -927,6 +936,8 @@ class Translator {
       const backPath = (knot.background !== undefined)
          ? Basic.service.imageResolver(knot.background.path) : "";
       const backAlt = (knot.background !== undefined) ? knot.background.alternative : "";
+      console.log("=== before theme");
+      console.log(finalHTML);
       for (let tp = themes.length-1; tp >= 0; tp--)
          finalHTML = this._themeSet[themes[tp]]
             .replace(/{knot}/igm, finalHTML)

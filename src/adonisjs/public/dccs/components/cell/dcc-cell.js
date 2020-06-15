@@ -88,6 +88,17 @@ class DCCCell extends DCCBase {
       element.setAttribute("y", coordinates.y);
    }
 
+   createIndividualInitial(row, col, props) {
+      let light = this.createIndividual(row, col);
+      if (props != null) {
+         if (light.properties == null)
+            light.properties = {};
+         for (let p in props)
+            light.properties[p] = props[p];
+      }
+      return light;
+   }
+
    updateElementState(element, properties) {
       /* generic method to be refined in descendents */
    }
