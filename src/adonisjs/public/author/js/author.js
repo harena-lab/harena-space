@@ -396,12 +396,21 @@ class AuthorManager {
       */
    }
 
-   async _templateSelect(scope) {
-      const templateList = await MessageBus.ext.request("data/template/*/list",
-                                                        {scope: scope});
+   async _templateSelect(scope, filter) {
+      const templatesScope = await MessageBus.ext.request("data/template/*/list",
+                                                          {scope: scope});
+      
+      let templateList = templatesScope.message;
+      if (filter != null) {
+         templateList = [];
+         for (let ts of templatesScope.message) {
+            if (filter.includes(ts.id))
+               templateList.push(ts);
+         }
+      }
       const template = await DCCNoticeInput.displayNotice(
          "Select a template for your knot.",
-         "list", "Select", "Cancel", templateList.message);
+         "list", "Select", "Cancel", templateList);
       return template;
    }
    
@@ -425,11 +434,20 @@ class AuthorManager {
             if (this._knots[knotid].categories &&
                 this._compiledCase.templates &&
                 this._compiledCase.templates.categories) {
+               console.log("=== templates");
+               const templateCats = Object.keys(
+                  this._compiledCase.templates.categories);
+               for (let cat of this._knots[knotid].categories)
+                  if (templateCats.includes(cat))
+                     this._templateNewKnot =
+                           this._compiledCase.templates.categories[cat];
+               /*
                for (let cat of this._knots[knotid].categories)
                   for (let temp in this._compiledCase.templates.categories)
                      if (cat == temp)
-                        this._templateNewKnot =
+                     this._templateNewKnot =
                            this._compiledCase.templates.categories[temp];
+               */
             }
             const extra =
                ((this._templateNewKnot == null) ? "" :
@@ -440,12 +458,12 @@ class AuthorManager {
 
             // Properties.s.editKnotProperties(this._knots[this._knotSelected],
             //                                 this._knotSelected, miniature, extra);
-            // if (this._templateNewKnot != null) {
+            if (this._templateNewKnot != null) {
                const miniBox = miniature.getBoundingClientRect();
                this._buildFloatingMenu(miniBox.left, miniBox.top,
                   "<dcc-trigger action='control/knot/new' label='Add' xstyle='in'>" +
                   "</dcc-trigger>");
-            // }
+            }
          } else {
             if (this._miniPrevious)
                this._miniPrevious.classList.remove("sty-selected-knot");
@@ -501,8 +519,8 @@ class AuthorManager {
     */
     async knotNew() {
       this._removeFloatingMenu();
-      // <TODO> reactivate in the future
-      let template = await this._templateSelect("knot");
+      
+      let template = await this._templateSelect("knot", this._templateNewKnot);
 
       // if (this._templateNewKnot != null) {
       if (template != null) {

@@ -46,8 +46,8 @@ class DCCCellImage extends DCCCell {
 
    updateElementState(element, properties, row, col) {
       const center = this.space.computeCellCenter(row, col);
-      console.log("=== center");
-      console.log(row + "," + col + "," + center.x + "," + center.y);
+      // console.log("=== center");
+      // console.log(row + "," + col + "," + center.x + "," + center.y);
       if (properties && properties.rotate)
          element.setAttribute("transform",
             "rotate(" + properties.rotate + "," + center.x + "," + center.y + ")");

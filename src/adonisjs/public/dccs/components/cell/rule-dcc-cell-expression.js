@@ -158,6 +158,7 @@ class RuleDCCCellAgent extends RuleDCCTransition {
       console.log(row + "," + col + "," + nr + "," + nc);
       */
 
+      let changeRotate = false;
       if (nr >= 0 && nr < spaceState.nrows &&
           nc >= 0 && nc < spaceState.ncols) {
          triggered = this._computeTransition(spaceState, row, col, nr, nc);
@@ -170,27 +171,38 @@ class RuleDCCCellAgent extends RuleDCCTransition {
             col = nc;
          }
       }
-
-      nr = row + movement[0];
-      nc = col + movement[1];
-      if (spaceState.infinite) {
-         nr = (nr < 0) ? spaceState.nrows - 1 : nr % spaceState.nrows;
-         nc = (nc < 0) ? spaceState.ncols - 1 : nc % spaceState.ncols;
+      if (!triggered) {
+         changeRotate = true;
+         let desvio = (parseInt(spaceState.state[row][col].properties.rotate) +
+             ((Math.random() >= 0.5) ? 45 : -45));
+         desvio = (desvio < 0) ? 315 : ((desvio > 315) ? 0 : desvio);
+         spaceState.state[row][col].properties.rotate = "" + desvio;
+         console.log("=== desvio");
+         console.log(spaceState.state[row][col].properties.rotate);
       }
-      if (nr >= 0 && nr < spaceState.nrows &&
-          nc >= 0 && nc < spaceState.ncols) {
-         if (spaceState.state[nr][nc] != null &&
-             spaceState.state[nr][nc].properties &&
-             spaceState.state[nr][nc].properties.rotate) {
-            let rotateOrigin = parseInt(spaceState.state[row][col].properties.rotate);
-            let rotateTarget = parseInt(spaceState.state[nr][nc].properties.rotate);
-            if (rotateOrigin > rotateTarget)
-               spaceState.state[row][col].properties.rotate = "" + (rotateOrigin - 45);
-            else if (rotateOrigin < rotateTarget)
-               spaceState.state[row][col].properties.rotate = "" + (rotateOrigin + 45);
-            spaceState.state[row][col].dcc.updateElementState(
-                  spaceState.state[row][col].element,
-                  spaceState.state[row][col].properties, row+1, col+1);
+
+      if (!changeRotate) {
+         nr = row + movement[0];
+         nc = col + movement[1];
+         if (spaceState.infinite) {
+            nr = (nr < 0) ? spaceState.nrows - 1 : nr % spaceState.nrows;
+            nc = (nc < 0) ? spaceState.ncols - 1 : nc % spaceState.ncols;
+         }
+         if (nr >= 0 && nr < spaceState.nrows &&
+             nc >= 0 && nc < spaceState.ncols) {
+            if (spaceState.state[nr][nc] != null &&
+                spaceState.state[nr][nc].properties &&
+                spaceState.state[nr][nc].properties.rotate) {
+               let rotateOrigin = parseInt(spaceState.state[row][col].properties.rotate);
+               let rotateTarget = parseInt(spaceState.state[nr][nc].properties.rotate);
+               if (rotateOrigin > rotateTarget)
+                  spaceState.state[row][col].properties.rotate = "" + (rotateOrigin - 45);
+               else if (rotateOrigin < rotateTarget)
+                  spaceState.state[row][col].properties.rotate = "" + (rotateOrigin + 45);
+               spaceState.state[row][col].dcc.updateElementState(
+                     spaceState.state[row][col].element,
+                     spaceState.state[row][col].properties, row+1, col+1);
+            }
          }
       }
 
