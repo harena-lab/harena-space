@@ -321,6 +321,7 @@ class ScriptBlocksCell {
                  "options": [
                     ["movimenta", "move"],
                     ["duplica", "duplicate"],
+                    ["desaparece", "vanish"],
                     ["rastro", "trail"]
                  ]
                },
@@ -488,6 +489,7 @@ _*_
    ScriptBlocksCell.transitions = {
       "move":      "_o_t>_t_o",
       "duplicate": "_o_t>_o_o",
+      "vanish":    "_o_t>__t",
       "trail":     "_o_t>#_o"
    };
 })();
