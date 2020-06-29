@@ -1,40 +1,55 @@
-Bloco
+Block
 =====
 
-## Apresentação (quiz)
+## Presentation (quiz)
 
-Apresentação do caso.
+Write here the **stem** of your quiz.
 
-Escolha uma das opções a seguir:
+> Write here the lead-in of your question.
+? hypothesis
+  * type: choice
+  * exclusive
+  * scramble
+  * choice:
+    * Answer-key: Answer-key
+    * Distractor A: Distractor A
+    * Distractor B: Distractor B
+    * Distractor C: Distractor C
 
-* Opção 1 -> Opção 1 Incorreta
-* Opção 2 -> Opção 2 Incorreta
-* Opção 3 -> Opção 3 Correta
-* Opção 4 -> Opção 4 Incorreta
+* Answer -> Variable.hypothesis
 
-## Opção 1 Incorreta (detailed)
+## Answer-key (detailed, end)
 
-Escreva aqui o feedback da resposta incorreta na questão 1.
+You answered: ^Block.Presentation.hypothesis^.
 
-* Retorna -> Questão
+Write here the feedback for the answer-key.
 
-## Opção 2 Incorreta (detailed)
+* Next Case -> Case.Next
+* Return -> Presentation
 
-Escreva aqui o feedback da resposta incorreta na questão 2.
+## Distractor A (detailed)
 
-* Retorna -> Questão
+You answered: ^Block.Presentation.hypothesis^.
 
-## Opção 3 Correta (detailed,end)
+Write here the feedback for the distractor A.
 
-Escreva aqui o feedback da resposta correta.
+* Return -> Presentation
 
-* Próximo caso -> Case.Next
+## Distractor B (detailed)
 
-## Opção 4 Incorreta (detailed)
+You answered: ^Block.Presentation.hypothesis^.
 
-Escreva aqui o feedback da resposta incorreta na questão 4.
+Write here the feedback for the distractor B.
 
-* Retorna -> Questão
+* Return -> Presentation
+
+## Distractor C (detailed)
+
+You answered: ^Block.Presentation.hypothesis^
+
+Write here the feedback for the distractor C.
+
+* Return -> Presentation
 
 ___ Flow ___
 

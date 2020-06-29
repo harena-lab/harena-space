@@ -86,6 +86,9 @@ class DCCExpression extends DCCVisual {
          compiled[0] = assign[1].trim();
          compiled[1] =
             DCCExpression.compileExpression(statement.substring(assign[0].length));
+      } else {
+         compiled[0] = null;
+         compiled[1] = DCCExpression.compileExpression(statement);
       }
       return compiled;
    }

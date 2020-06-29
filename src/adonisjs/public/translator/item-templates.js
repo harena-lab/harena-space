@@ -38,42 +38,16 @@ entity:
 `<dcc-entity id='dcc[seq]'[author] entity='[entity]'[image][alternative][title]>[text]</dcc-entity>`,
 mention:
 `<b>[entity]: </b>`,
-/*
-"talk-open":
-`
-
-<dcc-talk id='dcc[seq]'[author] character='[character]'[image][alt]>
-
-`,
-"talk-close":
-`
-
-</dcc-talk>
-
-`,
-*/
 input:
 `<dcc-[dcc] id='dcc[seq]'[author][extra]>[statement]</dcc-[dcc]>`,
+choice:
+`<dcc-input-option value="[value]">[choice]</dcc-input-option><br>`,
 output:
 `<dcc-expression id='dcc[seq]'[author] expression='[variable][index]'[variant]></dcc-expression>`,
 compute:
 `<dcc-compute instruction='[instruction]'></dcc-compute>`,
 domain:
 `[natural]`,
-/*
-selctxopen:
-`
-
-<dcc-group-select id='dcc[seq]'[author] context='[context]'[input]>
-
-`,
-selctxclose:
-`
-
-</dcc-group-select>
-
-`,
-*/
 select:
 `<dcc-state-select id='dcc[seq]'[author][answer]>[expression]</dcc-state-select>`
 };

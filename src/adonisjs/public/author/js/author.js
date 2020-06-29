@@ -105,7 +105,7 @@ class AuthorManager {
 
       if (authorState.template) {
          Basic.service.authorPropertyRemove("template");
-         this.caseNew(authorState.template);
+         this.caseNew(authorState.template.id);
       } else
          this._caseLoad(authorState.caseId);
 

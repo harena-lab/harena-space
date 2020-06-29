@@ -126,6 +126,12 @@ class PlayState {
    variableGet(topic, message) {
       let id = MessageBus.extractLevel(topic, 2);
 
+      console.log("=== variable request");
+      console.log(id);
+
+      console.log("=== variables");
+      console.log(this._state.variables);
+
       // tries to give a scope to the variable
       if (id != null && this._state.variables[id] == null) {
          const currentKnot = this.historyCurrent();

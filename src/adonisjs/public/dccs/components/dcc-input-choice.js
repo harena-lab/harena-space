@@ -80,6 +80,8 @@ class DCCInputOption extends DCCInput {
    
    inputChanged() {
       this.changed = true;
+      console.log("=== changed notification");
+      console.log(this.value);
       MessageBus.ext.publish("var/" + this.variable + "/changed",
                              {sourceType: DCCInputOption.elementTag,
                               value: this.value});
@@ -136,6 +138,10 @@ class DCCInputChoice extends DCCInput {
    
    async connectedCallback() {
       super.connectedCallback();
+
+      // <TODO> To avoid recursivity -- improve
+      if (!this.hasAttribute("statement"))
+         this._statement = null;
    }
 
    disconnectedCallback() {
@@ -168,6 +174,8 @@ class DCCInputChoice extends DCCInput {
    
    inputChanged(event) {
       this.changed = true;
+      console.log("=== changed notification");
+      console.log(event);
       MessageBus.ext.publish("var/" + this.variable + "/changed",
                              {sourceType: DCCInputChoice.elementTag,
                               value: event.target.value});
@@ -211,15 +219,17 @@ class DCCInputChoice extends DCCInput {
       let child = this.firstChild;
       let html = "<div id='presentation-dcc'>";
       let nop = 0;
+      const varid = this.variable.replace(/\./g, "_");
       // for (let o of this._options) {
       while (child != null) {
          if (child.nodeType == 3)
             html += child.textContent;
-         else if (child.tagName && child.tagName.toLowerCase() == DCCInputOption.elementTag) {
+         else if (child.tagName &&
+            child.tagName.toLowerCase() == DCCInputOption.elementTag) {
             nop++;
             html +=
             "<input id='[id]' type='[exclusive]' name='[variable]' value='[value]'[checked]>[statement]</input>"
-                  .replace("[id]", this.variable + nop)
+                  .replace("[id]", varid + nop)
                   .replace("[exclusive]",
                      (this.hasAttribute("exclusive") ? "radio" : "checkbox"))
                   .replace("[variable]", this.variable)
@@ -232,10 +242,12 @@ class DCCInputChoice extends DCCInput {
          // v++;
       }
       html += "</div>";
+      this.innerHTML = "";
 
       // === presentation setup (DCC Block)
       let presentation;
-      if (this.hasAttribute("xstyle") && this.xstyle.startsWith("out")) {
+      if (this.hasAttribute("xstyle") && this.xstyle.startsWith("out") &&
+          this._statement != null) {
          await this._applyRender(this._statement, "innerHTML", "text");
          presentation = await this._applyRender(html, "innerHTML", "input");
       } else
@@ -246,7 +258,10 @@ class DCCInputChoice extends DCCInput {
          // v = 1;
          // for (let o of this._options) {
          for (let v = 1; v <= nop; v++) {
-            let op = presentation.querySelector("#" + this.variable + v);
+            console.log("=== listener");
+            console.log("#" + varid + v);
+            let op = presentation.querySelector("#" + varid + v);
+            console.log(op);
             if (op != null) {
                op.addEventListener("change", this.inputChanged);
                this._options.push(op);

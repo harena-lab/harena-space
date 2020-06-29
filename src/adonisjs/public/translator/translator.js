@@ -367,16 +367,16 @@ class Translator {
              compiled[c].variable.indexOf(".") == -1)
             compiled[c].variable = knotId + "." + compiled[c].variable;
             // <TODO> can be interesting this link in the future
-            // compiled[c].variable = this._findContext(knotSet, knotId, compiled[c].variable);
+            // compiled[c].variable = this.findContext(knotSet, knotId, compiled[c].variable);
          else if (compiled[c].type == "context-open" &&
                   compiled[c].input.indexOf(".") == -1)
             compiled[c].input = knotId + "." + compiled[c].input;
              // <TODO> can be interesting this link in the future
-            // compiled[c].input = this._findContext(knotSet, knotId, compiled[c].input);
+            // compiled[c].input = this.findContext(knotSet, knotId, compiled[c].input);
          else if (compiled[c].type == "option" ||
                   compiled[c].type == "divert")
             compiled[c].contextTarget =
-               this._findContext(knotSet, knotId, compiled[c].target);
+               this.findContext(knotSet, knotId, compiled[c].target);
          /*
          {
             let target = compiled[c].target.replace(/ /g, "_");
@@ -393,7 +393,7 @@ class Translator {
       }
    }
 
-   _findContext(knotSet, knotId, originalTarget) {
+   findContext(knotSet, knotId, originalTarget) {
       let target = originalTarget.replace(/ /g, "_");
       if (!Translator.reservedNavigation.includes(target.toLowerCase())) {
          let prefix = knotId + ".";
@@ -443,9 +443,11 @@ class Translator {
       // third cycle - define the identity of each item: field or list
       for (let c = 1; c < compiled.length; c++)
          if (compiled[c].type == "item") {
+            /*
             console.log("=== item");
             console.log(compiled);
             console.log(c);
+            */
             let u = c-1;
             while (u >= 0 && (compiled[u].type == "linefeed" ||
                    (Translator.element[compiled[u].type] &&
@@ -829,7 +831,7 @@ class Translator {
       let knots = compiledCase.knots;
       for (let k in knots) {
          if (knots[k].inheritance) {
-            const target = this._findContext(knots, k, knots[k].inheritance);
+            const target = this.findContext(knots, k, knots[k].inheritance);
             if (knots[target]) {
                if (!knots[k].categories && knots[target].categories)
                   knots[k].categories = knots[target].categories;
@@ -936,8 +938,10 @@ class Translator {
       const backPath = (knot.background !== undefined)
          ? Basic.service.imageResolver(knot.background.path) : "";
       const backAlt = (knot.background !== undefined) ? knot.background.alternative : "";
+      /*
       console.log("=== before theme");
       console.log(finalHTML);
+      */
       for (let tp = themes.length-1; tp >= 0; tp--)
          finalHTML = this._themeSet[themes[tp]]
             .replace(/{knot}/igm, finalHTML)
@@ -1506,6 +1510,8 @@ class Translator {
       const lower = target.toLowerCase();
       if (Translator.reservedNavigation.includes(lower))
          message = Translator.navigationMap[lower];
+      else if (lower.startsWith("variable."))
+         message = "variable/" + target.substring(9) + "/navigate";
       else
          message = "knot/" + target + "/navigate";
       return message;
@@ -1805,18 +1811,27 @@ class Translator {
    _inputObjToHTML(obj) {
       // core attributes are not straight mapped
       const coreAttributes = ["seq", "author", "type", "subtype", "text",
-                              "show", "_source", "_modified", "mergeLine"];
+                              "show", "choice",
+                              "_source", "_modified", "mergeLine"];
       const subtypeMap = {
          short: "input-typed",
          text: "input-typed",
          "group select": "group-select",
          slider: "slider",
-         table: "input-table"
+         table: "input-table",
+         choice: "input-choice"
       };
       const subtype = (obj.subtype)
          ? subtypeMap[obj.subtype] : subtypeMap.short;
 
-      const statement = (obj.text) ? obj.text : "";
+      let statement = (obj.text) ? obj.text : "";
+      if (subtype == "input-choice" && obj.choice) {
+         statement += "<br>";
+         for (let ch in obj.choice)
+            statement += Translator.htmlTemplates.choice
+               .replace("[choice]", ch)
+               .replace("[value]", obj.choice[ch]);
+      }
 
       // <TODO> provisory - weak strategy (only one per case)
       let answer="";
