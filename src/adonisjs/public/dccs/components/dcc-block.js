@@ -127,7 +127,8 @@ class DCCBlock extends DCCMultiVisual {
          ? ((DCCBlock.defaultRoles.includes(role)) ? "" : "-" + role) : "";
 
       let presentation = null;
-      // location #in to indicate the location is not absent
+      // location #in to indicate the location attribute is not absent
+      // but is not outside 
       if (this.xstyle.startsWith("out") &&
           this.hasAttribute("location") && this.location != "#in") {
          /*
@@ -149,7 +150,7 @@ class DCCBlock extends DCCMultiVisual {
          let wrapper = document.querySelector("#" + this.location + "-wrapper");
          if (wrapper != null) {
             if (wrapper.style.display)  // html
-               delete wrapper.style.display;
+               wrapper.style.display = "flex";
             if (wrapper.getAttribute("visibility"))  // svg
                delete wrapper.removeAttribute("visibility");
          }

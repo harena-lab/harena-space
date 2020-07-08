@@ -14,9 +14,10 @@ class TemplateManager {
       for (let t in tl) {
          let tid = tl[t].id.replace(/\//ig, "__");
          let template = document.createElement("template");
+         let imageIcon = Basic.service.imageResolver(tl[t].icon);
          template.innerHTML = TemplateManager.templateBox
             .replace("[id]", tid)
-            .replace("[icon]", Basic.service.imageResolver(tl[t].icon))
+            .replace("[icon]", imageIcon)
             .replace("[title]", tl[t].name)
             .replace("[description]", tl[t].description);
          this._boxesPanel.appendChild(template.content.cloneNode(true));
@@ -24,8 +25,12 @@ class TemplateManager {
          box.addEventListener("click",
                function(){
                   let tid = this.id.replace(/__/ig, "/");
-                  Basic.service.authorPropertyStore("template", tid);
-                  window.location.href = 'author.html';
+                  Basic.service.authorPropertyStore("template",
+                     {id: tid,
+                      icon: imageIcon,
+                      title: tl[t].name,
+                      description: tl[t].description});
+                  window.location.href = 'template-case.html';
                }
             );
       }

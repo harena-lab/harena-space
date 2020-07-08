@@ -90,11 +90,7 @@ class DCCStyler extends DCCBase {
     */
    requestLocation(topic, message) {
       let location;
-      if ((this.hasAttribute("distribution") && this.distribution == "generic") &&
-          (!this._targeted || !this._targeted.includes(message.body))) {
-         location = DCCBlock.locationType + "-" + this._locationSet.generic;
-         this._locationSet.generic++;
-      } else {
+      if (this._targeted && this._targeted.includes(message.body)) {
          let counter = 1;
          if (this._locationSet[message.body] === undefined)
             this._locationSet[message.body] = 1;
@@ -103,7 +99,11 @@ class DCCStyler extends DCCBase {
             counter = this._locationSet[message.body];
          }
          location = message.body + "-" + counter;
-      }
+      } else if (this.hasAttribute("distribution") && this.distribution == "generic") {
+         location = DCCBlock.locationType + "-" + this._locationSet.generic;
+         this._locationSet.generic++;
+      } else
+         location = "#in";
       MessageBus.page.publish(
          MessageBus.buildResponseTopic(topic, message), location);
    }

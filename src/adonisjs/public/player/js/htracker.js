@@ -54,6 +54,9 @@ class Tracker {
    }
    
    inputChanged(topic, message) {
+      console.log("=== update input variable");
+      console.log(topic);
+      console.log(message);
       this._updateVariable(topic, message.value);
    }
    
