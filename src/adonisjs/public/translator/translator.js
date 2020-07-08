@@ -1825,12 +1825,12 @@ class Translator {
          ? subtypeMap[obj.subtype] : subtypeMap.short;
 
       let statement = (obj.text) ? obj.text : "";
-      if (subtype == "input-choice" && obj.choice) {
+      if (subtype == "input-choice" && obj.options) {
          statement += "<br>";
-         for (let ch in obj.choice)
+         for (let op in obj.options)
             statement += Translator.htmlTemplates.choice
-               .replace("[choice]", ch)
-               .replace("[value]", obj.choice[ch]);
+               .replace("[option]", op)
+               .replace("[value]", obj.options[op]);
       }
 
       // <TODO> provisory - weak strategy (only one per case)

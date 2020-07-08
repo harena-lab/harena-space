@@ -162,7 +162,7 @@ class Properties {
          value = (value.includes("."))
                   ? value.substring(value.lastIndexOf(".")+1) : value;
       else if (property.type == "select" &&
-                 typeof property.options === "string") {
+               typeof property.options === "string") {
          switch (property.options) {
             case "selectVocabulary":
                property.options = Context.instance.listSelectVocabularies();
@@ -180,11 +180,7 @@ class Properties {
          }
       }
       let fields = null;
-      if (property.type != "select")
-         fields = Properties.fieldTypes[property.type]
-                            .replace(/\[label\]/igm, property.label)
-                            .replace(/\[value\]/igm, value);
-      else {
+      if (property.type == "select") {
          fields = Properties.fieldTypes.selectOpen
                             .replace(/\[label\]/igm, property.label);
          let hasSelection = false;
@@ -207,7 +203,19 @@ class Properties {
                                 .replace(/\[oplabel\]/igm, value)
                                 .replace(/\[selected\]/igm, " selected");
          fields += Properties.fieldTypes.selectClose;
-      }
+      } else if (property.type == "propertyValue") {
+         console.log("=== options");
+         console.log(value);
+         fields = Properties.fieldTypes.propertyValueOpen
+                            .replace(/\[label\]/igm, property.label);
+         for (let op in value)
+            fields += Properties.fieldTypes.propertyValueOption
+                                .replace(/\[property\]/igm, op)
+                                .replace(/\[value\]/igm, value[op]);
+      } else    
+         fields = Properties.fieldTypes[property.type]
+                            .replace(/\[label\]/igm, property.label)
+                            .replace(/\[value\]/igm, value);
 
       return {details: fields.replace(/\[n\]/igm, seq + "_d"),
               short:   fields.replace(/\[n\]/igm, seq + "_s")};
@@ -299,6 +307,8 @@ class Properties {
                   categories[c] = categories[c].trim();
                objProperty = categories;
             }
+            break;
+         case "propertyValue":
             break;
          case "select":
             objProperty = field.value;
@@ -422,6 +432,21 @@ input: {
       index: {type: "shortStr",
               label: "Index",
               visual: "panel"}
+   },
+   choice: {
+      input:  {type: "void",
+               visual: "inline",
+               role: "input"},
+      text:    {type: "shortStr",
+                label: "Statement",
+                visual: "inline",
+                role: "text"},
+      variable: {type: "variable",
+                 label: "Variable",
+                 visual: "panel"},
+      options: {type: "propertyValue",
+                label: "options",
+                visual: "panel"}
    }
 }
 };
@@ -461,6 +486,15 @@ selectOption:
 `    <option value="[opvalue]"[selected]>[oplabel]</option>`,
 selectClose:
 `  </select>
+</div>`,
+propertyValueOpen:
+`<div class="styp-field-row">
+   <label class="styp-field-label">[label]</label>
+</div>`,
+propertyValueOption:
+`<div class="styp-field-pair">
+   <input type="text" id="pfieldprop[n]" class="styp-field-value" size="10" value="[property]">
+   <textarea style="height:100%" id="pfield[n]" class="styp-field-value" size="20">[value]</textarea>
 </div>`
 };
 

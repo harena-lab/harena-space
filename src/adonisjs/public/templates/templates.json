@@ -5,8 +5,8 @@
     "scope": "case"},
  "Quiz":
    {"description": "Single question quiz with four options.",
-    "path": "simple/case/quiz",
-    "icon": "simple/case/quiz.png",
+    "path": "simple/case/quiz_short",
+    "icon": "simple/case/quiz_short.png",
     "scope": "case"},
  "Quiz Sequence":
    {"description": "A sequence of questions.",
