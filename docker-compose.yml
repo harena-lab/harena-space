@@ -3,12 +3,8 @@ version: '3'
 services:
 
   harena-space:
-<<<<<<< HEAD
-    image: datasci4health/harena-space:v1
-=======
     container_name: harena-space
     image: faguim/harena-space:latest
->>>>>>> feature/49
     ports:
       - "10010:10010"
     environment:
@@ -30,8 +26,6 @@ services:
     networks:
       - harena-space
 
-<<<<<<< HEAD
-=======
   harena-manager:
     image: faguim/harena-manager:latest
     container_name: harena-manager
@@ -92,7 +86,6 @@ volumes:
   harena-manager-database:
     driver: "local"
 
->>>>>>> feature/49
 networks:
   harena-space:
     driver: bridge

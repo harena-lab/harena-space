@@ -1,8 +1,8 @@
 {
-  "name": "adonis-fullstack-app",
-  "version": "4.1.0",
-  "adonis-version": "4.1.0",
-  "description": "The fullstack application boilerplate for Adonisjs",
+  "name": "harena-space",
+  "version": "1.0.0",
+  "adonis-version": "5.0.0-preview",
+  "description": "Front-end of the Harena education project",
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
@@ -12,7 +12,7 @@
     "adonisjs",
     "adonis-app"
   ],
-  "author": "",
+  "author": "harena-lab-team",
   "license": "UNLICENSED",
   "private": true,
   "dependencies": {
