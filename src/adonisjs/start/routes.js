@@ -18,6 +18,15 @@ const Route = use("Route");
 
 Route.get('/', () => { return 'Hello from the harena-space'} )
 
+Route.on("/").render("home");
+
+// Those routes should be only accessible
+// when you are not logged in
+Route.group(() => {
+   Route.get('', 'AuthController.create')
+   Route.post('', 'AuthController.login')
+}).prefix('/login').middleware(['guest'])
+
 /*
 let harenaManagerUrl =
    Env.get("HARENA_MANAGER_URL", "http://localhost:3000/api/v1/");
