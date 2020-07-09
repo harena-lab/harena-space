@@ -31,7 +31,8 @@
     "npm": "^6.14.3"
   },
   "devDependencies": {
-    "cypress": "^4.10.0"
+    "cypress": "^4.10.0",
+    "jest": "^26.1.0"
   },
   "autoload": {
     "App": "./app"
