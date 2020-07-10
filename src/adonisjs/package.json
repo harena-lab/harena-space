@@ -28,7 +28,10 @@
     "@adonisjs/shield": "^1.0.8",
     "npm": "^6.14.3"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "cypress": "^4.10.0",
+    "jest": "^26.1.0"
+  },
   "autoload": {
     "App": "./app"
   }
