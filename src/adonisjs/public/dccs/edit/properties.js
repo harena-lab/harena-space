@@ -442,8 +442,7 @@ input: {
                 visual: "inline",
                 role: "text"},
       variable: {type: "variable",
-                 label: "Variable",
-                 visual: "panel"},
+                 label: "Variable"},
       options: {type: "propertyValue",
                 label: "options",
                 visual: "panel"}
