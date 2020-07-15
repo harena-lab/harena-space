@@ -43,11 +43,6 @@ class Properties {
       // <TODO> Provisory
       const svg = ["jacinto", "simple-svg"].
          includes(Basic.service.currentThemeFamily);
-      console.log("=== todos");
-      console.log(knotContent);
-      console.log(el);
-      console.log(dcc);
-
       if (editp.inlineProperty != null) {
          switch (editp.inlineProfile.type) {
             case "void":
@@ -204,14 +199,16 @@ class Properties {
                                 .replace(/\[selected\]/igm, " selected");
          fields += Properties.fieldTypes.selectClose;
       } else if (property.type == "propertyValue") {
-         console.log("=== options");
-         console.log(value);
          fields = Properties.fieldTypes.propertyValueOpen
                             .replace(/\[label\]/igm, property.label);
-         for (let op in value)
+         let sub = 1;
+         for (let op in value) {
             fields += Properties.fieldTypes.propertyValueOption
+                                .replace(/\[sn\]/igm, "_" + sub)
                                 .replace(/\[property\]/igm, op)
                                 .replace(/\[value\]/igm, value[op]);
+            sub++;
+         }
       } else    
          fields = Properties.fieldTypes[property.type]
                             .replace(/\[label\]/igm, property.label)
@@ -309,6 +306,17 @@ class Properties {
             }
             break;
          case "propertyValue":
+            objProperty = {};
+            let sub = 1;
+            let fp = null;
+            do {
+               fp = panel.querySelector("#pfieldprop" + seq + sufix + "_" + sub);
+               if (fp != null) {
+                  let fv = panel.querySelector("#pfield" + seq + sufix + "_" + sub);
+                  objProperty[fp.value.trim()] = fv.value.trim();
+                  sub++;
+               }
+            } while (fp != null);
             break;
          case "select":
             objProperty = field.value;
@@ -437,7 +445,7 @@ input: {
       input:  {type: "void",
                visual: "inline",
                role: "input"},
-      text:    {type: "shortStr",
+      text:    {type: "text",
                 label: "Statement",
                 visual: "inline",
                 role: "text"},
@@ -492,8 +500,8 @@ propertyValueOpen:
 </div>`,
 propertyValueOption:
 `<div class="styp-field-pair">
-   <input type="text" id="pfieldprop[n]" class="styp-field-value" size="10" value="[property]">
-   <textarea style="height:100%" id="pfield[n]" class="styp-field-value" size="20">[value]</textarea>
+   <input type="text" id="pfieldprop[n][sn]" class="styp-field-value" size="10" value="[property]">
+   <textarea style="height:100%" id="pfield[n][sn]" class="styp-field-value" size="20">[value]</textarea>
 </div>`
 };
 

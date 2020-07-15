@@ -159,9 +159,10 @@ class DCCBlock extends DCCMultiVisual {
           * complete internal interface
           */
          // check if there is a "presentation-dcc"
-         const presentationDCC = /id=['"]presentation-dcc['"]/im;
+         const presentationDCC = /id=['"]presentation-dcc.*['"]/im;
          if (!presentationDCC.test(html))
-            html = "<div id='presentation-dcc'>" + html + "</div>"
+            html = "<div id='presentation-dcc" + ((role) ? "-" + role : "") +
+                   "'>" + html + "</div>"
 
          if (this.xstyle == "in")
             html = "<style>@import '" +
@@ -180,7 +181,8 @@ class DCCBlock extends DCCMultiVisual {
              this.xstyle == "none")
             host = this.attachShadow({mode: "open"});
          host.appendChild(template.content.cloneNode(true));
-         presentation = host.querySelector("#presentation-dcc");
+         presentation = host.querySelector("#presentation-dcc" +
+                                           ((role) ? "-" + role : ""));
       }
       if (role)
          this._storePresentation(presentation, role);

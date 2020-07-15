@@ -217,15 +217,15 @@ class DCCInputChoice extends DCCInput {
       */
 
       let child = this.firstChild;
-      let html = "<div id='presentation-dcc'>";
+      let html = "";
       let nop = 0;
       const varid = this.variable.replace(/\./g, "_");
+      let inStatement = true;
+      let statement = "";
       // for (let o of this._options) {
       while (child != null) {
-         if (child.nodeType == 3)
-            html += child.textContent;
-         else if (child.tagName &&
-            child.tagName.toLowerCase() == DCCInputOption.elementTag) {
+         if (child.tagName &&
+             child.tagName.toLowerCase() == DCCInputOption.elementTag) {
             nop++;
             html +=
             "<input id='[id]' type='[exclusive]' name='[variable]' value='[value]'[checked]>[statement]</input>"
@@ -236,18 +236,34 @@ class DCCInputChoice extends DCCInput {
                   .replace("[value]", child.value)
                   .replace("[statement]", child._statement)
                   .replace("[checked]", child.hasAttribute("checked") ? " checked" : "");
-         } else
-            html += child.outerHTML;
+            inStatement = false;
+         } else {
+            const element = (child.nodeType == 3) ? child.textContent : child.outerHTML;
+            if (inStatement && this._statement == null)
+               statement += element;
+            else
+               html += element;
+            /*
+            if (child.nodeType == 3)
+               html += child.textContent;
+            else
+               html += child.outerHTML;
+            */
+         }
          child = child.nextSibling;
          // v++;
       }
-      html += "</div>";
+      if (statement.length > 0)
+         this._statement = statement;
       this.innerHTML = "";
 
       // === presentation setup (DCC Block)
       let presentation;
+      /*
       if (this.hasAttribute("xstyle") && this.xstyle.startsWith("out") &&
           this._statement != null) {
+      */
+      if (this._statement != null) {
          await this._applyRender(this._statement, "innerHTML", "text");
          presentation = await this._applyRender(html, "innerHTML", "input");
       } else

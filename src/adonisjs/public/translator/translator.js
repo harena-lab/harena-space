@@ -1875,12 +1875,20 @@ class Translator {
     */
    _inputObjToMd(obj) {
       // core attributes are not straight mapped
-      const coreAttributes = ["seq", "author", "variable", "type", "subtype", "text",
+      const coreAttributes = ["seq", "author", "variable", "type", "subtype",
+                              "text", "options",
                               "_source", "_modified", "mergeLine"];
       let extraAttr = "";
+      console.log("=== obj to md - input");
+      console.log(obj);
       for (let atr in obj)
          if (!coreAttributes.includes(atr))
             extraAttr += this._mdSubField(atr, obj[atr]);
+         else if (atr == "options") {
+            extraAttr += "\n  * options:";
+            for (let p in obj[atr])
+               extraAttr += "\n    * " + p + ": " + obj[atr][p];
+         }
 
       return Translator.markdownTemplates.input
                           .replace("{statement}", (obj.text) ? "> " + obj.text + "\n" : "")
