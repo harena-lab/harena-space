@@ -236,9 +236,9 @@ class Translator {
       
       this._compileUnityMarkdown(knot);
 
-      this._compileContext(knotSet, knotId);
-
       this._compileMerge(knot);
+
+      this._compileContext(knotSet, knotId);
 
       // this._compileCompose(compiledKnot);
       
@@ -363,11 +363,15 @@ class Translator {
    _compileContext(knotSet, knotId) {
       let compiled = knotSet[knotId].content;
       for (let c in compiled) {
-         if (compiled[c].type == "input" &&
-             compiled[c].variable.indexOf(".") == -1)
-            compiled[c].variable = knotId + "." + compiled[c].variable;
+         if (compiled[c].type == "input") {
+            if (compiled[c].variable.indexOf(".") == -1)
+               compiled[c].variable = knotId + "." + compiled[c].variable;
             // <TODO> can be interesting this link in the future
             // compiled[c].variable = this.findContext(knotSet, knotId, compiled[c].variable);
+            if (compiled[c].target)
+               compiled[c].contextTarget =
+                  this.findContext(knotSet, knotId, compiled[c].target);
+         }
          else if (compiled[c].type == "context-open" &&
                   compiled[c].input.indexOf(".") == -1)
             compiled[c].input = knotId + "." + compiled[c].input;
@@ -1452,6 +1456,12 @@ class Translator {
     * Option Md to Obj
     */
    _optionMdToObj(matchArray) {
+      const divertMap = {
+         "->":  "forward",
+         "<->": "round",
+         "(-)": "enclosed"
+      };
+
       let option = {
          type: "option"
       };
@@ -1465,9 +1475,11 @@ class Translator {
          option.rule = matchArray[3].trim();
       */
       if (matchArray[3] != null)
-         option.target = matchArray[3].trim();
+         option.divert = divertMap[matchArray[3].trim()];
       if (matchArray[4] != null)
-         option.value = matchArray[4].trim();
+         option.target = matchArray[4].trim();
+      if (matchArray[5] != null)
+         option.value = matchArray[5].trim();
       
       return option;
    }
@@ -1500,6 +1512,8 @@ class Translator {
          .replace("[subtype]", obj.subtype)
          .replace("[target]", this._transformNavigationMessage(obj.contextTarget))
          .replace("[display]", label)
+         .replace("[divert]",
+            (obj.divert == null) ? "" : " divert='" + obj.divert + "'")
          .replace("[value]",
             (obj.value == null) ? "" : " value='" + obj.value + "'")
          .replace("[image]", optionalImage);
@@ -1811,7 +1825,7 @@ class Translator {
    _inputObjToHTML(obj) {
       // core attributes are not straight mapped
       const coreAttributes = ["seq", "author", "type", "subtype", "text",
-                              "show", "choice",
+                              "show", "choice", "target", "contextTarget",
                               "_source", "_modified", "mergeLine"];
       const subtypeMap = {
          short: "input-typed",
@@ -1825,6 +1839,8 @@ class Translator {
          ? subtypeMap[obj.subtype] : subtypeMap.short;
 
       let statement = (obj.text) ? obj.text : "";
+      console.log("=== input option set");
+      console.log(obj.options);
       if (subtype == "input-choice" && obj.options) {
          statement += "<br>";
          for (let op in obj.options)
@@ -1832,6 +1848,7 @@ class Translator {
                .replace("[option]", op)
                .replace("[value]", obj.options[op]);
       }
+      console.log(statement);
 
       // <TODO> provisory - weak strategy (only one per case)
       let answer="";
@@ -1842,11 +1859,17 @@ class Translator {
             answer = " player='" + this._playerInputShow + "'";
       }
 
+      console.log("=== input obj");
+      console.log(obj);
+
       let extraAttr = "";
       for (let atr in obj)
          if (!coreAttributes.includes(atr) && obj[atr] != "false")
             extraAttr += " " + atr +
                          ((obj[atr] == "true") ? "" : "='" + obj[atr] + "'");
+      if (obj.contextTarget)
+         extraAttr +=
+            " target='" + this._transformNavigationMessage(obj.contextTarget) + "'";
 
       let input = Translator.htmlTemplates.input
                      .replace(/\[dcc\]/igm, subtype)
@@ -2089,7 +2112,7 @@ class Translator {
          mark: /^(  |\t[ \t]*)(?:[\+\*])[ \t]+([\w.\/\?&#\-][\w.\/\?&#\- \t]*)$/im,
          subtext: "value" },
       option: {
-         mark: /^[ \t]*([\+\*])[ \t]+([^\(&> \t\n\r\f][^\(&>\n\r\f]*)?-(?:(?:&gt;)|>)[ \t]*([^"\n\r\f]+)(?:"([^"\n\r\f]+)")?[ \t]*$/im
+         mark: /^[ \t]*([\+\*])[ \t]+([^\(&<> \t\n\r\f][^\(&<>\n\r\f]*)?((?:(?:(?:&lt;)|<)?-(?:(?:&gt;)|>))|(?:\(-\)))[ \t]*([^"\n\r\f]+)(?:"([^"\n\r\f]+)")?[ \t]*$/im
          },
       "divert-script": {
          mark: /^[ \t]*(?:\(([\w\.]+)[ \t]*(==|>|<|>=|<=|&gt;|&lt;|&gt;=|&lt;=)[ \t]*((?:"[^"\n\r\f]+")|(?:\-?\d+(?:\.\d+)?)|(?:[\w\.]+))\)[ \t]*)?-(?:(?:&gt;)|>)[ \t]*([^"\n\r\f]+)(?:"([^"\n\r\f]+)")?[ \t]*$/im,

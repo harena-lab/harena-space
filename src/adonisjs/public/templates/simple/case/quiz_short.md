@@ -9,46 +9,23 @@ Write here the **stem** of your quiz.
 ? hypothesis
   * type: choice
   * exclusive
+  * trigger
   * scramble
   * target: Feedback
   * options:
     * Answer-key: "Feedback for Answer-key"
-    * Distractor A: "Feedback for Distractor A"
-    * Distractor B: "Feedback for Distractor B"
-    * Distractor C: "Feedback for Distractor C"
-
-* Answer -> Variable.hypothesis
-
-## Answer-key (detailed, end)
-
-You answered: ^Block.Presentation.hypothesis^.
-
-Write here the feedback for the answer-key.
+    * Distractor 1: "Feedback for Distractor 1"
+    * Distractor 2: "Feedback for Distractor 2"
+    * Distractor 3: "Feedback for Distractor 3"
 
 * Next Case -> Case.Next
-* Return -> Presentation
+* Menu -> Presentation
 
-## Distractor A (detailed)
-
-You answered: ^Block.Presentation.hypothesis^.
-
-Write here the feedback for the distractor A.
-
-* Return -> Presentation
-
-## Distractor B (detailed)
+## Feedback (note)
 
 You answered: ^Block.Presentation.hypothesis^.
 
-Write here the feedback for the distractor B.
-
-* Return -> Presentation
-
-## Distractor C (detailed)
-
-You answered: ^Block.Presentation.hypothesis^
-
-Write here the feedback for the distractor C.
+^parameter^
 
 * Return -> Presentation
 

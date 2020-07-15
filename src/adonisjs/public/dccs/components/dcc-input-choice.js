@@ -43,7 +43,7 @@ class DCCInputOption extends DCCInput {
 
    static get observedAttributes() {
       return DCCInput.observedAttributes.concat(
-         ["parent", "exclusive", "checked"]);
+         ["parent", "exclusive", "checked", "value"]);
    }
 
    get parent() {
@@ -74,6 +74,14 @@ class DCCInputOption extends DCCInput {
          this.setAttribute("checked", "");
       else
          this.removeAttribute("checked");
+   }
+
+   get value() {
+      return this.getAttribute("value");
+   }
+   
+   set value(newValue) {
+      this.setAttribute("value", newValue);
    }
 
    /* Event handling */
@@ -156,7 +164,7 @@ class DCCInputChoice extends DCCInput {
 
    static get observedAttributes() {
       return DCCInput.observedAttributes.concat(
-         ["exclusive"]);
+         ["exclusive", "target"]);
    }
 
    get exclusive() {
@@ -168,6 +176,14 @@ class DCCInputChoice extends DCCInput {
          this.setAttribute("exclusive", "");
       else
          this.removeAttribute("exclusive");
+   }
+
+   get target() {
+      return this.getAttribute("target");
+   }
+   
+   set target(newValue) {
+      this.setAttribute("target", newValue);
    }
 
    /* Event handling */
@@ -227,15 +243,24 @@ class DCCInputChoice extends DCCInput {
          if (child.tagName &&
              child.tagName.toLowerCase() == DCCInputOption.elementTag) {
             nop++;
-            html +=
+            console.log("=== input tag");
+            console.log(child);
+            html += (this.target)
+            ?
+            "<dcc-trigger id='[id]' xstyle='theme' action='[target]' label='[statement]' divert='round' value='[value]'></dcc-trigger>"
+               .replace("[id]", varid + nop)
+               .replace("[target]", this.target)
+               .replace("[statement]", child._statement)
+               .replace("[value]", child.value)
+            :
             "<input id='[id]' type='[exclusive]' name='[variable]' value='[value]'[checked]>[statement]</input>"
-                  .replace("[id]", varid + nop)
-                  .replace("[exclusive]",
-                     (this.hasAttribute("exclusive") ? "radio" : "checkbox"))
-                  .replace("[variable]", this.variable)
-                  .replace("[value]", child.value)
-                  .replace("[statement]", child._statement)
-                  .replace("[checked]", child.hasAttribute("checked") ? " checked" : "");
+               .replace("[id]", varid + nop)
+               .replace("[exclusive]",
+                  (this.hasAttribute("exclusive") ? "radio" : "checkbox"))
+               .replace("[variable]", this.variable)
+               .replace("[value]", child.value)
+               .replace("[statement]", child._statement)
+               .replace("[checked]", child.hasAttribute("checked") ? " checked" : "");
             inStatement = false;
          } else {
             const element = (child.nodeType == 3) ? child.textContent : child.outerHTML;

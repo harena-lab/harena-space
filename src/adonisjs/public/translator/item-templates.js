@@ -29,7 +29,7 @@ script:
 image:
 `<img src='[path]'[alt]>`,
 option:
-`<dcc-trigger id='dcc[seq]'[author] type='[subtype]' action='[target]' label='[display]'[value][image]></dcc-trigger>`,
+`<dcc-trigger id='dcc[seq]'[author] type='[subtype]' action='[target]' label='[display]'[divert][value][image]></dcc-trigger>`,
 divert:
 `<dcc-trigger id='dcc[seq]'[author] type='+' action='[target]' label='[display]'></dcc-trigger>`,
 "divert-script":
