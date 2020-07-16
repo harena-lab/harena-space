@@ -5,7 +5,8 @@ Block
 
 Write here the **stem** of your quiz.
 
-> Write here the lead-in of your question.
+> Write here the lead-in of your quiz.
+>
 ? hypothesis
   * type: choice
   * exclusive
