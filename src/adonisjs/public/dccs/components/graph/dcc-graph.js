@@ -3,7 +3,6 @@
 class DCCGraph extends DCCVisual {
    constructor() {
       super();
-      this._graph = {nodes: [], edges: []};
    }
 
    connectedCallback() {
@@ -20,32 +19,11 @@ class DCCGraph extends DCCVisual {
          .replace(/\[width\]/g, this.width)
          .replace(/\[height\]/g, this.height);
 
-      this._layout = DCCGraphLayout.create(this.layout);
-      this._layout.attach(this);
-
+      this._graph = new Graph(this, this.layout);
       this._presentation = this._shadowHTML(html);
+      this._presentation.appendChild(this._graph.presentation);
       super.connectedCallback();
       this._presentationIsReady();
-   }
-
-   addNode(node) {
-      this._graph.nodes.push(node);
-      if (node.presentation != null)
-         this._presentation.appendChild(node.presentation);
-      if (this._layout != null)
-         this._layout.organize(this._graph);
-   }
-
-   addEdge(edge) {
-      this._graph.edges.push(edge);
-      if (edge.presentation != null)
-         this._presentation.appendChild(edge.presentation);
-      if (this._layout != null)
-         this._layout.organize();
-   }
-
-   insertGraph(graph) {
-
    }
 
    /* Observed Properties
@@ -83,14 +61,6 @@ class DCCGraph extends DCCVisual {
    /* Non-observed Properties
       ***********************/
 
-   get layout() {
-      return this._layout;
-   }
-
-   set layout(newValue) {
-      this._layout = newValue;
-   }
-
    get graph() {
       return this._graph;
    }
@@ -110,6 +80,12 @@ class DCCGraph extends DCCVisual {
    set graphHeight(newValue) {
       this._presentation.setAttribute("height", newValue);
    }
+
+   /*****/
+
+   addPiece(type, piece) {
+      this._graph.addPiece(type, piece);
+   }
 }
 
 /* Auto-organize a graph in a layout
@@ -126,8 +102,8 @@ class DCCGraphLayout {
       return layoutObj;
    }
 
-   attach(client) {
-      this._client = client;
+   attach(graph) {
+      this._graph = graph;
    }
 }
 
@@ -135,7 +111,6 @@ class DCCGraphLayout {
  *******************************/
 class DCCGraphLayoutDG extends DCCGraphLayout {
    organize() {
-      let graph = this._client.graph;
       let param = {subgraphs: DCCGraphLayoutDG.parameters["subgraphs"],
                    width: DCCGraphLayoutDG.parameters["node-width"],
                    height: DCCGraphLayoutDG.parameters["node-height"],
@@ -145,9 +120,9 @@ class DCCGraphLayoutDG extends DCCGraphLayout {
          DCCGraphLayoutDG.parameters["node-horizontal-spacing"];
       param.vstep = param.height +
          DCCGraphLayoutDG.parameters["node-vertical-spacing"];
-      for (let node of graph.nodes)
+      for (let node of this._graph.nodes)
          node.level = -1;
-      let proximo = graph.nodes[0];
+      let proximo = this._graph.nodes[0];
       let horizontal = 0,
           shiftH = 0,
           vertical = 0,
@@ -160,20 +135,20 @@ class DCCGraphLayoutDG extends DCCGraphLayout {
             shiftH = horizontal;
          else
             shiftV = vertical;
-         proximo = graph.nodes.find(node => node.level == -1);
+         proximo = this._graph.nodes.find(node => node.level == -1);
       } while (proximo != null);
 
-      this._client.graphWidth = horizontal * param.hstep + param.hmargin;
-      this._client.graphHeight = vertical * param.vstep + param.vmargin;
+      this._graph.width = horizontal * param.hstep + param.hmargin;
+      this._graph.height = vertical * param.vstep + param.vmargin;
 
-      for (let edge of graph.edges)
+      for (let edge of this._graph.edges)
          edge.update();
    }
 
    _visit(node, level, shift, param) {
       node.level = level;
       const children =
-         this._client.graph.edges.filter(edge => edge.source == node);
+         this._graph.edges.filter(edge => edge.source == node);
       let horizontal = 1;
       let vertical = level + 1;
       if (children.length > 0) {
@@ -199,8 +174,6 @@ class DCCGraphPiece extends DCCVisual {
    connectedCallback() {
       this._space = (this.hasAttribute("space"))
          ? document.querySelector("#" + this.space) : this.parentNode;
-      this._content = (this.hasAttribute("label"))
-         ? this.label : this.innerHTML;
       super.connectedCallback();
    }   
 
@@ -255,14 +228,16 @@ class DCCNode extends DCCGraphPiece {
          y: (this.hasAttribute("y")) ? this.y : 0,
          width: (this.hasAttribute("width")) ? this.width : 15,
          height: (this.hasAttribute("height")) ? this.height : 15,
-         content: this._content
+         label: this.label
       };
       if (this.hasAttribute("id"))
          prenode.id = this.id;
       let node = new GraphNode(prenode);
 
       this._presentation = node.presentation;
-      this._space.addNode(node);
+      console.log("=== add node");
+      console.log(this._space);
+      this._space.addPiece("node", node);
       this._presentationIsReady();
    }
 
@@ -305,6 +280,14 @@ class DCCNode extends DCCGraphPiece {
    set height(newValue) {
       this.setAttribute("height", newValue);
    }
+
+   /*****/
+
+   addPiece(type, piece) {
+      if (this._graph == null)
+         this._graph = new Graph(this._presentation, this._space.layout);
+      this._graph.addPiece(type, piece);
+   }
 }
 
 /* Graph Edge DCC
@@ -318,11 +301,11 @@ class DCCEdge extends DCCGraphPiece {
          let edge = new GraphEdge({
             source: this.source,
             target: this.target,
-            content: this._content
+            label: this.label
          }, this._space.graph);
 
          this._presentation = edge.presentation;
-         this._space.addEdge(edge);
+         this._space.addPiece("edge", edge);
          this._presentationIsReady();
       }
    }
@@ -352,6 +335,81 @@ class DCCEdge extends DCCGraphPiece {
    }
 }
 
+/* The root of an SVG graph
+ **************************/
+
+class Graph {
+   constructor(container, layout) {
+      this._container = container;
+      this._nodes = [];
+      this._edges = [];
+
+      this._presentation =
+         document.createElementNS("http://www.w3.org/2000/svg", "g");
+
+      this._layout = DCCGraphLayout.create(layout);
+      this._layout.attach(this);
+   }
+
+   get width() {
+      return this._container.graphWidth;
+   }
+
+   set width(newValue) {
+      this._container.graphWidth = newValue;
+   }
+
+   get height() {
+      return this._container.graphHeight;
+   }
+
+   set height(newValue) {
+      this._container.graphHeight = newValue;
+   }
+
+   get nodes() {
+      return this._nodes;
+   }
+
+   get edges() {
+      return this._edges;
+   }
+
+   addPiece(type, piece) {
+      this["_" + type + "s"].push(piece);
+      if (piece.presentation != null)
+         this._presentation.appendChild(piece.presentation);
+      if (this._layout != null)
+         this._layout.organize();
+   }
+
+   /*
+   addNode(node) {
+      this._nodes.push(node);
+      if (node.presentation != null)
+         this._presentation.appendChild(node.presentation);
+      if (this._layout != null)
+         this._layout.organize();
+   }
+
+   addEdge(edge) {
+      this._edges.push(edge);
+      if (edge.presentation != null)
+         this._presentation.appendChild(edge.presentation);
+      if (this._layout != null)
+         this._layout.organize();
+   }
+   */
+
+   addGraph(graph) {
+
+   }
+
+   get presentation() {
+      return this._presentation;
+   }
+}
+
 /* A node in an SVG graph
  ************************/
 class GraphNode {
@@ -368,7 +426,7 @@ class GraphNode {
          document.createElementNS("http://www.w3.org/2000/svg", "g");
       this._presentation.appendChild(this._rect);
 
-      if (node.content.length > 0) {
+      if (node.label != null) {
          this._contentSpace = document.createElementNS(
             "http://www.w3.org/2000/svg", "foreignObject");
          this._setDimensions(this._contentSpace);
@@ -376,7 +434,7 @@ class GraphNode {
          this._label.classList.add("dcc-node-label-theme");
          this._label.style = "width:" + this._node.width +
                              "px;height:" + this._node.height + "px";
-         this._label.innerHTML = "<div>" + node.content + "</div>";
+         this._label.innerHTML = "<div>" + node.label + "</div>";
          this._contentSpace.appendChild(this._label);
          this._presentation.appendChild(this._contentSpace);
       }
@@ -425,9 +483,11 @@ class GraphNode {
    _graphAttr(attr, value) {
       this._node[attr]= value;
       this._rect.setAttribute(attr, value);
-      this._contentSpace.setAttribute(attr, value);
-      this._label.style = "width:" + this._node.width +
-                          "px;height:" + this._node.height + "px";
+      if (this._contentSpace != null) {
+         this._contentSpace.setAttribute(attr, value);
+         this._label.style = "width:" + this._node.width +
+                             "px;height:" + this._node.height + "px";
+      }
    }
 
    _setDimensions(element) {
@@ -460,8 +520,8 @@ class GraphEdge {
             this._line.classList.add("dcc-edge-theme");
             this._presentation.appendChild(this._line);
 
-            if (edge.content.length > 0) {
-               this._labelText = document.createTextNode(edge.content);
+            if (edge.label != null) {
+               this._labelText = document.createTextNode(edge.label);
                this._label = document.createElementNS(
                   "http://www.w3.org/2000/svg", "text");
                this._label.appendChild(this._labelText);
@@ -500,7 +560,7 @@ class GraphEdge {
       if (this._label != null) {
          this._label.setAttribute("x", (x1 + x2) / 2);
          this._label.setAttribute("y", (y1 + y2) / 2);
-         this._labelText.nodeValue = this._edge.content;
+         this._labelText.nodeValue = this._edge.label;
       }
    }
 }
