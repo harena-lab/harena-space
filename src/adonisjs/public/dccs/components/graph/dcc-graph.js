@@ -7,9 +7,9 @@ class DCCGraph extends DCCVisual {
 
    connectedCallback() {
       if (!this.hasAttribute("width"))
-         this.width = 50;
+         this.width = 300;
       if (!this.hasAttribute("height"))
-         this.height = 50;
+         this.height = 200;
 
       let html = DCCGraph.svgTemplate
          .replace(/\[css\]/g,
@@ -115,56 +115,69 @@ class DCCGraphLayoutDG extends DCCGraphLayout {
                    width: DCCGraphLayoutDG.parameters["node-width"],
                    height: DCCGraphLayoutDG.parameters["node-height"],
                    hmargin: DCCGraphLayoutDG.parameters["horizontal-margin"],
-                   vmargin: DCCGraphLayoutDG.parameters["vertical-margin"]};
-      param.hstep = param.width +
-         DCCGraphLayoutDG.parameters["node-horizontal-spacing"];
-      param.vstep = param.height +
-         DCCGraphLayoutDG.parameters["node-vertical-spacing"];
+                   vmargin: DCCGraphLayoutDG.parameters["vertical-margin"],
+                   hspace: DCCGraphLayoutDG.parameters["node-horizontal-spacing"],
+                   vspace: DCCGraphLayoutDG.parameters["node-vertical-spacing"]};
       for (let node of this._graph.nodes)
          node.level = -1;
       let proximo = this._graph.nodes[0];
-      let horizontal = 0,
-          shiftH = 0,
-          vertical = 0,
-          shiftV = 0;
+      let shiftX = 0,
+          shiftY = 0,
+          maxX = 0,
+          maxY = 0;
       do {
-         let dim = this._visit(proximo, shiftV, shiftH, param);
-         horizontal += dim.horizontal;
-         vertical = (vertical < dim.vertical) ? dim.vertical : vertical;
-         if (param.subgraphs == "horizontal")
-            shiftH = horizontal;
-         else
-            shiftV = vertical;
+         let dim = this._visit(proximo, 0, shiftX, shiftY, param);
+         if (param.subgraphs == "horizontal") {
+            shiftX += dim.horizontal;
+            maxX = shiftX;
+            shiftY = 0;
+            maxY = (maxY < dim.vertical) ? dim.vertical : maxY;
+         }
+         else {
+            shiftX = 0;
+            maxX = (maxX < dim.horizontal) ? dim.horizontal : maxX;
+            shiftY += dim.vertical;
+            maxY = shiftY;
+         }
          proximo = this._graph.nodes.find(node => node.level == -1);
       } while (proximo != null);
 
-      this._graph.width = horizontal * param.hstep + param.hmargin;
-      this._graph.height = vertical * param.vstep + param.vmargin;
+      this._graph.width = maxX + param.hmargin;
+      this._graph.height = maxY + param.vmargin;
 
       for (let edge of this._graph.edges)
          edge.update();
    }
 
-   _visit(node, level, shift, param) {
+   _visit(node, level, shiftX, shiftY, param) {
       node.level = level;
+      if (node.width == null)
+         node.width = param.width;
+      if (node.height == null)
+         node.height = param.height;
       const children =
          this._graph.edges.filter(edge => edge.source == node);
-      let horizontal = 1;
-      let vertical = level + 1;
+      let horizontal = node.width + param.hspace,
+          vertical = node.height + param.vspace;
+      let cHorizontal = 0,
+          cVertical = 0;
       if (children.length > 0) {
-         horizontal = 0;
          for (let ch of children) {
-            let dim =
-               this._visit(ch.target, level + 1, shift + horizontal, param);
-            horizontal += dim.horizontal;
-            vertical = (vertical < dim.vertical) ? dim.vertical : vertical;
+            let dim = this._visit(
+               ch.target, level + 1,
+               shiftX + cHorizontal, shiftY + vertical, param);
+            cHorizontal += dim.horizontal;
+            cVertical =
+               (cVertical < dim.vertical) ? dim.vertical : cVertical;
          }
       }
-      node.x = param.hmargin + (shift + (horizontal - 1) / 2) * param.hstep;
-      node.y = param.vmargin + level * param.vstep;
-      node.width = param.width;
-      node.height = param.height;
-      return {horizontal: horizontal, vertical: vertical};
+      node.x = param.hmargin + shiftX;
+      if (horizontal < cHorizontal) {
+         node.x += (cHorizontal - horizontal) / 2;
+         horizontal = cHorizontal;
+      }
+      node.y = param.vmargin + shiftY;
+      return {horizontal: horizontal, vertical: vertical + cVertical};
    }
 }
 
@@ -224,20 +237,18 @@ class DCCNode extends DCCGraphPiece {
       super.connectedCallback();
 
       let prenode = {
-         x: (this.hasAttribute("x")) ? this.x : 0,
-         y: (this.hasAttribute("y")) ? this.y : 0,
-         width: (this.hasAttribute("width")) ? this.width : 15,
-         height: (this.hasAttribute("height")) ? this.height : 15,
+         x: this.x,
+         y: this.y,
+         width: this.width,
+         height: this.height,
          label: this.label
       };
       if (this.hasAttribute("id"))
          prenode.id = this.id;
-      let node = new GraphNode(prenode);
+      this._node = new GraphNode(prenode);
 
-      this._presentation = node.presentation;
-      console.log("=== add node");
-      console.log(this._space);
-      this._space.addPiece("node", node);
+      this._presentation = this._node.presentation;
+      this._space.addPiece("node", this._node);
       this._presentationIsReady();
    }
 
@@ -283,10 +294,15 @@ class DCCNode extends DCCGraphPiece {
 
    /*****/
 
+   get graph() {
+      return this._node.graph;
+   }
+
    addPiece(type, piece) {
-      if (this._graph == null)
-         this._graph = new Graph(this._presentation, this._space.layout);
-      this._graph.addPiece(type, piece);
+      if (this._node.graph == null)
+         this._node.graph =
+            new Graph(this._node, this._space.layout);
+      this._node.graph.addPiece(type, piece);
    }
 }
 
@@ -383,28 +399,6 @@ class Graph {
          this._layout.organize();
    }
 
-   /*
-   addNode(node) {
-      this._nodes.push(node);
-      if (node.presentation != null)
-         this._presentation.appendChild(node.presentation);
-      if (this._layout != null)
-         this._layout.organize();
-   }
-
-   addEdge(edge) {
-      this._edges.push(edge);
-      if (edge.presentation != null)
-         this._presentation.appendChild(edge.presentation);
-      if (this._layout != null)
-         this._layout.organize();
-   }
-   */
-
-   addGraph(graph) {
-
-   }
-
    get presentation() {
       return this._presentation;
    }
@@ -438,6 +432,8 @@ class GraphNode {
          this._contentSpace.appendChild(this._label);
          this._presentation.appendChild(this._contentSpace);
       }
+
+      this._setPosition();
    }
 
    get id() {
@@ -449,7 +445,8 @@ class GraphNode {
    }
 
    set x(newValue) {
-      this._graphAttr("x", newValue);
+      this._node.x = newValue;
+      this._setPosition();
    }
 
    get y() {
@@ -457,7 +454,8 @@ class GraphNode {
    }
 
    set y(newValue) {
-      this._graphAttr("y", newValue);
+      this._node.y = newValue;
+      this._setPosition();
    }
 
    get width() {
@@ -476,12 +474,39 @@ class GraphNode {
       this._graphAttr("height", newValue);
    }
 
+   get graph() {
+      return this._graph;
+   }
+
+   set graph(newValue) {
+      if (this._graph != null)
+         this._presentation.removeChild(this._graph.presentation);
+      this._graph = newValue;
+      this._presentation.appendChild(this._graph.presentation);
+   }
+
+   get graphWidth() {
+      return this._node.width;
+   }
+
+   set graphWidth(newValue) {
+      this._graphAttr("width", newValue);
+   }
+
+   get graphHeight() {
+      return this._node.height;
+   }
+
+   set graphHeight(newValue) {
+      this._graphAttr("height", newValue);
+   }
+
    get presentation() {
       return this._presentation;
    }
 
    _graphAttr(attr, value) {
-      this._node[attr]= value;
+      this._node[attr] = value;
       this._rect.setAttribute(attr, value);
       if (this._contentSpace != null) {
          this._contentSpace.setAttribute(attr, value);
@@ -490,11 +515,23 @@ class GraphNode {
       }
    }
 
+   _setPosition() {
+      this._presentation.setAttribute("transform",
+         "translate(" +
+         ((this.x != null) ? this.x : GraphNode.standardDimensions.x) + " " +
+         ((this.y != null) ? this.y : GraphNode.standardDimensions.y) + ")");
+   }
+
    _setDimensions(element) {
-      element.setAttribute("x", this.x);
-      element.setAttribute("y", this.y);
-      element.setAttribute("width", this.width);
-      element.setAttribute("height", this.height);
+      element.setAttribute("width",
+         (this.width != null) ? this.width : GraphNode.standardDimensions.width);
+      element.setAttribute("height",
+         (this.height != null) ? this.height : GraphNode.standardDimensions.height);
+   }
+
+   addPiece(type, piece) {
+      if (this._graph != null)
+         this._graph.addPiece(type, piece);
    }
 }
 
@@ -585,5 +622,12 @@ DCCGraphLayoutDG.parameters = {
    "node-vertical-spacing": 30,
    "horizontal-margin": 10,
    "vertical-margin": 10
+};
+
+GraphNode.standardDimensions = {
+   x: 0,
+   y: 0,
+   width: 100,
+   height: 50
 };
 })();
