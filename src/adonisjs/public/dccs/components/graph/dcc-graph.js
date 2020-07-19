@@ -19,7 +19,8 @@ class DCCGraph extends DCCVisual {
          .replace(/\[width\]/g, this.width)
          .replace(/\[height\]/g, this.height);
 
-      this._graph = new Graph(this, this.layout);
+      this._graph = new Graph(this, this.label,
+                              this.layout, this.action);
       this._presentation = this._shadowHTML(html);
       this._presentation.appendChild(this._graph.presentation);
       super.connectedCallback();
@@ -31,7 +32,15 @@ class DCCGraph extends DCCVisual {
    
    static get observedAttributes() {
       return DCCVisual.observedAttributes.concat(
-         ["width", "height", "layout"]);
+         ["label", "width", "height", "layout", "action"]);
+   }
+
+   get label() {
+      return this.getAttribute("label");
+   }
+
+   set label(newValue) {
+      this.setAttribute("label", newValue);
    }
 
    get width() {
@@ -56,6 +65,14 @@ class DCCGraph extends DCCVisual {
 
    set layout(newValue) {
       this.setAttribute("layout", newValue);
+   }
+
+   get action() {
+      return this.getAttribute("action");
+   }
+
+   set action(newValue) {
+      this.setAttribute("action", newValue);
    }
 
    /* Non-observed Properties
@@ -85,99 +102,6 @@ class DCCGraph extends DCCVisual {
 
    addPiece(type, piece) {
       this._graph.addPiece(type, piece);
-   }
-}
-
-/* Auto-organize a graph in a layout
- ***********************************/
-class DCCGraphLayout {
-   static create(layout) {
-      let layoutObj = null;
-      if (layout == null)
-         layout = "dg";
-      switch (layout) {
-         case "dg": layoutObj = new DCCGraphLayoutDG();
-                    break;
-      }
-      return layoutObj;
-   }
-
-   attach(graph) {
-      this._graph = graph;
-   }
-}
-
-/* Directed Graph Auto-organizer
- *******************************/
-class DCCGraphLayoutDG extends DCCGraphLayout {
-   organize() {
-      let param = {subgraphs: DCCGraphLayoutDG.parameters["subgraphs"],
-                   width: DCCGraphLayoutDG.parameters["node-width"],
-                   height: DCCGraphLayoutDG.parameters["node-height"],
-                   hmargin: DCCGraphLayoutDG.parameters["horizontal-margin"],
-                   vmargin: DCCGraphLayoutDG.parameters["vertical-margin"],
-                   hspace: DCCGraphLayoutDG.parameters["node-horizontal-spacing"],
-                   vspace: DCCGraphLayoutDG.parameters["node-vertical-spacing"]};
-      for (let node of this._graph.nodes)
-         node.level = -1;
-      let proximo = this._graph.nodes[0];
-      let shiftX = 0,
-          shiftY = 0,
-          maxX = 0,
-          maxY = 0;
-      do {
-         let dim = this._visit(proximo, 0, shiftX, shiftY, param);
-         if (param.subgraphs == "horizontal") {
-            shiftX += dim.horizontal;
-            maxX = shiftX;
-            shiftY = 0;
-            maxY = (maxY < dim.vertical) ? dim.vertical : maxY;
-         }
-         else {
-            shiftX = 0;
-            maxX = (maxX < dim.horizontal) ? dim.horizontal : maxX;
-            shiftY += dim.vertical;
-            maxY = shiftY;
-         }
-         proximo = this._graph.nodes.find(node => node.level == -1);
-      } while (proximo != null);
-
-      this._graph.width = maxX + param.hmargin;
-      this._graph.height = maxY + param.vmargin;
-
-      for (let edge of this._graph.edges)
-         edge.update();
-   }
-
-   _visit(node, level, shiftX, shiftY, param) {
-      node.level = level;
-      if (node.width == null)
-         node.width = param.width;
-      if (node.height == null)
-         node.height = param.height;
-      const children =
-         this._graph.edges.filter(edge => edge.source == node);
-      let horizontal = node.width + param.hspace,
-          vertical = node.height + param.vspace;
-      let cHorizontal = 0,
-          cVertical = 0;
-      if (children.length > 0) {
-         for (let ch of children) {
-            let dim = this._visit(
-               ch.target, level + 1,
-               shiftX + cHorizontal, shiftY + vertical, param);
-            cHorizontal += dim.horizontal;
-            cVertical =
-               (cVertical < dim.vertical) ? dim.vertical : cVertical;
-         }
-      }
-      node.x = param.hmargin + shiftX;
-      if (horizontal < cHorizontal) {
-         node.x += (cHorizontal - horizontal) / 2;
-         horizontal = cHorizontal;
-      }
-      node.y = param.vmargin + shiftY;
-      return {horizontal: horizontal, vertical: vertical + cVertical};
    }
 }
 
@@ -245,7 +169,7 @@ class DCCNode extends DCCGraphPiece {
       };
       if (this.hasAttribute("id"))
          prenode.id = this.id;
-      this._node = new GraphNode(prenode);
+      this._node = new GraphNode(prenode, this._space.action);
 
       this._presentation = this._node.presentation;
       this._space.addPiece("node", this._node);
@@ -299,9 +223,13 @@ class DCCNode extends DCCGraphPiece {
    }
 
    addPiece(type, piece) {
-      if (this._node.graph == null)
+      if (this._node.graph == null) {
+         console.log("add subgraph");
+         console.log(this._space.action);
          this._node.graph =
-            new Graph(this._node, this._space.layout);
+            new Graph(this._node, this.label,
+                      this._space.layout, this._space.action);
+      }
       this._node.graph.addPiece(type, piece);
    }
 }
@@ -355,16 +283,26 @@ class DCCEdge extends DCCGraphPiece {
  **************************/
 
 class Graph {
-   constructor(container, layout) {
+   constructor(container, label, layout, action) {
       this._container = container;
       this._nodes = [];
       this._edges = [];
+      this._label = label;
+      this._action = action;
 
       this._presentation =
          document.createElementNS("http://www.w3.org/2000/svg", "g");
 
-      this._layout = DCCGraphLayout.create(layout);
+      this._layout = GraphLayout.create(layout);
       this._layout.attach(this);
+   }
+
+   get label() {
+      return this._label;
+   }
+
+   set label(newValue) {
+      this._label = newValue;
    }
 
    get width() {
@@ -391,16 +329,32 @@ class Graph {
       return this._edges;
    }
 
+   get action() {
+      return this._action;
+   }
+
+   set action(newValue) {
+      this._action = action;
+   }
+
    addPiece(type, piece) {
       this["_" + type + "s"].push(piece);
-      if (piece.presentation != null)
+      if (piece.presentation != null) {
          this._presentation.appendChild(piece.presentation);
+         if (this._action && type == "node")
+            piece.action = this._action;
+      }
       if (this._layout != null)
          this._layout.organize();
    }
 
    get presentation() {
       return this._presentation;
+   }
+
+   get labelHeight() {
+      return (this._label != null)
+         ? GraphLayoutDG.parameters["node-label-height"] : 0;
    }
 }
 
@@ -411,13 +365,16 @@ class GraphNode {
       this._node = {};
       Object.assign(this._node, node);
 
+      this._nodeClicked = this._nodeClicked.bind(this);
+      this._nodeUnselect = this._nodeUnselect.bind(this);
+
+      this._presentation =
+         document.createElementNS("http://www.w3.org/2000/svg", "g");
+
       this._rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
       this._rect.setAttribute("rx", 10);
       this._setDimensions(this._rect);
       this._rect.classList.add("dcc-node-theme");
-
-      this._presentation =
-         document.createElementNS("http://www.w3.org/2000/svg", "g");
       this._presentation.appendChild(this._rect);
 
       if (node.label != null) {
@@ -426,12 +383,21 @@ class GraphNode {
          this._setDimensions(this._contentSpace);
          this._label = document.createElement("div");
          this._label.classList.add("dcc-node-label-theme");
+         this._label.classList.add(
+            (this._graph == null) ?
+               "dcc-node-label-theme" : "dcc-node-label-group-theme");
          this._label.style = "width:" + this._node.width +
                              "px;height:" + this._node.height + "px";
          this._label.innerHTML = "<div>" + node.label + "</div>";
          this._contentSpace.appendChild(this._label);
          this._presentation.appendChild(this._contentSpace);
       }
+
+      this._cover = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+      this._cover.setAttribute("rx", 10);
+      this._setDimensions(this._cover);
+      this._cover.classList.add("dcc-node-cover-theme");
+      this._presentation.appendChild(this._cover);
 
       this._setPosition();
    }
@@ -474,6 +440,16 @@ class GraphNode {
       this._graphAttr("height", newValue);
    }
 
+   get action() {
+      return this._action;
+   }
+
+   set action(newValue) {
+      this._action = newValue;
+      this._presentation.style.cursor = "pointer";
+      this._presentation.addEventListener("click", this._nodeClicked);
+   }
+
    get graph() {
       return this._graph;
    }
@@ -481,6 +457,10 @@ class GraphNode {
    set graph(newValue) {
       if (this._graph != null)
          this._presentation.removeChild(this._graph.presentation);
+      else {
+         this._label.classList.remove("dcc-node-label-theme");
+         this._label.classList.add("dcc-node-label-group-theme");
+      }
       this._graph = newValue;
       this._presentation.appendChild(this._graph.presentation);
    }
@@ -508,10 +488,13 @@ class GraphNode {
    _graphAttr(attr, value) {
       this._node[attr] = value;
       this._rect.setAttribute(attr, value);
+      this._cover.setAttribute(attr, value);
       if (this._contentSpace != null) {
          this._contentSpace.setAttribute(attr, value);
          this._label.style = "width:" + this._node.width +
-                             "px;height:" + this._node.height + "px";
+            "px;height:" + ((this._graph)
+               ? GraphLayoutDG.parameters["node-label-height"]
+               : this._node.height) + "px";
       }
    }
 
@@ -532,6 +515,21 @@ class GraphNode {
    addPiece(type, piece) {
       if (this._graph != null)
          this._graph.addPiece(type, piece);
+   }
+
+   _nodeClicked(event) {
+      event.stopPropagation();
+      MessageBus.int.publish("graph/select/clear");
+      this._cover.classList.remove("dcc-node-cover-theme");
+      this._cover.classList.add("dcc-node-selected-theme");
+      MessageBus.int.subscribe("graph/select/clear", this._nodeUnselect);
+      MessageBus.ext.publish(this._action, this.id);
+   }
+
+   _nodeUnselect() {
+      MessageBus.int.unsubscribe("graph/select/clear", this._nodeUnselect);
+      this._cover.classList.remove("dcc-node-selected-theme");
+      this._cover.classList.add("dcc-node-cover-theme");
    }
 }
 
@@ -602,6 +600,99 @@ class GraphEdge {
    }
 }
 
+/* Auto-organize a graph in a layout
+ ***********************************/
+class GraphLayout {
+   static create(layout) {
+      let layoutObj = null;
+      if (layout == null)
+         layout = "dg";
+      switch (layout) {
+         case "dg": layoutObj = new GraphLayoutDG();
+                    break;
+      }
+      return layoutObj;
+   }
+
+   attach(graph) {
+      this._graph = graph;
+   }
+}
+
+/* Directed Graph Auto-organizer
+ *******************************/
+class GraphLayoutDG extends GraphLayout {
+   organize() {
+      let param = {subgraphs: GraphLayoutDG.parameters["subgraphs"],
+                   width: GraphLayoutDG.parameters["node-width"],
+                   height: GraphLayoutDG.parameters["node-height"],
+                   hmargin: GraphLayoutDG.parameters["horizontal-margin"],
+                   vmargin: GraphLayoutDG.parameters["vertical-margin"],
+                   hspace: GraphLayoutDG.parameters["node-horizontal-spacing"],
+                   vspace: GraphLayoutDG.parameters["node-vertical-spacing"]};
+      for (let node of this._graph.nodes)
+         node.level = -1;
+      let proximo = this._graph.nodes[0];
+      let shiftX = 0,
+          shiftY = this._graph.labelHeight,
+          maxX = 0,
+          maxY = 0;
+      do {
+         let dim = this._visit(proximo, 0, shiftX, shiftY, param);
+         if (param.subgraphs == "horizontal") {
+            shiftX += dim.horizontal;
+            maxX = shiftX;
+            shiftY = 0;
+            maxY = (maxY < dim.vertical) ? dim.vertical : maxY;
+         }
+         else {
+            shiftX = 0;
+            maxX = (maxX < dim.horizontal) ? dim.horizontal : maxX;
+            shiftY += dim.vertical;
+            maxY = shiftY;
+         }
+         proximo = this._graph.nodes.find(node => node.level == -1);
+      } while (proximo != null);
+
+      this._graph.width = maxX + param.hmargin;
+      this._graph.height = maxY + param.vmargin;
+
+      for (let edge of this._graph.edges)
+         edge.update();
+   }
+
+   _visit(node, level, shiftX, shiftY, param) {
+      node.level = level;
+      if (node.width == null)
+         node.width = param.width;
+      if (node.height == null)
+         node.height = param.height;
+      const children =
+         this._graph.edges.filter(edge => edge.source == node);
+      let horizontal = node.width + param.hspace,
+          vertical = node.height + param.vspace;
+      let cHorizontal = 0,
+          cVertical = 0;
+      if (children.length > 0) {
+         for (let ch of children) {
+            let dim = this._visit(
+               ch.target, level + 1,
+               shiftX + cHorizontal, shiftY + vertical, param);
+            cHorizontal += dim.horizontal;
+            cVertical =
+               (cVertical < dim.vertical) ? dim.vertical : cVertical;
+         }
+      }
+      node.x = param.hmargin + shiftX;
+      if (horizontal < cHorizontal) {
+         node.x += (cHorizontal - horizontal) / 2;
+         horizontal = cHorizontal;
+      }
+      node.y = param.vmargin + shiftY;
+      return {horizontal: horizontal, vertical: vertical + cVertical};
+   }
+}
+
 (function() {
 customElements.define("dcc-graph", DCCGraph);
 customElements.define("dcc-node", DCCNode);
@@ -614,10 +705,11 @@ DCCGraph.svgTemplate =
 </svg>
 </div>`;
 
-DCCGraphLayoutDG.parameters = {
+GraphLayoutDG.parameters = {
    "subgraphs": "vertical",
    "node-width": 100,
    "node-height": 50,
+   "node-label-height": 30,
    "node-horizontal-spacing": 10,
    "node-vertical-spacing": 30,
    "horizontal-margin": 10,

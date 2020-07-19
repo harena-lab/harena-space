@@ -11,12 +11,29 @@
    fill: white;
 }
 
+.dcc-node-cover-theme {
+   fill-opacity: 0;
+}
+
+.dcc-node-cover-theme:hover {
+   fill: black;
+   fill-opacity: 0.2;
+}
+
+.dcc-node-selected-theme {
+   fill: black;
+   fill-opacity: 0.2;
+}
+
 .dcc-node-label-theme {
    display: flex;
    align-items: center;
    justify-content: center;
 }
 
-.dcc-node-label-theme div {
-
+.dcc-node-label-group-theme {
+   display: flex;
+   align-items: left;
+   justify-content: left;
+   margin-left: 3px;
 }
