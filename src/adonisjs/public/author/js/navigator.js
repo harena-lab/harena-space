@@ -99,8 +99,7 @@ async mountTreeCaseBefore(author, knots) {
    let previousKnot = null;
    for (let k in knots) {
       let newKnot = {
-         id: k.replace(/\./g, "_"),
-         knotid: k,
+         id: k,
          label: knots[k].title,
          render: knots[k].render,
          level: knots[k].level
