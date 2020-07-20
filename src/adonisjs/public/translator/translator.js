@@ -1839,8 +1839,6 @@ class Translator {
          ? subtypeMap[obj.subtype] : subtypeMap.short;
 
       let statement = (obj.text) ? obj.text : "";
-      console.log("=== input option set");
-      console.log(obj.options);
       if (subtype == "input-choice" && obj.options) {
          statement += "<br>";
          for (let op in obj.options)
@@ -1848,7 +1846,6 @@ class Translator {
                .replace("[option]", op)
                .replace("[value]", obj.options[op]);
       }
-      console.log(statement);
 
       // <TODO> provisory - weak strategy (only one per case)
       let answer="";
@@ -1858,9 +1855,6 @@ class Translator {
          else
             answer = " player='" + this._playerInputShow + "'";
       }
-
-      console.log("=== input obj");
-      console.log(obj);
 
       let extraAttr = "";
       for (let atr in obj)
@@ -1902,8 +1896,6 @@ class Translator {
                               "text", "options",
                               "_source", "_modified", "mergeLine"];
       let extraAttr = "";
-      console.log("=== obj to md - input");
-      console.log(obj);
       for (let atr in obj)
          if (!coreAttributes.includes(atr))
             extraAttr += this._mdSubField(atr, obj[atr]);

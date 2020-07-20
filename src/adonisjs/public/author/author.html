@@ -49,6 +49,7 @@
 <script src="../dccs/components/dcc-slider.js"></script>
 <script src="../dccs/components/dcc-compute.js"></script>
 <script src="../dccs/components/dcc-report.js"></script>
+<script src="../dccs/components/dcc-graph.js"></script>
 
 <script src="../lib/showdown-2-0-0/showdown.min.js"></script>
 <script src="../translator/translator.js"></script>
@@ -129,7 +130,11 @@
       <div class="d-flex">
           <div id="navigation-block" style="position:relative" class="w-25">
             <div class="sty-navigation-block">
-              <div id="navigation-panel" class="sty-navigation-panel std-border"></div>
+              <div class="sty-navigation-panel std-border">
+                <div id="navigation-panel"></div>
+                <dcc-graph id="navigation-graph" width="500" height="300" action="control/knot/selected">
+                </dcc-graph>
+              </div>
             </div>
             <div class="container">
               <div class="row">

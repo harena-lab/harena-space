@@ -116,7 +116,7 @@ class AuthorManager {
     * Redirects control/<entity>/<operation> messages
     */
    async controlEvent(topic, message) {
-      if (MessageBus.matchFilter(topic, "control/knot/+/selected"))
+      if (MessageBus.matchFilter(topic, "control/knot/selected"))
          this.knotSelected(topic, message);
       else if (MessageBus.matchFilter(topic, "control/group/+/selected"))
          this.groupSelected(topic, message);
@@ -421,8 +421,11 @@ class AuthorManager {
     */
    async knotSelected(topic, message) {
       this._removeFloatingMenu();
-      let knotid = MessageBus.extractLevel(topic, 3);
-      knotid = (knotid == "") ? this._knotSelected : knotid;
+      // let knotid = MessageBus.extractLevel(topic, 3);
+      console.log("=== knot to navigate");
+      console.log(message);
+      let knotid =
+         (message == null || message == "") ? this._knotSelected : message;
       if (knotid != null) {
          console.log("=== miniatureF");
          console.log("#mini-" + knotid.replace(/\./g, "_"));

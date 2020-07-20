@@ -88,7 +88,47 @@ _searchTree(current, knotid) {
    return result;
 }
 
+async mountTreeCaseBefore(author, knots) {
+   let navigationGraph = document.querySelector("#navigation-graph");
+   let graph = {
+      nodes: [],
+      edges: []
+   };
+   let current = graph;
+   let levelStack = [];
+   let previousKnot = null;
+   for (let k in knots) {
+      let newKnot = {
+         id: k.replace(/\./g, "_"),
+         knotid: k,
+         label: knots[k].title,
+         render: knots[k].render,
+         level: knots[k].level
+      };
+      if (previousKnot == null || newKnot.level == previousKnot.level)
+         current.nodes.push(newKnot);
+      else if (newKnot.level > previousKnot.level) {
+         previousKnot.graph = {
+            nodes: [newKnot],
+            edges: []
+         };
+         levelStack.push(current);
+         current = previousKnot.graph;
+      } else {
+         let newLevel = previousKnot.level;
+         while (levelStack.length > 0 && newKnot.level <= newLevel) {
+            current = levelStack.pop();
+            newLevel = current.level;
+         }
+         current.nodes.push(newKnot);
+      }
+      previousKnot = newKnot;
+   }
+   navigationGraph.importGraph(graph);
+}
+
 async mountTreeCase(author, knots) {
+   this.mountTreeCaseBefore(author, knots);
    this._author = author;
    this._knots = knots;
    this._navigationPanel = document.querySelector("#navigation-panel");

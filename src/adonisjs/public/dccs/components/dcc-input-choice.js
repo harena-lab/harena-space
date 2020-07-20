@@ -88,8 +88,6 @@ class DCCInputOption extends DCCInput {
    
    inputChanged() {
       this.changed = true;
-      console.log("=== changed notification");
-      console.log(this.value);
       MessageBus.ext.publish("var/" + this.variable + "/changed",
                              {sourceType: DCCInputOption.elementTag,
                               value: this.value});
@@ -190,8 +188,6 @@ class DCCInputChoice extends DCCInput {
    
    inputChanged(event) {
       this.changed = true;
-      console.log("=== changed notification");
-      console.log(event);
       MessageBus.ext.publish("var/" + this.variable + "/changed",
                              {sourceType: DCCInputChoice.elementTag,
                               value: event.target.value});
@@ -243,8 +239,6 @@ class DCCInputChoice extends DCCInput {
          if (child.tagName &&
              child.tagName.toLowerCase() == DCCInputOption.elementTag) {
             nop++;
-            console.log("=== input tag");
-            console.log(child);
             html += (this.target)
             ?
             "<dcc-trigger id='[id]' xstyle='theme' action='[target]' label='[statement]' divert='round' value='[value]'></dcc-trigger>"
@@ -299,10 +293,7 @@ class DCCInputChoice extends DCCInput {
          // v = 1;
          // for (let o of this._options) {
          for (let v = 1; v <= nop; v++) {
-            console.log("=== listener");
-            console.log("#" + varid + v);
             let op = presentation.querySelector("#" + varid + v);
-            console.log(op);
             if (op != null) {
                op.addEventListener("change", this.inputChanged);
                this._options.push(op);

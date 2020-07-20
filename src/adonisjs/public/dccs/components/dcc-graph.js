@@ -21,6 +21,13 @@ class DCCGraph extends DCCVisual {
 
       this._graph = new Graph(this, this.label,
                               this.layout, this.action);
+
+      // applies a pending import graph
+      if (this._graphObj) {
+         this._graph.importGraph(this._graphObj);
+         delete this._graphObj;
+      }
+
       this._presentation = this._shadowHTML(html);
       this._presentation.appendChild(this._graph.presentation);
       super.connectedCallback();
@@ -103,6 +110,13 @@ class DCCGraph extends DCCVisual {
    addPiece(type, piece) {
       this._graph.addPiece(type, piece);
    }
+
+   importGraph(graphObj) {
+      if (this._graph != null)
+         this._graph.importGraph(graphObj);
+      else
+         this._graphObj = graphObj;
+   }
 }
 
 /* Any Graph Piece (e.g., Node and Edge)
@@ -169,7 +183,7 @@ class DCCNode extends DCCGraphPiece {
       };
       if (this.hasAttribute("id"))
          prenode.id = this.id;
-      this._node = new GraphNode(prenode, this._space.action);
+      this._node = new GraphNode(prenode);
 
       this._presentation = this._node.presentation;
       this._space.addPiece("node", this._node);
@@ -224,8 +238,6 @@ class DCCNode extends DCCGraphPiece {
 
    addPiece(type, piece) {
       if (this._node.graph == null) {
-         console.log("add subgraph");
-         console.log(this._space.action);
          this._node.graph =
             new Graph(this._node, this.label,
                       this._space.layout, this._space.action);
@@ -346,6 +358,20 @@ class Graph {
       }
       if (this._layout != null)
          this._layout.organize();
+   }
+
+   importGraph(graphObj) {
+      for (let node of graphObj.nodes) {
+         let gnode = new GraphNode(node);
+         if (node.graph) {
+            gnode.graph = new Graph(gnode, node.label,
+                                    this._layout.label, this._action);
+            gnode.graph.importGraph(node.graph);
+         }
+         this.addPiece("node", gnode);
+      }
+      for (let edge of graphObj.edges)
+         this.addPiece("edge", new GraphEdge(edge, this));
    }
 
    get presentation() {
@@ -622,6 +648,10 @@ class GraphLayout {
 /* Directed Graph Auto-organizer
  *******************************/
 class GraphLayoutDG extends GraphLayout {
+   get label() {
+      return "dg";
+   }
+
    organize() {
       let param = {subgraphs: GraphLayoutDG.parameters["subgraphs"],
                    width: GraphLayoutDG.parameters["node-width"],
