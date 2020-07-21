@@ -182,11 +182,10 @@ class AuthorManager {
       const saved = await this.saveChangedCase();
 
       const cases = await MessageBus.ext.request("data/case/*/list",
-                                                 {filterBy: "user",
-                                                  filter: this._userid});
+                                                 {user: this._userid});
 
       cases.message.sort(
-            (a, b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : -1);
+            (a, b) => (a.title.toLowerCase() > b.title.toLowerCase()) ? 1 : -1);
 
       const caseId = await DCCNoticeInput.displayNotice(
          "Select a case to load or start a new case.",
@@ -233,7 +232,7 @@ class AuthorManager {
 
       const caseId = await MessageBus.ext.request("data/case//new",
                                                   {format: "markdown",
-                                                   name: "Untitled",
+                                                   title: "Untitled",
                                                    source: templateMd.message});
       this._caseLoad(caseId.message);
    }
@@ -246,7 +245,7 @@ class AuthorManager {
       const caseObj = await MessageBus.ext.request(
          "data/case/" + Basic.service.currentCaseId + "/get");
 
-      this._currentCaseName = caseObj.message.name;
+      this._currentCaseTitle = caseObj.message.title;
       await this._compile(caseObj.message.source);
       this._showCase();
    }
@@ -259,8 +258,8 @@ class AuthorManager {
       this._knots = this._compiledCase.knots;
 
       Basic.service.currentThemeFamily = this._compiledCase.theme;
-      if (this._compiledCase.name)
-         this._currentCaseName = this._compiledCase.name;
+      if (this._compiledCase.title)
+         this._currentCaseTitle = this._compiledCase.title;
 
       console.log(this._compiledCase);
    }
@@ -279,7 +278,7 @@ class AuthorManager {
          sk = knotIds[k];
       }
       
-      MessageBus.ext.publish("control/knot/" + sk + "/selected");
+      MessageBus.ext.publish("control/knot/selected", sk);
    }
    
    /*
@@ -290,17 +289,17 @@ class AuthorManager {
          this._checkKnotModification(this._renderState);
 
          if (this._temporaryCase) {
-            const caseName =
-               await DCCNoticeInput.displayNotice("Inform a name for your case:",
+            const caseTitle =
+               await DCCNoticeInput.displayNotice("Inform a title for your case:",
                                                   "input");
-            this._currentCaseName = caseName;
+            this._currentCaseTitle = caseTitle;
             this._temporaryCase = false;
          }
 
          let md =Translator.instance.assembleMarkdown(this._compiledCase);
          const status = await MessageBus.ext.request(
             "data/case/" + Basic.service.currentCaseId + "/set",
-            {name: this._currentCaseName,
+            {title: this._currentCaseTitle,
              format: "markdown",
              source: md});
          
@@ -799,11 +798,11 @@ class AuthorManager {
    }
 
    async caseRename() {
-      const caseName =
-         await DCCNoticeInput.displayNotice("Inform a new name for your case:",
+      const caseTitle =
+         await DCCNoticeInput.displayNotice("Inform a new title for your case:",
                                             "input");
-      if (caseName.length > 0)
-         this._currentCaseName = caseName;
+      if (caseTitle.length > 0)
+         this._currentCaseTitle = caseTitle;
    }
    
    /*

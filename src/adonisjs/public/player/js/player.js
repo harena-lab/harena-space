@@ -249,7 +249,7 @@ class PlayerManager {
 
                     if (precase != null)
                        for (let c in cases)
-                          if (cases[c].name == precase)
+                          if (cases[c].title == precase)
                              pi = c;
                  }
 
@@ -276,7 +276,7 @@ class PlayerManager {
       Basic.service.currentCaseId = caseid;
       const caseObj = await MessageBus.ext.request(
          "data/case/" + Basic.service.currentCaseId + "/get");
-      this._currentCaseName = caseObj.message.name;
+      this._currentCaseTitle = caseObj.message.title;
 
       this._compiledCase =
          await Translator.instance.compileMarkdown(Basic.service.currentCaseId,

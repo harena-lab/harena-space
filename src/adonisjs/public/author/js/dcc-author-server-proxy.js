@@ -101,14 +101,14 @@ class DCCAuthorServer {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + DCCCommonServer.instance.token
           },
-          "body": JSON.stringify({name: message.name,
+          "body": JSON.stringify({title: message.title,
                                   source: message.source})
       };
       console.log("=== request:");
-      console.log(DCCCommonServer.managerAddressAPI + "case");
+      console.log(DCCCommonServer.managerAddressAPI + "case/register");
       console.log(header);
       const response =
-         await fetch(DCCCommonServer.managerAddressAPI + "case", header);
+         await fetch(DCCCommonServer.managerAddressAPI + "case/register", header);
       console.log("=== response:")
       console.log(response);
       const jsonResponse = await response.json();
@@ -127,7 +127,7 @@ class DCCAuthorServer {
                "Content-Type": "application/json",
                "Authorization": "Bearer " + DCCCommonServer.instance.token
              },
-             "body": JSON.stringify({name: message.name,
+             "body": JSON.stringify({title: message.title,
                                      source: message.source})
          };
          console.log("=== save request");
