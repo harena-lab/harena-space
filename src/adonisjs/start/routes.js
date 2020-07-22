@@ -16,7 +16,7 @@
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use("Route");
 
-Route.get('/', () => { return 'Hello from the harena-space'} )
+Route.get('/', ({ view }) => view.render('layout.index') )
 
 Route.get('/institution-registration', async ({ view }) => {
    const pageTitle = "Institution Registration"
