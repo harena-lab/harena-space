@@ -283,7 +283,8 @@ class DCCInputChoice extends DCCInput {
           this._statement != null) {
       */
       if (this._statement != null) {
-         await this._applyRender(this._statement, "innerHTML", "text");
+         await this._applyRender(
+            "<p>" + this._statement + "</p>", "innerHTML", "text");
          presentation = await this._applyRender(html, "innerHTML", "input");
       } else
          presentation = await this._applyRender(html, "innerHTML", "input");
