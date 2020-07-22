@@ -1,0 +1,43 @@
+@layout('registration.template')
+
+@section('content')
+<div class="row">
+    <div class="col-md-6">
+      <form>
+        <div class="form-group">
+          <label for="institution">Institution</label>
+          <input type="text" class="form-control" id="institution-name" placeholder="Institution's Name">
+        </div>
+        <div class="form-group">
+            <label for="initials">Initials</label>
+            <input type="text" class="form-control" id="institution-initials" placeholder="Institution's Initials">
+          </div>
+        <div class="form-group">
+          <label for="country">Country</label>
+          <select name="country" id="country">
+             <option value="pt-BR">Brazil</option>
+             <option value="pt-BR">Portugal</option>
+             <option value="en">United States of America</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="administrator">Administrator</label>
+          <input type="text" class="form-control" id="admin-email" placeholder="Enter email for Institutional Account">
+        </div>
+        <div class="form-group">
+            <label for="password1">Password</label>
+            <input type="password" class="form-control" id="inst-password1">
+        </div>
+        <div class="form-group">
+            <label for="password2">Repeat Password</label>
+            <input type="password" class="form-control" id="inst-password2">
+        </div>
+        <a class="btn btn-primary" href="author.html" role="button">Sign-Up</a>
+      </form>
+    </div>
+    <!--
+    <div class="col-md-6" id="preview-desc">
+    </div>
+    -->
+  </div>
+  @endsection

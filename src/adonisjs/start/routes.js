@@ -18,6 +18,11 @@ const Route = use("Route");
 
 Route.get('/', () => { return 'Hello from the harena-space'} )
 
+Route.get('/institution-registration', async ({ view }) => {
+   const pageTitle = "Institution Registration"
+   return view.render('registration.institution', { pageTitle })
+})
+
 /*
 let harenaManagerUrl =
    Env.get("HARENA_MANAGER_URL", "http://localhost:3000/api/v1/");
