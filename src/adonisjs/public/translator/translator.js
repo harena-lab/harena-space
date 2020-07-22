@@ -2174,7 +2174,8 @@ class Translator {
 
    Translator.globalFields = ["theme", "title", "role", "templates"];
 
-   Translator.reservedNavigation = ["case.next", "knot.previous", "knot.next",
+   Translator.reservedNavigation = ["case.next", "knot.start",
+                                    "knot.previous", "knot.next",
                                     "flow.next", "session.close"];
    Translator.navigationMap = {
       "case.next":     "case/>/navigate",

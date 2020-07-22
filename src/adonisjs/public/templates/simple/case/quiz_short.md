@@ -1,7 +1,4 @@
-Block
-=====
-
-## Presentation (quiz)
+# Presentation (quiz)
 
 Write here the **stem** of your quiz.
 
@@ -22,7 +19,7 @@ Write here the **stem** of your quiz.
 * Next Case -> Case.Next
 * Menu -> Presentation
 
-## Feedback (note)
+# Feedback (note)
 
 You answered: ^Block.Presentation.hypothesis^.
 
