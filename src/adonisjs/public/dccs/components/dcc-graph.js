@@ -111,6 +111,10 @@ class DCCGraph extends DCCVisual {
       this._graph.addPiece(type, piece);
    }
 
+   cleanGraph() {
+      this._graph.cleanGraph();
+   }
+
    importGraph(graphObj) {
       if (this._graph != null)
          this._graph.importGraph(graphObj);
@@ -297,10 +301,10 @@ class DCCEdge extends DCCGraphPiece {
 class Graph {
    constructor(container, label, layout, action) {
       this._container = container;
-      this._nodes = [];
-      this._edges = [];
       this._label = label;
       this._action = action;
+
+      this.cleanGraph();
 
       this._presentation =
          document.createElementNS("http://www.w3.org/2000/svg", "g");
@@ -360,6 +364,12 @@ class Graph {
          this._layout.organize();
    }
 
+   
+   cleanGraph() {
+      this._nodes = [];
+      this._edges = [];
+   }
+
    importGraph(graphObj) {
       for (let node of graphObj.nodes) {
          let gnode = new GraphNode(node);
@@ -384,15 +394,26 @@ class Graph {
    }
 }
 
+class GraphPiece {
+   _showContextMenu(event) {
+      event.preventDefault();
+      if (this._node.menu)
+         DCCContextMenu.display(
+            event.clientX, event.clientY, this._node.menu);
+   }
+}
+
 /* A node in an SVG graph
  ************************/
-class GraphNode {
+class GraphNode extends GraphPiece {
    constructor(node) {
+      super();
       this._node = {};
       Object.assign(this._node, node);
 
       this._nodeClicked = this._nodeClicked.bind(this);
       this._nodeUnselect = this._nodeUnselect.bind(this);
+      this._showContextMenu = this._showContextMenu.bind(this);
 
       this._presentation =
          document.createElementNS("http://www.w3.org/2000/svg", "g");
@@ -424,6 +445,8 @@ class GraphNode {
       this._setDimensions(this._cover);
       this._cover.classList.add("dcc-node-cover-theme");
       this._presentation.appendChild(this._cover);
+
+      this._presentation.addEventListener("contextmenu", this._showContextMenu);
 
       this._setPosition();
    }
@@ -557,39 +580,69 @@ class GraphNode {
       this._cover.classList.remove("dcc-node-selected-theme");
       this._cover.classList.add("dcc-node-cover-theme");
    }
+
+   _nodeContext(event) {
+
+   }
 }
 
 /* An edge in an SVG graph
  *************************/
-class GraphEdge {
+class GraphEdge extends GraphPiece {
    constructor(edge, graph) {
+      super();
+      this._edge = {};
       if (graph != null && edge.source && edge.target) {
-         const source = graph.nodes.find(node => node.id == edge.source);
-         const target = graph.nodes.find(node => node.id == edge.target);
+         const sourceIndex = graph.nodes.findIndex(node => node.id == edge.source);
 
-         if (source != null && target != null) {
-            edge.source = source;
-            edge.target = target;
-            this._edge = {};
-            Object.assign(this._edge, edge);
-
-            this._presentation =
-               document.createElementNS("http://www.w3.org/2000/svg", "g");
-
-            this._line = document.createElementNS(
-               "http://www.w3.org/2000/svg", "line");
-            this._line.classList.add("dcc-edge-theme");
-            this._presentation.appendChild(this._line);
-
-            if (edge.label != null) {
-               this._labelText = document.createTextNode(edge.label);
-               this._label = document.createElementNS(
-                  "http://www.w3.org/2000/svg", "text");
-               this._label.appendChild(this._labelText);
-               this._presentation.appendChild(this._label);
+         if (sourceIndex > -1) {
+            let targetIndex = -1;
+            switch (edge.target) {
+               case "#previous":
+                  if (sourceIndex > 0)
+                     targetIndex = sourceIndex - 1;
+                  break;
+               case "#next":
+                  if (sourceIndex < graph.nodes.length-1)
+                     targetIndex = sourceIndex + 1;
+                  break;
+               default:
+                  let tg = edge.target;
+                  // search in the current level and upper levels
+                  do {
+                     targetIndex =
+                        graph.nodes.findIndex(node => node.id == tg);
+                     if (targetIndex == -1 && tg.includes("."))
+                        tg = tg.substring(0, tg.lastIndexOf("."));
+                     else
+                        tg = null;
+                  } while (tg != null);
+                  break;
             }
 
-            this.update();
+            if (targetIndex > -1) {
+               edge.source = graph.nodes[sourceIndex];
+               edge.target = graph.nodes[targetIndex];
+               Object.assign(this._edge, edge);
+
+               this._presentation =
+                  document.createElementNS("http://www.w3.org/2000/svg", "g");
+
+               this._line = document.createElementNS(
+                  "http://www.w3.org/2000/svg", "line");
+               this._line.classList.add("dcc-edge-theme");
+               this._presentation.appendChild(this._line);
+
+               if (edge.label != null) {
+                  this._labelText = document.createTextNode(edge.label);
+                  this._label = document.createElementNS(
+                     "http://www.w3.org/2000/svg", "text");
+                  this._label.appendChild(this._labelText);
+                  this._presentation.appendChild(this._label);
+               }
+
+               this.update();
+            }
          }
       }
    }
@@ -607,21 +660,26 @@ class GraphEdge {
    }
 
    update() {
-      const source = this._edge.source,
-            target = this._edge.target;
-      const x1 = source.x + source.width / 2,
-            y1 = source.y + source.height,
-            x2 = target.x + target.width / 2,
-            y2 = target.y;
-      this._line.setAttribute("x1", x1);
-      this._line.setAttribute("y1", y1);
-      this._line.setAttribute("x2", x2);
-      this._line.setAttribute("y2", y2);
+      if (this._edge.source != null && this._edge.target != null) {
+         const source = this._edge.source,
+               target = this._edge.target;
+         const x1 = source.x + source.width / 2,
+               y1 = source.y + source.height,
+               x2 = target.x + target.width / 2,
+               y2 = target.y;
+         // <TODO> provisory
+         if (y2 > y1) {
+            this._line.setAttribute("x1", x1);
+            this._line.setAttribute("y1", y1);
+            this._line.setAttribute("x2", x2);
+            this._line.setAttribute("y2", y2);
 
-      if (this._label != null) {
-         this._label.setAttribute("x", (x1 + x2) / 2);
-         this._label.setAttribute("y", (y1 + y2) / 2);
-         this._labelText.nodeValue = this._edge.label;
+            if (this._label != null) {
+               this._label.setAttribute("x", (x1 + x2) / 2);
+               this._label.setAttribute("y", (y1 + y2) / 2);
+               this._labelText.nodeValue = this._edge.label;
+            }
+         }
       }
    }
 }
@@ -705,12 +763,14 @@ class GraphLayoutDG extends GraphLayout {
           cVertical = 0;
       if (children.length > 0) {
          for (let ch of children) {
-            let dim = this._visit(
-               ch.target, level + 1,
-               shiftX + cHorizontal, shiftY + vertical, param);
-            cHorizontal += dim.horizontal;
-            cVertical =
-               (cVertical < dim.vertical) ? dim.vertical : cVertical;
+            if (ch.target != ch.source && ch.target.level == -1) {
+               let dim = this._visit(
+                  ch.target, level + 1,
+                  shiftX + cHorizontal, shiftY + vertical, param);
+               cHorizontal += dim.horizontal;
+               cVertical =
+                  (cVertical < dim.vertical) ? dim.vertical : cVertical;
+            }
          }
       }
       node.x = param.hmargin + shiftX;
@@ -737,8 +797,8 @@ DCCGraph.svgTemplate =
 
 GraphLayoutDG.parameters = {
    "subgraphs": "vertical",
-   "node-width": 100,
-   "node-height": 50,
+   "node-width": 75,
+   "node-height": 42,
    "node-label-height": 30,
    "node-horizontal-spacing": 10,
    "node-vertical-spacing": 30,

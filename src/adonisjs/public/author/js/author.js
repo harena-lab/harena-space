@@ -69,6 +69,11 @@ class AuthorManager {
    }
    */
 
+   get templatesCategories() {
+      return (this._compiledCase.templates)
+         ? this._compiledCase.templates.categories : null;
+   }
+
    /*
     *
     */
@@ -141,7 +146,7 @@ class AuthorManager {
                                    break;
          case "control/case/settings": await this.caseRename();
                                        break;
-         case "control/knot/new":  this.knotNew();
+         case "control/knot/new":  this.knotNew(message);
                                    break;
          case "control/knot/edit": this.knotEdit();
                                    break;
@@ -419,19 +424,23 @@ class AuthorManager {
     * ACTION: knot-selected
     */
    async knotSelected(topic, message) {
-      this._removeFloatingMenu();
+      // this._removeFloatingMenu();
       // let knotid = MessageBus.extractLevel(topic, 3);
       console.log("=== knot to navigate");
       console.log(message);
       let knotid =
          (message == null || message == "") ? this._knotSelected : message;
       if (knotid != null) {
+         /*
          console.log("=== miniatureF");
          console.log("#mini-" + knotid.replace(/\./g, "_"));
          const miniatureF =
             document.querySelector("#mini-" + knotid.replace(/\./g, "_"));
          let miniature = miniatureF.getElementsByTagName("div")[0];
+         */
 
+         // context menu
+         /*
          if (knotid == this._knotSelected) {
             // looks for a template considering the current categories
             this._templateNewKnot = null;
@@ -448,11 +457,9 @@ class AuthorManager {
                      this._templateNewKnot.push(
                         this._compiledCase.templates.categories[cat]);
                // deduplicate
-               /*
-               this._templateNewKnot =
-                  this._templateNewKnot.filter(
-                     (item, pos) => c.indexOf(item) === pos);
-               */
+               // this._templateNewKnot =
+               //    this._templateNewKnot.filter(
+               //       (item, pos) => c.indexOf(item) === pos);
                if (this._templateNewKnot.length == 0)
                   this._templateNewKnot = null;
             }
@@ -472,28 +479,33 @@ class AuthorManager {
                   "</dcc-trigger>");
             }
          } else {
-            if (this._miniPrevious)
-               this._miniPrevious.classList.remove("sty-selected-knot");
-            miniature.classList.add("sty-selected-knot");
-            this._miniPrevious = miniature;
-                  
-            if (this._knots[knotid].categories &&
-                this._knots[knotid].categories.indexOf("expansion") > -1) {
-               this._knotSelected = knotid;
-               this.knotNew();
-            } else {
-               this._checkKnotModification(this._renderState);
-               this._knotSelected = knotid;
-               this._htmlKnot = await Translator.instance.generateHTML(
-                                        this._knots[this._knotSelected]);
-               this._renderKnot();
-               this._collectEditableDCCs();
-            }
-            delete this._elementSelected;
-         }
+         */
+         /*
+         if (this._miniPrevious)
+            this._miniPrevious.classList.remove("sty-selected-knot");
+         miniature.classList.add("sty-selected-knot");
+         this._miniPrevious = miniature;
+         */
+               
+         /*
+         if (this._knots[knotid].categories &&
+             this._knots[knotid].categories.indexOf("expansion") > -1) {
+            this._knotSelected = knotid;
+            this.knotNew();
+         } else {
+         */
+         this._checkKnotModification(this._renderState);
+         this._knotSelected = knotid;
+         this._htmlKnot = await Translator.instance.generateHTML(
+                                  this._knots[this._knotSelected]);
+         this._renderKnot();
+         this._collectEditableDCCs();
+         delete this._elementSelected;
       }
    }
 
+   // <TODO> no use - remove?
+   /*
    _buildFloatingMenu(left, top, html) {
       this._removeFloatingMenu();
       this._floatingMenu = document.createElement("div");
@@ -504,13 +516,16 @@ class AuthorManager {
       this._floatingMenu.style.top = (top - mainBox.top) + "px";
       this._mainPanel.appendChild(this._floatingMenu);
    }
+   */
 
+   /*
    _removeFloatingMenu() {
       if (this._floatingMenu != null) {
          this._mainPanel.removeChild(this._floatingMenu);
          this._floatingMenu = null;
       }
    }
+   */
 
     /*
      * ACTION: group-selected
@@ -524,10 +539,13 @@ class AuthorManager {
     /*
     * ACTION: control/knot/new
     */
-    async knotNew() {
-      this._removeFloatingMenu();
+    async knotNew(message) {
+      // this._removeFloatingMenu();
       
-      let template = await this._templateSelect("knot", this._templateNewKnot);
+      let template = message;
+
+      if (template == null)
+         template = await this._templateSelect("knot", this._templateNewKnot);
 
       if (template != null) {
          let markdown = await MessageBus.ext.request("data/template/" +
