@@ -138,9 +138,10 @@ async mountTreeCase(author, knots) {
                   {topic: "control/knot/new",
                    message: {knotid: k, template: tnn}};
          }
-         items["delete"] = {topic: "control/knot/remove", message: {knotid: k}};
-         items["up"] = {topic: "control/knot/up", message: {knotid: k}};
-         items["down"] = {topic: "control/knot/down", message: {knotid: k}};
+         items["delete " + newKnot.label] =
+            {topic: "control/knot/remove", message: {knotid: k}};
+         items["move up"] = {topic: "control/knot/up", message: {knotid: k}};
+         items["move down"] = {topic: "control/knot/down", message: {knotid: k}};
          newKnot.menu = items;
 
          // put in the containment hierachy
