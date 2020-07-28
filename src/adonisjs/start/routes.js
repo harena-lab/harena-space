@@ -16,13 +16,22 @@
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use("Route");
 
-Route.get('/', ({ view }) => view.render('layout.index') )
+Route.get('/', ({ view }) => view.render('index') )
 
 Route.get('/institution-registration', async ({ view }) => {
    const pageTitle = "Institution Registration"
    return view.render('registration.institution', { pageTitle })
 })
 
+Route.get('/signup', async ({ view }) => {
+   const pageTitle = "Sign-Up"
+   return view.render('registration.signup', { pageTitle })
+})
+
+Route.get('/login', async ({ view }) => {
+   const pageTitle = "Log-in"
+   return view.render('registration.login', { pageTitle })
+})
 /*
 let harenaManagerUrl =
    Env.get("HARENA_MANAGER_URL", "http://localhost:3000/api/v1/");
