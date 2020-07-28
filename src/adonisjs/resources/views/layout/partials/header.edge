@@ -1,0 +1,48 @@
+<div class="relative overflow-hidden">
+    <div class="relative pt-6 pb-12 sm:pb-16 md:pb-20">
+      <div class="max-w-screen-xl px-4 mx-auto sm:px-6">
+        <nav class="relative flex items-center justify-between sm:h-10 md:justify-center">
+          <div class="flex items-center flex-1 md:absolute md:inset-y-0 md:left-0">
+            <div class="flex items-center justify-between w-full md:w-auto">
+              {{-- Logo / Main Link --}}
+              <a href="/">
+                Home
+              </a>
+  
+          {{-- Navigation Actions --}}
+          <div class="hidden md:absolute md:flex md:items-center md:justify-end md:inset-y-0 md:right-0">
+            {{--
+              This tag let us know if the current user is logged in or not.
+  
+              ref: http://adonisjs.com/docs/4.1/views#_loggedin
+              ref: http://adonisjs.com/docs/4.1/authentication#_loggedin
+            --}}
+            @loggedIn
+              <span class="inline-flex mr-4 rounded-md shadow">
+                <a href="/posts/create" class="inline-flex items-center px-4 py-2 text-base font-medium leading-6 text-indigo-600 transition duration-150 ease-in-out bg-white border border-transparent rounded-md hover:text-indigo-500 focus:outline-none focus:shadow-outline-blue active:bg-gray-50 active:text-indigo-700">
+                  Play
+                </a>
+              </span>
+              <span class="inline-flex rounded-md shadow">
+                <a href="/logout" class="inline-flex items-center px-4 py-2 text-base font-medium leading-6 text-indigo-600 transition duration-150 ease-in-out bg-white border border-transparent rounded-md hover:text-indigo-500 focus:outline-none focus:shadow-outline-blue active:bg-gray-50 active:text-indigo-700">
+                  Logout
+                </a>
+              </span>
+            @else
+              <span class="inline-flex mr-4 rounded-md shadow">
+                <a href="/login" class="inline-flex items-center px-4 py-2 text-base font-medium leading-6 text-indigo-600 transition duration-150 ease-in-out bg-white border border-transparent rounded-md hover:text-indigo-500 focus:outline-none focus:shadow-outline-blue active:bg-gray-50 active:text-indigo-700">
+                  Sign In
+                </a>
+              </span>
+              <span class="inline-flex rounded-md shadow">
+                <a href="/signup" class="inline-flex items-center px-4 py-2 text-base font-medium leading-6 text-indigo-600 transition duration-150 ease-in-out bg-white border border-transparent rounded-md hover:text-indigo-500 focus:outline-none focus:shadow-outline-blue active:bg-gray-50 active:text-indigo-700">
+                  Sign Up
+                </a>
+              </span>
+            @endloggedIn
+          </div>
+        </nav>
+      </div>
+    </div>
+  </div>
+  
