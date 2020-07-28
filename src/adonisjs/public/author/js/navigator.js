@@ -135,11 +135,13 @@ async mountTreeCase(author, knots) {
                   templatesNewKnot.push(templatesCats[cat]);
             for (let tnn of templatesNewKnot)
                items["add " + tnn.substring(tnn.lastIndexOf("/")+1)] =
-                  {topic: "control/knot/new", message: tnn};
+                  {topic: "control/knot/new",
+                   message: {knotid: k, template: tnn}};
          }
-         items["delete"] = {topic: "control/knot/remove"};
-         items["up"] = {topic: "control/knot/up"};
-         items["down"] = {topic: "control/knot/down"};
+         items["delete " + newKnot.label] =
+            {topic: "control/knot/remove", message: {knotid: k}};
+         items["move up"] = {topic: "control/knot/up", message: {knotid: k}};
+         items["move down"] = {topic: "control/knot/down", message: {knotid: k}};
          newKnot.menu = items;
 
          // put in the containment hierachy
@@ -186,9 +188,6 @@ async mountTreeCase(author, knots) {
          previousKnot = newKnot;
       }
    }
-
-   console.log("=== graph");
-   console.log(graph);
 
    navigationGraph.cleanGraph();
    navigationGraph.importGraph(graph);

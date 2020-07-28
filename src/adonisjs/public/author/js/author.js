@@ -148,6 +148,10 @@ class AuthorManager {
                                        break;
          case "control/knot/new":  this.knotNew(message);
                                    break;
+         case "control/knot/up":  this.knotUp(message);
+                                   break;
+         case "control/knot/down":  this.knotDown(message);
+                                   break;
          case "control/knot/edit": this.knotEdit();
                                    break;
          case "control/knot/markdown": this.knotMarkdown();
@@ -527,27 +531,29 @@ class AuthorManager {
    }
    */
 
-    /*
-     * ACTION: group-selected
-     */
-    async groupSelected(topic, message) {
-      this.knotSelected(topic, message);
-      const knotid = MessageBus.extractLevel(topic, 3);
-      this._navigator.downTree(knotid);
-    }
-
-    /*
-    * ACTION: control/knot/new
+   /*
+    * ACTION: group-selected
     */
-    async knotNew(message) {
-      // this._removeFloatingMenu();
-      
-      let template = message;
+   async groupSelected(topic, message) {
+     this.knotSelected(topic, message);
+     const knotid = MessageBus.extractLevel(topic, 3);
+     this._navigator.downTree(knotid);
+   }
+
+   /*
+   * ACTION: control/knot/new
+   */
+   async knotNew(message) {
+      let template = (message != null) ? message.template : null;
 
       if (template == null)
          template = await this._templateSelect("knot", this._templateNewKnot);
 
       if (template != null) {
+         const knotTarget =
+            (message != null && message.knotid != null)
+               ? message.knotid : this._knotSelected;
+
          let markdown = await MessageBus.ext.request("data/template/" +
                               template.replace(/\//g, ".") + "/get");
 
@@ -569,7 +575,7 @@ class AuthorManager {
          let newKnotSet = {};
          for (let k in this._knots) {
             newKnotSet[k] = this._knots[k];
-            if (k == this._knotSelected)
+            if (k == knotTarget)
                newKnotSet[knotId] = {
                   toCompile: true,
                   _source: markdown
@@ -585,19 +591,71 @@ class AuthorManager {
 
          let newSelected = null;
          const kl = Object.keys(this._knots);
-         const ki = kl.indexOf(this._knotSelected);
+         const ki = kl.indexOf(knotTarget);
          if (ki > -1 && ki+1 < kl.length)
             newSelected = kl[ki+1];
 
-         // this._knotSelected = knotId;
-         // const ki = this._knotSelected;
-         // this._knotSelected = null;
-
-         // this._htmlKnot = await Translator.instance.generateHTML(this._knots[this._knotSelected]);
          await this._showCase(newSelected);
-         // MessageBus.ext.publish("control/knot/" + ki + "/selected");
       }
-    }
+   }
+
+   async knotUp(message) {
+      const knotTarget =
+            (message != null && message.knotid != null)
+               ? message.knotid : this._knotSelected;
+      let newKnotSet = {};
+      let previousId = null,
+          previousKnot = null;
+      let swapped = false;
+      for (let k in this._knots) {
+         if (k == knotTarget) {
+            newKnotSet[k] = this._knots[k];
+            swapped = true;
+         } else {
+            if (previousId != null)
+               newKnotSet[previousId] = previousKnot;
+            previousId = k;
+            previousKnot = this._knots[k];
+         }
+      }
+      if (swapped) {
+         newKnotSet[previousId] = previousKnot;
+         this._compiledCase.knots = newKnotSet;
+         this._knots = newKnotSet;
+         await this._navigator.mountTreeCase(this, this._knots);
+      }
+   }
+
+   async knotDown(message) {
+      const knotTarget =
+            (message != null && message.knotid != null)
+               ? message.knotid : this._knotSelected;
+      let newKnotSet = {};
+      let previousId = null,
+          previousKnot = null;
+      let toSwap = false,
+          swapped = false;
+      for (let k in this._knots) {
+         if (toSwap) {
+            toSwap = false;
+            newKnotSet[k] = this._knots[k];
+            swapped = true;
+         } else { 
+            if (previousId != null)
+               newKnotSet[previousId] = previousKnot;
+            previousId = k;
+            previousKnot = this._knots[k];
+         }
+         if (k == knotTarget)
+            toSwap = true;
+      }
+      if (swapped) {
+         newKnotSet[previousId] = previousKnot;
+         this._compiledCase.knots = newKnotSet;
+         this._knots = newKnotSet;
+         await this._navigator.mountTreeCase(this, this._knots);
+      }
+   }
 
    _renderKnot() {
       if (this._renderState == 1)
