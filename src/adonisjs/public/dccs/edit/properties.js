@@ -371,8 +371,10 @@ option: {
            visual: "inline"},
    target: {type:  "select",
             options: "selectKnot",
-            label: "Target",
-            visual: "panel"}
+            label: "Target"},
+   message: {type: "text",
+             label: "message",
+             visual: "panel"}
 },
 entity: {
    entity: {type: "shortStr",
@@ -462,7 +464,7 @@ Properties.fieldTypes = {
 shortStr:
 `<div class="styp-field-row">
    <label class="styp-field-label">[label]</label>
-   <input type="text" id="pfield[n]" class="styp-field-value" size="10" value="[value]">
+   <input type="text" id="pfield[n]" class="styp-field-value" size="30" value="[value]">
 </div>`,
 variable:
 `<div class="styp-field-row">
@@ -472,7 +474,7 @@ variable:
 text:
 `<div class="styp-field-row">
    <label class="styp-field-label">[label]</label>
-   <textarea style="height:100%" id="pfield[n]" class="styp-field-value" size="10">[value]</textarea>
+   <textarea style="height:100%" id="pfield[n]" class="styp-field-text" size="30">[value]</textarea>
 </div>`,
 shortStrArray:
 `<div class="styp-field-row">

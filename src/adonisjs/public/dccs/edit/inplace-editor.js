@@ -57,12 +57,15 @@ class EditDCC {
          while (ew != null && (!ew.id || !ew.id.endsWith("-wrapper")))
             ew = ew.parentNode;
          // otherwise, finds the element outside dccs
-         if (ew != null && ew.id && ew.id != "inplace-editor-wrapper")
+         if (ew != null && ew.id && ew.id.endsWith("-wrapper") &&
+             ew.id != "inplace-editor-wrapper")
             elWrapper = ew;
-         else if (elWrapper.parentNode != null) {
+         else if (elWrapper.parentNode != null &&
+                  elWrapper.parentNode.nodeType == 1) {
             elWrapper = elWrapper.parentNode;
             while (elWrapper.nodeName.toLowerCase().startsWith("dcc-") &&
-                   elWrapper.parentNode != null)
+                   elWrapper.parentNode != null &&
+                   elWrapper.parentNode.nodeType == 1)
                elWrapper = elWrapper.parentNode;
          }
       }

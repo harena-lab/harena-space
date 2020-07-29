@@ -29,7 +29,7 @@ script:
 image:
 `<img src='[path]'[alt]>`,
 option:
-`<dcc-trigger id='dcc[seq]'[author] type='[subtype]' action='[target]' label='[display]'[divert][value][image]></dcc-trigger>`,
+`<dcc-trigger id='dcc[seq]'[author] type='[subtype]' action='[target]' label='[display]'[divert][message][image]></dcc-trigger>`,
 divert:
 `<dcc-trigger id='dcc[seq]'[author] type='+' action='[target]' label='[display]'></dcc-trigger>`,
 "divert-script":
@@ -82,7 +82,7 @@ knot:
 image:
 `![{alternative}]({path}{title})`,
 option:
-`{subtype}{label} -> {target}`,
+`{subtype}{label} {divert} {target}{message}`,
 entity:
 `@{entity}`,
 input:
