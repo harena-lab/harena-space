@@ -372,7 +372,7 @@ option: {
    target: {type:  "select",
             options: "selectKnot",
             label: "Target"},
-   message: {type: "shortStr",
+   message: {type: "text",
              label: "message",
              visual: "panel"}
 },
@@ -474,7 +474,7 @@ variable:
 text:
 `<div class="styp-field-row">
    <label class="styp-field-label">[label]</label>
-   <textarea style="height:100%" id="pfield[n]" class="styp-field-value" size="10">[value]</textarea>
+   <textarea style="height:100%" id="pfield[n]" class="styp-field-text" size="30">[value]</textarea>
 </div>`,
 shortStrArray:
 `<div class="styp-field-row">
