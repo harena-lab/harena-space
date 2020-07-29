@@ -1456,11 +1456,13 @@ class Translator {
     * Option Md to Obj
     */
    _optionMdToObj(matchArray) {
+      /*
       const divertMap = {
          "->":  "forward",
          "<->": "round",
          "(-)": "enclosed"
       };
+      */
 
       let option = {
          type: "option"
@@ -1475,11 +1477,11 @@ class Translator {
          option.rule = matchArray[3].trim();
       */
       if (matchArray[3] != null)
-         option.divert = divertMap[matchArray[3].trim()];
+         option.divert = matchArray[3].trim();
       if (matchArray[4] != null)
          option.target = matchArray[4].trim();
       if (matchArray[5] != null)
-         option.value = matchArray[5].trim();
+         option.message = matchArray[5].trim();
       
       return option;
    }
@@ -1514,7 +1516,7 @@ class Translator {
          .replace("[display]", label)
          .replace("[divert]",
             (obj.divert == null) ? "" : " divert='" + obj.divert + "'")
-         .replace("[value]",
+         .replace("[message]",
             (obj.value == null) ? "" : " value='" + obj.value + "'")
          .replace("[image]", optionalImage);
    }
@@ -1537,7 +1539,9 @@ class Translator {
       return Translator.markdownTemplates.option
                 .replace("{subtype}", (obj.subtype == "_") ? "" : obj.subtype+" ")
                 .replace("{label}", (obj.label) ? obj.label : "")
-                .replace("{target}", obj.target);
+                .replace("{divert}", obj.divert)
+                .replace("{target}", obj.target)
+                .replace("{message}", (obj.message) ? '"' + obj.message + '"' : "");
    }
    
    /*
