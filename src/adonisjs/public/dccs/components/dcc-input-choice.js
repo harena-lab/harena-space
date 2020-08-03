@@ -43,7 +43,7 @@ class DCCInputOption extends DCCInput {
 
    static get observedAttributes() {
       return DCCInput.observedAttributes.concat(
-         ["parent", "exclusive", "checked", "value"]);
+         ["parent", "exclusive", "checked", "target", "value"]);
    }
 
    get parent() {
@@ -74,6 +74,14 @@ class DCCInputOption extends DCCInput {
          this.setAttribute("checked", "");
       else
          this.removeAttribute("checked");
+   }
+
+   get target() {
+      return this.getAttribute("target");
+   }
+   
+   set target(newValue) {
+      this.setAttribute("target", newValue);
    }
 
    get value() {
@@ -112,8 +120,13 @@ class DCCInputOption extends DCCInput {
             (this.hasAttribute("xstyle") && this.xstyle.startsWith("out"))
             ? "" : this._statement;
 
-         let html = 
-            "<input id='presentation-dcc' type='[exclusive]' name='[variable]' value='[value]'[checked]>[statement]</input>"
+         let html = (this.target)
+            ? "<dcc-trigger id='[id]' xstyle='theme' action='[target]' label='[statement]' divert='round' value='[value]'></dcc-trigger>"
+               .replace("[id]", varid + nop)
+               .replace("[target]", this.target)
+               .replace("[statement]", child._statement)
+               .replace("[value]", child.value)
+            : "<input id='presentation-dcc' type='[exclusive]' name='[variable]' value='[value]'[checked]>[statement]</input>"
                .replace("[exclusive]", (this.hasAttribute("exclusive") ? "radio" : "checkbox"))
                .replace("[variable]", this.variable)
                .replace("[value]", this.value)
@@ -238,12 +251,14 @@ class DCCInputChoice extends DCCInput {
       while (child != null) {
          if (child.tagName &&
              child.tagName.toLowerCase() == DCCInputOption.elementTag) {
+            console.log("=== child");
+            console.log(child);
             nop++;
-            html += (this.target)
+            html += (this.target || child.target)
             ?
             "<dcc-trigger id='[id]' xstyle='theme' action='[target]' label='[statement]' divert='round' value='[value]'></dcc-trigger>"
                .replace("[id]", varid + nop)
-               .replace("[target]", this.target)
+               .replace("[target]", (child.target) ? child.target : this.target)
                .replace("[statement]", child._statement)
                .replace("[value]", child.value)
             :

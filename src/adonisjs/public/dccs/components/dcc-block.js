@@ -179,7 +179,8 @@ class DCCBlock extends DCCMultiVisual {
          let host = this;
          if (this.xstyle == "in" || this.xstyle == "theme" ||
              this.xstyle == "none")
-            host = this.attachShadow({mode: "open"});
+            host = (this.shadowRoot)
+               ? this.shadowRoot : this.attachShadow({mode: "open"});
          host.appendChild(template.content.cloneNode(true));
          presentation = host.querySelector("#presentation-dcc" +
                                            ((role) ? "-" + role : ""));
