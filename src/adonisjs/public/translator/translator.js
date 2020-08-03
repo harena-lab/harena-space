@@ -1283,7 +1283,16 @@ class Translator {
    }
 
    _textObjToMd(obj) {
-      return ((obj.blockquote) ? "> " : "") + obj.content;
+      let content = obj.content;
+      if (obj.blockquote) {
+         const blockRegex = /^[ \t]*>[ \t]*/i;
+         let lines = content.split("\n");
+         for (let l in lines)
+            if (!blockRegex.test(lines[l]))
+               lines[l] = "> " + lines[l];
+         content = lines.join("\n");
+      }
+      return content;
    }
 
    /*
