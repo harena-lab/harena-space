@@ -362,15 +362,29 @@ class Translator {
     */ 
    _compileContext(knotSet, knotId) {
       let compiled = knotSet[knotId].content;
+      let defaultInput = 1;
       for (let c in compiled) {
          if (compiled[c].type == "input") {
+            if (compiled[c].variable == null) {
+               compiled[c].variable = knotId + ".input" + defaultInput;
+               defaultInput++;
+            }
             if (compiled[c].variable.indexOf(".") == -1)
                compiled[c].variable = knotId + "." + compiled[c].variable;
             // <TODO> can be interesting this link in the future
             // compiled[c].variable = this.findContext(knotSet, knotId, compiled[c].variable);
             if (compiled[c].target)
                compiled[c].contextTarget =
-                  this.findContext(knotSet, knotId, compiled[c].target);
+                  this._findTarget(knotSet, knotId, compiled[c].target);
+            if (compiled[c].options) {
+               console.log("=== options");
+               console.log(compiled[c].options);
+               for (let o in compiled[c].options)
+                  if (compiled[c].options[o].target != null)
+                     compiled[c].options[o].contextTarget =
+                        this._findTarget(knotSet, knotId,
+                           compiled[c].options[o].target);
+            }
          }
          else if (compiled[c].type == "context-open" &&
                   compiled[c].input.indexOf(".") == -1)
@@ -380,7 +394,7 @@ class Translator {
          else if (compiled[c].type == "option" ||
                   compiled[c].type == "divert")
             compiled[c].contextTarget =
-               this.findContext(knotSet, knotId, compiled[c].target);
+               this._findTarget(knotSet, knotId, compiled[c].target);
          /*
          {
             let target = compiled[c].target.replace(/ /g, "_");
@@ -396,6 +410,21 @@ class Translator {
          }*/
       }
    }
+
+   _findTarget(knotSet, knotId, originalTarget) {
+      let contextTarget = originalTarget;
+      if (originalTarget == "(default)") {
+         // looks for a local default note
+         if (knotSet[knotId + "_note"])
+            contextTarget = knotId + "_note";
+         else
+            // otherwise considers a global note
+            contextTarget = "Note";
+      } else
+         contextTarget =
+            this.findContext(knotSet, knotId, originalTarget);
+      return contextTarget;
+  }
 
    findContext(knotSet, knotId, originalTarget) {
       let target = originalTarget.replace(/ /g, "_");
@@ -726,6 +755,44 @@ class Translator {
       }
 
       this._compileMergeLinefeeds(unity);
+
+      // ninth cycle - aggregates options
+      let optionGroup = null;
+      for (let c = 1; c < compiled.length; c++) {
+         if (compiled[c].type == "option" && compiled[c].subtype == "+") {
+            if (compiled[c-1].type == "option" && compiled[c-1].subtype == "+") {
+               optionGroup = this._initializeObject(
+                                    { type: "input",
+                                      subtype: "choice",
+                                      exclusive: true,
+                                      scramble: true,
+                                      options: {}
+                                    }, compiled[c]._source);
+               optionGroup.options[compiled[c-1].label] = {
+                  target: (compiled[c-1].target)
+                             ? compiled[c-1].target : "(default)"
+               }
+               if (compiled[c-1].message)
+                  optionGroup.options[compiled[c-1].label].message =
+                     compiled[c-1].message;
+               compiled[c-1] = optionGroup;
+            }
+            if (optionGroup != null) {
+               optionGroup.options[compiled[c].label] = {
+                  target: (compiled[c].target)
+                             ? compiled[c].target : "(default)"
+               }
+               if (compiled[c].message)
+                  optionGroup.options[compiled[c].label].message =
+                     compiled[c].message;
+               optionGroup._source += "\n" + compiled[c]._source;
+               compiled.splice(c, 1);
+               c--;
+            }
+         } else
+            optionGroup = null;
+         compiled[c].seq = c + 1;
+      }
    }
 
    // merges texts separated by linefeeds and
@@ -1283,7 +1350,16 @@ class Translator {
    }
 
    _textObjToMd(obj) {
-      return ((obj.blockquote) ? "> " : "") + obj.content;
+      let content = obj.content;
+      if (obj.blockquote) {
+         const blockRegex = /^[ \t]*>[ \t]*/i;
+         let lines = content.split("\n");
+         for (let l in lines)
+            if (!blockRegex.test(lines[l]))
+               lines[l] = "> " + lines[l];
+         content = lines.join("\n");
+      }
+      return content;
    }
 
    /*
@@ -1845,10 +1921,19 @@ class Translator {
       let statement = (obj.text) ? obj.text : "";
       if (subtype == "input-choice" && obj.options) {
          statement += "<br>";
-         for (let op in obj.options)
-            statement += Translator.htmlTemplates.choice
-               .replace("[option]", op)
-               .replace("[value]", obj.options[op]);
+         for (let op in obj.options) {
+            let choice = Translator.htmlTemplates.choice
+                        .replace("[option]", op);
+            if (typeof obj.options[op] === "string")
+               choice = choice.replace("[target]", "")
+                              .replace("[value]", obj.options[op]);
+            else {
+               choice = choice.replace("[target]",
+                                "target='" + obj.options[op].contextTarget + "' ")
+                              .replace("[value]", obj.options[op].message);
+            }
+            statement += choice;
+         }
       }
 
       // <TODO> provisory - weak strategy (only one per case)
@@ -2108,7 +2193,7 @@ class Translator {
          mark: /^(  |\t[ \t]*)(?:[\+\*])[ \t]+([\w.\/\?&#\-][\w.\/\?&#\- \t]*)$/im,
          subtext: "value" },
       option: {
-         mark: /^[ \t]*([\+\*])[ \t]+([^\(&<> \t\n\r\f][^\(&<>\n\r\f]*)?((?:(?:(?:&lt;)|<)?-(?:(?:&gt;)|>))|(?:\(-\)))[ \t]*([^"\n\r\f]+)(?:"([^"\n\r\f]*)")?[ \t]*$/im
+         mark: /^[ \t]*([\+\*])[ \t]+([^&<> \t\n\r\f][^&<>\n\r\f]*)?((?:(?:(?:&lt;)|<)?-(?:(?:&gt;)|>))|(?:\(-\)))[ \t]*([^"\n\r\f]+)(?:"([^"\n\r\f]*)")?[ \t]*$/im
          },
       "divert-script": {
          mark: /^[ \t]*(?:\(([\w\.]+)[ \t]*(==|>|<|>=|<=|&gt;|&lt;|&gt;=|&lt;=)[ \t]*((?:"[^"\n\r\f]+")|(?:\-?\d+(?:\.\d+)?)|(?:[\w\.]+))\)[ \t]*)?-(?:(?:&gt;)|>)[ \t]*([^"\n\r\f]+)(?:"([^"\n\r\f]+)")?[ \t]*$/im,

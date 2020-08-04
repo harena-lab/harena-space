@@ -105,10 +105,10 @@ class DCCAuthorServer {
                                   source: message.source})
       };
       console.log("=== request:");
-      console.log(DCCCommonServer.managerAddressAPI + "case/register");
+      console.log(DCCCommonServer.managerAddressAPI + "case");
       console.log(header);
       const response =
-         await fetch(DCCCommonServer.managerAddressAPI + "case/register", header);
+         await fetch(DCCCommonServer.managerAddressAPI + "case", header);
       console.log("=== response:")
       console.log(response);
       const jsonResponse = await response.json();
@@ -155,6 +155,8 @@ class DCCAuthorServer {
       };
       const response =
          await fetch(DCCCommonServer.managerAddressAPI + "case/" + caseId, header);
+      console.log("=== delete case");
+      console.log(response);
       const jsonResponse = await response.json();
       MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
                              jsonResponse);

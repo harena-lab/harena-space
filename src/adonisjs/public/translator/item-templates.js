@@ -41,7 +41,7 @@ mention:
 input:
 `<dcc-[dcc] id='dcc[seq]'[author][extra]>[statement]</dcc-[dcc]>`,
 choice:
-`<dcc-input-option value="[value]">[option]</dcc-input-option><br>`,
+`<dcc-input-option [target]value="[value]">[option]</dcc-input-option><br>`,
 output:
 `<dcc-expression id='dcc[seq]'[author] expression='[variable][index]'[variant]></dcc-expression>`,
 compute:

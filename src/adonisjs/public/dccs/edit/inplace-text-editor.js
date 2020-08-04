@@ -468,7 +468,8 @@ class EditDCCText extends EditDCC {
    async _handleConfirm() {
       Panels.s.unlockNonEditPanels();
 
-      const objSet = await this._translateContent(this._quill.getContents());
+      const objSet = await this._translateContent(
+         this._quill.getContents(), this._knotContent[this._element].blockquote);
 
       // removes extra linfeeds
       if (objSet[objSet.length-1].type == "linefeed")
@@ -527,7 +528,7 @@ class EditDCCText extends EditDCC {
       this._removeEditor();
    }
 
-   async _translateContent(editContent) {
+   async _translateContent(editContent, blockquote) {
       let content = "";
       console.log("=== content");
       console.log(editContent);
@@ -590,6 +591,13 @@ class EditDCCText extends EditDCC {
       let unity = {_source: content};
       Translator.instance._compileUnityMarkdown(unity);
       Translator.instance._compileMerge(unity);
+      if (blockquote != null)
+         for (let c of unity.content) {
+            c.blockquote = true;
+            Translator.instance.updateElementMarkdown(c);
+         }
+      console.log("=== unity");
+      console.log(unity);
       return unity.content;
    }
 }

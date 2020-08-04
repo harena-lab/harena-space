@@ -100,7 +100,9 @@ class DCCCommonServer {
       */
       const response = await fetch(
          DCCCommonServer.managerAddressAPI +
-         ((message.user) ? "user/" + message.user + "/case" : "case"), header);
+         ((message.user) ? "user/cases" : "cases"), header);
+      console.log("=== cases list response");
+      console.log(response);
       const jsonResponse = await response.json();
       let busResponse = [];
       for (let c in jsonResponse)
