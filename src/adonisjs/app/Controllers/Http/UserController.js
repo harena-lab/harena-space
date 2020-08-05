@@ -13,7 +13,7 @@ class UserController {
 			  'username.required': 'Please choose a username for your account',
 	          'email.required': 'You must provide an email address.',
       		  'email.email': 'You must provide a valid email address.',
-  	          'password.required': 'You must provide a password'
+  	          'password.required': 'You must provide a password',
 			  'password_confirmation.same': 'Passwords mismatch'
 			}
 
