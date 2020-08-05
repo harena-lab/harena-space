@@ -23,10 +23,18 @@ Route.get('/institution-registration', async ({ view }) => {
    return view.render('registration.institution', { pageTitle })
 })
 
-Route.get('/signup', async ({ view }) => {
-   const pageTitle = "Sign-Up"
-   return view.render('registration.signup', { pageTitle })
-})
+
+
+Route.group(() => { 
+
+  Route.get('', async ({ view }) => {
+    return view.render('registration.signup')
+  })
+
+  Route.post(  '',          'UserController.signup')
+  
+}).prefix('/signup')
+
 
 Route.get('/login', async ({ view }) => {
    const pageTitle = "Log-in"
