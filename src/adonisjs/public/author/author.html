@@ -69,10 +69,11 @@
 </head>
 
 <body onload="AuthorManager.author.start()">
+
   <!-- Create a section to place page content -->
+
   <main role="main">
-    <div id="main-panel"
-         class="d-flex flex-column vh-100 vw-100 scroll-y index-boot-padding">
+    <div id="main-panel" class="d-flex flex-column vh-100 vw-100 scroll-y index-boot-padding">
 
       <!-- Create breadcrumbs -->
       <div id="system-panel" class="container-fluid" style="position:relative">
@@ -106,7 +107,8 @@
 
           <dcc-trigger action="control/case/save" label="SAVE" xstyle="in"></dcc-trigger>
           <!-- Settings button activates a modal -->
-          <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#settings-modal" id="btn-save-settings">Settings</button>
+          <!-- <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#settings-modal" id="btn-save-settings">Settings</button> -->
+          <dcc-trigger action="control/case/settings" label="SETTINGS" xstyle="in"></dcc-trigger>
           <div id="advanced-mode" style="display:none">
             <dcc-trigger action="control/case/markdown" label="MARKDOWN" xstyle="in"></dcc-trigger>
           </div>
