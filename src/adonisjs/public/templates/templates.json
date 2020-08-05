@@ -5,11 +5,11 @@
     "scope": "case"},
  "Quiz":
    {"description": "Single question quiz with four options.",
-    "path": "simple/case/quiz",
-    "icon": "simple/case/quiz.png",
+    "path": "simple/case/quiz_short",
+    "icon": "simple/case/quiz_short.png",
     "scope": "case"},
- "Quiz Sequence":
-   {"description": "A sequence of questions.",
+ "Extreme Decisions":
+   {"description": "A sequence of quizzes.",
     "path": "simple/case/quiz_sequence",
     "icon": "simple/case/quiz_sequence.png",
     "scope": "case"},
@@ -28,10 +28,10 @@
     "path": "jacinto/standard_eletro",
     "icon": "jacinto/images/standard_eletro.png",
     "scope": "case"},
- "Question":
+ "Quiz Block":
    {"description": "Single question quiz with four options.",
-    "path": "simple/knot/quiz_question",
-    "icon": "simple/knot/quiz_question.png",
+    "path": "simple/knot/quiz",
+    "icon": "simple/knot/quiz.png",
     "scope": "knot"},
  "Description":
    {"description": "Description of a case or report.",

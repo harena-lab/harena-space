@@ -23,6 +23,10 @@
 <script src="../infra/dcc-common-server-proxy.js"></script>
 <script src="../infra/dcc-common-server-address.js"></script>
 <script src="../context/context.js"></script>
+<script src="../lib/jquery-3-4-1/jquery-3.4.1.slim.min.js"></script>
+<script src="../lib/popper-1-15-0/popper.min.js"></script>
+<script src="../lib/bootstrap-4-3-1/js/bootstrap.min.js"></script>
+
 
 <script src="../lib/quill-1-3-7/quill.min.js"></script>
 <script src="../lib/d3.min.js"></script>
@@ -38,6 +42,7 @@
 <script src="../dccs/components/dcc-character.js"></script>
 <script src="../dccs/components/dcc-lively-dialog.js"></script>
 <script src="../dccs/components/dcc-notice-input.js"></script>
+<script src="../dccs/components/dcc-context-menu.js"></script>
 <script src="../dccs/components/dcc-state-select.js"></script>
 <script src="../dccs/components/dcc-image-marker.js"></script>
 <script src="../dccs/components/dcc-styler.js"></script>
@@ -49,6 +54,7 @@
 <script src="../dccs/components/dcc-slider.js"></script>
 <script src="../dccs/components/dcc-compute.js"></script>
 <script src="../dccs/components/dcc-report.js"></script>
+<script src="../dccs/components/dcc-graph.js"></script>
 
 <script src="../lib/showdown-2-0-0/showdown.min.js"></script>
 <script src="../translator/translator.js"></script>
@@ -67,8 +73,63 @@
 </head>
 
 <body onload="AuthorManager.author.start()">
+  <!-- Modal -->
+  <div class="modal fade" id="settings-modal" tabindex="-1" role="dialog" aria-labelledby="settings-modal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <h3>Settings</h3>
+                  <form>
+                    <div class="form-group">
+                      <label for="case-title">Title</label>
+                      <input type="text" class="form-control" id="case-title" placeholder="Enter the title">
+                    </div>
+                    <div class="form-group">
+                      <label for="description">Description</label>
+                      <textarea class="form-control" id="description"></textarea>
+                    </div>
+                    <div class="form-group">
+                      <label for="language">Language</label>
+                      <select name="language" id="language">
+                         <option value="pt-BR">Portuguese (Brazil)</option>
+                         <option value="pt-BR">Portuguese (Portugal)</option>
+                         <option value="en">English</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="created">Creation Date</label>
+                      <input type="date" class="form-control" id="created">
+                    </div>
+                    <div class="form-group">
+                      <label for="institution">Institution</label>
+                      <input type="text" class="form-control" id="institution" placeholder="Enter your institution">
+                    </div>
+                    <div class="form-group">
+                      <label for="keywords">Domain</label>
+                      <input type="text" class="form-control" id="domain" placeholder="Inform the case domain">
+                    </div>
+                    <div class="form-group">
+                      <label for="keywords">Specialty</label>
+                      <input type="text" class="form-control" id="specialty" placeholder="Inform the case specialty">
+                    </div>
+                    <div class="form-group">
+                      <label for="keywords">Keywords</label>
+                      <textarea class="form-control" id="keywords" aria-describedby="keywords-help"></textarea>
+                      <small id="keywords-help" class="form-text text-muted">Inform your keywords separated by semicolon.</small>
+                    </div>
+                    <button type="button" class="btn btn-secondary" id="btn-save-settings">Save</button>
+                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
+                  </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--end of modal -->
+
   <!-- Create a section to place page content -->
+
   <main role="main">
+
     <div id="main-panel"
          class="d-flex flex-column vh-100 vw-100 scroll-y index-boot-padding">
 
@@ -103,7 +164,10 @@
           <div class="col-6">
 
           <dcc-trigger action="control/case/save" label="SAVE" xstyle="in"></dcc-trigger>
-          <dcc-trigger action="control/case/settings" label="SETTINGS" xstyle="in"></dcc-trigger>
+          <!-- Settings button activates a modal -->
+
+          <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#settings-modal" id="btn-save-settings">Settings</button>
+          <!-- <dcc-trigger action="control/case/settings" label="SETTINGS" xstyle="in"></dcc-trigger> -->
           <div id="advanced-mode" style="display:none">
             <dcc-trigger action="control/case/markdown" label="MARKDOWN" xstyle="in"></dcc-trigger>
           </div>
@@ -129,7 +193,11 @@
       <div class="d-flex">
           <div id="navigation-block" style="position:relative" class="w-25">
             <div class="sty-navigation-block">
-              <div id="navigation-panel" class="sty-navigation-panel std-border"></div>
+              <div class="sty-navigation-panel std-border">
+                <div id="navigation-panel"></div>
+                <dcc-graph id="navigation-graph" width="500" height="300" action="control/knot/selected">
+                </dcc-graph>
+              </div>
             </div>
             <div class="container">
               <div class="row">

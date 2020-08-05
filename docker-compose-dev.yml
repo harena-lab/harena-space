@@ -16,10 +16,13 @@ services:
       - CACHE_VIEWS=false
       - APP_KEY=Xw8Ctu827gw290qDx4GSnUlyTY3a6x
       - HASH_DRIVER=bcrypt
+
       - HARENA_SPACE_URL=http://localhost:10010
       - HARENA_SPACE_API_VERSION=v1
-      - HARENA_MANAGER_URL=http://localhost:10020
+
+      - HARENA_MANAGER_URL=http://manager:10020
       - HARENA_MANAGER_API_VERSION=v1
+
       - HARENA_LOGGER_URL=http://localhost:10030
       - HARENA_LOGGER_API_VERSION=v1        
     restart: always
@@ -29,7 +32,7 @@ services:
       - ./src/adonisjs:/app
       - /app/node_modules
 
-  harena-manager:
+  manager:
     image: manager
     ports:
       - "10020:10020"

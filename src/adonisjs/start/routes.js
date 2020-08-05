@@ -16,7 +16,42 @@
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use("Route");
 
-Route.get('/', () => { return 'Hello from the harena-space'} )
+Route.get('/', ({ view }) => view.render('index') )
+
+Route.get('/institution-registration', async ({ view }) => {
+   const pageTitle = "Institution Registration"
+   return view.render('registration.institution', { pageTitle })
+})
+
+
+
+Route.group(() => { 
+
+  Route.get('', async ({ view }) => {
+    return view.render('registration.signup')
+  })
+
+  Route.post(  '',          'UserController.signup')
+  
+}).prefix('/signup')
+
+
+Route.get('/login', async ({ view }) => {
+   const pageTitle = "Log-in"
+   return view.render('registration.login', { pageTitle })
+})
+
+Route.get('/author-edge', ({ view }) => {
+   return view.render('author.home')
+}).as('author_home')
+
+Route.get('/author-edge/create', ({ view }) => {
+   return view.render('author.create')
+}).as('author_create')
+
+Route.get('/author-edge/choose-template', ({ view }) => {
+   return view.render('author.template-case')
+}).as('author_template_case')
 
 /*
 let harenaManagerUrl =

@@ -14,6 +14,7 @@ class PlayerManager {
       MessageBus.ext.subscribe("knot/+/navigate", this.navigateEvent);
       MessageBus.ext.subscribe("flow/+/navigate", this.navigateEvent);
       MessageBus.ext.subscribe("case/+/navigate", this.navigateEvent);
+      MessageBus.ext.subscribe("variable/+/navigate", this.navigateEvent);
 
       // <TODO> temporary
       this.produceReport = this.produceReport.bind(this);
@@ -74,8 +75,8 @@ class PlayerManager {
                                          : (DCCPlayerServer.localEnv)
                                            ? DCCPlayerServer.playerObj.start
                                            : this._compiledCase.start;
-                                     console.log("=== start");
-                                     console.log(startKnot);
+                                     // console.log("=== start");
+                                     // console.log(startKnot);
                                      this._state.historyRecord(startKnot);
                                      this.knotLoad(startKnot);
                                      break;
@@ -103,8 +104,8 @@ class PlayerManager {
                console.log(instruction);
                if (instruction != null) {
                   if (instruction.parameter) {
-                     console.log("=== metaparameter");
-                     console.log(instruction.parameter.parameter);
+                     // console.log("=== metaparameter");
+                     // console.log(instruction.parameter.parameter);
                      this._state.metaexecParameterSet(instruction.parameter.parameter);
                   }
                   window.open("index.html?case=" +
@@ -112,7 +113,23 @@ class PlayerManager {
                      (this._previewCase ? "&preview" : ""), "_self");
                }
                break;
-            default: if (MessageBus.matchFilter(topic, "knot/+/navigate")) {
+            default: if (MessageBus.matchFilter(topic, "knot/+/navigate") ||
+                         MessageBus.matchFilter(topic, "variable/+/navigate")) {
+                        /*
+                        console.log("=== variable navigate");
+                        console.log(target);
+                        */
+                        if (MessageBus.matchFilter(topic, "variable/+/navigate")) {
+                           let result =
+                              await MessageBus.ext.request("var/" + target + "/get");
+                           target = Translator.instance.findContext(
+                              this._compiledCase.knots, this._currentKnot,
+                              result.message);
+                           /*
+                           console.log("=== variable resolved");
+                           console.log(target);
+                           */
+                        }
                         this._state.historyRecord(target);
                         if (message.value) {
                            this._state.parameter = message.value;
@@ -123,8 +140,8 @@ class PlayerManager {
                         }
                      } else if (MessageBus.matchFilter(topic, "case/+/navigate")) {
                         if (message) {
-                           console.log("=== metaparameter");
-                           console.log(message.parameter);
+                           // console.log("=== metaparameter");
+                           // console.log(message.parameter);
                            this._state.metaexecParameterSet(message.parameter);
                         }
                         window.open("index.html?case=" + target +
@@ -232,7 +249,7 @@ class PlayerManager {
 
                     if (precase != null)
                        for (let c in cases)
-                          if (cases[c].name == precase)
+                          if (cases[c].title == precase)
                              pi = c;
                  }
 
@@ -259,7 +276,7 @@ class PlayerManager {
       Basic.service.currentCaseId = caseid;
       const caseObj = await MessageBus.ext.request(
          "data/case/" + Basic.service.currentCaseId + "/get");
-      this._currentCaseName = caseObj.message.name;
+      this._currentCaseTitle = caseObj.message.title;
 
       this._compiledCase =
          await Translator.instance.compileMarkdown(Basic.service.currentCaseId,
