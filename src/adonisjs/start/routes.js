@@ -32,6 +32,19 @@ Route.get('/login', async ({ view }) => {
    const pageTitle = "Log-in"
    return view.render('registration.login', { pageTitle })
 })
+
+Route.get('/author-edge', ({ view }) => {
+   return view.render('author.home')
+}).as('author_home')
+
+Route.get('/author-edge/create', ({ view }) => {
+   return view.render('author.create')
+}).as('author_create')
+
+Route.get('/author-edge/choose-template', ({ view }) => {
+   return view.render('author.template-case')
+}).as('author_template_case')
+
 /*
 let harenaManagerUrl =
    Env.get("HARENA_MANAGER_URL", "http://localhost:3000/api/v1/");
