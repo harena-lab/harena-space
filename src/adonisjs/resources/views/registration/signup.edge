@@ -10,9 +10,9 @@
 
       @if(flashMessage('error'))
         <div class="mb-4">
-          @component('components.alert', { type: 'danger', color: 'red' })
+          @!component('components.alert', { type: 'danger', color: 'red' })
             {{ flashMessage('error') }}
-          @endcomponent
+          {{-- @endcomponent --}}
         </div>
       @endif
 
