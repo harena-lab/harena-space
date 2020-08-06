@@ -20,7 +20,7 @@ services:
       - HARENA_SPACE_URL=http://localhost:10010
       - HARENA_SPACE_API_VERSION=v1
 
-      - HARENA_MANAGER_URL=http://localhost:10020
+      - HARENA_MANAGER_URL=http://manager:10020
       - HARENA_MANAGER_API_VERSION=v1
 
       - HARENA_LOGGER_URL=http://localhost:10030
@@ -32,7 +32,7 @@ services:
       - ./src/adonisjs:/app
       - /app/node_modules
 
-  harena-manager:
+  manager:
     image: manager
     ports:
       - "10020:10020"

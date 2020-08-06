@@ -49,9 +49,16 @@ Route.get('/author-edge/create', ({ view }) => {
    return view.render('author.create')
 }).as('author_create')
 
-Route.get('/author-edge/choose-template', ({ view }) => {
-   return view.render('author.template-case')
-}).as('author_template_case')
+
+Route.group(() => {
+   
+   Route.get('', ({ view }) => {
+      return view.render('author.template-case')
+   })
+
+   Route.post('', 'CaseController.store')
+}).prefix('/author-edge/choose-template').as('author_template_case')
+
 
 Route.get("/author-edge/drafts", ({ view }) => {
    return view.render('author.drafts')
@@ -65,10 +72,14 @@ let harenaManagerUrl =
 const Env   = use("Env");
 
 Route.get("infra/dcc-common-server-address.js", async ({response, view}) =>{
-    const harena_manager_url = Env.get("HARENA_MANAGER_URL", "http://127.0.0.1:1020");
-    const harena_manager_api_version = Env.get("HARENA_MANAGER_API_VERSION", "v1");
-    const harena_logger_url = Env.get("HARENA_LOGGER_URL", "http://127.0.0.1:1030");
-    const harena_logger_api_version = Env.get("HARENA_LOGGER_API_VERSION", "v1");
+   //  const harena_manager_url = Env.get("HARENA_MANAGER_URL", "http://127.0.0.1:1020");
+    const harena_manager_url = "http://127.0.0.1:10020"
+   //  const harena_manager_api_version = Env.get("HARENA_MANAGER_API_VERSION", "v1");
+    const harena_manager_api_version = "v1"
+   //  const harena_logger_url = Env.get("HARENA_LOGGER_URL", "http://127.0.0.1:1030");
+    const harena_logger_url = "http://127.0.0.1:10030"
+   //  const harena_logger_api_version = Env.get("HARENA_LOGGER_API_VERSION", "v1");
+    const harena_logger_api_version = "v1"
     response.header("Content-type", "application/javascript");
     return view.render("dcc-common-server-address",
        {"harena_manager_url": harena_manager_url,
