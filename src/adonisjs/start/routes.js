@@ -53,6 +53,10 @@ Route.get('/author-edge/choose-template', ({ view }) => {
    return view.render('author.template-case')
 }).as('author_template_case')
 
+Route.get("/author-edge/drafts", ({ view }) => {
+   return view.render('author.drafts')
+}).as('cases_drafts')
+
 /*
 let harenaManagerUrl =
    Env.get("HARENA_MANAGER_URL", "http://localhost:3000/api/v1/");
