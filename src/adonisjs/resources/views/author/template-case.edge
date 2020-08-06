@@ -24,18 +24,21 @@
   
           <div class="row" style="padding-bottom: 70px;">
             <div class="col-md-6">
-              <form>
+              <form method="POST" action="{{ route('CaseController.store') }}">
+
+                {{ csrfField() }}
+
                 <div class="form-group">
                   <label for="case-title">Title</label>
-                  <input type="text" class="form-control" id="case-title" placeholder="Enter the title">
+                  <input type="text" class="form-control" id="case-title" name="case_title" placeholder="Enter the title">
                 </div>
                 <div class="form-group">
                   <label for="description">Description</label>
-                  <textarea class="form-control" id="description"></textarea>
+                  <textarea class="form-control" id="description" name="description"></textarea>
                 </div>
                 <div class="form-group">
                   <label for="language">Language</label>
-                  <select name="language" id="language">
+                  <select name="language" id="language" name="language">
                      <option value="pt-BR">Portuguese (Brazil)</option>
                      <option value="pt-BR">Portuguese (Portugal)</option>
                      <option value="en">English</option>
@@ -43,27 +46,28 @@
                 </div>
                 <div class="form-group">
                   <label for="created">Creation Date</label>
-                  <input type="date" class="form-control" id="created">
+                  <input type="date" class="form-control" id="created" name="created">
                 </div>
                 <div class="form-group">
                   <label for="institution">Institution</label>
-                  <input type="text" class="form-control" id="institution" placeholder="Enter your institution">
+                  <input type="text" class="form-control" id="institution" name="institution" placeholder="Enter your institution">
                 </div>
                 <div class="form-group">
                   <label for="keywords">Domain</label>
-                  <input type="text" class="form-control" id="domain" placeholder="Inform the case domain">
+                  <input type="text" class="form-control" id="domain" name="domain" placeholder="Inform the case domain">
                 </div>
                 <div class="form-group">
                   <label for="keywords">Specialty</label>
-                  <input type="text" class="form-control" id="specialty" placeholder="Inform the case specialty">
+                  <input type="text" class="form-control" id="specialty" name="specialty" placeholder="Inform the case specialty">
                 </div>
                 <div class="form-group">
                   <label for="keywords">Keywords</label>
-                  <textarea class="form-control" id="keywords" aria-describedby="keywords-help"></textarea>
+                  <textarea class="form-control" id="keywords" name="keywords" aria-describedby="keywords-help"></textarea>
                   <small id="keywords-help" class="form-text text-muted">Inform your keywords separated by semicolon.</small>
                 </div>
-                <a class="btn btn-primary" href="author.html" role="button">Create</a>
-                <a class="btn btn-danger" href="create.html" role="button">Cancel</a>
+                <button type="submit" class="btn btn-primary" role="button">Create</button>
+                <button class="btn btn-danger" href="{{ route('author_create') }}" role="button">Cancel</button>
+                
               </form>
             </div>
             <!--
