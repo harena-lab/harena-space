@@ -30,7 +30,7 @@ class TemplateManager {
                       icon: imageIcon,
                       title: tl[t].name,
                       description: tl[t].description});
-                  window.location.href = '/author/template-case.html';
+                  window.location.href = 'http://localhost:10010/author-edge/choose-template';
                }
             );
       }
