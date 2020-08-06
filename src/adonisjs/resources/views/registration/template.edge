@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>{{ pageTitle }} | Harena </title>
+<title>{{ pageTitle }} | Harena </title>
 
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
 
@@ -13,7 +13,6 @@
   <link rel="stylesheet" href="../infra/css/common-player.css">
   <link rel="stylesheet" href="../infra/css/common-author.css">
   {{--  {{ style('author') }}  --}}
-  <link rel="stylesheet" href="css/author.css">
 
   <script src="../infra/bus.js"></script>
   <script src="../infra/basic.js"></script>
@@ -31,23 +30,22 @@
 <body onload="TemplateToCase.s.start()">
   <!-- Create a section to place page content -->
   <main role="main">
-    <div class="d-flex flex-column vh-100 vw-100 home-author-padding hidden-overflow">
+    <div class="d-flex flex-column vh-100 vw-100 hidden-overflow">
 
       <!-- Create breadcrumbs -->
         @include('layout.partials.breadcrumbs')
       <!-- End of breadcrumbs -->
 
-      <div class="h-100 w-100 home-content-padding scroll-y">
-        <div class="home-text mb-5">
+      <div class="h-100 w-100 registration-padding">
+        <div>
           <p id="template-title"></p>
         </div>
-      
+
         <h1>{{ pageTitle }}</h1>
-        {{-- Title --}}
 
 
         @!section('content')
-        
+
       </div>
     </div>
   </main>
