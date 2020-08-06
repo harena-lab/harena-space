@@ -1,7 +1,7 @@
 'use strict'
 
 const Env = use('Env')
-const axios = require('axios');
+const axios = use('axios');
 // const { validate } = use('Validator')
 
 class UserController {
@@ -53,7 +53,7 @@ class UserController {
 		  		return response.redirect('/login')
 			})
 			.catch(function (error) {
-		  		console.log(error);
+		  		// console.log(error);
 			});
 		} catch (e){
 			console.log(e)
