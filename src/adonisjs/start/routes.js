@@ -15,7 +15,10 @@
 
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use("Route");
-Route.get(  '/populate_modal',     'CaseController.populate_modal')
+const View = use('View');
+const axios = use("axios")
+
+Route.get(  '/populate_modal', 'CaseController.populate_modal')
 
 Route.get('/', ({ view }) => view.render('index') )
 
@@ -40,8 +43,45 @@ Route.group(() => {
 
 
 
-Route.get('/author-edge/author', ({ view }) => {
-   return view.render('author.author')
+Route.get('/author-edge/author', async ({ view, request }) => {
+   // View.global('name_you_like', function () {
+      
+   //    return "ase"
+   //  })
+   try{
+      // const params = request.all()
+
+      const endpoint_url = Env.get("HARENA_MANAGER_URL") + "/api/v1/case/" + "d2ad02da-b7e1-4391-9f65-4f93eeb4ca7f" 
+
+      var config = {
+        method: 'get',
+        url: endpoint_url,
+        headers: {
+          'Authorization': 'Bearer ' + request.cookie('token')
+        }
+      };
+
+
+      await axios(config)
+        .then(function (endpoint_response) {
+           
+            console.log(endpoint_response.data)
+          //return view.render('author.author')
+          let asd = endpoint_response.data
+          let titleCase = asd.title
+          let description = asd.description
+          let keywords = asd.keywords
+
+          return view.render('author.author', {titleCase,description, keywords})
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    } catch(e){
+      console.log(e)
+    }
+   const quatroManha = "Institution Registration"
+   return view.render('author.author', {quatroManha})
 }).as('author.author')
 
 Route.get('/author-edge', ({ view }) => {

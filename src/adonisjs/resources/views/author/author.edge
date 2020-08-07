@@ -137,12 +137,13 @@
   <main role="main">
     <div id="main-panel"
          class="d-flex flex-column vh-100 vw-100 scroll-y index-boot-padding">
-
+    {{quatroManha}}
       <!-- Create breadcrumbs -->
       <div id="system-panel" class="container-fluid" style="position:relative">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="home.html">Home</a></li>
+            <!-- <li class="breadcrumb-item"><a href="home.html">Home</a></li> -->
+            <li class="breadcrumb-item"><a href="/author-edge">Home</a></li>
             <li class="breadcrumb-item">
               <div style="height: 15px">
                 <dcc-trigger action="control/leave/drafts" label="Drafts" xstyle="out">
@@ -223,8 +224,8 @@
           <div class="w-75 d-flex" id="knot-main">
             <div id="navigator-expansion" class="sty-navigation-expansion">
                 <div id="navigation-set" class="sty-navigation-set">
-                  <dcc-trigger id="button-expand-nav" action="control/navigator/expand" label="Expand" image="icons/icon-expansion-right.svg"></dcc-trigger>
-                  <dcc-trigger id="button-retract-nav" action="control/navigator/retract" label="Retract" image="icons/icon-expansion-left.svg"></dcc-trigger>
+                  <dcc-trigger id="button-expand-nav" action="control/navigator/expand" label="Expand" image="/author/icons/icon-expansion-right.svg"></dcc-trigger>
+                  <dcc-trigger id="button-retract-nav" action="control/navigator/retract" label="Retract" image="/author/icons/icon-expansion-left.svg"></dcc-trigger>
                 </div>
             </div>
             <div class="w-100">
@@ -233,8 +234,8 @@
               </div>
             </div>
             <div id="properties-expansion" class="sty-navigation-expansion">
-                <dcc-trigger id="button-expand-prop" action="control/properties/expand" label="Expand" image="icons/icon-expansion-left.svg"></dcc-trigger>
-                <dcc-trigger id="button-retract-prop" action="control/properties/retract" label="Retract" image="icons/icon-expansion-right.svg" style="display:none"></dcc-trigger>
+                <dcc-trigger id="button-expand-prop" action="control/properties/expand" label="Expand" image="/author/icons/icon-expansion-left.svg"></dcc-trigger>
+                <dcc-trigger id="button-retract-prop" action="control/properties/retract" label="Retract" image="/author/icons/icon-expansion-right.svg" style="display:none"></dcc-trigger>
             </div>
           </div>
 
