@@ -101,7 +101,7 @@ class DCCAuthorServer {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + DCCCommonServer.instance.token
           },
-          "body": JSON.stringify({name: message.name,
+          "body": JSON.stringify({title: message.title,
                                   source: message.source})
       };
       console.log("=== request:");
@@ -127,7 +127,7 @@ class DCCAuthorServer {
                "Content-Type": "application/json",
                "Authorization": "Bearer " + DCCCommonServer.instance.token
              },
-             "body": JSON.stringify({name: message.name,
+             "body": JSON.stringify({title: message.title,
                                      source: message.source})
          };
          console.log("=== save request");
@@ -155,6 +155,8 @@ class DCCAuthorServer {
       };
       const response =
          await fetch(DCCCommonServer.managerAddressAPI + "case/" + caseId, header);
+      console.log("=== delete case");
+      console.log(response);
       const jsonResponse = await response.json();
       MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
                              jsonResponse);

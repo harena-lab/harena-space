@@ -1,121 +1,28 @@
-Segunda
-=======
+Challenge
+=========
 
-## Apresentação (detailed)
+## Presentation (input)
 
-Apresente o caso aqui.
+Enter clinical information.
 
-* Próximo -> Flow.next
-
-## Pergunta (input)
-
-> Qual a sua principal hipótese de diagnóstico?
+> Enter question
+>
 ? hypothesis
   * vocabularies: mesh
+  * type: text
 
-* Submeter resposta -> Flow.Next
+* Submit -> Flow.Next
 
-Terça
-=====
+Feedback
+========
 
-## Reposta Ontem (detailed)
+## Feedback (detailed)
 
-Escreva aqui a resposta sobre a pergunta de ontem.
+Enter Feedback.
 
-* Próximo -> Flow.Next
++ Enter References -> References
 
-## Referências (detailed)
-
-Referências sobre a resposta da pergunta de ontem.
-
-* Próximo -> Flow.Next
-
-## Mais Informações (detailed)
-
-Informações adicionais da terça.
-
-* Próximo -> Flow.Next
-
-## Pergunta (input)
-
-> Escreva aqui a pergunta
-? hypothesis
-  * vocabularies: mesh
-
-* Submeter resposta -> Flow.Next
-
-Quarta
-======
-
-## Reposta Ontem (detailed)
-
-Escreva aqui a resposta sobre a pergunta de ontem.
-
-* Próximo -> Flow.Next
-
-## Referências (detailed)
-
-Referências sobre a resposta da pergunta de ontem.
-
-* Próximo -> Flow.Next
-
-## Mais Informações (detailed)
-
-Informações adicionais da terça.
-
-* Próximo -> Flow.Next
-
-## Pergunta (input)
-
-> Escreva aqui a pergunta
-? hypothesis
-  * vocabularies: mesh
-
-* Submeter resposta -> Flow.Next
-
-Quinta
-======
-
-## Reposta Ontem (detailed)
-
-Escreva aqui a resposta sobre a pergunta de ontem.
-
-* Próximo -> Flow.Next
-
-## Referências (detailed)
-
-Referências sobre a resposta da pergunta de ontem.
-
-* Próximo -> Flow.Next
-
-## Mais Informações (detailed)
-
-Informações adicionais da terça.
-
-* Próximo -> Flow.Next
-
-## Pergunta (input)
-
-> Escreva aqui a pergunta
-? hypothesis
-  * vocabularies: mesh
-
-* Submeter resposta -> Flow.Next
-
-Sexta
-=====
-
-## Reposta Ontem (detailed)
-
-Escreva aqui a resposta sobre a pergunta de ontem.
-
-* Próximo -> Flow.Next
-
-## Referências (detailed)
-
-Referências sobre a resposta da pergunta de ontem.
-
-* Próximo -> Flow.Next
+* Next -> Flow.Next
 
 ___ Flow ___
 

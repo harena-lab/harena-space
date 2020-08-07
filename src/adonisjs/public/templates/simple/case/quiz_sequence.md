@@ -1,54 +1,52 @@
-Bloco 1
-=======
+# Quiz1 (quiz)
 
-## Apresentação (detailed)
+Write here the **stem** of your quiz.
 
-Apresente a sua questão aqui.
+> Write here the lead-in of your quiz.
+>
+? hypothesis
+  * type: choice
+  * exclusive
+  * trigger
+  * scramble
+  * target: Feedback
+  * options:
+    * Answer-key: Feedback for Answer-key
+    * Distractor 1: Feedback for Distractor 1
+    * Distractor 2: Feedback for Distractor 2
+    * Distractor 3: Feedback for Distractor 3
 
-* Próximo -> Flow.next
+* Next Quiz -> Knot.Next
+* Menu -> Presentation
 
-## Questão (quiz)
+# Quiz2 (quiz)
 
-Escolha uma das opções a seguir:
+Write here the **stem** of your quiz.
 
-* Opção 1 -> Incorreta
-* Opção 2 -> Incorreta
-* Opção 3 -> Correta
-* Opção 4 -> Incorreta
+> Write here the lead-in of your quiz.
+>
+? hypothesis
+  * type: choice
+  * exclusive
+  * trigger
+  * scramble
+  * target: Feedback
+  * options:
+    * Answer-key: Feedback for Answer-key
+    * Distractor 1: Feedback for Distractor 1
+    * Distractor 2: Feedback for Distractor 2
+    * Distractor 3: Feedback for Distractor 3
 
-## Incorreta (detailed)
+* Next Case -> Case.Next
+* Menu -> Presentation
 
-Escreva aqui o feedback da resposta incorreta.
+# Feedback (note)
 
-* Retorna -> Questão
+You answered: ^Block.Presentation.hypothesis^.
 
-## Correta (detailed,marker_quiz)
+^parameter^
 
-Escreva aqui o feedback da resposta correta.
-
-* Próximo -> Flow.Next
-
-Bloco 2
-=======
-
-## Questão (quiz)
-
-Escolha uma das opções a seguir:
-
-* Opção 1 -> Incorreta
-* Opção 2 -> Incorreta
-* Opção 3 -> Correta
-* Opção 4 -> Incorreta
-
-## Incorreta (detailed)
-
-Escreva aqui o feedback da resposta incorreta.
-
-* Retorna -> Questão
-
-## Correta (detailed,marker_quiz,end)
-
-Escreva aqui o feedback da resposta correta.
+* Return -> Presentation
 
 * Próximo caso -> Case.Next
 
@@ -64,5 +62,4 @@ ___ Data ___
   * evidence: http://purl.org/versum/evidence/
 * templates:
   * categories:
-    * detailed: simple/knot/description
-    * marker_quiz: simple/knot/quiz_question
+    * quiz: simple/knot/quiz

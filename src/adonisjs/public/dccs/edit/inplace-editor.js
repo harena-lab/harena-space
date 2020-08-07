@@ -52,17 +52,22 @@ class EditDCC {
    _fetchElementWrapper() {
       // looks for a knot-wrapper or equivalent
       let elWrapper = this._editElement;
-      if (this._editElement != null) {
+      if (this._editElement != null &&
+          this._editDCC.xstyle && this._editDCC.xstyle != "out" &&
+          this._editDCC.xstyle != "out-image") {
          let ew = elWrapper.parentNode;
          while (ew != null && (!ew.id || !ew.id.endsWith("-wrapper")))
             ew = ew.parentNode;
          // otherwise, finds the element outside dccs
-         if (ew != null && ew.id && ew.id != "inplace-editor-wrapper")
+         if (ew != null && ew.id && ew.id.endsWith("-wrapper") &&
+             ew.id != "inplace-editor-wrapper")
             elWrapper = ew;
-         else if (elWrapper.parentNode != null) {
+         else if (elWrapper.parentNode != null &&
+                  elWrapper.parentNode.nodeType == 1) {
             elWrapper = elWrapper.parentNode;
             while (elWrapper.nodeName.toLowerCase().startsWith("dcc-") &&
-                   elWrapper.parentNode != null)
+                   elWrapper.parentNode != null &&
+                   elWrapper.parentNode.nodeType == 1)
                elWrapper = elWrapper.parentNode;
          }
       }

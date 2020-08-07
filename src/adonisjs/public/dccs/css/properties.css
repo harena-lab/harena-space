@@ -17,6 +17,13 @@
    flex-wrap: nowrap;
 }
 
+.styp-field-pair {
+   width: 100%;
+   display: flex;
+   flex-direction: row;
+   flex-wrap: nowrap;
+}
+
 .styp-field-label {
    font-size: 1rem;
    font-weight: 400;
@@ -25,7 +32,7 @@
    margin-bottom: .3rem;
 }
 
-.styp-field-value {
+.styp-field-value, .styp-field-text {
    font-size: 1rem;
    font-weight: 400;
    color: #495057;
@@ -33,6 +40,10 @@
    border-radius: .25rem;
    padding: .375rem .75rem;
    margin-bottom: .7rem;
+}
+
+.styp-field-text {
+   width: 600px;
 }
 
 .styp-field-highlight {

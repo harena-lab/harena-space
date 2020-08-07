@@ -236,9 +236,9 @@ class Translator {
       
       this._compileUnityMarkdown(knot);
 
-      this._compileContext(knotSet, knotId);
-
       this._compileMerge(knot);
+
+      this._compileContext(knotSet, knotId);
 
       // this._compileCompose(compiledKnot);
       
@@ -362,21 +362,39 @@ class Translator {
     */ 
    _compileContext(knotSet, knotId) {
       let compiled = knotSet[knotId].content;
+      let defaultInput = 1;
       for (let c in compiled) {
-         if (compiled[c].type == "input" &&
-             compiled[c].variable.indexOf(".") == -1)
-            compiled[c].variable = knotId + "." + compiled[c].variable;
+         if (compiled[c].type == "input") {
+            if (compiled[c].variable == null) {
+               compiled[c].variable = knotId + ".input" + defaultInput;
+               defaultInput++;
+            }
+            if (compiled[c].variable.indexOf(".") == -1)
+               compiled[c].variable = knotId + "." + compiled[c].variable;
             // <TODO> can be interesting this link in the future
-            // compiled[c].variable = this._findContext(knotSet, knotId, compiled[c].variable);
+            // compiled[c].variable = this.findContext(knotSet, knotId, compiled[c].variable);
+            if (compiled[c].target)
+               compiled[c].contextTarget =
+                  this._findTarget(knotSet, knotId, compiled[c].target);
+            if (compiled[c].options) {
+               console.log("=== options");
+               console.log(compiled[c].options);
+               for (let o in compiled[c].options)
+                  if (compiled[c].options[o].target != null)
+                     compiled[c].options[o].contextTarget =
+                        this._findTarget(knotSet, knotId,
+                           compiled[c].options[o].target);
+            }
+         }
          else if (compiled[c].type == "context-open" &&
                   compiled[c].input.indexOf(".") == -1)
             compiled[c].input = knotId + "." + compiled[c].input;
              // <TODO> can be interesting this link in the future
-            // compiled[c].input = this._findContext(knotSet, knotId, compiled[c].input);
+            // compiled[c].input = this.findContext(knotSet, knotId, compiled[c].input);
          else if (compiled[c].type == "option" ||
                   compiled[c].type == "divert")
             compiled[c].contextTarget =
-               this._findContext(knotSet, knotId, compiled[c].target);
+               this._findTarget(knotSet, knotId, compiled[c].target);
          /*
          {
             let target = compiled[c].target.replace(/ /g, "_");
@@ -393,7 +411,22 @@ class Translator {
       }
    }
 
-   _findContext(knotSet, knotId, originalTarget) {
+   _findTarget(knotSet, knotId, originalTarget) {
+      let contextTarget = originalTarget;
+      if (originalTarget == "(default)") {
+         // looks for a local default note
+         if (knotSet[knotId + "_note"])
+            contextTarget = knotId + "_note";
+         else
+            // otherwise considers a global note
+            contextTarget = "Note";
+      } else
+         contextTarget =
+            this.findContext(knotSet, knotId, originalTarget);
+      return contextTarget;
+  }
+
+   findContext(knotSet, knotId, originalTarget) {
       let target = originalTarget.replace(/ /g, "_");
       if (!Translator.reservedNavigation.includes(target.toLowerCase())) {
          let prefix = knotId + ".";
@@ -443,9 +476,11 @@ class Translator {
       // third cycle - define the identity of each item: field or list
       for (let c = 1; c < compiled.length; c++)
          if (compiled[c].type == "item") {
+            /*
             console.log("=== item");
             console.log(compiled);
             console.log(c);
+            */
             let u = c-1;
             while (u >= 0 && (compiled[u].type == "linefeed" ||
                    (Translator.element[compiled[u].type] &&
@@ -720,6 +755,44 @@ class Translator {
       }
 
       this._compileMergeLinefeeds(unity);
+
+      // ninth cycle - aggregates options
+      let optionGroup = null;
+      for (let c = 1; c < compiled.length; c++) {
+         if (compiled[c].type == "option" && compiled[c].subtype == "+") {
+            if (compiled[c-1].type == "option" && compiled[c-1].subtype == "+") {
+               optionGroup = this._initializeObject(
+                                    { type: "input",
+                                      subtype: "choice",
+                                      exclusive: true,
+                                      scramble: true,
+                                      options: {}
+                                    }, compiled[c]._source);
+               optionGroup.options[compiled[c-1].label] = {
+                  target: (compiled[c-1].target)
+                             ? compiled[c-1].target : "(default)"
+               }
+               if (compiled[c-1].message)
+                  optionGroup.options[compiled[c-1].label].message =
+                     compiled[c-1].message;
+               compiled[c-1] = optionGroup;
+            }
+            if (optionGroup != null) {
+               optionGroup.options[compiled[c].label] = {
+                  target: (compiled[c].target)
+                             ? compiled[c].target : "(default)"
+               }
+               if (compiled[c].message)
+                  optionGroup.options[compiled[c].label].message =
+                     compiled[c].message;
+               optionGroup._source += "\n" + compiled[c]._source;
+               compiled.splice(c, 1);
+               c--;
+            }
+         } else
+            optionGroup = null;
+         compiled[c].seq = c + 1;
+      }
    }
 
    // merges texts separated by linefeeds and
@@ -829,7 +902,7 @@ class Translator {
       let knots = compiledCase.knots;
       for (let k in knots) {
          if (knots[k].inheritance) {
-            const target = this._findContext(knots, k, knots[k].inheritance);
+            const target = this.findContext(knots, k, knots[k].inheritance);
             if (knots[target]) {
                if (!knots[k].categories && knots[target].categories)
                   knots[k].categories = knots[target].categories;
@@ -936,8 +1009,10 @@ class Translator {
       const backPath = (knot.background !== undefined)
          ? Basic.service.imageResolver(knot.background.path) : "";
       const backAlt = (knot.background !== undefined) ? knot.background.alternative : "";
+      /*
       console.log("=== before theme");
       console.log(finalHTML);
+      */
       for (let tp = themes.length-1; tp >= 0; tp--)
          finalHTML = this._themeSet[themes[tp]]
             .replace(/{knot}/igm, finalHTML)
@@ -1275,7 +1350,16 @@ class Translator {
    }
 
    _textObjToMd(obj) {
-      return ((obj.blockquote) ? "> " : "") + obj.content;
+      let content = obj.content;
+      if (obj.blockquote) {
+         const blockRegex = /^[ \t]*>[ \t]*/i;
+         let lines = content.split("\n");
+         for (let l in lines)
+            if (!blockRegex.test(lines[l]))
+               lines[l] = "> " + lines[l];
+         content = lines.join("\n");
+      }
+      return content;
    }
 
    /*
@@ -1448,6 +1532,14 @@ class Translator {
     * Option Md to Obj
     */
    _optionMdToObj(matchArray) {
+      /*
+      const divertMap = {
+         "->":  "forward",
+         "<->": "round",
+         "(-)": "enclosed"
+      };
+      */
+
       let option = {
          type: "option"
       };
@@ -1461,9 +1553,11 @@ class Translator {
          option.rule = matchArray[3].trim();
       */
       if (matchArray[3] != null)
-         option.target = matchArray[3].trim();
+         option.divert = matchArray[3].trim();
       if (matchArray[4] != null)
-         option.value = matchArray[4].trim();
+         option.target = matchArray[4].trim();
+      if (matchArray[5] != null)
+         option.message = matchArray[5].trim();
       
       return option;
    }
@@ -1496,7 +1590,9 @@ class Translator {
          .replace("[subtype]", obj.subtype)
          .replace("[target]", this._transformNavigationMessage(obj.contextTarget))
          .replace("[display]", label)
-         .replace("[value]",
+         .replace("[divert]",
+            (obj.divert == null) ? "" : " divert='" + obj.divert + "'")
+         .replace("[message]",
             (obj.value == null) ? "" : " value='" + obj.value + "'")
          .replace("[image]", optionalImage);
    }
@@ -1506,6 +1602,8 @@ class Translator {
       const lower = target.toLowerCase();
       if (Translator.reservedNavigation.includes(lower))
          message = Translator.navigationMap[lower];
+      else if (lower.startsWith("variable."))
+         message = "variable/" + target.substring(9) + "/navigate";
       else
          message = "knot/" + target + "/navigate";
       return message;
@@ -1517,7 +1615,9 @@ class Translator {
       return Translator.markdownTemplates.option
                 .replace("{subtype}", (obj.subtype == "_") ? "" : obj.subtype+" ")
                 .replace("{label}", (obj.label) ? obj.label : "")
-                .replace("{target}", obj.target);
+                .replace("{divert}", obj.divert)
+                .replace("{target}", obj.target)
+                .replace("{message}", (obj.message) ? '"' + obj.message + '"' : "");
    }
    
    /*
@@ -1805,18 +1905,36 @@ class Translator {
    _inputObjToHTML(obj) {
       // core attributes are not straight mapped
       const coreAttributes = ["seq", "author", "type", "subtype", "text",
-                              "show", "_source", "_modified", "mergeLine"];
+                              "show", "choice", "target", "contextTarget",
+                              "_source", "_modified", "mergeLine"];
       const subtypeMap = {
          short: "input-typed",
          text: "input-typed",
          "group select": "group-select",
          slider: "slider",
-         table: "input-table"
+         table: "input-table",
+         choice: "input-choice"
       };
       const subtype = (obj.subtype)
          ? subtypeMap[obj.subtype] : subtypeMap.short;
 
-      const statement = (obj.text) ? obj.text : "";
+      let statement = (obj.text) ? obj.text : "";
+      if (subtype == "input-choice" && obj.options) {
+         statement += "<br>";
+         for (let op in obj.options) {
+            let choice = Translator.htmlTemplates.choice
+                        .replace("[option]", op);
+            if (typeof obj.options[op] === "string")
+               choice = choice.replace("[target]", "")
+                              .replace("[value]", obj.options[op]);
+            else {
+               choice = choice.replace("[target]",
+                                "target='" + obj.options[op].contextTarget + "' ")
+                              .replace("[value]", obj.options[op].message);
+            }
+            statement += choice;
+         }
+      }
 
       // <TODO> provisory - weak strategy (only one per case)
       let answer="";
@@ -1832,6 +1950,9 @@ class Translator {
          if (!coreAttributes.includes(atr) && obj[atr] != "false")
             extraAttr += " " + atr +
                          ((obj[atr] == "true") ? "" : "='" + obj[atr] + "'");
+      if (obj.contextTarget)
+         extraAttr +=
+            " target='" + this._transformNavigationMessage(obj.contextTarget) + "'";
 
       let input = Translator.htmlTemplates.input
                      .replace(/\[dcc\]/igm, subtype)
@@ -1860,12 +1981,18 @@ class Translator {
     */
    _inputObjToMd(obj) {
       // core attributes are not straight mapped
-      const coreAttributes = ["seq", "author", "variable", "type", "subtype", "text",
+      const coreAttributes = ["seq", "author", "variable", "type", "subtype",
+                              "text", "options",
                               "_source", "_modified", "mergeLine"];
       let extraAttr = "";
       for (let atr in obj)
          if (!coreAttributes.includes(atr))
             extraAttr += this._mdSubField(atr, obj[atr]);
+         else if (atr == "options") {
+            extraAttr += "\n  * options:";
+            for (let p in obj[atr])
+               extraAttr += "\n    * " + p + ": " + obj[atr][p];
+         }
 
       return Translator.markdownTemplates.input
                           .replace("{statement}", (obj.text) ? "> " + obj.text + "\n" : "")
@@ -2066,7 +2193,7 @@ class Translator {
          mark: /^(  |\t[ \t]*)(?:[\+\*])[ \t]+([\w.\/\?&#\-][\w.\/\?&#\- \t]*)$/im,
          subtext: "value" },
       option: {
-         mark: /^[ \t]*([\+\*])[ \t]+([^\(&> \t\n\r\f][^\(&>\n\r\f]*)?-(?:(?:&gt;)|>)[ \t]*([^"\n\r\f]+)(?:"([^"\n\r\f]+)")?[ \t]*$/im
+         mark: /^[ \t]*([\+\*])[ \t]+([^&<> \t\n\r\f][^&<>\n\r\f]*)?((?:(?:(?:&lt;)|<)?-(?:(?:&gt;)|>))|(?:\(-\)))[ \t]*([^"\n\r\f]+)(?:"([^"\n\r\f]*)")?[ \t]*$/im
          },
       "divert-script": {
          mark: /^[ \t]*(?:\(([\w\.]+)[ \t]*(==|>|<|>=|<=|&gt;|&lt;|&gt;=|&lt;=)[ \t]*((?:"[^"\n\r\f]+")|(?:\-?\d+(?:\.\d+)?)|(?:[\w\.]+))\)[ \t]*)?-(?:(?:&gt;)|>)[ \t]*([^"\n\r\f]+)(?:"([^"\n\r\f]+)")?[ \t]*$/im,
@@ -2136,7 +2263,8 @@ class Translator {
 
    Translator.globalFields = ["theme", "title", "role", "templates"];
 
-   Translator.reservedNavigation = ["case.next", "knot.previous", "knot.next",
+   Translator.reservedNavigation = ["case.next", "knot.start",
+                                    "knot.previous", "knot.next",
                                     "flow.next", "session.close"];
    Translator.navigationMap = {
       "case.next":     "case/>/navigate",

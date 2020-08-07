@@ -82,12 +82,13 @@ class DCCCommonServer {
       let header = {
          "async": true,
          "crossDomain": true,
-         "method": "POST",
+         "method": "GET",
          "headers": {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + this.token
           }
       };
+      /*
       if (message.filterBy) {
          header.body = JSON.stringify({
             filterBy: message.filterBy,
@@ -96,17 +97,23 @@ class DCCCommonServer {
       }
       const response = await fetch(
          DCCCommonServer.managerAddressAPI + "case/list", header);
+      */
+      const response = await fetch(
+         DCCCommonServer.managerAddressAPI +
+         ((message.user) ? "user/cases" : "cases"), header);
+      console.log("=== cases list response");
+      console.log(response);
       const jsonResponse = await response.json();
       let busResponse = [];
       for (let c in jsonResponse)
          busResponse.push({
             id:   jsonResponse[c].id,
-            name: jsonResponse[c].name,
-            icon: Basic.service.rootPath + "resources/icons/mono-slide.svg",
-            svg : jsonResponse[c].svg
+            title: jsonResponse[c].title,
+            icon: Basic.service.rootPath + "resources/icons/mono-slide.svg"
+            // svg : jsonResponse[c].svg
          });
       busResponse.sort(function(c1, c2){
-         return (c1.name < c2.name) ? -1 : 1});
+         return (c1.title < c2.title) ? -1 : 1});
       MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
                              busResponse);
    }
@@ -153,7 +160,7 @@ class DCCCommonServer {
          console.log(jsonResponse);
          */
 
-         caseObj = {name: jsonResponse.name,
+         caseObj = {title: jsonResponse.title,
                     source: jsonResponse.source};
       }
 

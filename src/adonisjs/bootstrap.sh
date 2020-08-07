@@ -1,3 +1,3 @@
 #!/bin/bash
 
-adonis serve --dev --debug
+adonis serve --dev --debug --polling

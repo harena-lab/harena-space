@@ -18,8 +18,8 @@ constructor(translator) {
    MessageBus.ext.subscribe("control/navigator/expand", this.expandClicked);
    this.retractClicked = this.retractClicked.bind(this);
    MessageBus.ext.subscribe("control/navigator/retract", this.retractClicked);
-   this.upTree = this.upTree.bind(this);
-   MessageBus.ext.subscribe("control/group/up", this.upTree);
+   // this.upTree = this.upTree.bind(this);
+   // MessageBus.ext.subscribe("control/group/up", this.upTree);
 }
 
 async expandClicked(topic, message) {
@@ -44,6 +44,7 @@ async retractClicked(topic, message) {
    this._navigatorSpread--;
 }
 
+/*
 async downTree(knotid) {
    const newRoot = this._searchTree(this._tree, knotid);
    if (newRoot != null) {
@@ -87,8 +88,114 @@ _searchTree(current, knotid) {
    }
    return result;
 }
+*/
 
 async mountTreeCase(author, knots) {
+   let navigationGraph = document.querySelector("#navigation-graph");
+   let graph = {
+      nodes: [],
+      edges: []
+   };
+
+   // <TODO> provisory
+   const specialKnot = ["note", "notice", "notice_wide", "notice_exam_zoom",
+                        "expansion"];
+
+   const templatesCats = author.templatesCategories;
+
+   let current = graph;
+   let levelStack = [];
+   let previousKnot = null;
+   for (let k in knots) {
+      // special case for knot as notes
+      // <TODO> provisory - not presented
+      let draw = true;
+      if (knots[k].categories != null)
+         for (let c of knots[k].categories)
+            if (specialKnot.includes(c))
+               draw = false;
+
+      if (draw) {
+         // build nodes of the graph
+         let newKnot = {
+            id: k,
+            label: knots[k].title,
+            render: knots[k].render,
+            level: knots[k].level
+         };
+
+         // attach menus to nodes
+         let items = {};
+         let templatesNewKnot = [];
+         if (knots[k].categories && templatesCats != null) {
+            const templateCatIds = Object.keys(templatesCats);
+            for (let cat of knots[k].categories)
+               if (templateCatIds.includes(cat) &&
+                   !templatesNewKnot.includes(templatesCats[cat]))
+                  templatesNewKnot.push(templatesCats[cat]);
+            for (let tnn of templatesNewKnot)
+               items["add " + tnn.substring(tnn.lastIndexOf("/")+1)] =
+                  {topic: "control/knot/new",
+                   message: {knotid: k, template: tnn}};
+         }
+         items["delete " + newKnot.label] =
+            {topic: "control/knot/remove", message: {knotid: k}};
+         items["move up"] = {topic: "control/knot/up", message: {knotid: k}};
+         items["move down"] = {topic: "control/knot/down", message: {knotid: k}};
+         newKnot.menu = items;
+
+         // put in the containment hierachy
+         if (previousKnot == null || newKnot.level == previousKnot.level)
+            current.nodes.push(newKnot);
+         else if (newKnot.level > previousKnot.level) {
+            previousKnot.graph = {
+               nodes: [newKnot],
+               edges: []
+            };
+            levelStack.push(current);
+            current = previousKnot.graph;
+         } else {
+            let newLevel = previousKnot.level;
+            while (levelStack.length > 0 && newKnot.level <= newLevel) {
+               current = levelStack.pop();
+               newLevel = current.level;
+            }
+            current.nodes.push(newKnot);
+         }
+
+         // build edges of the graph
+         // <TODO> adjust flow.next
+         const edgeMap = {
+            "knot.next": "#next",
+            "knot.previous": "#previous",
+            "flow.next": "#next"
+         };
+         for (let c of knots[k].content) {
+            if (c.type == "option" || c.type == "divert") {
+               let target = c.contextTarget;
+               const tl = target.toLowerCase();
+               if (edgeMap[tl] != null)
+                  target = edgeMap[tl];
+               if (!Translator.reservedNavigation.includes(target.toLowerCase())) {
+                  current.edges.push({
+                     source: k,
+                     target: target
+                  });
+               }
+            }
+         }
+
+         previousKnot = newKnot;
+      }
+   }
+
+   navigationGraph.cleanGraph();
+   navigationGraph.importGraph(graph);
+}
+
+/*
+async mountTreeCase(author, knots) {
+   this.mountTreeCaseBefore(author, knots);
    this._author = author;
    this._knots = knots;
    this._navigationPanel = document.querySelector("#navigation-panel");
@@ -461,10 +568,9 @@ async _createMiniature(knot, krender) {
          // .replace(/{scale}/g, (this._author._themeSVG)
          //   ? "" : ";transform-origin:top left;transform:scale(0.1)")
       miniature.appendChild(iframe);
-      /*
-      let idoc = (iframe.contentWindow || iframe.contentDocument);
-      Basic.service.replaceStyle(idoc.document, null, this._author.currentThemeFamily);
-      */
+      
+      // let idoc = (iframe.contentWindow || iframe.contentDocument);
+      // Basic.service.replaceStyle(idoc.document, null, this._author.currentThemeFamily);
    }
 
    return miniature;
@@ -508,10 +614,12 @@ _drawLinks(knot, svg) {
    for (let kn in knot.children)
       this._drawLinks(knot.children[kn], svg);
 }
+*/
 
 }
 
-(function() {
+//(function() {
+   /*
    Navigator.miniKnot = {
       true: {
          width: 75, // 16:9
@@ -550,6 +658,7 @@ _drawLinks(knot, svg) {
          marginY: 3.75
       }
    };
+   */
    /*
    Navigator.miniKnot = {
       true: {
@@ -588,4 +697,4 @@ _drawLinks(knot, svg) {
       }
    };
    */
-})();
+// })();

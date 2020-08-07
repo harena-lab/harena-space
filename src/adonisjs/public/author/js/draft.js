@@ -25,8 +25,7 @@ class DraftManager {
 
    async _draftSelect(userid, advanced) {
       const cases = await MessageBus.ext.request("data/case/*/list",
-                                                 {filterBy: "user",
-                                                  filter: userid});
+                                                 {user: userid});
 
       const cl = cases.message;
       for (let c in cl) {
@@ -36,7 +35,7 @@ class DraftManager {
          template.innerHTML = html
             .replace(/\[id\]/ig, cl[c].id)
             // .replace("[icon]", cl[c].icon)
-            .replace("[title]", cl[c].name);
+            .replace("[title]", cl[c].title);
             // .replace("[description]", cl[c].description);
          this._boxesPanel.appendChild(template.content.cloneNode(true));
          let editButton = this._boxesPanel.querySelector("#e" + cl[c].id);
@@ -47,7 +46,8 @@ class DraftManager {
          editButton.addEventListener("click",
             function() {
                Basic.service.authorPropertyStore("caseId", this.id.substring(1));
-               window.location.href = "author.html";
+               //window.location.href = "http://0.0.0.0:10010/author/author.html";
+               window.location.href = "http://0.0.0.0:10010/author-edge/author";
             }
          );
          previewButton.addEventListener("click",
@@ -87,7 +87,7 @@ class DraftManager {
       const caseObj = await MessageBus.ext.request(
          "data/case/" + message + "/get");
       Basic.service.downloadFile(
-         caseObj.message.source, caseObj.message.name + ".md");
+         caseObj.message.source, caseObj.message.title + ".md");
    }
 }
 

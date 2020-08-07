@@ -19,6 +19,20 @@ nav.navbar {
   margin-bottom: 1rem;
 }
 
+/* Content padding in author case creation page*/
+.registration-padding{
+  background-color: #f2f2f2;
+  padding-left: 70px;
+  padding-right: 70px;
+}
+
+/* Content padding in author case creation page*/
+.create-case-padding{
+  background-color: #f2f2f2;
+  padding-left: 70px;
+  padding-right: 70px;
+}
+
 /* author draft css start*/
 .draft-scroll-container{
   padding-bottom: 2%;
