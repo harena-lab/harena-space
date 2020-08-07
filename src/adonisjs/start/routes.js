@@ -26,7 +26,7 @@ Route.get('/institution-registration', async ({ view }) => {
 
 // Those routes should be only accessible
 // when you are not logged in
-Route.group(() => { 
+Route.group(() => {
 
   Route.get(  'signup',     'UserController.create')
   Route.get(  'login',      'AuthController.create')
@@ -36,10 +36,10 @@ Route.group(() => {
 
 }).middleware(['guest'])
 
-Route.get('author_home',  ({ view }) => {
-   return view.render('author.home')
-})
 
+Route.get('/author_case', ({ view }) => {
+   return view.render('author.author')
+}).as('author_case')
 
 Route.get('/author-edge', ({ view }) => {
    return view.render('author.home')
@@ -51,7 +51,7 @@ Route.get('/author-edge/create', ({ view }) => {
 
 
 Route.group(() => {
-   
+
    Route.get('', ({ view }) => {
       return view.render('author.template-case')
    })
