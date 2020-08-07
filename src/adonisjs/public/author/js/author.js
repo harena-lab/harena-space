@@ -179,7 +179,8 @@ class AuthorManager {
          case "control/knot/update": this.knotUpdate(message);
                                      break;
          case "control/leave/drafts": await this.caseSave();
-                                      window.location.href = 'draft.html';
+                                      //window.location.href = 'draft.html';
+                                      window.location.href = '/author-edge/drafts';
                                       break;
       }
    }

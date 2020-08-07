@@ -46,7 +46,8 @@ class DraftManager {
          editButton.addEventListener("click",
             function() {
                Basic.service.authorPropertyStore("caseId", this.id.substring(1));
-               window.location.href = "http://0.0.0.0:10010/author/author.html";
+               //window.location.href = "http://0.0.0.0:10010/author/author.html";
+               window.location.href = "http://0.0.0.0:10010/author-edge/author";
             }
          );
          previewButton.addEventListener("click",
