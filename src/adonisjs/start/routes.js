@@ -37,9 +37,9 @@ Route.group(() => {
 }).middleware(['guest'])
 
 
-Route.get('/author_case', ({ view }) => {
+Route.get('/author-edge/author', ({ view }) => {
    return view.render('author.author')
-}).as('author_case')
+})
 
 Route.get('/author-edge', ({ view }) => {
    return view.render('author.home')
