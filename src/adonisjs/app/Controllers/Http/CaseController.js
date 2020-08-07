@@ -95,6 +95,34 @@ class CaseController {
             console.log(e)
         }
     }
+
+  async populate_modal({ params, request, view, response }) {
+    try{
+      // const params = request.all()
+
+      const endpoint_url = Env.get("HARENA_MANAGER_URL") + "/api/v1/case/" + params.id 
+
+      var config = {
+        method: 'get',
+        url: endpoint_url,
+        headers: {
+          'Authorization': 'Bearer ' + request.cookie('token')
+        }
+      };
+
+
+      await axios(config)
+        .then(function (endpoint_response) {
+            console.log(endpoint_response.data)
+          return view.render('/author_case', {'teste'})
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    } catch(e){
+      console.log(e)
+    }
+  }
 }
 
 module.exports = CaseController
