@@ -97,10 +97,11 @@ class CaseController {
     }
 
   async populate_modal({ params, request, view, response }) {
+    console.log(request.input('id'))
     try{
       // const params = request.all()
 
-      const endpoint_url = Env.get("HARENA_MANAGER_URL") + "/api/v1/case/" + params.id 
+      const endpoint_url = Env.get("HARENA_MANAGER_URL") + "/api/v1/case/" + request.input('id') 
 
       var config = {
         method: 'get',
@@ -114,7 +115,7 @@ class CaseController {
       await axios(config)
         .then(function (endpoint_response) {
             console.log(endpoint_response.data)
-          return view.render('/author_case', {'teste'})
+          return view.render('author.author')
         })
         .catch(function (error) {
           console.log(error);

@@ -15,6 +15,7 @@
 
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use("Route");
+Route.get(  '/populate_modal',     'CaseController.populate_modal')
 
 Route.get('/', ({ view }) => view.render('index') )
 
@@ -37,9 +38,11 @@ Route.group(() => {
 }).middleware(['guest'])
 
 
+
+
 Route.get('/author-edge/author', ({ view }) => {
    return view.render('author.author')
-})
+}).as('author.author')
 
 Route.get('/author-edge', ({ view }) => {
    return view.render('author.home')
