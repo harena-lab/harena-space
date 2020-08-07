@@ -71,9 +71,11 @@
 <script src="/author/js/panels.js"></script>
 <script src="/author/js/navigator.js"></script>
 <script src="/author/js/author.js"></script>
+
 </head>
 
 <body onload="AuthorManager.author.start()">
+
   @include('layout.partials.settings-modal')
   <!-- Modal -->
   <!--
@@ -127,16 +129,15 @@
       </div>
     </div>
   </div>
--->
+  -->
   <!--end of modal -->
 
   <!-- Create a section to place page content -->
 
   <main role="main">
-
     <div id="main-panel"
          class="d-flex flex-column vh-100 vw-100 scroll-y index-boot-padding">
-{{ teste }}
+
       <!-- Create breadcrumbs -->
       <div id="system-panel" class="container-fluid" style="position:relative">
         <nav aria-label="breadcrumb">
@@ -168,9 +169,10 @@
           <div class="col-6">
             <dcc-trigger action="control/case/save" label="SAVE" xstyle="in"></dcc-trigger>
             <dcc-trigger action="control/case/settings" label="SETTINGS" xstyle="in"></dcc-trigger>
-
+            
             <!-- Settings button activates a modal -->
-            <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#settings-modal" id="btn-save-settings">New Settings</button>
+            <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#settings-modal" 
+            id="btn-save-settings">New Settings</button>
 
             <div id="advanced-mode" style="display:none">
               <dcc-trigger action="control/case/markdown" label="MARKDOWN" xstyle="in"></dcc-trigger>
@@ -221,8 +223,8 @@
           <div class="w-75 d-flex" id="knot-main">
             <div id="navigator-expansion" class="sty-navigation-expansion">
                 <div id="navigation-set" class="sty-navigation-set">
-                  <dcc-trigger id="button-expand-nav" action="control/navigator/expand" label="Expand" image="/author/icons/icon-expansion-right.svg"></dcc-trigger>
-                  <dcc-trigger id="button-retract-nav" action="control/navigator/retract" label="Retract" image="/author/icons/icon-expansion-left.svg"></dcc-trigger>
+                  <dcc-trigger id="button-expand-nav" action="control/navigator/expand" label="Expand" image="icons/icon-expansion-right.svg"></dcc-trigger>
+                  <dcc-trigger id="button-retract-nav" action="control/navigator/retract" label="Retract" image="icons/icon-expansion-left.svg"></dcc-trigger>
                 </div>
             </div>
             <div class="w-100">
@@ -231,8 +233,8 @@
               </div>
             </div>
             <div id="properties-expansion" class="sty-navigation-expansion">
-                <dcc-trigger id="button-expand-prop" action="control/properties/expand" label="Expand" image="/author/icons/icon-expansion-left.svg"></dcc-trigger>
-                <dcc-trigger id="button-retract-prop" action="control/properties/retract" label="Retract" image="/author/icons/icon-expansion-right.svg" style="display:none"></dcc-trigger>
+                <dcc-trigger id="button-expand-prop" action="control/properties/expand" label="Expand" image="icons/icon-expansion-left.svg"></dcc-trigger>
+                <dcc-trigger id="button-retract-prop" action="control/properties/retract" label="Retract" image="icons/icon-expansion-right.svg" style="display:none"></dcc-trigger>
             </div>
           </div>
 

@@ -2,9 +2,19 @@
 
 const Env = use("Env")
 const axios = use("axios")
+const View = use('View')
 
+View.global('currentTime', function () {
+    return ("asease")
+  })
 
 class CaseController {
+
+    create({ view }){
+        return view.render('author.author')
+      }
+
+    
     async fetch ({ view }) {
 
         const harena_manager_url = Env.get("HARENA_MANAGER_URL", "http://127.0.0.1:1020");
@@ -16,6 +26,8 @@ class CaseController {
                           console.log(error)
                       })
     }
+
+
 
     async store ({request, session, response}) {
         try {
@@ -115,6 +127,9 @@ class CaseController {
       await axios(config)
         .then(function (endpoint_response) {
             console.log(endpoint_response.data)
+          //return view.render('author.author')
+         
+
           return view.render('author.author')
         })
         .catch(function (error) {
