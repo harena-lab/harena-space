@@ -112,9 +112,9 @@ class CaseController {
     async update ({request, session, response}) {
         try {
             const params = request.all();
-            console.log("-------------------------------------------------------------------------------------------------------");
-            console.log("=== params");
-            console.log(params);
+            //console.log("-------------------------------------------------------------------------------------------------------");
+            //console.log("=== params");
+            //console.log(params);
 
             //console.log("-------------------------------------------------------------------------------------------------------")
             //console.log(request.cookie('token'))

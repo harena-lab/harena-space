@@ -11,17 +11,18 @@
           <input type="hidden" id="case_id" name="case_id" value="{{caseId}}">
           <div class="form-group">
             <label for="case-title">Title</label>
-            <input type="text" class="form-control" id="case_title" name="case_title" value="{{titleCase}}" placeholder="Enter the title">
+            <input type="text" class="form-control" id="case_title" name="case_title" value="{{caseTitle}}" placeholder="Enter the title">
           </div>
           <div class="form-group">
             <label for="description">Description</label>
-            <textarea class="form-control" id="description" name="description">{{description}}</textarea>
+            <textarea class="form-control" id="description" name="description">{{caseDescription}}</textarea>
           </div>
           <div class="form-group">
             <label for="language">Language</label>
-            <select name="language" id="language" name="language">
+            <select name="language" id="language" value={{caseLanguage}}>
+               <option value={{caseLanguage}} selected disabled hidden>{{caseLanguage}}</option>
                <option value="pt-BR">Portuguese (Brazil)</option>
-               <option value="pt-BR">Portuguese (Portugal)</option>
+               <option value="pt-PT">Portuguese (Portugal)</option>
                <option value="en">English</option>
             </select>
           </div>
@@ -31,22 +32,22 @@
           </div>
           <div class="form-group">
             <label for="institution">Institution</label>
-            <input type="text" class="form-control" id="institution" name="institution" placeholder="Enter your institution">
+          <input type="text" class="form-control" id="institution" name="institution" value="{{caseInstitution}}" placeholder="Enter your institution">
           </div>
           <div class="form-group">
             <label for="keywords">Domain</label>
-            <input type="text" class="form-control" id="domain" name="domain" placeholder="Inform the case domain">
+            <input type="text" class="form-control" id="domain" name="domain" value="{{caseDomain}}" placeholder="Inform the case domain">
           </div>
           <div class="form-group">
             <label for="keywords">Specialty</label>
-            <input type="text" class="form-control" id="specialty" name="specialty" placeholder="Inform the case specialty">
+            <input type="text" class="form-control" id="specialty" name="specialty" value="{{caseSpecialty}}" placeholder="Inform the case specialty">
           </div>
           <div class="form-group">
             <label for="keywords">Keywords</label>
-            <textarea class="form-control" id="keywords" name="keywords" aria-describedby="keywords-help">{{keywords}}</textarea>
+            <textarea class="form-control" id="keywords" name="keywords" aria-describedby="keywords-help">{{caseKeywords}}</textarea>
             <small id="keywords-help" class="form-text text-muted">Inform your keywords separated by semicolon.</small>
           </div>
-          <button type="submit" class="btn btn-secondary" id="btn-save-settings" data-dismiss="modal">Save</button>
+          <button type="submit" class="btn btn-secondary" id="btn-save-settings">Save</button>
           <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
         </form>
       </div>

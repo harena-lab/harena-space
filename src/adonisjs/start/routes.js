@@ -71,12 +71,16 @@ Route.get('/author-edge/author', async ({ view, request }) => {
           //return view.render('author.author')
           let asd = endpoint_response.data
           let caseId = asd.id;
-          let titleCase = asd.title
-          let description = asd.description
-          let keywords = asd.keywords
+          let caseTitle = asd.title
+          let caseDescription = asd.description
+          let caseLanguage = asd.language
+          let caseInstitution = asd.caseInstitution
+          let caseDomain = asd.domain
+          let caseSpecialty = asd.specialty
+          let caseKeywords = asd.keywords
 
           return view.render('author.author',
-             {caseId,titleCase,description, keywords})
+             {caseId, caseTitle, caseDescription, caseLanguage, caseInstitution, caseDomain, caseSpecialty, caseKeywords})
         })
         .catch(function (error) {
           console.log(error);
