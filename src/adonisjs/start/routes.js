@@ -24,22 +24,22 @@ Route.get('/institution-registration', async ({ view }) => {
 })
 
 
-
+// Those routes should be only accessible
+// when you are not logged in
 Route.group(() => { 
 
-  Route.get('', async ({ view }) => {
-    return view.render('registration.signup')
-  })
+  Route.get(  'signup',     'UserController.create')
+  Route.get(  'login',      'AuthController.create')
 
-  Route.post(  '',          'UserController.signup')
-  
-}).prefix('/signup')
+  Route.post( 'signup',     'UserController.signup')
+  Route.post( 'login',      'AuthController.login')
 
+}).middleware(['guest'])
 
-Route.get('/login', async ({ view }) => {
-   const pageTitle = "Log-in"
-   return view.render('registration.login', { pageTitle })
+Route.get('author_home',  ({ view }) => {
+   return view.render('author.home')
 })
+
 
 Route.get('/author-edge', ({ view }) => {
    return view.render('author.home')

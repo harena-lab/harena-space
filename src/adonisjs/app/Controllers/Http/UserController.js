@@ -5,9 +5,15 @@ const axios = require('axios');
 const { validate } = use('Validator')
 
 class UserController {
-	create(view){
-
-	}
+  
+  /**
+     * Render the view 'user.create'.
+     *
+     * ref: http://adonisjs.com/docs/4.1/views
+     */
+  create({ view }){
+    return view.render('registration.signup')
+  }
 
 	async signup ({ request, session, response }) {
 		try{

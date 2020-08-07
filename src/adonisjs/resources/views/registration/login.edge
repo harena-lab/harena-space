@@ -2,19 +2,51 @@
 
 @section('content')
 <div class="row">
-    <div class="col-md-6">
-      <form>
-        <div class="form-group">
-          <label for="administrator">Login</label>
-          <input type="text" class="form-control" id="user-email" placeholder="Enter your email">
+
+
+      @component('components.panel')
+      <form method="POST" action="{{ route('AuthController.login') }}">
+
+        {{ csrfField() }}
+
+        @if(flashMessage('error'))
+        <div class="mb-4">
+          @!component('components.alert', { 
+            type: 'danger', 
+            color: 'red' })
+
+            {{ flashMessage('error') }}
         </div>
+        @endif
+
+        {{-- Login Field --}}
         <div class="form-group">
-            <label for="password1">Password</label>
-            <input type="password" class="form-control" id="inst-password">
+          <div class="mt-1 sm:mt-0 sm:col-span-2">
+            @!component('components.input', { 
+              name: 'login', 
+              value: old('login'), 
+              required: true,
+              placeholder: 'Enter login' })
+            {{ elIf('<p class="mt-2 text-sm text-red-600">$self</p>', getErrorFor('login'), hasErrorFor('login')) }}
+          </div>
         </div>
-        <a class="btn btn-primary" href="/author/author.html" role="button">Log-in</a>
+
+        {{-- Password Field --}}
+        <div class="form-group">
+          <div class="mt-1 sm:mt-0 sm:col-span-2">
+            @!component('components.input', 
+                { name: 'password', 
+                  type: 'password', 
+                  required: true,
+                  placeholder: 'Enter password' })
+
+            {{ elIf('<p class="mt-2 text-sm text-red-600">$self</p>', getErrorFor('password'), hasErrorFor('password')) }}
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" role="button">Log in</button
       </form>
-    </div>
+      @endcomponent
     <!--
     <div class="col-md-6" id="preview-desc">
     </div>
