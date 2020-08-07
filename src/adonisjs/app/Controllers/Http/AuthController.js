@@ -47,17 +47,20 @@ class AuthController {
 
   	  await axios(config)
  	  	.then(async function (endpoint_response) {
-
- 	  	  let user = endpoint_response.data
+		
+		  let user = endpoint_response.data
+		  console.log("-----------------------------------------------------------------------------------------------------------")
  	  	  console.log(user.token)
- 	  	  let token = await auth.generate(user)
-
- 	  	  console.log(token.token)
- 	  	  request.cookie("token", token.token)
+ 	  	  //let token = await auth.generate(user)
+		
+ 	  	  //console.log(token.token)
+ 	  	  //request.cookie("token", token.token)
  	  	  console.log('login feito')
-
- 	  	  // return view.render('author.home' )
-	  	  return response.redirect('/')
+			 //const data = { user : 'hello world' }
+			 response.cookie('token', user.token)
+			 //yield response.sendView('index', data)
+		  //return view.render('index', { user: user.toJSON() })
+ 	  	  return response.redirect('/')
 	  	})
 	    .catch(function (error) {
 		  console.log(error);

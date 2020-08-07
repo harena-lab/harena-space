@@ -20,7 +20,8 @@ class CaseController {
     async store ({request, session, response}) {
         try {
             const params = request.all()
-
+            //console.log("-------------------------------------------------------------------------------------------------------")
+            //console.log(request.cookie('token'))
             const endpoint_url = Env.get("HARENA_MANAGER_URL") + "/api/v1/case"
 
             const template_source = 
@@ -61,7 +62,7 @@ class CaseController {
                 * detailed: simple/knot/description
             `
             // console.log(request.cookie('token'))
-            // let token = request.cookie('token')
+            let token = request.cookie('token')
             const config = {
                 method: "post",
                 url: endpoint_url,
@@ -75,7 +76,7 @@ class CaseController {
                     source: template_source,
                 },
                     headers: {
-                        'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJjOWIxMmFjNi0yOThhLTQ2NTAtYWM2Zi0zODJlMzBjMWIyYTMiLCJpYXQiOjE1OTY3NjA2MDgsImV4cCI6MTU5Njg0NzAwOH0.npYm7yQTeYsiPjnokF-vRgbiKLNCQJmNHocEB_bID1A`  
+                        'Authorization': 'Bearer ' + token
                     }
             }
 
