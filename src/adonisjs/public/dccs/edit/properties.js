@@ -37,9 +37,19 @@ class Properties {
       const knotContent = knots[knotid].content;
       const element = dcc.currentPresentation();
       let obj = knotContent[el];
+      console.log("=== edit dcc");
+      console.log(obj);
+
+      let propRole = role;
+      if (!Properties.selectiveRoles.includes(role) &&
+          knots[knotid].type == "input")
+         propRole = "options";
+
       if (this._knotOriginalTitle)
          delete this._knotOriginalTitle;
-      const editp = this.editProperties(obj, role);
+      const editp = this.editProperties(obj, propRole);
+      console.log("=== edit inline");
+      console.log(editp);
       // <TODO> Provisory
       const svg = ["jacinto", "simple-svg"].
          includes(Basic.service.currentThemeFamily);
@@ -57,6 +67,14 @@ class Properties {
                break;
             case "image":
                this._editor = new EditDCCImage(obj, dcc, editp.htmls);
+               break;
+            case "option":
+               console.log("=== option inplace");
+               console.log(obj);
+               console.log(dcc);
+               console.log(editp.htmls);
+               this._editor = new EditDCCPlain(obj, dcc, editp.htmls,
+                                               editp.inlineProperty);
                break;
          }
       } else
@@ -94,6 +112,10 @@ class Properties {
     * Structure of the editable object
     */
    editProperties(obj, role) {
+      console.log("=== obj/role");
+      console.log(obj);
+      console.log(role);
+
       this._objProperties = obj;
 
       const profile = this._typeProfile(obj);
@@ -102,8 +124,10 @@ class Properties {
       let htmlS = "";
       let inlineProperty = null;
       let inlineProfile = null;
+      console.log("=== profile");
+      console.log(profile);
       for (let p in profile) {
-         if (profile[p].visual == "inline" &&
+         if ((profile[p].visual && profile[p].visual.includes("inline")) &&
              (role == null || profile[p].role == role)) {
             inlineProperty = p;
             inlineProfile = profile[p];
@@ -111,23 +135,24 @@ class Properties {
          if (profile[p].type != "void") {
             if (!profile[p].composite) {
                let html = this._editSingleProperty(
-                  profile[p], ((obj[p]) ? obj[p] : ""), seq);
+                  profile[p], ((obj[p]) ? obj[p] : ""), seq, role);
                htmlD += html.details;
-               if (profile[p].visual == "panel")
+               if (profile[p].visual && profile[p].visual.includes("panel"))
                   htmlS += html.short;
                seq++;
             } else {
                for (let s in profile[p].composite) {
-                  if (profile[p].composite[s].visual == "inline" &&
+                  if (profile[p].composite[s].visual &&
+                      profile[p].composite[s].visual.includes("inline") &&
                       (role == null || profile[p].composite[s].role == role)) {
                      inlineProperty = p;
                      inlineProfile = profile[p].composite[s];
                   }
                   let html = this._editSingleProperty(
                      profile[p].composite[s],
-                     ((obj[p] && obj[p][s]) ? obj[p][s] : ""), seq);
+                     ((obj[p] && obj[p][s]) ? obj[p][s] : ""), seq, role);
                   htmlD += html.details;
-                  if (profile[p].visual == "panel")
+                  if (profile[p].visual && profile[p].visual.includes("panel"))
                      htmlS += html.short;
                   seq++;
                }
@@ -150,7 +175,7 @@ class Properties {
       return profile;
    }
 
-   _editSingleProperty(property, value, seq) {
+   _editSingleProperty(property, value, seq, role) {
       if (property.type == "shortStrArray" && value.length > 0)
          value = value.join(",");
       else if (property.type == "variable")
@@ -209,7 +234,13 @@ class Properties {
                                 .replace(/\[value\]/igm, value[op]);
             sub++;
          }
-      } else    
+      } else if (property.type == "option" && role != null) {
+         const keys = Object.keys(value);
+         const rn = role.substring(role.lastIndexOf("_") + 1) - 1;
+         fields = Properties.fieldTypes["text"]
+                            .replace(/\[label\]/igm, property.label)
+                            .replace(/\[value\]/igm, value[keys[rn]].message);
+      } else
          fields = Properties.fieldTypes[property.type]
                             .replace(/\[label\]/igm, property.label)
                             .replace(/\[value\]/igm, value);
@@ -243,7 +274,8 @@ class Properties {
          for (let p in profile) {
             if (profile[p].type != "void") {
                if (!profile[p].composite) {
-                  if (details || profile[p].visual == "panel") {
+                  if (details ||
+                      (profile[p].visual && profile[p].visual.includes("panel"))) {
                      const objProperty =
                         await this._applySingleProperty(profile[p], seq, panel, sufix);
                      if (objProperty != null)
@@ -252,7 +284,8 @@ class Properties {
                   seq++;
                } else {
                   for (let s in profile[p].composite) {
-                     if (details || profile[p].visual == "panel") {
+                     if (details || (profile[p].visual &&
+                         profile[p].visual.includes("panel"))) {
                         const objProperty = await this._applySingleProperty(
                            profile[p].composite[s], seq, panel, sufix);
                         if (objProperty != null &&
@@ -305,6 +338,8 @@ class Properties {
                objProperty = categories;
             }
             break;
+         case "option":
+
          case "propertyValue":
             objProperty = {};
             let sub = 1;
@@ -337,6 +372,8 @@ class Properties {
 }
 
 (function() {
+
+Properties.selectiveRoles = ["entity", "image", "text", "slider", "input"];
 
 Properties.elProfiles = {
 knot: {
@@ -453,9 +490,15 @@ input: {
                 role: "text"},
       variable: {type: "variable",
                  label: "Variable"},
+      options: {type: "option",
+                label: "Message",
+                visual: "inline-panel",
+                role: "options"}
+      /*
       options: {type: "propertyValue",
                 label: "options",
                 visual: "panel"}
+      */
    }
 }
 };

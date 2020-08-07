@@ -71,9 +71,11 @@
 <script src="/author/js/panels.js"></script>
 <script src="/author/js/navigator.js"></script>
 <script src="/author/js/author.js"></script>
+
 </head>
 
 <body onload="AuthorManager.author.start()">
+
   @include('layout.partials.settings-modal')
   <!-- Modal -->
   <!--
@@ -127,21 +129,21 @@
       </div>
     </div>
   </div>
--->
+  -->
   <!--end of modal -->
 
   <!-- Create a section to place page content -->
 
   <main role="main">
-
     <div id="main-panel"
          class="d-flex flex-column vh-100 vw-100 scroll-y index-boot-padding">
-
+    {{quatroManha}}
       <!-- Create breadcrumbs -->
       <div id="system-panel" class="container-fluid" style="position:relative">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="home.html">Home</a></li>
+            <!-- <li class="breadcrumb-item"><a href="home.html">Home</a></li> -->
+            <li class="breadcrumb-item"><a href="/author-edge">Home</a></li>
             <li class="breadcrumb-item">
               <div style="height: 15px">
                 <dcc-trigger action="control/leave/drafts" label="Drafts" xstyle="out">
@@ -167,10 +169,13 @@
         <nav class="navbar navbar-light">
           <div class="col-6">
             <dcc-trigger action="control/case/save" label="SAVE" xstyle="in"></dcc-trigger>
+            <!--
             <dcc-trigger action="control/case/settings" label="SETTINGS" xstyle="in"></dcc-trigger>
-
+            -->
+            
             <!-- Settings button activates a modal -->
-            <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#settings-modal" id="btn-save-settings">New Settings</button>
+            <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#settings-modal" 
+            id="btn-save-settings">Settings</button>
 
             <div id="advanced-mode" style="display:none">
               <dcc-trigger action="control/case/markdown" label="MARKDOWN" xstyle="in"></dcc-trigger>

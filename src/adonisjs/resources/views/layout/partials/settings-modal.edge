@@ -1,19 +1,21 @@
+
 <div class="modal fade" id="settings-modal" tabindex="-1" role="dialog" aria-labelledby="settings-modal" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-body">
         <h3>Settings</h3>
-        <form method="POST" action="{{ route('CaseController.store') }}">
+        <form method="POST" action="{{ route('CaseController.update') }}">
 
           {{ csrfField() }}
 
+          <input type="hidden" id="case_id" name="case_id" value="{{caseId}}">
           <div class="form-group">
             <label for="case-title">Title</label>
-            <input type="text" class="form-control" id="case-title" name="case_title" placeholder="Enter the title">
+            <input type="text" class="form-control" id="case_title" name="case_title" value="{{titleCase}}" placeholder="Enter the title">
           </div>
           <div class="form-group">
             <label for="description">Description</label>
-            <textarea class="form-control" id="description" name="description"></textarea>
+            <textarea class="form-control" id="description" name="description">{{description}}</textarea>
           </div>
           <div class="form-group">
             <label for="language">Language</label>
@@ -41,10 +43,10 @@
           </div>
           <div class="form-group">
             <label for="keywords">Keywords</label>
-            <textarea class="form-control" id="keywords" name="keywords" aria-describedby="keywords-help"></textarea>
+            <textarea class="form-control" id="keywords" name="keywords" aria-describedby="keywords-help">{{keywords}}</textarea>
             <small id="keywords-help" class="form-text text-muted">Inform your keywords separated by semicolon.</small>
           </div>
-          <button type="submit" class="btn btn-secondary" id="btn-save-settings">Save</button>
+          <button type="submit" class="btn btn-secondary" id="btn-save-settings" data-dismiss="modal">Save</button>
           <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
         </form>
       </div>

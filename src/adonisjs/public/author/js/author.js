@@ -179,7 +179,8 @@ class AuthorManager {
          case "control/knot/update": this.knotUpdate(message);
                                      break;
          case "control/leave/drafts": await this.caseSave();
-                                      window.location.href = 'draft.html';
+                                      //window.location.href = 'draft.html';
+                                      window.location.href = '/author-edge/drafts';
                                       break;
       }
    }
@@ -503,7 +504,7 @@ class AuthorManager {
          this._htmlKnot = await Translator.instance.generateHTML(
                                   this._knots[this._knotSelected]);
          this._renderKnot();
-         this._collectEditableDCCs();
+         // this._collectEditableDCCs();
          delete this._elementSelected;
       }
    }
@@ -673,14 +674,9 @@ class AuthorManager {
    }
 
    elementSelected(topic, message) {
-      const dccId = MessageBus.extractLevel(topic, 3);
+      let dccId = MessageBus.extractLevel(topic, 3);
 
-      if (this._previousEditedDCC)
-         this._previousEditedDCC.reactivateAuthor();
-
-      this._editableDCCs[dccId].edit(message);
-
-      this._previousEditedDCC = this._editableDCCs[dccId];
+      this._collectEditableDCCs();
 
       const elSeq = parseInt(dccId.substring(3));
       let el = -1;
@@ -689,15 +685,33 @@ class AuthorManager {
         /* nothing */;
 
       if (el != -1) {
+         let dcc = this._editableDCCs[dccId];
+         const element = this._knots[this._knotSelected].content[el];
+         console.log("=== element properties");
+         console.log(element);
+         console.log("presentation-dcc-" + message);
+         console.log(Object.keys(this._editableDCCs));
+         // check if there is an option (trigger) element inside an input dcc
+         let roleEdit = message;
+         if (element.type == "input" && element.subtype == "choice" &&
+             element.exclusive && message != "text" &&
+             this._editableDCCs["presentation-dcc-" + message]) {
+            dcc = this._editableDCCs["presentation-dcc-" + message];
+            roleEdit = null;
+            console.log("=== new dcc");
+            console.log(dcc);
+         }
          this._elementSelected = el;
-         if (message)
-            Properties.s.editElementProperties(
-               this._knots, this._knotSelected, el,
-                  this._editableDCCs[dccId], message);
-         else
-            Properties.s.editElementProperties(
-               this._knots, this._knotSelected, el,
-                  this._editableDCCs[dccId]);
+
+         if (this._previousEditedDCC)
+            this._previousEditedDCC.reactivateAuthor();
+
+         dcc.edit(roleEdit);
+
+         this._previousEditedDCC = dcc;
+
+         Properties.s.editElementProperties(
+            this._knots, this._knotSelected, el, dcc, message);
        }
    }
 
@@ -773,7 +787,7 @@ class AuthorManager {
          this._htmlKnot = await Translator.instance.generateHTML(
             this._knots[this._knotSelected]);
          this._renderKnot();
-         this._collectEditableDCCs();
+         // this._collectEditableDCCs();
       }
    }
 

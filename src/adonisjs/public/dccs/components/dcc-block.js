@@ -122,7 +122,7 @@ class DCCBlock extends DCCMultiVisual {
    /*
     * Finds the outer target interface or creates an internal interface
     */
-   async _applyRender(html, outTarget, role) {
+   async _applyRender(html, outTarget, role, shadow) {
       const sufix = (role && role.length > 0)
          ? ((DCCBlock.defaultRoles.includes(role)) ? "" : "-" + role) : "";
 
@@ -177,8 +177,9 @@ class DCCBlock extends DCCMultiVisual {
          template.innerHTML = html;
          
          let host = this;
-         if (this.xstyle == "in" || this.xstyle == "theme" ||
-             this.xstyle == "none")
+         const allowShadow = (shadow == null) ? true : shadow;
+         if (allowShadow && (this.xstyle == "in" ||
+             this.xstyle == "theme" || this.xstyle == "none"))
             host = (this.shadowRoot)
                ? this.shadowRoot : this.attachShadow({mode: "open"});
          host.appendChild(template.content.cloneNode(true));
