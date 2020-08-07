@@ -11,7 +11,7 @@ Write here the **stem** of your quiz.
 * Next Case -> Case.Next
 * Menu -> Presentation
 
-# Feedback Note (note)
+# Presentation Note (note)
 
 You answered: ^Presentation.hypothesis^.
 

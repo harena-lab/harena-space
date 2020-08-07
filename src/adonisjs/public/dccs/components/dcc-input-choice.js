@@ -242,7 +242,7 @@ class DCCInputChoice extends DCCInput {
       */
 
       let child = this.firstChild;
-      let html = "";
+      let html = [];
       let nop = 0;
       const varid = this.variable.replace(/\./g, "_");
       let inStatement = true;
@@ -254,29 +254,30 @@ class DCCInputChoice extends DCCInput {
             console.log("=== child");
             console.log(child);
             nop++;
-            html += (this.target || child.target)
-            ?
-            "<dcc-trigger id='[id]' xstyle='theme' action='[target]' label='[statement]' divert='round' value='[value]'></dcc-trigger>"
-               .replace("[id]", varid + nop)
-               .replace("[target]", (child.target) ? child.target : this.target)
-               .replace("[statement]", child._statement)
-               .replace("[value]", child.value)
-            :
-            "<input id='[id]' type='[exclusive]' name='[variable]' value='[value]'[checked]>[statement]</input>"
-               .replace("[id]", varid + nop)
-               .replace("[exclusive]",
-                  (this.hasAttribute("exclusive") ? "radio" : "checkbox"))
-               .replace("[variable]", this.variable)
-               .replace("[value]", child.value)
-               .replace("[statement]", child._statement)
-               .replace("[checked]", child.hasAttribute("checked") ? " checked" : "");
+            let element = (this.target || child.target)
+               ?
+               "<dcc-trigger id='presentation-dcc-[id]' xstyle='theme' action='[target]' label='[statement]' divert='round' value='[value]'></dcc-trigger>"
+                  .replace("[id]", varid + "_" + nop)
+                  .replace("[target]", (child.target) ? child.target : this.target)
+                  .replace("[statement]", child._statement)
+                  .replace("[value]", child.value)
+               :
+               "<input id='presentation-dcc-[id]' type='[exclusive]' name='[variable]' value='[value]'[checked]>[statement]</input>"
+                  .replace("[id]", varid + "_" + nop)
+                  .replace("[exclusive]",
+                     (this.hasAttribute("exclusive") ? "radio" : "checkbox"))
+                  .replace("[variable]", this.variable)
+                  .replace("[value]", child.value)
+                  .replace("[statement]", child._statement)
+                  .replace("[checked]", child.hasAttribute("checked") ? " checked" : "");
+            html.push([1, element]);
             inStatement = false;
          } else {
             const element = (child.nodeType == 3) ? child.textContent : child.outerHTML;
             if (inStatement && this._statement == null)
                statement += element;
             else
-               html += element;
+               html.push([0, element]);
             /*
             if (child.nodeType == 3)
                html += child.textContent;
@@ -292,19 +293,35 @@ class DCCInputChoice extends DCCInput {
       this.innerHTML = "";
 
       // === presentation setup (DCC Block)
-      let presentation;
       /*
       if (this.hasAttribute("xstyle") && this.xstyle.startsWith("out") &&
           this._statement != null) {
       */
-      if (this._statement != null) {
+      if (this._statement != null)
          await this._applyRender(
             "<p>" + this._statement + "</p>", "innerHTML", "text");
-         presentation = await this._applyRender(html, "innerHTML", "input");
-      } else
-         presentation = await this._applyRender(html, "innerHTML", "input");
+
+      // presentation = await this._applyRender(html, "innerHTML", "input");
+      let presentation;
+      nop = 0;
+      for (let h of html) {
+         // <TODO> temporarily disabled
+         /*
+         if (h[0] == 0)
+            await this._applyRender(h[1], "innerHTML", "input");
+         else {
+         */
+         if (h[0] == 1) {
+            nop++;
+            presentation =
+               await this._applyRender(h[1], "innerHTML", varid + "_" + nop, false);
+            presentation.addEventListener("change", this.inputChanged);
+            this._options.push(presentation);
+         }
+      }
 
       // === post presentation setup
+      /*
       if (presentation != null) {
          // v = 1;
          // for (let o of this._options) {
@@ -316,6 +333,7 @@ class DCCInputChoice extends DCCInput {
             }
          }
       }
+      */
 
       this._presentationIsReady();
 

@@ -76,7 +76,7 @@ class CaseController {
             // console.log(request.cookie('token'))
             let token = request.cookie('token')
             const config = {
-                method: "post",
+                method: "POST",
                 url: endpoint_url,
                 data: {
                     title: params.case_title,
@@ -96,6 +96,53 @@ class CaseController {
             .then(function (endpoint_response) {
                 // return response.redirect('/author/author.html')
                           return response.redirect('/')
+
+                })
+            .catch(function (error) {
+                console.log(error);
+            });
+
+        }
+        catch (e) {
+            console.log(e)
+        }
+    }
+
+
+    async update ({request, session, response}) {
+        try {
+            const params = request.all();
+            console.log("-------------------------------------------------------------------------------------------------------");
+            console.log("=== params");
+            console.log(params);
+
+            //console.log("-------------------------------------------------------------------------------------------------------")
+            //console.log(request.cookie('token'))
+            const endpoint_url =
+               Env.get("HARENA_MANAGER_URL") + "/api/v1/case/" + params.case_id;
+
+            // console.log(request.cookie('token'))
+            let token = request.cookie('token')
+            const config = {
+                method: "PUT",
+                url: endpoint_url,
+                data: {
+                    title: params.case_title,
+                    description: params.description,
+                    language: params.language,
+                    domain: params.domain,
+                    specialty: params.specialty,
+                    keywords: params.keywords
+                },
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+            }
+
+            await axios(config)
+            .then(function (endpoint_response) {
+                // return response.redirect('/author/author.html')
+                          // return response.redirect('/')
 
                 })
             .catch(function (error) {

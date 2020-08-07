@@ -49,9 +49,11 @@ Route.get('/author-edge/author', async ({ view, request }) => {
    //    return "ase"
    //  })
    try{
-      // const params = request.all()
+      // const params = request.all();
 
-      const endpoint_url = Env.get("HARENA_MANAGER_URL") + "/api/v1/case/" + "d2ad02da-b7e1-4391-9f65-4f93eeb4ca7f" 
+      const endpoint_url = Env.get("HARENA_MANAGER_URL") + "/api/v1/case/" +
+         request.input("id");
+         // "d2ad02da-b7e1-4391-9f65-4f93eeb4ca7f"
 
       var config = {
         method: 'get',
@@ -68,11 +70,13 @@ Route.get('/author-edge/author', async ({ view, request }) => {
             console.log(endpoint_response.data)
           //return view.render('author.author')
           let asd = endpoint_response.data
+          let caseId = asd.id;
           let titleCase = asd.title
           let description = asd.description
           let keywords = asd.keywords
 
-          return view.render('author.author', {titleCase,description, keywords})
+          return view.render('author.author',
+             {caseId,titleCase,description, keywords})
         })
         .catch(function (error) {
           console.log(error);
@@ -99,7 +103,8 @@ Route.group(() => {
       return view.render('author.template-case')
    })
 
-   Route.post('', 'CaseController.store')
+   Route.post('/store', 'CaseController.store');
+   Route.post('/update', 'CaseController.update');
 }).prefix('/author-edge/choose-template').as('author_template_case')
 
 
