@@ -17,7 +17,7 @@ class CaseController {
                       })
     }
 
-    async store ({request, session, reponse}) {
+    async store ({request, session, response}) {
         try {
             const params = request.all()
 
@@ -60,7 +60,8 @@ class CaseController {
               * categories:
                 * detailed: simple/knot/description
             `
-            
+            // console.log(request.cookie('token'))
+            // let token = request.cookie('token')
             const config = {
                 method: "post",
                 url: endpoint_url,
@@ -72,12 +73,17 @@ class CaseController {
                     specialty: params.specialty,
                     keywords: params.keywords,
                     source: template_source,
-                }
+                },
+                    headers: {
+                        'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJjOWIxMmFjNi0yOThhLTQ2NTAtYWM2Zi0zODJlMzBjMWIyYTMiLCJpYXQiOjE1OTY3NjA2MDgsImV4cCI6MTU5Njg0NzAwOH0.npYm7yQTeYsiPjnokF-vRgbiKLNCQJmNHocEB_bID1A`  
+                    }
             }
 
             await axios(config)
             .then(function (endpoint_response) {
-                return response.redirect('/author/author.html')
+                // return response.redirect('/author/author.html')
+                          return response.redirect('/')
+
                 })
             .catch(function (error) {
                 console.log(error);

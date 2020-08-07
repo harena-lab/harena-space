@@ -16,12 +16,12 @@ class AuthController {
 	  const params = request.all()
 
 	  const messages = {
-		  'login.required': 'Missing login',
+		  'email.required': 'Missing email',
   	      'password.required': 'Missing password',
 	  }
 
 	  const validation = await validate(params, {
-	    login: 'required',
+	    email: 'required',
 		password: 'required',
 	  }, messages)
 
@@ -35,22 +35,27 @@ class AuthController {
 	  }
 
 	  const endpoint_url = Env.get("HARENA_MANAGER_URL") + "/api/v2/auth/login"   
+
 	  var config = {
 	    method: 'post',
 	    url: endpoint_url,
 	    data: {
-	  	  login: params.login,
+	  	  email: params.email,
 	  	  password: params.password,
 	    }
 	  };
 
   	  await axios(config)
  	  	.then(async function (endpoint_response) {
- 	  	  console.log(endpoint_response.data)
+
  	  	  let user = endpoint_response.data
+ 	  	  console.log(user.token)
  	  	  let token = await auth.generate(user)
+
  	  	  console.log(token.token)
- 	  	  console.log(view)
+ 	  	  request.cookie("token", token.token)
+ 	  	  console.log('login feito')
+
  	  	  // return view.render('author.home' )
 	  	  return response.redirect('/')
 	  	})

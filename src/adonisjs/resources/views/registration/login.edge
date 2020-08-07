@@ -23,11 +23,11 @@
         <div class="form-group">
           <div class="mt-1 sm:mt-0 sm:col-span-2">
             @!component('components.input', { 
-              name: 'login', 
-              value: old('login'), 
+              name: 'email', 
+              value: old('email'), 
               required: true,
-              placeholder: 'Enter login' })
-            {{ elIf('<p class="mt-2 text-sm text-red-600">$self</p>', getErrorFor('login'), hasErrorFor('login')) }}
+              placeholder: 'Enter email' })
+            {{ elIf('<p class="mt-2 text-sm text-red-600">$self</p>', getErrorFor('email'), hasErrorFor('email')) }}
           </div>
         </div>
 
