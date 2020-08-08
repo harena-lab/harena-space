@@ -1984,22 +1984,39 @@ class Translator {
       const coreAttributes = ["seq", "author", "variable", "type", "subtype",
                               "text", "options",
                               "_source", "_modified", "mergeLine"];
-      let extraAttr = "";
-      for (let atr in obj)
-         if (!coreAttributes.includes(atr))
-            extraAttr += this._mdSubField(atr, obj[atr]);
-         else if (atr == "options") {
-            extraAttr += "\n  * options:";
-            for (let p in obj[atr])
-               extraAttr += "\n    * " + p + ": " + obj[atr][p];
-         }
+      
+      let md = "";
 
-      return Translator.markdownTemplates.input
-                          .replace("{statement}", (obj.text) ? "> " + obj.text + "\n" : "")
-                          .replace("{variable}", obj.variable)
-                          .replace("{subtype}",
-                             (obj.subtype) ? this._mdSubField("type", obj.subtype) : "")
-                          .replace("{extra}", extraAttr);
+      if (obj.subtype == "choice" && obj.exclusive == true &&
+          obj.scramble == true) {
+         for (let op in obj.options)
+            md += Translator.markdownTemplates.choice
+                     .replace("{label}", op)
+                     .replace("{target}",
+                        (op.target && op.target != "(default)") ? op.target : "")
+                     .replace("{message}",
+                        (op.message ? '"' + op.message + '"' : ""));
+      } else {
+         let extraAttr = "";
+         for (let atr in obj)
+            if (!coreAttributes.includes(atr))
+               extraAttr += this._mdSubField(atr, obj[atr]);
+            else if (atr == "options") {
+               extraAttr += "\n  * options:";
+               for (let p in obj[atr])
+                  extraAttr += "\n    * " + p + ": " + obj[atr][p];
+            }
+
+         md = Translator.markdownTemplates.input
+               .replace("{statement}", (obj.text) ? "> " +
+                  obj.text + "\n" : "")
+               .replace("{variable}", obj.variable)
+               .replace("{subtype}",
+                  (obj.subtype) ? this._mdSubField("type", obj.subtype) : "")
+               .replace("{extra}", extraAttr);
+      }
+
+      return md;
    }
 
    _mdSubField(label, value) {

@@ -11,11 +11,11 @@ class DCCTimer extends DCCBase {
    }
 
    connectedCallback() {
-      if (!this.getAttribute("cycles"))
+      if (!this.hasAttribute("cycles"))
          this.cycles = 10;
-      if (!this.getAttribute("interval"))
+      if (!this.hasAttribute("interval"))
          this.interval = 100;
-      if (!this.getAttribute("publish"))
+      if (!this.hasAttribute("publish"))
          this.publish = "dcc/timer/cycle";
    }
 

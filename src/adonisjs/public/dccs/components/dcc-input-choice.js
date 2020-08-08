@@ -314,7 +314,7 @@ class DCCInputChoice extends DCCInput {
          if (h[0] == 1) {
             nop++;
             presentation =
-               await this._applyRender(h[1], "innerHTML", varid + "_" + nop, false);
+               await this._applyRender(h[1], "innerHTML", "item_" + nop, false);
             presentation.addEventListener("change", this.inputChanged);
             this._options.push(presentation);
          }

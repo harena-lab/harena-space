@@ -40,14 +40,18 @@ class Properties {
       console.log("=== edit dcc");
       console.log(obj);
 
+      /*
       let propRole = role;
-      if (!Properties.selectiveRoles.includes(role) &&
-          knots[knotid].type == "input")
+      let subrole = null;
+      if (!Properties.selectiveRoles.includes(role) && obj.type == "input") {
          propRole = "options";
+         subrole = role;
+      }
+      */
 
       if (this._knotOriginalTitle)
          delete this._knotOriginalTitle;
-      const editp = this.editProperties(obj, propRole);
+      const editp = this.editProperties(obj, role);
       console.log("=== edit inline");
       console.log(editp);
       // <TODO> Provisory
@@ -234,12 +238,13 @@ class Properties {
                                 .replace(/\[value\]/igm, value[op]);
             sub++;
          }
-      } else if (property.type == "option" && role != null) {
+      } else if (property.type == "option" && role.startsWith("item_")) {
+         // items inside an option type
          const keys = Object.keys(value);
-         const rn = role.substring(role.lastIndexOf("_") + 1) - 1;
+         this._subProperty = keys[role.substring(5) - 1];
          fields = Properties.fieldTypes["text"]
                             .replace(/\[label\]/igm, property.label)
-                            .replace(/\[value\]/igm, value[keys[rn]].message);
+                            .replace(/\[value\]/igm, value[this._subProperty].message);
       } else
          fields = Properties.fieldTypes[property.type]
                             .replace(/\[label\]/igm, property.label)
@@ -277,7 +282,8 @@ class Properties {
                   if (details ||
                       (profile[p].visual && profile[p].visual.includes("panel"))) {
                      const objProperty =
-                        await this._applySingleProperty(profile[p], seq, panel, sufix);
+                        await this._applySingleProperty(profile[p],
+                           seq, panel, sufix, this._objProperties[p]);
                      if (objProperty != null)
                         this._objProperties[p] = objProperty;
                   }
@@ -287,7 +293,8 @@ class Properties {
                      if (details || (profile[p].visual &&
                          profile[p].visual.includes("panel"))) {
                         const objProperty = await this._applySingleProperty(
-                           profile[p].composite[s], seq, panel, sufix);
+                           profile[p].composite[s], seq, panel, sufix,
+                           this._objProperties[p]);
                         if (objProperty != null &&
                             (typeof objProperty != "string" ||
                               objProperty.trim().length > 0)) {
@@ -318,7 +325,7 @@ class Properties {
      }
    }
 
-   async _applySingleProperty(property, seq, panel, sufix) {
+   async _applySingleProperty(property, seq, panel, sufix, previous) {
       let objProperty = null;
       let field =
          panel.querySelector("#pfield" + seq + sufix);
@@ -339,7 +346,9 @@ class Properties {
             }
             break;
          case "option":
-
+            objProperty = previous;
+            objProperty[this._subProperty].message = fiel.value.trim();
+            break;
          case "propertyValue":
             objProperty = {};
             let sub = 1;
@@ -373,7 +382,7 @@ class Properties {
 
 (function() {
 
-Properties.selectiveRoles = ["entity", "image", "text", "slider", "input"];
+// Properties.selectiveRoles = ["entity", "image", "text", "slider", "input"];
 
 Properties.elProfiles = {
 knot: {
