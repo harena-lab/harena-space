@@ -121,8 +121,16 @@ class DCCBlock extends DCCMultiVisual {
 
    /*
     * Finds the outer target interface or creates an internal interface
+    *
+    * htlm - HTML to be rendered
+    * outTarget - attribute to be set in an outer target element
+    * role - role of this part of the presentation concerning the whole component
+    * presentationId - customized presentation id (optional)
+    *                  default is "presentation-dcc" combined with a role
+    * shadow - oblies or forbids to render in shadow (optional)
+    *          otherwise will decide according to the context
     */
-   async _applyRender(html, outTarget, role, shadow) {
+   async _applyRender(html, outTarget, role, presentationId, shadow) {
       const sufix = (role && role.length > 0)
          ? ((DCCBlock.defaultRoles.includes(role)) ? "" : "-" + role) : "";
 
@@ -183,13 +191,12 @@ class DCCBlock extends DCCMultiVisual {
             host = (this.shadowRoot)
                ? this.shadowRoot : this.attachShadow({mode: "open"});
          host.appendChild(template.content.cloneNode(true));
-         presentation = host.querySelector("#presentation-dcc" +
-                                           ((role) ? "-" + role : ""));
+         presentation = host.querySelector((presentationId != null)
+                                           ? "#" + presentationId
+                                           : "#presentation-dcc" +
+                                             ((role) ? "-" + role : ""));
       }
-      if (role)
-         this._storePresentation(presentation, role);
-      else
-         this._storePresentation(presentation);
+      this._storePresentation(presentation, role, presentationId);
       this.checkActivateAuthor();
       return presentation;
    }

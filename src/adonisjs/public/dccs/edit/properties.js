@@ -6,13 +6,6 @@
 
 class Properties {
    constructor() {
-      // this._author = author;
-
-      /*
-      this._panelDetails = document.querySelector("#properties-panel");
-      this._panelDetailsButtons = document.querySelector("#properties-buttons");
-      */
-
       this.applyPropertiesDetails = this.applyPropertiesDetails.bind(this);
       MessageBus.ext.subscribe("properties/apply/details",
          this.applyPropertiesDetails);
@@ -37,27 +30,18 @@ class Properties {
       const knotContent = knots[knotid].content;
       const element = dcc.currentPresentation();
       let obj = knotContent[el];
-      console.log("=== edit dcc");
-      console.log(obj);
-
-      /*
-      let propRole = role;
-      let subrole = null;
-      if (!Properties.selectiveRoles.includes(role) && obj.type == "input") {
-         propRole = "options";
-         subrole = role;
-      }
-      */
-
+      this._item = -1;
+      if (role != null && role.startsWith("item_"))
+         this._item = parseInt(role.substring(5)) - 1;
       if (this._knotOriginalTitle)
          delete this._knotOriginalTitle;
       const editp = this.editProperties(obj, role);
-      console.log("=== edit inline");
-      console.log(editp);
       // <TODO> Provisory
       const svg = ["jacinto", "simple-svg"].
          includes(Basic.service.currentThemeFamily);
       if (editp.inlineProperty != null) {
+         if (this._editor != null)
+            this._editor.closeEditor();
          switch (editp.inlineProfile.type) {
             case "void":
                this._editor = new EditDCCPlain(obj, dcc, editp.htmls);
@@ -73,12 +57,13 @@ class Properties {
                this._editor = new EditDCCImage(obj, dcc, editp.htmls);
                break;
             case "option":
-               console.log("=== option inplace");
-               console.log(obj);
-               console.log(dcc);
-               console.log(editp.htmls);
-               this._editor = new EditDCCPlain(obj, dcc, editp.htmls,
-                                               editp.inlineProperty);
+               if (this._item > -1) {
+                  const keys = Object.keys(obj.options);
+                  // <TODO> improve in the future
+                  this._itemEdit = {edit: keys[this._item]};
+                  this._editor = new EditDCCPlain(
+                     this._itemEdit, dcc, editp.htmls, "edit");
+               }
                break;
          }
       } else
@@ -116,9 +101,9 @@ class Properties {
     * Structure of the editable object
     */
    editProperties(obj, role) {
-      console.log("=== obj/role");
-      console.log(obj);
-      console.log(role);
+      // console.log("=== obj/role");
+      // console.log(obj);
+      // console.log(role);
 
       this._objProperties = obj;
 
@@ -128,11 +113,11 @@ class Properties {
       let htmlS = "";
       let inlineProperty = null;
       let inlineProfile = null;
-      console.log("=== profile");
-      console.log(profile);
+      // console.log("=== profile");
+      // console.log(profile);
       for (let p in profile) {
          if ((profile[p].visual && profile[p].visual.includes("inline")) &&
-             (role == null || profile[p].role == role)) {
+             (role == null || role.startsWith(profile[p].role))) {
             inlineProperty = p;
             inlineProfile = profile[p];
          }
@@ -148,7 +133,8 @@ class Properties {
                for (let s in profile[p].composite) {
                   if (profile[p].composite[s].visual &&
                       profile[p].composite[s].visual.includes("inline") &&
-                      (role == null || profile[p].composite[s].role == role)) {
+                      (role == null ||
+                       role.startsWith(profile[p].composite[s].role))) {
                      inlineProperty = p;
                      inlineProfile = profile[p].composite[s];
                   }
@@ -238,13 +224,13 @@ class Properties {
                                 .replace(/\[value\]/igm, value[op]);
             sub++;
          }
-      } else if (property.type == "option" && role.startsWith("item_")) {
+      } else if (property.type == "option" && role.startsWith("item_") &&
+                 this._item > -1) {
          // items inside an option type
          const keys = Object.keys(value);
-         this._subProperty = keys[role.substring(5) - 1];
          fields = Properties.fieldTypes["text"]
-                            .replace(/\[label\]/igm, property.label)
-                            .replace(/\[value\]/igm, value[this._subProperty].message);
+                     .replace(/\[label\]/igm, property.label)
+                     .replace(/\[value\]/igm, value[keys[this._item]].message);
       } else
          fields = Properties.fieldTypes[property.type]
                             .replace(/\[label\]/igm, property.label)
@@ -273,6 +259,8 @@ class Properties {
       const sufix = (details) ? "_d" : "_s";
       const panel = (details)
          ? this._panelDetails : this._editor.editorExtended;
+      console.log("=== obj properties");
+      console.log(this._objProperties);
       if (this._objProperties) {
          const profile = this._typeProfile(this._objProperties);
          let seq = 1;
@@ -281,6 +269,8 @@ class Properties {
                if (!profile[p].composite) {
                   if (details ||
                       (profile[p].visual && profile[p].visual.includes("panel"))) {
+                     console.log("=== obj properties");
+                     console.log(this._objProperties);
                      const objProperty =
                         await this._applySingleProperty(profile[p],
                            seq, panel, sufix, this._objProperties[p]);
@@ -292,6 +282,8 @@ class Properties {
                   for (let s in profile[p].composite) {
                      if (details || (profile[p].visual &&
                          profile[p].visual.includes("panel"))) {
+                        console.log("=== obj properties");
+                        console.log(this._objProperties);
                         const objProperty = await this._applySingleProperty(
                            profile[p].composite[s], seq, panel, sufix,
                            this._objProperties[p]);
@@ -346,8 +338,16 @@ class Properties {
             }
             break;
          case "option":
-            objProperty = previous;
-            objProperty[this._subProperty].message = fiel.value.trim();
+            objProperty = {};
+            let i = 0;
+            for (let item in previous) {
+               if (i == this._item) {
+                  previous[item].message = field.value.trim();
+                  objProperty[this._itemEdit.edit] = previous[item];
+               } else
+                  objProperty[item] = previous[item];
+               i++;
+            }
             break;
          case "propertyValue":
             objProperty = {};
@@ -502,7 +502,7 @@ input: {
       options: {type: "option",
                 label: "Message",
                 visual: "inline-panel",
-                role: "options"}
+                role: "item"}
       /*
       options: {type: "propertyValue",
                 label: "options",

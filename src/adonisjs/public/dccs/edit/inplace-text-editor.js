@@ -591,11 +591,15 @@ class EditDCCText extends EditDCC {
       let unity = {_source: content};
       Translator.instance._compileUnityMarkdown(unity);
       Translator.instance._compileMerge(unity);
-      if (blockquote != null)
+      if (blockquote != null) {
          for (let c of unity.content) {
             c.blockquote = true;
+            if (c.type == "text-block")
+               for (let tb of c.content)
+                  tb.blockquote = true;
             Translator.instance.updateElementMarkdown(c);
          }
+      }
       console.log("=== unity");
       console.log(unity);
       return unity.content;

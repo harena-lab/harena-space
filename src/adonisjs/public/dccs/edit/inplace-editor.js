@@ -4,15 +4,13 @@
 
 class EditDCC {
    constructor(dcc, presentation) {
+      this._closed = false;
       this._editDCC = dcc;
       this._editElement = presentation;
       this._editorExtended = null;
       this._editorWrapper = this._fetchEditorWrapper();
       this._containerRect = this._editorWrapper.getBoundingClientRect();
       this._elementWrapper = this._fetchElementWrapper();
-      console.log("=== element wrapper");
-      console.log(this._editElement);
-      console.log(this._elementWrapper);
       this._elementWrapperRect = this._elementWrapper.getBoundingClientRect();
       this._elementRect = this._editElement.getBoundingClientRect();
    }
@@ -33,7 +31,14 @@ class EditDCC {
          await MessageBus.ext.request("properties/apply/short");
       else if (this._editDCC != null)
          this._editDCC.reactivateAuthor();
-      this._removeExtendedPanel();
+      this.closeEditor();
+   }
+
+   closeEditor() {
+      if (!this._closed) {
+         this._removeExtendedPanel();
+         this._closed = true;
+      }
    }
 
    // fetches the editor wrapper
@@ -143,7 +148,10 @@ class EditDCC {
    }
 
    _removeExtendedPanel() {
-      this._editorWrapper.removeChild(this._editorExtended);
+      if (this._editorExtended != null) {
+         this._editorWrapper.removeChild(this._editorExtended);
+         this._editorExtended = null;
+      }
    }
 
    _buildExtendedPanel(html, modality) {

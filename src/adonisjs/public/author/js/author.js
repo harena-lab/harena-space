@@ -271,6 +271,7 @@ class AuthorManager {
       if (this._compiledCase.title)
          this._currentCaseTitle = this._compiledCase.title;
 
+      console.log("***** COMPILED CASE *****");
       console.log(this._compiledCase);
    }
 
@@ -420,8 +421,6 @@ class AuthorManager {
       const template = await DCCNoticeInput.displayNotice(
          "Select a template for your knot.",
          "list", "Select", "Cancel", templateList);
-      console.log("=== template selected");
-      console.log(template);
       return (template == "Cancel") ? null : template;
    }
    
@@ -431,8 +430,6 @@ class AuthorManager {
    async knotSelected(topic, message) {
       // this._removeFloatingMenu();
       // let knotid = MessageBus.extractLevel(topic, 3);
-      console.log("=== knot to navigate");
-      console.log(message);
       let knotid =
          (message == null || message == "") ? this._knotSelected : message;
       if (knotid != null) {
@@ -685,13 +682,22 @@ class AuthorManager {
         /* nothing */;
 
       if (el != -1) {
+         /*
+         const presentationId = (message == null) ? null : message.presentationId;
+         let dcc = (presentationId != null)
+            ? this._editableDCCs[presentationId]
+            : this._editableDCCs[dccId];
+         */
          let dcc = this._editableDCCs[dccId];
          const element = this._knots[this._knotSelected].content[el];
+         /*
          console.log("=== element properties");
          console.log(element);
          console.log("presentation-dcc-" + message);
          console.log(Object.keys(this._editableDCCs));
+         */
          // check if there is an option (trigger) element inside an input dcc
+         /*
          let roleEdit = message;
          if (element.type == "input" && element.subtype == "choice" &&
              element.exclusive && message != "text" &&
@@ -702,16 +708,25 @@ class AuthorManager {
             console.log(dcc);
          }
          this._elementSelected = el;
+         */
 
          if (this._previousEditedDCC)
             this._previousEditedDCC.reactivateAuthor();
 
-         dcc.edit(roleEdit);
+         const role = (message != null) ? message.role : null;
+
+         // dcc.edit((presentationId != null) ? null : role);
+         dcc.edit(role);
 
          this._previousEditedDCC = dcc;
 
+         // check for a dcc inside a dcc
+         const presentationId = (message == null) ? null : message.presentationId;
+         dcc = (presentationId != null)
+            ? this._editableDCCs[presentationId] : dcc;
+
          Properties.s.editElementProperties(
-            this._knots, this._knotSelected, el, dcc, message);
+            this._knots, this._knotSelected, el, dcc, role);
        }
    }
 

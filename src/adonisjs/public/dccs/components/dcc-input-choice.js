@@ -251,8 +251,6 @@ class DCCInputChoice extends DCCInput {
       while (child != null) {
          if (child.tagName &&
              child.tagName.toLowerCase() == DCCInputOption.elementTag) {
-            console.log("=== child");
-            console.log(child);
             nop++;
             let element = (this.target || child.target)
                ?
@@ -314,7 +312,9 @@ class DCCInputChoice extends DCCInput {
          if (h[0] == 1) {
             nop++;
             presentation =
-               await this._applyRender(h[1], "innerHTML", "item_" + nop, false);
+               await this._applyRender(
+                  h[1], "innerHTML", "item_" + nop,
+                  "presentation-dcc-" + varid + "_" + nop, false);
             presentation.addEventListener("change", this.inputChanged);
             this._options.push(presentation);
          }

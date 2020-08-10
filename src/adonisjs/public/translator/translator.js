@@ -377,8 +377,6 @@ class Translator {
                compiled[c].contextTarget =
                   this._findTarget(knotSet, knotId, compiled[c].target);
             if (compiled[c].options) {
-               console.log("=== options");
-               console.log(compiled[c].options);
                for (let o in compiled[c].options)
                   if (compiled[c].options[o].target != null)
                      compiled[c].options[o].contextTarget =
@@ -520,14 +518,13 @@ class Translator {
             const pr = (c > 1 && compiled[c-1].type == "linefeed") ? c-2 : c-1;
             const nx = (c+2 < compiled.length && compiled[c+1].type == "linefeed")
                ? c+2 : c+1;
-            if (c == 0 || compiled[pr].type != "text-block") {
+            if (c == 0 || compiled[pr].type != "text-block" ||
+                (compiled[pr].type == "text-block" &&
+                 !this._equivalentSubQuote(compiled[c], compiled[pr]))) {
                // creates a new text-block
                if (nx < compiled.length &&
                    Translator.textBlockCandidate.includes(compiled[nx].type) &&
-                   ((compiled[c].blockquote && compiled[nx].blockquote) ||
-                    ((compiled[c].blockquote == null && compiled[nx].blockquote == null) &&
-                     ((compiled[c].subordinate && compiled[nx].subordinate) ||
-                      (!compiled[c].subordinate && !compiled[nx].subordinate))))) {
+                   this._equivalentSubQuote(compiled[c], compiled[nx])) {
                   tblockSeq = 1;
                   compiled[c].seq = 1;
                   tblock = this._initializeObject(
@@ -541,10 +538,7 @@ class Translator {
                   compiled[c] = tblock;
                }
             } else if (c > 0 &&
-                       ((compiled[c].blockquote && compiled[pr].blockquote) ||
-                        ((compiled[c].blockquote == null && compiled[pr].blockquote == null) &&
-                         ((compiled[c].subordinate && compiled[pr].subordinate) ||
-                          (!compiled[c].subordinate && !compiled[pr].subordinate))))) {
+                       this._equivalentSubQuote(compiled[c], compiled[pr])) {
                // adds element and previous linefeed (if exists)
                for (let e = pr+1; e <= c; e++) {
                   tblockSeq++;
@@ -767,7 +761,7 @@ class Translator {
                                       exclusive: true,
                                       scramble: true,
                                       options: {}
-                                    }, compiled[c]._source);
+                                    }, compiled[c-1]._source);
                optionGroup.options[compiled[c-1].label] = {
                   target: (compiled[c-1].target)
                              ? compiled[c-1].target : "(default)"
@@ -793,6 +787,14 @@ class Translator {
             optionGroup = null;
          compiled[c].seq = c + 1;
       }
+   }
+
+   // check if both are quoted or subordinated
+   _equivalentSubQuote(content1, content2) {
+      return ((content1.blockquote && content2.blockquote) ||
+              ((content1.blockquote == null && content2.blockquote == null) &&
+               ((content1.subordinate && content2.subordinate) ||
+                (!content1.subordinate && !content2.subordinate))));
    }
 
    // merges texts separated by linefeeds and
@@ -1210,6 +1212,17 @@ class Translator {
                       break;
          case "text": element._source = this._textObjToMd(element);
                       break;
+         case "text-block":
+            console.log("=== update markdown text block");
+            console.log(element);
+            element._source = "";
+            for (let sub of element.content) {
+               this.updateElementMarkdown(sub);
+               element._source += sub._source;
+            }
+            break;
+         case "linefeed": element._source = this._linefeedObjToMd(element);
+                          break;
          case "image": element._source = this._imageObjToMd(element);
                        break;
          case "option": element._source = this._optionObjToMd(element);
@@ -1402,6 +1415,19 @@ class Translator {
     */
    _linefeedObjToHTML(obj) {
       return (obj.render) ? obj.content.replace(/[\f\n\r][\f\n\r]/igm, "<br>") : "";
+   }
+
+
+   /*
+    * Line feed Obj to Markdown
+    */
+   _linefeedObjToMd(obj) {
+      let result = obj.content;
+      if (obj.blockquote) {
+         const lf = obj.content.match(/\r?\n/gm);
+         result = lf.join(">")
+      }
+      return result;
    }
 
    /*
@@ -1989,13 +2015,20 @@ class Translator {
 
       if (obj.subtype == "choice" && obj.exclusive == true &&
           obj.scramble == true) {
-         for (let op in obj.options)
+         let first = true;
+         for (let op in obj.options) {
+            if (!first)
+               md += "\n";
+            first = false;
+            let option = obj.options[op];
             md += Translator.markdownTemplates.choice
                      .replace("{label}", op)
                      .replace("{target}",
-                        (op.target && op.target != "(default)") ? op.target : "")
+                        (option.target && option.target != "(default)")
+                           ? option.target : "")
                      .replace("{message}",
-                        (op.message ? '"' + op.message + '"' : ""));
+                        (option.message ? '"' + option.message + '"' : ""));
+         }
       } else {
          let extraAttr = "";
          for (let atr in obj)

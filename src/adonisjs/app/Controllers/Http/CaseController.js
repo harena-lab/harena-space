@@ -73,7 +73,8 @@ class CaseController {
               * categories:
                 * detailed: simple/knot/description
             `
-            // console.log(request.cookie('token'))
+            console.log("******************************************** token from Adonis");
+            console.log(request.cookie('token'));
             let token = request.cookie('token')
             const config = {
                 method: "POST",
