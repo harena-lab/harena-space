@@ -43,9 +43,9 @@ Route.group(() => {
 
 
 
-Route.get('/author-edge/author', async ({ view, request }) => {
+Route.get('author-edge/author', async ({ view, request }) => {
    // View.global('name_you_like', function () {
-      
+
    //    return "ase"
    //  })
    try{
@@ -66,7 +66,7 @@ Route.get('/author-edge/author', async ({ view, request }) => {
 
       await axios(config)
         .then(function (endpoint_response) {
-           
+
             console.log(endpoint_response.data)
           //return view.render('author.author')
           let asd = endpoint_response.data
@@ -74,7 +74,7 @@ Route.get('/author-edge/author', async ({ view, request }) => {
           let caseTitle = asd.title
           let caseDescription = asd.description
           let caseLanguage = asd.language
-          let caseInstitution = asd.caseInstitution
+          let caseInstitution = asd.institution
           let caseDomain = asd.domain
           let caseSpecialty = asd.specialty
           let caseKeywords = asd.keywords
@@ -88,15 +88,13 @@ Route.get('/author-edge/author', async ({ view, request }) => {
     } catch(e){
       console.log(e)
     }
-   const quatroManha = "Institution Registration"
-   return view.render('author.author', {quatroManha})
-}).as('author.author')
+}).as('author_edit')
 
-Route.get('/author-edge', ({ view }) => {
+Route.get('author-edge', ({ view }) => {
    return view.render('author.home')
 }).as('author_home')
 
-Route.get('/author-edge/create', ({ view }) => {
+Route.get('author-edge/create', ({ view }) => {
    return view.render('author.create')
 }).as('author_create')
 
@@ -107,12 +105,12 @@ Route.group(() => {
       return view.render('author.template-case')
    })
 
-   Route.post('/store', 'CaseController.store');
-   Route.post('/update', 'CaseController.update');
-}).prefix('/author-edge/choose-template').as('author_template_case')
+   Route.post('store', 'CaseController.store');
+   Route.post('update', 'CaseController.update');
+}).prefix('author-edge/choose-template').as('author_template_case')
 
 
-Route.get("/author-edge/drafts", ({ view }) => {
+Route.get("author-edge/drafts", ({ view }) => {
    return view.render('author.drafts')
 }).as('cases_drafts')
 
