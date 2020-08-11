@@ -45,6 +45,7 @@ class DCCVisual extends DCCBase {
          this._activateAuthorPresentation(this._presentation, this);
    }
 
+   // author trigger attachment
    _activateAuthorPresentation(presentation, listener) {
       presentation.style.cursor = "pointer";
       presentation.dccid = this.id;
@@ -66,6 +67,7 @@ class DCCVisual extends DCCBase {
       this._presentation.style.display = "initial";
    }
 
+   // an external trigger attachment from TriggerDCC
    attachTrigger(event, trigger) {
       if (this._presentationReady)
          this._attachTriggerReady(event, trigger);
@@ -109,9 +111,14 @@ class DCCVisual extends DCCBase {
    _editPresentation(presentation, listener) {
       presentation.removeEventListener("click", listener.selectListener);
       presentation.style.cursor = "default";
-      if (presentation.style.border)
-         this._originalBorderStyle = presentation.style.border;
-      presentation.style.border = DCCVisual.selectedBorderStyle;
+      // check for a DCC inside a DCC
+      if (presentation.tagName.toLowerCase().startsWith("dcc-"))
+         presentation.edit();
+      else {
+         if (presentation.style.border)
+            this._originalBorderStyle = presentation.style.border;
+         presentation.style.border = DCCVisual.selectedBorderStyle;
+      }
    }
 
    reactivateAuthor() {
@@ -119,11 +126,16 @@ class DCCVisual extends DCCBase {
    }
 
    _reactivateAuthorPresentation(presentation, listener) {
-      if (this._originalBorderStyle) {
-         presentation.style.border = this._originalBorderStyle;
-         delete this._originalBorderStyle;
-      } else
-         presentation.style.border = "none";
+      // check for a DCC inside a DCC
+      if (presentation.tagName.toLowerCase().startsWith("dcc-"))
+         presentation.reactivateAuthor();
+      else {
+         if (this._originalBorderStyle) {
+            presentation.style.border = this._originalBorderStyle;
+            delete this._originalBorderStyle;
+         } else
+            presentation.style.border = "none";
+      }
       this._activateAuthorPresentation(presentation, listener);
    }
 
@@ -146,15 +158,11 @@ class DCCMultiVisual extends DCCVisual {
       this._presentationSet = [];
    }
 
-   _storePresentation(presentation, role) {
+   _storePresentation(presentation, role, presentationId) {
       super._storePresentation(presentation);
       if (presentation != null)
          this._presentationSet.push(
-            new PresentationDCC(presentation, this.id, role));
-         /*
-         if (role)
-            presentation.subRole = role;
-         */
+            new PresentationDCC(presentation, this.id, role, presentationId));
    }
 
    checkActivateAuthor() {
@@ -188,7 +196,8 @@ class DCCMultiVisual extends DCCVisual {
 
    edit(role) {
       for (let pr of this._presentationSet)
-         if (pr._role == role) {
+         if ((pr._param == null && role == null) ||
+             (pr._param != null && pr._param.role == role)) {
             this._editedPresentation = pr;
             this._editPresentation(pr._presentation, pr);
          }
@@ -203,27 +212,28 @@ class DCCMultiVisual extends DCCVisual {
    }
 
    currentPresentation() {
-      return (this._editedPresentation) ? this._editedPresentation._presentation : null;
+      return (this._editedPresentation)
+         ? this._editedPresentation._presentation : null;
    }
 }
 
 // manages individual in multiple visual DCCs
 class PresentationDCC {
-   constructor(presentation, id, role) {
+   constructor(presentation, id, role, presentationId) {
       this._presentation = presentation;
       this._id = id;
-      if (role)
-         this._role = role;
+      this._param = null;
+      if (role != null || presentationId != null) {
+         this._param = {};
+         this._param.role = role;
+         this._param.presentationId = presentationId;
+      }
       this.selectListener = this.selectListener.bind(this);
    }
 
    selectListener() {
-      if (this._role)
-         MessageBus.ext.publish(
-            "control/element/" + this._id + "/selected", this._role);
-      else
-         MessageBus.ext.publish(
-            "control/element/" + this._id + "/selected");
+      MessageBus.ext.publish(
+         "control/element/" + this._id + "/selected", this._param);
    }
 }
 

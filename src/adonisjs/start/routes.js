@@ -18,11 +18,11 @@ const Route = use("Route");
 const View = use('View');
 const axios = use("axios")
 
-Route.get(  '/populate_modal', 'CaseController.populate_modal')
+Route.get(  'populate_modal', 'CaseController.populate_modal')
 
 Route.get('/', ({ view }) => view.render('index') )
 
-Route.get('/institution-registration', async ({ view }) => {
+Route.get('institution-registration', async ({ view }) => {
    const pageTitle = "Institution Registration"
    return view.render('registration.institution', { pageTitle })
 })
@@ -43,15 +43,17 @@ Route.group(() => {
 
 
 
-Route.get('/author-edge/author', async ({ view, request }) => {
+Route.get('author', async ({ view, request }) => {
    // View.global('name_you_like', function () {
-      
+
    //    return "ase"
    //  })
    try{
-      // const params = request.all()
+      // const params = request.all();
 
-      const endpoint_url = Env.get("HARENA_MANAGER_URL") + "/api/v1/case/" + "d2ad02da-b7e1-4391-9f65-4f93eeb4ca7f" 
+      const endpoint_url = Env.get("HARENA_MANAGER_URL") + "/api/v1/case/" +
+         request.input("id");
+         // "d2ad02da-b7e1-4391-9f65-4f93eeb4ca7f"
 
       var config = {
         method: 'get',
@@ -64,15 +66,21 @@ Route.get('/author-edge/author', async ({ view, request }) => {
 
       await axios(config)
         .then(function (endpoint_response) {
-           
+
             console.log(endpoint_response.data)
           //return view.render('author.author')
           let asd = endpoint_response.data
-          let titleCase = asd.title
-          let description = asd.description
-          let keywords = asd.keywords
+          let caseId = asd.id;
+          let caseTitle = asd.title
+          let caseDescription = asd.description
+          let caseLanguage = asd.language
+          let caseInstitution = asd.institution
+          let caseDomain = asd.domain
+          let caseSpecialty = asd.specialty
+          let caseKeywords = asd.keywords
 
-          return view.render('author.author', {titleCase,description, keywords})
+          return view.render('author.author',
+             {caseId, caseTitle, caseDescription, caseLanguage, caseInstitution, caseDomain, caseSpecialty, caseKeywords})
         })
         .catch(function (error) {
           console.log(error);
@@ -80,15 +88,14 @@ Route.get('/author-edge/author', async ({ view, request }) => {
     } catch(e){
       console.log(e)
     }
-   const quatroManha = "Institution Registration"
-   return view.render('author.author', {quatroManha})
-}).as('author.author')
+      return view.render('author.author')
+}).as('author_edit')
 
-Route.get('/author-edge', ({ view }) => {
+Route.get('home', ({ view }) => {
    return view.render('author.home')
 }).as('author_home')
 
-Route.get('/author-edge/create', ({ view }) => {
+Route.get('create', ({ view }) => {
    return view.render('author.create')
 }).as('author_create')
 
@@ -99,11 +106,12 @@ Route.group(() => {
       return view.render('author.template-case')
    })
 
-   Route.post('', 'CaseController.store')
-}).prefix('/author-edge/choose-template').as('author_template_case')
+   Route.post('store', 'CaseController.store');
+   Route.post('update', 'CaseController.update');
+}).prefix('author/choose-template').as('author_template_case')
 
 
-Route.get("/author-edge/drafts", ({ view }) => {
+Route.get("drafts", ({ view }) => {
    return view.render('author.drafts')
 }).as('cases_drafts')
 

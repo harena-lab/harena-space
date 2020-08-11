@@ -7,8 +7,19 @@ class DCCCommonServer {
    constructor() {
       this._local = false;
 
-      this.userLogin = this.userLogin.bind(this);
-      MessageBus.ext.subscribe("data/user/login", this.userLogin);
+      /*
+      console.log("=== token");
+      this._token = null;
+      if (document.cookie.includes("token="))
+         this._token = document.cookie
+                          .split("; ")
+                          .find(row => row.startsWith("token="))
+                          .split("=")[1];
+      console.log(this._token);
+      */
+
+      // this.userLogin = this.userLogin.bind(this);
+      // MessageBus.ext.subscribe("data/user/login", this.userLogin);
       this.casesList = this.casesList.bind(this);
       MessageBus.ext.subscribe("data/case/*/list", this.casesList);
       this.loadCase = this.loadCase.bind(this);
@@ -24,6 +35,7 @@ class DCCCommonServer {
       MessageBus.int.subscribe("data/context/+/get", this.loadContext);
    }
 
+   /*
    get token() {
       return this._token;
    }
@@ -31,6 +43,7 @@ class DCCCommonServer {
    set token(newToken) {
       this._token = newToken;
    }
+   */
 
    get local() {
       return this._local;
@@ -46,6 +59,7 @@ class DCCCommonServer {
     * ************************
     */
 
+   /*
    async userLogin(topic, message) {
       let header = {
          "async": true,
@@ -69,6 +83,7 @@ class DCCCommonServer {
       console.log(response);
 
       const jsonResponse = await response.json();
+      console.log(jsonResponse);
       const busResponse = {
          userid: jsonResponse.id,
          token: jsonResponse.token
@@ -77,6 +92,7 @@ class DCCCommonServer {
       MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
                              busResponse);
    }
+   */
 
    async casesList(topic, message) {
       let header = {
@@ -85,7 +101,7 @@ class DCCCommonServer {
          "method": "GET",
          "headers": {
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + this.token
+            "Authorization": "Bearer " + DCCCommonServer.token
           }
       };
       /*
@@ -98,6 +114,8 @@ class DCCCommonServer {
       const response = await fetch(
          DCCCommonServer.managerAddressAPI + "case/list", header);
       */
+      console.log("=== cases list request");
+      console.log(header);
       const response = await fetch(
          DCCCommonServer.managerAddressAPI +
          ((message.user) ? "user/cases" : "cases"), header);
@@ -135,32 +153,22 @@ class DCCCommonServer {
             "method": "GET",
             "headers": {
                "Content-Type": "application/json",
-               "Authorization": "Bearer " + this.token
+               "Authorization": "Bearer " + DCCCommonServer.token
              }
          };
 
-         /*
-         console.log("=== load case request");
-         console.log(DCCCommonServer.managerAddressAPI + "case/" + caseId);
-         console.log(header);
-         */
-
          const response =
-            await fetch(DCCCommonServer.managerAddressAPI + "case/" + caseId, header);
-
-         /*
-         console.log("=== load case response");
-         console.log(response);
-         */
+            await fetch(DCCCommonServer.managerAddressAPI + "case/" + caseId,
+                        header);
 
          const jsonResponse = await response.json();
 
-         /*
-         console.log("=== load case json");
-         console.log(jsonResponse);
-         */
-
          caseObj = {title: jsonResponse.title,
+                    description: jsonResponse.description,
+                    language: jsonResponse.language,
+                    domain: jsonResponse.domain,
+                    specialty: jsonResponse.specialty,
+                    keywords: jsonResponse.keywords,
                     source: jsonResponse.source};
       }
 

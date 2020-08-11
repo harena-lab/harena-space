@@ -11,14 +11,14 @@ class AuthorManager {
       MessageBus.page = new MessageBus(false);
 
       Basic.service.host = this;
-      
+
       Translator.instance.authoringRender = true;
 
       this._compiledCase = null;
       this._knots = null;
-      
+
       this._navigator = new Navigator(Translator.instance);
-      
+
       this._themeSVG = true;
       this._knotSelected = null;
       this._htmlKnot = null;
@@ -30,9 +30,11 @@ class AuthorManager {
 
       this._floatingMenu = null;
       this._templateNewKnot = null;
-      
+
       this.controlEvent = this.controlEvent.bind(this);
       MessageBus.ext.subscribe("control/#", this.controlEvent);
+
+      this.updateSourceField = this.updateSourceField.bind(this);
 
       this._caseModified = false;
 
@@ -41,7 +43,7 @@ class AuthorManager {
             ? "If you leave this page you will lose your unsaved changes." : null;
       }
    }
-   
+
    /* <TODO>
       A commom code for shared functionalities between player and author
       ******/
@@ -50,7 +52,7 @@ class AuthorManager {
    get currentThemeFamily() {
       return this._currentThemeFamily;
    }
-   
+
    set currentThemeFamily(newValue) {
       Translator.instance.currentThemeFamily = newValue;
       this._currentThemeFamily = newValue;
@@ -113,6 +115,17 @@ class AuthorManager {
          this.caseNew(authorState.template.id);
       } else
          this._caseLoad(authorState.caseId);
+
+      /*
+      document.querySelector("#btn-save-settings")
+         .addEventListener("mousedown", this.updateSourceField);
+      */
+
+      /*
+      document.querySelector("#settings-modal")
+         .addEventListener("shown.bs.modal", this.updateSourceField);
+      */
+      $("#settings-modal").on("shown.bs.modal", this.updateSourceField);
 
       // this.caseLoadSelect();
    }
@@ -180,11 +193,11 @@ class AuthorManager {
                                      break;
          case "control/leave/drafts": await this.caseSave();
                                       //window.location.href = 'draft.html';
-                                      window.location.href = '/author-edge/drafts';
+                                      window.location.href = '/drafts';
                                       break;
       }
    }
-   
+
    /*
     * ACTION: control-load (1)
     */
@@ -212,7 +225,7 @@ class AuthorManager {
          sticky.classList.add("sticky-top");
       */
    }
-   
+
    async saveChangedCase() {
       let decision = "No";
 
@@ -232,7 +245,7 @@ class AuthorManager {
     */
    async caseNew(template) {
       this._temporaryCase = true;
-      
+
       // await this._themeSelect();
       // let template = await this._templateSelect("case");
 
@@ -259,7 +272,7 @@ class AuthorManager {
       await this._compile(caseObj.message.source);
       this._showCase();
    }
-      
+
    async _compile(caseSource) {
       this._compiledCase =
          await Translator.instance.compileMarkdown(Basic.service.currentCaseId,
@@ -271,12 +284,13 @@ class AuthorManager {
       if (this._compiledCase.title)
          this._currentCaseTitle = this._compiledCase.title;
 
+      console.log("***** COMPILED CASE *****");
       console.log(this._compiledCase);
    }
 
    async _showCase(selectKnot) {
       await this._navigator.mountTreeCase(this, this._compiledCase.knots);
-      
+
       let sk;
       if (selectKnot != null)
          sk = selectKnot;
@@ -287,17 +301,21 @@ class AuthorManager {
             k++;
          sk = knotIds[k];
       }
-      
+
       MessageBus.ext.publish("control/knot/selected", sk);
    }
-   
+
    /*
     * ACTION: control-save
     */
    async caseSave() {
+      console.log("=== case save");
+      console.log(Basic.service.currentCaseId);
+      console.log(this._compiledCase);
       if (Basic.service.currentCaseId != null && this._compiledCase != null) {
          this._checkKnotModification(this._renderState);
 
+         /*
          if (this._temporaryCase) {
             const caseTitle =
                await DCCNoticeInput.displayNotice("Inform a title for your case:",
@@ -305,14 +323,15 @@ class AuthorManager {
             this._currentCaseTitle = caseTitle;
             this._temporaryCase = false;
          }
+         */
 
-         let md =Translator.instance.assembleMarkdown(this._compiledCase);
+         let md = Translator.instance.assembleMarkdown(this._compiledCase);
          const status = await MessageBus.ext.request(
             "data/case/" + Basic.service.currentCaseId + "/set",
-            {title: this._currentCaseTitle,
+            {// title: this._currentCaseTitle,
              format: "markdown",
              source: md});
-         
+
          console.log("Case saved! Status: " + status.message);
 
          Basic.service.authorPropertyStore("caseId", Basic.service.currentCaseId);
@@ -325,6 +344,16 @@ class AuthorManager {
          let result = await promise;
          this._messageSpace.innerHTML = "";
       }
+   }
+
+   async updateSourceField() {
+      this._checkKnotModification(this._renderState);
+      let source = document.querySelector("#source");
+      let md = Translator.instance.assembleMarkdown(this._compiledCase);
+      console.log("=== source updated");
+      console.log(source);
+      console.log(md);
+      source.value = md;
    }
 
    /*
@@ -394,7 +423,7 @@ class AuthorManager {
         this._caseModified = modified;
       return modified;
    }
-   
+
    _retrieveEditorText() {
       return this._editor.value;
       /*
@@ -406,7 +435,7 @@ class AuthorManager {
    async _templateSelect(scope, filter) {
       const templatesScope = await MessageBus.ext.request("data/template/*/list",
                                                           {scope: scope});
-      
+
       let templateList = templatesScope.message;
       if (filter != null) {
          templateList = [];
@@ -420,19 +449,15 @@ class AuthorManager {
       const template = await DCCNoticeInput.displayNotice(
          "Select a template for your knot.",
          "list", "Select", "Cancel", templateList);
-      console.log("=== template selected");
-      console.log(template);
       return (template == "Cancel") ? null : template;
    }
-   
+
    /*
     * ACTION: knot-selected
     */
    async knotSelected(topic, message) {
       // this._removeFloatingMenu();
       // let knotid = MessageBus.extractLevel(topic, 3);
-      console.log("=== knot to navigate");
-      console.log(message);
       let knotid =
          (message == null || message == "") ? this._knotSelected : message;
       if (knotid != null) {
@@ -491,7 +516,7 @@ class AuthorManager {
          miniature.classList.add("sty-selected-knot");
          this._miniPrevious = miniature;
          */
-               
+
          /*
          if (this._knots[knotid].categories &&
              this._knots[knotid].categories.indexOf("expansion") > -1) {
@@ -504,7 +529,7 @@ class AuthorManager {
          this._htmlKnot = await Translator.instance.generateHTML(
                                   this._knots[this._knotSelected]);
          this._renderKnot();
-         this._collectEditableDCCs();
+         // this._collectEditableDCCs();
          delete this._elementSelected;
       }
    }
@@ -641,7 +666,7 @@ class AuthorManager {
             toSwap = false;
             newKnotSet[k] = this._knots[k];
             swapped = true;
-         } else { 
+         } else {
             if (previousId != null)
                newKnotSet[previousId] = previousKnot;
             previousId = k;
@@ -674,14 +699,9 @@ class AuthorManager {
    }
 
    elementSelected(topic, message) {
-      const dccId = MessageBus.extractLevel(topic, 3);
+      let dccId = MessageBus.extractLevel(topic, 3);
 
-      if (this._previousEditedDCC)
-         this._previousEditedDCC.reactivateAuthor();
-
-      this._editableDCCs[dccId].edit(message);
-
-      this._previousEditedDCC = this._editableDCCs[dccId];
+      this._collectEditableDCCs();
 
       const elSeq = parseInt(dccId.substring(3));
       let el = -1;
@@ -690,15 +710,51 @@ class AuthorManager {
         /* nothing */;
 
       if (el != -1) {
+         /*
+         const presentationId = (message == null) ? null : message.presentationId;
+         let dcc = (presentationId != null)
+            ? this._editableDCCs[presentationId]
+            : this._editableDCCs[dccId];
+         */
+         let dcc = this._editableDCCs[dccId];
+         const element = this._knots[this._knotSelected].content[el];
+         /*
+         console.log("=== element properties");
+         console.log(element);
+         console.log("presentation-dcc-" + message);
+         console.log(Object.keys(this._editableDCCs));
+         */
+         // check if there is an option (trigger) element inside an input dcc
+         /*
+         let roleEdit = message;
+         if (element.type == "input" && element.subtype == "choice" &&
+             element.exclusive && message != "text" &&
+             this._editableDCCs["presentation-dcc-" + message]) {
+            dcc = this._editableDCCs["presentation-dcc-" + message];
+            roleEdit = null;
+            console.log("=== new dcc");
+            console.log(dcc);
+         }
          this._elementSelected = el;
-         if (message)
-            Properties.s.editElementProperties(
-               this._knots, this._knotSelected, el,
-                  this._editableDCCs[dccId], message);
-         else
-            Properties.s.editElementProperties(
-               this._knots, this._knotSelected, el,
-                  this._editableDCCs[dccId]);
+         */
+
+         if (this._previousEditedDCC)
+            this._previousEditedDCC.reactivateAuthor();
+
+         const role = (message != null) ? message.role : null;
+
+         // dcc.edit((presentationId != null) ? null : role);
+         dcc.edit(role);
+
+         this._previousEditedDCC = dcc;
+
+         // check for a dcc inside a dcc
+         const presentationId = (message == null) ? null : message.presentationId;
+         dcc = (presentationId != null)
+            ? this._editableDCCs[presentationId] : dcc;
+
+         Properties.s.editElementProperties(
+            this._knots, this._knotSelected, el, dcc, role);
        }
    }
 
@@ -774,7 +830,7 @@ class AuthorManager {
          this._htmlKnot = await Translator.instance.generateHTML(
             this._knots[this._knotSelected]);
          this._renderKnot();
-         this._collectEditableDCCs();
+         // this._collectEditableDCCs();
       }
    }
 
@@ -829,7 +885,7 @@ class AuthorManager {
     */
    async casePlay() {
       Translator.instance.newThemeSet();
-      
+
       const htmlSet = Object.assign(
                          {"entry": {render: true},
                           "signin": {render: true},
@@ -847,13 +903,13 @@ class AuthorManager {
                finalHTML = await Translator.instance.generateHTMLBuffer(
                                                      this._knots[kn]);
                // finalHTML = await this._generateHTMLBuffer(kn);
-            else 
+            else
                finalHTML = await Translator.instance.loadTheme(kn);
                // finalHTML = await this._loadTheme(this._currentThemeFamily, kn);
             finalHTML = (htmlSet[kn].categories && htmlSet[kn].categories.indexOf("note") >= 0)
                ? AuthorManager.jsonNote.replace("{knot}", finalHTML)
                : AuthorManager.jsonKnot.replace("{knot}", finalHTML);
-            
+
             await MessageBus.ext.request("knot/" + kn + "/set",
                                                 {caseId: Basic.service.currentCaseId,
                                                  format: "html",
@@ -862,14 +918,14 @@ class AuthorManager {
          }
       }
       this._messageSpace.innerHTML = "Finalizing...";
-      
+
       let caseJSON = Translator.instance.generateCompiledJSON(this._compiledCase);
       await MessageBus.ext.request("case/" + Basic.service.currentCaseId + "/set",
                                           {format: "json", source: caseJSON},
                                           "case/" + Basic.service.currentCaseId + "/set/status");
-      
+
       this._messageSpace.innerHTML = "";
-      
+
       Translator.instance.deleteThemeSet();
       window.open(dirPlay.message + "/html/index.html", "_blank");
    }
@@ -881,14 +937,14 @@ class AuthorManager {
       if (caseTitle.length > 0)
          this._currentCaseTitle = caseTitle;
    }
-   
+
    /*
     * ACTION: config
     */
    async config() {
       this._themeSelect();
    }
-   
+
 
    async _themeSelect() {
       const families = await MessageBus.ext.request("data/theme_family/*/list");
@@ -897,7 +953,7 @@ class AuthorManager {
          "list", "Select", "Cancel", families.message);
       const themeObj = families.message.find(function(s){return s.id == this;},
                                              Basic.service.currentThemeFamily);
-      this._themeSVG = themeObj.svg; 
+      this._themeSVG = themeObj.svg;
       // this._themeSVG = families.message[Translator.instance.currentThemeFamily].svg;
    }
 }
@@ -905,6 +961,6 @@ class AuthorManager {
 (function() {
    AuthorManager.jsonKnot = "(function() { PlayerManager.player.presentKnot(`{knot}`) })();";
    AuthorManager.jsonNote = "(function() { PlayerManager.player.presentNote(`{knot}`) })();";
-   
+
    AuthorManager.author = new AuthorManager();
 })();

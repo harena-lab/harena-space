@@ -99,7 +99,7 @@ class DCCAuthorServer {
          "method": "POST",
          "headers": {
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + DCCCommonServer.instance.token
+            "Authorization": "Bearer " + DCCCommonServer.token
           },
           "body": JSON.stringify({title: message.title,
                                   source: message.source})
@@ -119,15 +119,45 @@ class DCCAuthorServer {
    async saveCase(topic, message) {
       if (message.format == "markdown") {
          const caseId = MessageBus.extractLevel(topic, 3);
+
+         /*
+          * <TODO> Provisory
+          * Read the case before writing to preserve the fields not maintained
+          * by the authoring environment.
+          ********************************************************************/
+
+         let headerRead = {
+            "async": true,
+            "crossDomain": true,
+            "method": "GET",
+            "headers": {
+               "Content-Type": "application/json",
+               "Authorization": "Bearer " + DCCCommonServer.token
+             }
+         };
+
+         const responseRead =
+            await fetch(DCCCommonServer.managerAddressAPI + "case/" + caseId,
+                        headerRead);
+
+         const jsonRead = await responseRead.json();
+
+         // write the case
+
          let header = {
             "async": true,
             "crossDomain": true,
             "method": "PUT",
             "headers": {
                "Content-Type": "application/json",
-               "Authorization": "Bearer " + DCCCommonServer.instance.token
+               "Authorization": "Bearer " + DCCCommonServer.token
              },
-             "body": JSON.stringify({title: message.title,
+             "body": JSON.stringify({title: jsonRead.title,
+                                     description: jsonRead.description,
+                                     language: jsonRead.language,
+                                     domain: jsonRead.domain,
+                                     specialty: jsonRead.specialty,
+                                     keywords: jsonRead.keywords,
                                      source: message.source})
          };
          console.log("=== save request");
@@ -150,7 +180,7 @@ class DCCAuthorServer {
          "method": "DELETE",
          "headers": {
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + DCCCommonServer.instance.token
+            "Authorization": "Bearer " + DCCCommonServer.token
           }
       };
       const response =
@@ -236,7 +266,7 @@ class DCCAuthorServer {
          "headers": {
             "Accept": "application/json",
             "cache-control": "no-cache",
-            "Authorization": "Bearer " + DCCCommonServer.instance.token
+            "Authorization": "Bearer " + DCCCommonServer.token
           },
           "processData": false,
           "contentType": false,

@@ -6,13 +6,6 @@
 
 class Properties {
    constructor() {
-      // this._author = author;
-
-      /*
-      this._panelDetails = document.querySelector("#properties-panel");
-      this._panelDetailsButtons = document.querySelector("#properties-buttons");
-      */
-
       this.applyPropertiesDetails = this.applyPropertiesDetails.bind(this);
       MessageBus.ext.subscribe("properties/apply/details",
          this.applyPropertiesDetails);
@@ -37,6 +30,9 @@ class Properties {
       const knotContent = knots[knotid].content;
       const element = dcc.currentPresentation();
       let obj = knotContent[el];
+      this._item = -1;
+      if (role != null && role.startsWith("item_"))
+         this._item = parseInt(role.substring(5)) - 1;
       if (this._knotOriginalTitle)
          delete this._knotOriginalTitle;
       const editp = this.editProperties(obj, role);
@@ -44,6 +40,8 @@ class Properties {
       const svg = ["jacinto", "simple-svg"].
          includes(Basic.service.currentThemeFamily);
       if (editp.inlineProperty != null) {
+         if (this._editor != null)
+            this._editor.closeEditor();
          switch (editp.inlineProfile.type) {
             case "void":
                this._editor = new EditDCCPlain(obj, dcc, editp.htmls);
@@ -57,6 +55,15 @@ class Properties {
                break;
             case "image":
                this._editor = new EditDCCImage(obj, dcc, editp.htmls);
+               break;
+            case "option":
+               if (this._item > -1) {
+                  const keys = Object.keys(obj.options);
+                  // <TODO> improve in the future
+                  this._itemEdit = {edit: keys[this._item]};
+                  this._editor = new EditDCCPlain(
+                     this._itemEdit, dcc, editp.htmls, "edit");
+               }
                break;
          }
       } else
@@ -94,6 +101,10 @@ class Properties {
     * Structure of the editable object
     */
    editProperties(obj, role) {
+      // console.log("=== obj/role");
+      // console.log(obj);
+      // console.log(role);
+
       this._objProperties = obj;
 
       const profile = this._typeProfile(obj);
@@ -102,32 +113,36 @@ class Properties {
       let htmlS = "";
       let inlineProperty = null;
       let inlineProfile = null;
+      // console.log("=== profile");
+      // console.log(profile);
       for (let p in profile) {
-         if (profile[p].visual == "inline" &&
-             (role == null || profile[p].role == role)) {
+         if ((profile[p].visual && profile[p].visual.includes("inline")) &&
+             (role == null || role.startsWith(profile[p].role))) {
             inlineProperty = p;
             inlineProfile = profile[p];
          }
          if (profile[p].type != "void") {
             if (!profile[p].composite) {
                let html = this._editSingleProperty(
-                  profile[p], ((obj[p]) ? obj[p] : ""), seq);
+                  profile[p], ((obj[p]) ? obj[p] : ""), seq, role);
                htmlD += html.details;
-               if (profile[p].visual == "panel")
+               if (profile[p].visual && profile[p].visual.includes("panel"))
                   htmlS += html.short;
                seq++;
             } else {
                for (let s in profile[p].composite) {
-                  if (profile[p].composite[s].visual == "inline" &&
-                      (role == null || profile[p].composite[s].role == role)) {
+                  if (profile[p].composite[s].visual &&
+                      profile[p].composite[s].visual.includes("inline") &&
+                      (role == null ||
+                       role.startsWith(profile[p].composite[s].role))) {
                      inlineProperty = p;
                      inlineProfile = profile[p].composite[s];
                   }
                   let html = this._editSingleProperty(
                      profile[p].composite[s],
-                     ((obj[p] && obj[p][s]) ? obj[p][s] : ""), seq);
+                     ((obj[p] && obj[p][s]) ? obj[p][s] : ""), seq, role);
                   htmlD += html.details;
-                  if (profile[p].visual == "panel")
+                  if (profile[p].visual && profile[p].visual.includes("panel"))
                      htmlS += html.short;
                   seq++;
                }
@@ -150,7 +165,7 @@ class Properties {
       return profile;
    }
 
-   _editSingleProperty(property, value, seq) {
+   _editSingleProperty(property, value, seq, role) {
       if (property.type == "shortStrArray" && value.length > 0)
          value = value.join(",");
       else if (property.type == "variable")
@@ -209,7 +224,14 @@ class Properties {
                                 .replace(/\[value\]/igm, value[op]);
             sub++;
          }
-      } else    
+      } else if (property.type == "option" && role.startsWith("item_") &&
+                 this._item > -1) {
+         // items inside an option type
+         const keys = Object.keys(value);
+         fields = Properties.fieldTypes["text"]
+                     .replace(/\[label\]/igm, property.label)
+                     .replace(/\[value\]/igm, value[keys[this._item]].message);
+      } else
          fields = Properties.fieldTypes[property.type]
                             .replace(/\[label\]/igm, property.label)
                             .replace(/\[value\]/igm, value);
@@ -237,24 +259,34 @@ class Properties {
       const sufix = (details) ? "_d" : "_s";
       const panel = (details)
          ? this._panelDetails : this._editor.editorExtended;
+      console.log("=== obj properties");
+      console.log(this._objProperties);
       if (this._objProperties) {
          const profile = this._typeProfile(this._objProperties);
          let seq = 1;
          for (let p in profile) {
             if (profile[p].type != "void") {
                if (!profile[p].composite) {
-                  if (details || profile[p].visual == "panel") {
+                  if (details ||
+                      (profile[p].visual && profile[p].visual.includes("panel"))) {
+                     console.log("=== obj properties");
+                     console.log(this._objProperties);
                      const objProperty =
-                        await this._applySingleProperty(profile[p], seq, panel, sufix);
+                        await this._applySingleProperty(profile[p],
+                           seq, panel, sufix, this._objProperties[p]);
                      if (objProperty != null)
                         this._objProperties[p] = objProperty;
                   }
                   seq++;
                } else {
                   for (let s in profile[p].composite) {
-                     if (details || profile[p].visual == "panel") {
+                     if (details || (profile[p].visual &&
+                         profile[p].visual.includes("panel"))) {
+                        console.log("=== obj properties");
+                        console.log(this._objProperties);
                         const objProperty = await this._applySingleProperty(
-                           profile[p].composite[s], seq, panel, sufix);
+                           profile[p].composite[s], seq, panel, sufix,
+                           this._objProperties[p]);
                         if (objProperty != null &&
                             (typeof objProperty != "string" ||
                               objProperty.trim().length > 0)) {
@@ -285,7 +317,7 @@ class Properties {
      }
    }
 
-   async _applySingleProperty(property, seq, panel, sufix) {
+   async _applySingleProperty(property, seq, panel, sufix, previous) {
       let objProperty = null;
       let field =
          panel.querySelector("#pfield" + seq + sufix);
@@ -303,6 +335,18 @@ class Properties {
                for (let c in categories)
                   categories[c] = categories[c].trim();
                objProperty = categories;
+            }
+            break;
+         case "option":
+            objProperty = {};
+            let i = 0;
+            for (let item in previous) {
+               if (i == this._item) {
+                  previous[item].message = field.value.trim();
+                  objProperty[this._itemEdit.edit] = previous[item];
+               } else
+                  objProperty[item] = previous[item];
+               i++;
             }
             break;
          case "propertyValue":
@@ -337,6 +381,8 @@ class Properties {
 }
 
 (function() {
+
+// Properties.selectiveRoles = ["entity", "image", "text", "slider", "input"];
 
 Properties.elProfiles = {
 knot: {
@@ -453,9 +499,15 @@ input: {
                 role: "text"},
       variable: {type: "variable",
                  label: "Variable"},
+      options: {type: "option",
+                label: "Message",
+                visual: "inline-panel",
+                role: "item"}
+      /*
       options: {type: "propertyValue",
                 label: "options",
                 visual: "panel"}
+      */
    }
 }
 };

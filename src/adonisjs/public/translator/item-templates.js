@@ -86,7 +86,9 @@ option:
 entity:
 `@{entity}`,
 input:
-`{statement}? {variable}{subtype}{extra}`
+`{statement}? {variable}{subtype}{extra}`,
+choice:
+`+ {label} <-> {target}{message}`
 };
 
 Translator.objTemplates = {

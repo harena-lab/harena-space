@@ -78,6 +78,7 @@ class Basic {
     * Use signin
     *    state - player state variable; stores user credentials after login
     */
+   /*
    async signin(state, hasPrecase) {
       let status = "start";
 
@@ -130,6 +131,7 @@ class Basic {
       await this.authorStateClean();
       
    }
+   */
 
    /*
     * Authoring State
@@ -138,10 +140,11 @@ class Basic {
    authorStateRetrieve() {
       let state = null;
       const stateS = localStorage.getItem(Basic.authorStateId);
-      if (stateS != null) {
+      if (stateS != null)
          state = JSON.parse(stateS);
-         DCCCommonServer.instance.token = state.token;
-      }
+      console.log("---- internal token");
+      console.log(state.token);
+         // DCCCommonServer.instance.token = state.token;
       return state;
    }
 
