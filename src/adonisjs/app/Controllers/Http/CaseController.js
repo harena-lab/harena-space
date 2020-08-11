@@ -14,11 +14,11 @@ class CaseController {
         return view.render('author.author')
       }
 
-    
+
     async fetch ({ view }) {
 
         const harena_manager_url = Env.get("HARENA_MANAGER_URL", "http://127.0.0.1:1020");
-        const cases_url = harena_manager_url + "/cases"        
+        const cases_url = harena_manager_url + "/cases"
         const cases = axios.get(cases_url)
                       .then((reponse) => {
                           console.log(reponse)
@@ -37,36 +37,36 @@ class CaseController {
             const endpoint_url = Env.get("HARENA_MANAGER_URL") + "/api/v1/case"
 
             /*
-            const template_source = 
+            const template_source =
             `
             # Presentation (quiz)
 
             Write here the **stem** of your quiz.
-            
+
             > Write here the **lead-in** of your quiz.
             + Distractor 1 <-> "Feedback for Distractor 1"
             + Distractor 1 <-> "Feedback for Distractor 1"
             + Distractor 2 <-> "Feedback for Distractor 2"
             + Distractor 3 <-> "Feedback for Distractor 3"
-            
+
             * Next Case -> Case.Next
             * Menu -> Presentation
-            
+
             # Feedback Note (note)
-            
+
             You answered: ^Presentation.hypothesis^.
-            
+
             ^parameter^
-            
+
             * Return -> Presentation
-            
+
             ___ Flow ___
-            
+
             * Sequential:
               * _sequential_
-            
+
             ___ Data ___
-            
+
             * theme: simple
             * namespaces:
               * evidence: http://purl.org/versum/evidence/
@@ -120,7 +120,7 @@ class CaseController {
                await axios(config)
                   .then(function (endpoint_response) {
                       // return response.redirect('/author/author.html')
-                      return response.redirect('/')
+                      return response.redirect('/author-edge')
                   })
                   .catch(function (error) {
                       console.log(error);
@@ -167,7 +167,7 @@ class CaseController {
             await axios(config)
             .then(function (endpoint_response) {
                 // return response.redirect('/author/author.html')
-                          // return response.redirect('/')
+                          return response.redirect('/')
 
                 })
             .catch(function (error) {
@@ -185,7 +185,7 @@ class CaseController {
     try{
       // const params = request.all()
 
-      const endpoint_url = Env.get("HARENA_MANAGER_URL") + "/api/v1/case/" + request.input('id') 
+      const endpoint_url = Env.get("HARENA_MANAGER_URL") + "/api/v1/case/" + request.input('id')
 
       var config = {
         method: 'get',
@@ -200,7 +200,7 @@ class CaseController {
         .then(function (endpoint_response) {
             console.log(endpoint_response.data)
           //return view.render('author.author')
-         
+
 
           return view.render('author.author')
         })
