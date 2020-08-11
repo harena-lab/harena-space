@@ -34,7 +34,7 @@ class AuthController {
 		  return response.redirect('back')
 	  }
 
-	  const endpoint_url = Env.get("HARENA_MANAGER_URL") + "/api/v2/auth/login"   
+	  const endpoint_url = Env.get("HARENA_MANAGER_URL") + "/api/v2/auth/login"
 
 	  var config = {
 	    method: 'post',
@@ -47,12 +47,12 @@ class AuthController {
 
   	  await axios(config)
  	  	.then(async function (endpoint_response) {
-		
+
 		  let user = endpoint_response.data
 		  console.log("-----------------------------------------------------------------------------------------------------------")
  	  	  console.log(user.token)
  	  	  //let token = await auth.generate(user)
-		
+
  	  	  //console.log(token.token)
  	  	  //request.cookie("token", token.token)
  	  	  console.log('login feito')
@@ -60,7 +60,7 @@ class AuthController {
 			 response.cookie('token', user.token)
 			 //yield response.sendView('index', data)
 		  //return view.render('index', { user: user.toJSON() })
- 	  	  return response.redirect('/')
+ 	  	  return response.redirect('/space')
 	  	})
 	    .catch(function (error) {
 		  console.log(error);

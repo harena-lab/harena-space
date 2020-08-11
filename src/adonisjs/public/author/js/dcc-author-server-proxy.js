@@ -20,12 +20,12 @@ class DCCAuthorServer {
 
       this.themeFamiliesList = this.themeFamiliesList.bind(this);
       MessageBus.ext.subscribe("data/theme_family/*/list", this.themeFamiliesList);
-      
+
       this.templatesList = this.templatesList.bind(this);
       MessageBus.ext.subscribe("data/template/*/list", this.templatesList);
       this.uploadArtifact = this.uploadArtifact.bind(this);
       MessageBus.ext.subscribe("data/asset//new", this.uploadArtifact);
-      
+
       /*
       this.prepareCaseHTML = this.prepareCaseHTML.bind(this);
       MessageBus.ext.subscribe("case/+/prepare", this.prepareCaseHTML);
@@ -35,7 +35,7 @@ class DCCAuthorServer {
       MessageBus.ext.subscribe("case/+/set", this.saveCaseObject);
       */
    }
-   
+
    // wrapper of the services
 
    async themeFamiliesList(topic, message) {
@@ -47,7 +47,7 @@ class DCCAuthorServer {
             "Content-Type": "application/json",
           }
       }
-      const response = await fetch("../themes/themes.json", header);
+      const response = await fetch("/themes/themes.json", header);
       let jsonResponse = await response.json();
       /*
       let busResponse = {};
@@ -62,7 +62,7 @@ class DCCAuthorServer {
          busResponse.push({
             id:   jsonResponse[t].path,
             name: t,
-            icon: "../themes/" + jsonResponse[t].path + "/images/" + jsonResponse[t].icon
+            icon: "/themes/" + jsonResponse[t].path + "/images/" + jsonResponse[t].icon
          });
       MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
                              busResponse);
@@ -77,7 +77,7 @@ class DCCAuthorServer {
             "Content-Type": "application/json",
           }
       }
-      const response = await fetch("../templates/templates.json", header);
+      const response = await fetch("/templates/templates.json", header);
       let jsonResponse = await response.json();
       let busResponse = [];
       for (let t in jsonResponse)
@@ -202,12 +202,12 @@ class DCCAuthorServer {
             "Content-Type": "text/html",
           }
       }
-      const response = await fetch("../modules/" + moduleName + ".html", header);
+      const response = await fetch("/modules/" + moduleName + ".html", header);
       let textResponse = await response.text();
       MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
                              textResponse);
    }
-   
+
    async loadTemplate(topic, message) {
       let templatePath =
          MessageBus.extractLevel(topic, 3).replace(/\./g, "/");
@@ -219,7 +219,7 @@ class DCCAuthorServer {
             "Content-Type": "text/plain",
           }
       }
-      const response = await fetch("../templates/" + templatePath +
+      const response = await fetch("/templates/" + templatePath +
                                    ".md", header);
       let textResponse = await response.text();
       MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
@@ -302,7 +302,7 @@ class DCCAuthorServer {
 
    async saveKnotHTML(topic, message) {
       const knotId = MessageBus.extractLevel(topic, 2);
-      
+
       const response = await fetch(DCCCommonServer.managerAddressAPI + "save-knot-html", {
          method: "POST",
          body: JSON.stringify({"caseName": message.caseId,
@@ -319,7 +319,7 @@ class DCCAuthorServer {
    async saveCaseObject(topic, message) {
       if (message.format == "json") {
          const caseId = MessageBus.extractLevel(topic, 2);
-         
+
          // <TODO> change the name of the service
          const response = await fetch(DCCCommonServer.managerAddressAPI + "save-case-script", {
             method: "POST",
