@@ -34,6 +34,8 @@ class AuthorManager {
       this.controlEvent = this.controlEvent.bind(this);
       MessageBus.ext.subscribe("control/#", this.controlEvent);
 
+      this.updateSourceField = this.updateSourceField.bind(this);
+
       this._caseModified = false;
 
       window.onbeforeunload = function() {
@@ -113,6 +115,17 @@ class AuthorManager {
          this.caseNew(authorState.template.id);
       } else
          this._caseLoad(authorState.caseId);
+
+      /*
+      document.querySelector("#btn-save-settings")
+         .addEventListener("mousedown", this.updateSourceField);
+      */
+
+      /*
+      document.querySelector("#settings-modal")
+         .addEventListener("shown.bs.modal", this.updateSourceField);
+      */
+      $("#settings-modal").on("shown.bs.modal", this.updateSourceField);
 
       // this.caseLoadSelect();
    }
@@ -296,9 +309,13 @@ class AuthorManager {
     * ACTION: control-save
     */
    async caseSave() {
+      console.log("=== case save");
+      console.log(Basic.service.currentCaseId);
+      console.log(this._compiledCase);
       if (Basic.service.currentCaseId != null && this._compiledCase != null) {
          this._checkKnotModification(this._renderState);
 
+         /*
          if (this._temporaryCase) {
             const caseTitle =
                await DCCNoticeInput.displayNotice("Inform a title for your case:",
@@ -306,11 +323,12 @@ class AuthorManager {
             this._currentCaseTitle = caseTitle;
             this._temporaryCase = false;
          }
+         */
 
-         let md =Translator.instance.assembleMarkdown(this._compiledCase);
+         let md = Translator.instance.assembleMarkdown(this._compiledCase);
          const status = await MessageBus.ext.request(
             "data/case/" + Basic.service.currentCaseId + "/set",
-            {title: this._currentCaseTitle,
+            {// title: this._currentCaseTitle,
              format: "markdown",
              source: md});
          
@@ -326,6 +344,16 @@ class AuthorManager {
          let result = await promise;
          this._messageSpace.innerHTML = "";
       }
+   }
+
+   async updateSourceField() {
+      this._checkKnotModification(this._renderState);
+      let source = document.querySelector("#source");
+      let md = Translator.instance.assembleMarkdown(this._compiledCase);
+      console.log("=== source updated");
+      console.log(source);
+      console.log(md);
+      source.value = md;
    }
 
    /*

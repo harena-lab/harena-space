@@ -36,6 +36,7 @@ class CaseController {
             //console.log(request.cookie('token'))
             const endpoint_url = Env.get("HARENA_MANAGER_URL") + "/api/v1/case"
 
+            /*
             const template_source = 
             `
             # Presentation (quiz)
@@ -73,36 +74,58 @@ class CaseController {
               * categories:
                 * detailed: simple/knot/description
             `
+            */
+
             console.log("******************************************** token from Adonis");
             console.log(request.cookie('token'));
             let token = request.cookie('token')
-            const config = {
-                method: "POST",
-                url: endpoint_url,
-                data: {
-                    title: params.case_title,
-                    description: params.description,
-                    language: params.language,
-                    domain: params.domain,
-                    specialty: params.specialty,
-                    keywords: params.keywords,
-                    source: template_source,
-                },
-                    headers: {
-                        'Authorization': 'Bearer ' + token
-                    }
-            }
 
-            await axios(config)
-            .then(function (endpoint_response) {
-                // return response.redirect('/author/author.html')
-                          return response.redirect('/')
-
+            // load template
+            let templateRequest = {
+               method: "GET",
+               url: Env.get("HARENA_SPACE_URL") + "/templates/" +
+                    params.template + ".md",
+               headers: {
+                  "Authorization": "Bearer " + request.cookie("token")
+               }
+            };
+            let markdown = null;
+            await axios(templateRequest)
+               .then(function (endpointResponse) {
+                   console.log("================== markdown");
+                   console.log(endpointResponse.data);
+                   markdown = endpointResponse.data;
                 })
-            .catch(function (error) {
-                console.log(error);
-            });
+               .catch(function (error) {
+                  console.log(error);
+                });
 
+            if (markdown != null) {
+               const config = {
+                  method: "POST",
+                  url: endpoint_url,
+                  data: {
+                     title: params.case_title,
+                     description: params.description,
+                     language: params.language,
+                     domain: params.domain,
+                     specialty: params.specialty,
+                     keywords: params.keywords,
+                     source: markdown,
+                  },
+                  headers: {
+                     'Authorization': 'Bearer ' + token
+                  }
+               }
+               await axios(config)
+                  .then(function (endpoint_response) {
+                      // return response.redirect('/author/author.html')
+                      return response.redirect('/')
+                  })
+                  .catch(function (error) {
+                      console.log(error);
+                  });
+               }
         }
         catch (e) {
             console.log(e)
@@ -113,9 +136,9 @@ class CaseController {
     async update ({request, session, response}) {
         try {
             const params = request.all();
-            //console.log("-------------------------------------------------------------------------------------------------------");
-            //console.log("=== params");
-            //console.log(params);
+            console.log("-------------------------------------------------------------------------------------------------------");
+            console.log("=== params");
+            console.log(params);
 
             //console.log("-------------------------------------------------------------------------------------------------------")
             //console.log(request.cookie('token'))
@@ -133,11 +156,12 @@ class CaseController {
                     language: params.language,
                     domain: params.domain,
                     specialty: params.specialty,
-                    keywords: params.keywords
+                    keywords: params.keywords,
+                    source: params.source
                 },
-                    headers: {
-                        'Authorization': 'Bearer ' + token
-                    }
+                headers: {
+                   'Authorization': 'Bearer ' + token
+                }
             }
 
             await axios(config)

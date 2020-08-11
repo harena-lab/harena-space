@@ -10,5 +10,5 @@
   DCCCommonServer.loggerAddress = "{{harena_logger_url}}/";
   DCCCommonServer.loggerAddressAPI = DCCCommonServer.loggerAddress +
                                       "api/{{harena_logger_api_version}}/";
-  DCCCommonServer.token = "{{ csrfToken }}";
+  DCCCommonServer.token = "{{ request.cookie("token") }}";
 })();

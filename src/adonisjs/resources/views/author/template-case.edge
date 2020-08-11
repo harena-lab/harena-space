@@ -66,6 +66,7 @@
                   <textarea class="form-control" id="keywords" name="keywords" aria-describedby="keywords-help"></textarea>
                   <small id="keywords-help" class="form-text text-muted">Inform your keywords separated by semicolon.</small>
                 </div>
+                <input type="hidden" id="template" name="template" value="{{ request.only(["template"])["template"].replace(/__/ig, "/") }}">
                 <button type="submit" class="btn btn-primary" role="button">Create</button>
                 <a class="btn btn-danger" href="{{ route('author_create') }}" role="button">Cancel</a>
                 

@@ -7,6 +7,7 @@ class DCCCommonServer {
    constructor() {
       this._local = false;
 
+      /*
       console.log("=== token");
       this._token = null;
       if (document.cookie.includes("token="))
@@ -15,6 +16,7 @@ class DCCCommonServer {
                           .find(row => row.startsWith("token="))
                           .split("=")[1];
       console.log(this._token);
+      */
 
       // this.userLogin = this.userLogin.bind(this);
       // MessageBus.ext.subscribe("data/user/login", this.userLogin);
@@ -33,6 +35,7 @@ class DCCCommonServer {
       MessageBus.int.subscribe("data/context/+/get", this.loadContext);
    }
 
+   /*
    get token() {
       return this._token;
    }
@@ -40,6 +43,7 @@ class DCCCommonServer {
    set token(newToken) {
       this._token = newToken;
    }
+   */
 
    get local() {
       return this._local;
@@ -97,7 +101,7 @@ class DCCCommonServer {
          "method": "GET",
          "headers": {
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + this.token
+            "Authorization": "Bearer " + DCCCommonServer.token
           }
       };
       /*
@@ -149,32 +153,22 @@ class DCCCommonServer {
             "method": "GET",
             "headers": {
                "Content-Type": "application/json",
-               "Authorization": "Bearer " + this.token
+               "Authorization": "Bearer " + DCCCommonServer.token
              }
          };
 
-         /*
-         console.log("=== load case request");
-         console.log(DCCCommonServer.managerAddressAPI + "case/" + caseId);
-         console.log(header);
-         */
-
          const response =
-            await fetch(DCCCommonServer.managerAddressAPI + "case/" + caseId, header);
-
-         /*
-         console.log("=== load case response");
-         console.log(response);
-         */
+            await fetch(DCCCommonServer.managerAddressAPI + "case/" + caseId,
+                        header);
 
          const jsonResponse = await response.json();
 
-         /*
-         console.log("=== load case json");
-         console.log(jsonResponse);
-         */
-
          caseObj = {title: jsonResponse.title,
+                    description: jsonResponse.description,
+                    language: jsonResponse.language,
+                    domain: jsonResponse.domain,
+                    specialty: jsonResponse.specialty,
+                    keywords: jsonResponse.keywords,
                     source: jsonResponse.source};
       }
 
