@@ -142,8 +142,6 @@ class Basic {
       const stateS = localStorage.getItem(Basic.authorStateId);
       if (stateS != null)
          state = JSON.parse(stateS);
-      console.log("---- internal token");
-      console.log(state.token);
          // DCCCommonServer.instance.token = state.token;
       return state;
    }
