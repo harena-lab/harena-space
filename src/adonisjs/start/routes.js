@@ -88,6 +88,7 @@ Route.get('author-edge/author', async ({ view, request }) => {
     } catch(e){
       console.log(e)
     }
+      return view.render('author.author')
 }).as('author_edit')
 
 Route.get('author-edge', ({ view }) => {
