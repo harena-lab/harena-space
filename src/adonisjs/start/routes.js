@@ -18,11 +18,11 @@ const Route = use("Route");
 const View = use('View');
 const axios = use("axios")
 
-Route.get(  '/populate_modal', 'CaseController.populate_modal')
+Route.get(  'populate_modal', 'CaseController.populate_modal')
 
 Route.get('/', ({ view }) => view.render('index') )
 
-Route.get('/institution-registration', async ({ view }) => {
+Route.get('institution-registration', async ({ view }) => {
    const pageTitle = "Institution Registration"
    return view.render('registration.institution', { pageTitle })
 })
@@ -43,7 +43,7 @@ Route.group(() => {
 
 
 
-Route.get('author-edge/author', async ({ view, request }) => {
+Route.get('author', async ({ view, request }) => {
    // View.global('name_you_like', function () {
 
    //    return "ase"
@@ -91,11 +91,11 @@ Route.get('author-edge/author', async ({ view, request }) => {
       return view.render('author.author')
 }).as('author_edit')
 
-Route.get('author-edge', ({ view }) => {
+Route.get('home', ({ view }) => {
    return view.render('author.home')
 }).as('author_home')
 
-Route.get('author-edge/create', ({ view }) => {
+Route.get('create', ({ view }) => {
    return view.render('author.create')
 }).as('author_create')
 
@@ -108,10 +108,10 @@ Route.group(() => {
 
    Route.post('store', 'CaseController.store');
    Route.post('update', 'CaseController.update');
-}).prefix('author-edge/choose-template').as('author_template_case')
+}).prefix('author/choose-template').as('author_template_case')
 
 
-Route.get("author-edge/drafts", ({ view }) => {
+Route.get("drafts", ({ view }) => {
    return view.render('author.drafts')
 }).as('cases_drafts')
 

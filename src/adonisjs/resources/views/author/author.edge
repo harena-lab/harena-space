@@ -137,13 +137,13 @@
   <main role="main">
     <div id="main-panel"
          class="d-flex flex-column vh-100 vw-100 scroll-y index-boot-padding">
-         
+
       <!-- Create breadcrumbs -->
       <div id="system-panel" class="container-fluid" style="position:relative">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb">
-            <!-- <li class="breadcrumb-item"><a href="home.html">Home</a></li> -->
-            <li class="breadcrumb-item"><a href="/author-edge">Home</a></li>
+            <!-- <li class="breadcrumb-item"><a href="//home.html">Home</a></li> -->
+            <li class="breadcrumb-item"><a href={{route('author_home')}}>Home</a></li>
             <li class="breadcrumb-item">
               <div style="height: 15px">
                 <dcc-trigger action="control/leave/drafts" label="Drafts" xstyle="out">
@@ -172,9 +172,9 @@
             <!--
             <dcc-trigger action="control/case/settings" label="SETTINGS" xstyle="in"></dcc-trigger>
             -->
-            
+
             <!-- Settings button activates a modal -->
-            <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#settings-modal" 
+            <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#settings-modal"
             id="btn-save-settings">Settings</button>
 
             <div id="advanced-mode" style="display:none">
@@ -191,8 +191,8 @@
           </div>
           <div class="col-2">
             <div class="btn-group" role="group" aria-label="Basic example">
-              <a href="#" class="btn btn-secondary btn-nav btn-sm"><i class="fas fa-arrow-left"></i> </a>
-              <a href="#" class="btn btn-secondary btn-nav btn-sm"><i class="fas fa-arrow-right"></i> </a>
+              <a href="//#" class="btn btn-secondary btn-nav btn-sm"><i class="fas fa-arrow-left"></i> </a>
+              <a href="//#" class="btn btn-secondary btn-nav btn-sm"><i class="fas fa-arrow-right"></i> </a>
             </div>
           </div>
         </nav>
@@ -217,7 +217,7 @@
                   </div>
                 </div>
                 <div class="col text-right">
-                  <p ><a href="preview2.html">Maximize <i class="fas fa-expand"></i></a></p>
+                  <p ><a href="//#">Maximize <i class="fas fa-expand"></i></a></p>
                 </div>
               </div>
             </div>

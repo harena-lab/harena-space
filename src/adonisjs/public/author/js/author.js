@@ -11,14 +11,14 @@ class AuthorManager {
       MessageBus.page = new MessageBus(false);
 
       Basic.service.host = this;
-      
+
       Translator.instance.authoringRender = true;
 
       this._compiledCase = null;
       this._knots = null;
-      
+
       this._navigator = new Navigator(Translator.instance);
-      
+
       this._themeSVG = true;
       this._knotSelected = null;
       this._htmlKnot = null;
@@ -30,7 +30,7 @@ class AuthorManager {
 
       this._floatingMenu = null;
       this._templateNewKnot = null;
-      
+
       this.controlEvent = this.controlEvent.bind(this);
       MessageBus.ext.subscribe("control/#", this.controlEvent);
 
@@ -43,7 +43,7 @@ class AuthorManager {
             ? "If you leave this page you will lose your unsaved changes." : null;
       }
    }
-   
+
    /* <TODO>
       A commom code for shared functionalities between player and author
       ******/
@@ -52,7 +52,7 @@ class AuthorManager {
    get currentThemeFamily() {
       return this._currentThemeFamily;
    }
-   
+
    set currentThemeFamily(newValue) {
       Translator.instance.currentThemeFamily = newValue;
       this._currentThemeFamily = newValue;
@@ -193,11 +193,11 @@ class AuthorManager {
                                      break;
          case "control/leave/drafts": await this.caseSave();
                                       //window.location.href = 'draft.html';
-                                      window.location.href = '/author-edge/drafts';
+                                      window.location.href = '/drafts';
                                       break;
       }
    }
-   
+
    /*
     * ACTION: control-load (1)
     */
@@ -225,7 +225,7 @@ class AuthorManager {
          sticky.classList.add("sticky-top");
       */
    }
-   
+
    async saveChangedCase() {
       let decision = "No";
 
@@ -245,7 +245,7 @@ class AuthorManager {
     */
    async caseNew(template) {
       this._temporaryCase = true;
-      
+
       // await this._themeSelect();
       // let template = await this._templateSelect("case");
 
@@ -272,7 +272,7 @@ class AuthorManager {
       await this._compile(caseObj.message.source);
       this._showCase();
    }
-      
+
    async _compile(caseSource) {
       this._compiledCase =
          await Translator.instance.compileMarkdown(Basic.service.currentCaseId,
@@ -290,7 +290,7 @@ class AuthorManager {
 
    async _showCase(selectKnot) {
       await this._navigator.mountTreeCase(this, this._compiledCase.knots);
-      
+
       let sk;
       if (selectKnot != null)
          sk = selectKnot;
@@ -301,10 +301,10 @@ class AuthorManager {
             k++;
          sk = knotIds[k];
       }
-      
+
       MessageBus.ext.publish("control/knot/selected", sk);
    }
-   
+
    /*
     * ACTION: control-save
     */
@@ -331,7 +331,7 @@ class AuthorManager {
             {// title: this._currentCaseTitle,
              format: "markdown",
              source: md});
-         
+
          console.log("Case saved! Status: " + status.message);
 
          Basic.service.authorPropertyStore("caseId", Basic.service.currentCaseId);
@@ -423,7 +423,7 @@ class AuthorManager {
         this._caseModified = modified;
       return modified;
    }
-   
+
    _retrieveEditorText() {
       return this._editor.value;
       /*
@@ -435,7 +435,7 @@ class AuthorManager {
    async _templateSelect(scope, filter) {
       const templatesScope = await MessageBus.ext.request("data/template/*/list",
                                                           {scope: scope});
-      
+
       let templateList = templatesScope.message;
       if (filter != null) {
          templateList = [];
@@ -451,7 +451,7 @@ class AuthorManager {
          "list", "Select", "Cancel", templateList);
       return (template == "Cancel") ? null : template;
    }
-   
+
    /*
     * ACTION: knot-selected
     */
@@ -516,7 +516,7 @@ class AuthorManager {
          miniature.classList.add("sty-selected-knot");
          this._miniPrevious = miniature;
          */
-               
+
          /*
          if (this._knots[knotid].categories &&
              this._knots[knotid].categories.indexOf("expansion") > -1) {
@@ -666,7 +666,7 @@ class AuthorManager {
             toSwap = false;
             newKnotSet[k] = this._knots[k];
             swapped = true;
-         } else { 
+         } else {
             if (previousId != null)
                newKnotSet[previousId] = previousKnot;
             previousId = k;
@@ -885,7 +885,7 @@ class AuthorManager {
     */
    async casePlay() {
       Translator.instance.newThemeSet();
-      
+
       const htmlSet = Object.assign(
                          {"entry": {render: true},
                           "signin": {render: true},
@@ -903,13 +903,13 @@ class AuthorManager {
                finalHTML = await Translator.instance.generateHTMLBuffer(
                                                      this._knots[kn]);
                // finalHTML = await this._generateHTMLBuffer(kn);
-            else 
+            else
                finalHTML = await Translator.instance.loadTheme(kn);
                // finalHTML = await this._loadTheme(this._currentThemeFamily, kn);
             finalHTML = (htmlSet[kn].categories && htmlSet[kn].categories.indexOf("note") >= 0)
                ? AuthorManager.jsonNote.replace("{knot}", finalHTML)
                : AuthorManager.jsonKnot.replace("{knot}", finalHTML);
-            
+
             await MessageBus.ext.request("knot/" + kn + "/set",
                                                 {caseId: Basic.service.currentCaseId,
                                                  format: "html",
@@ -918,14 +918,14 @@ class AuthorManager {
          }
       }
       this._messageSpace.innerHTML = "Finalizing...";
-      
+
       let caseJSON = Translator.instance.generateCompiledJSON(this._compiledCase);
       await MessageBus.ext.request("case/" + Basic.service.currentCaseId + "/set",
                                           {format: "json", source: caseJSON},
                                           "case/" + Basic.service.currentCaseId + "/set/status");
-      
+
       this._messageSpace.innerHTML = "";
-      
+
       Translator.instance.deleteThemeSet();
       window.open(dirPlay.message + "/html/index.html", "_blank");
    }
@@ -937,14 +937,14 @@ class AuthorManager {
       if (caseTitle.length > 0)
          this._currentCaseTitle = caseTitle;
    }
-   
+
    /*
     * ACTION: config
     */
    async config() {
       this._themeSelect();
    }
-   
+
 
    async _themeSelect() {
       const families = await MessageBus.ext.request("data/theme_family/*/list");
@@ -953,7 +953,7 @@ class AuthorManager {
          "list", "Select", "Cancel", families.message);
       const themeObj = families.message.find(function(s){return s.id == this;},
                                              Basic.service.currentThemeFamily);
-      this._themeSVG = themeObj.svg; 
+      this._themeSVG = themeObj.svg;
       // this._themeSVG = families.message[Translator.instance.currentThemeFamily].svg;
    }
 }
@@ -961,6 +961,6 @@ class AuthorManager {
 (function() {
    AuthorManager.jsonKnot = "(function() { PlayerManager.player.presentKnot(`{knot}`) })();";
    AuthorManager.jsonNote = "(function() { PlayerManager.player.presentNote(`{knot}`) })();";
-   
+
    AuthorManager.author = new AuthorManager();
 })();
