@@ -16,11 +16,14 @@
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use("Route");
 const View = use('View');
+const Helpers = use('Helpers')
 const axios = use("axios")
 
 Route.get(  'populate_modal', 'CaseController.populate_modal')
 
-Route.get('/', ({ view }) => view.render('index') )
+Route.get('/', ({ view }) => 
+    view.render('index') 
+).as('index')
 
 Route.get('institution-registration', async ({ view }) => {
    const pageTitle = "Institution Registration"
