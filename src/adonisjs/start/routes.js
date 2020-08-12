@@ -41,6 +41,7 @@ Route.group(() => {
   Route.post( 'signup',     'UserController.signup').as('signup')
   Route.post( 'login',      'AuthController.login').as('login')
 
+
 }).middleware(['guest'])
 
 
@@ -112,6 +113,7 @@ Route.group(() => {
    Route.post('store', 'CaseController.store');
    Route.post('update', 'CaseController.update');
 }).prefix('choose-template').as('author_template_case')
+
 
 
 Route.get("drafts", ({ view }) => {
