@@ -20,7 +20,7 @@ const axios = use("axios")
 
 Route.get(  'populate_modal', 'CaseController.populate_modal')
 
-Route.get('space', ({ view }) => view.render('index') )
+Route.get('/', ({ view }) => view.render('index') )
 
 Route.get('institution-registration', async ({ view }) => {
    const pageTitle = "Institution Registration"
@@ -32,18 +32,18 @@ Route.get('institution-registration', async ({ view }) => {
 // when you are not logged in
 Route.group(() => {
 
-  Route.get(  'space/signup',     'UserController.create').as('signup')
-  Route.get(  'space/login',      'AuthController.create').as('login')
+  Route.get(  'signup',     'UserController.create')
+  Route.get(  'login',      'AuthController.create')
 
-  Route.post( 'space/signup',     'UserController.signup').as('signup')
-  Route.post( 'space/login',      'AuthController.login').as('login')
+  Route.post( 'signup',     'UserController.signup')
+  Route.post( 'login',      'AuthController.login')
 
 }).middleware(['guest'])
 
 
 
 
-Route.get('space/author', async ({ view, request }) => {
+Route.get('author', async ({ view, request }) => {
    // View.global('name_you_like', function () {
 
    //    return "ase"
@@ -91,11 +91,11 @@ Route.get('space/author', async ({ view, request }) => {
       return view.render('author.author')
 }).as('author_edit')
 
-Route.get('space/home', ({ view }) => {
+Route.get('home', ({ view }) => {
    return view.render('author.home')
 }).as('author_home')
 
-Route.get('space/create', ({ view }) => {
+Route.get('create', ({ view }) => {
    return view.render('author.create')
 }).as('author_create')
 
@@ -108,10 +108,10 @@ Route.group(() => {
 
    Route.post('store', 'CaseController.store');
    Route.post('update', 'CaseController.update');
-}).prefix('space/choose-template').as('author_template_case')
+}).prefix('author/choose-template').as('author_template_case')
 
 
-Route.get("space/drafts", ({ view }) => {
+Route.get("drafts", ({ view }) => {
    return view.render('author.drafts')
 }).as('cases_drafts')
 
