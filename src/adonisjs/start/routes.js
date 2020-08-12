@@ -16,11 +16,14 @@
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use("Route");
 const View = use('View');
+const Helpers = use('Helpers')
 const axios = use("axios")
 
 Route.get(  'populate_modal', 'CaseController.populate_modal')
 
-Route.get('/', ({ view }) => view.render('index') )
+Route.get('/', ({ view }) => 
+    view.render('index') 
+).as('index')
 
 Route.get('institution-registration', async ({ view }) => {
    const pageTitle = "Institution Registration"
@@ -32,11 +35,12 @@ Route.get('institution-registration', async ({ view }) => {
 // when you are not logged in
 Route.group(() => {
 
-  Route.get(  'signup',     'UserController.create')
-  Route.get(  'login',      'AuthController.create')
+  Route.get(  'signup',     'UserController.create').as('signup')
+  Route.get(  'login',      'AuthController.create').as('login')
 
-  Route.post( 'signup',     'UserController.signup')
-  Route.post( 'login',      'AuthController.login')
+  Route.post( 'signup',     'UserController.signup').as('signup')
+  Route.post( 'login',      'AuthController.login').as('login')
+
 
 }).middleware(['guest'])
 
@@ -108,7 +112,8 @@ Route.group(() => {
 
    Route.post('store', 'CaseController.store');
    Route.post('update', 'CaseController.update');
-}).prefix('author/choose-template').as('author_template_case')
+}).prefix('choose-template').as('author_template_case')
+
 
 
 Route.get("drafts", ({ view }) => {
@@ -125,6 +130,7 @@ const Env   = use("Env");
 Route.get("infra/dcc-common-server-address.js", async ({response, view}) =>{
     const harena_manager_url = Env.get("HARENA_MANAGER_URL", "http://127.0.0.1:10020");
    //  const harena_manager_url = "http://127.0.0.1:10020"
+   const harena_manager_url_client = Env.get("HARENA_MANAGER_URL_CLIENT", "http://127.0.0.1:10020");
     const harena_manager_api_version = Env.get("HARENA_MANAGER_API_VERSION", "v1");
    //  const harena_manager_api_version = "v1"
     const harena_logger_url = Env.get("HARENA_LOGGER_URL", "http://127.0.0.1:10030");
@@ -134,6 +140,7 @@ Route.get("infra/dcc-common-server-address.js", async ({response, view}) =>{
     response.header("Content-type", "application/javascript");
     return view.render("dcc-common-server-address",
        {"harena_manager_url": harena_manager_url,
+        "harena_manager_url_client": harena_manager_url_client,
         "harena_manager_api_version": harena_manager_api_version,
         "harena_logger_url": harena_logger_url,
         "harena_logger_api_version": harena_logger_api_version});
