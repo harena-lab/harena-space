@@ -59,8 +59,8 @@ class AuthController {
 			 //const data = { user : 'hello world' }
 			 response.cookie('token', user.token)
 			 //yield response.sendView('index', data)
-		  return view.render('index', { user: user.toJSON() })
- 	  	//   return response.redirect('/space')
+		  //return view.render('index', { user: user.toJSON() })
+ 	  	  return response.redirect('/')
 	  	})
 	    .catch(function (error) {
 		  console.log(error);
