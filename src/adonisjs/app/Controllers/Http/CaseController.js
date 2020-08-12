@@ -120,7 +120,7 @@ class CaseController {
                await axios(config)
                   .then(function (endpoint_response) {
                       // return response.redirect('/author/author.html')
-                      return response.route('author_home')
+                      return response.redirect('/author')
                   })
                   .catch(function (error) {
                       console.log(error);
@@ -130,7 +130,7 @@ class CaseController {
         catch (e) {
             console.log(e)
         }
-        return response.route('author_home')
+        return response.redirect('/author')
     }
 
 
