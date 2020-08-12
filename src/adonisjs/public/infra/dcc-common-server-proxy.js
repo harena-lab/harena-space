@@ -116,9 +116,14 @@ class DCCCommonServer {
       */
       console.log("=== cases list request");
       console.log(header);
+      console.log(DCCCommonServer.managerAddressAPI);
+      /*
       const response = await fetch(
          DCCCommonServer.managerAddressAPI +
          ((message.user) ? "user/cases" : "cases"), header);
+      */
+      const response = await fetch(
+         DCCCommonServer.managerAddressAPI + "user/cases", header);
       console.log("=== cases list response");
       console.log(response);
       const jsonResponse = await response.json();

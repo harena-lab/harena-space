@@ -17,15 +17,16 @@ class DraftManager {
          MessageBus.int.subscribe("control/case/download", this.downloadCase);
       }
 
-      const authorState = Basic.service.authorStateRetrieve();
+      // const authorState = Basic.service.authorStateRetrieve();
 
       this._boxesPanel = document.querySelector("#case-boxes");
-      this._draftSelect(authorState.userid, advanced);
+      // this._draftSelect(authorState.userid, advanced);
+      this._draftSelect(advanced);
    }
 
-   async _draftSelect(userid, advanced) {
-      const cases = await MessageBus.ext.request("data/case/*/list",
-                                                 {user: userid});
+   async _draftSelect(advanced) {
+      const cases = await MessageBus.ext.request("data/case/*/list");
+                                                 // {user: userid});
 
       const cl = cases.message;
       for (let c in cl) {
@@ -54,7 +55,7 @@ class DraftManager {
          previewButton.addEventListener("click",
             function(){
                Basic.service.authorPropertyStore("caseId", this.id.substring(1));
-               window.location.href = "../player/index.html?caseid=" +
+               window.location.href = "/player/index.html?caseid=" +
                                       this.id.substring(1) +
                                       "&preview";
             }
