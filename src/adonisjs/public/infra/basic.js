@@ -224,7 +224,7 @@ class Basic {
       else if (!path.includes("/"))
          /* (!(path.startsWith("http://") || path.startsWith("https://") ||
                  path.startsWith("/") || path.startsWith("../"))) */
-         result = DCCCommonServer.managerAddress + "artifacts/cases/" +
+         result = DCCCommonServer.managerAddress + "resources/artifacts/cases/" +
                   ((this.host != null) ? this.currentCaseId + "/" : "") +
                   path;
       return result;
