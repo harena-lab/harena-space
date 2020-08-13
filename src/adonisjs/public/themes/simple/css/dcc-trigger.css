@@ -3,7 +3,7 @@
 /* Trigger DCC */
 
 .dcc-trigger-theme {
-   font-size: 3vmin;
+   font-size: 2vmin;
    /* vertical center */
    display: flex;
    flex-direction: column;
@@ -23,8 +23,8 @@
 
 @media (orientation: landscape) {
    .dcc-trigger-theme {
-      height: 40px;
-      width: 600px;
+      height: 80px;
+      width: 800px;
    }
 }
 
