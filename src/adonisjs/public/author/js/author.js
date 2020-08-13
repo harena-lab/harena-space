@@ -88,7 +88,7 @@ class AuthorManager {
       if (params != null && params.length > 0) {
          mode = params.match(/mode=([\w-]+)/i);
          mode = (mode == null) ? null : mode[1];
-         caseid = params.match(/caseid=([\w-]+)/i);
+         caseid = params.match(/id=([\w-]+)/i);
          caseid = (caseid == null) ? null : caseid[1];
       }
       if (mode != null && mode.toLowerCase() == "advanced")
@@ -212,8 +212,8 @@ class AuthorManager {
    async caseLoadSelect() {
       const saved = await this.saveChangedCase();
 
-      const cases = await MessageBus.ext.request("data/case/*/list",
-                                                 {user: this._userid});
+      const cases = await MessageBus.ext.request("data/case/*/list")
+                                                 // {user: this._userid});
 
       cases.message.sort(
             (a, b) => (a.title.toLowerCase() > b.title.toLowerCase()) ? 1 : -1);
