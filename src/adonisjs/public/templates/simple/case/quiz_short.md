@@ -9,15 +9,12 @@ Write here the **stem** of your quiz.
 + Distractor 3 <-> "Feedback for Distractor 3"
 
 * Next Case -> Case.Next
-* Menu -> Presentation
 
 # Presentation Note (note)
 
-You answered: ^Presentation.hypothesis^.
+You answered: ^Presentation.input^.
 
 ^parameter^
-
-* Return -> Presentation
 
 ___ Flow ___
 
