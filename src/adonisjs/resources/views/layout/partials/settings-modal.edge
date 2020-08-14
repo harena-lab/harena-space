@@ -27,8 +27,9 @@
             </select>
           </div>
           <div class="form-group">
-            <label for="created">Creation Date</label>
-            <input type="date" class="form-control" id="created" name="created">
+            <label for="created">Original Date</label>
+            <input type="date" class="form-control" id="originalDate" name="originalDate" value="{{caseInstitution}}">
+            <small id="keywords-help" class="form-text text-muted">Inform the date of case creation on Jacinto Moodle</small>
           </div>
           <div class="form-group">
             <label for="institution">Institution</label>
@@ -47,6 +48,7 @@
             <textarea class="form-control" id="keywords" name="keywords" aria-describedby="keywords-help">{{caseKeywords}}</textarea>
             <small id="keywords-help" class="form-text text-muted">Inform your keywords separated by semicolon.</small>
           </div>
+          
           <input type="hidden" id="source" name="source">
           <button type="submit" class="btn btn-secondary" id="btn-save-settings" data-toggle="modal" data-target="#settings-modal">Save</button>
           <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
