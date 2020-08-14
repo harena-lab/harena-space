@@ -3,7 +3,7 @@
 /* Trigger DCC */
 
 .dcc-trigger-theme {
-   font-size: 2vmin;
+   font-size: 3vmin;
    /* vertical center */
    display: flex;
    flex-direction: column;
