@@ -342,8 +342,10 @@ class Properties {
             let i = 0;
             for (let item in previous) {
                if (i == this._item) {
-                  previous[item].message = field.value.trim();
-                  objProperty[this._itemEdit.edit] = previous[item];
+                  if (this._itemEdit.edit.trim().length > 0) {
+                     previous[item].message = field.value.trim();
+                     objProperty[this._itemEdit.edit] = previous[item];
+                  }
                } else
                   objProperty[item] = previous[item];
                i++;
