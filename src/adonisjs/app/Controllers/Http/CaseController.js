@@ -158,6 +158,7 @@ class CaseController {
                     domain: params.domain,
                     specialty: params.specialty,
                     keywords: params.keywords,
+                    originalDate: params.originalDate,
                     source: params.source
                 },
                 headers: {
