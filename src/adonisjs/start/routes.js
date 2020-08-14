@@ -73,18 +73,18 @@ Route.get('author', async ({ view, request }) => {
 
             console.log(endpoint_response.data)
           //return view.render('author.author')
-          let asd = endpoint_response.data
-          let caseId = asd.id;
-          let caseTitle = asd.title
-          let caseDescription = asd.description
-          let caseLanguage = asd.language
-          let caseInstitution = asd.institution
-          let caseDomain = asd.domain
-          let caseSpecialty = asd.specialty
-          let caseKeywords = asd.keywords
-
+          let responseContent = endpoint_response.data
+          let caseId = responseContent.id;
+          let caseTitle = responseContent.title
+          let caseDescription = responseContent.description
+          let caseLanguage = responseContent.language
+          let caseInstitution = responseContent.institution
+          let caseDomain = responseContent.domain
+          let caseSpecialty = responseContent.specialty
+          let caseKeywords = responseContent.keywords
+          let caseOriginalDate = responseContent.original_date
           return view.render('author.author',
-             {caseId, caseTitle, caseDescription, caseLanguage, caseInstitution, caseDomain, caseSpecialty, caseKeywords})
+             {caseId, caseTitle, caseDescription, caseLanguage, caseInstitution, caseDomain, caseSpecialty, caseKeywords, caseOriginalDate})
         })
         .catch(function (error) {
           console.log(error);
