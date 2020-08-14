@@ -79,10 +79,11 @@ class DraftManager {
          await DCCNoticeInput.displayNotice(
             "Are you sure that you want to delete this case? (write yes or no)",
             "input");
-      if (decision.toLowerCase() == "yes")
+      if (decision.toLowerCase() == "yes"){
          await MessageBus.ext.request("data/case/" + message + "/delete");
-      const box = this._boxesPanel.querySelector("#b" + message);
-      this._boxesPanel.removeChild(box);
+         const box = this._boxesPanel.querySelector("#b" + message);
+         this._boxesPanel.removeChild(box);
+       }
    }
 
    async downloadCase(topic, message) {
