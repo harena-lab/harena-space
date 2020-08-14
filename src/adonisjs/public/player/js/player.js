@@ -223,8 +223,10 @@ class PlayerManager {
          if (DCCCommonServer.instance.local)
             await this._caseLoad();
          else {
+           /*
            await Basic.service.signin(this._state,
                  (precase != null || precaseid != null));
+           */
 
            if (DCCPlayerServer.localEnv)
               Basic.service.currentCaseId = DCCPlayerServer.playerObj.id;

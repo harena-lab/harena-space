@@ -547,6 +547,12 @@ class EditDCCText extends EditDCC {
                      md = "**" + md + "**";
                   if (attr.italic)
                      md = "*" + md + "*";
+                  if (attr.script == "sub")
+                     md = "<sub>" + md + "</sub>";
+                  if (attr.script == "sup")
+                     md = "<sup>" + md + "</sup>";
+                  if (attr.link)
+                     md = "[" + md + "](" + attr.link + ")";
                   if (attr.annotation || attr.select) {
                      md = "{" + md + "}";
                      if (attr.annotation && attr.annotation.length > 0)
@@ -558,6 +564,7 @@ class EditDCCText extends EditDCC {
                         md += "/" + attr.select.answer + "/";
                   }
                   if (attr.align == "center") {
+                     /*
                      if (content.includes("\n")) {
                         const cut = content.lastIndexOf("\n");
                         content = content.substring(0, cut+1) + "<div align='center'>" +
@@ -566,6 +573,14 @@ class EditDCCText extends EditDCC {
                         content = "<div align='center'>" + content + "</div>";
                      if (md.endsWith("\n"))
                         md = md.substring(0, md.length-1);
+                     */
+                     content = this._formatPreSegment(
+                        content, "<div align='center'>", "</div>");
+                     md = this._formatCurrent(md);
+                  }
+                  if (attr.list == "bullet") {
+                     content = this._formatPreSegment(content, "* ", "");
+                     md = this._formatCurrent(md);
                   }
                }
                content += md;
@@ -603,6 +618,24 @@ class EditDCCText extends EditDCC {
       console.log("=== unity");
       console.log(unity);
       return unity.content;
+   }
+
+   _formatPreSegment(content, preform, posform) {
+      let formated = content;
+      if (content.includes("\n")) {
+         const cut = content.lastIndexOf("\n");
+         formated = content.substring(0, cut+1) + preform +
+                    content.substring(cut+1) + posform;
+      } else
+         formated = preform + content + posform;
+      return formated;
+   }
+
+   _formatCurrent(current) {
+      let formated = current;
+      if (current.endsWith("\n"))
+         formated = current.substring(0, current.length-1);
+      return formated;
    }
 }
 
