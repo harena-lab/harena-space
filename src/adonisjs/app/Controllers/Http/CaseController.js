@@ -82,16 +82,9 @@ class CaseController {
         }
 
         await axios(config)
-        .then( (endpointResponse) => {
-          const caseId = endpointResponse.data.id
-          const caseSource = markdown 
-          console.log("Request store case ID >>>>>>>>>>>>")
-          console.log(caseId)
-          console.log("Endpoint Response ID >>>>>>>>>>>>")
-          // const authorRoute = "/author?id=" + caseId
-          // return response.redirect(authorRoute)
-          return response.route('CaseController.getCase', {id: caseId})
-          // return view.render('author.author', {caseId, caseSource})
+        .then(function (endpoint_response) {
+          return response.redirect('/author/?id='+ endpoint_response.data.id)
+          //return response.redirect('/home')
         })
         .catch(function (error) {
           console.log(error);
@@ -141,9 +134,9 @@ class CaseController {
       }
 
       await axios(config)
-      .then(function (endpointResponse) {
-        // return response.redirect('/author/author.html')
-        // return endpointResponse.redirect('author_edit')
+      .then(function (endpoint_response) {
+
+        //return response.redirect('/')
 
       })
       .catch(function (error) {
