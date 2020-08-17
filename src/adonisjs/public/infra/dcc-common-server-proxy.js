@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 
 class DCCCommonServer {
@@ -53,7 +53,7 @@ class DCCCommonServer {
       this._local = newValue;
    }
 
-   
+
    /*
     * Wrappers of the services
     * ************************
@@ -116,7 +116,7 @@ class DCCCommonServer {
       */
       console.log("=== cases list request");
       console.log(header);
-      console.log(DCCCommonServer.managerAddressAPI);
+      //console.log(DCCCommonServer.managerAddressAPI);
       /*
       const response = await fetch(
          DCCCommonServer.managerAddressAPI +
@@ -140,9 +140,10 @@ class DCCCommonServer {
       MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
                              busResponse);
    }
-   
+
    async loadCase(topic, message) {
       let caseObj;
+
       if (this.local) {
          this._caseScript = document.createElement("script");
          this._caseScript.src = Basic.service.rootPath + "cases/current-case.js";
@@ -152,7 +153,7 @@ class DCCCommonServer {
          caseObj = caseM.message;
       } else {
          const caseId = MessageBus.extractLevel(topic, 3);
-         let header = {
+         /*let header = {
             "async": true,
             "crossDomain": true,
             "method": "GET",
@@ -175,7 +176,18 @@ class DCCCommonServer {
                     specialty: jsonResponse.specialty,
                     keywords: jsonResponse.keywords,
                     source: jsonResponse.source};
-      }
+         */
+      caseObj = {title: document.getElementById("case_title").value,
+                 description: document.getElementById("description").value,
+                 language: document.getElementById("language").value,
+                 domain: document.getElementById("domain").value,
+                 specialty: document.getElementById("specialty").value,
+                 keywords: document.getElementById("keywords").value,
+                 source: document.getElementById("case_source").value};
+     }
+
+      // console.log('====================Case object');
+      // console.log(caseObj);
 
       MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message), caseObj);
    }
@@ -203,7 +215,7 @@ class DCCCommonServer {
    async loadTheme(topic, message) {
       let themeObj;
       const themeCompleteName = MessageBus.extractLevel(topic, 3);
-      const separator = themeCompleteName.indexOf("."); 
+      const separator = themeCompleteName.indexOf(".");
       const themeFamily = themeCompleteName.substring(0, separator);
       const themeName = themeCompleteName.substring(separator+1);
       let caseObj;
