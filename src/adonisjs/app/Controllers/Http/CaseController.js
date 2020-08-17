@@ -169,7 +169,7 @@ class CaseController {
              console.log('=====GET selected case:'+endpoint_response.status)
            //return view.render('author.author')
            let responseContent = endpoint_response.data
-           let caseId = responseContent.id;
+           let caseId = responseContent.id
            let caseTitle = responseContent.title
            let caseDescription = responseContent.description
            let caseLanguage = responseContent.language
@@ -178,7 +178,9 @@ class CaseController {
            let caseSpecialty = responseContent.specialty
            let caseKeywords = responseContent.keywords
            let caseOriginalDate = responseContent.original_date
-           let caseSource = responseContent.source
+           let caseSource = responseContent.source.replace(/"/gm, '\\"')
+           console.log('THIS IS CASE SOURCE ====================');
+           console.log(caseSource);
            return view.render('author.author',
               {caseId, caseTitle, caseDescription, caseLanguage, caseInstitution, caseDomain, caseSpecialty, caseKeywords, caseOriginalDate, caseSource})
          })
