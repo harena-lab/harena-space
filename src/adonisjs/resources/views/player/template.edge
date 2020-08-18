@@ -6,6 +6,7 @@
 
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
 
+<<<<<<< Updated upstream
   <link rel="stylesheet" href="../lib/fontawesome-5-10-1/css/all.min.css">
   {{--  {{ sytle('https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css') }}  --}}
   <link rel="stylesheet" href="../lib/bootstrap-4-3-1/css/bootstrap.min.css">
@@ -30,6 +31,41 @@
 
   <style media="screen">
 
+=======
+  <link rel="stylesheet" href="{{ assetsUrl('lib/fontawesome-5-10-1/css/all.min.css') }}">
+  <link rel="stylesheet" href="{{ assetsUrl('lib/bootstrap-4-3-1/css/bootstrap.min.css') }}">
+
+  <link rel="stylesheet" href="{{ assetsUrl('infra/css/common-player.css') }}">
+  <!-- <link rel="stylesheet" href="../infra/css/common-author.css"> -->
+
+  {{--  {{ style('player') }}  --}}
+  <link rel="stylesheet" href="{{ assetsUrl('start/css/main.css') }}"/>
+
+  <script src="{{ assetsUrl('infra/bus.js') }}"></script>
+  <script src="{{ assetsUrl('infra/basic.js') }}"></script>
+  <script src="{{ assetsUrl('infra/dcc-common-server-proxy.js') }}"></script>
+  <script src="{{ assetsUrl('infra/dcc-common-server-address.js') }}"></script>
+  <script src="{{ assetsUrl('author/js/dcc-author-server-proxy.js') }}"></script>
+
+  <script src="{{ assetsUrl('dccs/components/dcc-base.js') }}"></script>
+  <script src="{{ assetsUrl('dccs/components/dcc-visual.js') }}"></script>
+  <script src="{{ assetsUrl('dccs/components/dcc-notice-input.js') }}"></script>
+
+  <script src="{{ assetsUrl('author/js/template-case.js') }}"></script>
+
+  <style media="screen">
+
+  div{
+    border-color: red;
+    border-style: dotted;
+  }
+
+  h1{
+    font-weight: bold;
+    color: #808080;
+  }
+
+>>>>>>> Stashed changes
   .welcome-player-padding{
     /*background-color: #ffffff;
     */
@@ -37,6 +73,7 @@
     padding-left: 50px;
     padding-right: 50px;
   }
+<<<<<<< Updated upstream
   </style>
 </head>
 
@@ -63,4 +100,12 @@
   <!-- end of div /.container -->
 
 </body>
+=======
+
+  </style>
+</head>
+
+@!section('content')
+
+>>>>>>> Stashed changes
 </html>
