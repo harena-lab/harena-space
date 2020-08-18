@@ -79,6 +79,16 @@ let harenaManagerUrl =
    Env.get("HARENA_MANAGER_URL", "http://localhost:3000/api/v1/");
 */
 
+Route.get('player/welcome', ({ view }) => {
+  const pageTitle = 'Welcome player'
+  return view.render('player.welcome', {pageTitle})
+}).as('player_welcome')
+
+Route.get('player/home', ({ view }) => {
+  return view.render('player.player-cases')
+}).as('player_home')
+
+
 const Env   = use("Env");
 
 Route.get("infra/dcc-common-server-address.js", async ({response, view}) =>{
