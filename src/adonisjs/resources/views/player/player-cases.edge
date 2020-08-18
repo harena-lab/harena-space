@@ -1,0 +1,87 @@
+@layout('player.template')
+
+@section('content')
+<div onclick="ExtendDescription()">
+  <div class="text-box">
+    <div class="first_text">Go with the flow</div>
+    <div class="second_text">Let Phil choose your next challenges</div>
+  </div>
+  <div class="d-flex justify-content-center challenge-box" id="challenge-flex-grid">
+    <!-- Create a animated challenge container -->
+    <div class="blue_shape d-flex align-items-center justify-content-start" id="challenge-1" onclick="AnimDescription(this)">
+      <div class="order-1 challenge_image">
+        <div class="rect_red">
+          <img src= "/start/img/challenge_1.png" id="challenge_image" />
+        </div>
+      </div>
+      <div class=" p-2 order-2 case-head-text" id="challenge_text">
+        Challenge 1
+      </div>
+
+      <div class="hide" id="big-challenge-box">
+        <div class="order-1 vertical_bar">
+          |
+        </div>
+
+        <div class="order-2 text-wrap" id="description_Text">
+          Man, 51 years old, present to an emergency department complaining of chest pain.
+        </div>
+
+        <div class="order-3 d-flex align-items-center justify-content-center ml-auto" id="btn-go" onclick="window.location.href='https://harena.ds4h.org/space/player/index.html?case=phillmuchbetter-case01'">
+          Go
+        </div>
+      </div>
+
+    </div>
+    <!-- Creates a locked challenge -->
+    <div class="grey_shape d-flex shrink-1 justify-content-center align-items-center">
+      <img src="/start/img/locked_challenge.png" id="locked_image" />
+    </div>
+    <div class="grey_shape d-flex shrink-1 justify-content-center align-items-center">
+      <img src="/start/img/locked_challenge.png" id="locked_image" />
+    </div>
+    <div class="grey_shape d-flex shrink-1 justify-content-center align-items-center">
+      <img src="/start/img/locked_challenge.png" id="locked_image" />
+    </div>
+    <div class="grey_shape d-flex shrink-1 justify-content-center align-items-center">
+      <img src="/start/img/locked_challenge.png" id="locked_image" />
+    </div>
+    <div class="grey_shape d-flex shrink-1 justify-content-center align-items-center">
+      <img src="/start/img/locked_challenge.png" id="locked_image" />
+    </div>
+  </div>
+
+  <div class="text-box">
+    <div class="first_text">You've got the power</div>
+    <div class="second_text">You choose the next challenge</div>
+  </div>
+  <!-- Creates a case container -->
+  <div class="d-flex flex-row justify-content-center challenge-box">
+    <div class="blue_shape d-flex justify-content-end align-items-center">
+      <div class="p-2 ml-auto case-head-text">
+        Case 1
+      </div>
+      <div class="challenge_image">
+        <img src="/start/img/case_1.png" id="challenge_image" />
+      </div>
+    </div>
+    <div class="blue_shape d-flex justify-content-end align-items-center">
+      <div class="p-2 ml-auto case-head-text">
+        Case 2
+      </div>
+      <div class="challenge_image">
+        <img src="/start/img/case_2.png" id="challenge_image" />
+      </div>
+    </div>
+    <div class="blue_shape d-flex justify-content-end align-items-center">
+      <div class="p-2 ml-auto case-head-text">
+        Case 3
+      </div>
+      <div class="challenge_image">
+        <img src="/start/img/case_3.png" id="challenge_image" />
+      </div>
+    </div>
+  </div>
+</div>
+
+  @endsection

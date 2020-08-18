@@ -1,0 +1,37 @@
+@layout('player.template')
+
+  @section('content')
+<body>
+  @include('layout.partials.header')
+
+    <div class="d-flex justify-content-center challenge-box" id="challenge-flex-grid">
+      <!-- Creates a quest container -->
+      <div class="blue_shape d-flex align-items-center justify-content-start" id="challenge-1" onclick="AnimDescription(this)">
+        <div class="order-1 challenge_image">
+          <div class="rect_red">
+            <img src= "/start/img/challenge_1.png" id="challenge_image" />
+          </div>
+        </div>
+        <div class=" p-2 order-2 case-head-text" id="challenge_text">
+          Challenge 1
+        </div>
+
+        <div class="hide" id="big-challenge-box">
+          <div class="order-1 vertical_bar">
+            |
+          </div>
+
+          <div class="order-2 text-wrap" id="description_Text">
+            Man, 51 years old, present to an emergency department complaining of chest pain.
+          </div>
+
+          <div class="order-3 d-flex align-items-center justify-content-center ml-auto" id="btn-go" onclick="window.location.href='https://harena.ds4h.org/space/player/index.html?case=phillmuchbetter-case01'">
+            Go
+          </div>
+        </div>
+      </div>
+      
+
+    </div>
+  @endsection
+</body>
