@@ -1,7 +1,7 @@
-(function() {
-AuthorCellManager.instance.insertSource(
-"Micromundos",
-[],
+(function () {
+  AuthorCellManager.instance.insertSource(
+    'Micromundos',
+    [],
 `<block type="neighbor"></block>
 <block type="action"></block>`,
 `<dcc-space-cellular-editor id="cellular-space" rows="28" cols="40"
@@ -164,5 +164,5 @@ Selecione abaixo a chance de cada um dos eventos:
 </subscribe-dcc>
 <subscribe-dcc target="tardigrade-dies" topic="var/tardigrade_dies/changed" role="probability">
 </subscribe-dcc>`
-);
-})();
+  )
+})()

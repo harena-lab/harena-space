@@ -1,8 +1,8 @@
 /* Character DCC
   **************/
 class DCCCharacter extends DCCVisual {
-   connectedCallback() {
-      let templateHTML = 
+  connectedCallback () {
+    let templateHTML =
          `<style>
             .dsty-border {
                border: 1px solid gray;
@@ -94,93 +94,93 @@ class DCCCharacter extends DCCVisual {
                 <div id="record-description" class="dsty-field-value dsty-border">[description]</div>
              </div>
           </div>
-       </div>`;
-      
-      templateHTML = templateHTML.replace("[images]", this._imageElements())
-                                 .replace("[character]", this.character)
-                                 .replace("[role]", this.role)
-                                 .replace("[description]", this.description);
+       </div>`
 
-      // building the template
-      const template = document.createElement("template");
-      template.innerHTML = templateHTML;
-      let shadow = this.attachShadow({mode: "open"});
-      shadow.appendChild(template.content.cloneNode(true));
-      
-      this._presentation = shadow.querySelector("#presentation-dcc");
-      this._recordImages = shadow.querySelector("#record-images");
-      this._presentationIsReady();
+    templateHTML = templateHTML.replace('[images]', this._imageElements())
+      .replace('[character]', this.character)
+      .replace('[role]', this.role)
+      .replace('[description]', this.description)
 
-      super.connectedCallback();
-   }
-   
-   /* Properties
+    // building the template
+    const template = document.createElement('template')
+    template.innerHTML = templateHTML
+    const shadow = this.attachShadow({ mode: 'open' })
+    shadow.appendChild(template.content.cloneNode(true))
+
+    this._presentation = shadow.querySelector('#presentation-dcc')
+    this._recordImages = shadow.querySelector('#record-images')
+    this._presentationIsReady()
+
+    super.connectedCallback()
+  }
+
+  /* Properties
       **********/
-   
-   static get observedAttributes() {
-      return DCCVisual.observedAttributes.concat(
-         ["image", "character", "role", "description"]);
-   }
 
-   get image() {
-      return this.getAttribute("image");
-   }
-   
-   set image(newValue) {
-      this.setAttribute("image", newValue);
-   }
-   
-   get character() {
-      return this.getAttribute("character");
-   }
-   
-   set character(newValue) {
-      this.setAttribute("character", newValue);
-   }
-   
-   get role() {
-      return this.getAttribute("role");
-   }
-   
-   set role(newValue) {
-      this.setAttribute("role", newValue);
-   }
-   
-   get description() {
-      return this.getAttribute("description");
-   }
-   
-   set description(newValue) {
-      this.setAttribute("description", newValue);
-   }
+  static get observedAttributes () {
+    return DCCVisual.observedAttributes.concat(
+      ['image', 'character', 'role', 'description'])
+  }
 
-   _imageElements() {
-      let extension = this.image.lastIndexOf(".");
-      let icon = this.image.substring(0, extension) + "-icon" + this.image.substring(extension);
-      
-      return "<div class='dsty-image-box dsty-border'>" +
+  get image () {
+    return this.getAttribute('image')
+  }
+
+  set image (newValue) {
+    this.setAttribute('image', newValue)
+  }
+
+  get character () {
+    return this.getAttribute('character')
+  }
+
+  set character (newValue) {
+    this.setAttribute('character', newValue)
+  }
+
+  get role () {
+    return this.getAttribute('role')
+  }
+
+  set role (newValue) {
+    this.setAttribute('role', newValue)
+  }
+
+  get description () {
+    return this.getAttribute('description')
+  }
+
+  set description (newValue) {
+    this.setAttribute('description', newValue)
+  }
+
+  _imageElements () {
+    const extension = this.image.lastIndexOf('.')
+    const icon = this.image.substring(0, extension) + '-icon' + this.image.substring(extension)
+
+    return "<div class='dsty-image-box dsty-border'>" +
                 "<img id='char-image' class='dsty-image' src='" +
                    Basic.service.imageResolver(this.image) + "'></div>" +
              "<div class='dsty-icon-box dsty-border'>" +
                 "<img id='char-icon'class='dsty-icon' src='" +
-                   Basic.service.imageResolver(icon) + "'></div>";
-   }
-   
-   /* Editable Component */
-   activateEditDCC() {
-      if (!DCCCharacter.editableCode) {
-        editableDCCCharacter();
-        DCCCharacter.editableCode = true;
-      }
-      this._activateEditDCC();
-   }
-   
-   editImage() {
-      this._editImage();
-   }
+                   Basic.service.imageResolver(icon) + "'></div>"
+  }
+
+  /* Editable Component */
+  activateEditDCC () {
+    if (!DCCCharacter.editableCode) {
+      editableDCCCharacter()
+      DCCCharacter.editableCode = true
+    }
+    this._activateEditDCC()
+  }
+
+  editImage () {
+    this._editImage()
+  }
 }
 
-(function() {
-   DCCCharacter.editableCode = false;
-   customElements.define("dcc-character", DCCCharacter);
-})();
+(function () {
+  DCCCharacter.editableCode = false
+  customElements.define('dcc-character', DCCCharacter)
+})()

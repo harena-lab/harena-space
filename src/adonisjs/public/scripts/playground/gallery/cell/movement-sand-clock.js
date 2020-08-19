@@ -1,8 +1,8 @@
-(function() {
-AuthorCellManager.instance.insertSource(
-"Relógio de Areia",
-[["sand",  ".", "areia"],
- ["glass", "#", "vidro"]],
+(function () {
+  AuthorCellManager.instance.insertSource(
+    'Relógio de Areia',
+    [['sand', '.', 'areia'],
+      ['glass', '#', 'vidro']],
 `<block type="neighbor"></block>
 <block type="action"></block>`,
 `<dcc-space-cellular-editor id="cellular-space" label="sand clock" cell-width="6" cell-height="6">
@@ -91,5 +91,5 @@ _#_________________________________________#_
       </dcc-trigger>
    </div>
 </div>`
-);
-})();
+  )
+})()

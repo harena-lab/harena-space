@@ -1,9 +1,9 @@
 class AuthorStart {
-   async start() {
-      this._userid = await Basic.service.signin();
-   }
+  async start () {
+    this._userid = await Basic.service.signin()
+  }
 }
 
-(function() {
-AuthorStart.instance = new AuthorStart();
-})();
+(function () {
+  AuthorStart.instance = new AuthorStart()
+})()

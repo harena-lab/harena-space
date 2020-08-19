@@ -3,81 +3,78 @@
  */
 
 class DCCInput extends DCCBlock {
-   constructor() {
-      super();
-      this._changed = false;
-   }
+  constructor () {
+    super()
+    this._changed = false
+  }
 
-   connectedCallback() {
-      this._statement = (this.hasAttribute("statement"))
-         ? this.statement : this.innerHTML;
+  connectedCallback () {
+    this._statement = (this.hasAttribute('statement'))
+      ? this.statement : this.innerHTML
       // this.innerHTML = "";
 
-      super.connectedCallback();
+    super.connectedCallback()
 
-      if (this.mandatory) {
-         const inputIndication = (this._statement != null)
-            ? this._statement
-            : this.variable.substring(this.variable.lastIndexOf(".") + 1);
+    if (this.mandatory) {
+      const inputIndication = (this._statement != null)
+        ? this._statement
+        : this.variable.substring(this.variable.lastIndexOf('.') + 1)
 
-         MessageBus.int.publish("var/" + this.variable + "/input/mandatory",
-                                inputIndication);
-      }
-   }
+      MessageBus.int.publish('var/' + this.variable + '/input/mandatory',
+        inputIndication)
+    }
+  }
 
-   static get observedAttributes() {
-      return DCCBlock.observedAttributes.concat(
-         ["statement", "variable", "value", "mandatory"]);
-   }
+  static get observedAttributes () {
+    return DCCBlock.observedAttributes.concat(
+      ['statement', 'variable', 'value', 'mandatory'])
+  }
 
-   /*
+  /*
     * HTML Element property handling
     */
 
-   get statement() {
-      return this.getAttribute("statement");
-   }
-   
-   set statement(newValue) {
-      this.setAttribute("statement", newValue);
-   }
-   
-   get variable() {
-      return this.getAttribute("variable");
-   }
-   
-   set variable(newValue) {
-      this.setAttribute("variable", newValue);
-   }
+  get statement () {
+    return this.getAttribute('statement')
+  }
 
-   get value() {
-      return this.getAttribute("value");
-   }
+  set statement (newValue) {
+    this.setAttribute('statement', newValue)
+  }
 
-   set value(newValue) {
-      this.setAttribute("value", newValue);
-   }
+  get variable () {
+    return this.getAttribute('variable')
+  }
 
-   get mandatory() {
-      return this.hasAttribute("mandatory");
-   }
+  set variable (newValue) {
+    this.setAttribute('variable', newValue)
+  }
 
-   set mandatory(isMandatory) {
-      if (isMandatory)
-         this.setAttribute("mandatory", "");
-      else
-         this.removeAttribute("mandatory");
-   }
+  get value () {
+    return this.getAttribute('value')
+  }
 
-   /*
+  set value (newValue) {
+    this.setAttribute('value', newValue)
+  }
+
+  get mandatory () {
+    return this.hasAttribute('mandatory')
+  }
+
+  set mandatory (isMandatory) {
+    if (isMandatory) { this.setAttribute('mandatory', '') } else { this.removeAttribute('mandatory') }
+  }
+
+  /*
     * Class property handling
     */
 
-   get changed() {
-      return this._changed;
-   }
+  get changed () {
+    return this._changed
+  }
 
-   set changed(newValue) {
-      this._changed = newValue;
-   }
+  set changed (newValue) {
+    this._changed = newValue
+  }
 }

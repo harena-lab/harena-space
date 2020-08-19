@@ -6,45 +6,40 @@
  */
 
 class Navigator {
+  constructor (translator) {
+    this._translator = translator
 
-constructor(translator) {
-   this._translator = translator;
+    this._retracted = true
+    this._navigatorSpread = 1
+    this._showPreviewMiniature = false
 
-   this._retracted = true;
-   this._navigatorSpread = 1;
-   this._showPreviewMiniature = false;
+    this.expandClicked = this.expandClicked.bind(this)
+    MessageBus.ext.subscribe('control/navigator/expand', this.expandClicked)
+    this.retractClicked = this.retractClicked.bind(this)
+    MessageBus.ext.subscribe('control/navigator/retract', this.retractClicked)
+    // this.upTree = this.upTree.bind(this);
+    // MessageBus.ext.subscribe("control/group/up", this.upTree);
+  }
 
-   this.expandClicked = this.expandClicked.bind(this);
-   MessageBus.ext.subscribe("control/navigator/expand", this.expandClicked);
-   this.retractClicked = this.retractClicked.bind(this);
-   MessageBus.ext.subscribe("control/navigator/retract", this.retractClicked);
-   // this.upTree = this.upTree.bind(this);
-   // MessageBus.ext.subscribe("control/group/up", this.upTree);
-}
+  async expandClicked (topic, message) {
+    if (this._navigatorSpread == 0) { Panels.s.setupVisibleNavigator() } else {
+      Panels.s.setupWideNavigator()
+      this._retracted = false
+      this._presentTreeCase()
+    }
+    this._navigatorSpread++
+  }
 
-async expandClicked(topic, message) {
-   if (this._navigatorSpread == 0)
-      Panels.s.setupVisibleNavigator();
-   else {
-      Panels.s.setupWideNavigator();
-      this._retracted = false;
-      this._presentTreeCase();
-   }
-   this._navigatorSpread++;
-}
+  async retractClicked (topic, message) {
+    if (this._navigatorSpread == 1) { Panels.s.setupHiddenNavigator() } else {
+      Panels.s.setupRegularNavigator()
+      this._retracted = true
+      this._presentTreeCase()
+    }
+    this._navigatorSpread--
+  }
 
-async retractClicked(topic, message) {
-   if (this._navigatorSpread == 1)
-      Panels.s.setupHiddenNavigator();
-   else {
-      Panels.s.setupRegularNavigator();
-      this._retracted = true;
-      this._presentTreeCase();
-   }
-   this._navigatorSpread--;
-}
-
-/*
+  /*
 async downTree(knotid) {
    const newRoot = this._searchTree(this._tree, knotid);
    if (newRoot != null) {
@@ -90,121 +85,122 @@ _searchTree(current, knotid) {
 }
 */
 
-async mountTreeCase(author, knots) {
-   let navigationGraph = document.querySelector("#navigation-graph");
-   let graph = {
+  async mountTreeCase (author, knots) {
+    const navigationGraph = document.querySelector('#navigation-graph')
+    const graph = {
       nodes: [],
       edges: []
-   };
+    }
 
-   // <TODO> provisory
-   const specialKnot = ["note", "notice", "notice_wide", "notice_exam_zoom",
-                        "expansion"];
+    // <TODO> provisory
+    const specialKnot = ['note', 'notice', 'notice_wide', 'notice_exam_zoom',
+      'expansion']
 
-   const templatesCats = author.templatesCategories;
+    const templatesCats = author.templatesCategories
 
-   let current = graph;
-   let levelStack = [];
-   let previousKnot = null;
-   for (let k in knots) {
+    let current = graph
+    const levelStack = []
+    let previousKnot = null
+    for (const k in knots) {
       // special case for knot as notes
       // <TODO> provisory - not presented
-      let draw = true;
-      if (knots[k].categories != null)
-         for (let c of knots[k].categories)
-            if (specialKnot.includes(c))
-               draw = false;
+      let draw = true
+      if (knots[k].categories != null) {
+        for (const c of knots[k].categories) {
+          if (specialKnot.includes(c)) { draw = false }
+        }
+      }
 
       if (draw) {
-         // build nodes of the graph
-         let newKnot = {
-            id: k,
-            label: knots[k].title,
-            render: knots[k].render,
-            level: knots[k].level
-         };
+        // build nodes of the graph
+        const newKnot = {
+          id: k,
+          label: knots[k].title,
+          render: knots[k].render,
+          level: knots[k].level
+        }
 
-         // attach menus to nodes
-         let items = {};
-         let templatesNewKnot = [];
-         if (knots[k].categories && templatesCats != null) {
-            const templateCatIds = Object.keys(templatesCats);
-            for (let cat of knots[k].categories)
-               if (templateCatIds.includes(cat) &&
-                   !templatesNewKnot.includes(templatesCats[cat]))
-                  templatesNewKnot.push(templatesCats[cat]);
-            for (let tnn of templatesNewKnot)
-               items["add " + tnn.substring(tnn.lastIndexOf("/")+1)] =
-                  {topic: "control/knot/new",
-                   message: {knotid: k, template: tnn}};
-         }
-         items["delete " + newKnot.label] =
-            {topic: "control/knot/remove", message: {knotid: k}};
-         items["move up"] = {topic: "control/knot/up", message: {knotid: k}};
-         items["move down"] = {topic: "control/knot/down", message: {knotid: k}};
-         newKnot.menu = items;
+        // attach menus to nodes
+        const items = {}
+        const templatesNewKnot = []
+        if (knots[k].categories && templatesCats != null) {
+          const templateCatIds = Object.keys(templatesCats)
+          for (const cat of knots[k].categories) {
+            if (templateCatIds.includes(cat) &&
+                   !templatesNewKnot.includes(templatesCats[cat])) { templatesNewKnot.push(templatesCats[cat]) }
+          }
+          for (const tnn of templatesNewKnot) {
+            items['add ' + tnn.substring(tnn.lastIndexOf('/') + 1)] =
+                  {
+                    topic: 'control/knot/new',
+                    message: { knotid: k, template: tnn }
+                  }
+          }
+        }
+        items['delete ' + newKnot.label] =
+            { topic: 'control/knot/remove', message: { knotid: k } }
+        items['move up'] = { topic: 'control/knot/up', message: { knotid: k } }
+        items['move down'] = { topic: 'control/knot/down', message: { knotid: k } }
+        newKnot.menu = items
 
-         // put in the containment hierachy
-         if (previousKnot == null || newKnot.level == previousKnot.level)
-            current.nodes.push(newKnot);
-         else if (newKnot.level > previousKnot.level) {
-            previousKnot.graph = {
-               nodes: [newKnot],
-               edges: []
-            };
-            levelStack.push(current);
-            current = previousKnot.graph;
-         } else {
-            let newLevel = previousKnot.level;
-            while (levelStack.length > 0 && newKnot.level <= newLevel) {
-               current = levelStack.pop();
-               newLevel = current.level;
+        // put in the containment hierachy
+        if (previousKnot == null || newKnot.level == previousKnot.level) { current.nodes.push(newKnot) } else if (newKnot.level > previousKnot.level) {
+          previousKnot.graph = {
+            nodes: [newKnot],
+            edges: []
+          }
+          levelStack.push(current)
+          current = previousKnot.graph
+        } else {
+          let newLevel = previousKnot.level
+          while (levelStack.length > 0 && newKnot.level <= newLevel) {
+            current = levelStack.pop()
+            newLevel = current.level
+          }
+          current.nodes.push(newKnot)
+        }
+
+        // build edges of the graph
+        // <TODO> adjust flow.next
+        const edgeMap = {
+          'knot.next': '#next',
+          'knot.previous': '#previous',
+          'flow.next': '#next'
+        }
+        for (const c of knots[k].content) {
+          if (c.type == 'option' || c.type == 'divert') {
+            let target = c.contextTarget
+            const tl = target.toLowerCase()
+            if (edgeMap[tl] != null) { target = edgeMap[tl] }
+            if (!Translator.reservedNavigation.includes(target.toLowerCase())) {
+              current.edges.push({
+                source: k,
+                target: target
+              })
             }
-            current.nodes.push(newKnot);
-         }
+          }
+        }
 
-         // build edges of the graph
-         // <TODO> adjust flow.next
-         const edgeMap = {
-            "knot.next": "#next",
-            "knot.previous": "#previous",
-            "flow.next": "#next"
-         };
-         for (let c of knots[k].content) {
-            if (c.type == "option" || c.type == "divert") {
-               let target = c.contextTarget;
-               const tl = target.toLowerCase();
-               if (edgeMap[tl] != null)
-                  target = edgeMap[tl];
-               if (!Translator.reservedNavigation.includes(target.toLowerCase())) {
-                  current.edges.push({
-                     source: k,
-                     target: target
-                  });
-               }
-            }
-         }
-
-         previousKnot = newKnot;
+        previousKnot = newKnot
       }
-   }
+    }
 
-   navigationGraph.cleanGraph();
-   navigationGraph.importGraph(graph);
-}
+    navigationGraph.cleanGraph()
+    navigationGraph.importGraph(graph)
+  }
 
-/*
+  /*
 async mountTreeCase(author, knots) {
    this.mountTreeCaseBefore(author, knots);
    this._author = author;
    this._knots = knots;
    this._navigationPanel = document.querySelector("#navigation-panel");
    this._knotPanel = document.querySelector("#knot-panel");
-   
+
    this._capsule = await MessageBus.ext.request("data/module/capsule/get");
-   
+
    this._navigationPanel.innerHTML = "";
-   
+
    // building the visual tree
    this._tree = {level: 0, children: []};
    let current = this._tree;
@@ -253,7 +249,7 @@ async mountTreeCase(author, knots) {
                          ? newNoteKnot.level : this._maxLevel;
                   }
                }
-            }            
+            }
          }
 
          if (previousKnot == null || newKnot.level == previousKnot.level)
@@ -290,7 +286,7 @@ async _presentTreeCase() {
       Navigator.miniKnot[this._retracted].titleDelta * this._maxLevel;
    this._computeDimension(this._tree, true, 0, -baseTitle, this._maxLevel);
    // console.log(this._tree);
-   
+
    // set the dimensions and margins of the graph
    let margin = {top: 10, right: 0, bottom: 10, left: 0},
        width = this._tree.width,
@@ -329,7 +325,7 @@ async _presentTreeCase() {
       .data(root.descendants().filter(function(d){return (d.depth >= 1 && d.depth <= 2)}))
       .enter()
       .append("g");
-   
+
    // knot square
    gs.append("rect")
       .attr("id", function(d){ return "kmini-" + d.data.id; })
@@ -369,7 +365,7 @@ async _presentTreeCase() {
          let t = document.querySelector("#t_" + d.data.id);
          t.removeChild(t.firstChild);
          t.innerHTML = d.data.title});
-   
+
    this._translator.newThemeSet();
    this._translator.authoringRender = false;
    await this._drawMiniatures(this._tree, svg);
@@ -395,7 +391,7 @@ _computeDimension(knot, horizontal, x, y, titleLevel) {
       knot.height = 0;
       let shiftX = x + Navigator.miniKnot[this._retracted].paddingX;
       let shiftY = y + Navigator.miniKnot[this._retracted].paddingY + knot.titleSize;
-         
+
       if (knot.level - this._innerTree == 0) {
          for (let k in knot.children) {
             this._computeDimension(
@@ -568,7 +564,7 @@ async _createMiniature(knot, krender) {
          // .replace(/{scale}/g, (this._author._themeSVG)
          //   ? "" : ";transform-origin:top left;transform:scale(0.1)")
       miniature.appendChild(iframe);
-      
+
       // let idoc = (iframe.contentWindow || iframe.contentDocument);
       // Basic.service.replaceStyle(idoc.document, null, this._author.currentThemeFamily);
    }
@@ -615,11 +611,10 @@ _drawLinks(knot, svg) {
       this._drawLinks(knot.children[kn], svg);
 }
 */
-
 }
 
-//(function() {
-   /*
+// (function() {
+/*
    Navigator.miniKnot = {
       true: {
          width: 75, // 16:9
@@ -659,7 +654,7 @@ _drawLinks(knot, svg) {
       }
    };
    */
-   /*
+/*
    Navigator.miniKnot = {
       true: {
          width: 100, // 16:9

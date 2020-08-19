@@ -1,7 +1,7 @@
-(function() {
-const localCase = {
-name: "Gustavo Case 01",
-source: `# Abertura (detailed, start)
+(function () {
+  const localCase = {
+    name: 'Gustavo Case 01',
+    source: `# Abertura (detailed, start)
 
 ClinicRAC
 
@@ -224,7 +224,7 @@ ___ Data ___
 * theme: simple
 * namespaces:
   * evidence: http://purl.org/versum/evidence/`
-};
+  }
 
-MessageBus.int.publish("control/case/load/ready", localCase);
-})();
+  MessageBus.int.publish('control/case/load/ready', localCase)
+})()

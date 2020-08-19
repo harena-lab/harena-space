@@ -5,15 +5,15 @@
  */
 
 class CapsuleManager {
-   constructor() {
-      MessageBus.page = new MessageBus(false);
-   }
-   
-   startCapsule() {
-      PlayerManager.player._mainPanel = document.querySelector("#main-panel");
-   }
+  constructor () {
+    MessageBus.page = new MessageBus(false)
+  }
+
+  startCapsule () {
+    PlayerManager.player._mainPanel = document.querySelector('#main-panel')
+  }
 }
 
-(function() {
-   CapsuleManager.capsule = new CapsuleManager();
-})();
+(function () {
+  CapsuleManager.capsule = new CapsuleManager()
+})()
