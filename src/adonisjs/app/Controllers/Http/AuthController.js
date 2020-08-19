@@ -1,3 +1,5 @@
+/* global use */
+
 'use strict'
 
 const Env = use('Env')
@@ -33,11 +35,11 @@ class AuthController {
         return response.redirect('back')
       }
 
-      const endpoint_url = Env.get('HARENA_MANAGER_URL') + '/api/v2/auth/login'
+      const endpointUrl = Env.get('HARENA_MANAGER_URL') + '/api/v2/auth/login'
 
       var config = {
         method: 'post',
-        url: endpoint_url,
+        url: endpointUrl,
         data: {
           email: params.email,
           password: params.password
@@ -45,8 +47,8 @@ class AuthController {
       }
 
       await axios(config)
-        .then(async function (endpoint_response) {
-          const user = endpoint_response.data
+        .then(async function (endpointResponse) {
+          const user = endpointResponse.data
           console.log('-----------------------------------------------------------------------------------------------------------')
           console.log(user.token)
           // let token = await auth.generate(user)

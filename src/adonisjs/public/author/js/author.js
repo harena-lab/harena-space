@@ -140,7 +140,19 @@ class AuthorManager {
     * Redirects control/<entity>/<operation> messages
     */
   async controlEvent (topic, message) {
-    if (MessageBus.matchFilter(topic, 'control/knot/selected')) { this.knotSelected(topic, message) } else if (MessageBus.matchFilter(topic, 'control/group/+/selected')) { this.groupSelected(topic, message) } else if (MessageBus.matchFilter(topic, 'control/element/+/selected')) { this.elementSelected(topic, message) } else if (MessageBus.matchFilter(topic, 'control/element/+/new')) { this.elementNew(topic) } else if (MessageBus.matchFilter(topic, 'control/element/+/new/unique')) { this.elementNewUnique(topic, message) } else if (MessageBus.matchFilter(topic, 'control/element/insert')) { this.elementInsert(message) } else {
+    if (MessageBus.matchFilter(topic, 'control/knot/selected')) {
+      this.knotSelected(topic, message)
+    } else if (MessageBus.matchFilter(topic, 'control/group/+/selected')) {
+      this.groupSelected(topic, message)
+    } else if (MessageBus.matchFilter(topic, 'control/element/+/selected')) {
+      this.elementSelected(topic, message)
+    } else if (MessageBus.matchFilter(topic, 'control/element/+/new')) {
+      this.elementNew(topic)
+    } else if (MessageBus.matchFilter(topic, 'control/element/+/new/unique')) {
+      this.elementNewUnique(topic, message)
+    } else if (MessageBus.matchFilter(topic, 'control/element/insert')) {
+      this.elementInsert(message)
+    } else {
       switch (topic) {
         case 'control/case/new': this.caseNew()
           break
@@ -665,7 +677,11 @@ class AuthorManager {
   }
 
   _renderKnot () {
-    if (this._renderState == 1) { this._knotPanel.innerHTML = this._htmlKnot } else { this._presentEditor(this._knots[this._knotSelected]._source) }
+    if (this._renderState == 1) {
+      this._knotPanel.innerHTML = this._htmlKnot
+    } else {
+      this._presentEditor(this._knots[this._knotSelected]._source)
+    }
   }
 
   _collectEditableDCCs () {

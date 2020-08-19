@@ -1,3 +1,5 @@
+/* global use */
+
 'use strict'
 
 const Env = use('Env')
@@ -43,11 +45,11 @@ class UserController {
         return response.redirect('back')
       }
 
-      const endpoint_url = Env.get('HARENA_MANAGER_URL') + '/api/v1/user'
+      const endpointUrl = Env.get('HARENA_MANAGER_URL') + '/api/v1/user'
 
       var config = {
         method: 'post',
-        url: endpoint_url,
+        url: endpointUrl,
         data: {
           username: params.username,
           email: params.email,
@@ -57,11 +59,8 @@ class UserController {
       }
 
       await axios(config)
-        .then(function (endpoint_response) {
+        .then(function () {
           return response.redirect('/login')
-        })
-        .catch(function (error) {
-          // console.log(error);
         })
     } catch (e) {
       console.log(e)
