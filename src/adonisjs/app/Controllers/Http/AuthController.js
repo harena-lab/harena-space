@@ -1,6 +1,5 @@
 'use strict'
 
-const Redis = use('Redis')
 const Env = use('Env')
 const axios = require('axios');
 const { validate } = use('Validator')
