@@ -1,5 +1,6 @@
 'use strict'
 
+const Redis = use('Redis')
 const Env = use('Env')
 const axios = require('axios');
 const { validate } = use('Validator')
@@ -51,13 +52,15 @@ class AuthController {
 		  let user = endpoint_response.data
 		  console.log("-----------------------------------------------------------------------------------------------------------")
  	  	  console.log(user.token)
- 	  	  //let token = await auth.generate(user)
+
+
+		  await auth.login(user) 
 
  	  	  //console.log(token.token)
  	  	  //request.cookie("token", token.token)
  	  	  console.log('login feito')
 			 //const data = { user : 'hello world' }
-			 response.cookie('token', user.token)
+    		 response.cookie('token', user.token)
 			 //yield response.sendView('index', data)
 		  //return view.render('index', { user: user.toJSON() })
  	  	   return response.route('index')
@@ -68,6 +71,11 @@ class AuthController {
 	} catch (e){
 		console.log(e)
 	}
+  }
+
+  async logout({ auth, response }){
+  	await auth.logout()
+ 	return response.route('index')
   }
 }
 

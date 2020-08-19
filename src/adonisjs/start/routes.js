@@ -44,6 +44,7 @@ Route.group(() => {
 
 }).middleware(['guest'])
 
+Route.get( 'logout',      'AuthController.logout').as('logout')
 
 
 
