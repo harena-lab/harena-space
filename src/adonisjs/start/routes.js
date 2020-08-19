@@ -38,7 +38,9 @@ Route.group(() => {
   Route.post('login', 'AuthController.login').as('login')
 }).middleware(['guest'])
 
-Route.get('author/:id', 'CaseController.getCase').as('author_edit')
+Route.get('logout', 'AuthController.logout').as('logout')
+
+Route.get('author', 'CaseController.getCase').as('author_edit')
 
 Route.get('home', ({ view }) => {
   return view.render('author.home')

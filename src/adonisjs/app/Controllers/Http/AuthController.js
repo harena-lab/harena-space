@@ -48,10 +48,12 @@ class AuthController {
 
       await axios(config)
         .then(async function (endpointResponse) {
+
           const user = endpointResponse.data
           console.log('-----------------------------------------------------------------------------------------------------------')
           console.log(user.token)
-          // let token = await auth.generate(user)
+
+          await auth.login(user)
 
           // console.log(token.token)
           // request.cookie("token", token.token)
@@ -68,6 +70,11 @@ class AuthController {
     } catch (e) {
       console.log(e)
     }
+  }
+
+  async logout ({ auth, response }) {
+    await auth.logout()
+    return response.route('index')
   }
 }
 
