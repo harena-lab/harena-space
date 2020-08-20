@@ -1,5 +1,7 @@
 'use strict'
 
+const Logger = use('Logger')
+
 const Env = use('Env')
 const axios = require('axios');
 const { validate } = use('Validator')
@@ -10,8 +12,9 @@ class AuthController {
     return view.render('registration.login', { pageTitle: 'Log in' })
   }
 
+
+
   async login({ view, request, session, response, auth }) {
-  	console.log(1)
 	try{
 	  const params = request.all()
 
@@ -34,7 +37,7 @@ class AuthController {
 		  return response.redirect('back')
 	  }
 
-	  const endpoint_url = Env.get("HARENA_MANAGER_URL") + "/api/v2/auth/login"
+	  const endpoint_url = Env.get("HARENA_MANAGER_URL") + "/api/v1/auth/login"
 
 	  var config = {
 	    method: 'post',
@@ -47,22 +50,19 @@ class AuthController {
 
   	  await axios(config)
  	  	.then(async function (endpoint_response) {
-
+Logger.info('response is %s', endpoint_response)
 		  let user = endpoint_response.data
 		  console.log("-----------------------------------------------------------------------------------------------------------")
- 	  	  console.log(user.token)
-
-
+ 	  // 	  console.log(user.token)
+console.log(user)
 		  await auth.login(user) 
 
- 	  	  //console.log(token.token)
- 	  	  //request.cookie("token", token.token)
- 	  	  console.log('login feito')
-			 //const data = { user : 'hello world' }
-    		 response.cookie('token', user.token)
-			 //yield response.sendView('index', data)
+     	  // response.cookie('token', user.token)
+		  
+		  //yield response.sendView('index', data)
 		  //return view.render('index', { user: user.toJSON() })
- 	  	   return response.route('index')
+ 	  	  
+ 	  	  return response.route('index')
 	  	})
 	    .catch(function (error) {
 		  console.log(error);
@@ -72,9 +72,57 @@ class AuthController {
 	}
   }
 
-  async logout({ auth, response }){
-  	await auth.logout()
- 	return response.route('index')
+
+
+  async logout({ session, auth, response, request }){
+  	try{
+  		// console.log('aqui')
+  	//   	console.log(request.cookies())
+
+  	// console.log(request.cookie('adonis-session'))
+  	//   	console.log(request.cookie('adonis-session-values'))
+
+    const endpoint_url = Env.get("HARENA_MANAGER_URL") + "/api/v1/auth/logout"
+
+    var config = {
+ 	  method: 'post',
+	  url: endpoint_url,
+	  headers: {
+          // "Cookie": "Bearer " + request.cookie("token")
+          // "Cookie": "adonis-session=" + request.plainCookie("adonis-session") +
+               			// ";XSRF-TOKEN="+ request.plainCookie('XSRF-TOKEN') +
+
+
+          			// ";adonis-session-values=" + request.plainCookie('adonis-session-values') 
+      }
+	};
+// console.log(config)
+
+
+// 	const instance = await axios.create({
+//   withCredentials: true
+// })
+
+// await instance.post(endpoint_url)
+
+// await axios.get(endpoint_url)	
+	// axios.defaults.withCredentials = true
+
+
+  	await axios(config)
+	  .then(async function (endpoint_response) {
+        await auth.logout()
+ 	    return response.route('index')
+
+	  })
+      .catch(function (error) {
+	  	
+	    console.log(error);
+	  });
+  	}catch (e){
+  		console.log(e)
+  	}
+  	
   }
 }
 
