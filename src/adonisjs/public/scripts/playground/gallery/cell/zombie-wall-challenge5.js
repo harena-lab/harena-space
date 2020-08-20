@@ -1,7 +1,7 @@
-(function() {
-AuthorCellManager.instance.insertSource(
-"Zombie Venom Desafio 2",
-[],
+(function () {
+  AuthorCellManager.instance.insertSource(
+    'Zombie Venom Desafio 2',
+    [],
 `<block type="neighbor"></block>
 <block type="action"></block>`,
 `<dcc-space-cellular-editor id="cellular-space" cell-width="50" cell-height="50"
@@ -106,5 +106,5 @@ Configure a transparência do teto:
 </div>
 <subscribe-dcc target="cellular-space" topic="var/cover_opacity/changed" role="cover-opacity">
 </subscribe-dcc>`
-);
-})();
+  )
+})()

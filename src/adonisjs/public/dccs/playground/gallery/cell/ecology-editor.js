@@ -1,6 +1,6 @@
-(function() {
-insertSource(
-"Ecology",
+(function () {
+  insertSource(
+    'Ecology',
 `<div style="width: 100%; display:flex; flex-direction:row">
 
 <div style="flex:50%">
@@ -196,5 +196,5 @@ Selecione abaixo a chance de cada um dos eventos:
 
 </div>
 </div>`
-);
-})();
+  )
+})()

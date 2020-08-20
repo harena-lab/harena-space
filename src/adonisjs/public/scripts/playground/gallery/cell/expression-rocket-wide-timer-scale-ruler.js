@@ -1,15 +1,15 @@
-(function() {
-AuthorCellManager.instance.insertSource(
-"Foguetes",
-[["empty", "_", {src: "images/cell/cell-blue.svg", width: 25, height: 25, alt: "vazio"}],
- ["balloon", "b", {src: "images/cell/balloon01.svg", width: 25, height: 25, alt: "balão"}],
- ["plane1", "1", {src: "images/cell/plane01.svg", width: 25, height: 25, alt: "avião 1"}],
- ["plane2", "2", {src: "images/cell/plane02.svg", width: 25, height: 25, alt: "avião 2"}],
- ["plane3", "3", {src: "images/cell/plane03.svg", width: 25, height: 25, alt: "avião 3"}],
- ["rocket", "r", {src: "images/cell/rocket01.svg", width: 25, height: 25, alt: "foguete"}],
- ["flagr", "f", {src: "images/cell/flag-red.svg", width: 25, height: 25, alt: "bandeira vermelha"}],
- ["cloud", "#", {src: "images/cell/cloud01.svg", width: 25, height: 25, alt: "nuvem"}],
- ["tree", "t", {src: "images/cell/tree01.svg", width: 25, height: 25, alt: "árvore"}]],
+(function () {
+  AuthorCellManager.instance.insertSource(
+    'Foguetes',
+    [['empty', '_', { src: 'images/cell/cell-blue.svg', width: 25, height: 25, alt: 'vazio' }],
+      ['balloon', 'b', { src: 'images/cell/balloon01.svg', width: 25, height: 25, alt: 'balão' }],
+      ['plane1', '1', { src: 'images/cell/plane01.svg', width: 25, height: 25, alt: 'avião 1' }],
+      ['plane2', '2', { src: 'images/cell/plane02.svg', width: 25, height: 25, alt: 'avião 2' }],
+      ['plane3', '3', { src: 'images/cell/plane03.svg', width: 25, height: 25, alt: 'avião 3' }],
+      ['rocket', 'r', { src: 'images/cell/rocket01.svg', width: 25, height: 25, alt: 'foguete' }],
+      ['flagr', 'f', { src: 'images/cell/flag-red.svg', width: 25, height: 25, alt: 'bandeira vermelha' }],
+      ['cloud', '#', { src: 'images/cell/cloud01.svg', width: 25, height: 25, alt: 'nuvem' }],
+      ['tree', 't', { src: 'images/cell/tree01.svg', width: 25, height: 25, alt: 'árvore' }]],
 `<block type="condition"></block>
 <block type="velocity"></block>
 <block type="acceleration"></block>
@@ -127,5 +127,5 @@ AuthorCellManager.instance.insertSource(
    </div>
 </div>
 `
-);
-})();
+  )
+})()

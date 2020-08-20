@@ -1,3 +1,3 @@
-(function() {
-   DCCPlayerServer.localEnv = false;
-})();
+(function () {
+  DCCPlayerServer.localEnv = false
+})()

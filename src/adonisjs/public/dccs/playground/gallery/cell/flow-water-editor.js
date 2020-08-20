@@ -1,6 +1,6 @@
-(function() {
-insertSource(
-"Water Flow Editor",
+(function () {
+  insertSource(
+    'Water Flow Editor',
 `<div style="width: 100%; display:flex; flex-direction:row">
 
 <div style="flex:50%">
@@ -87,5 +87,5 @@ Selecione um dos ícones abaixo para editar o ambiente:
 
 </div>
 </div>`
-);
-})();
+  )
+})()

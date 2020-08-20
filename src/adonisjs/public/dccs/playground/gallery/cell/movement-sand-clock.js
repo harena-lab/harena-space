@@ -1,6 +1,6 @@
-(function() {
-insertSource(
-"Sand Clock",
+(function () {
+  insertSource(
+    'Sand Clock',
 `<dcc-space-cellular id="cellular-space" label="sand clock" cell-width="6" cell-height="6">
 #############################################
 #...........................................#
@@ -83,5 +83,5 @@ ___
 </dcc-timer>
 
 <subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>`
-);
-})();
+  )
+})()

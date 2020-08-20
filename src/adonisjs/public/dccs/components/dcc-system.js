@@ -3,15 +3,15 @@
  */
 
 class DCCSystem {
-   static getImageFiles() {
-      return DCCSystem.imageFiles;
-   }
+  static getImageFiles () {
+    return DCCSystem.imageFiles
+  }
 }
 
-(function() {
-   DCCSystem.imageFiles = [
-      "images/nurse.png",
-      "images/doctor.png",
-      "images/patient.png"
-   ];
-})();
+(function () {
+  DCCSystem.imageFiles = [
+    'images/nurse.png',
+    'images/doctor.png',
+    'images/patient.png'
+  ]
+})()

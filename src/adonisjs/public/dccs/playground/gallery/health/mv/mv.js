@@ -1,6 +1,6 @@
-(function() {
-insertSource(
-"Mechanical Ventilation",
+(function () {
+  insertSource(
+    'Mechanical Ventilation',
 `<dcc-image image="images/mv/mv-front-base.svg" style="width:600px"></dcc-image>
 <dcc-image image="images/mv/mv-back-base.svg" style="width:600px"></dcc-image>
 <dcc-state id="screen" value="off" rotate>
@@ -32,5 +32,5 @@ insertSource(
       <trigger-dcc event="click" target="power-button" role="next"></trigger-dcc>
    </dcc-image>
 </dcc-state>`
-);
-})();
+  )
+})()

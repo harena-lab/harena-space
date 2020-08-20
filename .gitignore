@@ -4,3 +4,7 @@ dcc-author-server-address.js
 package-lock\.json
 
 node_modules/
+
+.editorconfig
+
+.vscode

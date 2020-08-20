@@ -1,3 +1,5 @@
+/* global use */
+
 'use strict'
 
 const Logger = use('Logger')

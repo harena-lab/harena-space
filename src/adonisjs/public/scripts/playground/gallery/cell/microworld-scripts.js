@@ -1,10 +1,10 @@
-(function() {
-AuthorCellManager.instance.insertSource(
-"Micromundos",
-[["empty", "_", {src: "images/cell/cell-blue.svg", width: 25, height: 25, alt: "vazio"}],
- ["alga", "a", {src: "images/cell/alga.svg", width: 25, height: 25, alt: "alga"}],
- ["nematode", "n", {src: "images/cell/nematode.svg", width: 25, height: 25, alt: "nematóide"}],
- ["tardigrade", "t", {src: "images/cell/tardigrade.svg", width: 25, height: 25, alt: "tardígrado"}]],
+(function () {
+  AuthorCellManager.instance.insertSource(
+    'Micromundos',
+    [['empty', '_', { src: 'images/cell/cell-blue.svg', width: 25, height: 25, alt: 'vazio' }],
+      ['alga', 'a', { src: 'images/cell/alga.svg', width: 25, height: 25, alt: 'alga' }],
+      ['nematode', 'n', { src: 'images/cell/nematode.svg', width: 25, height: 25, alt: 'nematóide' }],
+      ['tardigrade', 't', { src: 'images/cell/tardigrade.svg', width: 25, height: 25, alt: 'tardígrado' }]],
 `<block type="neighbor"></block>
 <block type="action"></block>`,
 `<dcc-space-cellular-editor id="cellular-space" rows="28" cols="40"
@@ -57,5 +57,5 @@ AuthorCellManager.instance.insertSource(
       </dcc-trigger>
    </div>
 </div>`
-);
-})();
+  )
+})()

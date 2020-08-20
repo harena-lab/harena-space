@@ -1,5 +1,5 @@
-(function() {
-const localTheme = `
+(function () {
+  const localTheme = `
 <div class="styt-main-frame">
    <div class="styt-main">
       <div class="styt-main-text">
@@ -24,7 +24,7 @@ const localTheme = `
 <div id="action-1-wrapper" class="styt-button-frame">
    <div id="action-1" class="styt-button"></div>
 </div>
-`;
+`
 
-MessageBus.int.publish("control/theme/knot/load/ready", localTheme);
-})();
+  MessageBus.int.publish('control/theme/knot/load/ready', localTheme)
+})()

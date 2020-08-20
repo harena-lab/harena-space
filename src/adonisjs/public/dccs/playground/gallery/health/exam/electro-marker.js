@@ -1,6 +1,6 @@
-(function() {
-insertSource(
-"Eletro Image Marker",
+(function () {
+  insertSource(
+    'Eletro Image Marker',
 `<dcc-group-marker context="ekg" image="images/ekg.png"
   states="empty, key, contibutes, indiferent, against"
   label="Highlight: key (green), corroborate (blue), neutral (yellow), against (red)">
@@ -14,5 +14,5 @@ insertSource(
    <dcc-image-marker label="PR depression in DII lead" coords='374,511,50,59'></dcc-image-marker>
    <dcc-image-marker label="PR depression in DII lead" coords='510,514,52,50'></dcc-image-marker>
 </dcc-group-marker>`
-);
-})();
+  )
+})()
