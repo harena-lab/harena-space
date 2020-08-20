@@ -50,6 +50,10 @@
   <script src="{{ assetsUrl('author/js/template-case.js') }}"></script>
 
   <style media="screen">
+  :root{
+    --player-quest-icon-image-map: url({{ assetsUrl('player/images/edge/atividades.png') }});
+    --quest-icon-size: 142px;
+  }
 
   div{
 
@@ -63,48 +67,64 @@
   }
 
   #visita-virtual{
-    width: 142px;
-    height: 142px;
-    border-radius: 142px;
-    background: url({{ assetsUrl('player/images/edge/atividades.png') }}) 0 -150px;
+    width: var(--quest-icon-size);
+    height: var(--quest-icon-size);
+    border-radius: var(--quest-icon-size);
+    background: var(--player-quest-icon-image-map) 0 -150px;
   }
   #quiz-emergencia{
-    width: 142px;
-    height: 142px;
-    border-radius: 142px;
-    background: url({{ assetsUrl('player/images/edge/atividades.png') }}) -150px -150px;
+    width: var(--quest-icon-size);
+    height: var(--quest-icon-size);
+    border-radius: var(--quest-icon-size);
+    background: var(--player-quest-icon-image-map) -150px -150px;
   }
   #decisoes-extremas{
-    width: 142px;
-    height: 142px;
-    border-radius: 142px;
-    background: url({{ assetsUrl('player/images/edge/atividades.png') }}) -300px -150px;
+    width: var(--quest-icon-size);
+    height: var(--quest-icon-size);
+    border-radius: var(--quest-icon-size);
+    background: var(--player-quest-icon-image-map) -300px -150px;
   }
   #pronto-atendimento{
-
+    width: var(--quest-icon-size);
+    height: var(--quest-icon-size);
+    border-radius: var(--quest-icon-size);
+    background: var(--player-quest-icon-image-map) 0 150px;
   }
   #desafio-eletro{
-
+    width: var(--quest-icon-size);
+    height: var(--quest-icon-size);
+    border-radius: var(--quest-icon-size);
+    background: var(--player-quest-icon-image-map) -450px -150px;
   }
   #desafio-radio{
-
+    width: var(--quest-icon-size);
+    height: var(--quest-icon-size);
+    border-radius: var(--quest-icon-size);
+    background: var(--player-quest-icon-image-map) 0 -300px;
   }
   #prescricao-virtual{
-
+    width: var(--quest-icon-size);
+    height: var(--quest-icon-size);
+    border-radius: var(--quest-icon-size);
+    background: var(--player-quest-icon-image-map) -300px -300px;
   }
   #desafio-gaso{
-
+    width: var(--quest-icon-size);
+    height: var(--quest-icon-size);
+    border-radius: var(--quest-icon-size);
+    background: var(--player-quest-icon-image-map) -450px -300px;
   }
   #cruzada-emergencia{
-
+    width: var(--quest-icon-size);
+    height: var(--quest-icon-size);
+    border-radius: var(--quest-icon-size);
+    background: var(--player-quest-icon-image-map) 0 -450px;
   }
   #basico-alem-basico{
-
-  }
-  .player-quest-icon + #visita-virtual{
-    border-color: red;
-    border-style: solid;
-
+    width: var(--quest-icon-size);
+    height: var(--quest-icon-size);
+    border-radius: var(--quest-icon-size);
+    background: var(--player-quest-icon-image-map) -150px -300px;
   }
 
   .player-welcome-padding{
