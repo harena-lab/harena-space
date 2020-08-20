@@ -6,6 +6,8 @@ const Env = use('Env')
 const axios = require('axios');
 const { validate } = use('Validator')
 
+const User = use('App/Models/User');
+
 class AuthController {
 
   create({ view }){
@@ -51,9 +53,12 @@ class AuthController {
   	  await axios(config)
  	  	.then(async function (endpoint_response) {
 Logger.info('response is %s', endpoint_response)
-		  let user = endpoint_response.data
+		  let response_user = endpoint_response.data
 		  console.log("-----------------------------------------------------------------------------------------------------------")
  	  // 	  console.log(user.token)
+ 	  let user = new User()
+ 	  user.id = response_user.id
+ 	  user.email = response_user.email
 console.log(user)
 		  await auth.login(user) 
 
