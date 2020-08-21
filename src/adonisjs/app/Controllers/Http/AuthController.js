@@ -1,5 +1,3 @@
-/* global use */
-
 'use strict'
 
 const Logger = use('Logger')
@@ -54,7 +52,7 @@ class AuthController {
 
   	  await axios(config)
  	  	.then(async function (endpoint_response) {
-Logger.info('response is %s', endpoint_response)
+
 		  let response_user = endpoint_response.data
 		  console.log("-----------------------------------------------------------------------------------------------------------")
  	  // 	  console.log(user.token)
@@ -62,6 +60,7 @@ Logger.info('response is %s', endpoint_response)
  	  user.id = response_user.id
  	  user.email = response_user.email
 console.log(user)
+		  // await auth.attempt(params.email,params.password) 
 		  await auth.login(user) 
 
      	  // response.cookie('token', user.token)
@@ -82,6 +81,7 @@ console.log(user)
 
 
   async logout({ session, auth, response, request }){
+  	console.log(session.all())
   	try{
   		// console.log('aqui')
   	//   	console.log(request.cookies())
@@ -97,10 +97,8 @@ console.log(user)
 	  headers: {
           // "Cookie": "Bearer " + request.cookie("token")
           // "Cookie": "adonis-session=" + request.plainCookie("adonis-session") +
-               			// ";XSRF-TOKEN="+ request.plainCookie('XSRF-TOKEN') +
-
-
-          			// ";adonis-session-values=" + request.plainCookie('adonis-session-values') 
+          //      			";XSRF-TOKEN="+ request.plainCookie('XSRF-TOKEN') +
+          // 			";adonis-session-values=" + request.plainCookie('adonis-session-values') 
       }
 	};
 // console.log(config)
@@ -113,19 +111,22 @@ console.log(user)
 // await instance.post(endpoint_url)
 
 // await axios.get(endpoint_url)	
-	// axios.defaults.withCredentials = true
+	axios.defaults.withCredentials = true
 
-
-  	await axios(config)
-	  .then(async function (endpoint_response) {
         await auth.logout()
  	    return response.route('index')
 
-	  })
-      .catch(function (error) {
+  	// await axios(config)
+	  // .then(async function (endpoint_response) {
+	  // 	        await auth.logout()
+
+ 	 //    return response.route('index')
+
+	  // })
+   //    .catch(function (error) {
 	  	
-	    console.log(error);
-	  });
+	  //   console.log(error);
+	  // });
   	}catch (e){
   		console.log(e)
   	}
