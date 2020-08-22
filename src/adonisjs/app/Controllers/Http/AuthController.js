@@ -3,7 +3,9 @@
 const Logger = use('Logger')
 
 const Env = use('Env')
-const axios = require('axios');
+const axios = use('axios');
+var FormData = use('form-data');
+
 const { validate } = use('Validator')
 
 const User = use('App/Models/User');
@@ -17,6 +19,7 @@ class AuthController {
 
 
   async login({ view, request, session, response, auth }) {
+	// console.log(session.all())
 	try{
 	  const params = request.all()
 
@@ -39,11 +42,20 @@ class AuthController {
 		  return response.redirect('back')
 	  }
 
-	  const endpoint_url = Env.get("HARENA_MANAGER_URL") + "/api/v1/auth/login"
+	  let endpoint_url = Env.get("HARENA_MANAGER_URL") + "/api/v1/auth/login"
+
+	  let bodyFormData = new FormData();
+	  bodyFormData.append('email', params.email);
+	  bodyFormData.append('password', params.password);
+// console.log(bodyFormData.getHeaders())
 
 	  var config = {
 	    method: 'post',
 	    url: endpoint_url,
+	    // headers: {
+	    // 	data.getHeaders()
+	    // },
+	    // data: bodyFormData
 	    data: {
 	  	  email: params.email,
 	  	  password: params.password,
@@ -52,27 +64,49 @@ class AuthController {
 
   	  await axios(config)
  	  	.then(async function (endpoint_response) {
+ 	  		  console.log(session.all())
 
 		  let response_user = endpoint_response.data
 		  console.log("-----------------------------------------------------------------------------------------------------------")
- 	  // 	  console.log(user.token)
- 	  let user = new User()
- 	  user.id = response_user.id
- 	  user.email = response_user.email
-console.log(user)
+ 	  	let user = new User()
+ 	  	user.id = response_user.id
+ 	  	user.email = response_user.email
+		console.log(response_user)
+		session.put('adonis-auth', response_user)
+		console.log(session.all())
 		  // await auth.attempt(params.email,params.password) 
-		  await auth.login(user) 
+		  // await auth.loginViaId(user.id) 
+ 	  		  // console.log(session.all())
 
      	  // response.cookie('token', user.token)
 		  
 		  //yield response.sendView('index', data)
 		  //return view.render('index', { user: user.toJSON() })
- 	  	  
+
+    
  	  	  return response.route('index')
 	  	})
 	    .catch(function (error) {
-		  console.log(error);
+		  // console.log(error);
 	  	});
+
+		endpoint_url = Env.get("HARENA_MANAGER_URL") + "/api/v1/auth/logout"
+
+		config = {
+		 	  method: 'post',
+			  url: endpoint_url,
+			  data: new FormData()	
+			};
+
+		await axios(config)
+	  	  .then(async function (endpoint_response) {
+	  	        // await auth.logout()
+
+  			  return response.route('index')
+		  })
+	      .catch(function (error) {
+		    // console.log(error);
+		  });
 	} catch (e){
 		console.log(e)
 	}
@@ -90,16 +124,17 @@ console.log(user)
   	//   	console.log(request.cookie('adonis-session-values'))
 
     const endpoint_url = Env.get("HARENA_MANAGER_URL") + "/api/v1/auth/logout"
+console.log(session)
 
     var config = {
  	  method: 'post',
 	  url: endpoint_url,
-	  headers: {
+	  // headers: {
           // "Cookie": "Bearer " + request.cookie("token")
-          // "Cookie": "adonis-session=" + request.plainCookie("adonis-session") +
-          //      			";XSRF-TOKEN="+ request.plainCookie('XSRF-TOKEN') +
-          // 			";adonis-session-values=" + request.plainCookie('adonis-session-values') 
-      }
+          "Cookie": "adonis-session=" + request.plainCookie("adonis-session") +
+               			"; XSRF-TOKEN="+ request.plainCookie('XSRF-TOKEN') +
+          			"; adonis-session-values=" + request.plainCookie('adonis-session-values') 
+      // }
 	};
 // console.log(config)
 
@@ -114,21 +149,21 @@ console.log(user)
 	axios.defaults.withCredentials = true
 
         await auth.logout()
+ 	    // return response.route('index')
+
+  	await axios(config)
+	  .then(async function (endpoint_response) {
+	  	        // await auth.logout()
+
  	    return response.route('index')
 
-  	// await axios(config)
-	  // .then(async function (endpoint_response) {
-	  // 	        await auth.logout()
-
- 	 //    return response.route('index')
-
-	  // })
-   //    .catch(function (error) {
+	  })
+      .catch(function (error) {
 	  	
-	  //   console.log(error);
-	  // });
+	    // console.log(error);
+	  });
   	}catch (e){
-  		console.log(e)
+  		// console.log(e)
   	}
   	
   }
