@@ -140,10 +140,9 @@ class CaseController {
   async getCase ({ view, request, response, params }) {
     try {
       //  const params = request.all();
-      console.log(params.id)
-      const endpointUrl = Env.get('HARENA_MANAGER_URL') + '/api/v1/case/' + params.id
-      // "d2ad02da-b7e1-4391-9f65-4f93eeb4ca7f"
 
+      const endpointUrl = Env.get('HARENA_MANAGER_URL') + '/api/v1/case/' + request.input('id')
+      // "d2ad02da-b7e1-4391-9f65-4f93eeb4ca7f"
       var config = {
         method: 'get',
         url: endpointUrl,
