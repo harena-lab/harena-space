@@ -88,6 +88,20 @@ Route.get('player/home', ({ view }) => {
   return view.render('player.player-cases')
 }).as('player_home')
 
+Route.get('player/quest/cases', 'QuestController.getCasesByQuest')
+
+
+Route.group(() => {
+
+  Route.get(  'signup',     'UserController.create').as('signup')
+  Route.get(  'login',      'AuthController.create').as('login')
+
+  Route.post( 'signup',     'UserController.signup').as('signup')
+  Route.post( 'login',      'AuthController.login').as('login')
+
+
+}).middleware(['guest'])
+
 
 const Env   = use("Env");
 
