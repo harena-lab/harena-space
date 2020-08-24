@@ -11,7 +11,6 @@ class AuthController {
   }
 
   async login({ view, request, session, response, auth }) {
-  	console.log(1)
 	try{
 	  const params = request.all()
 
@@ -50,14 +49,12 @@ class AuthController {
 
 		  let user = endpoint_response.data
 		  console.log("-----------------------------------------------------------------------------------------------------------")
- 	  	  console.log(user.token)
  	  	  //let token = await auth.generate(user)
 
- 	  	  //console.log(token.token)
  	  	  //request.cookie("token", token.token)
  	  	  console.log('login feito')
 			 //const data = { user : 'hello world' }
-			 response.cookie('token', user.token)
+		  response.cookie('token', user.token)
 			 //yield response.sendView('index', data)
 		  //return view.render('index', { user: user.toJSON() })
  	  	   return response.route('index')
