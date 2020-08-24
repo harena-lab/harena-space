@@ -48,7 +48,7 @@ class DraftManager {
           Basic.service.authorPropertyStore('caseId', this.id.substring(1))
           // window.location.href = "http://0.0.0.0:10010/author/author.html";
           window.location.href =
-                  'author/' + this.id.substring(1)
+                  'author/?id=' + this.id.substring(1)
         }
       )
       previewButton.addEventListener('click',
@@ -93,23 +93,24 @@ class DraftManager {
       caseObj.message.source, caseObj.message.title + '.md')
   }
 }
+// <div class="draft-case-image w-100 h-50"></div>
 
 (function () {
   DraftManager.instance = new DraftManager()
 
-  DraftManager.caseBox =
-`<div id="b[id]" class="d-flex h-100 flex-column draft-author-case-container">
-   <div class="draft-case-image w-100 h-50"></div>
-   <div class="draft-case-title">[title]</div>
-   <div class="draft-author-description">Brief description of the case.</div>
-   <div class="d-flex">
-      <div id="e[id]" class="author-panel-button">EDIT</div>
-      <div id="p[id]" class="author-panel-button">PREVIEW</div>
-      <div id="d[id]" class="author-panel-button">DELETE</div>[download]
-   </div>
-</div>`
+DraftManager.caseBox =
+`<div id="b[id]" class="row draft-author-case-container">
+  <div class="col draft-case-title">[title]</div>
+  <div class="d-flex justify-content-end">
+    <div id="e[id]" class="col author-panel-button">EDIT</div>
+    <div id="p[id]" class="col author-panel-button">PREVIEW</div>
+    <div id="d[id]" class="col author-panel-button">DELETE</div>
+  </div>
+</div>`;
 
-  DraftManager.caseDownload =
+
+
+DraftManager.caseDownload =
 `
       <div id="w[id]" class="author-panel-button">DOWNLOAD</div>`
 })()
