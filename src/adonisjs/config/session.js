@@ -67,7 +67,7 @@ module.exports = {
     httpOnly: true,
     sameSite: false,
     path: '/',
-    domain:'harena.com'
+    // domain:'harena.com'
   },
 
   /*

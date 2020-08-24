@@ -69,26 +69,32 @@ class AuthController {
   	  await axios(config)
   	  // console.log('retorno')
  	  	.then(async function (endpoint_response) {
- 	  		  console.log(session.all())
+ 	  		  // console.log(session.all())
 
 		  	let response_user = endpoint_response.data
 		  	console.log("-----------------------------------------------------------------------------------------------------------")
 	 	  	
-	 	  	let user = new User()
-	 	  	user.id = response_user.id
-	 	  	user.email = response_user.email
+	 	  	// let user = new User()
+	 	  	// user.id = response_user.id
+	 	  	// user.email = response_user.email
 			
-			console.log(response_user)
+			// session.put('adonis-auth', response_user.adonisAuth)
 			
-			session.put('adonis-auth', response_user)
-			
-			console.log(session.all())
+			// console.log(session.all())
 			  // await auth.attempt(params.email,params.password) 
-		  await auth.loginViaId(user.id) 
+		  await auth.loginViaId(response_user.id) 
  	  		  // console.log(session.all())
 
-     	  // response.cookie('token', user.token)
-		  
+     	  response.cookie('token', response_user.token)
+          console.log("cookies-----------------------------------------------------------------------------------------------------------")
+  		  console.log(response_user)
+
+		  // console.log(response_user.token)
+		  // console.log(response.cookies())
+
+		  // console.log(response.cookie('token'))
+		  // console.log(response.plainCookie('token'))
+
 		  //yield response.sendView('index', data)
 		  //return view.render('index', { user: user.toJSON() })
 
@@ -98,24 +104,6 @@ class AuthController {
 	    .catch(function (error) {
 		  console.log(error);
 	  	});
-
-		// endpoint_url = Env.get("HARENA_MANAGER_URL") + "/api/v1/auth/logout"
-
-		// config = {
-		//  	  method: 'post',
-		// 	  url: endpoint_url,
-		// 	  data: new FormData()	
-		// 	};
-
-		// await axios(config)
-	 //  	  .then(async function (endpoint_response) {
-	 //  	        // await auth.logout()
-
-  // 			  return response.route('index')
-		//   })
-	 //      .catch(function (error) {
-		//     // console.log(error);
-		//   });
 	} catch (e){
 		console.log(e)
 	}
@@ -124,7 +112,8 @@ class AuthController {
 
 
   async logout({ session, auth, response, request }){
-  	// console.log(session.all())
+  	console.log('aquiiiiiiiiiiiiiiiiiiii')
+  	// console.log(request.cookies())
   	try{
   		// console.log('aqui')
   	//   	console.log(request.cookies())
@@ -132,44 +121,37 @@ class AuthController {
   	// console.log(request.cookie('adonis-session'))
   	//   	console.log(request.cookie('adonis-session-values'))
 
-    const endpoint_url = Env.get("HARENA_MANAGER_URL") + "/api/v1/auth/logout"
-console.log(session)
+    const endpoint_url = Env.get("HARENA_MANAGER_URL") + "/api/v2/auth/logout"
+// console.log(session)
 
     var config = {
  	  method: 'post',
 	  url: endpoint_url,
-	  // headers: {
+	  headers: {
+          // Authorization: 'Bearer ' + request.cookie('token')
+
           // "Cookie": "Bearer " + request.cookie("token")
-          "Cookie": "adonis-session=" + request.plainCookie("adonis-session") +
-               			"; XSRF-TOKEN="+ request.plainCookie('XSRF-TOKEN') +
-          			"; adonis-session-values=" + request.plainCookie('adonis-session-values') 
-      // }
+          // "Cookie": "adonis-session=" + request.cookie("adonis-session") +
+          //      		"; XSRF-TOKEN="+ request.cookie('XSRF-TOKEN') +
+          // 			"; adonis-session-values=" + request.cookie('adonis-session-values') 
+      }
 	};
-// console.log(config)
 
-
-// 	const instance = await axios.create({
-//   withCredentials: true
-// })
-
-// await instance.post(endpoint_url)
-
-// await axios.get(endpoint_url)	
 	axios.defaults.withCredentials = true
-
-        await auth.logout()
- 	    // return response.route('index')
+console.log(request.cookies())
+    await auth.logout()
 
   	await axios(config)
 	  .then(async function (endpoint_response) {
-	  	        // await auth.logout()
+	  	console.log('200 ok')
+	  	        await auth.logout()
 
  	    return response.route('index')
 
 	  })
       .catch(function (error) {
-	  	
-	    // console.log(error);
+	  	console.log('401 unauthorized')
+	    console.log(error);
 	  });
   	}catch (e){
   		// console.log(e)
