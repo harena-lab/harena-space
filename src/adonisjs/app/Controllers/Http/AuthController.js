@@ -12,14 +12,17 @@ const User = use('App/Models/User');
 
 class AuthController {
 
-  create({ view }){
+  create({ view, session }){
+  	console.log('ejijeiej')
+		console.log(session.all())
+
     return view.render('registration.login', { pageTitle: 'Log in' })
   }
 
 
 
   async login({ view, request, session, response, auth }) {
-	// console.log(session.all())
+	console.log('here')
 	try{
 	  const params = request.all()
 
@@ -42,7 +45,7 @@ class AuthController {
 		  return response.redirect('back')
 	  }
 
-	  let endpoint_url = Env.get("HARENA_MANAGER_URL") + "/api/v1/auth/login"
+	  let endpoint_url = Env.get("HARENA_MANAGER_URL") + "/api/v2/auth/login"
 
 	  let bodyFormData = new FormData();
 	  bodyFormData.append('email', params.email);
@@ -61,21 +64,27 @@ class AuthController {
 	  	  password: params.password,
 	    }
 	  };
-
+// session.clear()
+  console.log('aqui')
   	  await axios(config)
+  	  // console.log('retorno')
  	  	.then(async function (endpoint_response) {
  	  		  console.log(session.all())
 
-		  let response_user = endpoint_response.data
-		  console.log("-----------------------------------------------------------------------------------------------------------")
- 	  	let user = new User()
- 	  	user.id = response_user.id
- 	  	user.email = response_user.email
-		console.log(response_user)
-		session.put('adonis-auth', response_user)
-		console.log(session.all())
-		  // await auth.attempt(params.email,params.password) 
-		  // await auth.loginViaId(user.id) 
+		  	let response_user = endpoint_response.data
+		  	console.log("-----------------------------------------------------------------------------------------------------------")
+	 	  	
+	 	  	let user = new User()
+	 	  	user.id = response_user.id
+	 	  	user.email = response_user.email
+			
+			console.log(response_user)
+			
+			session.put('adonis-auth', response_user)
+			
+			console.log(session.all())
+			  // await auth.attempt(params.email,params.password) 
+		  await auth.loginViaId(user.id) 
  	  		  // console.log(session.all())
 
      	  // response.cookie('token', user.token)
@@ -87,26 +96,26 @@ class AuthController {
  	  	  return response.route('index')
 	  	})
 	    .catch(function (error) {
-		  // console.log(error);
+		  console.log(error);
 	  	});
 
-		endpoint_url = Env.get("HARENA_MANAGER_URL") + "/api/v1/auth/logout"
+		// endpoint_url = Env.get("HARENA_MANAGER_URL") + "/api/v1/auth/logout"
 
-		config = {
-		 	  method: 'post',
-			  url: endpoint_url,
-			  data: new FormData()	
-			};
+		// config = {
+		//  	  method: 'post',
+		// 	  url: endpoint_url,
+		// 	  data: new FormData()	
+		// 	};
 
-		await axios(config)
-	  	  .then(async function (endpoint_response) {
-	  	        // await auth.logout()
+		// await axios(config)
+	 //  	  .then(async function (endpoint_response) {
+	 //  	        // await auth.logout()
 
-  			  return response.route('index')
-		  })
-	      .catch(function (error) {
-		    // console.log(error);
-		  });
+  // 			  return response.route('index')
+		//   })
+	 //      .catch(function (error) {
+		//     // console.log(error);
+		//   });
 	} catch (e){
 		console.log(e)
 	}
@@ -115,7 +124,7 @@ class AuthController {
 
 
   async logout({ session, auth, response, request }){
-  	console.log(session.all())
+  	// console.log(session.all())
   	try{
   		// console.log('aqui')
   	//   	console.log(request.cookies())

@@ -65,8 +65,9 @@ module.exports = {
   */
   cookie: {
     httpOnly: true,
-    sameSite: true,
-    path: '/'
+    sameSite: false,
+    path: '/',
+    domain:'harena.com'
   },
 
   /*
