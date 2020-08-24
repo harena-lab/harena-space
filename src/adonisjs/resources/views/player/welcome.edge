@@ -1,6 +1,6 @@
 @layout('player.template')
 
-  @section('content')
+@section('content')
 <body>
   @include('layout.partials.header')
 
@@ -9,53 +9,62 @@
 
   <main role="main">
 
-    <div class=" d-flex flex-column vh-100 vw-100 hidden-overflow player-welcome-padding">
+    <div class="d-flex flex-column vh-100 vw-100 scroll-y player-welcome-padding">
 
-      <div class="container-fluid h-100 w-100 player-welcome-content">
+      <div class="container-fluid w-100 player-welcome-content">
         <div class="d-flex justify-content-center">
-          <h1> {{pageTitle}} </h1>
+          <h1 class="pb-5"> {{pageTitle}} </h1>
         </div>
-        <div class="container">
-          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4">
 
-            <div class="col">
-              <img id="visita-virtual" class="player-quest-icon" src="{{ assetsUrl('player/images/edge/img_trans.png') }}">
+        <div class="container-fluid">
+          <div class="row row-cols-sm-2 row-cols-md-3 row-cols-lg-5 justify-content-center">
+
+            <div class="col text-center player-quest-icon">
+              <img id="visita-virtual"  src="{{ assetsUrl('player/images/edge/img_trans.png') }}">
+              <h5 class="text-center text-wrap " id="txt-visita-virtual">Visita Virtual</h5>
             </div>
-            <div class="col">
+            <div class="col text-center player-quest-icon">
               <img id="quiz-emergencia" src="{{ assetsUrl('player/images/edge/img_trans.png') }}">
+              <h5  id="txt-quiz-emergencia">Quiz da Emergência</h5>
             </div>
-            <div class="col">
+            <div class="col text-center player-quest-icon">
               <img id="decisoes-extremas" src="{{ assetsUrl('player/images/edge/img_trans.png') }}">
+              <h5  id="txt-decisoes-extremas">Decisões Extremas</h5>
             </div>
-
-            <div class="col">
+            <div class="col text-center player-quest-icon">
               <img id="pronto-atendimento" src="{{ assetsUrl('player/images/edge/img_trans.png') }}">
+              <h5  id="txt-pronto-atendimento">Pronto Atendimento</h5>
             </div>
-            <div class="col">
+            <div class="col text-center player-quest-icon">
               <img id="desafio-eletro" src="{{ assetsUrl('player/images/edge/img_trans.png') }}">
+              <h5  id="txt-desafio-eletro">Desafio de Eletrocardiograma</h5>
             </div>
-            <div class="col">
+            <div class="col text-center player-quest-icon">
               <img id="desafio-radio" src="{{ assetsUrl('player/images/edge/img_trans.png') }}">
+              <h5  id="txt-desafio-radio">Desafio Radiológico</h5>
             </div>
 
-            <div class="col">
+            <div class="col text-center player-quest-icon">
               <img id="prescricao-virtual" src="{{ assetsUrl('player/images/edge/img_trans.png') }}">
+              <h5  id="txt-prescricao-virtual">Prescrição Virtual</h5>
             </div>
-            <div class="col">
+            <div class="col text-center player-quest-icon">
               <img id="desafio-gaso" src="{{ assetsUrl('player/images/edge/img_trans.png') }}">
+              <h5  id="txt-desafio-gaso">Desafio Gasométrico</h5>
             </div>
-            <div class="col">
+            <div class="col text-center player-quest-icon">
               <img id="cruzada-emergencia" src="{{ assetsUrl('player/images/edge/img_trans.png') }}">
+              <h5  id="txt-cruzada-emergencia">Cruzada da Emergência</h5>
             </div>
-            <div class="col">
+            <div class="col text-center player-quest-icon">
               <img id="basico-alem-basico" src="{{ assetsUrl('player/images/edge/img_trans.png') }}">
+              <h5  id="txt-basico-alem-basico">Básico além do Básico</h5>
             </div>
 
           </div>
         </div>
 
       </div>
-
 
     </div>
 

@@ -7,8 +7,7 @@
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
 
   <link rel="stylesheet" href="{{ assetsUrl('lib/fontawesome-5-10-1/css/all.min.css') }}">
-  <link rel="stylesheet" href="{{ assetsUrl('lib/bootstrap-4-3-1/css/bootstrap.min.css') }}">
-
+  <link rel="stylesheet" href="{{ assetsUrl('lib/bootstrap-4.4.1-dist/css/bootstrap.min.css') }}">
   <link rel="stylesheet" href="{{ assetsUrl('infra/css/common-player.css') }}">
   <!-- <link rel="stylesheet" href="../infra/css/common-author.css"> -->
 
@@ -29,7 +28,6 @@
   <script src="{{ assetsUrl('author/js/template-case.js') }}"></script>
 
   <link rel="stylesheet" href="{{ assetsUrl('lib/fontawesome-5-10-1/css/all.min.css') }}">
-  <link rel="stylesheet" href="{{ assetsUrl('lib/bootstrap-4-3-1/css/bootstrap.min.css') }}">
 
   <link rel="stylesheet" href="{{ assetsUrl('infra/css/common-player.css') }}">
   <!-- <link rel="stylesheet" href="{ assetsUrl('infra/css/common-author.css') }}"> -->
@@ -52,79 +50,162 @@
   <style media="screen">
   :root{
     --player-quest-icon-image-map: url({{ assetsUrl('player/images/edge/atividades.png') }});
-    --quest-icon-size: 142px;
+    --player-quest-icon-size: 142px;
+    --player-quest-icon-margin: 7px;
   }
 
   div{
 
-    border-color: green;
-    border-style: dotted;
+    /* border-color: green;
+    border-style: solid; */
   }
 
   h1{
     font-weight: bold;
     color: #808080;
   }
+  h5{
+    font-weight: bold;
+    color: #606060;
+  }
 
   #visita-virtual{
-    width: var(--quest-icon-size);
-    height: var(--quest-icon-size);
-    border-radius: var(--quest-icon-size);
-    background: var(--player-quest-icon-image-map) 0 -150px;
+    width: var(--player-quest-icon-size);
+    height: var(--player-quest-icon-size);
+    margin-top: var(--player-quest-icon-margin);
+
+    border: 7px solid #e8e8e8;
+    border-radius: var(--player-quest-icon-size);
+    background: var(--player-quest-icon-image-map) -5px -155px;
   }
+  #txt-visita-virtual{
+    color: #245797;
+  }
+
   #quiz-emergencia{
-    width: var(--quest-icon-size);
-    height: var(--quest-icon-size);
-    border-radius: var(--quest-icon-size);
-    background: var(--player-quest-icon-image-map) -150px -150px;
+    width: var(--player-quest-icon-size);
+    height: var(--player-quest-icon-size);
+    margin-top: var(--player-quest-icon-margin);
+
+    border: 7px solid #e8e8e8;
+    border-radius: var(--player-quest-icon-size);
+    background: var(--player-quest-icon-image-map) -157px -155px;
   }
+  #txt-quiz-emergencia{
+    color: #e64e31;
+  }
+
   #decisoes-extremas{
-    width: var(--quest-icon-size);
-    height: var(--quest-icon-size);
-    border-radius: var(--quest-icon-size);
-    background: var(--player-quest-icon-image-map) -300px -150px;
+    width: var(--player-quest-icon-size);
+    height: var(--player-quest-icon-size);
+    margin-top: var(--player-quest-icon-margin);
+
+    border: 7px solid #e8e8e8;
+    border-radius: var(--player-quest-icon-size);
+    background: var(--player-quest-icon-image-map) -305px -155px;
   }
+  #txt-decisoes-extremas{
+    color: #a34fa3;
+  }
+
   #pronto-atendimento{
-    width: var(--quest-icon-size);
-    height: var(--quest-icon-size);
-    border-radius: var(--quest-icon-size);
-    background: var(--player-quest-icon-image-map) 0 150px;
+    width: var(--player-quest-icon-size);
+    height: var(--player-quest-icon-size);
+    margin-top: var(--player-quest-icon-margin);
+
+    border: 7px solid #e8e8e8;
+    border-radius: var(--player-quest-icon-size);
+    background: var(--player-quest-icon-image-map) -5px 145px;
   }
+  #txt-pronto-atendimento{
+    color: #666666;
+  }
+
   #desafio-eletro{
-    width: var(--quest-icon-size);
-    height: var(--quest-icon-size);
-    border-radius: var(--quest-icon-size);
-    background: var(--player-quest-icon-image-map) -450px -150px;
+    width: var(--player-quest-icon-size);
+    height: var(--player-quest-icon-size);
+    margin-top: var(--player-quest-icon-margin);
+
+    border: 7px solid #e8e8e8;
+    border-radius: var(--player-quest-icon-size);
+    background: var(--player-quest-icon-image-map) -455px -155px;
   }
+  #txt-desafio-eletro{
+    color: #ae9e00;
+  }
+
   #desafio-radio{
-    width: var(--quest-icon-size);
-    height: var(--quest-icon-size);
-    border-radius: var(--quest-icon-size);
-    background: var(--player-quest-icon-image-map) 0 -300px;
+    width: var(--player-quest-icon-size);
+    height: var(--player-quest-icon-size);
+    margin-top: var(--player-quest-icon-margin);
+
+    border: 7px solid #e8e8e8;
+    border-radius: var(--player-quest-icon-size);
+    background: var(--player-quest-icon-image-map) -5px -305px;
   }
+  #txt-desafio-radio{
+    color: #348f00;
+  }
+
   #prescricao-virtual{
-    width: var(--quest-icon-size);
-    height: var(--quest-icon-size);
-    border-radius: var(--quest-icon-size);
-    background: var(--player-quest-icon-image-map) -300px -300px;
+    width: var(--player-quest-icon-size);
+    height: var(--player-quest-icon-size);
+    margin-top: var(--player-quest-icon-margin);
+
+    border: 7px solid #e8e8e8;
+    border-radius: var(--player-quest-icon-size);
+    background: var(--player-quest-icon-image-map) -305px -305px;
   }
+  #txt-prescricao-virtual{
+    color: #48ccce;
+  }
+
   #desafio-gaso{
-    width: var(--quest-icon-size);
-    height: var(--quest-icon-size);
-    border-radius: var(--quest-icon-size);
-    background: var(--player-quest-icon-image-map) -450px -300px;
+    width: var(--player-quest-icon-size);
+    height: var(--player-quest-icon-size);
+    margin-top: var(--player-quest-icon-margin);
+
+    border: 7px solid #e8e8e8;
+    border-radius: var(--player-quest-icon-size);
+    background: var(--player-quest-icon-image-map) -455px -305px;
   }
+  #txt-desafio-gaso{
+    color: #8a4e11;
+  }
+
   #cruzada-emergencia{
-    width: var(--quest-icon-size);
-    height: var(--quest-icon-size);
-    border-radius: var(--quest-icon-size);
-    background: var(--player-quest-icon-image-map) 0 -450px;
+    width: var(--player-quest-icon-size);
+    height: var(--player-quest-icon-size);
+    margin-top: var(--player-quest-icon-margin);
+
+    border: 7px solid #e8e8e8;
+    border-radius: var(--player-quest-icon-size);
+    background: var(--player-quest-icon-image-map) -5px -455px;
   }
+  #txt-cruzada-emergencia{
+    color: #c80b67;
+  }
+
   #basico-alem-basico{
-    width: var(--quest-icon-size);
-    height: var(--quest-icon-size);
-    border-radius: var(--quest-icon-size);
-    background: var(--player-quest-icon-image-map) -150px -300px;
+    width: var(--player-quest-icon-size);
+    height: var(--player-quest-icon-size);
+    margin-top: var(--player-quest-icon-margin);
+
+    border: 7px solid #e8e8e8;
+    border-radius: var(--player-quest-icon-size);
+    background: var(--player-quest-icon-image-map) -155px -305px;
+  }
+  #txt-basico-alem-basico{
+    color: #dc7a0c;
+  }
+
+  .player-quest-icon{
+    margin: 5px;
+    border-radius: 5px;
+    border-color: #b4b4b4;
+    border-style: solid;
+    border-width: 2px;
+    background-color: #f7f7f7;
   }
 
   .player-welcome-padding{
