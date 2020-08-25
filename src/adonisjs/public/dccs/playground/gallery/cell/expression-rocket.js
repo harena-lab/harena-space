@@ -1,6 +1,6 @@
-(function() {
-insertSource(
-"Rocket (expression)",
+(function () {
+  insertSource(
+    'Rocket (expression)',
 `<dcc-space-cellular id="cellular-space" cell-width="50" cell-height="50" grid>
 r_________
 __________
@@ -26,5 +26,5 @@ __________
 </dcc-timer>
 
 <subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>`
-);
-})();
+  )
+})()

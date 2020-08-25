@@ -1,73 +1,80 @@
+/* global use */
+
 'use strict'
 
 const Env = use('Env')
-const axios = require('axios');
+const axios = require('axios')
 const { validate } = use('Validator')
 
 class AuthController {
-
-  create({ view }){
+  create ({ view }) {
     return view.render('registration.login', { pageTitle: 'Log in' })
   }
 
-  async login({ view, request, session, response, auth }) {
-  	console.log(1)
-	try{
-	  const params = request.all()
+  async login ({ view, request, session, response, auth }) {
+    console.log(1)
+    try {
+      const params = request.all()
 
-	  const messages = {
-		  'email.required': 'Missing email',
-  	      'password.required': 'Missing password',
-	  }
+      const messages = {
+        'email.required': 'Missing email',
+        'password.required': 'Missing password'
+      }
 
-	  const validation = await validate(params, {
-	    email: 'required',
-		password: 'required',
-	  }, messages)
+      const validation = await validate(params, {
+        email: 'required',
+        password: 'required'
+      }, messages)
 
-	  // * If validation fails, early returns with validation message.
-	  if (validation.fails()) {
-	    session
-		  .withErrors(validation.messages())
-		  .flashExcept(['password'])
+      // * If validation fails, early returns with validation message.
+      if (validation.fails()) {
+        session
+          .withErrors(validation.messages())
+          .flashExcept(['password'])
 
-		  return response.redirect('back')
-	  }
+        return response.redirect('back')
+      }
 
-	  const endpoint_url = Env.get("HARENA_MANAGER_URL") + "/api/v2/auth/login"
+      const endpointUrl = Env.get('HARENA_MANAGER_URL') + '/api/v2/auth/login'
 
-	  var config = {
-	    method: 'post',
-	    url: endpoint_url,
-	    data: {
-	  	  email: params.email,
-	  	  password: params.password,
-	    }
-	  };
+      var config = {
+        method: 'post',
+        url: endpointUrl,
+        data: {
+          email: params.email,
+          password: params.password
+        }
+      }
 
-  	  await axios(config)
- 	  	.then(async function (endpoint_response) {
+      await axios(config)
+        .then(async function (endpointResponse) {
 
-		  let user = endpoint_response.data
-		  console.log("-----------------------------------------------------------------------------------------------------------")
- 	  	  console.log(user.token)
- 	  	  //let token = await auth.generate(user)
+          const user = endpointResponse.data
+          console.log('-----------------------------------------------------------------------------------------------------------')
+          console.log(user.token)
 
- 	  	  //console.log(token.token)
- 	  	  //request.cookie("token", token.token)
- 	  	  console.log('login feito')
-			 //const data = { user : 'hello world' }
-			 response.cookie('token', user.token)
-			 //yield response.sendView('index', data)
-		  //return view.render('index', { user: user.toJSON() })
- 	  	   return response.route('index')
-	  	})
-	    .catch(function (error) {
-		  console.log(error);
-	  	});
-	} catch (e){
-		console.log(e)
-	}
+          await auth.login(user)
+
+          // console.log(token.token)
+          // request.cookie("token", token.token)
+          console.log('login feito')
+          // const data = { user : 'hello world' }
+          response.cookie('token', user.token)
+          // yield response.sendView('index', data)
+          // return view.render('index', { user: user.toJSON() })
+          return response.route('index')
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  async logout ({ auth, response }) {
+    await auth.logout()
+    return response.route('index')
   }
 }
 

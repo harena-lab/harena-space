@@ -1,6 +1,6 @@
-(function() {
-insertSource(
-"Water Flow",
+(function () {
+  insertSource(
+    'Water Flow',
 `<dcc-space-cellular id="cellular-space" rows="30" cols="30" cell-width="10" cell-height="10" grid>
 _
 _
@@ -50,5 +50,5 @@ _____________########
 </dcc-timer>
 
 <subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>`
-);
-})();
+  )
+})()

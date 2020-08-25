@@ -1,6 +1,6 @@
-(function() {
-insertSource(
-"Falling Rocks (simple movement)",
+(function () {
+  insertSource(
+    'Falling Rocks (simple movement)',
 `<dcc-space-cellular id="cellular-space" cell-width="50" cell-height="50" grid>
 r__r_r
 __r_r_
@@ -27,5 +27,5 @@ _*_
 </dcc-timer>
 
 <subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>`
-);
-})();
+  )
+})()

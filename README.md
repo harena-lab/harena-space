@@ -3,6 +3,7 @@
 [![Docker Build](https://img.shields.io/docker/cloud/build/datasci4health/harena-space.svg?style=flat)](https://cloud.docker.com/u/datasci4health/repository/registry-1.docker.io/datasci4health/harena-space)
 [![Docker Pulls](https://img.shields.io/docker/pulls/datasci4health/harena-space.svg?style=flat)](https://cloud.docker.com/u/datasci4health/repository/registry-1.docker.io/datasci4health/harena-space)
 [![Docker Stars](https://img.shields.io/docker/stars/datasci4health/harena-space.svg?style=flat)](https://cloud.docker.com/u/datasci4health/repository/registry-1.docker.io/datasci4health/harena-space)
+[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
 # Harena Space
 Web-based client platform that includes: authoring environment, player engine and the Versum narrative scripting language translator.

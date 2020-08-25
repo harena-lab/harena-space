@@ -1,6 +1,6 @@
-(function() {
-insertSource(
-"Energy",
+(function () {
+  insertSource(
+    'Energy',
 `<dcc-space-cellular id="cellular-space" cell-width="10" cell-height="10">
 swwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 </dcc-space-cellular>
@@ -36,5 +36,5 @@ swwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 </dcc-timer>
 
 <subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>`
-);
-})();
+  )
+})()

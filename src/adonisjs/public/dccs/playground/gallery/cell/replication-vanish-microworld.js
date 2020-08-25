@@ -1,6 +1,6 @@
-(function() {
-insertSource(
-"Microworld - Replication and Predation",
+(function () {
+  insertSource(
+    'Microworld - Replication and Predation',
 `<dcc-space-cellular id="cellular-space" cell-width="32" cell-height="32" grid>
   ______c___
   __a_c_____
@@ -41,5 +41,5 @@ insertSource(
 </dcc-timer>
 
 <subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>`
-);
-})();
+  )
+})()

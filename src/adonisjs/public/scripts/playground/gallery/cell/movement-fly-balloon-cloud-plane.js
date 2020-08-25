@@ -1,11 +1,11 @@
-(function() {
-AuthorCellManager.instance.insertSource(
-"Balões, Aviões e Nuvens",
-[["empty", "_", {src: "images/cell/cell-blue.svg", width: 25, height: 25, alt: "vazio"}],
- ["balloon", "b", {src: "images/cell/balloon01.svg", width: 25, height: 25, alt: "balão"}],
- ["plane", "p", {src: "images/cell/plane01.svg", width: 25, height: 25, alt: "avião"}],
- ["cloud", "c", {src: "images/cell/cloud01.svg", width: 25, height: 25, alt: "nuvem"}],
- ["tree", "t", {src: "images/cell/tree01.svg", width: 25, height: 25, alt: "árvore"}]],
+(function () {
+  AuthorCellManager.instance.insertSource(
+    'Balões, Aviões e Nuvens',
+    [['empty', '_', { src: 'images/cell/cell-blue.svg', width: 25, height: 25, alt: 'vazio' }],
+      ['balloon', 'b', { src: 'images/cell/balloon01.svg', width: 25, height: 25, alt: 'balão' }],
+      ['plane', 'p', { src: 'images/cell/plane01.svg', width: 25, height: 25, alt: 'avião' }],
+      ['cloud', 'c', { src: 'images/cell/cloud01.svg', width: 25, height: 25, alt: 'nuvem' }],
+      ['tree', 't', { src: 'images/cell/tree01.svg', width: 25, height: 25, alt: 'árvore' }]],
 `<block type="neighbor"></block>
 <block type="action"></block>`,
 `<dcc-space-cellular-editor id="cellular-space" cell-width="50" cell-height="50" background-color="#d6f0ffff" grid>
@@ -63,5 +63,5 @@ t_________
       </dcc-trigger>
    </div>
 </div>`
-);
-})();
+  )
+})()
