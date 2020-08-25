@@ -311,8 +311,12 @@ class EditDCCText extends EditDCC {
   async _handleImageUpload () {
     const range = this._quill.getSelection()
     const imagePath = await this._imageUploadPanel()
+    console.log('=== image uploaded')
+    console.log(imagePath)
     this._quill.insertEmbed(
       range.index, 'image', Basic.service.imageResolver(imagePath))
+    console.log('=== image resolved')
+    console.log(Basic.service.imageResolver(imagePath))
     /*
       const range = this._quill.getSelection();
       let ep = await this._extendedPanel(
