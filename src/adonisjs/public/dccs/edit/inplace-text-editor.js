@@ -55,6 +55,8 @@ class EditDCCText extends EditDCC {
     this._handleImageUpload = this._handleImageUpload.bind(this)
     this._handleAnnotation = this._handleAnnotation.bind(this)
     this._handleHlSelect = this._handleHlSelect.bind(this)
+    this._handleUndo = this._handleUndo.bind(this)
+    this._handleRedo = this._handleRedo.bind(this)
     this._handleConfirm = this._handleConfirm.bind(this)
     this._handleCancel = this._handleCancel.bind(this)
     // this._editElement = element;
@@ -210,6 +212,8 @@ class EditDCCText extends EditDCC {
               highlighter: this._handleHighlighter, // <HIGHLIGHTER>
               annotation: this._handleAnnotation,
               'hl-select': this._handleHlSelect,
+              undo: this._handleUndo,
+              redo: this._handleRedo,
               confirm: this._handleConfirm,
               cancel: this._handleCancel
             }
@@ -232,6 +236,10 @@ class EditDCCText extends EditDCC {
       document.querySelector('.ql-highlighter').innerHTML =
             EditDCCText.buttonHighlightSVG
     }
+    document.querySelector('.ql-undo').innerHTML =
+         EditDCCText.buttonUndoSVG
+    document.querySelector('.ql-redo').innerHTML =
+         EditDCCText.buttonRedoSVG
     document.querySelector('.ql-confirm').innerHTML =
          EditDCC.buttonConfirmSVG
     document.querySelector('.ql-cancel').innerHTML =
@@ -467,6 +475,14 @@ class EditDCCText extends EditDCC {
    }
    */
 
+  _handleUndo() {
+    this._quill.history.undo()
+  }
+
+  _handleRedo() {
+    this._quill.history.redo()
+  }
+
   async _handleConfirm () {
     Panels.s.unlockNonEditPanels()
 
@@ -666,6 +682,18 @@ class EditDCCText extends EditDCC {
 <path fill="currentColor" d="M0 479.98L99.92 512l35.45-35.45-67.04-67.04L0 479.98zm124.61-240.01a36.592 36.592 0 0 0-10.79 38.1l13.05 42.83-50.93 50.94 96.23 96.23 50.86-50.86 42.74 13.08c13.73 4.2 28.65-.01 38.15-10.78l35.55-41.64-173.34-173.34-41.52 35.44zm403.31-160.7l-63.2-63.2c-20.49-20.49-53.38-21.52-75.12-2.35L190.55 183.68l169.77 169.78L530.27 154.4c19.18-21.74 18.15-54.63-2.35-75.13z">
 </path></svg>`
 
+  // highlighter https://fontawesome.com/icons/highlighter?style=solid
+  EditDCCText.buttonUndoSVG =
+`<svg viewBox="0 0 512 512">
+<path fill="currentColor" d="M212.333 224.333H12c-6.627 0-12-5.373-12-12V12C0 5.373 5.373 0 12 0h48c6.627 0 12 5.373 12 12v78.112C117.773 39.279 184.26 7.47 258.175 8.007c136.906.994 246.448 111.623 246.157 248.532C504.041 393.258 393.12 504 256.333 504c-64.089 0-122.496-24.313-166.51-64.215-5.099-4.622-5.334-12.554-.467-17.42l33.967-33.967c4.474-4.474 11.662-4.717 16.401-.525C170.76 415.336 211.58 432 256.333 432c97.268 0 176-78.716 176-176 0-97.267-78.716-176-176-176-58.496 0-110.28 28.476-142.274 72.333h98.274c6.627 0 12 5.373 12 12v48c0 6.627-5.373 12-12 12z">
+</path></svg>`
+
+  // highlighter https://fontawesome.com/icons/highlighter?style=solid
+  EditDCCText.buttonRedoSVG =
+`<svg viewBox="0 0 512 512">
+<path fill="currentColor" d="M500.33 0h-47.41a12 12 0 0 0-12 12.57l4 82.76A247.42 247.42 0 0 0 256 8C119.34 8 7.9 119.53 8 256.19 8.1 393.07 119.1 504 256 504a247.1 247.1 0 0 0 166.18-63.91 12 12 0 0 0 .48-17.43l-34-34a12 12 0 0 0-16.38-.55A176 176 0 1 1 402.1 157.8l-101.53-4.87a12 12 0 0 0-12.57 12v47.41a12 12 0 0 0 12 12h200.33a12 12 0 0 0 12-12V12a12 12 0 0 0-12-12z">
+</path></svg>`
+
   EditDCCText.toolbarTemplate =
 `<button class="ql-bold"></button>
 <button class="ql-italic"></button>
@@ -683,7 +711,9 @@ EditDCCText.toolbarTemplateHighlighter = "";
 */
 
   EditDCCText.toolbarTemplateConfirm =
-`<button class="ql-confirm"></button>
+`<button class="ql-undo"></button>
+<button class="ql-redo"></button>
+<button class="ql-confirm"></button>
 <button class="ql-cancel"></button>`
 
   EditDCCText.editorTemplate = {
