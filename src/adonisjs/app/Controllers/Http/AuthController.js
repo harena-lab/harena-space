@@ -45,7 +45,7 @@ class AuthController {
 		  return response.redirect('back')
 	  }
 
-	  let endpoint_url = Env.get("HARENA_MANAGER_URL") + "/api/v2/auth/login"
+	  let endpoint_url = Env.get("HARENA_MANAGER_URL") + "/api/v1/auth/login"
 
 	  let bodyFormData = new FormData();
 	  bodyFormData.append('email', params.email);
@@ -121,14 +121,14 @@ class AuthController {
   	// console.log(request.cookie('adonis-session'))
   	//   	console.log(request.cookie('adonis-session-values'))
 
-    const endpoint_url = Env.get("HARENA_MANAGER_URL") + "/api/v2/auth/logout"
+    const endpoint_url = Env.get("HARENA_MANAGER_URL") + "/api/v1/auth/logout"
 // console.log(session)
 
     var config = {
  	  method: 'post',
 	  url: endpoint_url,
 	  headers: {
-          // Authorization: 'Bearer ' + request.cookie('token')
+          Authorization: 'Bearer ' + request.cookie('token')
 
           // "Cookie": "Bearer " + request.cookie("token")
           // "Cookie": "adonis-session=" + request.cookie("adonis-session") +
@@ -137,14 +137,14 @@ class AuthController {
       }
 	};
 
-	axios.defaults.withCredentials = true
-console.log(request.cookies())
-    await auth.logout()
+	// axios.defaults.withCredentials = true
+// console.log(request.cookies())
+    // await auth.logout()
 
   	await axios(config)
 	  .then(async function (endpoint_response) {
-	  	console.log('200 ok')
-	  	        await auth.logout()
+	  	// console.log('200 ok')
+	  	await auth.logout()
 
  	    return response.route('index')
 
