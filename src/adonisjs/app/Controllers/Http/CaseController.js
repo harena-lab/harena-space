@@ -11,31 +11,35 @@ View.global('currentTime', function () {
 })
 
 class CaseController {
+
+
   create ({ view }) {
     return view.render('author.author')
   }
+
+
+
 
   async fetch ({ view }) {
     const harenaManagerUrl = Env.get('HARENA_MANAGER_URL', 'http://127.0.0.1:1020')
     const casesUrl = harenaManagerUrl + '/cases'
     axios.get(casesUrl)
-      .then((reponse) => {
-        console.log(reponse)
+      .then((response) => {
+        console.log(response)
       }, (error) => {
         console.log(error)
       })
   }
 
+
+
+
+
   async store ({ view, request, session, response }) {
     try {
       const params = request.all()
-      // console.log("-------------------------------------------------------------------------------------------------------")
-      // console.log(request.cookie('token'))
       const endpointUrl = Env.get('HARENA_MANAGER_URL') + '/api/v1/case'
 
-      console.log('******************************************** token from Adonis')
-      console.log(request.cookie('token'))
-      console.log(params)
       const token = request.cookie('token')
 
       // load template
@@ -47,11 +51,10 @@ class CaseController {
           Authorization: 'Bearer ' + request.cookie('token')
         }
       }
+
       let markdown = null
       await axios(templateRequest)
         .then(function (endpointResponse) {
-          console.log('================== markdown')
-          console.log(endpointResponse.data)
           markdown = endpointResponse.data
         })
         .catch(function (error) {
@@ -80,7 +83,6 @@ class CaseController {
         await axios(config)
           .then(function (endpointResponse) {
             return response.redirect('/author/?id=' + endpointResponse.data.id)
-          // return response.redirect('/home')
           })
           .catch(function (error) {
             console.log(error)
@@ -94,16 +96,10 @@ class CaseController {
   async update ({ request, session, response }) {
     try {
       const params = request.all()
-      console.log('-------------------------------------------------------------------------------------------------------')
-      console.log('=== params')
-      console.log(params)
 
-      // console.log("-------------------------------------------------------------------------------------------------------")
-      // console.log(request.cookie('token'))
       const endpointUrl =
       Env.get('HARENA_MANAGER_URL') + '/api/v1/case/' + params.case_id
 
-      // console.log(request.cookie('token'))
       const token = request.cookie('token')
       const config = {
         method: 'PUT',
@@ -125,9 +121,7 @@ class CaseController {
 
       await axios(config)
         .then(function () {
-
           // return response.redirect('/')
-
         })
         .catch(function (error) {
           console.log(error)
@@ -137,9 +131,10 @@ class CaseController {
     }
   }
 
+
+
   async getCase ({ view, request, response, params }) {
     try {
-      //  const params = request.all();
 
       const endpointUrl = Env.get('HARENA_MANAGER_URL') + '/api/v1/case/' + request.input('id')
       // "d2ad02da-b7e1-4391-9f65-4f93eeb4ca7f"
@@ -155,7 +150,6 @@ class CaseController {
         .then(function (endpointResponse) {
           // DCCCommonServer.setCaseObj(endpoint_response);
 
-          console.log('=====GET selected case:' + endpointResponse.status)
           // return view.render('author.author')
           const responseContent = endpointResponse.data
           const caseId = responseContent.id
@@ -168,8 +162,7 @@ class CaseController {
           const caseKeywords = responseContent.keywords
           const caseOriginalDate = responseContent.original_date
           const caseSource = responseContent.source.replace(/"/gm, '\\"')
-          console.log('THIS IS CASE SOURCE ====================')
-          console.log(caseSource)
+
           return view.render('author.author',
             { caseId, caseTitle, caseDescription, caseLanguage, caseInstitution, caseDomain, caseSpecialty, caseKeywords, caseOriginalDate, caseSource })
         })
@@ -181,6 +174,8 @@ class CaseController {
     }
     return view.render('author.author')
   }
+
+
 
   async populateModal ({ params, request, view, response }) {
     try {
@@ -199,7 +194,7 @@ class CaseController {
       await axios(config)
         .then(function (endpointResponse) {
           console.log(endpointResponse.data)
-          // return view.render('author.author')
+            // return view.render('author.author')
 
           return view.render('author.author')
         })
@@ -210,6 +205,9 @@ class CaseController {
       console.log(e)
     }
   }
+
+
+
 }
 
 module.exports = CaseController
