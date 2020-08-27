@@ -1,7 +1,7 @@
-@layout('author.author-layout')
+@layout('player.template')
 
 @section('content')
-<body onload="DraftManager.instance.start()">
+<body >
   <!-- Create a section to place page content -->
   <main role="main">
     <div class="d-flex flex-column vh-100 vw-100 home-author-padding hidden-overflow">
@@ -21,7 +21,7 @@
           <p>Continue editing your draft cases.</p>
         </div>
         <div id="case-boxes" class="container-fluid h-100 scroll-y draft-scroll-container">
-
+          <input type="hidden" name="seia" value="{{test}}">
         </div>
       </div>
     </div>
