@@ -1,0 +1,32 @@
+@layout('author.author-layout')
+
+@section('content')
+<body onload="DraftManager.instance.start()">
+  <!-- Create a section to place page content -->
+  <main role="main">
+    <div class="d-flex flex-column vh-100 vw-100 home-author-padding hidden-overflow">
+
+      <!-- Create breadcrumbs -->
+      <div class="container-fluid" >
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href={{route('player_home')}}>Home</a></li>
+          </ol>
+        </nav>
+      </div>
+      <!-- End of breadcrumbs -->
+
+      <div class="h-100 w-100 home-content-padding">
+        <div class="home-text mb-5">
+          <p>Continue editing your draft cases.</p>
+        </div>
+        <div id="case-boxes" class="container-fluid h-100 scroll-y draft-scroll-container">
+
+        </div>
+      </div>
+    </div>
+  </main>
+  <!-- end of div /.container -->
+
+</body>
+@endsection

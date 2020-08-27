@@ -82,11 +82,11 @@ let harenaManagerUrl =
 Route.get('player/welcome', ({ view }) => {
   const pageTitle = 'Welcome player'
   return view.render('player.welcome', {pageTitle})
-}).as('player_welcome')
-
-Route.get('player/home', ({ view }) => {
-  return view.render('player.player-cases')
 }).as('player_home')
+
+Route.get('player/quest', ({ view }) => {
+  return view.render('player.player-new-cases')
+}).as('player_quest')
 
 Route.get('player/quest/cases', 'QuestController.getCasesByQuest')
 

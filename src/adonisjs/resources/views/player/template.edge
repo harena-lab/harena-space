@@ -48,6 +48,7 @@
   <script src="{{ assetsUrl('author/js/template-case.js') }}"></script>
 
   <style media="screen">
+
   :root{
     --player-quest-icon-image-map: url({{ assetsUrl('player/images/edge/atividades.png') }});
     --player-quest-icon-size: 142px;
@@ -77,6 +78,13 @@
     border: 7px solid #e8e8e8;
     border-radius: var(--player-quest-icon-size);
     background: var(--player-quest-icon-image-map) -5px -155px;
+    cursor: pointer;
+  }
+  #visita-virtual:hover{
+    border: 7px solid #0962b5;
+    width: var(--player-quest-icon-size) +10px;
+    height: var(--player-quest-icon-size) +10px;
+    background: var(--player-quest-icon-image-map) 0 -150px;
   }
   #txt-visita-virtual{
     color: #245797;
@@ -90,6 +98,13 @@
     border: 7px solid #e8e8e8;
     border-radius: var(--player-quest-icon-size);
     background: var(--player-quest-icon-image-map) -157px -155px;
+    cursor: pointer;
+  }
+  #quiz-emergencia:hover{
+    border: 7px solid #0962b5;
+    width: var(--player-quest-icon-size) +10px;
+    height: var(--player-quest-icon-size) +10px;
+    background: var(--player-quest-icon-image-map) -150px -150px;
   }
   #txt-quiz-emergencia{
     color: #e64e31;
@@ -103,6 +118,13 @@
     border: 7px solid #e8e8e8;
     border-radius: var(--player-quest-icon-size);
     background: var(--player-quest-icon-image-map) -305px -155px;
+    cursor: pointer;
+  }
+  #decisoes-extremas:hover{
+    border: 7px solid #0962b5;
+    width: var(--player-quest-icon-size) +10px;
+    height: var(--player-quest-icon-size) +10px;
+    background: var(--player-quest-icon-image-map) -300px -150px;
   }
   #txt-decisoes-extremas{
     color: #a34fa3;
@@ -116,6 +138,13 @@
     border: 7px solid #e8e8e8;
     border-radius: var(--player-quest-icon-size);
     background: var(--player-quest-icon-image-map) -5px 145px;
+    cursor: pointer;
+  }
+  #pronto-atendimento:hover{
+    border: 7px solid #0962b5;
+    width: var(--player-quest-icon-size) +10px;
+    height: var(--player-quest-icon-size) +10px;
+    background: var(--player-quest-icon-image-map) 0 150px;
   }
   #txt-pronto-atendimento{
     color: #666666;
@@ -129,6 +158,13 @@
     border: 7px solid #e8e8e8;
     border-radius: var(--player-quest-icon-size);
     background: var(--player-quest-icon-image-map) -455px -155px;
+    cursor: pointer;
+  }
+  #desafio-eletro:hover{
+    border: 7px solid #0962b5;
+    width: var(--player-quest-icon-size) +10px;
+    height: var(--player-quest-icon-size) +10px;
+    background: var(--player-quest-icon-image-map) -450px -150px;
   }
   #txt-desafio-eletro{
     color: #ae9e00;
@@ -142,6 +178,13 @@
     border: 7px solid #e8e8e8;
     border-radius: var(--player-quest-icon-size);
     background: var(--player-quest-icon-image-map) -5px -305px;
+    cursor: pointer;
+  }
+  #desafio-radio:hover{
+    border: 7px solid #0962b5;
+    width: var(--player-quest-icon-size) +10px;
+    height: var(--player-quest-icon-size) +10px;
+    background: var(--player-quest-icon-image-map) 0 -300px;
   }
   #txt-desafio-radio{
     color: #348f00;
@@ -155,6 +198,13 @@
     border: 7px solid #e8e8e8;
     border-radius: var(--player-quest-icon-size);
     background: var(--player-quest-icon-image-map) -305px -305px;
+    cursor: pointer;
+  }
+  #prescricao-virtual:hover{
+    border: 7px solid #0962b5;
+    width: var(--player-quest-icon-size) +10px;
+    height: var(--player-quest-icon-size) +10px;
+    background: var(--player-quest-icon-image-map) -300px -300px;
   }
   #txt-prescricao-virtual{
     color: #48ccce;
@@ -168,6 +218,13 @@
     border: 7px solid #e8e8e8;
     border-radius: var(--player-quest-icon-size);
     background: var(--player-quest-icon-image-map) -455px -305px;
+    cursor: pointer;
+  }
+  #desafio-gaso:hover{
+    border: 7px solid #0962b5;
+    width: var(--player-quest-icon-size) +10px;
+    height: var(--player-quest-icon-size) +10px;
+    background: var(--player-quest-icon-image-map) -450px -300px;
   }
   #txt-desafio-gaso{
     color: #8a4e11;
@@ -181,6 +238,13 @@
     border: 7px solid #e8e8e8;
     border-radius: var(--player-quest-icon-size);
     background: var(--player-quest-icon-image-map) -5px -455px;
+    cursor: pointer;
+  }
+  #cruzada-emergencia:hover{
+    border: 7px solid #0962b5;
+    width: var(--player-quest-icon-size) +10px;
+    height: var(--player-quest-icon-size) +10px;
+    background: var(--player-quest-icon-image-map) 0 -450px;
   }
   #txt-cruzada-emergencia{
     color: #c80b67;
@@ -194,6 +258,14 @@
     border: 7px solid #e8e8e8;
     border-radius: var(--player-quest-icon-size);
     background: var(--player-quest-icon-image-map) -155px -305px;
+    cursor: pointer;
+  }
+  #basico-alem-basico:hover{
+    border: 7px solid #0962b5;
+    width: var(--player-quest-icon-size) +10px;
+    height: var(--player-quest-icon-size) +10px;
+    background: var(--player-quest-icon-image-map) -150px -300px;
+
   }
   #txt-basico-alem-basico{
     color: #dc7a0c;
@@ -216,9 +288,6 @@
   }
 
   .player-welcome-content{
-    border-color: #800000;
-    border-style: double;
-    border-radius:
 
   }
 
