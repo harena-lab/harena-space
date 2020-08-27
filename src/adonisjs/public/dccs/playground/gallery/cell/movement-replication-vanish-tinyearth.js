@@ -1,6 +1,6 @@
-(function() {
-insertSource(
-"Tiny Earth - Movement, Replication, and Predation",
+(function () {
+  insertSource(
+    'Tiny Earth - Movement, Replication, and Predation',
 `<dcc-space-cellular id="cellular-space" cell-width="32" cell-height="32" background-color="#aaffaa">
 __c_____h___hhc____h
 _____t____t____r____
@@ -64,5 +64,5 @@ _h_____r______hc____
 </dcc-timer>
 
 <subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>`
-);
-})();
+  )
+})()

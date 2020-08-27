@@ -1,11 +1,11 @@
-(function() {
-AuthorCellManager.instance.insertSource(
-"Boids",
-[["empty", "_", {src: "images/cell/cell-blue.svg", width: 25, height: 25, alt: "vazio"}],
- ["boid", "o", {src: "images/cell/boid01.svg", width: 25, height: 25, alt: "boid"}],
- ["flagr", "f", {src: "images/cell/flag-red.svg", width: 25, height: 25, alt: "bandeira vermelha"}],
- ["cloud", "#", {src: "images/cell/cloud01.svg", width: 25, height: 25, alt: "nuvem"}],
- ["tree", "t", {src: "images/cell/tree01.svg", width: 25, height: 25, alt: "árvore"}]],
+(function () {
+  AuthorCellManager.instance.insertSource(
+    'Boids',
+    [['empty', '_', { src: 'images/cell/cell-blue.svg', width: 25, height: 25, alt: 'vazio' }],
+      ['boid', 'o', { src: 'images/cell/boid01.svg', width: 25, height: 25, alt: 'boid' }],
+      ['flagr', 'f', { src: 'images/cell/flag-red.svg', width: 25, height: 25, alt: 'bandeira vermelha' }],
+      ['cloud', '#', { src: 'images/cell/cloud01.svg', width: 25, height: 25, alt: 'nuvem' }],
+      ['tree', 't', { src: 'images/cell/tree01.svg', width: 25, height: 25, alt: 'árvore' }]],
 `<block type="boid"></block>
 <block type="action"></block>`,
 `<dcc-space-cellular-editor id="cellular-space" cell-width="50" cell-height="50" background-color="#d6f0ffff" grid infinite>
@@ -140,5 +140,5 @@ _________________
    </div>
 </div>
 `
-);
-})();
+  )
+})()

@@ -1,6 +1,6 @@
-(function() {
-insertSource(
-"Colors - Movement and Influence",
+(function () {
+  insertSource(
+    'Colors - Movement and Influence',
 `<dcc-space-cellular id="cellular-space" rows="50" cell-width="7" cell-height="7" grid infinite>
 r___r_____d__r____l_______d__l___r___d_r_u__r____d____l_r____u
 _l_____l____d____d___u___l___d___l___d___u___l__l___r_uuu__l__
@@ -73,5 +73,5 @@ ___r___l___d__d__l_____u____ll__rr__uu__dd__l__r__l__d___d__l_
 </dcc-timer>
 
 <subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>`
-);
-})();
+  )
+})()

@@ -21,7 +21,17 @@ services:
       - HARENA_MANAGER_URL=http://localhost:10020
       - HARENA_MANAGER_API_VERSION=v1
       - HARENA_LOGGER_URL=http://localhost:10030
-      - HARENA_LOGGER_API_VERSION=v1        
+      - HARENA_LOGGER_API_VERSION=v1
+
+
+      - DB_CONNECTION=mysql
+      - DB_HOST=harena-manager-database
+      - DB_PORT=3306
+      - DB_USER=jacinto
+      - DB_PASSWORD=jacinto
+      - DB_DATABASE=harena-manager 
+
+              
     restart: always
     networks:
       - harena-space

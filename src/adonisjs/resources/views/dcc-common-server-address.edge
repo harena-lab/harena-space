@@ -4,11 +4,11 @@
 */
 
 (function() {
-  DCCCommonServer.managerAddress = "{{harena_manager_url_client}}/";
+  DCCCommonServer.managerAddress = "{{ harena_manager_url_client }}/";
   DCCCommonServer.managerAddressAPI = DCCCommonServer.managerAddress +
-                                      "api/{{harena_manager_api_version}}/";
-  DCCCommonServer.loggerAddress = "{{harena_logger_url}}/";
+                                      "api/{{ harena_manager_api_version }}/";
+  DCCCommonServer.loggerAddress = "{{ harena_logger_url }}/";
   DCCCommonServer.loggerAddressAPI = DCCCommonServer.loggerAddress +
-                                      "api/{{harena_logger_api_version}}/";
+                                      "api/{{ harena_logger_api_version }}/";
   DCCCommonServer.token = "{{ request.cookie("token") }}";
 })();

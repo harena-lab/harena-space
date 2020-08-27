@@ -66,7 +66,8 @@ module.exports = {
   cookie: {
     httpOnly: true,
     sameSite: false,
-    path: '/'
+    path: '/',
+    // domain:'harena.com'
   },
 
   /*
@@ -91,5 +92,5 @@ module.exports = {
   | the redis file. But you are free to define an object here too.
   |
   */
-  redis: 'self::redis.local'
+  // redis: 'self::redis.local'
 }

@@ -1,14 +1,22 @@
 'use strict'
 
+const Logger = use('Logger')
+
 const Env = use('Env')
-const axios = require('axios');
+const axios = use('axios');
+var FormData = use('form-data');
+
 const { validate } = use('Validator')
+
+const User = use('App/Models/User');
 
 class AuthController {
 
-  create({ view }){
+  create({ view, session }){
     return view.render('registration.login', { pageTitle: 'Log in' })
   }
+
+
 
   async login({ view, request, session, response, auth }) {
 	try{
@@ -24,7 +32,7 @@ class AuthController {
 		password: 'required',
 	  }, messages)
 
-	  // * If validation fails, early returns with validation message.
+	  // * If validation fails, early returns with validation message
 	  if (validation.fails()) {
 	    session
 		  .withErrors(validation.messages())
@@ -33,7 +41,7 @@ class AuthController {
 		  return response.redirect('back')
 	  }
 
-	  const endpoint_url = Env.get("HARENA_MANAGER_URL") + "/api/v2/auth/login"
+	  let endpoint_url = Env.get("HARENA_MANAGER_URL") + "/api/v1/auth/login"
 
 	  var config = {
 	    method: 'post',
@@ -47,17 +55,12 @@ class AuthController {
   	  await axios(config)
  	  	.then(async function (endpoint_response) {
 
-		  let user = endpoint_response.data
-		  console.log("-----------------------------------------------------------------------------------------------------------")
- 	  	  //let token = await auth.generate(user)
-
- 	  	  //request.cookie("token", token.token)
- 	  	  console.log('login feito')
-			 //const data = { user : 'hello world' }
-		  response.cookie('token', user.token)
-			 //yield response.sendView('index', data)
-		  //return view.render('index', { user: user.toJSON() })
- 	  	   return response.route('index')
+          let response_user = endpoint_response.data
+	 	  	
+		  await auth.loginViaId(response_user.id) 
+     	  response.cookie('token', response_user.token)
+    
+ 	  	  return response.route('index')
 	  	})
 	    .catch(function (error) {
 		  console.log(error);
@@ -66,6 +69,36 @@ class AuthController {
 		console.log(e)
 	}
   }
+
+
+
+  async logout({ session, auth, response, request }){
+  	try{
+	    const endpoint_url = Env.get("HARENA_MANAGER_URL") + "/api/v1/auth/logout"
+
+	    var config = {
+	 	  method: 'post',
+		  url: endpoint_url,
+		  headers: {
+	          Authorization: 'Bearer ' + request.cookie('token')
+	      }
+		};
+
+	  	await axios(config)
+		  .then(async function (endpoint_response) {
+		  	await auth.logout()
+	 	    return response.route('index')
+		  })
+	      .catch(function (error) {
+		    console.log(error);
+		  });
+	}catch (e){
+		console.log(e)
+	}
+  }
+
+
+
 }
 
 module.exports = AuthController

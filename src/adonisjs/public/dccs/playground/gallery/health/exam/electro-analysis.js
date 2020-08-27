@@ -1,6 +1,6 @@
-(function() {
-insertSource(
-"Eletro Analysis",
+(function () {
+  insertSource(
+    'Eletro Analysis',
 `<dcc-group-marker context="ekg" image="images/ekg.png">
    <dcc-image-marker label="Difuse ST-segment elevation" coords='129,56,56,46'></dcc-image-marker>
    <dcc-image-marker label="Difuse ST-segment elevation" coords='779,33,81,65'></dcc-image-marker>
@@ -12,5 +12,5 @@ insertSource(
    <dcc-image-marker label="PR depression in DII lead" coords='374,511,50,59'></dcc-image-marker>
    <dcc-image-marker label="PR depression in DII lead" coords='510,514,52,50'></dcc-image-marker>
 </dcc-group-marker>`
-);
-})();
+  )
+})()

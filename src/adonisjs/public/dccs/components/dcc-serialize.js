@@ -6,6 +6,6 @@ class DCCSerialize extends DCCBase {
 
 }
 
-(function() {
-   customElements.define("dcc-serialize", DCCSerialize);
-})();
+(function () {
+  customElements.define('dcc-serialize', DCCSerialize)
+})()
