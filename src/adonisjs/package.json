@@ -39,7 +39,9 @@
     "App": "./app"
   },
   "standard": {
-    "globals": ["use"],
+    "globals": [
+      "use"
+    ],
     "ignore": [
       "public/"
     ]

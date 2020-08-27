@@ -1,162 +1,152 @@
+/* global use */
 'use strict'
 
-const Logger = use('Logger')
+// const Logger = use('Logger')
 
 const Env = use('Env')
-const axios = use('axios');
-var FormData = use('form-data');
+const axios = use('axios')
+var FormData = use('form-data')
 
 const { validate } = use('Validator')
 
-const User = use('App/Models/User');
+// const User = use('App/Models/User')
 
 class AuthController {
-
-  create({ view, session }){
-  	console.log('ejijeiej')
-		console.log(session.all())
-
+  create ({ view, session }) {
+    console.log('ejijeiej')
+    console.log(session.all())
     return view.render('registration.login', { pageTitle: 'Log in' })
   }
 
+  async login ({ view, request, session, response, auth }) {
+    console.log('here')
+    try {
+      const params = request.all()
 
+      const messages = {
+        'email.required': 'Missing email',
+        'password.required': 'Missing password'
+      }
 
-  async login({ view, request, session, response, auth }) {
-	console.log('here')
-	try{
-	  const params = request.all()
+      const validation = await validate(params, {
+        email: 'required',
+        password: 'required'
+      }, messages)
 
-	  const messages = {
-		  'email.required': 'Missing email',
-  	      'password.required': 'Missing password',
-	  }
+      // * If validation fails, early returns with validation message.
+      if (validation.fails()) {
+        session
+          .withErrors(validation.messages())
+          .flashExcept(['password'])
 
-	  const validation = await validate(params, {
-	    email: 'required',
-		password: 'required',
-	  }, messages)
+        return response.redirect('back')
+      }
 
-	  // * If validation fails, early returns with validation message.
-	  if (validation.fails()) {
-	    session
-		  .withErrors(validation.messages())
-		  .flashExcept(['password'])
+      const endpointUrl = Env.get('HARENA_MANAGER_URL') + '/api/v1/auth/login'
 
-		  return response.redirect('back')
-	  }
+      const bodyFormData = new FormData()
+      bodyFormData.append('email', params.email)
+      bodyFormData.append('password', params.password)
+      // console.log(bodyFormData.getHeaders())
 
-	  let endpoint_url = Env.get("HARENA_MANAGER_URL") + "/api/v1/auth/login"
+      var config = {
+        method: 'post',
+        url: endpointUrl,
+        // headers: {
+        // data.getHeaders()
+        // },
+        // data: bodyFormData
+        data: {
+          email: params.email,
+          password: params.password
+        }
+      }
+      // session.clear()
+      console.log('aqui')
+      await axios(config)
+        // console.log('retorno')
+        .then(async function (endpointResponse) {
+          // console.log(session.all())
 
-	  let bodyFormData = new FormData();
-	  bodyFormData.append('email', params.email);
-	  bodyFormData.append('password', params.password);
-// console.log(bodyFormData.getHeaders())
+          const responseUser = endpointResponse.data
+          console.log('-----------------------------------------------------------------------------------------------------------')
 
-	  var config = {
-	    method: 'post',
-	    url: endpoint_url,
-	    // headers: {
-	    // 	data.getHeaders()
-	    // },
-	    // data: bodyFormData
-	    data: {
-	  	  email: params.email,
-	  	  password: params.password,
-	    }
-	  };
-// session.clear()
-  console.log('aqui')
-  	  await axios(config)
-  	  // console.log('retorno')
- 	  	.then(async function (endpoint_response) {
- 	  		  // console.log(session.all())
+          // let user = new User()
+          // user.id = response_user.id
+          // user.email = response_user.email
 
-		  	let response_user = endpoint_response.data
-		  	console.log("-----------------------------------------------------------------------------------------------------------")
-	 	  	
-	 	  	// let user = new User()
-	 	  	// user.id = response_user.id
-	 	  	// user.email = response_user.email
-			
-			// session.put('adonis-auth', response_user.adonisAuth)
-			
-			// console.log(session.all())
-			  // await auth.attempt(params.email,params.password) 
-		  await auth.loginViaId(response_user.id) 
- 	  		  // console.log(session.all())
+          // session.put('adonis-auth', response_user.adonisAuth)
 
-     	  response.cookie('token', response_user.token)
-          console.log("cookies-----------------------------------------------------------------------------------------------------------")
-  		  console.log(response_user)
+          // console.log(session.all())
+          // await auth.attempt(params.email,params.password)
+          await auth.loginViaId(responseUser.id)
+          // console.log(session.all())
 
-		  // console.log(response_user.token)
-		  // console.log(response.cookies())
+          response.cookie('token', responseUser.token)
+          console.log('cookies-----------------------------------------------------------------------------------------------------------')
+          console.log(responseUser)
 
-		  // console.log(response.cookie('token'))
-		  // console.log(response.plainCookie('token'))
+          // console.log(response_user.token)
+          // console.log(response.cookies())
 
-		  //yield response.sendView('index', data)
-		  //return view.render('index', { user: user.toJSON() })
+          // console.log(response.cookie('token'))
+          // console.log(response.plainCookie('token'))
 
-    
- 	  	  return response.route('index')
-	  	})
-	    .catch(function (error) {
-		  console.log(error);
-	  	});
-	} catch (e){
-		console.log(e)
-	}
+          // yield response.sendView('index', data)
+          // return view.render('index', { user: user.toJSON() })
+          return response.route('index')
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+    } catch (e) {
+      console.log(e)
+    }
   }
 
+  async logout ({ session, auth, response, request }) {
+    console.log('aquiiiiiiiiiiiiiiiiiiii')
+    // console.log(request.cookies())
+    try {
+      // console.log('aqui')
+      // console.log(request.cookies())
 
+      // console.log(request.cookie('adonis-session'))
+      // console.log(request.cookie('adonis-session-values'))
 
-  async logout({ session, auth, response, request }){
-  	console.log('aquiiiiiiiiiiiiiiiiiiii')
-  	// console.log(request.cookies())
-  	try{
-  		// console.log('aqui')
-  	//   	console.log(request.cookies())
+      const endpointUrl = Env.get('HARENA_MANAGER_URL') + '/api/v1/auth/logout'
+      // console.log(session)
 
-  	// console.log(request.cookie('adonis-session'))
-  	//   	console.log(request.cookie('adonis-session-values'))
-
-    const endpoint_url = Env.get("HARENA_MANAGER_URL") + "/api/v1/auth/logout"
-// console.log(session)
-
-    var config = {
- 	  method: 'post',
-	  url: endpoint_url,
-	  headers: {
+      var config = {
+        method: 'post',
+        url: endpointUrl,
+        headers: {
           Authorization: 'Bearer ' + request.cookie('token')
 
           // "Cookie": "Bearer " + request.cookie("token")
           // "Cookie": "adonis-session=" + request.cookie("adonis-session") +
-          //      		"; XSRF-TOKEN="+ request.cookie('XSRF-TOKEN') +
-          // 			"; adonis-session-values=" + request.cookie('adonis-session-values') 
+          // "; XSRF-TOKEN="+ request.cookie('XSRF-TOKEN') +
+          // "; adonis-session-values=" + request.cookie('adonis-session-values')
+        }
       }
-	};
 
-	// axios.defaults.withCredentials = true
-// console.log(request.cookies())
-    // await auth.logout()
+      // axios.defaults.withCredentials = true
+      // console.log(request.cookies())
+      // await auth.logout()
 
-  	await axios(config)
-	  .then(async function (endpoint_response) {
-	  	// console.log('200 ok')
-	  	await auth.logout()
-
- 	    return response.route('index')
-
-	  })
-      .catch(function (error) {
-	  	console.log('401 unauthorized')
-	    console.log(error);
-	  });
-  	}catch (e){
-  		// console.log(e)
-  	}
-  	
+      await axios(config)
+        .then(async function (endpointResponse) {
+          // console.log('200 ok')
+          await auth.logout()
+          return response.route('index')
+        })
+        .catch(function (error) {
+          console.log('401 unauthorized')
+          console.log(error)
+        })
+    } catch (e) {
+      // console.log(e)
+    }
   }
 }
 
