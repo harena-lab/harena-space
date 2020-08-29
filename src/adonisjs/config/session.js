@@ -66,7 +66,7 @@ module.exports = {
   cookie: {
     httpOnly: true,
     sameSite: false,
-    path: '/',
+    path: '/'
     // domain:'harena.com'
   },
 
@@ -81,7 +81,7 @@ module.exports = {
   */
   file: {
     location: 'sessions'
-  },
+  }
 
   /*
   |--------------------------------------------------------------------------
