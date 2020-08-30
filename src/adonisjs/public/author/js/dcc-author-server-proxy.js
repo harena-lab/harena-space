@@ -131,21 +131,21 @@ class DCCAuthorServer {
           * by the authoring environment.
           ********************************************************************/
 
-      const headerRead = {
-        async: true,
-        crossDomain: true,
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + DCCCommonServer.token
-        }
-      }
-
-      const responseRead =
-            await fetch(DCCCommonServer.managerAddressAPI + 'case/' + caseId,
-              headerRead)
-
-      const jsonRead = await responseRead.json()
+      // const headerRead = {
+      //   async: true,
+      //   crossDomain: true,
+      //   method: 'GET',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //     Authorization: 'Bearer ' + DCCCommonServer.token
+      //   }
+      // }
+      //
+      // const responseRead =
+      //       await fetch(DCCCommonServer.managerAddressAPI + 'case/' + caseId,
+      //         headerRead)
+      //
+      // const jsonRead = await responseRead.json()
 
       // write the case
 
@@ -158,12 +158,12 @@ class DCCAuthorServer {
           Authorization: 'Bearer ' + DCCCommonServer.token
         },
         body: JSON.stringify({
-          title: jsonRead.title,
-          description: jsonRead.description,
-          language: jsonRead.language,
-          domain: jsonRead.domain,
-          specialty: jsonRead.specialty,
-          keywords: jsonRead.keywords,
+          title: document.getElementById('case_title').value,
+          description: document.getElementById('description').value,
+          language: document.getElementById('language').value,
+          domain: document.getElementById('domain').value,
+          specialty: document.getElementById('specialty').value,
+          keywords: document.getElementById('keywords').value,
           source: message.source
         })
       }
