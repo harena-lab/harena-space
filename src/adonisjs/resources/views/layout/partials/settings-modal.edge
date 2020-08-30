@@ -5,7 +5,7 @@
       <div class="modal-body">
         <h3>Settings</h3>
         <form>
-          
+
           <input type="hidden" id="case_id" name="case_id" value="{{caseId}}">
           <input type="hidden" id="case_source" name="case_source" value="{{caseSource}}">
 
@@ -50,7 +50,9 @@
           </div>
 
           <input type="hidden" id="source" name="source">
-          <button type="button" class="btn btn-secondary" id="btn-save-settings" data-toggle="modal" data-target="#settings-modal">Save</button>
+          <button type="button" class="btn btn-secondary" id="btn-save-settings" data-toggle="modal" data-target="#settings-modal" >Save</button>
+          <dcc-trigger action="control/case/save" label="SAVE" location="btn-save-settings" xstyle="out"></dcc-trigger>
+
           <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
         </form>
       </div>
