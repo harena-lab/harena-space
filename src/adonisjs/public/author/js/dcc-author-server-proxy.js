@@ -4,7 +4,7 @@
  * Component following the Digital Content Component (DCC) model responsible for acting
  * as a proxy between the authoring environment and the server.
  */
-
+const axios = require('axios');
 class DCCAuthorServer {
   constructor () {
     this.loadModule = this.loadModule.bind(this)
@@ -149,15 +149,29 @@ class DCCAuthorServer {
 
       // write the case
 
-      const header = {
-        async: true,
-        crossDomain: true,
+      // const header = {
+      //   async: true,
+      //   crossDomain: true,
+      //   method: 'PUT',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //     Authorization: 'Bearer ' + DCCCommonServer.token
+      //   },
+      //   body: JSON.stringify({
+      //     title: document.getElementById('case_title').value,
+      //     description: document.getElementById('description').value,
+      //     language: document.getElementById('language').value,
+      //     domain: document.getElementById('domain').value,
+      //     specialty: document.getElementById('specialty').value,
+      //     keywords: document.getElementById('keywords').value,
+      //     source: message.source
+      //   })
+      // }
+
+      const config = {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + DCCCommonServer.token
-        },
-        body: JSON.stringify({
+        url: DCCCommonServer.managerAddressAPI + 'case/' + caseId,
+        data: {
           title: document.getElementById('case_title').value,
           description: document.getElementById('description').value,
           language: document.getElementById('language').value,
@@ -165,17 +179,30 @@ class DCCAuthorServer {
           specialty: document.getElementById('specialty').value,
           keywords: document.getElementById('keywords').value,
           source: message.source
-        })
+        },
+        headers: {
+          Authorization: 'Bearer ' + DCCCommonServer.token
+        }
       }
+      await axios(config)
+        .then(function () {
+          console.log('AXIOS UPDATE ============================');
+          // return response.redirect('/')
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
       console.log('=== save request')
       console.log(DCCCommonServer.managerAddressAPI + 'case/' + caseId)
-      const response =
-            await fetch(DCCCommonServer.managerAddressAPI + 'case/' + caseId, header)
+      // const response =
+      //       await fetch(DCCCommonServer.managerAddressAPI + 'case/' + caseId, header)
       console.log('=== save response')
-      console.log(response)
-      const jsonResponse = await response.json()
+      // console.log(response)
+      // const jsonResponse = await response.json()
       MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-        jsonResponse.source)
+        message.source)
+    }else {
+      console.log('save failed else');
     }
   }
 
