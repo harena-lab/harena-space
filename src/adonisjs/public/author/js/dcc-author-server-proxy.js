@@ -4,7 +4,7 @@
  * Component following the Digital Content Component (DCC) model responsible for acting
  * as a proxy between the authoring environment and the server.
  */
-const axios = require('axios');
+// const axios = require('axios');
 class DCCAuthorServer {
   constructor () {
     this.loadModule = this.loadModule.bind(this)
@@ -184,23 +184,24 @@ class DCCAuthorServer {
           Authorization: 'Bearer ' + DCCCommonServer.token
         }
       }
-      await axios(config)
-        .then(function () {
-          console.log('AXIOS UPDATE ============================');
-          // return response.redirect('/')
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
       console.log('=== save request')
       console.log(DCCCommonServer.managerAddressAPI + 'case/' + caseId)
+      axios(config)
+        .then(function (response) {
+          // return response.redirect('/')
+          console.log('=== save response')
+          console.log(response);
+          MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
+             response.data.source)
+        })
+        .catch(function (error) {
+          console.log('=== save error')
+          console.log(error)
+        })
       // const response =
       //       await fetch(DCCCommonServer.managerAddressAPI + 'case/' + caseId, header)
-      console.log('=== save response')
       // console.log(response)
       // const jsonResponse = await response.json()
-      MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-        message.source)
     }else {
       console.log('save failed else');
     }
