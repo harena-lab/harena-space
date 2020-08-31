@@ -39,7 +39,7 @@ services:
       - harena-space
     volumes:
       - ./src/adonisjs:/app
-      - /app/node_modules
+      - node-modules:/app/node_modules
 
   manager:
     image: manager
@@ -67,6 +67,10 @@ services:
     restart: always  
     networks:
       - harena-space
+    volumes:
+      - harena_manager-artifacts:/app/public/resources
+      - harena-manager-node-modules:/app/node_modules
+      # - ./src/adonisjs:/app
 
   harena-manager-database:
     image: mysql:5.7
@@ -100,6 +104,12 @@ services:
 
 volumes:
   harena-manager-database:
+    driver: "local"
+  harena_manager-artifacts:
+    driver: "local"
+  harena-manager-node-modules:
+    driver: "local"
+  node-modules:
     driver: "local"
 
 networks:
