@@ -185,6 +185,7 @@ class DCCCommonServer {
         specialty: document.getElementById('specialty').value,
         keywords: document.getElementById('keywords').value,
         source: document.getElementById('case_source').value
+                        .replace(/\\"/gm, '"')
       }
     }
 

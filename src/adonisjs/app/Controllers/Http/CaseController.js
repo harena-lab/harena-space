@@ -11,14 +11,9 @@ View.global('currentTime', function () {
 })
 
 class CaseController {
-
-
   create ({ view }) {
     return view.render('author.author')
   }
-
-
-
 
   async fetch ({ view }) {
     const harenaManagerUrl = Env.get('HARENA_MANAGER_URL', 'http://127.0.0.1:1020')
@@ -30,10 +25,6 @@ class CaseController {
         console.log(error)
       })
   }
-
-
-
-
 
   async store ({ view, request, session, response }) {
     try {
@@ -96,7 +87,7 @@ class CaseController {
   async update ({ request, session, response }) {
     try {
       const params = request.all()
-
+      console.log('UPDATE STARTING........');
       const endpointUrl =
       Env.get('HARENA_MANAGER_URL') + '/api/v1/case/' + params.case_id
 
@@ -131,11 +122,8 @@ class CaseController {
     }
   }
 
-
-
   async getCase ({ view, request, response, params }) {
     try {
-
       const endpointUrl = Env.get('HARENA_MANAGER_URL') + '/api/v1/case/' + request.input('id')
       // "d2ad02da-b7e1-4391-9f65-4f93eeb4ca7f"
       var config = {
@@ -175,8 +163,6 @@ class CaseController {
     return view.render('author.author')
   }
 
-
-
   async populateModal ({ params, request, view, response }) {
     try {
       // const params = request.all()
@@ -194,7 +180,7 @@ class CaseController {
       await axios(config)
         .then(function (endpointResponse) {
           console.log(endpointResponse.data)
-            // return view.render('author.author')
+          // return view.render('author.author')
 
           return view.render('author.author')
         })
@@ -205,9 +191,6 @@ class CaseController {
       console.log(e)
     }
   }
-
-
-
 }
 
 module.exports = CaseController
