@@ -132,7 +132,7 @@ class AuthorManager {
          .addEventListener("shown.bs.modal", this.updateSourceField);
       */
     $('#settings-modal').on('shown.bs.modal', this.updateSourceField)
-
+    $('#btn-save-settings').on('click', await this.caseSave)
     // this.caseLoadSelect();
   }
 

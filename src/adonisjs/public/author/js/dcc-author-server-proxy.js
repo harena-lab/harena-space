@@ -4,7 +4,7 @@
  * Component following the Digital Content Component (DCC) model responsible for acting
  * as a proxy between the authoring environment and the server.
  */
-
+// const axios = require('axios');
 class DCCAuthorServer {
   constructor () {
     this.loadModule = this.loadModule.bind(this)
@@ -131,51 +131,79 @@ class DCCAuthorServer {
           * by the authoring environment.
           ********************************************************************/
 
-      const headerRead = {
-        async: true,
-        crossDomain: true,
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + DCCCommonServer.token
-        }
-      }
-
-      const responseRead =
-            await fetch(DCCCommonServer.managerAddressAPI + 'case/' + caseId,
-              headerRead)
-
-      const jsonRead = await responseRead.json()
+      // const headerRead = {
+      //   async: true,
+      //   crossDomain: true,
+      //   method: 'GET',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //     Authorization: 'Bearer ' + DCCCommonServer.token
+      //   }
+      // }
+      //
+      // const responseRead =
+      //       await fetch(DCCCommonServer.managerAddressAPI + 'case/' + caseId,
+      //         headerRead)
+      //
+      // const jsonRead = await responseRead.json()
 
       // write the case
 
-      const header = {
-        async: true,
-        crossDomain: true,
+      // const header = {
+      //   async: true,
+      //   crossDomain: true,
+      //   method: 'PUT',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //     Authorization: 'Bearer ' + DCCCommonServer.token
+      //   },
+      //   body: JSON.stringify({
+      //     title: document.getElementById('case_title').value,
+      //     description: document.getElementById('description').value,
+      //     language: document.getElementById('language').value,
+      //     domain: document.getElementById('domain').value,
+      //     specialty: document.getElementById('specialty').value,
+      //     keywords: document.getElementById('keywords').value,
+      //     source: message.source
+      //   })
+      // }
+
+      const config = {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + DCCCommonServer.token
-        },
-        body: JSON.stringify({
-          title: jsonRead.title,
-          description: jsonRead.description,
-          language: jsonRead.language,
-          domain: jsonRead.domain,
-          specialty: jsonRead.specialty,
-          keywords: jsonRead.keywords,
+        url: DCCCommonServer.managerAddressAPI + 'case/' + caseId,
+        data: {
+          title: document.getElementById('case_title').value,
+          description: document.getElementById('description').value,
+          language: document.getElementById('language').value,
+          domain: document.getElementById('domain').value,
+          specialty: document.getElementById('specialty').value,
+          keywords: document.getElementById('keywords').value,
           source: message.source
-        })
+        },
+        headers: {
+          Authorization: 'Bearer ' + DCCCommonServer.token
+        }
       }
       console.log('=== save request')
       console.log(DCCCommonServer.managerAddressAPI + 'case/' + caseId)
-      const response =
-            await fetch(DCCCommonServer.managerAddressAPI + 'case/' + caseId, header)
-      console.log('=== save response')
-      console.log(response)
-      const jsonResponse = await response.json()
-      MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-        jsonResponse.source)
+      axios(config)
+        .then(function (response) {
+          // return response.redirect('/')
+          console.log('=== save response')
+          console.log(response);
+          MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
+             response.data.source)
+        })
+        .catch(function (error) {
+          console.log('=== save error')
+          console.log(error)
+        })
+      // const response =
+      //       await fetch(DCCCommonServer.managerAddressAPI + 'case/' + caseId, header)
+      // console.log(response)
+      // const jsonResponse = await response.json()
+    }else {
+      console.log('save failed else');
     }
   }
 
