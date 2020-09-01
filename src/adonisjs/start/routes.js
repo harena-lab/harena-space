@@ -19,6 +19,10 @@ const Route = use('Route')
 
 Route.get('populate_modal', 'CaseController.populateModal')
 
+Route.get('/test', ({ view }) =>
+  view.render('author/quest')
+).as('quest')
+
 Route.get('/', ({ view }) =>
   view.render('index')
 ).as('index')
