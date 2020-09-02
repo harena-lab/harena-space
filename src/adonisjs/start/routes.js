@@ -74,7 +74,10 @@ Route.get('player/welcome', ({ view }) => {
 }).as('player_home')
 
 Route.get('player/quest', 'QuestController.getCasesByQuest').as('player_quest')
-
+Route.get('player/case', ({ view,request }) => {
+  const caseId = request.input('id')
+  return view.render('player.player')
+}).as('player_case')
 
 Route.group(() => {
 

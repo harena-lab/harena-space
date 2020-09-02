@@ -161,6 +161,7 @@ class PlayerManager {
   }
 
   async startPlayer (caseid) {
+    const preCaseOff = true;
     this._mainPanel = document.querySelector('#main-panel')
 
     const parameters = window.location.search.substr(1)
@@ -170,7 +171,7 @@ class PlayerManager {
     if (parameters != null && parameters.length > 0) {
       precase = parameters.match(/case=([\w-]+)/i)
       if (precase != null) { precase = precase[1] } else {
-        precaseid = parameters.match(/caseid=([\w-]+)/i)
+        precaseid = parameters.match(/id=([\w-]+)/i)
         precaseid = (precaseid != null) ? precaseid[1] : null
       }
       const metaparameter = this._state.metaexecParameterGet()
@@ -181,7 +182,7 @@ class PlayerManager {
     } else { precase = null }
 
     let resume = false
-    if (!this._previewCase && this._state.pendingPlayCheck()) {
+    if (!this._previewCase && this._state.pendingPlayCheck() && !preCaseOff) {
       // <TODO> adjust for name: (precase == null || this._state.pendingPlayId() == precase)) {
       const decision = await DCCNoticeInput.displayNotice(
         'You have an unfinished case. Do you want to continue?',
