@@ -68,7 +68,30 @@ let harenaManagerUrl =
    Env.get("HARENA_MANAGER_URL", "http://localhost:3000/api/v1/");
 */
 
-const Env = use('Env')
+Route.get('player/welcome', ({ view }) => {
+  const pageTitle = 'Welcome player'
+  return view.render('player.welcome', {pageTitle})
+}).as('player_home')
+
+Route.get('player/quest', 'QuestController.getCasesByQuest').as('player_quest')
+Route.get('player/case', ({ view,request }) => {
+  const caseId = request.input('id')
+  return view.render('player.player')
+}).as('player_case')
+
+Route.group(() => {
+
+  Route.get(  'signup',     'UserController.create').as('signup')
+  Route.get(  'login',      'AuthController.create').as('login')
+
+  Route.post( 'signup',     'UserController.signup').as('signup')
+  Route.post( 'login',      'AuthController.login').as('login')
+
+
+}).middleware(['guest'])
+
+
+const Env   = use("Env");
 
 Route.get('infra/dcc-common-server-address.js', async ({ response, view }) => {
   const harenaManagerUrl = Env.get('HARENA_MANAGER_URL', 'http://127.0.0.1:10020')

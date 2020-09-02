@@ -1,0 +1,97 @@
+@layout('player.template')
+
+@section('content')
+<body>
+  @include('layout.partials.header')
+
+
+  <!--  <div class="d-flex vh-100 vw-100 justify-content-center welcome-player-padding" id="challenge-flex-grid"> -->
+
+  <main role="main">
+
+    <div class="d-flex flex-column vh-100 vw-100 scroll-y player-welcome-padding">
+
+      <div class="container-fluid w-100 player-welcome-content">
+        <div class="d-flex justify-content-center">
+          <h1 class="pb-5"> {{pageTitle}} </h1>
+        </div>
+
+        <div class="container-fluid">
+          <div class="row row-cols-sm-2 row-cols-md-3 row-cols-lg-5 justify-content-center">
+
+            <div class="col text-center player-quest-icon">
+              <a href="quest?id=775bd2ac-68b5-45a9-82c6-b796894114c7">
+                <img class="visita-virtual"  src="{{ assetsUrl('player/images/edge/img_trans.png') }}">
+                <h5 class="text-center text-wrap txt-visita-virtual">Visita Virtual</h5>
+              </a>
+
+            </div>
+            <div class="col text-center player-quest-icon">
+              <a href="#">
+                <img class="quiz-emergencia" src="{{ assetsUrl('player/images/edge/img_trans.png') }}">
+                <h5  class="txt-quiz-emergencia">Quiz da Emergência</h5>
+              </a>
+
+            </div>
+            <div class="col text-center player-quest-icon">
+              <a href="#">
+                <img class="decisoes-extremas" src="{{ assetsUrl('player/images/edge/img_trans.png') }}">
+                <h5  class="txt-decisoes-extremas">Decisões Extremas</h5>
+              </a>
+            </div>
+            <div class="col text-center player-quest-icon">
+              <a href="#">
+                <img class="pronto-atendimento" src="{{ assetsUrl('player/images/edge/img_trans.png') }}">
+                <h5  class="txt-pronto-atendimento">Pronto Atendimento</h5>
+              </a>
+
+            </div>
+            <div class="col text-center player-quest-icon">
+              <a href="#">
+                <img class="desafio-eletro" src="{{ assetsUrl('player/images/edge/img_trans.png') }}">
+                <h5  class="txt-desafio-eletro">Desafio de Eletrocardiograma</h5>
+              </a>
+            </div>
+            <div class="col text-center player-quest-icon">
+              <a href="#">
+                <img class="desafio-radio" src="{{ assetsUrl('player/images/edge/img_trans.png') }}">
+                <h5  class="txt-desafio-radio">Desafio Radiológico</h5>
+              </a>
+            </div>
+
+            <div class="col text-center player-quest-icon">
+              <a href="#">
+                <img class="prescricao-virtual" src="{{ assetsUrl('player/images/edge/img_trans.png') }}">
+                <h5  class="txt-prescricao-virtual">Prescrição Virtual</h5>
+              </a>
+            </div>
+            <div class="col text-center player-quest-icon">
+              <a href="#">
+                <img class="desafio-gaso" src="{{ assetsUrl('player/images/edge/img_trans.png') }}">
+                <h5  class="txt-desafio-gaso">Desafio Gasométrico</h5>
+              </a>
+            </div>
+            <div class="col text-center player-quest-icon">
+              <a href="#">
+                <img class="cruzada-emergencia" src="{{ assetsUrl('player/images/edge/img_trans.png') }}">
+                <h5  class="txt-cruzada-emergencia">Cruzada da Emergência</h5>
+              </a>
+            </div>
+            <div class="col text-center player-quest-icon">
+              <a href="#">
+                <img class="basico-alem-basico" src="{{ assetsUrl('player/images/edge/img_trans.png') }}">
+                <h5  class="txt-basico-alem-basico">Básico além do Básico</h5>
+              </a>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  @endsection
+</body>

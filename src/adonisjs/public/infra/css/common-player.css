@@ -1,5 +1,17 @@
 @charset "UTF-8";
 
+.hidden-overflow{
+  overflow: hidden;
+}
+.scroll-y{
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+.scroll-x{
+  overflow-x: scroll;
+  overflow-y: hidden;
+}
+
 .breadcrumb {
   list-style-type: inherit;
   list-style-position: outside;
