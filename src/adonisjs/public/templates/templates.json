@@ -8,10 +8,15 @@
     "path": "simple/case/quiz_sequence",
     "icon": "simple/case/quiz_sequence.png",
     "scope": "case"},
- "Challenge":
-   {"description": "A week challenge.",
-    "path": "simple/case/challenge",
-    "icon": "simple/case/challenge.png",
+ "Electrocardiogram Challenge":
+   {"description": "An Electrocardiogram Challenge.",
+    "path": "simple/case/eletro_challenge",
+    "icon": "simple/case/eletro_challenge.png",
+    "scope": "case"},
+ "Radiological Challenge":
+   {"description": "A Radiological Challenge.",
+    "path": "simple/case/radio_challenge",
+    "icon": "simple/case/radio_challenge.png",
     "scope": "case"},
  "Virtual Visit":
    {"description": "A virtual visit.",
