@@ -91,15 +91,15 @@ docker exec -it harena-space_harena-space_1 bash
 
 Release updates can be found at [CHANGELOG.md file](https://github.com/datasci4health/harena-space/blob/development/CHANGELOG.md).
 
-# References and Playgrounds
+## Harena Technologies
 
-## Versum Translator
+### Versum Translator
 
 Versum [Syntax  and Object Representation](https://github.com/datasci4health/harena-docs/blob/master/versum/syntax.md).
 
 Learn how the Versum translator works and its correspondent output in  Versum Object Representation as well as HTML in the [Translator Playground](https://ds4h.org/harena-space/src/adonisjs/public/translator/playground/).
 
-## Digital Content Components
+### Digital Content Components
 
 Digital Content Components [Reference and Examples](http://datasci4health.github.io/harena-space/src/adonisjs/public/dccs/).
 
