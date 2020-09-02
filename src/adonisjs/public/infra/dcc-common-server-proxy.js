@@ -153,7 +153,9 @@ class DCCCommonServer {
       caseObj = caseM.message
     } else {
       const caseId = MessageBus.extractLevel(topic, 3)
-      /* let header = {
+      if (document.querySelector("#settings-modal") == null) {
+        console.log('=== collecting from REST')
+        let header = {
             "async": true,
             "crossDomain": true,
             "method": "GET",
@@ -176,16 +178,18 @@ class DCCCommonServer {
                     specialty: jsonResponse.specialty,
                     keywords: jsonResponse.keywords,
                     source: jsonResponse.source};
-         */
-      caseObj = {
-        title: document.getElementById('case_title').value,
-        description: document.getElementById('description').value,
-        language: document.getElementById('language').value,
-        domain: document.getElementById('domain').value,
-        specialty: document.getElementById('specialty').value,
-        keywords: document.getElementById('keywords').value,
-        source: document.getElementById('case_source').value
-                        .replace(/\\"/gm, '"')
+      } else {
+        console.log('=== collecting from modal')
+        caseObj = {
+          title: document.getElementById('case_title').value,
+          description: document.getElementById('description').value,
+          language: document.getElementById('language').value,
+          domain: document.getElementById('domain').value,
+          specialty: document.getElementById('specialty').value,
+          keywords: document.getElementById('keywords').value,
+          source: document.getElementById('case_source').value
+                          .replace(/\\"/gm, '"')
+        }
       }
     }
 

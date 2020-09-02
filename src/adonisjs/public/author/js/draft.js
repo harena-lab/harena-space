@@ -54,7 +54,7 @@ class DraftManager {
       previewButton.addEventListener('click',
         function () {
           Basic.service.authorPropertyStore('caseId', this.id.substring(1))
-          window.location.href = '../player/index.html?caseid=' +
+          window.location.href = 'player/case?id=' +
                                       this.id.substring(1) +
                                       '&preview'
         }

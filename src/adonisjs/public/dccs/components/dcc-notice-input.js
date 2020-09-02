@@ -204,7 +204,7 @@ class DCCNoticeInput extends DCCVisual {
       for (var sl in this._selectList) {
         options += "<option value='" + this._selectList[sl].id +
                        selected +
-                       this._selectList[sl].name + '</option>'
+                       this._selectList[sl].title + '</option>'
         selected = "'>"
       }
       this._listWeb.innerHTML = options

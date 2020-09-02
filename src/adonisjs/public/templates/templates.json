@@ -1,9 +1,4 @@
-{"Linear Case-Diagnosis":
-   {"description": "Presents the description and requests the diagnosis.",
-    "path": "simple/case/linear_case_diagnosis",
-    "icon": "simple/images/linear_case_diagnosis.png",
-    "scope": "case"},
- "Quiz":
+{"Quiz":
    {"description": "Single question quiz with four options.",
     "path": "simple/case/quiz_short",
     "icon": "simple/case/quiz_short.png",
@@ -13,20 +8,20 @@
     "path": "simple/case/quiz_sequence",
     "icon": "simple/case/quiz_sequence.png",
     "scope": "case"},
- "Challenge":
-   {"description": "A week challenge.",
-    "path": "simple/case/challenge",
-    "icon": "simple/case/challenge.png",
+ "Electrocardiogram Challenge":
+   {"description": "An Electrocardiogram Challenge.",
+    "path": "simple/case/eletro_challenge",
+    "icon": "simple/case/eletro_challenge.png",
     "scope": "case"},
- "Linear Description-EKG":
-   {"description": "Linear description of the case followed by an EKG.",
-    "path": "simple/case/linear_details_ekg",
-    "icon": "simple/images/linear_details_ekg.png",
+ "Radiological Challenge":
+   {"description": "A Radiological Challenge.",
+    "path": "simple/case/radio_challenge",
+    "icon": "simple/case/radio_challenge.png",
     "scope": "case"},
- "Jacinto Standard EKG":
-   {"description": "Standard cycle with an EKG.",
-    "path": "jacinto/standard_eletro",
-    "icon": "jacinto/images/standard_eletro.png",
+ "Virtual Visit":
+   {"description": "A virtual visit.",
+    "path": "simple/case/virtual_visit",
+    "icon": "simple/case/virtual_visit.png",
     "scope": "case"},
  "Quiz Block":
    {"description": "Single question quiz with four options.",

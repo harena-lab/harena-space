@@ -85,22 +85,22 @@ class PlayerManager {
           break
         case 'flow/>/navigate': const flowNext = this._nextFlowKnot()
           if (flowNext != null) {
-            console.log('=== flow next')
-            console.log(flowNext)
+            // console.log('=== flow next')
+            // console.log(flowNext)
             this._state.historyRecord(flowNext.target)
             this.knotLoad(flowNext.target)
           }
           break
         case 'case/>/navigate':
           // <TODO> jumping other instructions - improve it
-          console.log('=== next case')
+          // console.log('=== next case')
           let instruction
           do {
             instruction = this._state.metascriptNextInstruction()
           } while (instruction != null && instruction.type != 'divert-script' &&
                         instruction.target.substring(0, 5).toLowerCase() != 'case.')
 
-          console.log(instruction)
+          // console.log(instruction)
           if (instruction != null) {
             if (instruction.parameter) {
               // console.log("=== metaparameter");
@@ -161,6 +161,7 @@ class PlayerManager {
   }
 
   async startPlayer (caseid) {
+    const preCaseOff = true;
     this._mainPanel = document.querySelector('#main-panel')
 
     const parameters = window.location.search.substr(1)
@@ -170,7 +171,7 @@ class PlayerManager {
     if (parameters != null && parameters.length > 0) {
       precase = parameters.match(/case=([\w-]+)/i)
       if (precase != null) { precase = precase[1] } else {
-        precaseid = parameters.match(/caseid=([\w-]+)/i)
+        precaseid = parameters.match(/id=([\w-]+)/i)
         precaseid = (precaseid != null) ? precaseid[1] : null
       }
       const metaparameter = this._state.metaexecParameterGet()
@@ -181,7 +182,7 @@ class PlayerManager {
     } else { precase = null }
 
     let resume = false
-    if (!this._previewCase && this._state.pendingPlayCheck()) {
+    if (!this._previewCase && this._state.pendingPlayCheck() && !preCaseOff) {
       // <TODO> adjust for name: (precase == null || this._state.pendingPlayId() == precase)) {
       const decision = await DCCNoticeInput.displayNotice(
         'You have an unfinished case. Do you want to continue?',
@@ -270,6 +271,7 @@ class PlayerManager {
     this._compiledCase =
          await Translator.instance.compileMarkdown(Basic.service.currentCaseId,
            caseObj.message.source)
+    console.log('***** COMPILED CASE *****')
     console.log(this._compiledCase)
     this._knots = this._compiledCase.knots
     Basic.service.currentThemeFamily = this._compiledCase.theme

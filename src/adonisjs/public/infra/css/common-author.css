@@ -54,7 +54,7 @@ nav.navbar {
 }
 
 .create-template-author-container{
-  min-width: 25%;
+  width: 300px;
   margin: 10px;
   background-color: #ffffff;
   border-color: #808080;

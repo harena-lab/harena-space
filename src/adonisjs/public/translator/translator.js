@@ -364,7 +364,9 @@ class Translator {
           }
         }
       } else if (compiled[c].type == 'context-open' &&
-                  compiled[c].input.indexOf('.') == -1) { compiled[c].input = knotId + '.' + compiled[c].input }
+                 compiled[c].input && compiled[c].input.indexOf('.') == -1) {
+        compiled[c].input = knotId + '.' + compiled[c].input
+      }
       // <TODO> can be interesting this link in the future
       // compiled[c].input = this.findContext(knotSet, knotId, compiled[c].input);
       else if (compiled[c].type == 'option' ||
@@ -392,9 +394,10 @@ class Translator {
     let contextTarget = originalTarget
     if (originalTarget == '(default)') {
       // looks for a local default note
-      if (knotSet[knotId + '_note']) { contextTarget = knotId + '_note' } else
+      const noteTarget = this.findContext(knotSet, knotId, knotId + ' Note')
+      if (knotSet[noteTarget]) { contextTarget = noteTarget } else
       // otherwise considers a global note
-      { contextTarget = 'Note' }
+      { contextTarget = this.findContext(knotSet, knotId, 'Note') }
     } else {
       contextTarget =
             this.findContext(knotSet, knotId, originalTarget)
@@ -881,7 +884,7 @@ class Translator {
           if (compiled[c].type == 'input') {
             compiled[c].variable =
                      compiled[c].variable.substring(compiled[c].variable.lastIndexOf('.') + 1)
-          } else if (compiled[c].type == 'context-open') {
+          } else if (compiled[c].type == 'context-open' && compiled[c].input) {
             compiled[c].input =
                      compiled[c].input.substring(compiled[c].input.lastIndexOf('.') + 1)
           }
