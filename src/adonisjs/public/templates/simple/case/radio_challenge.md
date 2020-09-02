@@ -1,26 +1,4 @@
-# Day 1 (input)
-
-<h2>Day 1</h2>
-{{stem
-Write here the **stem**.
-}}
-
-> Write here the **lead-in**.
-? hypothesis
-  * type: text
-
-* Next -> Flow.Next
-
-# Day 2 (input)
-
-<h2>Day 2</h2>
-{{feedback
-Write here the yesterday's Feedback.
-}}
-
-{{references
-* [Enter References](References)
-}}
+# Presentation (input)
 
 {{stem
 Write here the **stem**.
@@ -30,20 +8,19 @@ Write here the **stem**.
 ? hypothesis
   * type: text
 
-* Next -> Flow.Next
+* Submit -> Flow.Next
 
-# Last Day (detailed)
+# Feedback (detailed)
 
-<h2>Last Day</h2>
 {{feedback
-Write here the final Feedback.
+Enter Feedback.
 }}
 
 {{references
 * [Enter References](References)
 }}
 
-* Next Virtual Visit -> Case.Next
+* Next -> Flow.Next
 
 ___ Flow ___
 

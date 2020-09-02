@@ -1,26 +1,24 @@
-Challenge
-=========
+# Presentation (input)
 
-## Presentation (input)
+{{stem
+Write here the **stem**.
+}}
 
-Enter clinical information.
-
-> Enter question
->
+> Write here the **lead-in**.
 ? hypothesis
-  * vocabularies: mesh
   * type: text
 
 * Submit -> Flow.Next
 
-Feedback
-========
+# Feedback (detailed)
 
-## Feedback (detailed)
-
+{{feedback
 Enter Feedback.
+}}
 
-+ Enter References -> References
+{{references
+* [Enter References](References)
+}}
 
 * Next -> Flow.Next
 
