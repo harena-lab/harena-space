@@ -364,7 +364,9 @@ class Translator {
           }
         }
       } else if (compiled[c].type == 'context-open' &&
-                  compiled[c].input.indexOf('.') == -1) { compiled[c].input = knotId + '.' + compiled[c].input }
+                 compiled[c].input && compiled[c].input.indexOf('.') == -1) {
+        compiled[c].input = knotId + '.' + compiled[c].input
+      }
       // <TODO> can be interesting this link in the future
       // compiled[c].input = this.findContext(knotSet, knotId, compiled[c].input);
       else if (compiled[c].type == 'option' ||
@@ -881,7 +883,7 @@ class Translator {
           if (compiled[c].type == 'input') {
             compiled[c].variable =
                      compiled[c].variable.substring(compiled[c].variable.lastIndexOf('.') + 1)
-          } else if (compiled[c].type == 'context-open') {
+          } else if (compiled[c].type == 'context-open' && compiled[c].input) {
             compiled[c].input =
                      compiled[c].input.substring(compiled[c].input.lastIndexOf('.') + 1)
           }

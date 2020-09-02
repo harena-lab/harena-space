@@ -12,5 +12,20 @@
    {"description": "Template with a picture in the up-right corner.",
     "path": "basic/picture_up_right",
     "icon": "basic/images/picture_up_right.png",
-    "scope": "knot"}
+    "scope": "knot"},
+ "Linear Case-Diagnosis":
+   {"description": "Presents the description and requests the diagnosis.",
+    "path": "simple/case/linear_case_diagnosis",
+    "icon": "simple/images/linear_case_diagnosis.png",
+    "scope": "case"},
+ "Linear Description-EKG":
+   {"description": "Linear description of the case followed by an EKG.",
+    "path": "simple/case/linear_details_ekg",
+    "icon": "simple/images/linear_details_ekg.png",
+    "scope": "case"},
+ "Jacinto Standard EKG":
+   {"description": "Standard cycle with an EKG.",
+    "path": "jacinto/standard_eletro",
+    "icon": "jacinto/images/standard_eletro.png",
+    "scope": "case"}
 }

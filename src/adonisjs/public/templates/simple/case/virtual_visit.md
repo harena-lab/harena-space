@@ -1,118 +1,49 @@
-Monday
-======
+# Day 1 (input)
 
-## Presentation (input)
+<h2>Day 1</h2>
+{{stem
+Write here the **stem**.
+}}
 
-<h2>Monday</h2>
-
-Enter clinical information.
-
-> Enter question
->
+> Write here the **lead-in**.
 ? hypothesis
-  * vocabularies: mesh
   * type: text
-
-* Submit -> Flow.Next
-
-Tuesday
-=======
-
-## Feedback (detailed)
-
-<h2>Tuesday</h2>
-
-Enter Yesterday's Feedback.
-
-+ Enter References -> References
 
 * Next -> Flow.Next
 
-## Presentation (input)
+# Day 2 (input)
 
-<h2>Tuesday</h2>
+<h2>Day 2</h2>
+{{feedback
+Write here the yesterday's Feedback.
+}}
 
-Enter clinical information.
+{{references
+* [Enter References](References)
+}}
 
-> Enter question
+{{stem
+Write here the **stem**.
+}}
+
+> Write here the **lead-in**.
 ? hypothesis
-  * vocabularies: mesh
   * type: text
 
-* Submit -> Flow.Next
+* Next -> Flow.Next
 
-Quarta
-======
+# Last Day (detailed)
 
-## Reposta Ontem (detailed)
+<h2>Last Day</h2>
+{{feedback
+Write here the final Feedback.
+}}
 
-Escreva aqui a resposta sobre a pergunta de ontem.
+{{references
+* [Enter References](References)
+}}
 
-* Próximo -> Flow.Next
-
-## Referências (detailed)
-
-Referências sobre a resposta da pergunta de ontem.
-
-* Próximo -> Flow.Next
-
-## Mais Informações (detailed)
-
-Informações adicionais da terça.
-
-* Próximo -> Flow.Next
-
-## Pergunta (input)
-
-> Escreva aqui a pergunta
-? hypothesis
-  * vocabularies: mesh
-
-* Submeter resposta -> Flow.Next
-
-Quinta
-======
-
-## Reposta Ontem (detailed)
-
-Escreva aqui a resposta sobre a pergunta de ontem.
-
-* Próximo -> Flow.Next
-
-## Referências (detailed)
-
-Referências sobre a resposta da pergunta de ontem.
-
-* Próximo -> Flow.Next
-
-## Mais Informações (detailed)
-
-Informações adicionais da terça.
-
-* Próximo -> Flow.Next
-
-## Pergunta (input)
-
-> Escreva aqui a pergunta
-? hypothesis
-  * vocabularies: mesh
-
-* Submeter resposta -> Flow.Next
-
-Sexta
-=====
-
-## Reposta Ontem (detailed)
-
-Escreva aqui a resposta sobre a pergunta de ontem.
-
-* Próximo -> Flow.Next
-
-## Referências (detailed)
-
-Referências sobre a resposta da pergunta de ontem.
-
-* Próximo -> Flow.Next
+* Next Virtual Visit -> Case.Next
 
 ___ Flow ___
 
