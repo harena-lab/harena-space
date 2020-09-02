@@ -394,9 +394,10 @@ class Translator {
     let contextTarget = originalTarget
     if (originalTarget == '(default)') {
       // looks for a local default note
-      if (knotSet[knotId + '_note']) { contextTarget = knotId + '_note' } else
+      const noteTarget = this.findContext(knotSet, knotId, knotId + ' Note')
+      if (knotSet[noteTarget]) { contextTarget = noteTarget } else
       // otherwise considers a global note
-      { contextTarget = 'Note' }
+      { contextTarget = this.findContext(knotSet, knotId, 'Note') }
     } else {
       contextTarget =
             this.findContext(knotSet, knotId, originalTarget)

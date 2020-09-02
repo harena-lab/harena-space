@@ -85,22 +85,22 @@ class PlayerManager {
           break
         case 'flow/>/navigate': const flowNext = this._nextFlowKnot()
           if (flowNext != null) {
-            console.log('=== flow next')
-            console.log(flowNext)
+            // console.log('=== flow next')
+            // console.log(flowNext)
             this._state.historyRecord(flowNext.target)
             this.knotLoad(flowNext.target)
           }
           break
         case 'case/>/navigate':
           // <TODO> jumping other instructions - improve it
-          console.log('=== next case')
+          // console.log('=== next case')
           let instruction
           do {
             instruction = this._state.metascriptNextInstruction()
           } while (instruction != null && instruction.type != 'divert-script' &&
                         instruction.target.substring(0, 5).toLowerCase() != 'case.')
 
-          console.log(instruction)
+          // console.log(instruction)
           if (instruction != null) {
             if (instruction.parameter) {
               // console.log("=== metaparameter");
@@ -271,6 +271,7 @@ class PlayerManager {
     this._compiledCase =
          await Translator.instance.compileMarkdown(Basic.service.currentCaseId,
            caseObj.message.source)
+    console.log('***** COMPILED CASE *****')
     console.log(this._compiledCase)
     this._knots = this._compiledCase.knots
     Basic.service.currentThemeFamily = this._compiledCase.theme
