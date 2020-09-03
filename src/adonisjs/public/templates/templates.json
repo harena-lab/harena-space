@@ -1,25 +1,25 @@
-{"Quiz":
-   {"description": "Single question quiz with four options.",
+{"Quiz da Emergência":
+   {"description": "Um quiz com quatro alternativas.",
     "path": "simple/case/quiz_short",
     "icon": "simple/case/quiz_short.png",
     "scope": "case"},
- "Extreme Decisions":
-   {"description": "A sequence of quizzes.",
+ "Decisões Extremas":
+   {"description": "Uma sequência de quizzes.",
     "path": "simple/case/quiz_sequence",
     "icon": "simple/case/quiz_sequence.png",
     "scope": "case"},
- "Electrocardiogram Challenge":
-   {"description": "An Electrocardiogram Challenge.",
+ "Desafio de Eletrocardiograma":
+   {"description": "Um desafio de eletrocardiograma.",
     "path": "simple/case/eletro_challenge",
     "icon": "simple/case/eletro_challenge.png",
     "scope": "case"},
- "Radiological Challenge":
-   {"description": "A Radiological Challenge.",
+ "Desafio Radiológico":
+   {"description": "Um desafio radiológico.",
     "path": "simple/case/radio_challenge",
     "icon": "simple/case/radio_challenge.png",
     "scope": "case"},
- "Virtual Visit":
-   {"description": "A virtual visit.",
+ "Visita Virtual":
+   {"description": "Uma visita virtual.",
     "path": "simple/case/virtual_visit",
     "icon": "simple/case/virtual_visit.png",
     "scope": "case"},

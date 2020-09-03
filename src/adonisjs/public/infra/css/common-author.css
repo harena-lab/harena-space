@@ -10,6 +10,14 @@ h1 {
   font-weight: bold;
   color: #808080;
 }
+h3 {
+  font-weight: bold;
+  color: #808080;
+}
+h4 {
+  font-weight: bold;
+  color: #808080;
+}
 
 div {
   box-sizing: border-box;
@@ -54,7 +62,7 @@ nav.navbar {
 }
 
 .create-template-author-container{
-  width: 300px;
+  width: 250px !important;
   margin: 10px;
   background-color: #ffffff;
   border-color: #808080;
@@ -85,6 +93,21 @@ nav.navbar {
 
 .author-panel-button {
   width: 33%;
+  background-color: #a2a2a2;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+  border-radius: 5px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-left: 5px;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.create-author-panel-button {
+  width: 100%;
   background-color: #a2a2a2;
   color: #ffffff;
   font-size: 14px;

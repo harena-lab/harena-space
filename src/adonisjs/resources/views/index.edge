@@ -23,10 +23,16 @@
     <div class="d-flex w-100 mx-5 home-image-margin" style="">
 
       <div class="d-flex ml-auto flex-column align-items-center justify-content-center align-items-center">
-        <div class="flex-column">
+        <div class="d-flex flex-column">
           <h1 class="home-header-text"> Phil Muchbetter: a clinical reasoning game</h1>
           <p class="home-p-text">Join us in this adventure of becoming a doctor</p>
-          <div class="lets-play rounded-pill" onclick="location.href='{{ route('author_home') }}'">Let's Play</div>
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-4 lets-play rounded-pill" onclick="location.href='{{ route('author_home') }}'">Author</div>
+              <div class="col-4 ml-4 lets-play rounded-pill" onclick="location.href='{{ route('player_home') }}'">Player</div>
+            </div>
+
+          </div>
         </div>
       </div>
       <div class="d-flex ml-auto w-50 flex-column align-items-center justify-content-center" style="background: url({{ assetsUrl('start/img/background_home.jpeg') }});">
