@@ -13,16 +13,6 @@
 
   <title>Phil Muchbetter Game</title>
 
-  <style media="screen">
-  .test-margin{
-    border-color: rgb(52,110,147);
-    border-bottom-width: 45px;
-    border-top: 0;
-    border-left: 0;
-    border-right: 0;
-    border-style: solid;
-  }
-  </style>
 </head>
 
 <body>
@@ -30,13 +20,18 @@
   @include('layout.partials.header')
 
   <div class="d-flex vh-100 vw-100" style="background-color: rgb(245,245,245);">
-    <div class="w-100 mx-5 home-image-margin" style="">
-      <img src="{{ assetsUrl('start/img/home-image.png') }}" class="h-100 float-right" id="home-image" />
-      <div class="d-flex h-100 align-items-center">
+    <div class="d-flex w-100 mx-5 home-image-margin" style="">
+
+      <div class="d-flex ml-auto flex-column align-items-center justify-content-center align-items-center">
         <div class="flex-column">
           <h1 class="home-header-text"> Phil Muchbetter: a clinical reasoning game</h1>
           <p class="home-p-text">Join us in this adventure of becoming a doctor</p>
           <div class="lets-play rounded-pill" onclick="location.href='{{ route('author_home') }}'">Let's Play</div>
+        </div>
+      </div>
+      <div class="d-flex ml-auto w-50 flex-column align-items-center justify-content-center" style="background: url({{ assetsUrl('start/img/background_home.jpeg') }});">
+        <div>
+          <img src="{{ assetsUrl('start/img/home_icon.png') }}" alt="" class="h-100 float-right" id="home-image"/>
         </div>
       </div>
     </div>
