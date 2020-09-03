@@ -91,8 +91,8 @@ class QuestController {
 		} catch(e){
 			console.log(e)
 		}
-
-		return view.render('player.welcome', { quests: responseData[0]  });
+		const pageTitle = 'Welcome Player';
+		return view.render('player.welcome', { quests: responseData[0], pageTitle});
 
 	}
 }

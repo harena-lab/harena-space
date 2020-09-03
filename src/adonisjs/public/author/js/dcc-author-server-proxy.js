@@ -289,7 +289,7 @@ class DCCAuthorServer {
   async uploadArtifact (topic, message) {
     const data = new FormData()
     if (message.file) { data.append('file', message.file) } else if (message.b64) { data.append('image', this.b64toBlob(message.b64)) }
-    data.append('case_id', message.caseid)
+    data.append('caseId', message.caseid)
     const header = {
       async: true,
       crossDomain: true,
