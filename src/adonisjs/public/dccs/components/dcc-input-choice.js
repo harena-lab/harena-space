@@ -118,11 +118,12 @@ class DCCInputOption extends DCCInput {
               ? '' : this._statement
 
       const html = (this.target)
-        ? "<dcc-trigger id='[id]' xstyle='theme' action='[target]' label='[statement]' divert='round' value='[value]'></dcc-trigger>"
+        ? "<dcc-trigger id='[id]' xstyle='theme' action='[target]' label='[statement]' divert='round' value='[value]' variable='[variable]:label'></dcc-trigger>"
           .replace('[id]', varid + nop)
           .replace('[target]', this.target)
           .replace('[statement]', child._statement)
           .replace('[value]', child.value)
+          .replace('[variable]', this.variable)
         : "<input id='presentation-dcc' type='[exclusive]' name='[variable]' value='[value]'[checked]>[statement]</input>"
           .replace('[exclusive]', (this.hasAttribute('exclusive') ? 'radio' : 'checkbox'))
           .replace('[variable]', this.variable)
@@ -248,11 +249,12 @@ class DCCInputChoice extends DCCInput {
              child.tagName.toLowerCase() == DCCInputOption.elementTag) {
         nop++
         const element = (this.target || child.target)
-          ? "<dcc-trigger id='presentation-dcc-[id]' xstyle='theme' action='[target]' label='[statement]' divert='round' value='[value]'></dcc-trigger>"
+          ? "<dcc-trigger id='presentation-dcc-[id]' xstyle='theme' action='[target]' label='[statement]' divert='round' value='[value]' variable='[variable]:label'></dcc-trigger>"
             .replace('[id]', varid + '_' + nop)
             .replace('[target]', (child.target) ? child.target : this.target)
             .replace('[statement]', child._statement)
             .replace('[value]', child.value)
+            .replace('[variable]', this.variable)
           : "<input id='presentation-dcc-[id]' type='[exclusive]' name='[variable]' value='[value]'[checked]>[statement]</input>"
             .replace('[id]', varid + '_' + nop)
             .replace('[exclusive]',

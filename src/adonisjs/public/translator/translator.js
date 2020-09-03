@@ -1674,10 +1674,11 @@ class Translator {
     */
   _divertMdToObj (matchArray) {
     const label = (matchArray[1]) ? matchArray[1].trim() : matchArray[2].trim()
-    const target = (matchArray[3]) ? matchArray[3].trim() : matchArray[4].trim()
+    const target = (matchArray[4]) ? matchArray[4].trim() : matchArray[5].trim()
     return {
       type: 'divert',
       label: label,
+      divert: matchArray[3].trim(),
       target: target
     }
   }
@@ -1689,6 +1690,7 @@ class Translator {
     return Translator.htmlTemplates.divert
       .replace('[seq]', obj.seq)
       .replace('[author]', this.authorAttr)
+      .replace('[divert]', this.divert)
       .replace('[target]',
         this._transformNavigationMessage(obj.contextTarget))
       .replace('[display]', obj.label)
@@ -2161,7 +2163,7 @@ class Translator {
       mark: /^[ \t]*(?:\(([\w\.]+)[ \t]*(==|>|<|>=|<=|&gt;|&lt;|&gt;=|&lt;=)[ \t]*((?:"[^"\n\r\f]+")|(?:\-?\d+(?:\.\d+)?)|(?:[\w\.]+))\)[ \t]*)?-(?:(?:&gt;)|>)[ \t]*([^"\n\r\f]+)(?:"([^"\n\r\f]+)")?[ \t]*$/im
     },
     divert: {
-      mark: /(?:(\w+)|"([^"]+)")(?:[ \t])*-(?:(?:&gt;)|>)[ \t]*(?:(\w[\w.]*)|"([^"]*)")/im,
+      mark: /(?:(\w+)|"([^"]+)")(?:[ \t])*((?:(?:(?:&lt;)|<)?-(?:(?:&gt;)|>))|(?:\(-\)))[ \t]*(?:(\w[\w.]*)|"([^"]*)")/im,
       inline: true
     },
     entity: {

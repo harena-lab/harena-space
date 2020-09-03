@@ -309,9 +309,10 @@ class DCCAuthorServer {
     // console.log(header);
     const response =
          await fetch(DCCCommonServer.managerAddressAPI + 'artifact', header)
-    console.log('=== response')
+    console.log('=== response image upload')
     console.log(response)
     const jsonResponse = await response.json()
+    console.log(jsonResponse)
     MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
       jsonResponse.filename)
   }
