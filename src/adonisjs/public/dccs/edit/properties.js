@@ -44,6 +44,10 @@ class Properties {
           this._editor = new EditDCCPlain(obj, dcc, editp.htmls)
           break
         case 'text':
+          console.log('=== vou editar aqui')
+          console.log(knotContent)
+          console.log(el)
+          console.log(dcc)
           this._editor = new EditDCCText(knotContent, el, dcc, svg)
           break
         case 'shortStr':

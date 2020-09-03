@@ -5,7 +5,10 @@
 Write here the **stem**.
 }}
 
-> Write here the **lead-in**.
+{{leadin
+Write here the **lead-in**.
+}}
+
 ? hypothesis
   * type: text
 
@@ -26,7 +29,10 @@ Write here the yesterday's Feedback.
 Write here the **stem**.
 }}
 
-> Write here the **lead-in**.
+{{leadin
+Write here the **lead-in**.
+}}
+
 ? hypothesis
   * type: text
 
@@ -57,5 +63,4 @@ ___ Data ___
   * evidence: http://purl.org/versum/evidence/
 * templates:
   * categories:
-    * detailed: simple/knot/description
-    * marker_quiz: simple/knot/quiz_question
+    * input: simple/knot/visit_day

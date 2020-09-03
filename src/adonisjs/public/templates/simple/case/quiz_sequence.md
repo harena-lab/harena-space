@@ -22,15 +22,23 @@ Write here the **stem** of your question.
 
 * Next Question -> Flow.Next
 
+# Feedback (quiz)
+
+{{feedback
+Write here the **feedback**.
+}}
+
+{{references
+* [Enter References](References)
+}}
+
+* Next Question -> Flow.Next
+
 # Note (note)
 
 **You answered:** ^Presentation.input1^.
 <br>
 ^parameter^
-
-# References (note)
-
-* [Enter References](References)
 
 ___ Flow ___
 

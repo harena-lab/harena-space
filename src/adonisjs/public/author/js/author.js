@@ -167,6 +167,8 @@ class AuthorManager {
           break
         case 'control/knot/new': this.knotNew(message)
           break
+        case 'control/knot/remove': this.knotRemove(message)
+          break
         case 'control/knot/up': this.knotUp(message)
           break
         case 'control/knot/down': this.knotDown(message)
@@ -621,6 +623,20 @@ class AuthorManager {
 
       await this._showCase(newSelected)
     }
+  }
+
+  async knotRemove (message) {
+    const knotTarget =
+            (message != null && message.knotid != null)
+              ? message.knotid : this._knotSelected
+    const newKnotSet = {}
+    for (const k in this._knots) {
+      if (k != knotTarget)
+        newKnotSet[k] = this._knots[k]
+    }
+    this._compiledCase.knots = newKnotSet
+    this._knots = newKnotSet
+    await this._navigator.mountTreeCase(this, this._knots)
   }
 
   async knotUp (message) {
