@@ -1,54 +1,44 @@
 # Quiz1 (quiz)
 
-Write here the **stem** of your quiz.
+Write here the **stem** of your question.
 
-> Write here the lead-in of your quiz.
->
-? hypothesis
-  * type: choice
-  * exclusive
-  * trigger
-  * scramble
-  * target: Feedback
-  * options:
-    * Answer-key: Feedback for Answer-key
-    * Distractor 1: Feedback for Distractor 1
-    * Distractor 2: Feedback for Distractor 2
-    * Distractor 3: Feedback for Distractor 3
+> Write here the **lead-in** of your question.
++ Answer-key <-> "Feedback for Answer-key"
++ Distractor 1 <-> "Feedback for Distractor 1"
++ Distractor 2 <-> "Feedback for Distractor 2"
++ Distractor 3 <-> "Feedback for Distractor 3"
 
-* Next Quiz -> Knot.Next
-* Menu -> Presentation
+* Next Question -> Knot.Next
 
 # Quiz2 (quiz)
 
-Write here the **stem** of your quiz.
+Write here the **stem** of your question.
 
-> Write here the lead-in of your quiz.
->
-? hypothesis
-  * type: choice
-  * exclusive
-  * trigger
-  * scramble
-  * target: Feedback
-  * options:
-    * Answer-key: Feedback for Answer-key
-    * Distractor 1: Feedback for Distractor 1
-    * Distractor 2: Feedback for Distractor 2
-    * Distractor 3: Feedback for Distractor 3
+> Write here the **lead-in** of your question.
++ Answer-key <-> "Feedback for Answer-key"
++ Distractor 1 <-> "Feedback for Distractor 1"
++ Distractor 2 <-> "Feedback for Distractor 2"
++ Distractor 3 <-> "Feedback for Distractor 3"
 
-* Next Case -> Case.Next
-* Menu -> Presentation
+* Next Question -> Knot.Next
 
-# Feedback (note)
+# Note (note)
 
-You answered: ^Block.Presentation.hypothesis^.
-
+**You answered:** ^Presentation.input1^.
+<br>
 ^parameter^
 
-* Return -> Presentation
+# Presentation References (note)
 
-* Próximo caso -> Case.Next
+**You answered:** ^Presentation.input1^.
+<br>
+^parameter^
+
+References <-> References
+
+# References (note)
+
+* [Enter References](References)
 
 ___ Flow ___
 

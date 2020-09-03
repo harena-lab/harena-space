@@ -31,7 +31,7 @@
     option:
 '<dcc-trigger id=\'dcc[seq]\'[author] type=\'[subtype]\' action=\'[target]\' label=\'[display]\'[divert][message][image]></dcc-trigger>',
     divert:
-'<dcc-trigger id=\'dcc[seq]\'[author] type=\'+\' action=\'[target]\' label=\'[display]\'></dcc-trigger>',
+'<dcc-trigger id=\'dcc[seq]\'[author] type=\'+\' action=\'[target]\' label=\'[display]\' divert=\'[divert]\'></dcc-trigger>',
     'divert-script':
 '-&gt; [target][parameter]<br>',
     entity:

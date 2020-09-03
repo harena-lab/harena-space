@@ -1565,7 +1565,9 @@ class Translator {
   _transformNavigationMessage (target) {
     let message
     const lower = target.toLowerCase()
-    if (Translator.reservedNavigation.includes(lower)) { message = Translator.navigationMap[lower] } else if (lower.startsWith('variable.')) { message = 'variable/' + target.substring(9) + '/navigate' } else { message = 'knot/' + target + '/navigate' }
+    if (Translator.reservedNavigation.includes(lower)) { message = Translator.navigationMap[lower] }
+    else if (lower.startsWith('variable.')) { message = 'variable/' + target.substring(9) + '/navigate' }
+    else { message = 'knot/' + target + '/navigate' }
     return message
   }
 
@@ -1672,10 +1674,11 @@ class Translator {
     */
   _divertMdToObj (matchArray) {
     const label = (matchArray[1]) ? matchArray[1].trim() : matchArray[2].trim()
-    const target = (matchArray[3]) ? matchArray[3].trim() : matchArray[4].trim()
+    const target = (matchArray[4]) ? matchArray[4].trim() : matchArray[5].trim()
     return {
       type: 'divert',
       label: label,
+      divert: matchArray[3].trim(),
       target: target
     }
   }
@@ -1687,6 +1690,7 @@ class Translator {
     return Translator.htmlTemplates.divert
       .replace('[seq]', obj.seq)
       .replace('[author]', this.authorAttr)
+      .replace('[divert]', this.divert)
       .replace('[target]',
         this._transformNavigationMessage(obj.contextTarget))
       .replace('[display]', obj.label)
@@ -1876,7 +1880,7 @@ class Translator {
             .replace('[value]', obj.options[op])
         } else {
           choice = choice.replace('[target]',
-            "target='" + obj.options[op].contextTarget + "' ")
+            "target='" + this._transformNavigationMessage(obj.options[op].contextTarget) + "' ")
             .replace('[value]', obj.options[op].message)
         }
         statement += choice
@@ -2159,7 +2163,7 @@ class Translator {
       mark: /^[ \t]*(?:\(([\w\.]+)[ \t]*(==|>|<|>=|<=|&gt;|&lt;|&gt;=|&lt;=)[ \t]*((?:"[^"\n\r\f]+")|(?:\-?\d+(?:\.\d+)?)|(?:[\w\.]+))\)[ \t]*)?-(?:(?:&gt;)|>)[ \t]*([^"\n\r\f]+)(?:"([^"\n\r\f]+)")?[ \t]*$/im
     },
     divert: {
-      mark: /(?:(\w+)|"([^"]+)")(?:[ \t])*-(?:(?:&gt;)|>)[ \t]*(?:(\w[\w.]*)|"([^"]*)")/im,
+      mark: /(?:(\w+)|"([^"]+)")(?:[ \t])*((?:(?:(?:&lt;)|<)?-(?:(?:&gt;)|>))|(?:\(-\)))[ \t]*(?:(\w[\w.]*)|"([^"]*)")/im,
       inline: true
     },
     entity: {
