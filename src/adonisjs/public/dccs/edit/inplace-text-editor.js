@@ -132,14 +132,14 @@ class EditDCCText extends EditDCC {
 
   _buildEditorPanel () {
     const editor = document.createElement('div')
-    editor.style.position = 'absolute'
-    editor.style.left = this._transformRelativeX(
-      this._elementWrapperRect.left - this._containerRect.left)
-    editor.style.top = this._transformRelativeY(
-      this._elementWrapperRect.top - this._containerRect.top)
-    editor.style.width = this._transformRelativeX(this._elementWrapperRect.width)
-    editor.style.height =
-         this._transformRelativeY(this._elementWrapperRect.height)
+    editor.style.position = 'sticky'
+    // editor.style.left = this._transformRelativeX(
+    //   this._elementWrapperRect.left - this._containerRect.left)
+    // editor.style.top = this._transformRelativeY(
+    //   this._elementWrapperRect.top - this._containerRect.top)
+    // editor.style.width = this._transformRelativeX(this._elementWrapperRect.width)
+    // editor.style.height =
+    //      this._transformRelativeY(this._elementWrapperRect.height)
     if (this._svgDraw) {
       editor.innerHTML =
             EditDCCText.editorTemplate.svg

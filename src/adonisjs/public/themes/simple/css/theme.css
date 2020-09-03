@@ -44,7 +44,7 @@
 /* .styt-main, .styt-button, input[type="text"], textarea { */
 .styt-main, .styt-button, .styt-button-option {
    /* font-size: 4vmin; */
-   font-size: 3vmin;
+   font-size: 1.8rem;
 }
 
 .styt-main-text {
