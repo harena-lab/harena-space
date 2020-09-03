@@ -12,9 +12,21 @@ Write here the **stem** of your quiz.
 
 # Presentation Note (note)
 
-You answered: ^Presentation.input^.
-
+**You answered:** ^Presentation.input1^.
+<br>
 ^parameter^
+
+# Presentation References (note)
+
+**You answered:** ^Presentation.input1^.
+<br>
+^parameter^
+
+References <-> References
+
+# References (note)
+
+* [Enter References](References)
 
 ___ Flow ___
 

@@ -289,7 +289,7 @@ class DCCAuthorServer {
   async uploadArtifact (topic, message) {
     const data = new FormData()
     if (message.file) { data.append('file', message.file) } else if (message.b64) { data.append('image', this.b64toBlob(message.b64)) }
-    data.append('case_id', message.caseid)
+    data.append('caseId', message.caseid)
     const header = {
       async: true,
       crossDomain: true,
@@ -309,9 +309,10 @@ class DCCAuthorServer {
     // console.log(header);
     const response =
          await fetch(DCCCommonServer.managerAddressAPI + 'artifact', header)
-    console.log('=== response')
+    console.log('=== response image upload')
     console.log(response)
     const jsonResponse = await response.json()
+    console.log(jsonResponse)
     MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
       jsonResponse.filename)
   }

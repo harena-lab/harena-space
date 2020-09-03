@@ -31,7 +31,7 @@ class DCCTrigger extends DCCBlock {
 
   static get observedAttributes () {
     return DCCBlock.observedAttributes.concat(
-      ['type', 'link', 'action', 'value'])
+      ['type', 'link', 'action', 'value', 'variable'])
   }
 
   get type () {
@@ -64,6 +64,14 @@ class DCCTrigger extends DCCBlock {
 
   set value (newValue) {
     this.setAttribute('value', newValue)
+  }
+
+  get variable () {
+    return this.getAttribute('variable')
+  }
+
+  set variable (newValue) {
+    this.setAttribute('variable', newValue)
   }
 
   /* Rendering */
@@ -124,15 +132,28 @@ class DCCTrigger extends DCCBlock {
   }
 
   _computeTrigger () {
-    if (this._active &&
-          (this.hasAttribute('label') || this.hasAttribute('action'))) {
-      if (this.hasAttribute('action') && this.action.endsWith('/navigate')) { this._active = false }
-      const topic = (this.hasAttribute('action'))
-        ? this.action : 'trigger/' + this.label + '/clicked'
-      const message = {}
-      if (this.hasAttribute('value')) { message.value = this.value }
+    if (this._active) {
+      if (this.hasAttribute('variable')) {
+        const v = (this.variable.includes(':'))
+          ? this.variable.substring(0, this.variable.indexOf(':')) : this.variable
+        console.log('=== trigger variable')
+        console.log('var/' + v + '/changed')
+        console.log((this.variable.endsWith(':label')) ? this.label : this.value)
+        MessageBus.ext.publish('var/' + v + '/changed',
+        {
+          sourceType: DCCTrigger.elementTag,
+          value: (this.variable.endsWith(':label')) ? this.label : this.value
+        })
+      }
+      if (this.hasAttribute('label') || this.hasAttribute('action')) {
+        if (this.hasAttribute('action') && this.action.endsWith('/navigate')) { this._active = false }
+        const topic = (this.hasAttribute('action'))
+          ? this.action : 'trigger/' + this.label + '/clicked'
+        const message = {}
+        if (this.hasAttribute('value')) { message.value = this.value }
 
-      MessageBus.ext.publish(topic, message)
+        MessageBus.ext.publish(topic, message)
+      }
     }
   }
 
