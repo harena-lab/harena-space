@@ -477,7 +477,31 @@ class Properties {
           role: 'input'
         },
         text: {
-          type: 'shortStr',
+          type: 'text',
+          label: 'Statement',
+          visual: 'inline',
+          role: 'text'
+        },
+        variable: {
+          type: 'variable',
+          label: 'Variable',
+          visual: 'panel'
+        },
+        vocabularies: {
+          type: 'select',
+          options: 'selectVocabulary',
+          label: 'Vocabularies',
+          visual: 'panel'
+        }
+      },
+      text: {
+        input: {
+          type: 'void',
+          visual: 'inline',
+          role: 'input'
+        },
+        text: {
+          type: 'text',
           label: 'Statement',
           visual: 'inline',
           role: 'text'

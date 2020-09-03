@@ -1900,6 +1900,8 @@ class Translator {
                          ((obj[atr] == 'true') ? '' : "='" + obj[atr] + "'")
       }
     }
+    if (obj.subtype == 'text')
+      extraAttr += ' rows="5"'
     if (obj.contextTarget) {
       extraAttr +=
             " target='" + this._transformNavigationMessage(obj.contextTarget) + "'"
