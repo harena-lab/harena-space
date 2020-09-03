@@ -43,8 +43,8 @@ class TemplateManager {
   TemplateManager.instance = new TemplateManager()
 
   TemplateManager.templateBox =
-`<div class="d-flex h-100 flex-column create-template-author-container">
-   <div class="draft-case-image w-100 h-50">
+`<div class="d-flex h-75 flex-column create-template-author-container">
+   <div class="draft-case-image w-50 h-40">
       <img src="[icon]" class="home-author-image">
    </div>
    <div class="draft-case-title">[title]</div>

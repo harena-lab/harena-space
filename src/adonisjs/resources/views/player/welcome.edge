@@ -18,15 +18,18 @@
 
         <div class="container-fluid">
           <div class="row row-cols-sm-2 row-cols-md-3 row-cols-lg-5 justify-content-center">
+            @each(q in quests)
+
 
             <div class="col text-center player-quest-icon">
-              <a href="quest?id=775bd2ac-68b5-45a9-82c6-b796894114c7">
-                <img class="visita-virtual"  src="{{ assetsUrl('player/images/edge/img_trans.png') }}">
-                <h5 class="text-center text-wrap txt-visita-virtual">Visita Virtual</h5>
+              <a href="{{ route('player_quest')}}?id={{q.id}}&color={{q.color.substring(1)}}">
+                <img class="visita-virtual"  src="{{q.url}}">
+                <h5 class="text-center text-wrap txt-visita-virtual" style="color:{{q.color}} !important;">{{q.title}}</h5>
               </a>
 
             </div>
-            <div class="col text-center player-quest-icon">
+            @endeach
+            <!-- <div class="col text-center player-quest-icon">
               <a href="#">
                 <img class="quiz-emergencia" src="{{ assetsUrl('player/images/edge/img_trans.png') }}">
                 <h5  class="txt-quiz-emergencia">Quiz da Emergência</h5>
@@ -82,7 +85,7 @@
                 <img class="basico-alem-basico" src="{{ assetsUrl('player/images/edge/img_trans.png') }}">
                 <h5  class="txt-basico-alem-basico">Básico além do Básico</h5>
               </a>
-            </div>
+            </div> -->
 
           </div>
         </div>

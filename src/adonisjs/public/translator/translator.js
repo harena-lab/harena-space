@@ -394,9 +394,10 @@ class Translator {
     let contextTarget = originalTarget
     if (originalTarget == '(default)') {
       // looks for a local default note
-      if (knotSet[knotId + '_note']) { contextTarget = knotId + '_note' } else
+      const noteTarget = this.findContext(knotSet, knotId, knotId + ' Note')
+      if (knotSet[noteTarget]) { contextTarget = noteTarget } else
       // otherwise considers a global note
-      { contextTarget = 'Note' }
+      { contextTarget = this.findContext(knotSet, knotId, 'Note') }
     } else {
       contextTarget =
             this.findContext(knotSet, knotId, originalTarget)
@@ -1564,7 +1565,9 @@ class Translator {
   _transformNavigationMessage (target) {
     let message
     const lower = target.toLowerCase()
-    if (Translator.reservedNavigation.includes(lower)) { message = Translator.navigationMap[lower] } else if (lower.startsWith('variable.')) { message = 'variable/' + target.substring(9) + '/navigate' } else { message = 'knot/' + target + '/navigate' }
+    if (Translator.reservedNavigation.includes(lower)) { message = Translator.navigationMap[lower] }
+    else if (lower.startsWith('variable.')) { message = 'variable/' + target.substring(9) + '/navigate' }
+    else { message = 'knot/' + target + '/navigate' }
     return message
   }
 
@@ -1875,7 +1878,7 @@ class Translator {
             .replace('[value]', obj.options[op])
         } else {
           choice = choice.replace('[target]',
-            "target='" + obj.options[op].contextTarget + "' ")
+            "target='" + this._transformNavigationMessage(obj.options[op].contextTarget) + "' ")
             .replace('[value]', obj.options[op].message)
         }
         statement += choice

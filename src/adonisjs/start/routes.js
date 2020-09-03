@@ -68,10 +68,7 @@ let harenaManagerUrl =
    Env.get("HARENA_MANAGER_URL", "http://localhost:3000/api/v1/");
 */
 
-Route.get('player/welcome', ({ view }) => {
-  const pageTitle = 'Welcome player'
-  return view.render('player.welcome', {pageTitle})
-}).as('player_home')
+Route.get('player', 'QuestController.getQuests').as('player_home')
 
 Route.get('player/quest', 'QuestController.getCasesByQuest').as('player_quest')
 Route.get('player/case', ({ view,request }) => {
