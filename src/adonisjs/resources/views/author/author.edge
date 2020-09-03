@@ -116,19 +116,19 @@
            style="position:relative">
         <nav class="navbar navbar-light">
           <div class="col-6">
-            <dcc-trigger action="control/case/save" label="SAVE" xstyle="in"></dcc-trigger>
-            <!--
-            <dcc-trigger action="control/case/settings" label="SETTINGS" xstyle="in"></dcc-trigger>
-            -->
+            <button type="button" class="btn btn-secondary" id="btn-save-draft">Save</button>
+            <dcc-trigger action="control/case/save" location="btn-save-draft" label="SAVE" xstyle="out"></dcc-trigger>
 
             <!-- Settings button activates a modal -->
-            <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#settings-modal"
-            id="btn-save-settings">Settings</button>
+            <button type="button" class="btn btn-secondary m-1" data-toggle="modal" data-target="#settings-modal">
+              Settings
+            </button>
+            <span class="sty-message-space" id="message-space"></span>
 
             <div id="advanced-mode" style="display:none">
               <dcc-trigger action="control/case/markdown" label="MARKDOWN" xstyle="in"></dcc-trigger>
             </div>
-            <div class="sty-message-space" id="message-space"></div>
+
 
           </div>
 <!--          <div class="navbar-sub col-2">
