@@ -8,7 +8,7 @@ Write here the **stem** of your question.
 + Distractor 2 <-> "Feedback for Distractor 2"
 + Distractor 3 <-> "Feedback for Distractor 3"
 
-* Next Question -> Knot.Next
+* Next Question -> Flow.Next
 
 # Quiz2 (quiz)
 
@@ -20,21 +20,13 @@ Write here the **stem** of your question.
 + Distractor 2 <-> "Feedback for Distractor 2"
 + Distractor 3 <-> "Feedback for Distractor 3"
 
-* Next Question -> Knot.Next
+* Next Question -> Flow.Next
 
 # Note (note)
 
 **You answered:** ^Presentation.input1^.
 <br>
 ^parameter^
-
-# Presentation References (note)
-
-**You answered:** ^Presentation.input1^.
-<br>
-^parameter^
-
-References <-> References
 
 # References (note)
 
