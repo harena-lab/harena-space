@@ -1,0 +1,46 @@
+@layout('author.author-layout')
+
+@section('content')
+<body>
+  <!-- Create a section to place page content -->
+  <main role="main">
+    <div class="d-flex flex-column vh-100 vw-100 home-author-padding hidden-overflow">
+
+      <!-- Create breadcrumbs -->
+      <div class="container-fluid" >
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href={{route('author_home')}}>Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Drafts</li>
+          </ol>
+        </nav>
+      </div>
+      <!-- End of breadcrumbs -->
+
+      <div class="h-100 w-100 home-content-padding">
+        <div class="home-text mb-5">
+          <p>Continue editing your draft cases.</p>
+        </div>
+        <div id="case-boxes" class="container-fluid h-100 scroll-x draft-scroll-container">
+          <div class="d-flex">
+
+              @each(q in quests)
+
+              <div class="d-flex 0 text-center player-quest-icon player-quest-icon-padding">
+                <a href="{{ route('drafts.cases')}}?id={{q.id}}&color={{q.color.substring(1)}}">
+                  <img class="visita-virtual"  src="{{q.url}}">
+                  <h5 class="text-center text-wrap txt-visita-virtual" style="color:{{q.color}} !important;">{{q.title}}</h5>
+                </a>
+
+              </div>
+              @endeach
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <!-- end of div /.container -->
+
+</body>
+@endsection

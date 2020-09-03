@@ -59,9 +59,17 @@ Route.group(() => {
   Route.post('update', 'CaseController.update')
 }).prefix('choose-template').as('author_template_case')
 
-Route.get('drafts', ({ view }) => {
-  return view.render('author.drafts')
-}).as('cases_drafts')
+// Route.get('drafts', ({ view }) => {
+//   return view.render('author.drafts')
+// }).as('cases_drafts')
+Route.group(() => {
+  Route.get('/', ({ view }) => {
+    return view.render('author.drafts')
+  })
+
+  Route.get('quests', 'QuestController.getQuestsAuthor')
+  Route.get('cases', 'QuestController.getCasesByQuestAuthor')
+}).prefix('drafts').as('cases_drafts')
 
 /*
 let harenaManagerUrl =
