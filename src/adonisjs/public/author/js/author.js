@@ -132,7 +132,6 @@ class AuthorManager {
          .addEventListener("shown.bs.modal", this.updateSourceField);
       */
     $('#settings-modal').on('shown.bs.modal', this.updateSourceField)
-    $('#btn-save-settings').on('click', await this.caseSave)
     // this.caseLoadSelect();
   }
 
@@ -312,6 +311,7 @@ class AuthorManager {
     */
   async caseSave () {
     console.log('=== case save')
+    document.getElementById('btn-save-draft').innerHTML = 'SAVING...';
     console.log(Basic.service.currentCaseId)
     console.log(this._compiledCase)
     if (Basic.service.currentCaseId != null && this._compiledCase != null) {
@@ -344,8 +344,10 @@ class AuthorManager {
       const promise = new Promise((resolve, reject) => {
         setTimeout(() => resolve('done!'), 2000)
       })
-      const result = await promise
-      this._messageSpace.innerHTML = ''
+      const result = await promise;
+      this._messageSpace.innerHTML = '';
+      document.getElementById('btn-save-draft').innerHTML = 'SAVE';
+
     }
   }
 

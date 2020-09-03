@@ -79,60 +79,6 @@
 <body onload="AuthorManager.author.start()">
 
   @include('layout.partials.settings-modal')
-  <!-- Modal -->
-  <!--
-  <div class="modal fade" id="settings-modal" tabindex="-1" role="dialog" aria-labelledby="settings-modal" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-body">
-          <h3>Settings</h3>
-          <form>
-            <div class="form-group">
-              <label for="case-title">Title</label>
-              <input type="text" class="form-control" id="case-title" placeholder="Enter the title">
-            </div>
-            <div class="form-group">
-              <label for="description">Description</label>
-              <textarea class="form-control" id="description"></textarea>
-            </div>
-            <div class="form-group">
-              <label for="language">Language</label>
-              <select name="language" id="language">
-                  <option value="pt-BR">Portuguese (Brazil)</option>
-                  <option value="pt-BR">Portuguese (Portugal)</option>
-                  <option value="en">English</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="created">Creation Date</label>
-              <input type="date" class="form-control" id="created">
-            </div>
-            <div class="form-group">
-              <label for="institution">Institution</label>
-              <input type="text" class="form-control" id="institution" placeholder="Enter your institution">
-            </div>
-            <div class="form-group">
-              <label for="keywords">Domain</label>
-              <input type="text" class="form-control" id="domain" placeholder="Inform the case domain">
-            </div>
-            <div class="form-group">
-              <label for="keywords">Specialty</label>
-              <input type="text" class="form-control" id="specialty" placeholder="Inform the case specialty">
-            </div>
-            <div class="form-group">
-              <label for="keywords">Keywords</label>
-              <textarea class="form-control" id="keywords" aria-describedby="keywords-help"></textarea>
-              <small id="keywords-help" class="form-text text-muted">Inform your keywords separated by semicolon.</small>
-            </div>
-            <button type="button" class="btn btn-secondary" id="btn-save-settings">Save</button>
-            <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-  -->
-  <!--end of modal -->
 
   <!-- Create a section to place page content -->
 
@@ -170,29 +116,30 @@
            style="position:relative">
         <nav class="navbar navbar-light">
           <div class="col-6">
-            <dcc-trigger action="control/case/save" label="SAVE" xstyle="in"></dcc-trigger>
-            <!--
-            <dcc-trigger action="control/case/settings" label="SETTINGS" xstyle="in"></dcc-trigger>
-            -->
+            <button type="button" class="btn btn-secondary" id="btn-save-draft">Save</button>
+            <dcc-trigger action="control/case/save" location="btn-save-draft" label="SAVE" xstyle="out"></dcc-trigger>
 
             <!-- Settings button activates a modal -->
-            <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#settings-modal"
-            id="btn-save-settings">Settings</button>
+            <button type="button" class="btn btn-secondary m-1" data-toggle="modal" data-target="#settings-modal">
+              Settings
+            </button>
+            <span class="sty-message-space" id="message-space"></span>
 
             <div id="advanced-mode" style="display:none">
               <dcc-trigger action="control/case/markdown" label="MARKDOWN" xstyle="in"></dcc-trigger>
             </div>
-            <div class="sty-message-space" id="message-space"></div>
+
 
           </div>
-          <div class="navbar-sub col-2">
+<!--          <div class="navbar-sub col-2">
             <div class="custom-control custom-switch" data-on="success" data-off="default">
               <input type="checkbox" class="custom-control-input" id="preview-switch">
               <label class="custom-control-label" for="preview-switch">Preview mode</label>
             </div>
           </div>
+        -->
           <div class="col-2">
-            
+
           </div>
         </nav>
       </div>
