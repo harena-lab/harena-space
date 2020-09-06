@@ -287,7 +287,9 @@ class AuthorManager {
 
     this._knots = this._compiledCase.knots
 
-    Basic.service.currentThemeFamily = this._compiledCase.theme
+    // Basic.service.currentThemeFamily = this._compiledCase.theme
+    console.log('=== setting theme family')
+    Basic.service.composedThemeFamily(this._compiledCase.theme)
     if (this._compiledCase.title) { this._currentCaseTitle = this._compiledCase.title }
 
     console.log('***** COMPILED CASE *****')

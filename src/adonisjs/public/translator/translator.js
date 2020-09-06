@@ -57,7 +57,8 @@ class Translator {
     if (this._themeSettings) { delete this._themeSettings }
     if (compiledCase.theme) {
       const themeSt = await MessageBus.int.request(
-        'data/theme_family/' + compiledCase.theme + '/settings')
+        'data/theme_family/' + Basic.service.decomposeThemeFamily(compiledCase.theme).family +
+        '/settings')
       if (themeSt != null) { this._themeSettings = themeSt.message }
     }
 

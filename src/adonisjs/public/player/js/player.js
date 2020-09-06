@@ -274,7 +274,8 @@ class PlayerManager {
     console.log('***** COMPILED CASE *****')
     console.log(this._compiledCase)
     this._knots = this._compiledCase.knots
-    Basic.service.currentThemeFamily = this._compiledCase.theme
+    // Basic.service.currentThemeFamily = this._compiledCase.theme
+    Basic.service.composedThemeFamily(this._compiledCase.theme)
   }
 
   _caseFlow () {
