@@ -10,6 +10,7 @@ class Basic {
     // initial values of shared states
     this._currentThemeFamily = Basic.standardThemeFamily
     this._currentThemeCSS = null
+    this._currentCustomCSS = null
     this.currentCaseId = null
 
     /*
@@ -48,11 +49,38 @@ class Basic {
   }
 
   set currentThemeFamily (newValue) {
-    // Translator.instance.currentThemeFamily = newValue;
     this._currentThemeFamily = newValue
 
     this._currentThemeCSS =
          this.replaceStyle(document, this._currentThemeCSS, newValue)
+  }
+
+  get currentCustomTheme () {
+    return this._currentCustomTheme
+  }
+
+  set currentCustomTheme (newValue) {
+    this._currentCustomTheme = newValue
+
+    this._currentCustomCSS =
+         this.replaceStyle(document, this._currentCustomCSS, this.currentThemeFamily,
+           newValue + '/theme.css')
+  }
+
+  composedThemeFamily (themeFamily) {
+    const dtf = this.decomposeThemeFamily(themeFamily);
+    this.currentThemeFamily = dtf.family
+    this.currentCustomTheme = dtf.custom
+  }
+
+  decomposeThemeFamily (themeFamily) {
+    let family = themeFamily;
+    let custom = "default";
+    if (family.includes("(")) {
+      custom = family.substring(family.indexOf('(') + 1, family.length - 1)
+      family = family.substring(0, family.indexOf('('))
+    }
+    return {family: family, custom: custom}
   }
 
   /*
@@ -242,6 +270,11 @@ class Basic {
   themeStyleResolver (cssFile) {
     return this._rootPath + 'themes/' + this.currentThemeFamily +
              '/css/' + cssFile
+  }
+
+  themeCustomStyleResolver (cssFile) {
+    return this._rootPath + 'themes/' + this.currentThemeFamily +
+             '/css/' + this.currentCustomTheme + "/" + cssFile
   }
 
   systemStyleResolver (cssFile) {
