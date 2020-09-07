@@ -146,9 +146,6 @@ class PlayState {
     }
 
     if (id != null) {
-      console.log('=== variable get')
-      console.log(id)
-      console.log(this._state.variables[id])
       MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
         this._state.variables[id])
     }
