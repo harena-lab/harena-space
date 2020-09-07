@@ -1,4 +1,4 @@
-# Presentation (quiz)
+# Presentation (quiz, end)
 
 Write here the **stem** of your quiz.
 
@@ -8,18 +8,20 @@ Write here the **stem** of your quiz.
 + Distractor 2 <-> "Feedback for Distractor 2"
 + Distractor 3 <-> "Feedback for Distractor 3"
 
-* Next Case -> Case.Next
-
 # Note (note)
 
 **You answered:** ^Previous.input1^.
-<br>
+
+
+
 ^parameter^
 
 # Presentation References (note)
 
 **You answered:** ^Previous.input1^.
-<br>
+
+
+
 ^parameter^
 
 References <-> References

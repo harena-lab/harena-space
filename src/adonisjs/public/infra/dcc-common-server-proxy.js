@@ -112,8 +112,6 @@ class DCCCommonServer {
       const response = await fetch(
          DCCCommonServer.managerAddressAPI + "case/list", header);
       */
-    console.log('=== cases list request')
-    console.log(header)
     // console.log(DCCCommonServer.managerAddressAPI);
     /*
       const response = await fetch(
@@ -122,8 +120,6 @@ class DCCCommonServer {
       */
     const response = await fetch(
       DCCCommonServer.managerAddressAPI + 'user/cases', header)
-    console.log('=== cases list response')
-    console.log(response)
     const jsonResponse = await response.json()
     const busResponse = []
     for (const c in jsonResponse) {
@@ -154,7 +150,6 @@ class DCCCommonServer {
     } else {
       const caseId = MessageBus.extractLevel(topic, 3)
       if (document.querySelector("#settings-modal") == null) {
-        console.log('=== collecting from REST')
         let header = {
             "async": true,
             "crossDomain": true,
@@ -179,7 +174,6 @@ class DCCCommonServer {
                     keywords: jsonResponse.keywords,
                     source: jsonResponse.source};
       } else {
-        console.log('=== collecting from modal')
         caseObj = {
           title: document.getElementById('case_title').value,
           description: document.getElementById('description').value,

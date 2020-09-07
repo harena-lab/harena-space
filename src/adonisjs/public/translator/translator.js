@@ -521,7 +521,7 @@ class Translator {
             compiled[c] = tblock
           }
         } else if (c > 0 &&
-                       this._equivalentSubQuote(compiled[c], compiled[pr])) {
+                   this._equivalentSubQuote(compiled[c], compiled[pr])) {
           // adds element and previous linefeed (if exists)
           for (let e = pr + 1; e <= c; e++) {
             tblockSeq++
@@ -2170,7 +2170,7 @@ class Translator {
       mark: /^[ \t]*(?:\(([\w\.]+)[ \t]*(==|>|<|>=|<=|&gt;|&lt;|&gt;=|&lt;=)[ \t]*((?:"[^"\n\r\f]+")|(?:\-?\d+(?:\.\d+)?)|(?:[\w\.]+))\)[ \t]*)?-(?:(?:&gt;)|>)[ \t]*([^"\n\r\f]+)(?:"([^"\n\r\f]+)")?[ \t]*$/im
     },
     divert: {
-      mark: /(?:(\w+)|"([^"]+)")(?:[ \t])*((?:(?:(?:&lt;)|<)?-(?:(?:&gt;)|>))|(?:\(-\)))[ \t]*(?:(\w[\w.]*)|"([^"]*)")/im,
+      mark: /(?:([^&<> \t\n\r\f][^&<> \t\n\r\f]*)|"([^"]+)")(?:[ \t])*((?:(?:(?:&lt;)|<)?-(?:(?:&gt;)|>))|(?:\(-\)))[ \t]*(?:(\w[\w.]*)|"([^"]*)")/im,
       inline: true
     },
     entity: {
@@ -2231,7 +2231,8 @@ class Translator {
   Translator.subordinatorElement = ['entity']
   Translator.isLine = ['knot', 'field', 'item', 'option', 'divert-script', 'entity', 'input',
     'compute', 'context-open']
-  Translator.textBlockCandidate = ['select', 'annotation', 'text', 'mention', 'image']
+  Translator.textBlockCandidate = ['select', 'annotation', 'text', 'mention', 'image',
+                                   'output']
   Translator.scriptable = ['compute', 'divert-script']
 
   Translator.fieldSet = ['vocabularies', 'answers', 'states', 'labels']
