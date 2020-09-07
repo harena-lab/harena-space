@@ -206,5 +206,5 @@ class MessageBus {
   MessageBus._connection = 1
 
   MessageBus.int = new MessageBus(false)
-  MessageBus.ext = new MessageBus(true)
+  MessageBus.ext = new MessageBus(false)
 })()
