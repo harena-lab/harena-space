@@ -32,19 +32,19 @@ _____t
 `Selecione um dos ícones abaixo para editar o ambiente:
 <div style="flex:48px; max-height:48px; display:flex; flex-direction:row; border:2px">
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
-      <dcc-trigger label="Árvore" action="type/tree"
+      <dcc-button label="Árvore" topic="type/tree"
                    image="images/cell/tree01.svg">
-      </dcc-trigger>
+      </dcc-button>
    </div>
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
-      <dcc-trigger label="Balão" action="type/balloon"
+      <dcc-button label="Balão" topic="type/balloon"
                    image="images/cell/balloon01.svg">
-      </dcc-trigger>
+      </dcc-button>
    </div>
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
-      <dcc-trigger label="Nada" action="type/empty"
+      <dcc-button label="Nada" topic="type/empty"
                    image="images/cell/cell-blue.svg">
-      </dcc-trigger>
+      </dcc-button>
    </div>
 </div>`
   )

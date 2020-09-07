@@ -22,7 +22,7 @@
   <script src="../../dccs/components/dcc-base.js"></script>
   <script src="../../dccs/components/dcc-visual.js"></script>
   <script src="../../dccs/components/dcc-block.js"></script>
-  <script src="../../dccs/components/dcc-trigger.js"></script>
+  <script src="../../dccs/components/dcc-button.js"></script>
 
   <script src="../translator.js"></script>
   <script src="../item-templates.js"></script>
@@ -188,12 +188,12 @@
 
       <div class="container-fluid">
         <nav class="navbar navbar-light d-flex">
-          <dcc-trigger action="control/delta/example" label="DELTA" xstyle="in">
-          </dcc-trigger>
-          <dcc-trigger action="control/raw/example" label="RAW" xstyle="in">
-          </dcc-trigger>
-          <dcc-trigger action="control/clipboard/example" label="CLIPBOARD" xstyle="in">
-          </dcc-trigger>
+          <dcc-button topic="control/delta/example" label="DELTA" xstyle="in">
+          </dcc-button>
+          <dcc-button topic="control/raw/example" label="RAW" xstyle="in">
+          </dcc-button>
+          <dcc-button topic="control/clipboard/example" label="CLIPBOARD" xstyle="in">
+          </dcc-button>
         </nav>
       </div>
 

@@ -77,24 +77,24 @@ ___
 `Selecione um dos ícones abaixo para editar o ambiente:
 <div style="flex:48px; max-height:48px; display:flex; flex-direction:row; border:2px">
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
-      <dcc-trigger label="Zumbi" action="type/zombie1"
+      <dcc-button label="Zumbi" topic="type/zombie1"
                    image="images/cell/zumbi_10.png">
-      </dcc-trigger>
+      </dcc-button>
    </div>
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
-      <dcc-trigger label="Zumbi" action="type/zombie2"
+      <dcc-button label="Zumbi" topic="type/zombie2"
                    image="images/cell/zumbi_3.png">
-      </dcc-trigger>
+      </dcc-button>
    </div>
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
-      <dcc-trigger label="Parede" action="type/wall"
+      <dcc-button label="Parede" topic="type/wall"
                    image="images/cell/wall.svg">
-      </dcc-trigger>
+      </dcc-button>
    </div>
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
-      <dcc-trigger label="Nada" action="type/empty"
+      <dcc-button label="Nada" topic="type/empty"
                    image="images/cell/cell-green.svg">
-      </dcc-trigger>
+      </dcc-button>
    </div>
 </div>
 Configure a transparência do teto:

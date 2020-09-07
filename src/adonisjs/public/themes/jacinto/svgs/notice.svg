@@ -184,8 +184,8 @@
      transform="translate(754.906 -96.854)" />
 </g>
 <foreignObject>
-  <dcc-trigger
-     action="knot/" />
+  <dcc-button
+     topic="knot/" />
 </foreignObject>
 &quot; label=&quot;Previous Knot&quot; xstyle=&quot;out-image&quot; location=&quot;close-window&quot;&gt;<circle
    style="opacity:0.98000004;fill:none"

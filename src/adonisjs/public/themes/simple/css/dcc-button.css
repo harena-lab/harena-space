@@ -2,7 +2,7 @@
 
 /* Trigger DCC */
 
-.dcc-trigger-theme {
+.dcc-button-theme {
    font-size: 3vmin;
    /* vertical center */
    display: flex;
@@ -21,24 +21,24 @@
 }
 
 @media (orientation: landscape) {
-   .dcc-trigger-theme {
+   .dcc-button-theme {
       height: 80px;
       width: 800px;
    }
 }
 
 @media (orientation: portrait) {
-   .dcc-trigger-theme {
+   .dcc-button-theme {
       height: 140px;
       width: 300px;
    }
 }
 
-.dcc-trigger-theme:hover {
+.dcc-button-theme:hover {
    cursor: pointer;
 }
 
-.dcc-trigger-image-theme {
+.dcc-button-image-theme {
    max-width: 100%;
    max-height: 100%;
    cursor: pointer;

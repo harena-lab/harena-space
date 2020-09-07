@@ -26,6 +26,10 @@ class Translator {
     return (this.authoringRender) ? ' author' : ''
   }
 
+  get themeSettings () {
+    return this._themeSettings;
+  }
+
   _authorAttrSub (superseq) {
     return (this.authoringRender && superseq == -1) ? ' author' : ''
   }
@@ -1559,7 +1563,7 @@ class Translator {
       .replace('[divert]',
         (obj.divert == null) ? '' : " divert='" + obj.divert + "'")
       .replace('[message]',
-        (obj.value == null) ? '' : " value='" + obj.value + "'")
+        (obj.message == null) ? '' : " message='" + obj.message + "'")
       .replace('[image]', optionalImage)
   }
 

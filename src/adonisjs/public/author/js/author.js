@@ -498,18 +498,18 @@ class AuthorManager {
             }
             const extra =
                ((this._templateNewKnot == null) ? "" :
-                  "<dcc-trigger action='control/knot/new' label='Add' xstyle='in'>" +
-                        "</dcc-trigger>") +
-               "<dcc-trigger action='control/knot/remove' label='Remove' xstyle='in'>" +
-                     "</dcc-trigger>";
+                  "<dcc-button topic='control/knot/new' label='Add' xstyle='in'>" +
+                        "</dcc-button>") +
+               "<dcc-button topic='control/knot/remove' label='Remove' xstyle='in'>" +
+                     "</dcc-button>";
 
             // Properties.s.editKnotProperties(this._knots[this._knotSelected],
             //                                 this._knotSelected, miniature, extra);
             if (this._templateNewKnot != null) {
                const miniBox = miniature.getBoundingClientRect();
                this._buildFloatingMenu(miniBox.left, miniBox.top,
-                  "<dcc-trigger action='control/knot/new' label='Add' xstyle='in'>" +
-                  "</dcc-trigger>");
+                  "<dcc-button topic='control/knot/new' label='Add' xstyle='in'>" +
+                  "</dcc-button>");
             }
          } else {
          */

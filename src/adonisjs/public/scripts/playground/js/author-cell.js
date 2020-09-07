@@ -233,12 +233,12 @@ class AuthorCellManager {
 </div>
 <div id="script-block" class="d-flex col-6 flex-column align-items-stretch">
    <div class="sty-navigation-expansion">
-       <dcc-trigger id="button-expand-script" action="control/script/expand" label="Expand" image="images/icon/icon-expansion-left.svg"></dcc-trigger>
-       <dcc-trigger id="button-retract-script" action="control/script/retract" label="Retract" image="images/icon/icon-expansion-right.svg"></dcc-trigger>
+       <dcc-button id="button-expand-script" topic="control/script/expand" label="Expand" image="images/icon/icon-expansion-left.svg"></dcc-button>
+       <dcc-button id="button-retract-script" topic="control/script/retract" label="Retract" image="images/icon/icon-expansion-right.svg"></dcc-button>
    </div>
    <div class="sty-navigation-expansion">
-       <dcc-trigger id="button-retract-cells" action="control/cells/retract" label="Expand" image="images/icon/icon-expansion-left.svg"></dcc-trigger>
-       <dcc-trigger id="button-expand-cells" action="control/cells/expand" label="Retract" image="images/icon/icon-expansion-right.svg"></dcc-trigger>
+       <dcc-button id="button-retract-cells" topic="control/cells/retract" label="Expand" image="images/icon/icon-expansion-left.svg"></dcc-button>
+       <dcc-button id="button-expand-cells" topic="control/cells/expand" label="Retract" image="images/icon/icon-expansion-right.svg"></dcc-button>
    </div>
    <div class="h-100 w-100" style="padding-left:.800rem">
       <div class="h-100 w-100" id="script-panel"></div>

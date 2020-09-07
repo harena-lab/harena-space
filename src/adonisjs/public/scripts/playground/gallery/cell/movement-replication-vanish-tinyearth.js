@@ -44,9 +44,9 @@ _h_____r______hc____
    ___
 </rule-dcc-cell-pair>
 
-<dcc-trigger label="Next" action="state/next"></dcc-trigger>
-<dcc-trigger label="Play" action="timer/start"></dcc-trigger>
-<dcc-trigger label="Stop" action="timer/stop"></dcc-trigger>
+<dcc-button label="Next" topic="state/next"></dcc-button>
+<dcc-button label="Play" topic="timer/start"></dcc-button>
+<dcc-button label="Stop" topic="timer/stop"></dcc-button>
 
 <dcc-timer cycles="1000" interval="500" publish="state/next">
    <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>

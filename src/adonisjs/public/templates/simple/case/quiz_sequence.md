@@ -36,7 +36,7 @@ Write here the **feedback**.
 
 # Note (note)
 
-**You answered:** ^Presentation.input1^.
+**You answered:** ^Previous.input1^.
 <br>
 ^parameter^
 
