@@ -48,14 +48,14 @@ _________________
 
 <div style="flex:48px; max-height:48px; display:flex; flex-direction:row; border:2px">
    <div style="flex:20%; max-width:96px; max-height:48px; margin-right:10px">
-      <dcc-trigger label="Régua" action="ruler/activate"
+      <dcc-button label="Régua" topic="ruler/activate"
                    image="images/cell/ruler.svg">
-      </dcc-trigger>
+      </dcc-button>
    </div>
    <div style="flex:20%; max-width:96px; max-height:48px; margin-right:10px">
-      <dcc-trigger label="Apagar Régua" action="ruler/reset"
+      <dcc-button label="Apagar Régua" topic="ruler/reset"
                    image="images/cell/ruler-reset.svg">
-      </dcc-trigger>
+      </dcc-button>
    </div>
 </div>
 <div style="flex:48px; max-height:48px; display:flex; flex-direction:row">
@@ -79,64 +79,64 @@ _________________
 `Selecione um dos ícones abaixo para editar o ambiente:
 <div style="flex:48px; max-height:48px; display:flex; flex-direction:row; border:2px">
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
-      <dcc-trigger label="Árvore" action="type/tree"
+      <dcc-button label="Árvore" topic="type/tree"
                    image="images/cell/tree01.svg">
-      </dcc-trigger>
+      </dcc-button>
    </div>
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
-      <dcc-trigger label="Boid" action="type/boid" value="rotate:0"
+      <dcc-button label="Boid" topic="type/boid" message="rotate:0"
                    image="images/cell/boid01.svg">
-      </dcc-trigger>
+      </dcc-button>
    </div>
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
-      <dcc-trigger label="Boid 45" action="type/boid" value="rotate:45"
+      <dcc-button label="Boid 45" topic="type/boid" message="rotate:45"
                    image="images/cell/boid01-045.svg">
-      </dcc-trigger>
+      </dcc-button>
    </div>
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
-      <dcc-trigger label="Boid 90" action="type/boid" value="rotate:90"
+      <dcc-button label="Boid 90" topic="type/boid" message="rotate:90"
                    image="images/cell/boid01-090.svg">
-      </dcc-trigger>
+      </dcc-button>
    </div>
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
-      <dcc-trigger label="Boid 135" action="type/boid" value="rotate:135"
+      <dcc-button label="Boid 135" topic="type/boid" message="rotate:135"
                    image="images/cell/boid01-135.svg">
-      </dcc-trigger>
+      </dcc-button>
    </div>
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
-      <dcc-trigger label="Boid 180" action="type/boid" value="rotate:180"
+      <dcc-button label="Boid 180" topic="type/boid" message="rotate:180"
                    image="images/cell/boid01-180.svg">
-      </dcc-trigger>
+      </dcc-button>
    </div>
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
-      <dcc-trigger label="Boid 225" action="type/boid" value="rotate:225"
+      <dcc-button label="Boid 225" topic="type/boid" message="rotate:225"
                    image="images/cell/boid01-225.svg">
-      </dcc-trigger>
+      </dcc-button>
    </div>
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
-      <dcc-trigger label="Boid 270" action="type/boid" value="rotate:270"
+      <dcc-button label="Boid 270" topic="type/boid" message="rotate:270"
                    image="images/cell/boid01-270.svg">
-      </dcc-trigger>
+      </dcc-button>
    </div>
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
-      <dcc-trigger label="Boid 315" action="type/boid" value="rotate:315"
+      <dcc-button label="Boid 315" topic="type/boid" message="rotate:315"
                    image="images/cell/boid01-315.svg">
-      </dcc-trigger>
+      </dcc-button>
    </div>
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
-      <dcc-trigger label="Bandeira Vermelha" action="type/flagr"
+      <dcc-button label="Bandeira Vermelha" topic="type/flagr"
                    image="images/cell/flag-red.svg">
-      </dcc-trigger>
+      </dcc-button>
    </div>
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
-      <dcc-trigger label="Nuvem" action="type/cloud"
+      <dcc-button label="Nuvem" topic="type/cloud"
                    image="images/cell/cloud01.svg">
-      </dcc-trigger>
+      </dcc-button>
    </div>
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
-      <dcc-trigger label="Nada" action="type/empty"
+      <dcc-button label="Nada" topic="type/empty"
                    image="images/cell/cell-blue.svg">
-      </dcc-trigger>
+      </dcc-button>
    </div>
 </div>
 `

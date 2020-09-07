@@ -1,4 +1,4 @@
-/* Trigger DCC
+/* Button DCC
  *
  * xstyle - controls the behavior of the style
  *   * "in" or not defined -> uses the internal trigger-button style
@@ -6,7 +6,7 @@
  *   * "out"  -> apply an style externally defined with the name "trigger-button-template"
 **************************************************************************/
 
-class DCCTrigger extends DCCBlock {
+class DCCButton extends DCCBlock {
   constructor () {
     super()
     this._computeTrigger = this._computeTrigger.bind(this)
@@ -21,7 +21,7 @@ class DCCTrigger extends DCCBlock {
 
     super.connectedCallback()
 
-    if (this.hasAttribute('action') && this.action.endsWith('/navigate')) {
+    if (this.hasAttribute('topic') && this.topic.endsWith('/navigate')) {
       this.navigationBlocked = this.navigationBlocked.bind(this)
       MessageBus.ext.subscribe('+/+/navigate/blocked', this.navigationBlocked)
     }
@@ -31,7 +31,7 @@ class DCCTrigger extends DCCBlock {
 
   static get observedAttributes () {
     return DCCBlock.observedAttributes.concat(
-      ['type', 'link', 'action', 'value', 'variable'])
+      ['type', 'link', 'topic', 'message', 'variable'])
   }
 
   get type () {
@@ -50,20 +50,20 @@ class DCCTrigger extends DCCBlock {
     this.setAttribute('link', newValue)
   }
 
-  get action () {
-    return this.getAttribute('action')
+  get topic () {
+    return this.getAttribute('topic')
   }
 
-  set action (newValue) {
-    this.setAttribute('action', newValue)
+  set topic (newValue) {
+    this.setAttribute('topic', newValue)
   }
 
-  get value () {
-    return this.getAttribute('value')
+  get message () {
+    return this.getAttribute('message')
   }
 
-  set value (newValue) {
-    this.setAttribute('value', newValue)
+  set message (newValue) {
+    this.setAttribute('message', newValue)
   }
 
   get variable () {
@@ -80,14 +80,14 @@ class DCCTrigger extends DCCBlock {
     // === pre presentation setup
     let html
     if (this.xstyle.startsWith('out')) { html = this.label } else {
-      // html = DCCTrigger.templateStyle;
+      // html = DCCButton.templateStyle;
       if (this.hasAttribute('image')) {
-        html = DCCTrigger.templateElements.image
+        html = DCCButton.templateElements.image
           .replace('[render]', this._renderStyle())
           .replace('[label]', this.label)
           .replace('[image]', this.image)
       } else {
-        html = DCCTrigger.templateElements.regular
+        html = DCCButton.templateElements.regular
           .replace('[render]', this._renderStyle())
           .replace('[label]', this.label)
       }
@@ -124,7 +124,7 @@ class DCCTrigger extends DCCBlock {
   /* Rendering */
 
   elementTag () {
-    return DCCTrigger.elementTag
+    return DCCButton.elementTag
   }
 
   externalLocationType () {
@@ -138,19 +138,19 @@ class DCCTrigger extends DCCBlock {
           ? this.variable.substring(0, this.variable.indexOf(':')) : this.variable
         console.log('=== trigger variable')
         console.log('var/' + v + '/changed')
-        console.log((this.variable.endsWith(':label')) ? this.label : this.value)
+        console.log((this.variable.endsWith(':label')) ? this.label : this.message)
         MessageBus.ext.publish('var/' + v + '/changed',
         {
-          sourceType: DCCTrigger.elementTag,
-          value: (this.variable.endsWith(':label')) ? this.label : this.value
+          sourceType: DCCButton.elementTag,
+          value: (this.variable.endsWith(':label')) ? this.label : this.message
         })
       }
-      if (this.hasAttribute('label') || this.hasAttribute('action')) {
-        if (this.hasAttribute('action') && this.action.endsWith('/navigate')) { this._active = false }
-        const topic = (this.hasAttribute('action'))
-          ? this.action : 'trigger/' + this.label + '/clicked'
+      if (this.hasAttribute('label') || this.hasAttribute('topic')) {
+        if (this.hasAttribute('topic') && this.topic.endsWith('/navigate')) { this._active = false }
+        const topic = (this.hasAttribute('topic'))
+          ? this.topic : 'button/' + this.label + '/clicked'
         const message = {}
-        if (this.hasAttribute('value')) { message.value = this.value }
+        if (this.hasAttribute('message')) { message.value = this.message }
 
         MessageBus.ext.publish(topic, message)
       }
@@ -163,7 +163,7 @@ class DCCTrigger extends DCCBlock {
 }
 
 (function () {
-  DCCTrigger.templateElements = {
+  DCCButton.templateElements = {
     regular:
    '<span id=\'presentation-dcc\' class=\'[render]\'>[label]</span>',
     image:
@@ -172,7 +172,7 @@ class DCCTrigger extends DCCBlock {
    </span>`
   }
 
-  DCCTrigger.elementTag = 'dcc-trigger'
+  DCCButton.elementTag = 'dcc-button'
 
-  customElements.define(DCCTrigger.elementTag, DCCTrigger)
+  customElements.define(DCCButton.elementTag, DCCButton)
 })()

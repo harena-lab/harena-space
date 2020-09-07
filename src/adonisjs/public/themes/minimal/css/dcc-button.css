@@ -2,7 +2,7 @@
 
 /* Trigger DCC */
 
-.dcc-trigger-theme {
+.dcc-button-theme {
    border: 1px solid lightgray;
    border-radius: 5px;
    margin: 5px;
@@ -12,12 +12,12 @@
    text-decoration: none;
    display: inline-block;
 }
-.dcc-trigger-theme:hover {
+.dcc-button-theme:hover {
    color: black;
    font-weight: bold;
    cursor: pointer;
 }
-.dcc-trigger-image-theme {
+.dcc-button-image-theme {
    max-width: 100%;
    max-height: 100%;
    cursor: pointer;

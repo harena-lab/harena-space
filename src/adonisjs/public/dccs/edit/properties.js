@@ -642,8 +642,8 @@ class Properties {
   /*
 Properties.buttonApply =
 `<div class="control-button">
-   <dcc-trigger xstyle="in" action="properties/apply" label="Apply" image="icons/icon-check.svg">
-   </dcc-trigger>
+   <dcc-button xstyle="in" topic="properties/apply" label="Apply" image="icons/icon-check.svg">
+   </dcc-button>
 </div>`;
 */
 

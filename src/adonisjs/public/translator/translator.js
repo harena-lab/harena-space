@@ -1559,7 +1559,7 @@ class Translator {
       .replace('[divert]',
         (obj.divert == null) ? '' : " divert='" + obj.divert + "'")
       .replace('[message]',
-        (obj.value == null) ? '' : " value='" + obj.value + "'")
+        (obj.message == null) ? '' : " message='" + obj.message + "'")
       .replace('[image]', optionalImage)
   }
 

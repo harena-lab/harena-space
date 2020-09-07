@@ -54,16 +54,16 @@ _h_____r______hc____
    ___
 </rule-dcc-cell-pair>
 
-<dcc-trigger label="Next" action="state/next"></dcc-trigger>
-<dcc-trigger label="Play" action="timer/start"></dcc-trigger>
-<dcc-trigger label="Stop" action="timer/stop"></dcc-trigger>
+<dcc-button label="Next" topic="state/next"></dcc-button>
+<dcc-button label="Play" topic="timer/start"></dcc-button>
+<dcc-button label="Stop" topic="timer/stop"></dcc-button>
 
-<dcc-trigger label="Empty" action="type/empty"></dcc-trigger>
-<dcc-trigger label="Water" action="type/water"></dcc-trigger>
-<dcc-trigger label="Rock" action="type/rock"></dcc-trigger>
-<dcc-trigger label="Tree" action="type/tree"></dcc-trigger>
-<dcc-trigger label="Carnivore" action="type/carnivore"></dcc-trigger>
-<dcc-trigger label="Herbivore" action="type/herbivore"></dcc-trigger>
+<dcc-button label="Empty" topic="type/empty"></dcc-button>
+<dcc-button label="Water" topic="type/water"></dcc-button>
+<dcc-button label="Rock" topic="type/rock"></dcc-button>
+<dcc-button label="Tree" topic="type/tree"></dcc-button>
+<dcc-button label="Carnivore" topic="type/carnivore"></dcc-button>
+<dcc-button label="Herbivore" topic="type/herbivore"></dcc-button>
 
 <dcc-timer cycles="1000" interval="500" publish="state/next">
    <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
