@@ -13,13 +13,17 @@ Write here the **stem** of your quiz.
 # Note (note)
 
 **You answered:** ^Previous.input1^.
-<br>
+
+
+
 ^parameter^
 
 # Presentation References (note)
 
 **You answered:** ^Previous.input1^.
-<br>
+
+
+
 ^parameter^
 
 References <-> References

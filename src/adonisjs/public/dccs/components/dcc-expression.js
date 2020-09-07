@@ -31,13 +31,9 @@ class DCCExpression extends DCCVisual {
     }
 
     const compiled = DCCExpression.compileStatementSet(this.expression)
-    console.log('=== compiled:')
-    console.log(compiled)
-    for (const c of compiled) { console.log('=== result: ' + DCCExpression.computeExpression(c[1])) }
+    // for (const c of compiled) { console.log('=== result: ' + DCCExpression.computeExpression(c[1])) }
 
     let result = await MessageBus.ext.request('var/' + this._variable + '/get')
-    console.log('=== result field')
-    console.log(result.message)
     if (result.message == null) { result = '' } else {
       if (this._index == null) {
         // <TODO> provisory unfold
@@ -60,19 +56,13 @@ class DCCExpression extends DCCVisual {
   }
 
   static compileStatementSet (statementSet) {
-    console.log('=== statement set')
-    console.log(statementSet)
     const statementLines = statementSet.split(/;\r?\n?|\r?\n/)
-    console.log('=== statement lines')
-    console.log(statementLines)
     const compiledSet = []
     for (const l of statementLines) { compiledSet.push(DCCExpression.compileStatement(l)) }
     return compiledSet
   }
 
   static compileStatement (statement) {
-    console.log('=== compile')
-    console.log(statement)
     const compiled = []
     const assign = statement.match(DCCExpression.assignment)
     if (assign != null) {
@@ -92,8 +82,6 @@ class DCCExpression extends DCCVisual {
     *                   (avoid transformations during its execution)
     */
   static compileExpression (expression) {
-    console.log('=== expression')
-    console.log(expression)
     const compiled = []
     const stack = []
     let mdfocus = expression
@@ -110,7 +98,6 @@ class DCCExpression extends DCCVisual {
       }
       if (matchStart > -1) {
         const matchContent = mdfocus.match(DCCExpression.element[selected])[0]
-        console.log('=== ' + selected + ': ' + matchContent)
 
         switch (selected) {
           case 'number':
@@ -158,8 +145,6 @@ class DCCExpression extends DCCVisual {
       compiled.push([(op[1] == DCCExpression.precedence.function)
         ? DCCExpression.role.function : DCCExpression.role.arithmetic, op[0]])
     }
-    console.log('=== compiled')
-    console.log(compiled)
     return compiled
   }
 
