@@ -337,8 +337,14 @@ class PlayerManager {
              this._knots[knotName].categories.includes('script')) { MetaPlayer.player.play(this._knots[knotName], this._state) } else {
         const knot = await Translator.instance.generateHTML(
           this._knots[knotName])
-        if (this._knots[knotName].categories &&
-                this._knots[knotName].categories.includes('note')) { this.presentNote(knot) } else { this.presentKnot(knot) }
+        console.log('=== theme settings')
+        console.log(Translator.instance.themeSettings.note)
+        let note = false
+        if (this._knots[knotName].categories && Translator.instance.themeSettings &&
+            Translator.instance.themeSettings.note)
+          note = this._knots[knotName].categories.find(
+            cat => Translator.instance.themeSettings.note.includes(cat))
+        if (note) { this.presentNote(knot) } else { this.presentKnot(knot) }
       }
     }
     MessageBus.ext.publish('knot/' + knotName + '/start')
