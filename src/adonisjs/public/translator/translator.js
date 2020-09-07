@@ -26,6 +26,10 @@ class Translator {
     return (this.authoringRender) ? ' author' : ''
   }
 
+  get themeSettings () {
+    return this._themeSettings;
+  }
+
   _authorAttrSub (superseq) {
     return (this.authoringRender && superseq == -1) ? ' author' : ''
   }

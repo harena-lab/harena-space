@@ -133,25 +133,18 @@ class DCCButton extends DCCBlock {
 
   _computeTrigger () {
     if (this._active) {
+      let message = { sourceType: DCCButton.elementTag }
       if (this.hasAttribute('variable')) {
         const v = (this.variable.includes(':'))
           ? this.variable.substring(0, this.variable.indexOf(':')) : this.variable
-        console.log('=== trigger variable')
-        console.log('var/' + v + '/changed')
-        console.log((this.variable.endsWith(':label')) ? this.label : this.message)
-        MessageBus.ext.publish('var/' + v + '/changed',
-        {
-          sourceType: DCCButton.elementTag,
-          value: (this.variable.endsWith(':label')) ? this.label : this.message
-        })
+        message.value = (this.variable.endsWith(':label')) ? this.label : this.message
+        MessageBus.ext.publish('var/' + v + '/changed', message)
       }
       if (this.hasAttribute('label') || this.hasAttribute('topic')) {
         if (this.hasAttribute('topic') && this.topic.endsWith('/navigate')) { this._active = false }
         const topic = (this.hasAttribute('topic'))
           ? this.topic : 'button/' + this.label + '/clicked'
-        const message = {}
         if (this.hasAttribute('message')) { message.value = this.message }
-
         MessageBus.ext.publish(topic, message)
       }
     }
