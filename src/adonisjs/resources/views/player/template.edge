@@ -2,27 +2,15 @@
 <html>
 <head>
   <meta charset="utf-8">
-<title>{{ pageTitle }} | Harena </title>
+  <title>{{ pageTitle }} | Harena </title>
 
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
 
-  <link rel="stylesheet" href="{{ assetsUrl('lib/fontawesome-5-10-1/css/all.min.css') }}">
-  <link rel="stylesheet" href="{{ assetsUrl('lib/bootstrap-4.4.1-dist/css/bootstrap.min.css') }}">
-
-  <link rel="stylesheet" href="{{ assetsUrl('infra/css/common-author.css') }}">
-  <link rel="stylesheet" href="{{ assetsUrl('infra/css/common-player.css') }}">
-
-  {{--  {{ style('player') }}  --}}
   <link rel="stylesheet" href="{{ assetsUrl('start/css/main.css') }}">
 
-  <script src="{{ assetsUrl('infra/bus.js') }}"></script>
-  <script src="{{ assetsUrl('infra/basic.js') }}"></script>
-  <script src="{{ assetsUrl('infra/dcc-common-server-proxy.js') }}"></script>
-  <script src="{{ assetsUrl('infra/dcc-common-server-address.js') }}"></script>
-  <script src="{{ assetsUrl('author/js/dcc-author-server-proxy.js') }}"></script>
-  <script async src="{{ assetsUrl('infra/token-validator.js') }}"></script>
+  @include('layout.template-min')
 
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="{{ assetsUrl('author/js/dcc-author-server-proxy.js') }}"></script>
 
   <script src="{{ assetsUrl('dccs/components/dcc-base.js') }}"></script>
   <script src="{{ assetsUrl('dccs/components/dcc-visual.js') }}"></script>
