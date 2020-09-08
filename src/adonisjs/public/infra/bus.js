@@ -75,8 +75,8 @@ class MessageBus {
         const response = await fetch(DCCCommonServer.loggerAddressAPI + 'message', {
           method: 'POST',
           body: JSON.stringify({
-            "harena-log-stream-version": "1",
-            "harena-log-stream":[
+            'harena-log-stream-version': '1',
+            'harena-log-stream': [
               {
                 topic: extTopic,
                 payload: extMessage

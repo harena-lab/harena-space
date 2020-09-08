@@ -22,7 +22,7 @@ class AuthController {
 
       const messages = {
         'email.required': 'Missing email',
-        'password.required': 'Missing password',
+        'password.required': 'Missing password'
       }
 
       const validation = await validate(params, {
@@ -52,10 +52,9 @@ class AuthController {
 
       await axios(config)
         .then(async function (endpointResponse) {
-
           const responseUser = endpointResponse.data
-          //session.put('username', responseUser.username)
-          //await auth.loginViaId(responseUser.id)
+          // session.put('username', responseUser.username)
+          // await auth.loginViaId(responseUser.id)
           response.cookie('token', responseUser.token)
 
           return response.route('index')

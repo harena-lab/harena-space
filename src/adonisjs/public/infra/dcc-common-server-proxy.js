@@ -149,30 +149,32 @@ class DCCCommonServer {
       caseObj = caseM.message
     } else {
       const caseId = MessageBus.extractLevel(topic, 3)
-      if (document.querySelector("#settings-modal") == null) {
-        let header = {
-            "async": true,
-            "crossDomain": true,
-            "method": "GET",
-            "headers": {
-               "Content-Type": "application/json",
-               "Authorization": "Bearer " + DCCCommonServer.token
-             }
-         };
+      if (document.querySelector('#settings-modal') == null) {
+        const header = {
+          async: true,
+          crossDomain: true,
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + DCCCommonServer.token
+          }
+        }
 
-         const response =
-            await fetch(DCCCommonServer.managerAddressAPI + "case/" + caseId,
-                        header);
+        const response =
+            await fetch(DCCCommonServer.managerAddressAPI + 'case/' + caseId,
+              header)
 
-         const jsonResponse = await response.json();
+        const jsonResponse = await response.json()
 
-         caseObj = {title: jsonResponse.title,
-                    description: jsonResponse.description,
-                    language: jsonResponse.language,
-                    domain: jsonResponse.domain,
-                    specialty: jsonResponse.specialty,
-                    keywords: jsonResponse.keywords,
-                    source: jsonResponse.source};
+        caseObj = {
+          title: jsonResponse.title,
+          description: jsonResponse.description,
+          language: jsonResponse.language,
+          domain: jsonResponse.domain,
+          specialty: jsonResponse.specialty,
+          keywords: jsonResponse.keywords,
+          source: jsonResponse.source
+        }
       } else {
         caseObj = {
           title: document.getElementById('case_title').value,
@@ -182,7 +184,7 @@ class DCCCommonServer {
           specialty: document.getElementById('specialty').value,
           keywords: document.getElementById('keywords').value,
           source: document.getElementById('case_source').value
-                          .replace(/\\"/gm, '"')
+            .replace(/\\"/gm, '"')
         }
       }
     }

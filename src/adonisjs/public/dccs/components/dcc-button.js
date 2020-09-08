@@ -133,7 +133,7 @@ class DCCButton extends DCCBlock {
 
   _computeTrigger () {
     if (this._active) {
-      let message = { sourceType: DCCButton.elementTag }
+      const message = { sourceType: DCCButton.elementTag }
       if (this.hasAttribute('variable')) {
         const v = (this.variable.includes(':'))
           ? this.variable.substring(0, this.variable.indexOf(':')) : this.variable
