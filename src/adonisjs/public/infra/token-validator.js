@@ -32,27 +32,29 @@ class TokenController {
         // console.log('=== check token response')
         // console.log(endpointResponse.data);
 
-          if (endpointResponse.data = 'token valid') {
-            const elem = document.getElementById('header-login').firstElementChild
-            elem.href = '/logout'
-            elem.innerHTML = 'Log out'
-          }
-        })
-        .catch(function (error) {
-          console.log('=== check token error')
-          console.log(error)
-        })
-    } else {
-      console.log('token invalid')
-      const elem = document.getElementById('header-login').firstElementChild
-      elem.href = '/login'
-      elem.innerHTML = 'Log in'
+        if (endpointResponse.data='token valid') {
+          console.log('token valid');
+          let elem = document.getElementById('header-login').firstElementChild;
+          elem.href='/logout';
+          elem.innerHTML='Log out';
+        }
+      })
+      .catch(function (error) {
+        console.log('=== check token error')
+        console.log(error)
+      })
+    }else{
+      console.log('token invalid');
+      let elem = document.getElementById('header-login').firstElementChild;
+      elem.href='/login'
+      elem.innerHTML='Log in'
     }
   }
 
-  async redirectUnlogged () {
-    $(document).ready(function () {
-      if (DCCCommonServer.token != 'undefined') {
+    // $( document ).ready(function() {
+
+      if(DCCCommonServer.token != 'undefined'){
+
         const config = {
           method: 'GET',
           url: DCCCommonServer.managerAddressAPI + 'auth/check',
@@ -75,7 +77,7 @@ class TokenController {
       } else {
         window.location.href = '/login'
       }
-    })
+    // });
   }
 }
 (function () {
