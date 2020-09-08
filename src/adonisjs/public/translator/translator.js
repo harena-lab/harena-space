@@ -27,7 +27,7 @@ class Translator {
   }
 
   get themeSettings () {
-    return this._themeSettings;
+    return this._themeSettings
   }
 
   _authorAttrSub (superseq) {
@@ -1570,9 +1570,7 @@ class Translator {
   _transformNavigationMessage (target) {
     let message
     const lower = target.toLowerCase()
-    if (Translator.reservedNavigation.includes(lower)) { message = Translator.navigationMap[lower] }
-    else if (lower.startsWith('variable.')) { message = 'variable/' + target.substring(9) + '/navigate' }
-    else { message = 'knot/' + target + '/navigate' }
+    if (Translator.reservedNavigation.includes(lower)) { message = Translator.navigationMap[lower] } else if (lower.startsWith('variable.')) { message = 'variable/' + target.substring(9) + '/navigate' } else { message = 'knot/' + target + '/navigate' }
     return message
   }
 
@@ -1905,8 +1903,7 @@ class Translator {
                          ((obj[atr] == 'true') ? '' : "='" + obj[atr] + "'")
       }
     }
-    if (obj.subtype == 'text')
-      extraAttr += ' rows="5"'
+    if (obj.subtype == 'text') { extraAttr += ' rows="5"' }
     if (obj.contextTarget) {
       extraAttr +=
             " target='" + this._transformNavigationMessage(obj.contextTarget) + "'"
@@ -2232,7 +2229,7 @@ class Translator {
   Translator.isLine = ['knot', 'field', 'item', 'option', 'divert-script', 'entity', 'input',
     'compute', 'context-open']
   Translator.textBlockCandidate = ['select', 'annotation', 'text', 'mention', 'image',
-                                   'output']
+    'output']
   Translator.scriptable = ['compute', 'divert-script']
 
   Translator.fieldSet = ['vocabularies', 'answers', 'states', 'labels']

@@ -12,17 +12,17 @@ const { validate } = use('Validator')
 // const User = use('App/Models/User')
 
 class AuthController {
-  create ({ view, session }) {
+  create ({ view }) {
     return view.render('registration.login', { pageTitle: 'Log in' })
   }
 
-  async login ({ view, request, session, response, auth }) {
+  async login ({ view, request, response }) {
     try {
       const params = request.all()
 
       const messages = {
         'email.required': 'Missing email',
-        'password.required': 'Missing password',
+        'password.required': 'Missing password'
       }
 
       const validation = await validate(params, {
@@ -31,13 +31,13 @@ class AuthController {
       }, messages)
 
       // * If validation fails, early returns with validation message
-      if (validation.fails()) {
-        session
-          .withErrors(validation.messages())
-          .flashExcept(['password'])
-
-        return response.redirect('back')
-      }
+      // if (validation.fails()) {
+      //   session
+      //     .withErrors(validation.messages())
+      //     .flashExcept(['password'])
+      //
+      //   return response.redirect('back')
+      // }
 
       const endpointUrl = Env.get('HARENA_MANAGER_URL') + '/api/v1/auth/login'
 
@@ -52,10 +52,9 @@ class AuthController {
 
       await axios(config)
         .then(async function (endpointResponse) {
-
           const responseUser = endpointResponse.data
-
-          await auth.loginViaId(responseUser.id)
+          // session.put('username', responseUser.username)
+          // await auth.loginViaId(responseUser.id)
           response.cookie('token', responseUser.token)
 
           return response.route('index')
@@ -68,7 +67,7 @@ class AuthController {
     }
   }
 
-  async logout ({ session, auth, response, request }) {
+  async logout ({ response, request }) {
     try {
       const endpointUrl = Env.get('HARENA_MANAGER_URL') + '/api/v1/auth/logout'
 
@@ -82,7 +81,8 @@ class AuthController {
 
       await axios(config)
         .then(async function (endpointResponse) {
-          await auth.logout()
+          response.clearCookie('token')
+
           return response.route('index')
         })
         .catch(function (error) {

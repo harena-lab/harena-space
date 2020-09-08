@@ -161,7 +161,7 @@ class PlayerManager {
   }
 
   async startPlayer (caseid) {
-    const preCaseOff = true;
+    const preCaseOff = true
     this._mainPanel = document.querySelector('#main-panel')
 
     const parameters = window.location.search.substr(1)
@@ -341,9 +341,10 @@ class PlayerManager {
         console.log(Translator.instance.themeSettings.note)
         let note = false
         if (this._knots[knotName].categories && Translator.instance.themeSettings &&
-            Translator.instance.themeSettings.note)
+            Translator.instance.themeSettings.note) {
           note = this._knots[knotName].categories.find(
             cat => Translator.instance.themeSettings.note.includes(cat))
+        }
         if (note) { this.presentNote(knot) } else { this.presentKnot(knot) }
       }
     }

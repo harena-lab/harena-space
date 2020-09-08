@@ -87,7 +87,7 @@ class CaseController {
   async update ({ request, session, response }) {
     try {
       const params = request.all()
-      console.log('UPDATE STARTING........');
+      console.log('UPDATE STARTING........')
       const endpointUrl =
       Env.get('HARENA_MANAGER_URL') + '/api/v1/case/' + params.case_id
 

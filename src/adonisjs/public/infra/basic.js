@@ -68,19 +68,19 @@ class Basic {
   }
 
   composedThemeFamily (themeFamily) {
-    const dtf = this.decomposeThemeFamily(themeFamily);
+    const dtf = this.decomposeThemeFamily(themeFamily)
     this.currentThemeFamily = dtf.family
     this.currentCustomTheme = dtf.custom
   }
 
   decomposeThemeFamily (themeFamily) {
-    let family = themeFamily;
-    let custom = "default";
-    if (family.includes("(")) {
+    let family = themeFamily
+    let custom = 'default'
+    if (family.includes('(')) {
       custom = family.substring(family.indexOf('(') + 1, family.length - 1)
       family = family.substring(0, family.indexOf('('))
     }
-    return {family: family, custom: custom}
+    return { family: family, custom: custom }
   }
 
   /*
@@ -274,7 +274,7 @@ class Basic {
 
   themeCustomStyleResolver (cssFile) {
     return this._rootPath + 'themes/' + this.currentThemeFamily +
-             '/css/' + this.currentCustomTheme + "/" + cssFile
+             '/css/' + this.currentCustomTheme + '/' + cssFile
   }
 
   systemStyleResolver (cssFile) {
