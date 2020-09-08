@@ -9,8 +9,14 @@ class TokenController {
   }
 
   async checkToken (checked) {
+    let elem
+    if (document.getElementById('harena-header')) {
+      elem = document.getElementById('header-login').firstElementChild
+    } else {
+      return
+    }
+
     if (checked) {
-      const elem = document.getElementById('header-login').firstElementChild
       elem.href = '/logout'
       elem.innerHTML = 'Log out'
       return
@@ -34,7 +40,7 @@ class TokenController {
 
           if (endpointResponse.data === 'token valid') {
             console.log('token valid')
-            const elem = document.getElementById('header-login').firstElementChild
+            // const elem = document.getElementById('header-login').firstElementChild
             elem.href = '/logout'
             elem.innerHTML = 'Log out'
           }
@@ -45,7 +51,7 @@ class TokenController {
         })
     } else {
       console.log('token invalid')
-      const elem = document.getElementById('header-login').firstElementChild
+      // const elem = document.getElementById('header-login').firstElementChild
       elem.href = '/login'
       elem.innerHTML = 'Log in'
     }
@@ -66,12 +72,12 @@ class TokenController {
       console.log(DCCCommonServer.managerAddressAPI + 'auth/check')
       axios(config)
         .then(function (endpointResponse) {
-          // console.log('=== check token response')
+          console.log('=== check token redirect response')
           // console.log(endpointResponse.data);
-          endpointResponse.data == 'token valid' ? TokenController.instance.checkToken(true) : window.location.href = '/login'
+          endpointResponse.data === 'token valid' ? TokenController.instance.checkToken(true) : window.location.href = '/login'
         })
         .catch(function (error) {
-          console.log('=== check token error')
+          console.log('=== check redirect error')
           console.log(error)
         })
     } else {
