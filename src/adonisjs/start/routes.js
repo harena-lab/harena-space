@@ -59,9 +59,17 @@ Route.group(() => {
   Route.post('update', 'CaseController.update')
 }).prefix('choose-template').as('author_template_case')
 
-Route.get('drafts', ({ view }) => {
-  return view.render('author.drafts')
-}).as('cases_drafts')
+// Route.get('drafts', ({ view }) => {
+//   return view.render('author.drafts')
+// }).as('cases_drafts')
+Route.group(() => {
+  Route.get('/', ({ view }) => {
+    return view.render('author.drafts')
+  }).as('draft_all_cases')
+
+  Route.get('quests', 'QuestController.getQuestsAuthor').as('draft_quests')
+  Route.get('cases', 'QuestController.getCasesByQuestAuthor').as('draft_cases')
+}).prefix('drafts')
 
 Route.group(() => {
 	Route.post(  'link/case',		'CaseController.linkCase')
