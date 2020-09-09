@@ -19,16 +19,16 @@
 
       <div class="h-100 w-100 home-content-padding">
         <div class="home-text mb-5">
-          <p>Continue editing your draft cases.</p>
+          <p>Choose a quest to filter your cases.</p>
         </div>
         <div id="case-boxes" class="container-fluid h-100 scroll-x draft-scroll-container">
           <div class="d-flex">
 
               @each(q in quests)
 
-              <div class="d-flex 0 text-center player-quest-icon player-quest-icon-padding">
-                <a href="{{ route('drafts.cases')}}?id={{q.id}}&color={{q.color.substring(1)}}">
-                  <img class="visita-virtual"  src="{{q.url}}">
+              <div class="d-flex justify-content-center text-center draft-quest-container">
+                <a href="{{ route('draft_cases')}}?id={{q.id}}">
+                  <img class="draft-quest-icon"  src="{{q.url}}">
                   <h5 class="text-center text-wrap txt-visita-virtual" style="color:{{q.color}} !important;">{{q.title}}</h5>
                 </a>
 

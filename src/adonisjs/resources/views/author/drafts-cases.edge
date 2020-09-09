@@ -17,7 +17,7 @@
       </div>
       <!-- End of breadcrumbs -->
 
-      <div class="h-100 w-100 home-content-padding">
+      <div class="h-100 w-100 draft-content-padding">
         <div class="home-text mb-5">
           <p>Continue editing your draft cases.</p>
         </div>
@@ -26,7 +26,7 @@
           <div id="b{{c.id}}" class="row draft-author-case-container">
             <div class="col draft-case-title">{{c.title}}</div>
             <div class="d-flex justify-content-end">
-              <div id="e{{c.id}}" class="col author-panel-button">EDIT</div>
+              <div id="e{{c.id}}" class="col author-panel-button" onclick="window.location.href='/author?id={{c.id}}'">EDIT</div>
               <div id="p{{c.id}}" class="col author-panel-button">PREVIEW</div>
               <div id="d{{c.id}}" class="col author-panel-button">DELETE</div>
             </div>

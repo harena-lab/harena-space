@@ -65,11 +65,11 @@ Route.group(() => {
 Route.group(() => {
   Route.get('/', ({ view }) => {
     return view.render('author.drafts')
-  })
+  }).as('draft_all_cases')
 
-  Route.get('quests', 'QuestController.getQuestsAuthor')
-  Route.get('cases', 'QuestController.getCasesByQuestAuthor')
-}).prefix('drafts').as('cases_drafts')
+  Route.get('quests', 'QuestController.getQuestsAuthor').as('draft_quests')
+  Route.get('cases', 'QuestController.getCasesByQuestAuthor').as('draft_cases')
+}).prefix('drafts')
 
 Route.group(() => {
 	Route.post(  'link/case',		'CaseController.linkCase')

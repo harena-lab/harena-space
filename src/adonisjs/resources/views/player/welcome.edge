@@ -25,10 +25,10 @@
             @each(q in quests)
 
 
-            <div class="col text-center player-quest-icon">
+            <div class="col text-center player-quest-container">
               <a href="{{ route('player_quest')}}?id={{q.id}}&color={{q.color.substring(1)}}">
-                <img class="visita-virtual"  src="{{q.url}}">
-                <h5 class="text-center text-wrap txt-visita-virtual" style="color:{{q.color}} !important;">{{q.title}}</h5>
+                <img class="player-quest-icon"  src="{{q.url}}">
+                <h5 class="text-center text-wrap player-quest-icon-txt" style="color:{{q.color}} !important;">{{q.title}}</h5>
               </a>
 
             </div>
