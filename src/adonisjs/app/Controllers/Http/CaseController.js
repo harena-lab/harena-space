@@ -19,18 +19,14 @@ class CaseController {
     const harenaManagerUrl = Env.get('HARENA_MANAGER_URL', 'http://127.0.0.1:1020')
     const casesUrl = harenaManagerUrl + '/cases'
     axios.get(casesUrl)
-      .then((response) => {
-        console.log(response)
-      }, (error) => {
-        console.log(error)
-      })
+      .then((response) => { console.log(response) }, (error) => { console.log(error) })
   }
 
   async store ({ view, request, session, response }) {
     try {
       const params = request.all()
       const endpointUrl = Env.get('HARENA_MANAGER_URL') + '/api/v1/case'
-
+      console.log(params)
       const token = request.cookie('token')
 
       // load template
@@ -71,9 +67,31 @@ class CaseController {
           }
         }
 
+        let _caseId
         await axios(config)
           .then(function (endpointResponse) {
-            return response.redirect('/author/?id=' + endpointResponse.data.id)
+            _caseId = endpointResponse.data.id
+          // return response.redirect('/author/?id=' + endpointResponse.data.id)
+          })
+          .catch(function (error) {
+            console.log(error)
+          })
+
+        const linkCase = {
+          method: 'POST',
+          url: Env.get('HARENA_MANAGER_URL') + '/api/v1/quest/link/case',
+          data: {
+            questId: params.quest,
+            caseId: _caseId,
+            orderPosition: 0
+          },
+          headers: {
+            Authorization: 'Bearer ' + token
+          }
+        }
+        await axios(linkCase)
+          .then(function (endpointResponse) {
+            return response.redirect('/author/?id=' + _caseId)
           })
           .catch(function (error) {
             console.log(error)
@@ -84,10 +102,36 @@ class CaseController {
     }
   }
 
+  async linkCase ({ request, response }) {
+    const params = request.all()
+    const endpointUrl = Env.get('HARENA_MANAGER_URL') + '/api/v1/quest/link/case'
+    const token = request.cookie('token')
+    const config = {
+      method: 'POST',
+      url: endpointUrl,
+      data: {
+        questId: params.quest,
+        caseId: params.case,
+        orderPosition: 0
+      },
+      headers: {
+        Authorization: 'Bearer ' + token
+      }
+    }
+    await axios(config)
+      .then(function (endpointResponse) {
+      // return response.redirect('/author/?id=' + endpointResponse.data.id)
+        return true
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
+  }
+
   async update ({ request, session, response }) {
     try {
       const params = request.all()
-      console.log('UPDATE STARTING........')
+      // console.log('UPDATE STARTING........')
       const endpointUrl =
       Env.get('HARENA_MANAGER_URL') + '/api/v1/case/' + params.case_id
 
@@ -112,7 +156,7 @@ class CaseController {
 
       await axios(config)
         .then(function () {
-          // return response.redirect('/')
+        // return response.redirect('/')
         })
         .catch(function (error) {
           console.log(error)
@@ -136,7 +180,7 @@ class CaseController {
 
       await axios(config)
         .then(function (endpointResponse) {
-          // DCCCommonServer.setCaseObj(endpoint_response);
+        // DCCCommonServer.setCaseObj(endpoint_response);
 
           // return view.render('author.author')
           const responseContent = endpointResponse.data

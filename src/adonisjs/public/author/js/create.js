@@ -32,7 +32,7 @@ class TemplateManager {
               title: tl[t].name,
               description: tl[t].description
             })
-          window.location.href = 'choose-template?template=' + this.id
+          window.location.href = 'choose-template?template=' + this.id + '&quest=' + tl[t].questId
         }
       )
     }

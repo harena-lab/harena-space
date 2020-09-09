@@ -87,7 +87,8 @@ class DCCAuthorServer {
           id: jsonResponse[t].path,
           name: t,
           icon: 'template_fix/' + jsonResponse[t].icon,
-          description: jsonResponse[t].description
+          description: jsonResponse[t].description,
+          questId: jsonResponse[t].questId
         })
       }
     }
