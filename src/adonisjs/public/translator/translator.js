@@ -26,6 +26,10 @@ class Translator {
     return (this.authoringRender) ? ' author' : ''
   }
 
+  get themeSettings () {
+    return this._themeSettings
+  }
+
   _authorAttrSub (superseq) {
     return (this.authoringRender && superseq == -1) ? ' author' : ''
   }
@@ -57,7 +61,8 @@ class Translator {
     if (this._themeSettings) { delete this._themeSettings }
     if (compiledCase.theme) {
       const themeSt = await MessageBus.int.request(
-        'data/theme_family/' + compiledCase.theme + '/settings')
+        'data/theme_family/' + Basic.service.decomposeThemeFamily(compiledCase.theme).family +
+        '/settings')
       if (themeSt != null) { this._themeSettings = themeSt.message }
     }
 
@@ -516,7 +521,7 @@ class Translator {
             compiled[c] = tblock
           }
         } else if (c > 0 &&
-                       this._equivalentSubQuote(compiled[c], compiled[pr])) {
+                   this._equivalentSubQuote(compiled[c], compiled[pr])) {
           // adds element and previous linefeed (if exists)
           for (let e = pr + 1; e <= c; e++) {
             tblockSeq++
@@ -1558,16 +1563,14 @@ class Translator {
       .replace('[divert]',
         (obj.divert == null) ? '' : " divert='" + obj.divert + "'")
       .replace('[message]',
-        (obj.value == null) ? '' : " value='" + obj.value + "'")
+        (obj.message == null) ? '' : " message='" + obj.message + "'")
       .replace('[image]', optionalImage)
   }
 
   _transformNavigationMessage (target) {
     let message
     const lower = target.toLowerCase()
-    if (Translator.reservedNavigation.includes(lower)) { message = Translator.navigationMap[lower] }
-    else if (lower.startsWith('variable.')) { message = 'variable/' + target.substring(9) + '/navigate' }
-    else { message = 'knot/' + target + '/navigate' }
+    if (Translator.reservedNavigation.includes(lower)) { message = Translator.navigationMap[lower] } else if (lower.startsWith('variable.')) { message = 'variable/' + target.substring(9) + '/navigate' } else { message = 'knot/' + target + '/navigate' }
     return message
   }
 
@@ -1900,8 +1903,7 @@ class Translator {
                          ((obj[atr] == 'true') ? '' : "='" + obj[atr] + "'")
       }
     }
-    if (obj.subtype == 'text')
-      extraAttr += ' rows="5"'
+    if (obj.subtype == 'text') { extraAttr += ' rows="5"' }
     if (obj.contextTarget) {
       extraAttr +=
             " target='" + this._transformNavigationMessage(obj.contextTarget) + "'"
@@ -2165,7 +2167,7 @@ class Translator {
       mark: /^[ \t]*(?:\(([\w\.]+)[ \t]*(==|>|<|>=|<=|&gt;|&lt;|&gt;=|&lt;=)[ \t]*((?:"[^"\n\r\f]+")|(?:\-?\d+(?:\.\d+)?)|(?:[\w\.]+))\)[ \t]*)?-(?:(?:&gt;)|>)[ \t]*([^"\n\r\f]+)(?:"([^"\n\r\f]+)")?[ \t]*$/im
     },
     divert: {
-      mark: /(?:(\w+)|"([^"]+)")(?:[ \t])*((?:(?:(?:&lt;)|<)?-(?:(?:&gt;)|>))|(?:\(-\)))[ \t]*(?:(\w[\w.]*)|"([^"]*)")/im,
+      mark: /(?:([^&<> \t\n\r\f][^&<> \t\n\r\f]*)|"([^"]+)")(?:[ \t])*((?:(?:(?:&lt;)|<)?-(?:(?:&gt;)|>))|(?:\(-\)))[ \t]*(?:(\w[\w.]*)|"([^"]*)")/im,
       inline: true
     },
     entity: {
@@ -2226,7 +2228,8 @@ class Translator {
   Translator.subordinatorElement = ['entity']
   Translator.isLine = ['knot', 'field', 'item', 'option', 'divert-script', 'entity', 'input',
     'compute', 'context-open']
-  Translator.textBlockCandidate = ['select', 'annotation', 'text', 'mention', 'image']
+  Translator.textBlockCandidate = ['select', 'annotation', 'text', 'mention', 'image',
+    'output']
   Translator.scriptable = ['compute', 'divert-script']
 
   Translator.fieldSet = ['vocabularies', 'answers', 'states', 'labels']

@@ -98,7 +98,7 @@ class DraftManager {
 (function () {
   DraftManager.instance = new DraftManager()
 
-DraftManager.caseBox =
+  DraftManager.caseBox =
 `<div id="b[id]" class="row draft-author-case-container">
   <div class="col draft-case-title">[title]</div>
   <div class="d-flex justify-content-end">
@@ -106,11 +106,9 @@ DraftManager.caseBox =
     <div id="p[id]" class="col author-panel-button">PREVIEW</div>
     <div id="d[id]" class="col author-panel-button">DELETE</div>
   </div>
-</div>`;
+</div>`
 
-
-
-DraftManager.caseDownload =
+  DraftManager.caseDownload =
 `
       <div id="w[id]" class="author-panel-button">DOWNLOAD</div>`
 })()

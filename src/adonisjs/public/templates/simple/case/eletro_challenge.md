@@ -31,7 +31,7 @@ ___ Flow ___
 
 ___ Data ___
 
-* theme: simple
+* theme: simple(yellow)
 * namespaces:
   * evidence: http://purl.org/versum/evidence/
 * templates:

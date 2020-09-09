@@ -58,49 +58,49 @@
 `Selecione um dos ícones abaixo para editar o ambiente:
 <div style="flex:48px; max-height:48px; display:flex; flex-direction:row; border:2px">
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
-      <dcc-trigger label="Árvore" action="type/tree"
+      <dcc-button label="Árvore" topic="type/tree"
                    image="images/cell/tree01.svg">
-      </dcc-trigger>
+      </dcc-button>
    </div>
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
-      <dcc-trigger label="Balão" action="type/balloon"
+      <dcc-button label="Balão" topic="type/balloon"
                    image="images/cell/balloon01.svg">
-      </dcc-trigger>
+      </dcc-button>
    </div>
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
-      <dcc-trigger label="Avião 1" action="type/plane1"
+      <dcc-button label="Avião 1" topic="type/plane1"
                    image="images/cell/plane01.svg">
-      </dcc-trigger>
+      </dcc-button>
    </div>
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
-      <dcc-trigger label="Avião 2" action="type/plane2"
+      <dcc-button label="Avião 2" topic="type/plane2"
                    image="images/cell/plane02.svg">
-      </dcc-trigger>
+      </dcc-button>
    </div>
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
-      <dcc-trigger label="Avião 3" action="type/plane3"
+      <dcc-button label="Avião 3" topic="type/plane3"
                    image="images/cell/plane03.svg">
-      </dcc-trigger>
+      </dcc-button>
    </div>
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
-      <dcc-trigger label="Foguete" action="type/rocket"
+      <dcc-button label="Foguete" topic="type/rocket"
                    image="images/cell/rocket01.svg">
-      </dcc-trigger>
+      </dcc-button>
    </div>
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
-      <dcc-trigger label="Bandeira Vermelha" action="type/flagr"
+      <dcc-button label="Bandeira Vermelha" topic="type/flagr"
                    image="images/cell/flag-red.svg">
-      </dcc-trigger>
+      </dcc-button>
    </div>
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
-      <dcc-trigger label="Nuvem" action="type/cloud"
+      <dcc-button label="Nuvem" topic="type/cloud"
                    image="images/cell/cloud01.svg">
-      </dcc-trigger>
+      </dcc-button>
    </div>
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
-      <dcc-trigger label="Nada" action="type/empty"
+      <dcc-button label="Nada" topic="type/empty"
                    image="images/cell/cell-blue.svg">
-      </dcc-trigger>
+      </dcc-button>
    </div>
 </div>
 `

@@ -19,12 +19,12 @@ ___
 _*_
 </rule-dcc-cell-pair>
 
-<dcc-trigger label="Next" action="state/next"></dcc-trigger>
-<dcc-trigger label="Play" action="timer/start"></dcc-trigger>
+<dcc-button label="Next" topic="state/next"></dcc-button>
+<dcc-button label="Play" topic="timer/start"></dcc-button>
 
-<dcc-trigger label="Empty" action="type/empty"></dcc-trigger>
-<dcc-trigger label="Rock" action="type/rock"></dcc-trigger>
-<dcc-trigger label="Tree" action="type/tree"></dcc-trigger>
+<dcc-button label="Empty" topic="type/empty"></dcc-button>
+<dcc-button label="Rock" topic="type/rock"></dcc-button>
+<dcc-button label="Tree" topic="type/tree"></dcc-button>
 
 <dcc-timer cycles="10" interval="1000" publish="state/next">
    <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>

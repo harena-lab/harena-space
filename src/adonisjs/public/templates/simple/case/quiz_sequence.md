@@ -22,7 +22,7 @@ Write here the **stem** of your question.
 
 * Next Question -> Flow.Next
 
-# Feedback (quiz)
+# Feedback (quiz, end)
 
 {{feedback
 Write here the **feedback**.
@@ -32,12 +32,12 @@ Write here the **feedback**.
 * [Enter References](References)
 }}
 
-* Next Question -> Flow.Next
-
 # Note (note)
 
-**You answered:** ^Presentation.input1^.
-<br>
+**You answered:** ^Previous.input1^.
+
+
+
 ^parameter^
 
 ___ Flow ___
@@ -47,7 +47,7 @@ ___ Flow ___
 
 ___ Data ___
 
-* theme: simple
+* theme: simple(purple)
 * namespaces:
   * evidence: http://purl.org/versum/evidence/
 * templates:

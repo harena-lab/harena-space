@@ -45,12 +45,12 @@ _____________########
 </rule-dcc-cell-flow>
 
 <div>
-   <dcc-trigger label="Próximo" action="state/next"></dcc-trigger>
-   <dcc-trigger label="Play" action="timer/start"></dcc-trigger>
-   <dcc-trigger label="Stop" action="timer/stop"></dcc-trigger>
-   <dcc-trigger label="Gravar" action="state/save"></dcc-trigger>
-   <dcc-trigger label="Ler" action="state/load"></dcc-trigger>
-   <dcc-trigger label="Baixar" action="state/download"></dcc-trigger>
+   <dcc-button label="Próximo" topic="state/next"></dcc-button>
+   <dcc-button label="Play" topic="timer/start"></dcc-button>
+   <dcc-button label="Stop" topic="timer/stop"></dcc-button>
+   <dcc-button label="Gravar" topic="state/save"></dcc-button>
+   <dcc-button label="Ler" topic="state/load"></dcc-button>
+   <dcc-button label="Baixar" topic="state/download"></dcc-button>
 </div>
 </div>
 
@@ -58,19 +58,19 @@ _____________########
 Selecione um dos ícones abaixo para editar o ambiente:
 <div style="flex:48px; max-height:48px; display:flex; flex-direction:row; border:2px">
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
-      <dcc-trigger label="Água" action="type/water"
+      <dcc-button label="Água" topic="type/water"
                    image="images/cell/waves.svg">
-      </dcc-trigger>
+      </dcc-button>
    </div>
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
-      <dcc-trigger label="Parede" action="type/wall"
+      <dcc-button label="Parede" topic="type/wall"
                    image="images/cell/wall.svg">
-      </dcc-trigger>
+      </dcc-button>
    </div>
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
-      <dcc-trigger label="Nada" action="type/empty"
+      <dcc-button label="Nada" topic="type/empty"
                    image="images/cell/cell-yellow.svg">
-      </dcc-trigger>
+      </dcc-button>
    </div>
 </div>
 

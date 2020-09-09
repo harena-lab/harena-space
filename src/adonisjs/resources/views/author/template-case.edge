@@ -54,11 +54,11 @@
                   <input type="text" class="form-control" id="institution" name="institution" placeholder="Enter your institution">
                 </div> -->
                 <div class="form-group">
-                  <label for="keywords">Domain</label>
+                  <label for="domain">Domain</label>
                   <input type="text" class="form-control" id="domain" name="domain" placeholder="Inform the case domain">
                 </div>
                 <div class="form-group">
-                  <label for="keywords">Specialty</label>
+                  <label for="specialty">Specialty</label>
                   <input type="text" class="form-control" id="specialty" name="specialty" placeholder="Inform the case specialty">
                 </div>
                 <div class="form-group">
@@ -67,6 +67,7 @@
                   <small id="keywords-help" class="form-text text-muted">Inform your keywords separated by semicolon.</small>
                 </div>
                 <input type="hidden" id="template" name="template" value="{{ request.only(["template"])["template"].replace(/__/ig, "/") }}">
+                <input type="hidden" id="quest" name="quest" value="{{ request.input('quest') }}">
                 <button type="submit" class="btn btn-primary" role="button">Create</button>
                 <a class="btn btn-danger" href="{{ route('author_create') }}" role="button">Cancel</a>
 

@@ -1,6 +1,15 @@
 # _Knot_Name_ (input)
 
 <h2>Day X</h2>
+
+{{feedback
+Write here the yesterday's Feedback.
+}}
+
+{{references
+* [Enter References](References)
+}}
+
 {{stem
 Write here the **stem**.
 }}

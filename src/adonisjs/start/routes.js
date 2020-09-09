@@ -71,6 +71,11 @@ Route.group(() => {
   Route.get('cases', 'QuestController.getCasesByQuestAuthor')
 }).prefix('drafts').as('cases_drafts')
 
+Route.group(() => {
+	Route.post(  'link/case',		'CaseController.linkCase')
+}).prefix('/quest').middleware('auth')
+
+
 /*
 let harenaManagerUrl =
    Env.get("HARENA_MANAGER_URL", "http://localhost:3000/api/v1/");
@@ -79,24 +84,20 @@ let harenaManagerUrl =
 Route.get('player', 'QuestController.getQuests').as('player_home')
 
 Route.get('player/quest', 'QuestController.getCasesByQuest').as('player_quest')
-Route.get('player/case', ({ view,request }) => {
+Route.get('player/case', ({ view, request }) => {
   const caseId = request.input('id')
   return view.render('player.player')
 }).as('player_case')
 
 Route.group(() => {
+  Route.get('signup', 'UserController.create').as('signup')
+  Route.get('login', 'AuthController.create').as('login')
 
-  Route.get(  'signup',     'UserController.create').as('signup')
-  Route.get(  'login',      'AuthController.create').as('login')
-
-  Route.post( 'signup',     'UserController.signup').as('signup')
-  Route.post( 'login',      'AuthController.login').as('login')
-
-
+  Route.post('signup', 'UserController.signup').as('signup')
+  Route.post('login', 'AuthController.login').as('login')
 }).middleware(['guest'])
 
-
-const Env   = use("Env");
+const Env = use('Env')
 
 Route.get('infra/dcc-common-server-address.js', async ({ response, view }) => {
   const harenaManagerUrl = Env.get('HARENA_MANAGER_URL', 'http://127.0.0.1:10020')

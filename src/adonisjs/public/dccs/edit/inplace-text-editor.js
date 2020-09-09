@@ -477,11 +477,11 @@ class EditDCCText extends EditDCC {
    }
    */
 
-  _handleUndo() {
+  _handleUndo () {
     this._quill.history.undo()
   }
 
-  _handleRedo() {
+  _handleRedo () {
     this._quill.history.redo()
   }
 

@@ -80,7 +80,7 @@ module.exports = {
   |
   */
   file: {
-    location: 'sessions'
+    location: ''
   }
 
   /*
