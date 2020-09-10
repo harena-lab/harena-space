@@ -1,7 +1,7 @@
 @layout('author.author-layout')
 
 @section('content')
-<body onload="DraftManager.instance.start()">
+<body>
   <!-- Create a section to place page content -->
   <main role="main">
     <div class="d-flex flex-column vh-100 vw-100 home-author-padding hidden-overflow">
@@ -22,6 +22,16 @@
           <p>Continue editing your draft cases.</p>
         </div>
         <div id="case-boxes" class="container-fluid h-100 scroll-y draft-scroll-container">
+          @each(c in cases)
+          <div id="b{{c.id}}" class="row draft-author-case-container">
+            <div class="col draft-case-title">{{c.title}}</div>
+            <div class="d-flex justify-content-end">
+              <div id="e{{c.id}}" class="col author-panel-button" onclick="window.location.href='/author?id={{c.id}}'">EDIT</div>
+              <div id="p{{c.id}}" class="col author-panel-button">PREVIEW</div>
+              <div id="d{{c.id}}" class="col author-panel-button">DELETE</div>
+            </div>
+          </div>
+          @endeach
 
         </div>
       </div>

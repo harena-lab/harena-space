@@ -132,7 +132,6 @@ class PlayState {
     console.log(this._state.variables)
     */
 
-
     if (id.startsWith('Previous.')) {
       const previousKnot = this.historyPreviousId()
       if (previousKnot != null) { id = previousKnot + '.' + id.substring(9) }
@@ -181,9 +180,9 @@ class PlayState {
     return (this._state.history.length > 1)
   }
 
-  historyPreviousId() {
+  historyPreviousId () {
     return (this.historyHasPrevious())
-      ? this._state.history[this._state.history.length - 2] : null;
+      ? this._state.history[this._state.history.length - 2] : null
   }
 
   historyCurrent () {

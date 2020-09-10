@@ -47,19 +47,17 @@ class QuestManager {
       )
     }
   }
-
 }
 // <div class="draft-case-image w-100 h-50"></div>
 
 (function () {
   QuestManager.instance = new QuestManager()
 
-QuestManager.caseBox =
+  QuestManager.caseBox =
 `<div id="b[id]" class="row draft-author-case-container">
   <div class="col draft-case-title">[title]</div>
   <div class="d-flex justify-content-end">
     <div id="e[id]" class="col author-panel-button">VIEW</div>
   </div>
-</div>`;
-
+</div>`
 })()

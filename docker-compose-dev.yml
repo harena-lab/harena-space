@@ -7,7 +7,7 @@ services:
     ports:
       - "10010:10010"
     environment:
-      - ENV_SILENT=true            
+      - ENV_SILENT=true
       - HOST=0.0.0.0
       - PORT=10010
       - NODE_ENV=development
@@ -26,13 +26,6 @@ services:
 
       - HARENA_LOGGER_URL=http://localhost:10030
       - HARENA_LOGGER_API_VERSION=v1
-
-      - DB_CONNECTION=mysql
-      - DB_HOST=harena-manager-database
-      - DB_PORT=3306
-      - DB_USER=jacinto
-      - DB_PASSWORD=jacinto
-      - DB_DATABASE=harena-manager  
 
     restart: always
     networks:
@@ -54,7 +47,7 @@ services:
       - APP_URL=http://0.0.0.0:10020
       - CACHE_VIEWS=false
       - APP_KEY=vJX37W4ycI2nkVoBbCM8OW1nsP5LAE8l
-      
+
       - DB_CONNECTION=mysql
       - DB_HOST=harena-manager-database
       - DB_PORT=3306
@@ -64,7 +57,7 @@ services:
       - HASH_DRIVER=bcrypt
     depends_on:
       - harena-manager-database
-    restart: always  
+    restart: always
     networks:
       - harena-space
     volumes:
@@ -87,16 +80,16 @@ services:
     restart: always
     networks:
       - harena-space
-      
+
 
   harena-manager-database-ui:
     image: phpmyadmin/phpmyadmin:latest
     ports:
       - 10022:80
     environment:
-      - PMA_ARBITRARY=0                         # connection to any server 
+      - PMA_ARBITRARY=0                         # connection to any server
       - PMA_HOST=harena-manager-database
-      - PMA_PORT=3306  
+      - PMA_PORT=3306
     depends_on:
       - harena-manager-database
     networks:

@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
-    "test": "node ace test"
+    "test": "standard && node ace test"
   },
   "keywords": [
     "adonisjs",
@@ -43,7 +43,7 @@
       "use"
     ],
     "ignore": [
-      "public/"
+      "public/lib"
     ]
   }
 }

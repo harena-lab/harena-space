@@ -315,7 +315,7 @@ class AuthorManager {
     */
   async caseSave () {
     console.log('=== case save')
-    document.getElementById('btn-save-draft').innerHTML = 'SAVING...';
+    document.getElementById('btn-save-draft').innerHTML = 'SAVING...'
     console.log(Basic.service.currentCaseId)
     console.log(this._compiledCase)
     if (Basic.service.currentCaseId != null && this._compiledCase != null) {
@@ -348,10 +348,9 @@ class AuthorManager {
       const promise = new Promise((resolve, reject) => {
         setTimeout(() => resolve('done!'), 2000)
       })
-      const result = await promise;
-      this._messageSpace.innerHTML = '';
-      document.getElementById('btn-save-draft').innerHTML = 'SAVE';
-
+      const result = await promise
+      this._messageSpace.innerHTML = ''
+      document.getElementById('btn-save-draft').innerHTML = 'SAVE'
     }
   }
 
@@ -633,8 +632,7 @@ class AuthorManager {
               ? message.knotid : this._knotSelected
     const newKnotSet = {}
     for (const k in this._knots) {
-      if (k != knotTarget)
-        newKnotSet[k] = this._knots[k]
+      if (k != knotTarget) { newKnotSet[k] = this._knots[k] }
     }
     this._compiledCase.knots = newKnotSet
     this._knots = newKnotSet
