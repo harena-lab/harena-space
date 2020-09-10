@@ -15,7 +15,7 @@ Write here the **stem** of your question.
 Write here the **stem** of your question.
 
 > Write here the **lead-in** of your question.
-+ Answer-key <-> "Feedback for Answer-key"
++ Answer-key <-> "Feedback for Answer-key" >((right))
 + Distractor 1 <-> "Feedback for Distractor 1"
 + Distractor 2 <-> "Feedback for Distractor 2"
 + Distractor 3 <-> "Feedback for Distractor 3"
@@ -32,7 +32,7 @@ Write here the **feedback**.
 * [Enter References](References)
 }}
 
-* Next Case -> Flow.Next
+* Next Case -> Case.Next
 
 # Note (note)
 
