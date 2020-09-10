@@ -734,25 +734,11 @@ class Translator {
               scramble: true,
               options: {}
             }, compiled[c - 1]._source)
-          optionGroup.options[compiled[c - 1].label] = {
-            target: (compiled[c - 1].target)
-              ? compiled[c - 1].target : '(default)'
-          }
-          if (compiled[c - 1].message) {
-            optionGroup.options[compiled[c - 1].label].message =
-                     compiled[c - 1].message
-          }
+          this._transferOption(optionGroup.options, compiled[c-1])
           compiled[c - 1] = optionGroup
         }
         if (optionGroup != null) {
-          optionGroup.options[compiled[c].label] = {
-            target: (compiled[c].target)
-              ? compiled[c].target : '(default)'
-          }
-          if (compiled[c].message) {
-            optionGroup.options[compiled[c].label].message =
-                     compiled[c].message
-          }
+          this._transferOption(optionGroup.options, compiled[c])
           optionGroup._source += '\n' + compiled[c]._source
           compiled.splice(c, 1)
           c--
@@ -760,6 +746,21 @@ class Translator {
       } else { optionGroup = null }
       compiled[c].seq = c + 1
     }
+  }
+
+  _transferOption(options, compiledItem) {
+      options[compiledItem.label] = {
+        target: (compiledItem.target)
+          ? compiledItem.target : '(default)'
+      }
+      if (compiledItem.message) {
+        options[compiledItem.label].message =
+                 compiledItem.message
+      }
+      if (compiledItem.state) {
+        options[compiledItem.label].state = compiledItem.state
+        options[compiledItem.label].operation = compiledItem.operation
+      }
   }
 
   // check if both are quoted or subordinated
@@ -1531,6 +1532,11 @@ class Translator {
     if (matchArray[3] != null) { option.divert = matchArray[3].trim() }
     if (matchArray[4] != null) { option.target = matchArray[4].trim() }
     if (matchArray[5] != null) { option.message = matchArray[5].trim() }
+    if (matchArray[6] != null)
+      { option.operation = matchArray[6].trim() }
+    else if (matchArray[8] != null)
+      { option.operation = matchArray[8].trim() }
+    if (matchArray[7] != null) { option.state = matchArray[7].trim() }
 
     return option
   }
@@ -1575,14 +1581,16 @@ class Translator {
   }
 
   _optionObjToMd (obj) {
-    console.log('=== option markdown')
-    console.log(obj)
+    let state = ''
+    if (obj.state && obj.operation)
+      state = ' ' + ((obj.operation == ">") ? '>' : '') + '((' + obj.state + '))' + ((obj.operation == "?") ? '?' : '')
     return Translator.markdownTemplates.option
       .replace('{subtype}', (obj.subtype == '_') ? '' : obj.subtype + ' ')
       .replace('{label}', (obj.label) ? obj.label : '')
       .replace('{divert}', obj.divert)
       .replace('{target}', obj.target)
       .replace('{message}', (obj.message) ? '"' + obj.message + '"' : '')
+      .replace('{state}', state)
   }
 
   /*
@@ -1947,6 +1955,9 @@ class Translator {
         if (!first) { md += '\n' }
         first = false
         const option = obj.options[op]
+        let state = ''
+        if (option.state && option.operation)
+          state = ' ' + ((option.operation == ">") ? '>' : '') + '((' + option.state + '))' + ((option.operation == "?") ? '?' : '')
         md += Translator.markdownTemplates.choice
           .replace('{label}', op)
           .replace('{target}',
@@ -1954,6 +1965,7 @@ class Translator {
               ? option.target : '')
           .replace('{message}',
             (option.message ? '"' + option.message + '"' : ''))
+          .replace("{state}", state)
       }
     } else {
       let extraAttr = ''
@@ -2161,7 +2173,7 @@ class Translator {
       subtext: 'value'
     },
     option: {
-      mark: /^[ \t]*([\+\*])[ \t]+([^&<> \t\n\r\f][^&<>\n\r\f]*)?((?:(?:(?:&lt;)|<)?-(?:(?:&gt;)|>))|(?:\(-\)))[ \t]*([^"\n\r\f]+)(?:"([^"\n\r\f]*)")?[ \t]*$/im
+      mark: /^[ \t]*([\+\*])[ \t]+([^&<> \t\n\r\f][^&<>\n\r\f]*)?((?:(?:(?:&lt;)|<)?-(?:(?:&gt;)|>))|(?:\(-\)))[ \t]*([^"\n\r\f(]+)(?:"([^"\n\r\f]*)")?[ \t]*(?:(\>)?\(\(([^)]*)\)\))?(\?)?[ \t]*$/im
     },
     'divert-script': {
       mark: /^[ \t]*(?:\(([\w\.]+)[ \t]*(==|>|<|>=|<=|&gt;|&lt;|&gt;=|&lt;=)[ \t]*((?:"[^"\n\r\f]+")|(?:\-?\d+(?:\.\d+)?)|(?:[\w\.]+))\)[ \t]*)?-(?:(?:&gt;)|>)[ \t]*([^"\n\r\f]+)(?:"([^"\n\r\f]+)")?[ \t]*$/im
