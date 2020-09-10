@@ -87,7 +87,8 @@ class DCCAuthorServer {
           id: jsonResponse[t].path,
           name: t,
           icon: 'template_fix/' + jsonResponse[t].icon,
-          description: jsonResponse[t].description
+          description: jsonResponse[t].description,
+          questId: jsonResponse[t].questId
         })
       }
     }
@@ -190,9 +191,9 @@ class DCCAuthorServer {
         .then(function (response) {
           // return response.redirect('/')
           console.log('=== save response')
-          console.log(response);
+          console.log(response)
           MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-             response.data.source)
+            response.data.source)
         })
         .catch(function (error) {
           console.log('=== save error')
@@ -202,8 +203,8 @@ class DCCAuthorServer {
       //       await fetch(DCCCommonServer.managerAddressAPI + 'case/' + caseId, header)
       // console.log(response)
       // const jsonResponse = await response.json()
-    }else {
-      console.log('save failed else');
+    } else {
+      console.log('save failed else')
     }
   }
 

@@ -124,17 +124,24 @@ class PlayState {
   variableGet (topic, message) {
     let id = MessageBus.extractLevel(topic, 2)
 
+    /*
     console.log('=== variable request')
     console.log(id)
 
     console.log('=== variables')
     console.log(this._state.variables)
+    */
+
+    if (id.startsWith('Previous.')) {
+      const previousKnot = this.historyPreviousId()
+      if (previousKnot != null) { id = previousKnot + '.' + id.substring(9) }
+    }
 
     // tries to give a scope to the variable
     if (id != null && this._state.variables[id] == null) {
       const currentKnot = this.historyCurrent()
       if (currentKnot != null &&
-             this._state.variables[currentKnot + '.' + id] != null) { id = currentKnot + '.' + id }
+          this._state.variables[currentKnot + '.' + id] != null) { id = currentKnot + '.' + id }
     }
 
     if (id != null) {
@@ -171,6 +178,11 @@ class PlayState {
 
   historyHasPrevious () {
     return (this._state.history.length > 1)
+  }
+
+  historyPreviousId () {
+    return (this.historyHasPrevious())
+      ? this._state.history[this._state.history.length - 2] : null
   }
 
   historyCurrent () {

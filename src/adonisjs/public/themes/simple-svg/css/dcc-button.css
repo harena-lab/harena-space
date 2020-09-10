@@ -2,15 +2,15 @@
 
 /* Trigger DCC */
 
-.dcc-trigger-theme {
+.dcc-button-theme {
    text-decoration: underline;
    color: red;
    display: block;
 }
-.dcc-trigger-theme:hover {
+.dcc-button-theme:hover {
    cursor: pointer;
 }
-.dcc-trigger-image-theme {
+.dcc-button-image-theme {
    max-width: 100%;
    max-height: 100%;
    cursor: pointer;

@@ -124,10 +124,11 @@ class DCCInputTyped extends DCCInput {
 
 (function () {
   // <TODO> temporary (size = 50)
+  // <TODO> temporary (width: 100%)
   // <TODO> transfer the definition of font to CSS
   DCCInputTyped.templateElements = {
     text: "<div class='[render]'><label>[statement]</label><input type='text' id='[variable]' [itype]></input></div>",
-    area: "<div class='[render]'><label>[statement]</label><textarea rows='[rows]' id='[variable]'></textarea></div>"
+    area: "<div class='[render]'><label>[statement]</label><textarea rows='[rows]' style='width:100%' id='[variable]'></textarea></div>"
   }
 
   DCCInputTyped.elementTag = 'dcc-input-typed'

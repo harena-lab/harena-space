@@ -32,7 +32,7 @@ class TemplateManager {
               title: tl[t].name,
               description: tl[t].description
             })
-          window.location.href = 'choose-template?template=' + this.id
+          window.location.href = 'choose-template?template=' + this.id + '&quest=' + tl[t].questId
         }
       )
     }
@@ -44,8 +44,8 @@ class TemplateManager {
 
   TemplateManager.templateBox =
 `            <div class="d-flex h-75 flex-column create-template-author-container">
-              <div class=" h-75">
-                <div class="draft-case-image text-center">
+              <div class="h-75">
+                <div class="h-50 draft-case-image text-center">
                    <img src="[icon]" class="home-author-image">
                 </div>
                 <div class="draft-case-title text-center">[title]</div>

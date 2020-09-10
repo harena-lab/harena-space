@@ -20,10 +20,12 @@ class DraftManager {
 
     this._boxesPanel = document.querySelector('#case-boxes')
     // this._draftSelect(authorState.userid, advanced);
-    this._draftSelect(advanced)
+    document.getElementsByClassName('buttons-container').length > 0 ?
+      this._draftQuestCasesSelect(advanced) : this._draftSelect(advanced)
   }
 
   async _draftSelect (advanced) {
+    console.log('Drafting total cases')
     const cases = await MessageBus.ext.request('data/case/*/list')
     // {user: userid});
 
@@ -74,6 +76,51 @@ class DraftManager {
     }
   }
 
+  async _draftQuestCasesSelect (advanced) {
+    console.log('Drafting cases by quest')
+    // const cases = await MessageBus.ext.request('data/case/*/list')
+    // {user: userid});
+
+    const cl = document.getElementsByClassName('buttons-container')
+    // for (var i in cl){
+    //   let test = cl[i].children
+    //   for(var e in )
+    // }
+    for (const c in cl) {
+      if (cl[c].children) {
+        const editButton = cl[c].children[0]
+        // console.log(editButton.id.substring(2))
+        const previewButton = cl[c].children[1]
+        const deleteButton = cl[c].children[2]
+
+        editButton.addEventListener('click',
+          function () {
+            Basic.service.authorPropertyStore('caseId', editButton.id.substring(1))
+            // window.location.href = "http://0.0.0.0:10010/author/author.html";
+            window.location.href =
+                 '/author?id=' + editButton.id.substring(1)
+          })
+        previewButton.addEventListener('click',
+          function () {
+            Basic.service.authorPropertyStore('caseId', editButton.id.substring(1))
+            window.location.href = '/player/case?id=' +
+                                         previewButton.id.substring(1) +
+                                         '&preview'
+          })
+        deleteButton.addEventListener('click',
+          function () {
+            MessageBus.int.publish('control/case/delete', editButton.id.substring(1))
+          })
+        if (advanced) {
+          downloadButton.addEventListener('click',
+            function () {
+              MessageBus.int.publish('control/case/download', this.id.substring(1))
+            })
+        }
+      }
+    }
+  }
+
   async deleteCase (topic, message) {
     const decision =
          await DCCNoticeInput.displayNotice(
@@ -98,7 +145,7 @@ class DraftManager {
 (function () {
   DraftManager.instance = new DraftManager()
 
-DraftManager.caseBox =
+  DraftManager.caseBox =
 `<div id="b[id]" class="row draft-author-case-container">
   <div class="col draft-case-title">[title]</div>
   <div class="d-flex justify-content-end">
@@ -106,11 +153,9 @@ DraftManager.caseBox =
     <div id="p[id]" class="col author-panel-button">PREVIEW</div>
     <div id="d[id]" class="col author-panel-button">DELETE</div>
   </div>
-</div>`;
+</div>`
 
-
-
-DraftManager.caseDownload =
+  DraftManager.caseDownload =
 `
       <div id="w[id]" class="author-panel-button">DOWNLOAD</div>`
 })()

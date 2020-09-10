@@ -78,12 +78,12 @@ _____h______________
 </rule-dcc-cell-pair>
 
 <div>
-   <dcc-trigger label="Próximo" action="state/next"></dcc-trigger>
-   <dcc-trigger label="Play" action="timer/start"></dcc-trigger>
-   <dcc-trigger label="Stop" action="timer/stop"></dcc-trigger>
-   <dcc-trigger label="Gravar" action="state/save"></dcc-trigger>
-   <dcc-trigger label="Ler" action="state/load"></dcc-trigger>
-   <dcc-trigger label="Baixar" action="state/download"></dcc-trigger>
+   <dcc-button label="Próximo" topic="state/next"></dcc-button>
+   <dcc-button label="Play" topic="timer/start"></dcc-button>
+   <dcc-button label="Stop" topic="timer/stop"></dcc-button>
+   <dcc-button label="Gravar" topic="state/save"></dcc-button>
+   <dcc-button label="Ler" topic="state/load"></dcc-button>
+   <dcc-button label="Baixar" topic="state/download"></dcc-button>
 </div>
 </div>
 
@@ -91,34 +91,34 @@ _____h______________
 Selecione um dos ícones abaixo para editar o ambiente:
 <div style="flex:48px; max-height:48px; display:flex; flex-direction:row; border:2px">
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
-      <dcc-trigger label="Água" action="type/water"
+      <dcc-button label="Água" topic="type/water"
                    image="images/cell/waves.svg">
-      </dcc-trigger>
+      </dcc-button>
    </div>
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
-      <dcc-trigger label="Rocha" action="type/rock"
+      <dcc-button label="Rocha" topic="type/rock"
                    image="images/cell/rock01.svg">
-      </dcc-trigger>
+      </dcc-button>
    </div>
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
-      <dcc-trigger label="Planta" action="type/plant"
+      <dcc-button label="Planta" topic="type/plant"
                    image="images/cell/plant01.svg">
-      </dcc-trigger>
+      </dcc-button>
    </div>
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
-      <dcc-trigger label="Herbívoro" action="type/herbivore"
+      <dcc-button label="Herbívoro" topic="type/herbivore"
                    image="images/cell/brontosaurus.svg">
-      </dcc-trigger>
+      </dcc-button>
    </div>
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
-      <dcc-trigger label="Carnívoro" action="type/carnivore"
+      <dcc-button label="Carnívoro" topic="type/carnivore"
                    image="images/cell/carnivorous-dinosaur.svg">
-      </dcc-trigger>
+      </dcc-button>
    </div>
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
-      <dcc-trigger label="Nada" action="type/empty"
+      <dcc-button label="Nada" topic="type/empty"
                    image="images/cell/cell-green.svg">
-      </dcc-trigger>
+      </dcc-button>
    </div>
 </div>
 

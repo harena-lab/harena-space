@@ -19,8 +19,8 @@ _*_
 
 <dcc-cell-image type="t" label="tree" image="images/cell/tree01.svg"></dcc-cell-image>
 
-<dcc-trigger label="Next" action="state/next"></dcc-trigger>
-<dcc-trigger label="Play" action="timer/start"></dcc-trigger>
+<dcc-button label="Next" topic="state/next"></dcc-button>
+<dcc-button label="Play" topic="timer/start"></dcc-button>
 
 <dcc-timer cycles="10" interval="1000" publish="state/next">
    <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>

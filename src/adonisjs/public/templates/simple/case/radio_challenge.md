@@ -4,7 +4,9 @@
 Write here the **stem**.
 }}
 
-> Write here the **lead-in**.
+{{leadin
+Write here the **lead-in**.
+}}
 ? hypothesis
   * type: text
 
@@ -29,7 +31,7 @@ ___ Flow ___
 
 ___ Data ___
 
-* theme: simple
+* theme: simple(green)
 * namespaces:
   * evidence: http://purl.org/versum/evidence/
 * templates:

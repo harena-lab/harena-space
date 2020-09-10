@@ -7,7 +7,7 @@
    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
 
    <link rel="stylesheet" href="../../lib/fontawesome-5-10-1/css/all.min.css">
-   <link rel="stylesheet" href="../../lib/bootstrap-4-3-1/css/bootstrap.min.css">
+   <link rel="stylesheet" href="../../lib/bootstrap-4.4.1/css/bootstrap.min.css">
    <link rel="stylesheet" href="../../lib/quill-1-3-7/quill.snow.css">
 
    <link rel="stylesheet" href="../../infra/css/common-player.css">
@@ -32,7 +32,7 @@
    <script src="../../dccs/components/dcc-image.js"></script>
    <script src="../../dccs/components/dcc-expression.js"></script>
    <script src="../../dccs/components/dcc-block.js"></script>
-   <script src="../../dccs/components/dcc-trigger.js"></script>
+   <script src="../../dccs/components/dcc-button.js"></script>
    <script src="../../dccs/components/dcc-character.js"></script>
    <script src="../../dccs/components/dcc-lively-dialog.js"></script>
    <script src="../../dccs/components/dcc-notice-input.js"></script>
@@ -61,8 +61,8 @@
       <div class="container-fluid">
         <nav class="navbar navbar-light d-flex">
           <div class="d-flex col">
-             <dcc-trigger action="control/translate/example" label="TRANSLATE" xstyle="in">
-             </dcc-trigger>
+             <dcc-button topic="control/translate/example" label="TRANSLATE" xstyle="in">
+             </dcc-button>
           </div>
           <div class="d-flex col-10">
              <dcc-input-choice variable="output" exclusive xstyle="in">

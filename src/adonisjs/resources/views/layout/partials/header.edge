@@ -2,43 +2,21 @@
   <nav>
     {{-- Logo / Main Link --}}
     {{-- Navigation Actions --}}
-    <div class="d-flex overflow-hidden pt-3 mr-4">
+    <div class="d-flex overflow-hidden pt-3 mr-4" id="harena-header">
 
       <span class="inline-flex mr-4 rounded-md shadow mr-auto">
-      <a href="{{ route('index') }}" class="inline-flex items-center px-3 py-2 text-base font-medium leading-6 text-indigo-600 transition duration-150 ease-in-out bg-white border border-transparent rounded-md hover:text-indigo-500 focus:outline-none focus:shadow-outline-blue active:bg-gray-50 active:text-indigo-700">
+        <a href="{{ route('index') }}" class="inline-flex items-center px-3 py-2 text-base font-medium leading-6 text-indigo-600 transition duration-150 ease-in-out bg-white border border-transparent rounded-md hover:text-indigo-500 focus:outline-none focus:shadow-outline-blue active:bg-gray-50 active:text-indigo-700">
           Home
         </a>
       </span>
-      {{--
-        This tag let us know if the current user is logged in or not.
 
-        ref: http://adonisjs.com/docs/4.1/views#_loggedin
-        ref: http://adonisjs.com/docs/4.1/authentication#_loggedin
-      --}}
+  <span class="inline-flex mr-4 rounded-md shadow" id="header-login">
+    <a href="{{route('login')}}" class="inline-flex items-center px-4 py-2 text-base font-medium leading-6 text-indigo-600 transition duration-150 ease-in-out bg-white border border-transparent rounded-md hover:text-indigo-500 focus:outline-none focus:shadow-outline-blue active:bg-gray-50 active:text-indigo-700">
+      Log in
+    </a>
+  </span>
 
-      @loggedIn
-        <!--<span class="inline-flex mr-4 rounded-md shadow">
-          <a href="{{route('player_home')}}" class="inline-flex items-center px-4 py-2 text-base font-medium leading-6 text-indigo-600 transition duration-150 ease-in-out bg-white border border-transparent rounded-md hover:text-indigo-500 focus:outline-none focus:shadow-outline-blue active:bg-gray-50 active:text-indigo-700">
-            Play
-          </a>
-        </span>-->
-        <span class="inline-flex rounded-md shadow">
-          <a href="{{route('logout')}}" class="inline-flex items-center px-4 py-2 text-base font-medium leading-6 text-indigo-600 transition duration-150 ease-in-out bg-white border border-transparent rounded-md hover:text-indigo-500 focus:outline-none focus:shadow-outline-blue active:bg-gray-50 active:text-indigo-700">
-            Logout
-          </a>
-        </span>
-      @else
-        <span class="inline-flex mr-4 rounded-md shadow">
-          <a href="{{route('login')}}" class="inline-flex items-center px-4 py-2 text-base font-medium leading-6 text-indigo-600 transition duration-150 ease-in-out bg-white border border-transparent rounded-md hover:text-indigo-500 focus:outline-none focus:shadow-outline-blue active:bg-gray-50 active:text-indigo-700">
-            Log in
-          </a>
-        </span>
-        <!--  <span class="inline-flex rounded-md shadow">
-          <a href="/signup" class="inline-flex items-center px-4 py-2 text-base font-medium leading-6 text-indigo-600 transition duration-150 ease-in-out bg-white border border-transparent rounded-md hover:text-indigo-500 focus:outline-none focus:shadow-outline-blue active:bg-gray-50 active:text-indigo-700">
-            Sign Up
-          </a>
-        </span>  -->
-      @endloggedIn
-    </div>
-  </nav>
-  </div>
+
+</div>
+</nav>
+</div>

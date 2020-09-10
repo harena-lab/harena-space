@@ -304,8 +304,8 @@ async _presentTreeCase() {
 
    if (this._treeStack.length > 0)
       navTree =
-         "<dcc-trigger action='control/group/up' label='Up' " +
-           "image='icons/icon-back.svg' xstyle='sty-tree-button'></dcc-trigger>" +
+         "<dcc-button topic='control/group/up' label='Up' " +
+           "image='icons/icon-back.svg' xstyle='sty-tree-button'></dcc-button>" +
          navTree;
 
    this._navigationPanel.innerHTML = navTree;
@@ -546,7 +546,7 @@ async _createMiniature(knot, krender) {
               Navigator.miniKnot[this._retracted].height + "px'>" +
               knot.title + "</div>";
 
-   miniature.innerHTML = inner + "<dcc-trigger action='control/" +
+   miniature.innerHTML = inner + "<dcc-button topic='control/" +
                             ((knot.render) ? "knot/" : "group/") +
                             knot.knotid + "/selected' " +
                             "xstyle='sty-navigation-knot-cover' label = ''>";

@@ -174,7 +174,7 @@
    data-name="Close Window"
    id="close-window" />
 <foreignObject>
-  <dcc-trigger
-     action="knot/" />
+  <dcc-button
+     topic="knot/" />
 </foreignObject>
 &quot; label=&quot;Previous Knot&quot; xstyle=&quot;out-image&quot; location=&quot;close-window&quot;&gt;</svg>

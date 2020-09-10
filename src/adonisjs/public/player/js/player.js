@@ -161,7 +161,7 @@ class PlayerManager {
   }
 
   async startPlayer (caseid) {
-    const preCaseOff = true;
+    const preCaseOff = true
     this._mainPanel = document.querySelector('#main-panel')
 
     const parameters = window.location.search.substr(1)
@@ -274,7 +274,8 @@ class PlayerManager {
     console.log('***** COMPILED CASE *****')
     console.log(this._compiledCase)
     this._knots = this._compiledCase.knots
-    Basic.service.currentThemeFamily = this._compiledCase.theme
+    // Basic.service.currentThemeFamily = this._compiledCase.theme
+    Basic.service.composedThemeFamily(this._compiledCase.theme)
   }
 
   _caseFlow () {
@@ -336,8 +337,15 @@ class PlayerManager {
              this._knots[knotName].categories.includes('script')) { MetaPlayer.player.play(this._knots[knotName], this._state) } else {
         const knot = await Translator.instance.generateHTML(
           this._knots[knotName])
-        if (this._knots[knotName].categories &&
-                this._knots[knotName].categories.includes('note')) { this.presentNote(knot) } else { this.presentKnot(knot) }
+        console.log('=== theme settings')
+        console.log(Translator.instance.themeSettings.note)
+        let note = false
+        if (this._knots[knotName].categories && Translator.instance.themeSettings &&
+            Translator.instance.themeSettings.note) {
+          note = this._knots[knotName].categories.find(
+            cat => Translator.instance.themeSettings.note.includes(cat))
+        }
+        if (note) { this.presentNote(knot) } else { this.presentKnot(knot) }
       }
     }
     MessageBus.ext.publish('knot/' + knotName + '/start')

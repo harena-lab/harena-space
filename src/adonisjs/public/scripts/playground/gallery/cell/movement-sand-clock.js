@@ -76,19 +76,19 @@ _#_________________________________________#_
 `Selecione um dos ícones abaixo para editar o ambiente:
 <div style="flex:48px; max-height:48px; display:flex; flex-direction:row; border:2px">
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
-      <dcc-trigger label="Vidro" action="type/glass"
+      <dcc-button label="Vidro" topic="type/glass"
                    image="images/cell/glass.svg">
-      </dcc-trigger>
+      </dcc-button>
    </div>
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
-      <dcc-trigger label="Areia" action="type/sand"
+      <dcc-button label="Areia" topic="type/sand"
                    image="images/cell/sand.svg">
-      </dcc-trigger>
+      </dcc-button>
    </div>
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
-      <dcc-trigger label="Nada" action="type/empty"
+      <dcc-button label="Nada" topic="type/empty"
                    image="images/cell/cell-yellow.svg">
-      </dcc-trigger>
+      </dcc-button>
    </div>
 </div>`
   )

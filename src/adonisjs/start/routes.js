@@ -59,9 +59,22 @@ Route.group(() => {
   Route.post('update', 'CaseController.update')
 }).prefix('choose-template').as('author_template_case')
 
-Route.get('drafts', ({ view }) => {
-  return view.render('author.drafts')
-}).as('cases_drafts')
+// Route.get('drafts', ({ view }) => {
+//   return view.render('author.drafts')
+// }).as('cases_drafts')
+Route.group(() => {
+  Route.get('/', ({ view }) => {
+    return view.render('author.drafts')
+  }).as('draft_all_cases')
+
+  Route.get('quests', 'QuestController.getQuestsAuthor').as('draft_quests')
+  Route.get('cases', 'QuestController.getCasesByQuestAuthor').as('draft_cases')
+}).prefix('drafts')
+
+Route.group(() => {
+	Route.post(  'link/case',		'CaseController.linkCase')
+}).prefix('/quest').middleware('auth')
+
 
 /*
 let harenaManagerUrl =
@@ -71,24 +84,20 @@ let harenaManagerUrl =
 Route.get('player', 'QuestController.getQuests').as('player_home')
 
 Route.get('player/quest', 'QuestController.getCasesByQuest').as('player_quest')
-Route.get('player/case', ({ view,request }) => {
+Route.get('player/case', ({ view, request }) => {
   const caseId = request.input('id')
   return view.render('player.player')
 }).as('player_case')
 
 Route.group(() => {
+  Route.get('signup', 'UserController.create').as('signup')
+  Route.get('login', 'AuthController.create').as('login')
 
-  Route.get(  'signup',     'UserController.create').as('signup')
-  Route.get(  'login',      'AuthController.create').as('login')
-
-  Route.post( 'signup',     'UserController.signup').as('signup')
-  Route.post( 'login',      'AuthController.login').as('login')
-
-
+  Route.post('signup', 'UserController.signup').as('signup')
+  Route.post('login', 'AuthController.login').as('login')
 }).middleware(['guest'])
 
-
-const Env   = use("Env");
+const Env = use('Env')
 
 Route.get('infra/dcc-common-server-address.js', async ({ response, view }) => {
   const harenaManagerUrl = Env.get('HARENA_MANAGER_URL', 'http://127.0.0.1:10020')

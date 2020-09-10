@@ -10,7 +10,7 @@
           <input type="hidden" id="case_source" name="case_source" value="{{caseSource}}">
 
           <div class="form-group">
-            <label for="case-title">Title</label>
+            <label for="case_title">Title</label>
             <input type="text" class="form-control" id="case_title" name="case_title" value="{{caseTitle}}" placeholder="Enter the title">
           </div>
           <div class="form-group">
@@ -27,20 +27,20 @@
             </select>
           </div>
           <div class="form-group">
-            <label for="created">Original Date</label>
+            <label for="originalDate">Original Date</label>
             <input type="date" class="form-control" id="originalDate" name="originalDate" value="{{caseOriginalDate}}">
             {{-- <small id="keywords-help" class="form-text text-muted">Inform the date of case creation on Jacinto Moodle</small> --}}
           </div>
-          <div class="form-group">
+<!--          <div class="form-group">
             <label for="institution">Institution</label>
           <input type="text" class="form-control" id="institution" name="institution" value="{{caseInstitution}}" placeholder="Enter your institution">
-          </div>
+        </div> -->
           <div class="form-group">
-            <label for="keywords">Domain</label>
+            <label for="domain">Domain</label>
             <input type="text" class="form-control" id="domain" name="domain" value="{{caseDomain}}" placeholder="Inform the case domain">
           </div>
           <div class="form-group">
-            <label for="keywords">Specialty</label>
+            <label for="specialty">Specialty</label>
             <input type="text" class="form-control" id="specialty" name="specialty" value="{{caseSpecialty}}" placeholder="Inform the case specialty">
           </div>
           <div class="form-group">
@@ -51,7 +51,7 @@
 
           <input type="hidden" id="source" name="source">
           <button type="button" class="btn btn-secondary" id="btn-save-settings" data-toggle="modal" data-target="#settings-modal" >Save</button>
-          <dcc-trigger action="control/case/save" label="SAVE" location="btn-save-settings" xstyle="out"></dcc-trigger>
+          <dcc-button topic="control/case/save" label="SAVE" location="btn-save-settings" xstyle="out"></dcc-button>
 
           <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
         </form>

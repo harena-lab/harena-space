@@ -29,9 +29,9 @@
     image:
 '<img src=\'[path]\'[alt]>',
     option:
-'<dcc-trigger id=\'dcc[seq]\'[author] type=\'[subtype]\' action=\'[target]\' label=\'[display]\'[divert][message][image]></dcc-trigger>',
+'<dcc-button id=\'dcc[seq]\'[author] type=\'[subtype]\' topic=\'[target]\' label=\'[display]\'[divert][message][image]></dcc-button>',
     divert:
-'<dcc-trigger id=\'dcc[seq]\'[author] type=\'+\' action=\'[target]\' label=\'[display]\' divert=\'[divert]\'></dcc-trigger>',
+'<dcc-button id=\'dcc[seq]\'[author] type=\'+\' topic=\'[target]\' label=\'[display]\' divert=\'[divert]\'></dcc-button>',
     'divert-script':
 '-&gt; [target][parameter]<br>',
     entity:
@@ -82,13 +82,13 @@
     image:
 '![{alternative}]({path}{title})',
     option:
-'{subtype}{label} {divert} {target}{message}',
+'{subtype}{label} {divert} {target}{message}{state}',
     entity:
 '@{entity}',
     input:
 '{statement}? {variable}{subtype}{extra}',
     choice:
-'+ {label} <-> {target}{message}'
+'+ {label} <-> {target}{message}{state}'
   }
 
   Translator.objTemplates = {

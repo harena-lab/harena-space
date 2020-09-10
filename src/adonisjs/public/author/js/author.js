@@ -167,6 +167,8 @@ class AuthorManager {
           break
         case 'control/knot/new': this.knotNew(message)
           break
+        case 'control/knot/remove': this.knotRemove(message)
+          break
         case 'control/knot/up': this.knotUp(message)
           break
         case 'control/knot/down': this.knotDown(message)
@@ -285,7 +287,9 @@ class AuthorManager {
 
     this._knots = this._compiledCase.knots
 
-    Basic.service.currentThemeFamily = this._compiledCase.theme
+    // Basic.service.currentThemeFamily = this._compiledCase.theme
+    console.log('=== setting theme family')
+    Basic.service.composedThemeFamily(this._compiledCase.theme)
     if (this._compiledCase.title) { this._currentCaseTitle = this._compiledCase.title }
 
     console.log('***** COMPILED CASE *****')
@@ -311,7 +315,7 @@ class AuthorManager {
     */
   async caseSave () {
     console.log('=== case save')
-    document.getElementById('btn-save-draft').innerHTML = 'SAVING...';
+    document.getElementById('btn-save-draft').innerHTML = 'SAVING...'
     console.log(Basic.service.currentCaseId)
     console.log(this._compiledCase)
     if (Basic.service.currentCaseId != null && this._compiledCase != null) {
@@ -344,10 +348,9 @@ class AuthorManager {
       const promise = new Promise((resolve, reject) => {
         setTimeout(() => resolve('done!'), 2000)
       })
-      const result = await promise;
-      this._messageSpace.innerHTML = '';
-      document.getElementById('btn-save-draft').innerHTML = 'SAVE';
-
+      const result = await promise
+      this._messageSpace.innerHTML = ''
+      document.getElementById('btn-save-draft').innerHTML = 'SAVE'
     }
   }
 
@@ -494,18 +497,18 @@ class AuthorManager {
             }
             const extra =
                ((this._templateNewKnot == null) ? "" :
-                  "<dcc-trigger action='control/knot/new' label='Add' xstyle='in'>" +
-                        "</dcc-trigger>") +
-               "<dcc-trigger action='control/knot/remove' label='Remove' xstyle='in'>" +
-                     "</dcc-trigger>";
+                  "<dcc-button topic='control/knot/new' label='Add' xstyle='in'>" +
+                        "</dcc-button>") +
+               "<dcc-button topic='control/knot/remove' label='Remove' xstyle='in'>" +
+                     "</dcc-button>";
 
             // Properties.s.editKnotProperties(this._knots[this._knotSelected],
             //                                 this._knotSelected, miniature, extra);
             if (this._templateNewKnot != null) {
                const miniBox = miniature.getBoundingClientRect();
                this._buildFloatingMenu(miniBox.left, miniBox.top,
-                  "<dcc-trigger action='control/knot/new' label='Add' xstyle='in'>" +
-                  "</dcc-trigger>");
+                  "<dcc-button topic='control/knot/new' label='Add' xstyle='in'>" +
+                  "</dcc-button>");
             }
          } else {
          */
@@ -621,6 +624,19 @@ class AuthorManager {
 
       await this._showCase(newSelected)
     }
+  }
+
+  async knotRemove (message) {
+    const knotTarget =
+            (message != null && message.knotid != null)
+              ? message.knotid : this._knotSelected
+    const newKnotSet = {}
+    for (const k in this._knots) {
+      if (k != knotTarget) { newKnotSet[k] = this._knots[k] }
+    }
+    this._compiledCase.knots = newKnotSet
+    this._knots = newKnotSet
+    await this._navigator.mountTreeCase(this, this._knots)
   }
 
   async knotUp (message) {

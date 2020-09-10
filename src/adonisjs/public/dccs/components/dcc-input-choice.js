@@ -118,7 +118,7 @@ class DCCInputOption extends DCCInput {
               ? '' : this._statement
 
       const html = (this.target)
-        ? "<dcc-trigger id='[id]' xstyle='theme' action='[target]' label='[statement]' divert='round' value='[value]' variable='[variable]:label'></dcc-trigger>"
+        ? "<dcc-button id='[id]' xstyle='theme' topic='[target]' label='[statement]' divert='round' message='[value]' variable='[variable]:label'></dcc-button>"
           .replace('[id]', varid + nop)
           .replace('[target]', this.target)
           .replace('[statement]', child._statement)
@@ -249,7 +249,7 @@ class DCCInputChoice extends DCCInput {
              child.tagName.toLowerCase() == DCCInputOption.elementTag) {
         nop++
         const element = (this.target || child.target)
-          ? "<dcc-trigger id='presentation-dcc-[id]' xstyle='theme' action='[target]' label='[statement]' divert='round' value='[value]' variable='[variable]:label'></dcc-trigger>"
+          ? "<dcc-button id='presentation-dcc-[id]' xstyle='theme' topic='[target]' label='[statement]' divert='round' message='[value]' variable='[variable]:label'></dcc-button>"
             .replace('[id]', varid + '_' + nop)
             .replace('[target]', (child.target) ? child.target : this.target)
             .replace('[statement]', child._statement)
