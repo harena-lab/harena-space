@@ -3,12 +3,12 @@
 Write here the **stem** of your question.
 
 > Write here the **lead-in** of your question.
-+ Answer-key <-> "Feedback for Answer-key"
++ Answer-key <-> "Feedback for Answer-key" >((right))
 + Distractor 1 <-> "Feedback for Distractor 1"
 + Distractor 2 <-> "Feedback for Distractor 2"
 + Distractor 3 <-> "Feedback for Distractor 3"
 
-* Next Question -> Flow.Next
+* Next Question -> Flow.Next ((right))?
 
 # Quiz2 (quiz)
 
@@ -20,7 +20,7 @@ Write here the **stem** of your question.
 + Distractor 2 <-> "Feedback for Distractor 2"
 + Distractor 3 <-> "Feedback for Distractor 3"
 
-* Next Question -> Flow.Next
+* Next Question -> Flow.Next ((right))?
 
 # Feedback (quiz, end)
 
@@ -31,6 +31,8 @@ Write here the **feedback**.
 {{references
 * [Enter References](References)
 }}
+
+* Next Case -> Flow.Next
 
 # Note (note)
 

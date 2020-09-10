@@ -82,13 +82,13 @@
     image:
 '![{alternative}]({path}{title})',
     option:
-'{subtype}{label} {divert} {target}{message}',
+'{subtype}{label} {divert} {target}{message}{state}',
     entity:
 '@{entity}',
     input:
 '{statement}? {variable}{subtype}{extra}',
     choice:
-'+ {label} <-> {target}{message}'
+'+ {label} <-> {target}{message}{state}'
   }
 
   Translator.objTemplates = {
