@@ -20,11 +20,12 @@ class DraftManager {
 
     this._boxesPanel = document.querySelector('#case-boxes')
     // this._draftSelect(authorState.userid, advanced);
-    //this._draftSelect(advanced)
-    this._draftQuestCasesSelect(advanced)
+    document.getElementsByClassName('buttons-container').length > 0 ?
+      this._draftQuestCasesSelect(advanced) : this._draftSelect(advanced)
   }
 
   async _draftSelect (advanced) {
+    console.log('Drafting total cases')
     const cases = await MessageBus.ext.request('data/case/*/list')
     // {user: userid});
 
@@ -76,63 +77,49 @@ class DraftManager {
   }
 
   async _draftQuestCasesSelect (advanced) {
+    console.log('Drafting cases by quest')
     // const cases = await MessageBus.ext.request('data/case/*/list')
     // {user: userid});
 
     const cl = document.getElementsByClassName('buttons-container')
+    // for (var i in cl){
+    //   let test = cl[i].children
+    //   for(var e in )
+    // }
     for (const c in cl) {
-      //console.log(cl[c]);
-      const editButton = cl[c].children[0]
-      //console.log(editButton.id.substring(2))
-      const previewButton = cl[c].children[1]
-      const deleteButton = cl[c].children[2]
+      if (cl[c].children) {
+        const editButton = cl[c].children[0]
+        // console.log(editButton.id.substring(2))
+        const previewButton = cl[c].children[1]
+        const deleteButton = cl[c].children[2]
 
-      editButton.addEventListener('click',
-     function () {
-       Basic.service.authorPropertyStore('caseId', editButton.id.substring(1))
-       // window.location.href = "http://0.0.0.0:10010/author/author.html";
-       window.location.href =
-               '/author?id=' + editButton.id.substring(1)
-     }
-   )
-   previewButton.addEventListener('click',
-     function () {
-       Basic.service.authorPropertyStore('caseId', editButton.id.substring(1))
-       window.location.href = '/player/case?id=' +
-                                   previewButton.id.substring(1) +
-                                   '&preview'
-     }
-   )
-   deleteButton.addEventListener('click',
-     function () {
-       MessageBus.int.publish('control/case/delete', editButton.id.substring(1))
-     }
-   )
-   if (advanced) {
-     downloadButton.addEventListener('click',
-       function () {
-         MessageBus.int.publish('control/case/download', this.id.substring(1))
-       }
-     )
-   }
+        editButton.addEventListener('click',
+          function () {
+            Basic.service.authorPropertyStore('caseId', editButton.id.substring(1))
+            // window.location.href = "http://0.0.0.0:10010/author/author.html";
+            window.location.href =
+                 '/author?id=' + editButton.id.substring(1)
+          })
+        previewButton.addEventListener('click',
+          function () {
+            Basic.service.authorPropertyStore('caseId', editButton.id.substring(1))
+            window.location.href = '/player/case?id=' +
+                                         previewButton.id.substring(1) +
+                                         '&preview'
+          })
+        deleteButton.addEventListener('click',
+          function () {
+            MessageBus.int.publish('control/case/delete', editButton.id.substring(1))
+          })
+        if (advanced) {
+          downloadButton.addEventListener('click',
+            function () {
+              MessageBus.int.publish('control/case/download', this.id.substring(1))
+            })
+        }
+      }
     }
-      // const template = document.createElement('template')
-      // const html = DraftManager.caseBox
-      //   .replace('[download]', (advanced) ? DraftManager.caseDownload : '')
-      // template.innerHTML = html
-      //   .replace(/\[id\]/ig, cl[c].id)
-      // // .replace("[icon]", cl[c].icon)
-      //   .replace('[title]', cl[c].title)
-      // // .replace("[description]", cl[c].description);
-      // this._boxesPanel.appendChild(template.content.cloneNode(true))
-      // const editButton = this._boxesPanel.querySelector('#e' + cl[c].id)
-      // const previewButton = this._boxesPanel.querySelector('#p' + cl[c].id)
-      // const deleteButton = this._boxesPanel.querySelector('#d' + cl[c].id)
-      // const downloadButton = (advanced)
-      //   ? this._boxesPanel.querySelector('#w' + cl[c].id) : null
-
-    }
-
+  }
 
   async deleteCase (topic, message) {
     const decision =
