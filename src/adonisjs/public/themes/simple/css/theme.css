@@ -10,7 +10,7 @@
  ******/
 
 .styt-main-frame {
-   position: absolute;
+   /* position: absolute; */
    left: 0px;
    right: 0px;
    top: 0px;
@@ -19,7 +19,7 @@
 }
 
 .styt-main {
-   position: absolute;
+   /* position: absolute; */
    left: 15px;
    right: 15px;
    top: 10px;
@@ -54,7 +54,7 @@
 }
 
 .styt-button-frame {
-   position: absolute;
+   /* position: absolute; */
    bottom: 0px;
    width: 100%;
    /* display: flex; */

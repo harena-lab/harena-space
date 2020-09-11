@@ -45,6 +45,9 @@
 
 .inplace-editor {
    background-color: white;
+   position: relative;
+   height: 100% !important;
+   weight: 100% !important;
    /* overflow: hidden; */
 }
 

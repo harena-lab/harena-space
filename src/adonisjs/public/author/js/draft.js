@@ -20,8 +20,8 @@ class DraftManager {
 
     this._boxesPanel = document.querySelector('#case-boxes')
     // this._draftSelect(authorState.userid, advanced);
-    document.getElementsByClassName('buttons-container').length > 0 ?
-      this._draftQuestCasesSelect(advanced) : this._draftSelect(advanced)
+    document.getElementsByClassName('buttons-container').length > 0
+      ? this._draftQuestCasesSelect(advanced) : this._draftSelect(advanced)
   }
 
   async _draftSelect (advanced) {

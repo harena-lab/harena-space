@@ -124,15 +124,16 @@
             </div>
           </div>
         -->
-          <div class="col-2">
+          <!-- <div class="col-2">
 
-          </div>
+          </div> -->
         </nav>
       </div>
       <!-- End of toolbar -->
 
       <div class="d-flex h-75">
-          <div id="navigation-block" style="position:relative" class="w-25">
+        <!-- Container displayng the flow of the case -->
+          <div id="navigation-block" class="w-25" style="position:relative">
             <div class="sty-navigation-block">
               <div class="sty-navigation-panel std-border">
                 <div id="navigation-panel"></div>
@@ -141,7 +142,9 @@
               </div>
             </div>
           </div>
+        <!-- End of container displayng the flow of the case -->
 
+        <!-- Container displaying the case -->
           <div class="w-75 d-flex" id="knot-main">
             <div id="navigator-expansion" class="sty-navigation-expansion">
                 <div id="navigation-set" class="sty-navigation-set">
@@ -150,8 +153,10 @@
                 </div>
             </div>
             <div class="w-100">
-              <div id="inplace-editor-wrapper" class="d-flex h-100 sticky-top std-border">
-                <div id="knot-panel" class="sty-knot-panel"></div>
+               <div id="inplace-editor-wrapper" class="d-flex h-100 sticky-top std-border">
+                 <div id="knot-panel" class="d-flex sty-knot-panel w-100 h-100">
+
+                 </div>
               </div>
             </div>
             <div id="properties-expansion" class="sty-navigation-expansion">
@@ -159,7 +164,7 @@
                 <dcc-button id="button-retract-prop" topic="control/properties/retract" label="Retract" image="/author/icons/icon-expansion-right.svg" style="display:none"></dcc-button>
             </div>
           </div>
-
+        <!-- End of container displaying the case -->
           <div id="elements-main" class="d-flex">
             <div id="elements-block" class="sty-elements-block" style="position:relative; display:none">
                <!--

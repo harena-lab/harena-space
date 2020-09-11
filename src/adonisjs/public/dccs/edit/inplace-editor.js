@@ -73,7 +73,7 @@ class EditDCC {
 
   _buildToolbarPanel (html) {
     this._editorToolbar = document.createElement('div')
-    this._editorToolbar.classList.add('inplace-editor-floating')
+    this._editorToolbar.classList.add('inplace-editor-floating', 'col')
     this._editorToolbar.innerHTML = html
 
     // this._editorToolbar.style.left = this._transformRelativeX(
@@ -151,20 +151,20 @@ class EditDCC {
     panelExtended.classList.add('inplace-editor-floating')
     panelExtended.innerHTML = html
 
-    panelExtended.style.left = this._transformRelativeX(
-      this._elementRect.left - this._containerRect.left)
+    // panelExtended.style.left = this._transformRelativeX(
+    //   this._elementRect.left - this._containerRect.left)
 
     // tests the middle of the element against the middle of the container
-    if (modality != 'properties' ||
-          (this._elementRect.top + (this._elementRect.height / 2) >
-           this._containerRect.top + (this._containerRect.height / 2))) {
-      panelExtended.style.bottom = this._transformRelativeY(
-        this._containerRect.height -
-            (this._elementRect.top - this._containerRect.top))
-    } else {
-      panelExtended.style.top =
-            this._transformRelativeY(this._elementRect.bottom - this._containerRect.top)
-    }
+    // if (modality != 'properties' ||
+    //       (this._elementRect.top + (this._elementRect.height / 2) >
+    //        this._containerRect.top + (this._containerRect.height / 2))) {
+    //   panelExtended.style.bottom = this._transformRelativeY(
+    //     this._containerRect.height -
+    //         (this._elementRect.top - this._containerRect.top))
+    // } else {
+    //   panelExtended.style.top =
+    //         this._transformRelativeY(this._elementRect.bottom - this._containerRect.top)
+    // }
 
     this._extendedSub = {
       cancel: panelExtended.querySelector('#ext-cancel'),

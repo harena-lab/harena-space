@@ -221,7 +221,7 @@ class EditDCCText extends EditDCC {
         }
       })
     if (selectOptions) { this._quill.setContents(oldDelta) }
-    this._editor.classList.add('inplace-editor')
+    this._editor.classList.add('w-100', 'inplace-editor')
 
     // toolbar customization
     // document.querySelector('.ql-link').innerHTML =
