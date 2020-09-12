@@ -139,14 +139,32 @@ Learn and try to instantiate and customize Digital Content Components (DCCs) at 
 
 # Directory Map
 
-* **author** - Front-end of the authoring environment that runs in the client side. The `author.html` plus the `js/index.js` files are the main modules. The Javascript files of the module are in the `[js]` directory.
-
-* **dccs** - Digital Content Components (DCCs) library. The authoring environment and the generated cases use web components to execute active web tasks, e.g., buttons, animations, inputs, etc. These web components follow the DCC standard and are stored in this directory.
-
-* **infra** - Contains infrastructure related modules, which are shared by the Author and Player platforms -- e.g., the bus service.
-
-* **lib** - External javascript libraries adopted by both platforms (author and player).
+* **author** - Front-end of the authoring environment that runs on the client-side. The `author.html` plus the `js/index.js` files are the main modules. The Javascript files of the module are in the `[js]` directory.
 
 * **player** - Kernel of the HTML cases player. This kernel is used by the `translator` module to produce the final HTML version of the cases, which have the player kernel inside them.
 
 * **translator** - Translates the markdown document of a case to the final case executed in the player using HTML, CSS, and Javascript. In the process, it produces an intermediary object representation of the case.
+
+* **dccs** - Digital Content Components (DCCs) library. The authoring environment and the generated cases use web components to execute active web tasks, e.g., buttons, animations, inputs, etc. These web components follow the DCC standard and are stored in this directory.
+
+* **flow** - Flow representation and processing. For example, several cases can be dynamically composed in a flow controlled by this module.
+
+* **scripts** - Scripts programming via box programming through Blockly.
+
+* **context** - Semantic related data management, related to controlled vocabularies, taxonomies, and ontologies. For example, semantic annotations of medical texts are resolved by this module.
+
+* **infra** - Contains infrastructure-related modules, which are shared by the Author and Player platforms -- e.g., the bus service.
+
+* **lib** - External javascript libraries adopted by both platforms (author and player).
+
+* **themes** - HTML + CSS + DCC themes that are used to render cases.
+
+* **templates** - Case templates adopted at the beginning of the authoring process.
+
+## To Refactor
+
+* **start** - Environment landing page. Deprecated, it was replaced by an AdonisJS/Edge approach.
+
+* **modules** - Miniature environment to render cases used in the author environment to preview the case render. It will be transferred to the author directory.
+
+* **resources** - Aggregates resources shared by several modules. It will be transferred to a specific AdonisJS directory.
