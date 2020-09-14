@@ -196,10 +196,11 @@ console.log(params.complexity)
           const caseSpecialty = responseContent.specialty
           const caseKeywords = responseContent.keywords
           const caseOriginalDate = responseContent.original_date
+          const caseComplexity = responseContent.complexity
           const caseSource = responseContent.source.replace(/"/gm, '\\"')
 
           return view.render('author.author',
-            { caseId, caseTitle, caseDescription, caseLanguage, caseInstitution, caseDomain, caseSpecialty, caseKeywords, caseOriginalDate, caseSource })
+            { caseId, caseTitle, caseDescription, caseLanguage, caseInstitution, caseDomain, caseSpecialty, caseKeywords, caseOriginalDate, caseComplexity, caseSource })
         })
         .catch(function (error) {
           console.log(error)
