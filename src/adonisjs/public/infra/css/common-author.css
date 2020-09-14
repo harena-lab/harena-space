@@ -45,7 +45,7 @@ nav.navbar {
 /* author draft css start*/
 .draft-scroll-container{
   padding-bottom: 2%;
-  height: 60% !important;
+  height: 75% !important;
   width: 100% !important;
 }
 
@@ -256,6 +256,12 @@ nav.navbar {
   padding-left: 80px;
   padding-right: 80px;
   padding-top: 60px;
+}
+.draft-author-padding{
+	background-color: #ffffff;
+	padding-left: 30px;
+	padding-right: 30px;
+	padding-top: 40px;
 }
 .scroll-y{
   overflow-x: hidden;
