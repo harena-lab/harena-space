@@ -18,6 +18,11 @@
             <textarea class="form-control" id="description" name="description">{{caseDescription}}</textarea>
           </div>
           <div class="form-group">
+            <label for="creationDate">Creation Date</label>
+            <input type="date" class="form-control" id="creationDate" name="creationDate" value="{{caseOriginalDate}}">
+            {{-- <small id="keywords-help" class="form-text text-muted">Inform the date of case creation on Jacinto Moodle</small> --}}
+          </div>
+          <div class="form-group">
             <label for="language">Language</label>
             <select name="language" id="language" value={{caseLanguage}}>
                <option value={{caseLanguage}} selected disabled hidden>{{caseLanguage}}</option>
@@ -27,17 +32,23 @@
             </select>
           </div>
           <div class="form-group">
-            <label for="originalDate">Original Date</label>
-            <input type="date" class="form-control" id="originalDate" name="originalDate" value="{{caseOriginalDate}}">
-            {{-- <small id="keywords-help" class="form-text text-muted">Inform the date of case creation on Jacinto Moodle</small> --}}
-          </div>
-<!--          <div class="form-group">
             <label for="institution">Institution</label>
-          <input type="text" class="form-control" id="institution" name="institution" value="{{caseInstitution}}" placeholder="Enter your institution">
-        </div> -->
+            <select name="institution" id="institution" value={{ caseInstitution }}>
+              <option value={{caseInstitution}} selected disabled hidden>{{caseInstitution}}</option>
+              <option value="unicamp">Unicamp</option>
+              <option value="minho">Universidade do Minho</option>
+            </select>
+          </div>
           <div class="form-group">
             <label for="domain">Domain</label>
-            <input type="text" class="form-control" id="domain" name="domain" value="{{caseDomain}}" placeholder="Inform the case domain">
+            <select name="domain" id="domain" value={{ caseDomain }}>
+              <option value={{ caseDomain }} selected disabled hidden>{{caseDomain}}</option>
+              <option value="Medicine">Medicine</option>
+              <option value="Nurse">Nurse</option>
+              <option value="Physioterapy">Physioterapy</option>
+              <option value="Pharmacy">Pharmacy</option>
+              <option value="Occupational Therapy">Occupational Therapy</option>
+            </select>
           </div>
 
           <div class="form-group">

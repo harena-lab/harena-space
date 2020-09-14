@@ -61,7 +61,8 @@ class CaseController {
             keywords: params.keywords,
             source: markdown,
             original_date: params.creationDate,
-            complexity: params.complexity
+            complexity: params.complexity,
+            institution: params.institution
           },
           headers: {
             Authorization: 'Bearer ' + token
@@ -131,12 +132,12 @@ class CaseController {
 
   async update ({ request, session, response }) {
     try {
-      console.log('update')
+      console.log('update ---------------------------- ')
       const params = request.all()
       // console.log('UPDATE STARTING........')
       const endpointUrl =
       Env.get('HARENA_MANAGER_URL') + '/api/v1/case/' + params.case_id
-console.log(params.complexity)
+
       const token = request.cookie('token')
       const config = {
         method: 'PUT',
@@ -149,8 +150,9 @@ console.log(params.complexity)
           specialty: params.specialty,
           keywords: params.keywords,
           originalDate: params.originalDate,
-          source: params.source,
-          complexity: params.complexity
+          complexity: params.complexity,
+          institution: params.institution,
+          source: params.source
         },
         headers: {
           Authorization: 'Bearer ' + token
@@ -196,10 +198,12 @@ console.log(params.complexity)
           const caseSpecialty = responseContent.specialty
           const caseKeywords = responseContent.keywords
           const caseOriginalDate = responseContent.original_date
+          const caseComplexity = responseContent.complexity
+
           const caseSource = responseContent.source.replace(/"/gm, '\\"')
 
           return view.render('author.author',
-            { caseId, caseTitle, caseDescription, caseLanguage, caseInstitution, caseDomain, caseSpecialty, caseKeywords, caseOriginalDate, caseSource })
+            { caseId, caseTitle, caseDescription, caseLanguage, caseInstitution, caseDomain, caseSpecialty, caseKeywords, caseOriginalDate, caseSource, caseComplexity })
         })
         .catch(function (error) {
           console.log(error)
@@ -226,6 +230,7 @@ console.log(params.complexity)
 
       await axios(config)
         .then(function (endpointResponse) {
+          console.log('here')
           console.log(endpointResponse.data)
           // return view.render('author.author')
 
