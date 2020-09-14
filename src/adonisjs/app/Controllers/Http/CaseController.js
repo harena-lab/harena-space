@@ -60,7 +60,8 @@ class CaseController {
             specialty: params.specialty,
             keywords: params.keywords,
             source: markdown,
-            original_date: params.creationDate
+            original_date: params.creationDate,
+            complexity: params.complexity
           },
           headers: {
             Authorization: 'Bearer ' + token
@@ -130,11 +131,12 @@ class CaseController {
 
   async update ({ request, session, response }) {
     try {
+      console.log('update')
       const params = request.all()
       // console.log('UPDATE STARTING........')
       const endpointUrl =
       Env.get('HARENA_MANAGER_URL') + '/api/v1/case/' + params.case_id
-
+console.log(params.complexity)
       const token = request.cookie('token')
       const config = {
         method: 'PUT',
@@ -147,7 +149,8 @@ class CaseController {
           specialty: params.specialty,
           keywords: params.keywords,
           originalDate: params.originalDate,
-          source: params.source
+          source: params.source,
+          complexity: params.complexity
         },
         headers: {
           Authorization: 'Bearer ' + token

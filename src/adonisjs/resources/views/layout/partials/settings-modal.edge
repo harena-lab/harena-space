@@ -39,6 +39,15 @@
             <label for="domain">Domain</label>
             <input type="text" class="form-control" id="domain" name="domain" value="{{caseDomain}}" placeholder="Inform the case domain">
           </div>
+
+          <div class="form-group">
+            <label for="complexity">Complexity</label>
+            <select name="complexity" id="complexity" value={{caseComplexity}}>
+               <option value={{caseComplexity}} selected disabled hidden>{{caseComplexity}}</option>
+               <option value="undergraduate">Undergraduate</option>
+               <option value="postgraduate">Postgraduate</option>
+            </select>
+          </div>
           <div class="form-group">
             <label for="specialty">Specialty</label>
             <input type="text" class="form-control" id="specialty" name="specialty" value="{{caseSpecialty}}" placeholder="Inform the case specialty">
