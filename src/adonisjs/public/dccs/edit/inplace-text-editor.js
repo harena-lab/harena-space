@@ -48,9 +48,11 @@ class EditDCCText extends EditDCC {
     console.log(knotContent)
     console.log(el)
 
+
     super(dcc, dcc.currentPresentation())
     this._knotContent = knotContent
     this._element = el
+    this._editDCC = dcc
     this._handleHighlighter = this._handleHighlighter.bind(this)
     this._handleImageUpload = this._handleImageUpload.bind(this)
     this._handleAnnotation = this._handleAnnotation.bind(this)
@@ -66,6 +68,7 @@ class EditDCCText extends EditDCC {
                               EditDCCText.toolbarTemplateHighlighter +
                               EditDCCText.toolbarTemplateConfirm
     this._buildEditor(false)
+
   }
 
   _buildEditor (selectOptions, oldDelta) {
@@ -103,10 +106,13 @@ class EditDCCText extends EditDCC {
 
     // this._editorToolbar = this._buildToolbarPanel();
     // this._editorWrapper.appendChild(this._editorToolbar);
+    // document.getElementById('inplace-editor-wrapper').appendChild(_editorContainer)
+    this._editDCC.parentNode.insertBefore(this._fetchEditorContainer(), this._editDCC.nextSibling)
     this._buildToolbarPanel(this._toolbarControls)
 
     this._editor = this._buildEditorPanel()
-    this._editorWrapper.appendChild(this._editor)
+    // this._editorWrapper.appendChild(this._editor)
+    this._fetchEditorContainer().appendChild(this._editor)
 
     this._buildQuillEditor(selectOptions, oldDelta)
 

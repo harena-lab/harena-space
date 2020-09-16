@@ -9,6 +9,7 @@ class EditDCC {
     this._editElement = presentation
     this._editorExtended = null
     this._editorWrapper = this._fetchEditorWrapper()
+    this._editorContainer = this._fetchEditorContainer()
     this._containerRect = this._editorWrapper.getBoundingClientRect()
     this._elementWrapper = this._fetchElementWrapper()
     this._elementWrapperRect = this._elementWrapper.getBoundingClientRect()
@@ -27,7 +28,7 @@ class EditDCC {
   }
 
   async _handleEditorAction (action) {
-    if (action == 'confirm') { await MessageBus.ext.request('properties/apply/short') } else if (this._editDCC != null) { this._editDCC.reactivateAuthor() }
+    if (action === 'confirm') { await MessageBus.ext.request('properties/apply/short') } else if (this._editDCC != null) { this._editDCC.reactivateAuthor() }
     this.closeEditor()
   }
 
@@ -38,7 +39,7 @@ class EditDCC {
     }
   }
 
-  // fetches the editor wrapper
+  // fetches the editor container
   _fetchEditorWrapper () {
     let container = document
     if (window.parent && window.parent.document) {
@@ -47,6 +48,18 @@ class EditDCC {
       if (cont != null) { container = cont }
     }
     return container
+  }
+
+  // fetches the editor container
+  _fetchEditorContainer () {
+    if (!document.querySelector('.editor-container')) {
+      this._editorContainer = document.createElement('div')
+      this._editorContainer.classList.add('editor-container')
+      this._editorWrapper.appendChild(this._editorContainer)
+    }else {
+      this._editorContainer = document.querySelector('.editor-container')
+    }
+    return this._editorContainer
   }
 
   // fetches the element wrapper
@@ -73,7 +86,7 @@ class EditDCC {
 
   _buildToolbarPanel (html) {
     this._editorToolbar = document.createElement('div')
-    this._editorToolbar.classList.add('inplace-editor-floating', 'col')
+    this._editorToolbar.classList.add('inplace-editor-floating')
     this._editorToolbar.innerHTML = html
 
     // this._editorToolbar.style.left = this._transformRelativeX(
@@ -81,7 +94,7 @@ class EditDCC {
     // this._editorToolbar.style.bottom = this._transformRelativeY(
     //   this._containerRect.height -
     //         (this._elementWrapperRect.top - this._containerRect.top))
-    this._editorWrapper.appendChild(this._editorToolbar)
+    this._fetchEditorContainer().appendChild(this._editorToolbar)
   }
 
   _removeToolbarPanel () {
@@ -115,7 +128,10 @@ class EditDCC {
   async _extendedPanel (html, modality) {
     this._editorExtended =
          this._buildExtendedPanel(html, modality)
-    this._editorWrapper.appendChild(this._editorExtended)
+    this._fetchEditorContainer().appendChild(this._editorExtended)
+    this._editDCC.parentNode.insertBefore(this._fetchEditorContainer(), this._editDCC.nextSibling)
+
+
 
     const promise = new Promise((resolve, reject) => {
       const callback = function (button) { resolve(button) }
@@ -141,7 +157,7 @@ class EditDCC {
 
   _removeExtendedPanel () {
     if (this._editorExtended != null) {
-      this._editorWrapper.removeChild(this._editorExtended)
+      this._editorContainer.removeChild(this._editorExtended)
       this._editorExtended = null
     }
   }
@@ -170,8 +186,9 @@ class EditDCC {
       cancel: panelExtended.querySelector('#ext-cancel'),
       content: panelExtended.querySelector('#ext-content')
     }
-    if (modality == 'image') { this._extendedSub.image = panelExtended.querySelector('#ext-content') } else { this._extendedSub.confirm = panelExtended.querySelector('#ext-confirm') }
-
+    if (modality === 'image') {
+      this._extendedSub.image = panelExtended.querySelector('#ext-content')
+    } else { this._extendedSub.confirm = panelExtended.querySelector('#ext-confirm') }
     return panelExtended
   }
 
@@ -179,7 +196,7 @@ class EditDCC {
     const ep = await this._extendedPanel(
       EditDCC.imageBrowseTemplate, 'image')
     let path = null
-    if (ep.clicked == 'confirm' && ep.content.files[0]) {
+    if (ep.clicked === 'confirm' && ep.content.files[0]) {
       const asset = await
       MessageBus.ext.request('data/asset//new',
         {

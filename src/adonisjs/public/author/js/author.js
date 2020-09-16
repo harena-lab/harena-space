@@ -91,7 +91,7 @@ class AuthorManager {
       caseid = params.match(/id=([\w-]+)/i)
       caseid = (caseid == null) ? null : caseid[1]
     }
-    if (mode != null && mode.toLowerCase() == 'advanced') { document.querySelector('#advanced-mode').style.display = 'initial' }
+    if (mode != null && mode.toLowerCase() === 'advanced') { document.querySelector('#advanced-mode').style.display = 'initial' }
 
     // build singletons
     Panels.start()
@@ -223,7 +223,7 @@ class AuthorManager {
       'Select a case to load or start a new case.',
       'list', 'Select', 'New', cases.message)
 
-    if (caseId == 'New') { this.caseNew() } else { this._caseLoad(caseId) }
+    if (caseId === 'New') { this.caseNew() } else { this._caseLoad(caseId) }
 
     /*
       const sticky = document.querySelector("#sticky-top");
@@ -401,20 +401,20 @@ class AuthorManager {
   _checkKnotModification (nextState) {
     // (1) render slide; (2) edit knot; (3) edit case
     let modified = false
-    if (this._renderState == 2) {
+    if (this._renderState === 2) {
       if (this._editor != null) {
         const editorText = this._retrieveEditorText()
-        if (this._knots[this._knotSelected]._source != editorText) {
+        if (this._knots[this._knotSelected]._source !== editorText) {
           modified = true
           this._knots[this._knotSelected]._source = editorText
           Translator.instance.extractKnotAnnotations(this._knots[this._knotSelected])
           Translator.instance.compileKnotMarkdown(this._knots, this._knotSelected)
         }
       }
-    } else if (this._renderState == 3) {
+    } else if (this._renderState === 3) {
       if (this._editor != null) {
         const editorText = this._retrieveEditorText()
-        if (!this._originalMd || this._originalMd != editorText) {
+        if (!this._originalMd || this._originalMd !== editorText) {
           modified = true
           if (nextState != 3) { delete this._originalMd }
           this._compile(editorText)
@@ -461,7 +461,7 @@ class AuthorManager {
     // this._removeFloatingMenu();
     // let knotid = MessageBus.extractLevel(topic, 3);
     const knotid =
-         (message == null || message == '') ? this._knotSelected : message
+         (message == null || message === '') ? this._knotSelected : message
     if (knotid != null) {
       /*
          console.log("=== miniatureF");
