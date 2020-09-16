@@ -116,6 +116,7 @@ class EditDCC {
     this._editorExtended =
          this._buildExtendedPanel(html, modality)
     this._editorWrapper.appendChild(this._editorExtended)
+    this._editDCC._presentation.focus()
 
     const promise = new Promise((resolve, reject) => {
       const callback = function (button) { resolve(button) }

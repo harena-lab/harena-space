@@ -66,6 +66,7 @@ class EditDCCText extends EditDCC {
                               EditDCCText.toolbarTemplateHighlighter +
                               EditDCCText.toolbarTemplateConfirm
     this._buildEditor(false)
+    document.querySelector('.ql-editor').focus()
   }
 
   _buildEditor (selectOptions, oldDelta) {
@@ -107,7 +108,6 @@ class EditDCCText extends EditDCC {
 
     this._editor = this._buildEditorPanel()
     this._editorWrapper.appendChild(this._editor)
-
     this._buildQuillEditor(selectOptions, oldDelta)
 
     this._editElement.style.display = 'none'
