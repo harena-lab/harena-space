@@ -75,7 +75,6 @@ Route.group(() => {
   Route.post('link/case', 'CaseController.linkCase')
 }).prefix('/quest').middleware('auth')
 
-
 /*
 let harenaManagerUrl =
    Env.get("HARENA_MANAGER_URL", "http://localhost:3000/api/v1/");

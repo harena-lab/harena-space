@@ -48,9 +48,11 @@ class EditDCCText extends EditDCC {
     console.log(knotContent)
     console.log(el)
 
+
     super(dcc, dcc.currentPresentation())
     this._knotContent = knotContent
     this._element = el
+    this._editDCC = dcc
     this._handleHighlighter = this._handleHighlighter.bind(this)
     this._handleImageUpload = this._handleImageUpload.bind(this)
     this._handleAnnotation = this._handleAnnotation.bind(this)
@@ -67,6 +69,7 @@ class EditDCCText extends EditDCC {
                               EditDCCText.toolbarTemplateConfirm
     this._buildEditor(false)
     document.querySelector('.ql-editor').focus()
+
   }
 
   _buildEditor (selectOptions, oldDelta) {
@@ -104,10 +107,15 @@ class EditDCCText extends EditDCC {
 
     // this._editorToolbar = this._buildToolbarPanel();
     // this._editorWrapper.appendChild(this._editorToolbar);
+    // document.getElementById('inplace-editor-wrapper').appendChild(_editorContainer)
+    this._editDCC.parentNode.insertBefore(this._fetchEditorContainer(), this._editDCC.nextSibling)
     this._buildToolbarPanel(this._toolbarControls)
 
     this._editor = this._buildEditorPanel()
-    this._editorWrapper.appendChild(this._editor)
+
+    // this._editorWrapper.appendChild(this._editor)
+    this._fetchEditorContainer().appendChild(this._editor)
+
     this._buildQuillEditor(selectOptions, oldDelta)
 
     this._editElement.style.display = 'none'
@@ -132,16 +140,14 @@ class EditDCCText extends EditDCC {
 
   _buildEditorPanel () {
     const editor = document.createElement('div')
-    editor.style.position = 'absolute'
-    editor.style.left = this._transformRelativeX(
-      this._elementWrapperRect.left - this._containerRect.left)
-    editor.style.top = this._transformRelativeY(
-      this._elementWrapperRect.top - this._containerRect.top)
-    editor.style.width = this._transformRelativeX(this._elementWrapperRect.width)
-    editor.style.height =
-        this._transformRelativeY(
-          (this._elementWrapperRect.height < EditDCCText.minHeight) ? EditDCCText.minHeight : this._elementWrapperRect.height
-        )
+    editor.style.position = 'sticky'
+    // editor.style.left = this._transformRelativeX(
+    //   this._elementWrapperRect.left - this._containerRect.left)
+    // editor.style.top = this._transformRelativeY(
+    //   this._elementWrapperRect.top - this._containerRect.top)
+    // editor.style.width = this._transformRelativeX(this._elementWrapperRect.width)
+    // editor.style.height =
+    //      this._transformRelativeY(this._elementWrapperRect.height)
     if (this._svgDraw) {
       editor.innerHTML =
             EditDCCText.editorTemplate.svg
@@ -223,7 +229,7 @@ class EditDCCText extends EditDCC {
         }
       })
     if (selectOptions) { this._quill.setContents(oldDelta) }
-    this._editor.classList.add('inplace-editor')
+    this._editor.classList.add('w-100', 'inplace-editor')
 
     // toolbar customization
     // document.querySelector('.ql-link').innerHTML =

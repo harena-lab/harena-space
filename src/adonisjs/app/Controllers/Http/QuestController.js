@@ -8,10 +8,11 @@ class QuestController {
   async getCasesByQuestAuthor ({ request, response }) {
     try {
       const params = request.all()
-      console.log('------------------------COR DA QUEST')
-      console.log(params.color)
+
+      // console.log('------------------------COR DA QUEST')
+      // console.log(params.color)
       var responseData = []
-      let endpoint_url = Env.get("HARENA_MANAGER_URL") + "/api/v1/author/quest/cases"
+      const endpoint_url = Env.get('HARENA_MANAGER_URL') + '/api/v1/author/quest/cases'
 
       var config = {
         method: 'get',
@@ -23,8 +24,7 @@ class QuestController {
           'Authorization': 'Bearer ' + request.cookie('token')
         }
       }
-
-
+      
       await axios(config)
         .then(function (endpoint_response) {
           console.log('============ Retrieving cases for selected quests')
@@ -37,6 +37,7 @@ class QuestController {
 
             })
           }
+
           function sortAlphabetically (a, b) {
             if (a.title < b.title) {
               return -1
@@ -47,6 +48,7 @@ class QuestController {
             return 0
           }
           responseData[0] = busResponse.sort(sortAlphabetically)
+
         })
 
         .catch(function (error) {
@@ -63,16 +65,17 @@ class QuestController {
   async getQuestsAuthor ({ request, response }) {
     try {
       var responseData = []
+
       let endpoint_url = Env.get("HARENA_MANAGER_URL") + "/api/v1/author/quests"
 
       var config = {
         method: 'get',
         url: endpoint_url,
         headers: {
+
           'Authorization': 'Bearer ' + request.cookie('token')
         }
       }
-
 
       await axios(config)
         .then(function (endpoint_response) {
@@ -95,7 +98,9 @@ class QuestController {
         .catch(function (error) {
           console.log(error)
         })
-    } catch(e) {
+
+    } catch (e) {
+
       console.log(e)
     }
 

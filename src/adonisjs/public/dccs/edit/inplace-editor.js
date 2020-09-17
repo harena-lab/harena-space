@@ -9,6 +9,7 @@ class EditDCC {
     this._editElement = presentation
     this._editorExtended = null
     this._editorWrapper = this._fetchEditorWrapper()
+    this._editorContainer = this._fetchEditorContainer()
     this._containerRect = this._editorWrapper.getBoundingClientRect()
     this._elementWrapper = this._fetchElementWrapper()
     this._elementWrapperRect = this._elementWrapper.getBoundingClientRect()
@@ -27,7 +28,7 @@ class EditDCC {
   }
 
   async _handleEditorAction (action) {
-    if (action == 'confirm') { await MessageBus.ext.request('properties/apply/short') } else if (this._editDCC != null) { this._editDCC.reactivateAuthor() }
+    if (action === 'confirm') { await MessageBus.ext.request('properties/apply/short') } else if (this._editDCC != null) { this._editDCC.reactivateAuthor() }
     this.closeEditor()
   }
 
@@ -38,7 +39,7 @@ class EditDCC {
     }
   }
 
-  // fetches the editor wrapper
+  // fetches the editor container
   _fetchEditorWrapper () {
     let container = document
     if (window.parent && window.parent.document) {
@@ -47,6 +48,18 @@ class EditDCC {
       if (cont != null) { container = cont }
     }
     return container
+  }
+
+  // fetches the editor container
+  _fetchEditorContainer () {
+    if (!document.querySelector('.editor-container')) {
+      this._editorContainer = document.createElement('div')
+      this._editorContainer.classList.add('editor-container')
+      this._editorWrapper.appendChild(this._editorContainer)
+    }else {
+      this._editorContainer = document.querySelector('.editor-container')
+    }
+    return this._editorContainer
   }
 
   // fetches the element wrapper
@@ -76,12 +89,12 @@ class EditDCC {
     this._editorToolbar.classList.add('inplace-editor-floating')
     this._editorToolbar.innerHTML = html
 
-    this._editorToolbar.style.left = this._transformRelativeX(
-      this._elementWrapperRect.left - this._containerRect.left)
-    this._editorToolbar.style.bottom = this._transformRelativeY(
-      this._containerRect.height -
-            (this._elementWrapperRect.top - this._containerRect.top))
-    this._editorWrapper.appendChild(this._editorToolbar)
+    // this._editorToolbar.style.left = this._transformRelativeX(
+    //   this._elementWrapperRect.left - this._containerRect.left)
+    // this._editorToolbar.style.bottom = this._transformRelativeY(
+    //   this._containerRect.height -
+    //         (this._elementWrapperRect.top - this._containerRect.top))
+    this._fetchEditorContainer().appendChild(this._editorToolbar)
   }
 
   _removeToolbarPanel () {
@@ -115,7 +128,9 @@ class EditDCC {
   async _extendedPanel (html, modality) {
     this._editorExtended =
          this._buildExtendedPanel(html, modality)
-    this._editorWrapper.appendChild(this._editorExtended)
+
+    this._fetchEditorContainer().appendChild(this._editorExtended)
+    this._editDCC.parentNode.insertBefore(this._fetchEditorContainer(), this._editDCC.nextSibling)
     this._editDCC._presentation.focus()
 
     const promise = new Promise((resolve, reject) => {
@@ -142,7 +157,7 @@ class EditDCC {
 
   _removeExtendedPanel () {
     if (this._editorExtended != null) {
-      this._editorWrapper.removeChild(this._editorExtended)
+      this._editorContainer.removeChild(this._editorExtended)
       this._editorExtended = null
     }
   }
@@ -152,27 +167,28 @@ class EditDCC {
     panelExtended.classList.add('inplace-editor-floating')
     panelExtended.innerHTML = html
 
-    panelExtended.style.left = this._transformRelativeX(
-      this._elementRect.left - this._containerRect.left)
+    // panelExtended.style.left = this._transformRelativeX(
+    //   this._elementRect.left - this._containerRect.left)
 
     // tests the middle of the element against the middle of the container
-    if (modality != 'properties' ||
-          (this._elementRect.top + (this._elementRect.height / 2) >
-           this._containerRect.top + (this._containerRect.height / 2))) {
-      panelExtended.style.bottom = this._transformRelativeY(
-        this._containerRect.height -
-            (this._elementRect.top - this._containerRect.top))
-    } else {
-      panelExtended.style.top =
-            this._transformRelativeY(this._elementRect.bottom - this._containerRect.top)
-    }
+    // if (modality != 'properties' ||
+    //       (this._elementRect.top + (this._elementRect.height / 2) >
+    //        this._containerRect.top + (this._containerRect.height / 2))) {
+    //   panelExtended.style.bottom = this._transformRelativeY(
+    //     this._containerRect.height -
+    //         (this._elementRect.top - this._containerRect.top))
+    // } else {
+    //   panelExtended.style.top =
+    //         this._transformRelativeY(this._elementRect.bottom - this._containerRect.top)
+    // }
 
     this._extendedSub = {
       cancel: panelExtended.querySelector('#ext-cancel'),
       content: panelExtended.querySelector('#ext-content')
     }
-    if (modality == 'image') { this._extendedSub.image = panelExtended.querySelector('#ext-content') } else { this._extendedSub.confirm = panelExtended.querySelector('#ext-confirm') }
-
+    if (modality === 'image') {
+      this._extendedSub.image = panelExtended.querySelector('#ext-content')
+    } else { this._extendedSub.confirm = panelExtended.querySelector('#ext-confirm') }
     return panelExtended
   }
 
@@ -180,7 +196,7 @@ class EditDCC {
     const ep = await this._extendedPanel(
       EditDCC.imageBrowseTemplate, 'image')
     let path = null
-    if (ep.clicked == 'confirm' && ep.content.files[0]) {
+    if (ep.clicked === 'confirm' && ep.content.files[0]) {
       const asset = await
       MessageBus.ext.request('data/asset//new',
         {
