@@ -56,7 +56,7 @@ class QuestController {
       console.log(e)
     }
 
-    return view.render('author.drafts-cases', { cases: responseData[0]})
+    return view.render('author.drafts-cases', { cases: responseData[0] })
 
   }
 
