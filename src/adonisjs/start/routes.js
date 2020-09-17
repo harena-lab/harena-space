@@ -1,6 +1,6 @@
 /* global use */
 'use strict'
-
+const Helpers = use('Helpers')
 /*
 |--------------------------------------------------------------------------
 | Routes
@@ -72,13 +72,17 @@ Route.group(() => {
 }).prefix('drafts')
 
 Route.group(() => {
-  Route.post('link/case',		'CaseController.linkCase')
+  Route.post('link/case', 'CaseController.linkCase')
 }).prefix('/quest').middleware('auth')
 
 /*
 let harenaManagerUrl =
    Env.get("HARENA_MANAGER_URL", "http://localhost:3000/api/v1/");
 */
+
+Route.get('translator/playground', ({ view, request }) => {
+  return Helpers.publicPath('translator/playground/index.html')
+})
 
 Route.get('player', 'QuestController.getQuests').as('player_home')
 

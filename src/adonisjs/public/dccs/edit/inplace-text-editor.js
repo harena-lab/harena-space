@@ -68,6 +68,7 @@ class EditDCCText extends EditDCC {
                               EditDCCText.toolbarTemplateHighlighter +
                               EditDCCText.toolbarTemplateConfirm
     this._buildEditor(false)
+    document.querySelector('.ql-editor').focus()
 
   }
 
@@ -111,6 +112,7 @@ class EditDCCText extends EditDCC {
     this._buildToolbarPanel(this._toolbarControls)
 
     this._editor = this._buildEditorPanel()
+
     // this._editorWrapper.appendChild(this._editor)
     this._fetchEditorContainer().appendChild(this._editor)
 

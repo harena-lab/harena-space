@@ -128,10 +128,10 @@ class EditDCC {
   async _extendedPanel (html, modality) {
     this._editorExtended =
          this._buildExtendedPanel(html, modality)
+
     this._fetchEditorContainer().appendChild(this._editorExtended)
     this._editDCC.parentNode.insertBefore(this._fetchEditorContainer(), this._editDCC.nextSibling)
-
-
+    this._editDCC._presentation.focus()
 
     const promise = new Promise((resolve, reject) => {
       const callback = function (button) { resolve(button) }

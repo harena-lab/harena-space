@@ -60,7 +60,9 @@ class CaseController {
             specialty: params.specialty,
             keywords: params.keywords,
             source: markdown,
-            original_date: params.creationDate
+            original_date: params.creationDate,
+            complexity: params.complexity,
+            institution: params.institution
           },
           headers: {
             Authorization: 'Bearer ' + token
@@ -130,6 +132,7 @@ class CaseController {
 
   async update ({ request, session, response }) {
     try {
+      console.log('update ---------------------------- ')
       const params = request.all()
       // console.log('UPDATE STARTING........')
       const endpointUrl =
@@ -147,6 +150,8 @@ class CaseController {
           specialty: params.specialty,
           keywords: params.keywords,
           originalDate: params.originalDate,
+          complexity: params.complexity,
+          institution: params.institution,
           source: params.source
         },
         headers: {
@@ -193,10 +198,12 @@ class CaseController {
           const caseSpecialty = responseContent.specialty
           const caseKeywords = responseContent.keywords
           const caseOriginalDate = responseContent.original_date
+          const caseComplexity = responseContent.complexity
+
           const caseSource = responseContent.source.replace(/"/gm, '\\"')
 
           return view.render('author.author',
-            { caseId, caseTitle, caseDescription, caseLanguage, caseInstitution, caseDomain, caseSpecialty, caseKeywords, caseOriginalDate, caseSource })
+            { caseId, caseTitle, caseDescription, caseLanguage, caseInstitution, caseDomain, caseSpecialty, caseKeywords, caseOriginalDate, caseSource, caseComplexity })
         })
         .catch(function (error) {
           console.log(error)
@@ -223,6 +230,7 @@ class CaseController {
 
       await axios(config)
         .then(function (endpointResponse) {
+          console.log('here')
           console.log(endpointResponse.data)
           // return view.render('author.author')
 

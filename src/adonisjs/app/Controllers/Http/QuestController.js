@@ -8,6 +8,7 @@ class QuestController {
   async getCasesByQuestAuthor ({ request, response }) {
     try {
       const params = request.all()
+
       // console.log('------------------------COR DA QUEST')
       // console.log(params.color)
       var responseData = []
@@ -20,10 +21,10 @@ class QuestController {
           questId: params.id
         },
         headers: {
-          Authorization: 'Bearer ' + request.cookie('token')
+          'Authorization': 'Bearer ' + request.cookie('token')
         }
       }
-
+      
       await axios(config)
         .then(function (endpoint_response) {
           console.log('============ Retrieving cases for selected quests')
@@ -36,7 +37,18 @@ class QuestController {
 
             })
           }
-          responseData[0] = busResponse
+
+          function sortAlphabetically (a, b) {
+            if (a.title < b.title) {
+              return -1
+            }
+            if (a.title > b.title) {
+              return 1
+            }
+            return 0
+          }
+          responseData[0] = busResponse.sort(sortAlphabetically)
+
         })
 
         .catch(function (error) {
@@ -47,18 +59,21 @@ class QuestController {
     }
 
     return view.render('author.drafts-cases', { cases: responseData[0] })
+
   }
 
   async getQuestsAuthor ({ request, response }) {
     try {
       var responseData = []
-      const endpoint_url = Env.get('HARENA_MANAGER_URL') + '/api/v1/author/quests'
+
+      let endpoint_url = Env.get("HARENA_MANAGER_URL") + "/api/v1/author/quests"
 
       var config = {
         method: 'get',
         url: endpoint_url,
         headers: {
-          Authorization: 'Bearer ' + request.cookie('token')
+
+          'Authorization': 'Bearer ' + request.cookie('token')
         }
       }
 
@@ -72,9 +87,10 @@ class QuestController {
               id: endpoint_response.data[c].id,
               title: endpoint_response.data[c].title,
               color: endpoint_response.data[c].color,
-              url: endpoint_response.data[c].url
+              url: endpoint_response.data[c].url,
 
             })
+
           }
           responseData[0] = busResponse
         })
@@ -82,7 +98,9 @@ class QuestController {
         .catch(function (error) {
           console.log(error)
         })
+
     } catch (e) {
+
       console.log(e)
     }
 
