@@ -10,16 +10,17 @@
  ******/
 
 .styt-main-frame {
-   position: absolute;
+   /* position: absolute; */
    left: 0px;
    right: 0px;
    top: 0px;
    bottom: 0px;
    background-color: #004270;
+   width: 100%;
 }
 
 .styt-main {
-   position: absolute;
+   /* position: absolute; */
    left: 15px;
    right: 15px;
    top: 10px;
@@ -44,17 +45,17 @@
 /* .styt-main, .styt-button, input[type="text"], textarea { */
 .styt-main, .styt-button, .styt-button-option {
    /* font-size: 4vmin; */
-   font-size: 3vmin;
+   font-size: 1.8rem;
 }
 
 .styt-main-text {
    width: 100%;
    height: 100%;
-   overflow: scroll;
+   /* overflow: scroll; */
 }
 
 .styt-button-frame {
-   position: absolute;
+   /* position: absolute; */
    bottom: 0px;
    width: 100%;
    /* display: flex; */
@@ -71,7 +72,7 @@
    margin-left: auto;
    margin-right: auto;
    text-align: center;
-
+   margin-bottom: 15px;
    color: white;
    /* padding: 12px 0px 0px 0px; */
    border-radius: 10px;

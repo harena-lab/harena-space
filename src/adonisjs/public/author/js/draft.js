@@ -20,8 +20,8 @@ class DraftManager {
 
     this._boxesPanel = document.querySelector('#case-boxes')
     // this._draftSelect(authorState.userid, advanced);
-    document.getElementsByClassName('buttons-container').length > 0 ?
-      this._draftQuestCasesSelect(advanced) : this._draftSelect(advanced)
+    document.getElementsByClassName('buttons-container').length > 0
+      ? this._draftQuestCasesSelect(advanced) : this._draftSelect(advanced)
   }
 
   async _draftSelect (advanced) {
@@ -50,13 +50,13 @@ class DraftManager {
           Basic.service.authorPropertyStore('caseId', this.id.substring(1))
           // window.location.href = "http://0.0.0.0:10010/author/author.html";
           window.location.href =
-                  'author?id=' + this.id.substring(1)
+                  '/author?id=' + this.id.substring(1)
         }
       )
       previewButton.addEventListener('click',
         function () {
           Basic.service.authorPropertyStore('caseId', this.id.substring(1))
-          window.location.href = 'player/case?id=' +
+          window.location.href = '/player/case?id=' +
                                       this.id.substring(1) +
                                       '&preview'
         }
