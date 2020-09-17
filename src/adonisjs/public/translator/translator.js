@@ -734,7 +734,7 @@ class Translator {
               scramble: true,
               options: {}
             }, compiled[c - 1]._source)
-          this._transferOption(optionGroup.options, compiled[c - 1])
+          this._transferOption(optionGroup.options, compiled[c-1])
           compiled[c - 1] = optionGroup
         }
         if (optionGroup != null) {
@@ -748,19 +748,19 @@ class Translator {
     }
   }
 
-  _transferOption (options, compiledItem) {
-    options[compiledItem.label] = {
-      target: (compiledItem.target)
-        ? compiledItem.target : '(default)'
-    }
-    if (compiledItem.message) {
-      options[compiledItem.label].message =
+  _transferOption(options, compiledItem) {
+      options[compiledItem.label] = {
+        target: (compiledItem.target)
+          ? compiledItem.target : '(default)'
+      }
+      if (compiledItem.message) {
+        options[compiledItem.label].message =
                  compiledItem.message
-    }
-    if (compiledItem.state) {
-      options[compiledItem.label].state = compiledItem.state
-      options[compiledItem.label].operation = compiledItem.operation
-    }
+      }
+      if (compiledItem.state) {
+        options[compiledItem.label].state = compiledItem.state
+        options[compiledItem.label].operation = compiledItem.operation
+      }
   }
 
   // check if both are quoted or subordinated
@@ -1532,7 +1532,10 @@ class Translator {
     if (matchArray[3] != null) { option.divert = matchArray[3].trim() }
     if (matchArray[4] != null) { option.target = matchArray[4].trim() }
     if (matchArray[5] != null) { option.message = matchArray[5].trim() }
-    if (matchArray[6] != null) { option.operation = matchArray[6].trim() } else if (matchArray[8] != null) { option.operation = matchArray[8].trim() }
+    if (matchArray[6] != null)
+      { option.operation = matchArray[6].trim() }
+    else if (matchArray[8] != null)
+      { option.operation = matchArray[8].trim() }
     if (matchArray[7] != null) { option.state = matchArray[7].trim() }
 
     return option
@@ -1579,7 +1582,8 @@ class Translator {
 
   _optionObjToMd (obj) {
     let state = ''
-    if (obj.state && obj.operation) { state = ' ' + ((obj.operation == '>') ? '>' : '') + '((' + obj.state + '))' + ((obj.operation == '?') ? '?' : '') }
+    if (obj.state && obj.operation)
+      state = ' ' + ((obj.operation == ">") ? '>' : '') + '((' + obj.state + '))' + ((obj.operation == "?") ? '?' : '')
     return Translator.markdownTemplates.option
       .replace('{subtype}', (obj.subtype == '_') ? '' : obj.subtype + ' ')
       .replace('{label}', (obj.label) ? obj.label : '')
@@ -1952,7 +1956,8 @@ class Translator {
         first = false
         const option = obj.options[op]
         let state = ''
-        if (option.state && option.operation) { state = ' ' + ((option.operation == '>') ? '>' : '') + '((' + option.state + '))' + ((option.operation == '?') ? '?' : '') }
+        if (option.state && option.operation)
+          state = ' ' + ((option.operation == ">") ? '>' : '') + '((' + option.state + '))' + ((option.operation == "?") ? '?' : '')
         md += Translator.markdownTemplates.choice
           .replace('{label}', op)
           .replace('{target}',
@@ -1960,7 +1965,7 @@ class Translator {
               ? option.target : '')
           .replace('{message}',
             (option.message ? '"' + option.message + '"' : ''))
-          .replace('{state}', state)
+          .replace("{state}", state)
       }
     } else {
       let extraAttr = ''
