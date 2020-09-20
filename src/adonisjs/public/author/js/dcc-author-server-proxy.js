@@ -179,6 +179,7 @@ class DCCAuthorServer {
           domain: document.getElementById('domain').value,
           specialty: document.getElementById('specialty').value,
           keywords: document.getElementById('keywords').value,
+          originalDate: document.getElementById('creationDate').value,
           institution: document.getElementById('institution').value,
           complexity: document.getElementById('complexity').value,
           source: message.source
