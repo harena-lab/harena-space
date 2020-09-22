@@ -73,7 +73,7 @@ class DCCVisual extends DCCBase {
   }
 
   _attachTriggerPresentation (event, trigger, presentation) {
-    if (event == 'click') { presentation.style.cursor = 'pointer' }
+    if (event === 'click') { presentation.style.cursor = 'pointer' }
     presentation.addEventListener(event, trigger)
   }
 
