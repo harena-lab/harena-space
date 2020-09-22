@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="../../infra/css/common-player.css">
   <link rel="stylesheet" href="../../infra/css/common-author.css">
 
-  <script src="https://cdn.ckeditor.com/ckeditor5/22.0.0/classic/ckeditor.js"></script>
+  <script src="../../lib/ckeditor5/ckeditor.js"></script>
   <script src="../../lib/showdown-2-0-0/showdown.min.js"></script>
 
   <script src="../../infra/bus.js"></script>
@@ -53,57 +53,28 @@
   </style>
 
   <script>
-    function start() {
+    function start () {
+      ClassicEditor.create( document.querySelector( '#editor' ) )
+        .then( editor => {
+          window.editor = editor;
+        } )
+        .catch( error => {
+          console.error( 'There was a problem initializing the editor.', error );
+        } );
+
+        MessageBus.ext.subscribe("control/html/example", showHTML);
+    }
+
+    function showHTML () {
       /*
-      ClassicEditor
-        .create( document.querySelector( '#editor' ) )
-        .catch( error => {
-            console.error( error );
-      } );
-    */
-
-
-    ClassicEditor
-      .create( document.querySelector( '#editor' ), {
-          image: {
-              // Configure the available styles.
-              styles: [
-                  'alignLeft', 'alignCenter', 'alignRight'
-              ],
-
-              // Configure the available image resize options.
-              resizeOptions: [
-                  {
-                      name: 'imageResize:original',
-                      label: 'Original',
-                      value: null
-                  },
-                  {
-                      name: 'imageResize:50',
-                      label: '50%',
-                      value: '50'
-                  },
-                  {
-                      name: 'imageResize:75',
-                      label: '75%',
-                      value: '75'
-                  }
-              ],
-
-              // You need to configure the image toolbar, too, so it shows the new style
-              // buttons as well as the resize buttons.
-              toolbar: [
-                  'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight',
-                  '|',
-                  'imageResize',
-                  '|',
-                  'imageTextAlternative'
-              ]
-          }
-      } )
-        .catch( error => {
-            console.error( error );
-      } );
+      document.querySelector('#results').content
+         const text = quill.getText();
+         let charText = "\n[";
+         for (let t in text)
+            charText += text[t] + ":" + text.charCodeAt(t) +
+                        ((t == text.length-1) ? "" : ", ");
+          resultsPanel.value = text + charText + "]";
+      */
     }
   </script>
 
@@ -134,7 +105,7 @@
 
       <div class="container-fluid">
         <nav class="navbar navbar-light d-flex">
-          <dcc-button topic="control/delta/example" label="DELTA" xstyle="in">
+          <dcc-button topic="control/delta/example" label="HTML" xstyle="in">
           </dcc-button>
           <dcc-button topic="control/raw/example" label="RAW" xstyle="in">
           </dcc-button>
