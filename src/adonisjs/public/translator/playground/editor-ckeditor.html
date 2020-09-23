@@ -60,22 +60,21 @@
         } )
         .catch( error => {
           console.error( 'There was a problem initializing the editor.', error );
-        } );
+      } );
 
-        MessageBus.ext.subscribe("control/html/example", showHTML);
+      MessageBus.ext.subscribe("control/html/example", showHTML);
+      MessageBus.ext.subscribe("control/markdown/example", showMarkdown);
     }
 
     function showHTML () {
-      /*
-      document.querySelector('#results').content
-         const text = quill.getText();
-         let charText = "\n[";
-         for (let t in text)
-            charText += text[t] + ":" + text.charCodeAt(t) +
-                        ((t == text.length-1) ? "" : ", ");
-          resultsPanel.value = text + charText + "]";
-      */
+      document.querySelector('#results').value = editor.getData()
     }
+
+    function showMarkdown () {
+      let mt = new showdown.Converter()
+      document.querySelector('#results').value = mt.makeMarkdown(editor.getData())
+    }
+    
   </script>
 
   <title>Translator Test</title>
@@ -105,9 +104,9 @@
 
       <div class="container-fluid">
         <nav class="navbar navbar-light d-flex">
-          <dcc-button topic="control/delta/example" label="HTML" xstyle="in">
+          <dcc-button topic="control/html/example" label="HTML" xstyle="in">
           </dcc-button>
-          <dcc-button topic="control/raw/example" label="RAW" xstyle="in">
+          <dcc-button topic="control/markdown/example" label="MARKDOWN" xstyle="in">
           </dcc-button>
           <dcc-button topic="control/clipboard/example" label="CLIPBOARD" xstyle="in">
           </dcc-button>
@@ -136,7 +135,7 @@
         <div class="align-items-stretch col-6">
           <div class="std-panel h-100">
             <div class="d-flex h-100 w-100 position-relative flex-column">
-              <div class="panel-label ">Object Results</div>
+              <div class="panel-label ">Data</div>
               <textarea id="results" class="w-100 h-100 std-monospace"></textarea>
             </div>
           </div>
