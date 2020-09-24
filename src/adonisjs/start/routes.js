@@ -72,9 +72,8 @@ Route.group(() => {
 }).prefix('drafts')
 
 Route.group(() => {
-	Route.post(  'link/case',		'CaseController.linkCase')
+  Route.post('link/case', 'CaseController.linkCase')
 }).prefix('/quest').middleware('auth')
-
 
 /*
 let harenaManagerUrl =

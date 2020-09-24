@@ -18,12 +18,14 @@
       <!-- End of breadcrumbs -->
 
       <div class="h-100 w-100 home-content-padding">
-        <div class="home-text mb-5">
+        <div class="home-text mb-4">
           <p>Choose a quest to filter your cases.</p>
         </div>
         <div id="case-boxes" class="container-fluid h-100 scroll-x draft-scroll-container">
+          <div class="d-flex justify-content-end mb-3">
+                <button type="button" name="draft-button-all" class="btn btn-secondary align-self-start" onclick="window.location.href='{{route('draft_all_cases')}}'">Show all cases</button>
+          </div>
           <div class="d-flex">
-
               @each(q in quests)
 
               <div class="d-flex justify-content-center text-center draft-quest-container">
@@ -34,7 +36,6 @@
 
               </div>
               @endeach
-
           </div>
         </div>
       </div>

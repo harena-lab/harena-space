@@ -4,7 +4,7 @@
    flex: 95%;
    width: auto;
    height: 95%;
-   overflow: scroll;
+   /* overflow: scroll; */
    display: flex;
    flex-direction: column;
    padding: 5px;
@@ -43,7 +43,8 @@
 }
 
 .styp-field-text {
-   width: 600px;
+   width: 550px;
+   margin: 3px;
 }
 
 .styp-field-highlight {
