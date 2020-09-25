@@ -72,7 +72,14 @@
 
     function showMarkdown () {
       let mt = new showdown.Converter()
-      document.querySelector('#results').value = mt.makeMarkdown(editor.getData())
+      mt.setFlavor('github')
+      let html = editor.getData();
+      html2 = html
+        .replace(/<figure[^>]*>[^<]*<img[^>]*src="([^"]*)"><figcaption>([^<]*)<\/figcaption><\/figure>/igm, '<img alt="$2" src="$1">')
+        .replace(/<figure[^>]*>[^<]*<img[^>]*src="([^"]*)"><\/figure>/igm, '<img src="$1">')
+        .replace(/<figure[^>]*>/igm, '')
+        .replace(/<\/figure>/igm, '')
+      document.querySelector('#results').value = html + '\n\n' + html2 + '\n\n' + mt.makeMarkdown(html2)
     }
     
   </script>
