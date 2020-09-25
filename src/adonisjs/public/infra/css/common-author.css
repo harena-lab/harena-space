@@ -65,6 +65,7 @@ nav.navbar {
 .create-template-author-container{
   width: 200px !important;
   min-width: 200px !important;
+  height: 315px !important;
   margin: 10px;
   background-color: #ffffff;
   border-color: #808080;
@@ -85,8 +86,7 @@ nav.navbar {
   font-weight: bold;
   color: #808080;
   line-height: 1.2;
-  margin-right: 3%;
-  margin-left: 3%;
+  margin-right: 13px;
 }
 
 .draft-case-image{
@@ -154,6 +154,7 @@ nav.navbar {
 
   }
 }
+
 .home-content-padding{
 
   background-color: #f2f2f2;
@@ -161,6 +162,7 @@ nav.navbar {
   padding-right: 70px;
   padding-top: 70px;
 }
+
 .draft-content-padding{
   border-color: #505050;
   border-width: 0.5rem;
@@ -171,10 +173,10 @@ nav.navbar {
   border-top-right-radius: 0.94rem;
   background-color: #f2f2f2;
 
-  padding-left: 70px;
-  padding-right: 70px;
-  padding-top: 70px;
-  padding-bottom: 10px; 
+  padding-left: 13px;
+  padding-right: 7px;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 .draft-quest-icon{
   border: 7px solid #e8e8e8;
