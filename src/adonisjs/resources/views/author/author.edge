@@ -73,15 +73,17 @@
          class="d-flex flex-column vh-100 vw-100 scroll-y index-boot-padding">
 
       <!-- Create breadcrumbs -->
-      <div id="system-panel" class="container-fluid" style="position:relative">
+      <div id="system-panel" class="container-fluid author-breadcrumb" style="position:relative">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb">
             <!-- <li class="breadcrumb-item"><a href="//home.html">Home</a></li> -->
             <li class="breadcrumb-item"><a href={{route('author_home')}}>Home</a></li>
             <li class="breadcrumb-item">
               <div style="height: 15px">
-                <dcc-button topic="control/leave/drafts" label="Drafts" xstyle="out">
-                </dcc-button>
+                <a href="#">
+                  <dcc-button topic="control/leave/drafts" label="Drafts" xstyle="out">
+                  </dcc-button>
+                </a>
               </div>
             </li>
             <li class="breadcrumb-item active" aria-current="page">Edit case</li>

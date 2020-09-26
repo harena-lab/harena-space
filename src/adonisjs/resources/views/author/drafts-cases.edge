@@ -7,7 +7,7 @@
     <div class="d-flex flex-column vh-100 vw-100 draft-author-padding hidden-overflow">
 
       <!-- Create breadcrumbs -->
-      <div class="container-fluid" >
+      <div class="container-fluid author-breadcrumb" >
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href={{route('author_home')}}>Home</a></li>
@@ -19,7 +19,7 @@
 
       <div class="h-100 w-100 draft-content-padding">
         <div class="home-text mb-3">
-          <p>Continue editing your draft cases.</p>
+          <p>Continue editing your drafted cases.</p>
         </div>
         <div id="case-boxes" class="container-fluid h-100 scroll-y draft-scroll-container">
           @each(c in cases)

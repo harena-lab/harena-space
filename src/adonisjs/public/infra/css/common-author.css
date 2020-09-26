@@ -27,6 +27,10 @@ nav.navbar {
   margin-bottom: 1rem;
 }
 
+.author-breadcrumb{
+  z-index: 1040;
+}
+
 /* Content padding in author case creation page*/
 .registration-padding{
   background-color: #f2f2f2;
@@ -45,7 +49,6 @@ nav.navbar {
 /* author draft css start*/
 .draft-scroll-container{
   padding-bottom: 2%;
-  height: 80% !important;
   width: 100% !important;
 }
 
@@ -264,7 +267,7 @@ nav.navbar {
 	background-color: #ffffff;
 	padding-left: 30px;
 	padding-right: 30px;
-	padding-top: 40px;
+	padding-top: 5px;
 }
 .scroll-y{
   overflow-x: hidden;
