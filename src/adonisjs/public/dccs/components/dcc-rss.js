@@ -11,6 +11,8 @@ class DCCRSS extends DCCBase {
   }
 
   connectedCallback () {
+    super.connectedCallback()
+
     if (!this.hasAttribute('publish')) { this.publish = 'dcc/rss/post' }
     if (!this.hasAttribute('interval')) { this.interval = 1000 }
   }

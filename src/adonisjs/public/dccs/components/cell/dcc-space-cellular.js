@@ -19,6 +19,8 @@ class DCCSpaceCellular extends DCCBase {
   }
 
   connectedCallback () {
+    super.connectedCallback()
+
     this._stateStr = this.innerHTML.trim()
 
     this._stateTypes = []
