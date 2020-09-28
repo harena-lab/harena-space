@@ -3,6 +3,7 @@
 
 /* Extension of the Quill Editor */
 
+/*
 const Inline = Quill.import('blots/inline')
 const Delta = Quill.import('delta')
 
@@ -41,6 +42,7 @@ class SelectBlot extends Inline {
 SelectBlot.blotName = 'select'
 SelectBlot.tagName = 'dcc-state-select'
 Quill.register(SelectBlot)
+*/
 
 class EditDCCText extends EditDCC {
   constructor (knotContent, el, dcc, svg) {
@@ -53,6 +55,7 @@ class EditDCCText extends EditDCC {
     this._knotContent = knotContent
     this._element = el
     this._editDCC = dcc
+    /*
     this._handleHighlighter = this._handleHighlighter.bind(this)
     this._handleImageUpload = this._handleImageUpload.bind(this)
     this._handleAnnotation = this._handleAnnotation.bind(this)
@@ -61,6 +64,7 @@ class EditDCCText extends EditDCC {
     this._handleRedo = this._handleRedo.bind(this)
     this._handleConfirm = this._handleConfirm.bind(this)
     this._handleCancel = this._handleCancel.bind(this)
+    */
     // this._editElement = element;
     // this._commons = new EditDCC(element);
     this._svgDraw = svg
@@ -68,7 +72,7 @@ class EditDCCText extends EditDCC {
                               EditDCCText.toolbarTemplateHighlighter +
                               EditDCCText.toolbarTemplateConfirm
     this._buildEditor(false)
-    document.querySelector('.ql-editor').focus()
+    // document.querySelector('.ql-editor').focus()
 
   }
 
@@ -109,14 +113,14 @@ class EditDCCText extends EditDCC {
     // this._editorWrapper.appendChild(this._editorToolbar);
     // document.getElementById('inplace-editor-wrapper').appendChild(_editorContainer)
     this._editDCC.parentNode.insertBefore(this._fetchEditorContainer(), this._editDCC.nextSibling)
-    this._buildToolbarPanel(this._toolbarControls)
+    // this._buildToolbarPanel(this._toolbarControls)
 
     this._editor = this._buildEditorPanel()
 
     // this._editorWrapper.appendChild(this._editor)
     this._fetchEditorContainer().appendChild(this._editor)
 
-    this._buildQuillEditor(selectOptions, oldDelta)
+    this._buildCKEditor(selectOptions, oldDelta)
 
     this._editElement.style.display = 'none'
 
@@ -190,7 +194,7 @@ class EditDCCText extends EditDCC {
   }
 
   // builds a Quill editor
-  _buildQuillEditor (selectOptions, oldDelta) {
+  _buildCKEditor (selectOptions, oldDelta) {
     const inplaceContent = this._editor.querySelector('#inplace-content')
     if (!selectOptions) {
       Translator.instance.authoringRender = false
@@ -209,6 +213,7 @@ class EditDCCText extends EditDCC {
       inplaceContent.innerHTML = html
     }
 
+    /*
     this._quill = new Quill(inplaceContent,
       {
         theme: 'snow',
@@ -229,6 +234,16 @@ class EditDCCText extends EditDCC {
         }
       })
     if (selectOptions) { this._quill.setContents(oldDelta) }
+    */
+
+    InlineEditor.create(inplaceContent)
+      .then( editor => {
+        window.editor = editor;
+      } )
+      .catch( error => {
+        console.error( 'There was a problem initializing the editor.', error );
+    } );
+
     this._editor.classList.add('w-100', 'inplace-editor')
 
     // toolbar customization
@@ -236,10 +251,13 @@ class EditDCCText extends EditDCC {
     //      EditDCCText.buttonLinkSVG
     // document.querySelector('.ql-image').innerHTML =
     //      EditDCCText.buttonImageSVG
+    /*
     document.querySelector('.ql-annotation').innerHTML =
          EditDCCText.buttonAnnotationSVG
+    */
     /* <HIGHLIGHTER>
       */
+    /*
     if (!selectOptions) {
       document.querySelector('.ql-highlighter').innerHTML =
             EditDCCText.buttonHighlightSVG
@@ -252,8 +270,10 @@ class EditDCCText extends EditDCC {
          EditDCC.buttonConfirmSVG
     document.querySelector('.ql-cancel').innerHTML =
          EditDCC.buttonCancelSVG
+    */
   }
 
+  /* <ADAPT>
   _formatSelectOptions () {
     // transforms the highlight select options in HTML
     const selectOptions =
@@ -268,6 +288,7 @@ class EditDCCText extends EditDCC {
          "<span style='color:lightgray'>diagnostics</span>" +
          this._hlSelectHTML
   }
+  */
 
   _removeEditor () {
     // this._editorWrapper.removeChild(this._editorToolbar);
@@ -326,6 +347,7 @@ class EditDCCText extends EditDCC {
    }
    */
 
+  /* <ADAPT>
   async _handleImageUpload () {
     const range = this._quill.getSelection()
     const imagePath = await this._imageUploadPanel()
@@ -335,22 +357,23 @@ class EditDCCText extends EditDCC {
       range.index, 'image', Basic.service.imageResolver(imagePath))
     console.log('=== image resolved')
     console.log(Basic.service.imageResolver(imagePath))
-    /*
-      const range = this._quill.getSelection();
-      let ep = await this._extendedPanel(
-            EditDCC.imageBrowseTemplate, "image");
-      if (ep.clicked == "confirm" && ep.content.files[0]) {
-         const asset = await
-            MessageBus.ext.request("data/asset//new",
-                 {file: ep.content.files[0],
-                  caseid: Basic.service.currentCaseId});
-         this._quill.insertEmbed(
-            range.index, "image", Basic.service.imageResolver(asset.message));
-      }
-      this._removeExtendedPanel();
-      */
-  }
 
+      // const range = this._quill.getSelection();
+      // let ep = await this._extendedPanel(
+      //       EditDCC.imageBrowseTemplate, "image");
+      // if (ep.clicked == "confirm" && ep.content.files[0]) {
+      //    const asset = await
+      //       MessageBus.ext.request("data/asset//new",
+      //            {file: ep.content.files[0],
+      //             caseid: Basic.service.currentCaseId});
+      //    this._quill.insertEmbed(
+      //       range.index, "image", Basic.service.imageResolver(asset.message));
+      // }
+      // this._removeExtendedPanel();
+  }
+  */
+
+  /* <ADAPT>
   async _handleAnnotation () {
     const range = this._quill.getSelection()
     const ep =
@@ -361,7 +384,9 @@ class EditDCCText extends EditDCC {
     }
     this._removeExtendedPanel()
   }
+  */
 
+  /* <ADAPT>
   async _handleHighlighter () {
     const ctxList = Context.instance.listSelectVocabularies()
     this._contextList = EditDCCText.headerTemplate + "<select id='ext-content'>"
@@ -380,14 +405,16 @@ class EditDCCText extends EditDCC {
             {type: "input",
              subtype: "group select",
              vocabularies: [vocabulary]});
-         */
+         
 
       const first = await this._loadSelectOptions(vocabulary)
       this._handleHlSelect(first, true)
     }
     this._removeExtendedPanel()
   }
+  */
 
+  /* <ADAPT>
   async _loadSelectOptions (vocabulary) {
     const range = this._quill.getSelection(true)
     const context =
@@ -419,7 +446,9 @@ class EditDCCText extends EditDCC {
     if (range && range.length > 0) { this._quill.setSelection(range) }
     return first
   }
+  */
 
+  /* <ADAPT>
   _handleHlSelect (hlSelect, maintainSelect) {
     const range = this._quill.getSelection(true)
     this._hlSelect.innerHTML = this._highlightOptions[hlSelect].label +
@@ -430,6 +459,7 @@ class EditDCCText extends EditDCC {
 
     if (!maintainSelect) { this._quill.setSelection(range.index + range.length, 0) }
   }
+  */
 
   /*
    async _handleExtendedPanel(html, imageBrowser) {
@@ -483,6 +513,7 @@ class EditDCCText extends EditDCC {
    }
    */
 
+  /* <ADAPT>
   _handleUndo () {
     this._quill.history.undo()
   }
@@ -490,6 +521,7 @@ class EditDCCText extends EditDCC {
   _handleRedo () {
     this._quill.history.redo()
   }
+  */
 
   async _handleConfirm () {
     Panels.s.unlockNonEditPanels()
