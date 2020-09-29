@@ -5,7 +5,7 @@ function _harenaCustomUploadAdapterPlugin( editor ) {
     console.log('=== loading plugin')
     editor.plugins.get( 'FileRepository' ).createUploadAdapter = ( loader ) => {
         // Configure the URL to the upload script in your back-end here!
-        return new HarenaUploadAdapter( loader );
+        return new HarenaUploadAdapter( loader, Basic.service.currentCaseId, DCCCommonServer.token );
     };
 }
 

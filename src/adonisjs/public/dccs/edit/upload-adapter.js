@@ -1,7 +1,9 @@
 class HarenaUploadAdapter {
-    constructor( loader ) {
+    constructor( loader, caseid, token ) {
         // The file loader instance to use during the upload.
         this.loader = loader;
+        this._caseid = caseid;
+        this._token = token;
     }
 
     // Starts the upload process.
@@ -33,7 +35,7 @@ class HarenaUploadAdapter {
         // xhr.setRequestHeader('Content-Type', 'multipart/form-data');
         xhr.setRequestHeader('Accept', 'application/json');
         xhr.setRequestHeader('cache-control', 'no-cache');
-        xhr.setRequestHeader('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI0OTU5MTYyMi1hODllLTRmODktOTFhMy01YzlkYWFlZTczYzAiLCJpYXQiOjE2MDEzNzEwMjgsImV4cCI6MTYwMTQ1NzQyOH0.ysh9uylxlKgJhhB5n2VM3wg_fzuOxcwzv-_fQhlbNPw');
+        xhr.setRequestHeader('Authorization', 'Bearer ' + this._token);
         xhr.processData = false;
         xhr.contentType = false;
         xhr.mimeType = 'multipart/form-data';
@@ -90,6 +92,7 @@ class HarenaUploadAdapter {
 
         // data.append( 'upload', file );
         data.append('file', file);
+        data.append('caseId', this._caseid);
 
         // Important note: This is the right place to implement security mechanisms
         // like authentication and CSRF protection. For instance, you can use
