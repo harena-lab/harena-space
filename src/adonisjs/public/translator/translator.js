@@ -1064,7 +1064,7 @@ class Translator {
           break
         case 'script': html = this._scriptObjToHTML(obj, superseq)
           break
-        case 'image' : html = this._imageObjToHTML(obj); break
+        case 'image' : html = this._imageObjToHTML(obj, superseq); break
         case 'option' : html = this._optionObjToHTML(obj); break
         case 'field' : html = this._fieldObjToHTML(obj); break
         case 'divert-script' :
@@ -1309,6 +1309,8 @@ class Translator {
     // return this._markdownTranslator.makeHtml(obj.content);
     let result = obj.content
     if (this.authoringRender && superseq == -1) {
+      console.log('=== original dcc markdown content')
+      console.log(obj.content)
       result = Translator.htmlTemplatesEditable.text
         .replace('[seq]', this._subSeq(superseq, obj.seq))
         .replace('[author]', this._authorAttrSub(superseq))
@@ -1409,7 +1411,7 @@ class Translator {
          ? authorRender : this.authoringRender;
       */
     let result
-    if (this.authoringRender) {
+    if (this.authoringRender && superseq == -1) {
       result = Translator.htmlTemplatesEditable.image
         .replace('[seq]', obj.seq)
         .replace('[author]', this._authorAttrSub(superseq))
@@ -1422,6 +1424,8 @@ class Translator {
         .replace('[path]', Basic.service.imageResolver(obj.path))
         .replace('[alt]', (obj.title)
           ? " alt='" + obj.title + "'" : '')
+        .replace('[caption]', (obj.title)
+          ? "<figcaption>" + obj.title + "</figcaption>" : '')
     }
     return result
   }
@@ -2159,7 +2163,7 @@ class Translator {
       mark: /^[ \t]*>[ \t]*/im
     },
     image: {
-      mark: /([ \t]*)!\[([\w \t]*)\]\(([\w:.\/\?&#\-~]+)[ \t]*(?:"([\w ]*)")?\)/im,
+      mark: /([ \t]*)!\[([\w \t]*)\]\(<?([\w:.\/\?&#\-~]+)>?[ \t]*(?:"([\w ]*)")?\)/im,
       inline: true
     },
     field: {

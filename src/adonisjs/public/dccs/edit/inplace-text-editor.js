@@ -2,7 +2,6 @@
   *********************/
 
 function _harenaCustomUploadAdapterPlugin( editor ) {
-    console.log('=== loading plugin')
     editor.plugins.get( 'FileRepository' ).createUploadAdapter = ( loader ) => {
         // Configure the URL to the upload script in your back-end here!
         return new HarenaUploadAdapter( loader, Basic.service.currentCaseId, DCCCommonServer.token );
@@ -14,33 +13,144 @@ class EditDCCText extends EditDCC {
     super(dcc, dcc.currentPresentation())
     this._knotContent = knotContent
     this._element = el
-    console.log('=== dcc')
-    console.log(dcc.currentPresentation())
     this._editDCC = dcc
+    this._textChanged = false
     this._buildEditor(dcc.currentPresentation())
-
-    // this._harenaCustomUploadAdapterPlugin = this._harenaCustomUploadAdapterPlugin.bind(this)
   }
 
   _buildEditor (dcc) {
-    InlineEditor.create(dcc,
-        {extraPlugins: [ _harenaCustomUploadAdapterPlugin ]}
-        /*
-        {simpleUpload: {
-            uploadUrl: 'http://localhost:10020/api/v1/artifact',
-            headers: {
-              Accept: 'application/json',
-              'cache-control': 'no-cache',
-              Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI0OTU5MTYyMi1hODllLTRmODktOTFhMy01YzlkYWFlZTczYzAiLCJpYXQiOjE2MDEzNzEwMjgsImV4cCI6MTYwMTQ1NzQyOH0.ysh9uylxlKgJhhB5n2VM3wg_fzuOxcwzv-_fQhlbNPw'
-            }
-        }}*/
-        )
+    InlineEditor.create(dcc, {extraPlugins: [_harenaCustomUploadAdapterPlugin]} )
       .then( editor => {
         window.editor = editor;
+        this._editor = editor;
+        editor.editing.view.document.on( 'change:isFocused', ( evt, data, isFocused ) => {
+          // console.log( `View document is focused: ${ isFocused }.` );
+          if (!isFocused && this._textChanged) {
+            this._textChanged = false
+            this._updateTranslated()
+          }
+        } );
+        editor.model.document.on( 'change:data', () => {
+          this._textChanged = true
+        } );
       } )
       .catch( error => {
         console.error( 'There was a problem initializing the editor.', error );
-    } );    
+    } );
+  }
+
+  async _updateTranslated () {
+    const objSet = await this._translateContent(
+      this._editor.getData(), this._knotContent[this._element].blockquote)
+
+    // removes extra linefeeds
+    if (objSet[objSet.length - 1].type == 'linefeed') { objSet.pop() }
+
+    // redefines the sequence according to the new elements
+    const seq = this._knotContent[this._element].seq
+    const shift = objSet.length - 1
+    for (let s = this._element + 1; s < this._knotContent.length; s++) { this._knotContent[s].seq += shift }
+
+    // removes the previous element and insert the new one
+    this._knotContent.splice(this._element, 1)
+    for (let o = 0; o < objSet.length; o++) {
+      objSet[o].seq = seq + o
+      this._knotContent.splice(this._element + o, 0, objSet[o])
+    }
+
+    MessageBus.ext.publish('control/knot/update')
+  }
+
+  async _translateContent (editContent, blockquote) {
+    let content = ''
+    console.log('=== content')
+    console.log(editContent)
+
+    const htmlTranslate = editContent
+      .replace(/<img[^>]*src="([^"]*)"><figcaption>([^<]*)<\/figcaption>/igm,
+               '<img alt="$2" src="$1">')
+      .replace(/<figure[^>]*style="width:([^;]*);">[^<]*<img([^>]*)><\/figure>/igm,
+               '<figure><img$2 width="$1" height="$1"></figure>')
+      .replace(/<figure[^>]*>[^<]*<img([^>]*)><\/figure>/igm, '<img$1>')
+      .replace(/<figure[^>]*>/igm, '')
+      .replace(/<\/figure[^>]*>/igm, '')
+
+    let mt = new showdown.Converter()
+    mt.setFlavor('github')
+    const mdTranslate = mt.makeMarkdown(htmlTranslate)
+
+    /*
+    for (const e in editContent.ops) {
+      const ec = editContent.ops[e]
+      if (ec.insert) {
+        if (typeof ec.insert === 'string') {
+          let md = ec.insert.replace(/\n/g, '\n\n')
+          if (ec.attributes) {
+            const attr = ec.attributes
+            if (attr.bold) { md = '**' + md + '**' }
+            if (attr.italic) { md = '*' + md + '*' }
+            if (attr.script == 'sub') { md = '<sub>' + md + '</sub>' }
+            if (attr.script == 'sup') { md = '<sup>' + md + '</sup>' }
+            if (attr.link) { md = '[' + md + '](' + attr.link + ')' }
+            if (attr.annotation || attr.select) {
+              md = '{' + md + '}'
+              if (attr.annotation && attr.annotation.length > 0) {
+                md += '(' + attr.annotation
+                  .replace(/\(/, '\(')
+                  .replace(/\)/, '\)') + ')'
+              }
+              if (attr.select && attr.select.answer &&
+                         attr.select.answer.length > 0) { md += '/' + attr.select.answer + '/' }
+            }
+            if (attr.align == 'center') {
+              content = this._formatPreSegment(
+                content, "<div align='center'>", '</div>')
+              md = this._formatCurrent(md)
+            }
+            if (attr.list == 'bullet') {
+              content = this._formatPreSegment(content, '* ', '')
+              md = this._formatCurrent(md)
+            }
+          }
+          content += md
+        } else if (ec.insert.image) {
+          let imageURL = ec.insert.image
+          if (imageURL.startsWith('data:')) {
+            const asset = await
+            MessageBus.ext.request('data/asset//new',
+              {
+                b64: imageURL,
+                caseid: Basic.service.currentCaseId
+              })
+            imageURL = asset.message
+          }
+          content += '![' +
+                  ((ec.attributes && ec.attributes.alt) ? ec.attributes.alt : 'image') + '](' +
+                  Basic.service.imageAbsoluteToRelative(imageURL) + ')\n'
+        }
+      }
+    }
+    content = content.trimEnd()
+    content = content.replace(/[\n]+$/g, '') + '\n'
+    */
+
+    console.log('=== html')
+    console.log(mdTranslate)
+    const unity = { _source: mdTranslate }
+    Translator.instance._compileUnityMarkdown(unity)
+    Translator.instance._compileMerge(unity)
+    if (blockquote != null) {
+      for (const c of unity.content) {
+        c.blockquote = true
+        if (c.type == 'text-block') {
+          for (const tb of c.content) { tb.blockquote = true }
+        }
+        Translator.instance.updateElementMarkdown(c)
+      }
+    }
+    console.log('=== unity')
+    console.log(unity)
+    return unity.content
   }
 }
 
