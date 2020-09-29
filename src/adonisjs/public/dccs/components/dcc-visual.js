@@ -29,6 +29,7 @@ class DCCVisual extends DCCBase {
    */
 
   connectedCallback () {
+    super.connectedCallback()
     this.checkActivateAuthor()
   }
 

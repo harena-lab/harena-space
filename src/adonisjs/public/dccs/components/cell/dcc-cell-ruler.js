@@ -15,6 +15,7 @@ class DCCCellRuler extends DCCBase {
   }
 
   connectedCallback () {
+    super.connectedCallback()
     MessageBus.page.publish('dcc/tool-cell/register', this)
   }
 

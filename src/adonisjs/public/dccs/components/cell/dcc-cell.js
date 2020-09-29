@@ -9,6 +9,8 @@ class DCCCell extends DCCBase {
   }
 
   connectedCallback () {
+    super.connectedCallback()
+
     // Fetch all the children that are not defined yet
     const undefinedProps = this.querySelectorAll(':not(:defined)')
 
