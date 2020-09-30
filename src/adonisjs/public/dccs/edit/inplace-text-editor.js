@@ -58,7 +58,7 @@ class EditDCCText extends EditDCC {
       this._knotContent.splice(this._element + o, 0, objSet[o])
     }
 
-    MessageBus.ext.publish('control/knot/update')
+    // MessageBus.ext.publish('control/knot/update')
   }
 
   async _translateContent (editContent, blockquote) {
@@ -67,8 +67,10 @@ class EditDCCText extends EditDCC {
     console.log(editContent)
 
     const htmlTranslate = editContent
-      .replace(/<img[^>]*src="([^"]*)"><figcaption>([^<]*)<\/figcaption>/igm,
-               '<img alt="$2" src="$1">')
+      .replace(/<img([^>]*)title="([^"]*)"([^>]*)><figcaption>([^<]*)<\/figcaption>/igm,
+               '<img$1title="$4"$3>')
+      .replace(/<img([^>]*)><figcaption>([^<]*)<\/figcaption>/igm,
+               '<img$1 title="$2">')
       .replace(/<figure[^>]*style="width:([^;]*);">[^<]*<img([^>]*)><\/figure>/igm,
                '<figure><img$2 width="$1" height="$1"></figure>')
       .replace(/<figure[^>]*>[^<]*<img([^>]*)><\/figure>/igm, '<img$1>')
