@@ -33,7 +33,7 @@ class DCCInclude extends DCCBase {
   _includeHTML () {
     console.log("=== response XML")
     console.log(this._xhr.responseXML)
-    // this.appendChild(this._xhr.responseXML.title)
+    this.appendChild(this._xhr.responseXML.body)
   }
 }
 
