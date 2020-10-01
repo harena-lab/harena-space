@@ -31,7 +31,7 @@ class HarenaUploadAdapter {
         // integration to choose the right communication channel. This example uses
         // a POST request with JSON as a data structure but your configuration
         // could be different.
-        xhr.open( 'POST', 'http://localhost:10020/api/v1/artifact', true );
+        xhr.open( 'POST', DCCCommonServer.managerAddressAPI + 'artifact', true );
         // xhr.setRequestHeader('Content-Type', 'multipart/form-data');
         xhr.setRequestHeader('Accept', 'application/json');
         xhr.setRequestHeader('cache-control', 'no-cache');
