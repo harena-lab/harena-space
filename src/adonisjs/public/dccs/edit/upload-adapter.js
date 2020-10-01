@@ -68,7 +68,7 @@ class HarenaUploadAdapter {
             // This URL will be used to display the image in the content. Learn more in the
             // UploadAdapter#upload documentation.
             resolve( {
-                default: response.url
+              default: response.url
             } );
         } );
 
