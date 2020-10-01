@@ -169,12 +169,13 @@ class DCCBlock extends DCCMultiVisual {
                       Basic.service.systemStyleResolver(this.elementTag() + '.css') +
                    "' </style>" + html
       } else if (this.xstyle == 'theme') {
+        if (Basic.service.currentCustomTheme != null)
+          html = "<style>@import '" +
+                   Basic.service.themeCustomStyleResolver(this.elementTag() + '.css') +
+                 "' </style>" + html
         html = "<style>@import '" +
                       Basic.service.themeStyleResolver(this.elementTag() + '.css') +
-               "' </style>\n" +
-               "<style>@import '" +
-                      Basic.service.themeCustomStyleResolver(this.elementTag() + '.css') +
-               "' </style>" + html
+               "' </style>\n" + html
       }
 
       const template = document.createElement('template')
