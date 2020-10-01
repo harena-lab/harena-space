@@ -7,6 +7,7 @@ class SubscribeDCC extends HTMLElement {
     if (this.hasAttribute('topic')) {
       this._targetObj = (this.hasAttribute('target'))
         ? document.querySelector('#' + this.target) : this.parentNode
+      console.log(this._targetObj)
 
       if (!this.hasAttribute('role')) { MessageBus.ext.subscribe(this.topic, this._targetObj.notify) } else { MessageBus.ext.subscribe(this.topic, this.publishWithRole) }
     }

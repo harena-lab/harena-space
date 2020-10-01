@@ -6,6 +6,8 @@ class DCCCompute extends DCCBase {
   }
 
   async connectedCallback () {
+    super.connectedCallback()
+
     if (this.hasAttribute('instruction')) {
       if (this.instruction == 'case=0') { MessageBus.ext.publish('case/completed', '') } else {
         const trans = /(\w+)?[ \t]*([+\-*/=])[ \t]*(\d+(?:\.\d+)?)/im

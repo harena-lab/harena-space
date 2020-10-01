@@ -18,6 +18,8 @@ class DCCLivelyTalk extends DCCVisual {
   }
 
   connectedCallback () {
+    super.connectedCallback()
+
     this._prefixSpeech = (this.speech) ? this.speech : ''
 
     this.addEventListener('schedule-animation', this._scheduleAnimation)

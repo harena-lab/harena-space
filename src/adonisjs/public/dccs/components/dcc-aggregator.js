@@ -10,6 +10,8 @@ class DCCAggregator extends DCCBase {
   }
 
   connectedCallback () {
+    super.connectedCallback()
+
     if (!this.hasAttribute('publish')) { this.publish = 'dcc/aggregate/post' }
     if (this.hasAttribute('quantity')) {
       if (typeof this.quantity === 'number') { this._quantity = this.quantity } else { this._quantity = parseInt(this.quantity) }

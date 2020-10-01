@@ -12,6 +12,8 @@ class DCCStyler extends DCCBase {
   }
 
   connectedCallback () {
+    super.connectedCallback()
+
     if (this.hasAttribute('targeted')) {
       this._targeted = this.targeted.split(';')
       for (const t in this._targeted) { this._targeted[t] = this._targeted[t].trim() }
