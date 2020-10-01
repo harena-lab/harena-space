@@ -1398,7 +1398,7 @@ class Translator {
       alternative: matchArray[2].trim(),
       path: matchArray[3].trim()
     }
-    if (matchArray[4] != null) { image.title = matchArray[3].trim() }
+    if (matchArray[4] != null) { image.title = matchArray[4].trim() }
     return image
   }
 

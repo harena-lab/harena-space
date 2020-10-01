@@ -81,61 +81,6 @@ class EditDCCText extends EditDCC {
     mt.setFlavor('github')
     const mdTranslate = mt.makeMarkdown(htmlTranslate)
 
-    /*
-    for (const e in editContent.ops) {
-      const ec = editContent.ops[e]
-      if (ec.insert) {
-        if (typeof ec.insert === 'string') {
-          let md = ec.insert.replace(/\n/g, '\n\n')
-          if (ec.attributes) {
-            const attr = ec.attributes
-            if (attr.bold) { md = '**' + md + '**' }
-            if (attr.italic) { md = '*' + md + '*' }
-            if (attr.script == 'sub') { md = '<sub>' + md + '</sub>' }
-            if (attr.script == 'sup') { md = '<sup>' + md + '</sup>' }
-            if (attr.link) { md = '[' + md + '](' + attr.link + ')' }
-            if (attr.annotation || attr.select) {
-              md = '{' + md + '}'
-              if (attr.annotation && attr.annotation.length > 0) {
-                md += '(' + attr.annotation
-                  .replace(/\(/, '\(')
-                  .replace(/\)/, '\)') + ')'
-              }
-              if (attr.select && attr.select.answer &&
-                         attr.select.answer.length > 0) { md += '/' + attr.select.answer + '/' }
-            }
-            if (attr.align == 'center') {
-              content = this._formatPreSegment(
-                content, "<div align='center'>", '</div>')
-              md = this._formatCurrent(md)
-            }
-            if (attr.list == 'bullet') {
-              content = this._formatPreSegment(content, '* ', '')
-              md = this._formatCurrent(md)
-            }
-          }
-          content += md
-        } else if (ec.insert.image) {
-          let imageURL = ec.insert.image
-          if (imageURL.startsWith('data:')) {
-            const asset = await
-            MessageBus.ext.request('data/asset//new',
-              {
-                b64: imageURL,
-                caseid: Basic.service.currentCaseId
-              })
-            imageURL = asset.message
-          }
-          content += '![' +
-                  ((ec.attributes && ec.attributes.alt) ? ec.attributes.alt : 'image') + '](' +
-                  Basic.service.imageAbsoluteToRelative(imageURL) + ')\n'
-        }
-      }
-    }
-    content = content.trimEnd()
-    content = content.replace(/[\n]+$/g, '') + '\n'
-    */
-
     console.log('=== html')
     console.log(mdTranslate)
     const unity = { _source: mdTranslate }

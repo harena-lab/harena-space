@@ -14,7 +14,7 @@ class AuthorCKEditor {
   start () {
     this.showHTML = this.showHTML.bind(this)
     this.showMarkdown = this.showMarkdown.bind(this)
-    ClassicEditor.create( document.querySelector( '#editor' ) )
+    InlineEditor.create( document.querySelector( '#editor' ) )
       .then( editor => {
         window.editor = editor;
       } )
@@ -37,8 +37,10 @@ class AuthorCKEditor {
     let html = editor.getData();
 
     let htmlCK = html
-      .replace(/<img[^>]*src="([^"]*)"><figcaption>([^<]*)<\/figcaption>/igm,
-               '<img alt="$2" src="$1">')
+      .replace(/<img([^>]*)title="([^"]*)"([^>]*)><figcaption>([^<]*)<\/figcaption>/igm,
+               '<img$1title="$4"$3>')
+      .replace(/<img([^>]*)><figcaption>([^<]*)<\/figcaption>/igm,
+               '<img$1 title="$2">')
       .replace(/<figure[^>]*style="width:([^;]*);">[^<]*<img([^>]*)><\/figure>/igm,
                '<figure><img$2 width="$1" height="$1"></figure>')
       .replace(/<figure[^>]*>[^<]*<img([^>]*)><\/figure>/igm, '<img$1>')
