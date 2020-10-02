@@ -47,8 +47,8 @@ class AuthorCKEditor {
       .replace(/<figure[^>]*>/igm, '')
       .replace(/<\/figure[^>]*>/igm, '')
 
-    document.querySelector('#results').value = html + '\n\n' + htmlCK +
-                                               '\n\n' + mt.makeMarkdown(htmlCK)
+    document.querySelector('#results').value = html + '\n\n-----\n\n' + htmlCK +
+                                               '\n\n-----\n\n' + mt.makeMarkdown(htmlCK)
   }
 }
 
