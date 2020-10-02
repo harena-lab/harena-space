@@ -16,6 +16,9 @@
    <!-- <script src="../../lib/quill-1-3-7/quill.min.js"></script> -->
    <script src="../../lib/showdown-2-0-0/showdown.min.js"></script>
 
+   <script src="../../config/config.js"></script>
+   <script src="../../config/config-local.js"></script>
+
    <script src="../../infra/bus.js"></script>
    <script src="../../infra/basic.js"></script>
    <script src="../../infra/dcc-common-server-proxy.js"></script>
@@ -65,7 +68,7 @@
              </dcc-button>
           </div>
           <div class="d-flex col-10">
-             <dcc-input-choice variable="output" exclusive xstyle="in">
+             <dcc-input-choice variable="output" exclusive>
                 <b>Versum:</b>
                 <dcc-input-option value="versum-object" checked>Object</dcc-input-option>&nbsp;
                 <dcc-input-option value="versum-html">HTML</dcc-input-option>&nbsp;

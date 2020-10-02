@@ -13,6 +13,8 @@ class DCCImageMarker extends DCCVisual {
   }
 
   async connectedCallback () {
+    super.connectedCallback()
+
     const coordsArr = this.coords.split(',')
     this._coords = {
       x: parseInt(coordsArr[0]),

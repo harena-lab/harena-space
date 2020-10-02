@@ -32,11 +32,11 @@ body {
 
 .sty-main-panel {
    /* the main box (body) occupies all the visible area */
-   position: absolute;
+   /* position: absolute;
    left: 0px;
    right: 0px;
    top: 0px;
-   bottom: 0px;
+   bottom: 0px; */
 
    /* eliminate margins etc. */
    margin: 0px;

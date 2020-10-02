@@ -1,7 +1,7 @@
 @charset "UTF-8";
 
 .editor-container{
-  position: absolute;
+  /* position: absolute; */
   overflow: auto;
   max-width: 95% !important;
   max-height: 85% !important;

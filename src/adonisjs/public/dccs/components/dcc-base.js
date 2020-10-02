@@ -8,8 +8,13 @@ class DCCBase extends HTMLElement {
     this.edit = this.edit.bind(this)
   }
 
+  connectedCallback () {
+    if (this.hasAttribute('bind'))
+      this._content = DCC.retrieve(this.bind.toLowerCase(), this.nodeName.toLowerCase())
+  }
+
   static get observedAttributes () {
-    return ['id', 'role', 'author']
+    return ['id', 'role', 'author', 'bind']
   }
 
   static get replicatedAttributes () {
@@ -39,6 +44,34 @@ class DCCBase extends HTMLElement {
 
   set author (isAuthor) {
     if (isAuthor) { this.setAttribute('author', '') } else { this.removeAttribute('author') }
+  }
+
+  // binds this DCC to a content component
+  get bind () {
+    return this.getAttribute('bind')
+  }
+
+  set bind (newValue) {
+    this.setAttribute('bind', newValue)
+  }
+
+  // connects this DCC to another
+  connect (id, topic) {
+    if (id != null && topic != null) {
+      if (this._connections == null) this._connections = {}
+      if (this._connections[topic] == null) this._connections[topic] = []
+      this._connections[topic].push(id)
+    }
+  }
+
+  async request (topic) {
+    let response = {}
+    if (this._connections != null && this._connections[topic] != null)
+      for (let c of this._connections[topic]) {
+        const result = await MessageBus.int.request(topic + '/' + c)
+        response[c] = (result != null) ? result.message : null
+      }
+    return response
   }
 
   edit () {

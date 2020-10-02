@@ -162,7 +162,7 @@ class PlayerManager {
 
   async startPlayer (caseid) {
     const preCaseOff = true
-    this._mainPanel = document.querySelector('#main-panel')
+    this._mainPanel = document.querySelector('#player-panel')
 
     const parameters = window.location.search.substr(1)
     let precase = null
