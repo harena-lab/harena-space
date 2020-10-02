@@ -1306,18 +1306,13 @@ class Translator {
     * Text Obj to HTML
     */
   _textObjToHTML (obj, superseq) {
-    // return this._markdownTranslator.makeHtml(obj.content);
     let result = obj.content
-    if (this.authoringRender && superseq == -1) {
-      console.log('=== original dcc markdown content')
-      console.log(obj.content)
+    if (this.authoringRender && superseq == -1)
       result = Translator.htmlTemplatesEditable.text
         .replace('[seq]', this._subSeq(superseq, obj.seq))
         .replace('[author]', this._authorAttrSub(superseq))
         .replace('[content]', obj.content)
-    }
     return result
-    // return obj.content;
   }
 
   _textObjToMd (obj) {
@@ -1372,7 +1367,7 @@ class Translator {
     * Line feed Obj to HTML
     */
   _linefeedObjToHTML (obj) {
-    return (obj.render) ? obj.content.replace(/[\f\n\r][\f\n\r]/igm, '<br>') : ''
+    return (obj.render) ? obj.content : ''
   }
 
   /*
@@ -1398,7 +1393,7 @@ class Translator {
       alternative: matchArray[2].trim(),
       path: matchArray[3].trim()
     }
-    if (matchArray[4] != null) { image.title = matchArray[3].trim() }
+    if (matchArray[4] != null) { image.title = matchArray[4].trim() }
     return image
   }
 

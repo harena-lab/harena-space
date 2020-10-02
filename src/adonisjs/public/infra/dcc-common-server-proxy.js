@@ -4,7 +4,7 @@
 
 class DCCCommonServer {
   constructor () {
-    this._local = false
+    // this._local = false
 
     /*
       console.log("=== token");
@@ -44,6 +44,7 @@ class DCCCommonServer {
    }
    */
 
+  /*
   get local () {
     return this._local
   }
@@ -51,6 +52,7 @@ class DCCCommonServer {
   set local (newValue) {
     this._local = newValue
   }
+  */
 
   /*
     * Wrappers of the services
@@ -140,7 +142,7 @@ class DCCCommonServer {
   async loadCase (topic, message) {
     let caseObj
 
-    if (this.local) {
+    if (HarenaConfig.local) {
       this._caseScript = document.createElement('script')
       this._caseScript.src = Basic.service.rootPath + 'cases/current-case.js'
       document.head.appendChild(this._caseScript)
@@ -197,7 +199,7 @@ class DCCCommonServer {
 
   async themeFamilySettings (topic, message) {
     let settings = {}
-    if (!this.local) {
+    if (!HarenaConfig.local) {
       const themeFamily = MessageBus.extractLevel(topic, 3)
       const header = {
         async: true,
@@ -222,7 +224,7 @@ class DCCCommonServer {
     const themeFamily = themeCompleteName.substring(0, separator)
     const themeName = themeCompleteName.substring(separator + 1)
     let caseObj
-    if (this.local) {
+    if (HarenaConfig.local) {
       this._themeScript = document.createElement('script')
       this._themeScript.src = Basic.service.rootPath + 'themes/' +
                                  themeFamily + '/local/' + themeName + '.js'
@@ -251,17 +253,20 @@ class DCCCommonServer {
   }
 
   async contextList (topic, message) {
-    const header = {
-      async: true,
-      crossDomain: true,
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
+    let ctxCatalog = {}
+    if (!HarenaConfig.local) {
+      const header = {
+        async: true,
+        crossDomain: true,
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
       }
+      const response = await fetch(Basic.service.rootPath + 'context/context.json',
+        header)
+      ctxCatalog = await response.json()
     }
-    const response = await fetch(Basic.service.rootPath + 'context/context.json',
-      header)
-    const ctxCatalog = await response.json()
     MessageBus.int.publish(MessageBus.buildResponseTopic(topic, message),
       ctxCatalog)
   }

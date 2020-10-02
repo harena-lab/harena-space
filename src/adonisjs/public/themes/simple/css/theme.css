@@ -10,12 +10,14 @@
  ******/
 
 .styt-main-frame {
-   /* position: absolute; */
+   /* position: absolute;
    left: 0px;
    right: 0px;
    top: 0px;
    bottom: 0px;
-   background-color: #004270;
+   */
+
+   /* background-color: #004270; */
    width: 100%;
 }
 
