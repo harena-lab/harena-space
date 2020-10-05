@@ -1,5 +1,5 @@
 /**
- * Embeds a data model
+ * Proxy for a REST request
  */
 
 class DCCRest extends DCCBase {
@@ -22,53 +22,57 @@ class DCCRest extends DCCBase {
 
   async connect (id, topic) {
     super.connect(id, topic)
-    const schema = await this.request('data/schema')
+    this._schema = await this.request('data/schema')
   }
 
   async restRequest(method, parameters) {
-    console.log('=== rest request')
-    console.log(method)
-    console.log(parameters)
-    if (this._content != null && this._content.paths != null) {
-      const paths = Object.keys(this._content.paths)
+    if (this._content != null && this._content.oas != null &&
+        this._content.oas.paths != null) {
+      const paths = Object.keys(this._content.oas.paths)
       if (paths.length > 0) {
         let url = paths[0]
         for (let p in parameters)
           url = url.replace('{' + p + '}', parameters[p])
+
         const request = {
           method: method.toUpperCase(),
           url: url,
+          async: true,
           crossDomain: true,
           headers: {
+            'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*'
           }
         }
+
+        if (this._content.credentials && this._content.credentials == 'use' &&
+            DCCRest.token)
+          request.headers['Authorization'] = 'Bearer ' + DCCRest.token
+
+        let pathDetails = this._content.oas.paths[paths[0]]
+        if (pathDetails[method] != null && pathDetails[method].parameters != null) {
+          let body = {}
+          for (let p of pathDetails[method].parameters) {
+            if (p.in != null && p.in == 'query')
+              body[p.name] = parameters[p.name]
+          }
+          console.log(body)
+          request.body = JSON.stringify(body)
+        }
+
         console.log("=== request header")
         console.log(request)
-        axios(request)
-          .then(function (response) {
-            console.log('=== REST response')
-            console.log(response)
-            // MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-            //   response.data.source)
-          })
-          .catch(function (error) {
-            console.log('=== REST error')
-            console.log(error)
-          })
-        /*
-        const header = {
-          async: true,
-          crossDomain: true,
-          method: method.toUpperCase(),
-          headers: {
-            'Access-Control-Allow-Origin': '*',
-            'Content-Type': 'application/json'
-          }
+
+        const jsonResp = await fetch(url, request)
+          .then(response => response.json())
+          .catch(error => console.log('error', error))
+
+        if (this._content.credentials && this._content.credentials == 'store' &&
+            jsonResp.token) {
+          DCCRest.token = jsonResp.token
+          // removes to avoid sending to the bus
+          delete jsonResp.token
         }
-        const response = await fetch(url, header)
-        const jsonResponse = await response.json()
-        */
       }
     }
   }
@@ -78,18 +82,15 @@ class DCCRest extends DCCBase {
     console.log(topic)
     console.log(message.role)
     if (message.role) {
-      switch (message.role.toLowerCase()) {
-        case 'get':
-          if (topic.startsWith('var/')) {
-            let parameters = {}
-            parameters[MessageBus.extractLevel(topic, 2)] =
-              ((message.body)
-                ? ((message.body.value) ? message.body.value : message)
-                : ((message.value) ? message.value : message))
-            this.restRequest('get', parameters)
-          }
-          break
-      }
+      let parameters = {}
+      let par = ((message.body)
+          ? ((message.body.value) ? message.body.value : message)
+          : ((message.value) ? message.value : message))
+      if (topic.startsWith('var/'))
+        parameters[MessageBus.extractLevel(topic, 2)] = par
+      else
+        parameters = par
+      this.restRequest(message.role.toLowerCase(), parameters)
     }
   }
 
