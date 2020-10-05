@@ -5,14 +5,13 @@
 
 const Env = use('Env')
 const axios = use('axios')
-const axiosCookieJarSupport = use('axios-cookiejar-support').default
-const tough = require('tough-cookie');
+
 // var FormData = use('form-data')
 
 const { validate } = use('Validator')
 
 // const User = use('App/Models/User')
-axiosCookieJarSupport(axios);
+
 
 class AuthController {
   create ({ view }) {
@@ -21,7 +20,7 @@ class AuthController {
 
   async login ({ view, request, response }) {
 
-    const cookieJar = new tough.CookieJar();
+
     try {
       const params = request.all()
 
@@ -66,8 +65,10 @@ class AuthController {
           // console.log('jar')
           // console.log(cookieJar)
           // responseUser.cookie('adonis-remember-token', )
-          console.log(endpointResponse)
-console.log(endpointResponse.headers['set-cookies'])
+          console.log(responseUser)
+          request.cookie('adonis-remember-token')
+          console.log('You are just dumb ==========================================================================')
+          console.log(request.cookie('adonis-remember-token'))
 // response.cookie('token', responseUser.token)
           // const endpointUrl2 = Env.get('HARENA_MANAGER_URL') + '/api/v1/case/04ef4c85-1823-4955-81a5-2da6e30ca7a1'
           //
