@@ -39,7 +39,7 @@ DCC.contentComponent(
       paths: {
         'http://localhost:10020/api/v1/auth/login/': {
           'post': {
-            operationId: 'latest',
+            operationId: 'login',
             parameters: [
               {name: 'email',
                in: 'query'},
@@ -54,20 +54,17 @@ DCC.contentComponent(
 )
 
 DCC.contentComponent(
-  'harena-login',
+  'harena-cases',
   'dcc-rest',
   {
     credentials: 'use',
     oas: {
       paths: {
-        'http://localhost:10020/api/v1/auth/login/': {
-          'post': {
-            operationId: 'latest',
+        'http://localhost:10020/api/v1/author/quest/cases?questId={questId}': {
+          'get': {
+            operationId: 'cases',
             parameters: [
-              {name: 'email',
-               in: 'query'},
-              {name: 'password',
-               in: 'query'}
+              {name: 'questId'}
             ]
           }
         }
