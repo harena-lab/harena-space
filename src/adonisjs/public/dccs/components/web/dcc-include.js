@@ -18,7 +18,7 @@ class DCCInclude extends DCCBase {
       **********/
 
   static get observedAttributes () {
-    return DCCVisual.observedAttributes.concat(
+    return DCCBase.observedAttributes.concat(
       ['src'])
   }
 
