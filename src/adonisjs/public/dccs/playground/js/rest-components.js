@@ -31,19 +31,45 @@ DCC.contentComponent(
 )
 
 DCC.contentComponent(
-  'auth',
+  'harena-login',
   'dcc-rest',
   {
-    paths: {
-      'https://harena.ds4h.org/manager/api/v1/auth/login/': {
-        'get': {
-          operationId: 'latest',
-          parameters: [
-            {name: 'email',
-             in: 'query'},
-            {name: 'password',
-             in: 'query'}
-          ]
+    credentials: 'store',
+    oas: {
+      paths: {
+        'http://localhost:10020/api/v1/auth/login/': {
+          'post': {
+            operationId: 'latest',
+            parameters: [
+              {name: 'email',
+               in: 'query'},
+              {name: 'password',
+               in: 'query'}
+            ]
+          }
+        }
+      }
+    }
+  }
+)
+
+DCC.contentComponent(
+  'harena-login',
+  'dcc-rest',
+  {
+    credentials: 'use',
+    oas: {
+      paths: {
+        'http://localhost:10020/api/v1/auth/login/': {
+          'post': {
+            operationId: 'latest',
+            parameters: [
+              {name: 'email',
+               in: 'query'},
+              {name: 'password',
+               in: 'query'}
+            ]
+          }
         }
       }
     }
