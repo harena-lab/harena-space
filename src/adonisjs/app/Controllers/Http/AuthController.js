@@ -100,20 +100,18 @@ class AuthController {
 
   async logout ({ response, request }) {
     try {
-      const endpointUrl = Env.get('HARENA_MANAGER_URL') + '/api/v1/auth/logout'
+      const endpointUrl = Env.get('HARENA_MANAGER_URL') + '/api/v2/auth/logout'
 
       var config = {
         method: 'post',
         url: endpointUrl,
-        headers: {
-          Authorization: 'Bearer ' + request.cookie('token')
-        }
+        withCredentials: true
       }
 
       await axios(config)
         .then(async function (endpointResponse) {
-          response.clearCookie('token')
-
+          response.clearCookie('adonis-remember-token')
+          response.clearCookie('adonis-session')
           return response.route('index')
         })
         .catch(function (error) {
