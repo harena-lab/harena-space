@@ -50,14 +50,30 @@ class DCCRest extends DCCBase {
           request.headers['Authorization'] = 'Bearer ' + DCCRest.token
 
         let pathDetails = this._content.oas.paths[paths[0]]
-        if (pathDetails[method] != null && pathDetails[method].parameters != null) {
-          let body = {}
-          for (let p of pathDetails[method].parameters) {
-            if (p.in != null && p.in == 'query')
-              body[p.name] = parameters[p.name]
+        let opid = ''
+        if (pathDetails[method] != null) {
+          if (pathDetails[method].operationId) opid = pathDetails[method].operationId
+          if (pathDetails[method].parameters != null) {
+            if (method == 'get') {
+              let body = {}
+              for (let p of pathDetails[method].parameters)
+                if (p.in != null && p.in == 'query')
+                  body[p.name] = parameters[p.name]
+              request.data = JSON.stringify(body)
+              /*
+              request.data = new FormData()
+              for (let p of pathDetails[method].parameters)
+                if (p.in != null && p.in == 'query')
+                  request.data.append(p.name, parameters[p.name])
+              */
+            } else {
+              let body = {}
+              for (let p of pathDetails[method].parameters)
+                if (p.in != null && p.in == 'query')
+                  body[p.name] = parameters[p.name]
+              request.body = JSON.stringify(body)
+            }
           }
-          console.log(body)
-          request.body = JSON.stringify(body)
         }
 
         console.log("=== request header")
@@ -67,20 +83,25 @@ class DCCRest extends DCCBase {
           .then(response => response.json())
           .catch(error => console.log('error', error))
 
-        if (this._content.credentials && this._content.credentials == 'store' &&
-            jsonResp.token) {
-          DCCRest.token = jsonResp.token
-          // removes to avoid sending to the bus
-          delete jsonResp.token
+        if (this._content.credentials && this._content.credentials == 'store') {
+          if (jsonResp.token) {
+            DCCRest.token = jsonResp.token
+            // removes to avoid sending to the bus
+            delete jsonResp.token
+          }
+          if (jsonResp.refreshToken) {
+            DCCRest.refreshToken = jsonResp.refreshToken
+            // removes to avoid sending to the bus
+            delete jsonResp.refreshToken
+          }
         }
+
+        MessageBus.ext.publish('data/service/' + opid, jsonResp)
       }
     }
   }
 
   async notify (topic, message) {
-    console.log('=== notify')
-    console.log(topic)
-    console.log(message.role)
     if (message.role) {
       let parameters = {}
       let par = ((message.body)

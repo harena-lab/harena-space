@@ -1393,7 +1393,9 @@ class Translator {
       alternative: matchArray[2].trim(),
       path: matchArray[3].trim()
     }
-    if (matchArray[4] != null) { image.title = matchArray[4].trim() }
+    if (matchArray[4] != null) { image.width = matchArray[4]}
+    if (matchArray[5] != null) { image.height = matchArray[5]}
+    if (matchArray[6] != null) { image.title = matchArray[6].trim() }
     return image
   }
 
@@ -1415,12 +1417,18 @@ class Translator {
         .replace('[title]', (obj.title)
           ? " title='" + obj.title + "'" : '')
     } else {
+      let resize = ' style="width:100%;height:auto"'
+      if (obj.width || obj.height)
+        resize = ' style="' +
+          ((obj.width) ? 'width:' + obj.width + ';' : '') +
+          ((obj.height) ? 'height:' + obj.height : '') + '"'
       result = Translator.htmlTemplates.image
         .replace('[path]', Basic.service.imageResolver(obj.path))
         .replace('[alt]', (obj.title)
-          ? " alt='" + obj.title + "'" : '')
+          ? ' alt="' + obj.title + '"' : '')
+        .replace('[resize]', resize)
         .replace('[caption]', (obj.title)
-          ? "<figcaption>" + obj.title + "</figcaption>" : '')
+          ? '<figcaption>' + obj.title + '</figcaption>' : '')
     }
     return result
   }
@@ -2158,7 +2166,7 @@ class Translator {
       mark: /^[ \t]*>[ \t]*/im
     },
     image: {
-      mark: /([ \t]*)!\[([\w \t]*)\]\(<?([\w:.\/\?&#\-~]+)>?[ \t]*(?:"([\w ]*)")?\)/im,
+      mark: /([ \t]*)!\[([\w \t]*)\]\(<?([\w:.\/\?&#\-~]+)>?[ \t]*(?:=(\d*(?:\.\d+[^x \t"\)])?)(?:x(\d*(?:\.\d+[^ \t"\)])?))?)?[ \t]*(?:"([\w ]*)")?\)/im,
       inline: true
     },
     field: {
