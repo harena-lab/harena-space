@@ -1,5 +1,5 @@
 /**
- * Embeds a data model
+ * Transforms data from a form in a REST submission
  */
 
 class DCCSubmit extends DCCButton {
@@ -21,7 +21,10 @@ class DCCSubmit extends DCCButton {
       const message = { sourceType: this.nodeName.toLowerCase() }
       if (this.hasAttribute('label') || this.hasAttribute('topic')) {
         const topic = (this.hasAttribute('topic'))
-          ? this.topic : 'button/' + this.label + '/submit'
+          ? this.topic
+          : (this.hasAttribute('variable'))
+            ? 'var/' + this.varible + '/changed'
+            : 'button/' + this.label + '/clicked'
         if (this.hasAttribute('message')) { message.value = this.message }
         if (this._schema != null) {
           const schema = Object.keys(this._schema)
@@ -32,6 +35,13 @@ class DCCSubmit extends DCCButton {
             if (field != null)
               message[s] = field.value
           }
+        } else {
+          let form = this.parentNode
+          while (form != null && form.nodeName.toLowerCase() != 'form')
+            form = form.parentNode
+          message.value = {}
+          for (let f of form)
+            message.value[f.id] = f.value
         }
         console.log('=== form')
         console.log(topic)
