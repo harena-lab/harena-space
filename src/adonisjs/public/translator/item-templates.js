@@ -27,7 +27,7 @@
 
 `,
     image:
-'<figure><img src=\'[path]\'[alt]>[caption]</figure>',
+'<figure><img src=\'[path]\'[alt][resize]>[caption]</figure>',
     option:
 '<dcc-button id=\'dcc[seq]\'[author] type=\'[subtype]\' topic=\'[target]\' label=\'[display]\'[divert][message][image]></dcc-button>',
     divert:
