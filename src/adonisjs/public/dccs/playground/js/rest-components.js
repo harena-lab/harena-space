@@ -54,6 +54,24 @@ DCC.contentComponent(
 )
 
 DCC.contentComponent(
+  'harena-roles',
+  'dcc-rest',
+  {
+    credentials: 'use',
+    oas: {
+      paths: {
+        'http://localhost:10020/api/v1/admin/roles': {
+          'get': {
+            operationId: 'roles',
+            parameters: []
+          }
+        }
+      }
+    }
+  }
+)
+
+DCC.contentComponent(
   'harena-cases',
   'dcc-rest',
   {
