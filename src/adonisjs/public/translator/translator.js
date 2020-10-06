@@ -1417,13 +1417,14 @@ class Translator {
         .replace('[title]', (obj.title)
           ? " title='" + obj.title + "'" : '')
     } else {
-      let resize = ' style="width:100%;height:auto"'
+      let resize = ''
       if (obj.width || obj.height)
         resize = ' style="' +
           ((obj.width) ? 'width:' + obj.width + ';' : '') +
-          ((obj.height) ? 'height:' + obj.height : '') + '"'
+          ((obj.height && obj.height != obj.width) ? 'height:' + obj.height : '') + '"'
       result = Translator.htmlTemplates.image
         .replace('[path]', Basic.service.imageResolver(obj.path))
+        .replace('[imgresized]', (resize != '') ? ' image_resized' : '')
         .replace('[alt]', (obj.title)
           ? ' alt="' + obj.title + '"' : '')
         .replace('[resize]', resize)
@@ -1434,11 +1435,17 @@ class Translator {
   }
 
   _imageObjToMd (obj) {
+    let resize = ''
+    if (obj.width || obj.height)
+      resize = ' =' +
+        ((obj.width) ? obj.width : '') + 'x' +
+        ((obj.height) ? obj.height : '')
     return Translator.markdownTemplates.image
       .replace('{alternative}', obj.alternative)
       .replace('{path}', obj.path)
+      .replace('{resize}', resize)
       .replace('{title}',
-        (obj.title) ? '"' + obj.title + '"' : '')
+        (obj.title) ? ' "' + obj.title + '"' : '')
   }
 
   /*
