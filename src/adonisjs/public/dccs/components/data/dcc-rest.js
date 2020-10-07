@@ -3,26 +3,22 @@
  */
 
 class DCCRest extends DCCBase {
-  constructor () {
-    super()
-  }
-
+  // <FUTURE> Considering a complex schema
+  /*
   async connectedCallback () {
     super.connectedCallback()
 
-    // this.presentReport = this.presentReport.bind(this)
-
-    /*
     const schema = await this.request('data/schema')
 
     console.log('=== schema')
     console.log(schema)
-    */
   }
+  */
 
   async connect (id, topic) {
     super.connect(id, topic)
-    this._schema = await this.request('data/schema')
+    if (topic == 'data/schema')
+      this._schema = await this.request('data/schema')
   }
 
   async restRequest(method, parameters) {
@@ -54,25 +50,14 @@ class DCCRest extends DCCBase {
         if (pathDetails[method] != null) {
           if (pathDetails[method].operationId) opid = pathDetails[method].operationId
           if (pathDetails[method].parameters != null) {
-            if (method == 'get') {
-              let body = {}
-              for (let p of pathDetails[method].parameters)
-                if (p.in != null && p.in == 'query')
-                  body[p.name] = parameters[p.name]
+            let body = {}
+            for (let p of pathDetails[method].parameters)
+              if (p.in != null && p.in == 'query')
+                body[p.name] = parameters[p.name]
+            if (method == 'get')
               request.data = JSON.stringify(body)
-              /*
-              request.data = new FormData()
-              for (let p of pathDetails[method].parameters)
-                if (p.in != null && p.in == 'query')
-                  request.data.append(p.name, parameters[p.name])
-              */
-            } else {
-              let body = {}
-              for (let p of pathDetails[method].parameters)
-                if (p.in != null && p.in == 'query')
-                  body[p.name] = parameters[p.name]
+            else
               request.body = JSON.stringify(body)
-            }
           }
         }
 
