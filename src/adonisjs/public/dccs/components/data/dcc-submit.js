@@ -22,7 +22,7 @@ class DCCSubmit extends DCCButton {
       if (this.hasAttribute('label') || this.hasAttribute('topic')) {
         const topic = (this.hasAttribute('topic'))
           ? this.topic
-          (this.hasAttribute('variable'))
+          : (this.hasAttribute('variable'))
             ? 'var/' + this.varible + '/changed'
             : 'button/' + this.label + '/clicked'
         if (this.hasAttribute('message')) { message.value = this.message }

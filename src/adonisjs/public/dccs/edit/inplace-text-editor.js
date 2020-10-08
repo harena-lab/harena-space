@@ -79,7 +79,10 @@ class EditDCCText extends EditDCC {
 
     let mt = new showdown.Converter()
     mt.setFlavor('github')
-    const mdTranslate = mt.makeMarkdown(htmlTranslate)
+    let mdTranslate = mt.makeMarkdown(htmlTranslate)
+
+    mdTranslate = mdTranslate
+      .replace(/!\[null\]\(([^")]+)"([^"]+)"\)/igm, '![$2]($1"$2")')
 
     console.log('=== html')
     console.log(mdTranslate)
