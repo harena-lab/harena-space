@@ -15,8 +15,8 @@ class DCCRest extends DCCBase {
   }
   */
 
-  async connect (id, topic) {
-    super.connect(id, topic)
+  async connectTo (id, topic) {
+    super.connectTo(id, topic)
     if (topic == 'data/schema')
       this._schema = await this.request('data/schema')
   }

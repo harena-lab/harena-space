@@ -6,6 +6,8 @@ class MessageBus {
   constructor (externalized) {
     this._externalized = externalized
     this._listeners = []
+    this._providers = {}
+    this._connections = {}
   }
 
   get externalized () {
@@ -40,6 +42,11 @@ class MessageBus {
     }
 
     return status
+  }
+
+  subscribeWithConnection (topic, callback) {
+    this.subscribe(topic, callback)
+    this.subscribe(topic + '/+', callback)
   }
 
   unsubscribe (topic, callback) {
@@ -92,23 +99,6 @@ class MessageBus {
       parent.postMessage({ topic: topic, message: message }, '*')
     }
   }
-
-  /*
-   connect(callback) {
-      const connection = MessageBus._connection;
-      this.subscribe("connection/" + connection, callback);
-      MessageBus._connection++;
-      return connection;
-   }
-
-   disconnect(connection, callback) {
-      this.unsubscribe("connection/" + connection, callback);
-   }
-
-   send(connection, message) {
-      this.publish("connection/" + connection, message);
-   }
-   */
 
   /* Checks if this topic has a subscriber */
   hasSubscriber (topic) {
@@ -170,8 +160,70 @@ class MessageBus {
     }
   }
 
+  /* Connection-oriented communication
+   ***********************************/
+
+  provides (id, topic, service) {
+    let status = true
+    const key = id + ':' + topic
+    if (this._providers[key])
+      status = false
+    else {
+      this._providers[key] = {
+        topic: topic,
+        service: service
+      }
+      if (this._connections[key] != null) {
+        this._connections[key].service = service
+        for (let c of this._connections[key].clients) {}
+          c.callback.connectionReady(id, topic)
+          delete c.callback
+        }
+      }
+    }
+  }
+
+  connect (id, topic, callback) {
+    let connection = {
+      topic: topic,
+      callback: callback
+    }
+    const key = id + ':' + topic
+    if (this._providers[key])
+
+
+    for (let p of this._providers)
+      if (p.id == id && p.topic == topic) {
+        connection.service = p.service
+        c.callback.connectionReady(id, topic)
+        break
+      }
+    this._connections.push(connection)
+  }
+
+  send (id, topic, message) {
+    if ()
+  }
+
+  /*
+   connect(callback) {
+      const connection = MessageBus._connection;
+      this.subscribe("connection/" + connection, callback);
+      MessageBus._connection++;
+      return connection;
+   }
+
+   disconnect(connection, callback) {
+      this.unsubscribe("connection/" + connection, callback);
+   }
+
+   send(connection, message) {
+      this.publish("connection/" + connection, message);
+   }
+   */
+
   /* Message analysis services
-      *************************/
+     *************************/
 
   static _convertRegExp (filter) {
     return new RegExp(filter.replace(/\//g, '\\/')

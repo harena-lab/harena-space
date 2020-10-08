@@ -7,8 +7,8 @@ class DCCSubmit extends DCCButton {
     super.connectedCallback()
   }
 
-  async connect (id, topic) {
-    super.connect(id, topic)
+  async connectTo (id, topic) {
+    super.connectTo(id, topic)
     const result = await this.request('data/schema')
     if (result != null && result[id] != null)
       this._schema = result[id]

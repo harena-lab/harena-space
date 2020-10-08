@@ -14,7 +14,7 @@ class DCCBase extends HTMLElement {
   }
 
   static get observedAttributes () {
-    return ['id', 'role', 'author', 'bind']
+    return ['id', 'role', 'author', 'bind', 'connect']
   }
 
   static get replicatedAttributes () {
@@ -55,8 +55,23 @@ class DCCBase extends HTMLElement {
     this.setAttribute('bind', newValue)
   }
 
+  // connects this DCC to annother component
+  get connect () {
+    return this.getAttribute('connect')
+  }
+
+  set connect (newValue) {
+    this.setAttribute('connect', newValue)
+    const colon = newValue.indexOf(':')
+    if (colon != -1) {
+      this.connectTo(newValue.substring(0, colon), newValue.substring(colon + 1))
+      console.log('=== connect')
+      console.log(newValue.substring(0, colon) + '; topic: ' + newValue.substring(colon + 1))
+    }
+  }
+
   // connects this DCC to another
-  connect (id, topic) {
+  connectTo (id, topic) {
     if (id != null && topic != null) {
       if (this._connections == null) this._connections = {}
       if (this._connections[topic] == null) this._connections[topic] = []
@@ -64,15 +79,25 @@ class DCCBase extends HTMLElement {
     }
   }
 
-  async request (topic) {
+  async request (topic, message) {
     let response = {}
     if (this._connections != null && this._connections[topic] != null)
       for (let c of this._connections[topic]) {
-        const result = await MessageBus.int.request(topic + '/' + c)
+        const result = await MessageBus.int.request(topic + '/' + c, message)
         response[c] = (result != null) ? result.message : null
       }
     return response
   }
+
+  // <FUTURE> Makes sense?
+  // one way notification for connected componentes
+  /*
+  async update (topic, message) {
+    if (this._connections != null && this._connections[topic] != null)
+      for (let c of this._connections[topic]) {
+        await MessageBus.int.publish(topic + '/' + c, message)
+  }
+  */
 
   edit () {
     /* nothing */
