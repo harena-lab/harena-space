@@ -9,8 +9,11 @@ class DCCRecord extends DCCBase {
       this.key = (this.hasAttribute('id')) ? 'dcc-record-' + this.id : 'dcc-record-key'
     this.store = this.store.bind(this)
     this.retrieve = this.retrieve.bind(this)
+    this.retrieveC = this.retrieveC.bind(this)
     MessageBus.int.subscribeWithConnection('data/record/store', this.store)
     MessageBus.int.subscribeWithConnection('data/record/retrieve', this.retrieve)
+    if (this.hasAttribute('id'))
+      MessageBus.page.provides(this.id, 'data/record/retrieve', this.retrieveC)
   }
 
   /* Properties
@@ -31,11 +34,26 @@ class DCCRecord extends DCCBase {
   }
 
   store(topic, message) {
-    localStorage.setItem(this.key, (message.body) ? message.body : message)
+    console.log('=== store')
+    console.log(topic)
+    console.log(message)
+    console.log(this.key)
+    localStorage.setItem(this.key,
+      JSON.stringify((message.body) ? message.body : message))
   }
 
   retrieve(topic, message) {
-    MessageBus.int.publish(MessageBus.buildResponseTopic(topic, message), localStorage.getItem(this.key))
+    MessageBus.int.publish(MessageBus.buildResponseTopic(topic, message),
+      this.retrieveC(topic, message))
+  }
+
+  retrieveC(topic, message) {
+    console.log('=== retrieve C')
+    console.log(topic)
+    console.log(message)
+    console.log(this.key)
+    console.log(localStorage.getItem(this.key))
+    return JSON.parse(localStorage.getItem(this.key))
   }
 
   async notify (topic, message) {

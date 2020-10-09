@@ -11,6 +11,8 @@ class DCCBase extends HTMLElement {
   connectedCallback () {
     if (this.hasAttribute('bind'))
       this._content = DCC.retrieve(this.bind.toLowerCase(), this.nodeName.toLowerCase())
+    if (this.hasAttribute('connect'))
+      this._connectTo(this.connect)
   }
 
   static get observedAttributes () {
@@ -62,11 +64,15 @@ class DCCBase extends HTMLElement {
 
   set connect (newValue) {
     this.setAttribute('connect', newValue)
-    const colon = newValue.indexOf(':')
+    this._connectTo(newValue)
+  }
+
+  _connectTo (idTopic) {
+    const colon = idTopic.indexOf(':')
     if (colon != -1) {
-      this.connectTo(newValue.substring(0, colon), newValue.substring(colon + 1))
+      this.connectTo(idTopic.substring(0, colon), idTopic.substring(colon + 1))
       console.log('=== connect')
-      console.log(newValue.substring(0, colon) + '; topic: ' + newValue.substring(colon + 1))
+      console.log(idTopic.substring(0, colon) + '; topic: ' + idTopic.substring(colon + 1))
     }
   }
 
@@ -76,17 +82,29 @@ class DCCBase extends HTMLElement {
       if (this._connections == null) this._connections = {}
       if (this._connections[topic] == null) this._connections[topic] = []
       this._connections[topic].push(id)
+      MessageBus.page.connect(id, topic, this)
     }
   }
 
   async request (topic, message) {
+    let response = null
+    if (this._connections != null && this._connections[topic] != null)
+      response =
+        await MessageBus.page.requestC(this._connections[topic][0], topic, message)
+    return response
+  }
+
+  async multiRequest (topic, message) {
     let response = {}
     if (this._connections != null && this._connections[topic] != null)
-      for (let c of this._connections[topic]) {
-        const result = await MessageBus.int.request(topic + '/' + c, message)
-        response[c] = (result != null) ? result.message : null
-      }
+      for (let c of this._connections[topic])
+        // const result = await MessageBus.int.request(topic + '/' + c, message)
+        response[c] = await MessageBus.page.requestC(c, topic, message)
     return response
+  }
+
+  connectionReady (id, topic) {
+    /* implemented in the subclasses */
   }
 
   // <FUTURE> Makes sense?

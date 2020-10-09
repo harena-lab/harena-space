@@ -169,40 +169,37 @@ class MessageBus {
     if (this._providers[key])
       status = false
     else {
-      this._providers[key] = {
-        topic: topic,
-        service: service
-      }
+      this._providers[key] = service
       if (this._connections[key] != null) {
-        this._connections[key].service = service
-        for (let c of this._connections[key].clients) {}
-          c.callback.connectionReady(id, topic)
-          delete c.callback
-        }
+        for (let c of this._connections[key])
+          c.connectionReady(id, topic)
+        delete this._connections[key]
       }
     }
   }
 
   connect (id, topic, callback) {
-    let connection = {
-      topic: topic,
-      callback: callback
-    }
     const key = id + ':' + topic
     if (this._providers[key])
-
-
-    for (let p of this._providers)
-      if (p.id == id && p.topic == topic) {
-        connection.service = p.service
-        c.callback.connectionReady(id, topic)
-        break
-      }
-    this._connections.push(connection)
+      callback.connectionReady(id, topic)
+    else
+      if (this._connections[key])
+        this._connections[key].push(callback)
+      else
+        this._connections[key] = [callback]
   }
 
-  send (id, topic, message) {
-    if ()
+  async requestC (id, topic, message) {
+    console.log('=== request C:')
+    console.log(id)
+    console.log(topic)
+    console.log(message)
+    console.log(this._providers)
+    let response = null
+    const key = id + ':' + topic
+    if (this._providers[key] != null)
+      response = await this._providers[key](topic, message)
+    return response
   }
 
   /*

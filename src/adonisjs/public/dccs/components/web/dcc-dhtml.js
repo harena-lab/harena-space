@@ -87,10 +87,21 @@ class DCCDHTML extends DCCBase {
   }
 
   recordUpdate (topic, message) {
+    console.log('=== record update')
+    console.log(topic)
+    console.log(message)
     this._record = ((message.body)
       ? ((message.body.value) ? message.body.value : message)
       : ((message.value) ? message.value : message))
     this._renderHTML()
+  }
+
+  async connectionReady (id, topic) {
+    super.connectionReady (id, topic)
+    if (topic == 'data/record/retrieve') {
+      const response = await this.request(topic)
+      this.recordUpdate(topic, response)
+    }
   }
 }
 
