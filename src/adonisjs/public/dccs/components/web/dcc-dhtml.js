@@ -6,33 +6,7 @@ class DCCDHTML extends DCCBase {
     this._originalHTML = this.innerHTML
     this.recordUpdate = this.recordUpdate.bind(this)
     super.connectedCallback()
-    if (this.hasAttribute('subscribe'))
-      MessageBus.ext.subscribe(this.subscribe, this.recordUpdate)
     this._renderHTML()
-  }
-
-  /* Properties
-     **********/
-
-  static get observedAttributes () {
-    return DCCBase.observedAttributes.concat(
-      ['subscribe', 'each'])
-  }
-
-  get subscribe () {
-    return this.getAttribute('subscribe')
-  }
-
-  set subscribe (newValue) {
-    this.setAttribute('subscribe', newValue)
-  }
-
-  get each () {
-    return this.getAttribute('each')
-  }
-
-  set each (newValue) {
-    this.setAttribute('each', newValue)
   }
 
   _renderHTML () {
@@ -86,19 +60,30 @@ class DCCDHTML extends DCCBase {
     return html
   }
 
+  notify (topic, message) {
+    if (message.role != null) {
+      switch (message.role) {
+        case 'update': this.recordUpdate(topic, message)
+                       break
+      }
+    }
+  }
+
   recordUpdate (topic, message) {
     console.log('=== record update')
     console.log(topic)
     console.log(message)
     this._record = ((message.body)
-      ? ((message.body.value) ? message.body.value : message)
+      ? ((message.body.value) ? message.body.value : message.body)
       : ((message.value) ? message.value : message))
     this._renderHTML()
   }
 
   async connectionReady (id, topic) {
     super.connectionReady (id, topic)
-    if (topic == 'data/record/retrieve') {
+    console.log('=== ready')
+    console.log(topic)
+    if (topic == 'data/record/retrieve' || topic == 'service/request/get') {
       const response = await this.request(topic)
       this.recordUpdate(topic, response)
     }

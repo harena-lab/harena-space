@@ -12,6 +12,8 @@ class LoginTest {
         password: pswd
       }
     }
+    console.log('=== config')
+    console.log(config)
     await axios(config)
       .then(function (endpointResponse) {
         console.log(endpointResponse.status)

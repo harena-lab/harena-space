@@ -44,11 +44,6 @@ class MessageBus {
     return status
   }
 
-  subscribeWithConnection (topic, callback) {
-    this.subscribe(topic, callback)
-    this.subscribe(topic + '/+', callback)
-  }
-
   unsubscribe (topic, callback) {
     let found = false
     for (let l = 0; l < this._listeners.length && !found; l++) {
@@ -164,8 +159,13 @@ class MessageBus {
    ***********************************/
 
   provides (id, topic, service) {
+    console.log('=== provides')
+    console.log(id)
+    console.log(topic)
     let status = true
     const key = id + ':' + topic
+    console.log(key)
+    console.log(this._connections[key])
     if (this._providers[key])
       status = false
     else {
@@ -179,7 +179,12 @@ class MessageBus {
   }
 
   connect (id, topic, callback) {
+    console.log('=== connect')
+    console.log(id)
+    console.log(topic)
     const key = id + ':' + topic
+    console.log(key)
+    console.log(this._providers[key])
     if (this._providers[key])
       callback.connectionReady(id, topic)
     else

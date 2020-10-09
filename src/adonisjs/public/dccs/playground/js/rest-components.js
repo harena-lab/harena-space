@@ -37,7 +37,7 @@ DCC.contentComponent(
     credentials: 'store',
     oas: {
       paths: {
-        'http://localhost:10020/api/v1/auth/login/': {
+        'http://localhost:10020/api/v2/auth/login': {
           'post': {
             operationId: 'login',
             parameters: [

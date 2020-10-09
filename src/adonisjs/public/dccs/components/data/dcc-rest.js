@@ -3,6 +3,16 @@
  */
 
 class DCCRest extends DCCBase {
+
+  constructor() {
+    super()
+    this.serviceRequest = this.serviceRequest.bind(this)
+    this.serviceRequestC = this.serviceRequestC.bind(this)
+    MessageBus.int.subscribe('service/request/+', this.request)
+    if (this.hasAttribute('id'))
+      MessageBus.page.provides(this.id, 'service/request/get', this.serviceRequestC)
+  }
+
   // <FUTURE> Considering a complex schema
   /*
   async connectedCallback () {
@@ -22,6 +32,8 @@ class DCCRest extends DCCBase {
   }
 
   async restRequest(method, parameters) {
+    let result = null
+
     if (this._content != null && this._content.oas != null &&
         this._content.oas.paths != null) {
       const paths = Object.keys(this._content.oas.paths)
@@ -33,17 +45,22 @@ class DCCRest extends DCCBase {
         const request = {
           method: method.toUpperCase(),
           url: url,
+          withCredentials: true
+          /*
           async: true,
           crossDomain: true,
           headers: {
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*'
           }
+          */
         }
 
+        /*
         if (this._content.credentials && this._content.credentials == 'use' &&
             DCCRest.token)
           request.headers['Authorization'] = 'Bearer ' + DCCRest.token
+        */
 
         let pathDetails = this._content.oas.paths[paths[0]]
         let opid = ''
@@ -54,20 +71,30 @@ class DCCRest extends DCCBase {
             for (let p of pathDetails[method].parameters)
               if (p.in != null && p.in == 'query')
                 body[p.name] = parameters[p.name]
-            if (method == 'get')
-              request.data = JSON.stringify(body)
-            else
-              request.body = JSON.stringify(body)
+            request.data = body
           }
         }
 
         console.log("=== request header")
         console.log(request)
 
+        /*
         const jsonResp = await fetch(url, request)
           .then(response => response.json())
           .catch(error => console.log('error', error))
+        */
 
+        await axios(request)
+          .then(function (endpointResponse) {
+            console.log(endpointResponse.status)
+            // MessageBus.ext.publish('data/service/' + opid, endpointResponse.data)
+            result = endpointResponse.data
+          })
+          .catch(function (error) {
+            console.log(error)
+          })
+
+        /*
         if (this._content.credentials && this._content.credentials == 'store') {
           if (jsonResp.token) {
             DCCRest.token = jsonResp.token
@@ -80,10 +107,23 @@ class DCCRest extends DCCBase {
             delete jsonResp.refreshToken
           }
         }
+        */
 
-        MessageBus.ext.publish('data/service/' + opid, jsonResp)
+        
       }
     }
+    return result
+  }
+
+  async serviceRequest (topic, message) {
+    let result = await this.serviceRequestC(topic, message)
+    MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message), result)
+    if (this.hasAttribute('id'))
+      MessageBus.ext.publish('service/response/' + MessageBus.extractLevel(topic, 3) + '/' + this.id, result)
+  }
+
+  async serviceRequestC (topic, message) {
+    return await this.restRequest(MessageBus.extractLevel(topic, 3), message)
   }
 
   async notify (topic, message) {
@@ -96,7 +136,8 @@ class DCCRest extends DCCBase {
         parameters[MessageBus.extractLevel(topic, 2)] = par
       else
         parameters = par
-      this.restRequest(message.role.toLowerCase(), parameters)
+      // this.restRequest(message.role.toLowerCase(), parameters)
+      this.serviceRequest('service/request/' + message.role.toLowerCase(), parameters)
     }
   }
 

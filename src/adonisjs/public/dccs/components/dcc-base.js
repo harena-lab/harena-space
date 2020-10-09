@@ -6,17 +6,21 @@ class DCCBase extends HTMLElement {
   constructor () {
     super()
     this.edit = this.edit.bind(this)
+    this.toNotify = this.toNotify.bind(this)
+    this.notify = this.notify.bind(this)
   }
 
   connectedCallback () {
     if (this.hasAttribute('bind'))
       this._content = DCC.retrieve(this.bind.toLowerCase(), this.nodeName.toLowerCase())
+    if (this.hasAttribute('subscribe'))
+      this._subscribeTopic(this.subscribe)
     if (this.hasAttribute('connect'))
       this._connectTo(this.connect)
   }
 
   static get observedAttributes () {
-    return ['id', 'role', 'author', 'bind', 'connect']
+    return ['id', 'role', 'author', 'bind', 'subscribe', 'connect']
   }
 
   static get replicatedAttributes () {
@@ -57,6 +61,39 @@ class DCCBase extends HTMLElement {
     this.setAttribute('bind', newValue)
   }
 
+  get subscribe () {
+    return this.getAttribute('subscribe')
+  }
+
+  set subscribe (newValue) {
+    this.setAttribute('subscribe', newValue)
+    this._subscribeTopic(newValue)
+  }
+
+  _subscribeTopic (topicRole) {
+    const colon = topicRole.lastIndexOf(':')
+    if (colon != -1) {
+      this._subsrole = topicRole.substring(colon + 1)
+      MessageBus.ext.subscribe(topicRole.substring(0, colon), this.toNotify)
+      console.log('=== subscribed')
+      console.log(topicRole.substring(colon + 1))
+      console.log(topicRole.substring(0, colon))
+    } else
+      MessageBus.ext.subscribe(topicRole, this.notify)
+  }
+
+  toNotify (topic, message) {
+    console.log('=== to notify')
+    console.log(this._subsrole)
+    console.log(topic)
+    console.log(message)
+    this.notify(topic, {role: this._subsrole, body: message})
+  }
+
+  notify (topic, message) {
+    /* implemented in the subclasses */
+  }
+
   // connects this DCC to annother component
   get connect () {
     return this.getAttribute('connect')
@@ -69,11 +106,8 @@ class DCCBase extends HTMLElement {
 
   _connectTo (idTopic) {
     const colon = idTopic.indexOf(':')
-    if (colon != -1) {
+    if (colon != -1)
       this.connectTo(idTopic.substring(0, colon), idTopic.substring(colon + 1))
-      console.log('=== connect')
-      console.log(idTopic.substring(0, colon) + '; topic: ' + idTopic.substring(colon + 1))
-    }
   }
 
   // connects this DCC to another
@@ -84,6 +118,10 @@ class DCCBase extends HTMLElement {
       this._connections[topic].push(id)
       MessageBus.page.connect(id, topic, this)
     }
+  }
+
+  connectionReady (id, topic) {
+    /* implemented in the subclasses */
   }
 
   async request (topic, message) {
@@ -101,10 +139,6 @@ class DCCBase extends HTMLElement {
         // const result = await MessageBus.int.request(topic + '/' + c, message)
         response[c] = await MessageBus.page.requestC(c, topic, message)
     return response
-  }
-
-  connectionReady (id, topic) {
-    /* implemented in the subclasses */
   }
 
   // <FUTURE> Makes sense?
