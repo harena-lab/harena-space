@@ -27,7 +27,7 @@
 
 `,
     image:
-'<figure><img src=\'[path]\'[alt]>[caption]</figure>',
+'<figure class="image[imgresized]"[resize]><img src="[path]"[alt]>[caption]</figure>',
     option:
 '<dcc-button id=\'dcc[seq]\'[author] type=\'[subtype]\' topic=\'[target]\' label=\'[display]\'[divert][message][image]></dcc-button>',
     divert:
@@ -80,7 +80,7 @@
     knot:
 '[level] [title][categories][inheritance]',
     image:
-'![{alternative}]({path}{title})',
+'![{alternative}]({path}{resize}{title})',
     option:
 '{subtype}{label} {divert} {target}{message}{state}',
     entity:

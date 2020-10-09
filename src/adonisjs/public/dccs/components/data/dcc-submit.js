@@ -7,8 +7,8 @@ class DCCSubmit extends DCCButton {
     super.connectedCallback()
   }
 
-  async connect (id, topic) {
-    super.connect(id, topic)
+  async connectTo (id, topic) {
+    super.connectTo(id, topic)
     const result = await this.request('data/schema')
     if (result != null && result[id] != null)
       this._schema = result[id]
@@ -22,7 +22,7 @@ class DCCSubmit extends DCCButton {
       if (this.hasAttribute('label') || this.hasAttribute('topic')) {
         const topic = (this.hasAttribute('topic'))
           ? this.topic
-          (this.hasAttribute('variable'))
+          : (this.hasAttribute('variable'))
             ? 'var/' + this.varible + '/changed'
             : 'button/' + this.label + '/clicked'
         if (this.hasAttribute('message')) { message.value = this.message }

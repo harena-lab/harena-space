@@ -8,7 +8,7 @@ class ConnectDCC extends HTMLElement {
         ? document.querySelector('#' + this.from) : this.parentNode
       console.log("=== to connect")
       console.log(this._fromObj)
-      this._fromObj.connect(this.to, this.topic)
+      this._fromObj.connectTo(this.to, this.topic)
     }
   }
 

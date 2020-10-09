@@ -288,7 +288,6 @@ class AuthorManager {
     this._knots = this._compiledCase.knots
 
     // Basic.service.currentThemeFamily = this._compiledCase.theme
-    console.log('=== setting theme family')
     Basic.service.composedThemeFamily(this._compiledCase.theme)
     if (this._compiledCase.title) { this._currentCaseTitle = this._compiledCase.title }
 
@@ -314,10 +313,7 @@ class AuthorManager {
     * ACTION: control-save
     */
   async caseSave () {
-    console.log('=== case save')
     document.getElementById('btn-save-draft').innerHTML = 'SAVING...'
-    console.log(Basic.service.currentCaseId)
-    console.log(this._compiledCase)
     if (Basic.service.currentCaseId != null && this._compiledCase != null) {
       this._checkKnotModification(this._renderState)
 
@@ -339,7 +335,7 @@ class AuthorManager {
           source: md
         })
 
-      console.log('Case saved! Status: ' + status.message)
+      // console.log('Case saved! Status: ' + status.message)
 
       Basic.service.authorPropertyStore('caseId', Basic.service.currentCaseId)
 
@@ -358,9 +354,6 @@ class AuthorManager {
     this._checkKnotModification(this._renderState)
     const source = document.querySelector('#source')
     const md = Translator.instance.assembleMarkdown(this._compiledCase)
-    console.log('=== source updated')
-    console.log(source)
-    console.log(md)
     source.value = md
   }
 

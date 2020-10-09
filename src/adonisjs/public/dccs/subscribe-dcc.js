@@ -14,6 +14,8 @@ class SubscribeDCC extends HTMLElement {
   }
 
   publishWithRole (topic, message) {
+    console.log('=== target publish with role')
+    console.log(this._targetObj)
     this._targetObj.notify(topic, { role: this.role, body: message })
   }
 

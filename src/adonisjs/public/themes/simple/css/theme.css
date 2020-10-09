@@ -124,3 +124,28 @@
    width: 100%;
    margin-bottom: 1rem;
 }
+
+.image {
+   display: table;
+   clear: both;
+   text-align: center;
+   margin: 1em auto;
+}
+
+.image img {
+   display: block;
+   margin: 0 auto;
+   max-width: 100%;
+   min-width: 50px;
+}
+
+.image > figcaption {
+   display: table-caption;
+   caption-side: bottom;
+   word-break: break-word;
+   color: #333;
+   background-color: #f7f7f7;
+   padding: .6em;
+   font-size: .75em;
+   outline-offset: -1px;
+}
