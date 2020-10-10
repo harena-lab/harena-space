@@ -3,7 +3,7 @@
 @section('content')
 <div class="row">
 
-
+  <form>
       @component('components.panel')
 
 
@@ -41,10 +41,15 @@
             {{ elIf('<p class="mt-2 text-sm text-red-600">$self</p>', getErrorFor('password'), hasErrorFor('password')) }}
           </div>
         </div>
+        <!--
         <button type="submit" class="btn btn-primary" role="button" onclick="LoginTest.i.login()">Log in</button>
-
+        -->
+        <dcc-submit label="Login"></dcc-submit>
 
       @endcomponent
+
+    </form>
+    <dcc-rest bind="harena-login" subscribe="button/Login/clicked:post"></dcc-rest>
     <!--
     <div class="col-md-6" id="preview-desc">
     </div>

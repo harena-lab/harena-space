@@ -34,6 +34,10 @@ class DCCRest extends DCCBase {
   async restRequest(method, parameters) {
     let result = null
 
+    if (this._content.environment)
+      for (let e in this._content.environment)
+        parameters[e] = this._content.environment[e]
+
     if (this._content != null && this._content.oas != null &&
         this._content.oas.paths != null) {
       const paths = Object.keys(this._content.oas.paths)

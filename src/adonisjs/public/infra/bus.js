@@ -266,4 +266,5 @@ class MessageBus {
 
   MessageBus.int = new MessageBus(false)
   MessageBus.ext = new MessageBus(false)
+  MessageBus.page = new MessageBus(false)
 })()

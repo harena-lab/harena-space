@@ -1,49 +1,24 @@
-
-
 (function () {
-
-DCC.contentComponent(
-  'xkcd',
-  'dcc-rest',
-  {
-    paths: {
-      'http://xkcd.com/{comic_id}/info.0.json': {
-        'get': {
-          operationId: 'info'
-        }
-      }
-    }
-  }
-)
-
-DCC.contentComponent(
-  'coronavirus',
-  'dcc-rest',
-  {
-    paths: {
-      'https://api.quarantine.country/api/v1/spots/year?region={region}': {
-        'get': {
-          operationId: 'latest'
-        }
-      }
-    }
-  }
-)
 
 DCC.contentComponent(
   'harena-login',
   'dcc-rest',
   {
+    environment: {
+      'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api
+    },
     oas: {
       paths: {
-        'http://localhost:10020/api/v2/auth/login': {
+        '{url-manager}/auth/login': {
           'post': {
             operationId: 'login',
             parameters: [
+              {name: 'url-manager',
+               in: 'path'},
               {name: 'email',
                in: 'query'},
               {name: 'password',
-               in: 'query'}
+               in: 'query'},
             ]
           }
         }
@@ -56,13 +31,18 @@ DCC.contentComponent(
   'harena-roles',
   'dcc-rest',
   {
-    credentials: 'use',
+    environment: {
+      'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api
+    },
     oas: {
       paths: {
-        'http://localhost:10020/api/v1/admin/roles': {
+        '{url-manager}/admin/roles': {
           'get': {
             operationId: 'roles',
-            parameters: []
+            parameters: [
+              {name: 'url-manager',
+               in: 'path'}
+            ]
           }
         }
       }
@@ -74,14 +54,19 @@ DCC.contentComponent(
   'harena-cases',
   'dcc-rest',
   {
-    credentials: 'use',
+    environment: {
+      'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api
+    },
     oas: {
       paths: {
         'http://localhost:10020/api/v1/author/quest/cases?questId={questId}': {
           'get': {
             operationId: 'cases',
             parameters: [
-              {name: 'questId'}
+              {name: 'url-manager',
+               in: 'path'},
+              {name: 'questId',
+               in: 'path'}
             ]
           }
         }

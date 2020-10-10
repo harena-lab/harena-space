@@ -136,7 +136,7 @@ class DCCBase extends HTMLElement {
     let response = {}
     if (this._connections != null && this._connections[topic] != null)
       for (let c of this._connections[topic])
-        // const result = await MessageBus.int.request(topic + '/' + c, message)
+        // const result = await MessageBus.page.request(topic + '/' + c, message)
         response[c] = await MessageBus.page.requestC(c, topic, message)
     return response
   }
@@ -147,7 +147,7 @@ class DCCBase extends HTMLElement {
   async update (topic, message) {
     if (this._connections != null && this._connections[topic] != null)
       for (let c of this._connections[topic]) {
-        await MessageBus.int.publish(topic + '/' + c, message)
+        await MessageBus.page.publish(topic + '/' + c, message)
   }
   */
 
