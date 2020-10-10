@@ -895,6 +895,7 @@ class Translator {
                      compiled[c].input.substring(compiled[c].input.lastIndexOf('.') + 1)
           }
         }
+        
         // reinserting context
         this._compileContext(knots, k)
       }
@@ -1454,12 +1455,13 @@ class Translator {
   _contextOpenMdToObj (matchArray) {
     const context = {
       type: 'context',
-      context: matchArray[1].trim()
     }
 
-    if (matchArray[2] != null) {
-      context.evaluation = matchArray[2].trim()
-      context.options = matchArray[3]
+    if (matchArray[1] != null) context.namespace = matchArray[1].trim()
+    if (matchArray[2] != null) context.context = matchArray[2].trim()
+    if (matchArray[3] != null) {
+      context.evaluation = matchArray[3].trim()
+      context.options = matchArray[4]
     }
 
     return context
@@ -1499,9 +1501,10 @@ class Translator {
       complete: matchArray[0]
     }
 
-    if (matchArray[1] != null) { inside.expression = matchArray[1].trim() }
-    if (matchArray[2] != null) { inside.specification = matchArray[2].trim() }
-    if (matchArray[3] != null) { inside.rate = matchArray[3].trim() }
+    if (matchArray[1] != null) { inside.namespace = matchArray[1].trim() }
+    if (matchArray[2] != null) { inside.expression = matchArray[2].trim() }
+    if (matchArray[3] != null) { inside.specification = matchArray[3].trim() }
+    if (matchArray[4] != null) { inside.rate = matchArray[4].trim() }
 
     return inside
   }
@@ -2068,8 +2071,9 @@ class Translator {
       type: 'context-open'
     }
 
-    if (matchArray[1] != null) { context.context = matchArray[1].trim() }
-    if (matchArray[2] != null) { context.input = matchArray[2].trim().replace(/ /igm, '_') }
+    if (matchArray[1] != null) { context.namespace = matchArray[1].trim() }
+    if (matchArray[2] != null) { context.context = matchArray[2].trim() }
+    if (matchArray[3] != null) { context.input = matchArray[3].trim().replace(/ /igm, '_') }
 
     // <TODO> weak strategy -- improve
     // this._currentInputContext = context.context;
@@ -2219,7 +2223,9 @@ class Translator {
     compute: {
       mark: /~[ \t]*(\w+)?[ \t]*([+\-*/=])[ \t]*(\d+(?:\.\d+)?)$/im
     },
-    'context-open': { mark: /\{\{([\w \t\+\-\*\."=\:%]+)?(?:\/([\w \t\.\:]+)\/)?$/im },
+    'context-open': {
+      mark: /\{\{(?:([^\:\n\r\f]+)\:)?([\w \t\+\-\*\."=%]+)?(?:\/([\w \t\.\:]+)\/)?$/im
+    },
     'context-close': { mark: /\}\}/im },
     select: {
       mark: /\{([^\}\n\r\f]+)\}(?:\(([^\)\n\r\f]+)\))?(?:\/([^\/\n\r\f]+)\/)/im,
@@ -2247,7 +2253,8 @@ class Translator {
     annotation: Translator.element.annotation.mark
   }
 
-  Translator.marksAnnotationInside = /([^=\:\n\r\f]+)(?:[=\:]([\w \t%]*)(?:\/([\w \t%]*))?)?/im
+  Translator.marksAnnotationInside =
+    /(?:([^\:\n\r\f]+)\:)?([^=\n\r\f]+)(?:=([\w \t%]*)(?:\/([\w \t%]*))?)?/im
 
   // <TODO> this is a different approach indicating characteristic by type
   // (homogenize?)
