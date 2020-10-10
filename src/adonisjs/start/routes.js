@@ -68,6 +68,8 @@ Route.group(() => {
   }).as('draft_all_cases')
 
   Route.get('quests', 'QuestController.getQuestsAuthor').as('draft_quests')
+  Route.get('categories', 'CategoryController.getCategories').as('draft_category')
+  Route.get('categories/:categoryId', 'CategoryController.getCasesByCategory').as('draft_category_cases')
   Route.get('cases', 'QuestController.getCasesByQuestAuthor').as('draft_cases')
 }).prefix('drafts')
 

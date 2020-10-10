@@ -81,9 +81,9 @@ class CaseController {
 
         const linkCase = {
           method: 'POST',
-          url: Env.get('HARENA_MANAGER_URL') + '/api/v1/quest/link/case',
+          url: Env.get('HARENA_MANAGER_URL') + '/api/v1/category/link/case',
           data: {
-            questId: params.quest,
+            categoryId: params.quest,
             caseId: _caseId,
             orderPosition: 0
           },
