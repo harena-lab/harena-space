@@ -14,6 +14,8 @@ class DCCBlock extends DCCMultiVisual {
   }
 
   async connectedCallback () {
+    super.connectedCallback()
+
     if (!this.hasAttribute('xstyle')) {
       this.xstyle = 'theme'
       if (MessageBus.page.hasSubscriber('dcc/request/xstyle')) {

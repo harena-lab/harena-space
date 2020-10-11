@@ -17,7 +17,7 @@ class DCCModel extends DCCBase {
      **********/
 
   get schema () {
-    return (this._content != null) ? this._content.schema : null;
+    return (this._setup != null) ? this._setup.schema : null;
   }
 
   requestSchema (topic, message) {
@@ -26,5 +26,5 @@ class DCCModel extends DCCBase {
 }
 
 (function () {
-  DCC.component('dcc-model', DCCModel)
+  DCC.webComponent('dcc-model', DCCModel)
 })()

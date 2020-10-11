@@ -9,8 +9,12 @@ class DCCRest extends DCCBase {
     this.serviceRequest = this.serviceRequest.bind(this)
     this.serviceRequestC = this.serviceRequestC.bind(this)
     MessageBus.int.subscribe('service/request/+', this.request)
-    if (this.hasAttribute('id'))
+    if (this.hasAttribute('id')) {
       MessageBus.page.provides(this.id, 'service/request/get', this.serviceRequestC)
+      MessageBus.page.provides(this.id, 'service/request/post', this.serviceRequestC)
+      MessageBus.page.provides(this.id, 'service/request/put', this.serviceRequestC)
+      MessageBus.page.provides(this.id, 'service/request/delete', this.serviceRequestC)
+    }
   }
 
   // <FUTURE> Considering a complex schema
@@ -25,22 +29,25 @@ class DCCRest extends DCCBase {
   }
   */
 
-  async connectTo (id, topic) {
-    super.connectTo(id, topic)
-    if (topic == 'data/schema')
-      this._schema = await this.request('data/schema')
+  async connectTo (id, topic, role) {
+    super.connectTo(id, topic, role)
+    if (role == 'schema')
+      this._schema = await this.request(role, null, id)
   }
 
   async restRequest(method, parameters) {
+    console.log('=== rest request parameters')
+    console.log(parameters)
+
     let result = null
 
-    if (this._content.environment)
-      for (let e in this._content.environment)
-        parameters[e] = this._content.environment[e]
+    if (this._setup.environment)
+      for (let e in this._setup.environment)
+        parameters[e] = this._setup.environment[e]
 
-    if (this._content != null && this._content.oas != null &&
-        this._content.oas.paths != null) {
-      const paths = Object.keys(this._content.oas.paths)
+    if (this._setup != null && this._setup.oas != null &&
+        this._setup.oas.paths != null) {
+      const paths = Object.keys(this._setup.oas.paths)
       if (paths.length > 0) {
         let url = paths[0]
         for (let p in parameters)
@@ -61,12 +68,12 @@ class DCCRest extends DCCBase {
         }
 
         /*
-        if (this._content.credentials && this._content.credentials == 'use' &&
+        if (this._setup.credentials && this._setup.credentials == 'use' &&
             DCCRest.token)
           request.headers['Authorization'] = 'Bearer ' + DCCRest.token
         */
 
-        let pathDetails = this._content.oas.paths[paths[0]]
+        let pathDetails = this._setup.oas.paths[paths[0]]
         let opid = ''
         if (pathDetails[method] != null) {
           if (pathDetails[method].operationId) opid = pathDetails[method].operationId
@@ -99,7 +106,7 @@ class DCCRest extends DCCBase {
           })
 
         /*
-        if (this._content.credentials && this._content.credentials == 'store') {
+        if (this._setup.credentials && this._setup.credentials == 'store') {
           if (jsonResp.token) {
             DCCRest.token = jsonResp.token
             // removes to avoid sending to the bus
@@ -127,15 +134,14 @@ class DCCRest extends DCCBase {
   }
 
   async serviceRequestC (topic, message) {
-    return await this.restRequest(MessageBus.extractLevel(topic, 3), message)
+    return await this.restRequest(MessageBus.extractLevel(topic, 3),
+      this._extractParameters(message))
   }
 
   async notify (topic, message) {
     if (message.role) {
       let parameters = {}
-      let par = ((message.body)
-          ? ((message.body.value) ? message.body.value : message)
-          : ((message.value) ? message.value : message))
+      let par = this._extractParameters(message)
       if (topic.startsWith('var/'))
         parameters[MessageBus.extractLevel(topic, 2)] = par
       else
@@ -145,8 +151,14 @@ class DCCRest extends DCCBase {
     }
   }
 
+  _extractParameters(message) {
+    return ((message.body)
+          ? ((message.body.value) ? message.body.value : message)
+          : ((message.value) ? message.value : message))
+  }
+
 }
 
 (function () {
-  DCC.component('dcc-rest', DCCRest)
+  DCC.webComponent('dcc-rest', DCCRest)
 })()

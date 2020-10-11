@@ -68,5 +68,5 @@ class DCCRecord extends DCCBase {
 }
 
 (function () {
-  DCC.component('dcc-record', DCCRecord)
+  DCC.webComponent('dcc-record', DCCRecord)
 })()

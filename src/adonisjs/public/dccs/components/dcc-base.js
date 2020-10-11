@@ -8,15 +8,21 @@ class DCCBase extends HTMLElement {
     this.edit = this.edit.bind(this)
     this.toNotify = this.toNotify.bind(this)
     this.notify = this.notify.bind(this)
+    console.log('=== dcc id')
+    console.log(this.id)
   }
 
   connectedCallback () {
+    console.log('=== callback')
+    console.log(this.id)
     if (this.hasAttribute('bind'))
-      this._content = DCC.retrieve(this.bind.toLowerCase(), this.nodeName.toLowerCase())
+      this._setup = DCC.retrieve(this.bind.toLowerCase(), this.nodeName.toLowerCase())
     if (this.hasAttribute('subscribe'))
       this._subscribeTopic(this.subscribe)
-    if (this.hasAttribute('connect'))
+    if (this.hasAttribute('connect')) {
+      console.log('=== has connection')
       this._connectTo(this.connect)
+    }
   }
 
   static get observedAttributes () {
@@ -104,18 +110,30 @@ class DCCBase extends HTMLElement {
     this._connectTo(newValue)
   }
 
-  _connectTo (idTopic) {
-    const colon = idTopic.indexOf(':')
-    if (colon != -1)
-      this.connectTo(idTopic.substring(0, colon), idTopic.substring(colon + 1))
+  _connectTo (idTopicRole) {
+    console.log('=== base connect to')
+    console.log(idTopicRole)
+    const colonId = idTopicRole.indexOf(':')
+    const colonRole = idTopicRole.lastIndexOf(':')
+    if (colonId != -1 && colonRole != -1) {
+      this.connectTo(
+        idTopicRole.substring(0, colonId),
+        idTopicRole.substring(colonId + 1, colonRole),
+        idTopicRole.substring(colonRole+1)
+      )
+    }
   }
 
   // connects this DCC to another
-  connectTo (id, topic) {
-    if (id != null && topic != null) {
+  connectTo (id, topic, role) {
+    console.log('=== connection')
+    console.log(id)
+    console.log(topic)
+    console.log(role)
+    if (id != null && topic != null && role != null) {
       if (this._connections == null) this._connections = {}
-      if (this._connections[topic] == null) this._connections[topic] = []
-      this._connections[topic].push(id)
+      if (this._connections[role] == null) this._connections[role] = []
+      this._connections[role].push({id: id, topic: topic})
       MessageBus.page.connect(id, topic, this)
     }
   }
@@ -124,20 +142,27 @@ class DCCBase extends HTMLElement {
     /* implemented in the subclasses */
   }
 
-  async request (topic, message) {
+  async request (role, message, id) {
     let response = null
-    if (this._connections != null && this._connections[topic] != null)
-      response =
-        await MessageBus.page.requestC(this._connections[topic][0], topic, message)
+    if (this._connections != null && this._connections[role] != null)
+      if (id != null) {
+        const conId = this._connections[role].find(con => con.id == id)
+        response =
+            await MessageBus.page.requestC(id, conId.topic, message)
+      } else
+        response =
+            await MessageBus.page.requestC(
+              this._connections[role][0].id, this._connections[role][0].topic, message)
     return response
   }
 
-  async multiRequest (topic, message) {
+  async multiRequest (role, message) {
     let response = {}
-    if (this._connections != null && this._connections[topic] != null)
-      for (let c of this._connections[topic])
-        // const result = await MessageBus.page.request(topic + '/' + c, message)
-        response[c] = await MessageBus.page.requestC(c, topic, message)
+    console.log('=== multi request')
+    console.log(this._connections)
+    if (this._connections != null && this._connections[role] != null)
+      for (let c of this._connections[role])
+        response[c.id] = await MessageBus.page.requestC(c.id, c.topic, message)
     return response
   }
 

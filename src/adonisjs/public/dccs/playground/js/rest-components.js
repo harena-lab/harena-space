@@ -2,7 +2,7 @@
 
 (function () {
 
-DCC.contentComponent(
+DCC.component(
   'xkcd',
   'dcc-rest',
   {
@@ -16,7 +16,7 @@ DCC.contentComponent(
   }
 )
 
-DCC.contentComponent(
+DCC.component(
   'coronavirus',
   'dcc-rest',
   {
@@ -30,20 +30,25 @@ DCC.contentComponent(
   }
 )
 
-DCC.contentComponent(
+DCC.component(
   'harena-login',
   'dcc-rest',
   {
+    environment: {
+      'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api
+    },
     oas: {
       paths: {
-        'http://localhost:10020/api/v2/auth/login': {
+        '{url-manager}/auth/login': {
           'post': {
             operationId: 'login',
             parameters: [
+              {name: 'url-manager',
+               in: 'path'},
               {name: 'email',
                in: 'query'},
               {name: 'password',
-               in: 'query'}
+               in: 'query'},
             ]
           }
         }
@@ -52,17 +57,22 @@ DCC.contentComponent(
   }
 )
 
-DCC.contentComponent(
+DCC.component(
   'harena-roles',
   'dcc-rest',
   {
-    credentials: 'use',
+    environment: {
+      'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api
+    },
     oas: {
       paths: {
-        'http://localhost:10020/api/v1/admin/roles': {
+        '{url-manager}/admin/roles': {
           'get': {
             operationId: 'roles',
-            parameters: []
+            parameters: [
+              {name: 'url-manager',
+               in: 'path'}
+            ]
           }
         }
       }
@@ -70,18 +80,23 @@ DCC.contentComponent(
   }
 )
 
-DCC.contentComponent(
+DCC.component(
   'harena-cases',
   'dcc-rest',
   {
-    credentials: 'use',
+    environment: {
+      'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api
+    },
     oas: {
       paths: {
         'http://localhost:10020/api/v1/author/quest/cases?questId={questId}': {
           'get': {
             operationId: 'cases',
             parameters: [
-              {name: 'questId'}
+              {name: 'url-manager',
+               in: 'path'},
+              {name: 'questId',
+               in: 'path'}
             ]
           }
         }

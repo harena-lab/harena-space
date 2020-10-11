@@ -91,5 +91,5 @@ class DCCDHTML extends DCCBase {
 }
 
 (function () {
-  DCC.component('dcc-dhtml', DCCDHTML)
+  DCC.webComponent('dcc-dhtml', DCCDHTML)
 })()

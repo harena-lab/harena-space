@@ -3,6 +3,7 @@
 @section('content')
 <div class="row">
 
+  <dcc-rest id="harena-login" bind="harena-login"></dcc-rest>
   <form>
       @component('components.panel')
 
@@ -44,12 +45,11 @@
         <!--
         <button type="submit" class="btn btn-primary" role="button" onclick="LoginTest.i.login()">Log in</button>
         -->
-        <dcc-submit label="Login"></dcc-submit>
+        <dcc-submit bind="submit-login" label="Login" connect="harena-login:service/request/post:submit">
 
       @endcomponent
 
     </form>
-    <dcc-rest bind="harena-login" subscribe="button/Login/clicked:post"></dcc-rest>
     <!--
     <div class="col-md-6" id="preview-desc">
     </div>
