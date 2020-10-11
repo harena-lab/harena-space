@@ -5,6 +5,6 @@ class HarenaConfig {
   HarenaConfig.local = false
   HarenaConfig.manager = {
     url: 'http://localhost:10020',
-    api: '/api/v2'
+    api: '/api/v1'
   }
 })()
