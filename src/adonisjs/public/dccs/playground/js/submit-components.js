@@ -11,4 +11,15 @@ DCC.component(
   }
 )
 
+DCC.component(
+  'submit-logout',
+  'dcc-submit',
+  {
+    pos: function(response) {
+      console.log('=== after processing')
+      console.log(response)
+    }
+  }
+)
+
 })()
