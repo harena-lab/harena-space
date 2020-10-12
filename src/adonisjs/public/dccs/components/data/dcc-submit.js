@@ -41,8 +41,9 @@ class DCCSubmit extends DCCButton {
         while (form != null && form.nodeName.toLowerCase() != 'form')
           form = form.parentNode
         message.value = {}
-        for (let f of form)
-          message.value[f.id] = f.value
+        if (form != null)
+          for (let f of form)
+            message.value[f.id] = f.value
       }
       console.log('=== form')
       console.log(topic)

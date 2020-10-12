@@ -58,6 +58,29 @@ DCC.component(
 )
 
 DCC.component(
+  'harena-logout',
+  'dcc-rest',
+  {
+    environment: {
+      'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api
+    },
+    oas: {
+      paths: {
+        '{url-manager}/auth/logout': {
+          'post': {
+            operationId: 'logout',
+            parameters: [
+              {name: 'url-manager',
+               in: 'path'}
+            ]
+          }
+        }
+      }
+    }
+  }
+)
+
+DCC.component(
   'harena-roles',
   'dcc-rest',
   {
