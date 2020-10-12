@@ -83,8 +83,10 @@ class DCCDHTML extends DCCBase {
     super.connectionReady (id, topic)
     console.log('=== ready')
     console.log(topic)
+    console.log(id)
+    console.log(this._connections)
     if (topic == 'data/record/retrieve' || topic == 'service/request/get') {
-      const response = await this.request(topic)
+      const response = await this.request('retrieve', null, id)
       this.recordUpdate(topic, response)
     }
   }
