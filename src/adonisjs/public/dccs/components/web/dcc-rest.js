@@ -9,25 +9,25 @@ class DCCRest extends DCCBase {
     this.serviceRequest = this.serviceRequest.bind(this)
     this.serviceRequestC = this.serviceRequestC.bind(this)
     MessageBus.int.subscribe('service/request/+', this.request)
+  }
+
+  // <FUTURE> Considering a complex schema
+  async connectedCallback () {
+    super.connectedCallback()
+
     if (this.hasAttribute('id')) {
       MessageBus.page.provides(this.id, 'service/request/get', this.serviceRequestC)
       MessageBus.page.provides(this.id, 'service/request/post', this.serviceRequestC)
       MessageBus.page.provides(this.id, 'service/request/put', this.serviceRequestC)
       MessageBus.page.provides(this.id, 'service/request/delete', this.serviceRequestC)
     }
-  }
-
-  // <FUTURE> Considering a complex schema
-  /*
-  async connectedCallback () {
-    super.connectedCallback()
-
+    /*
     const schema = await this.request('data/schema')
 
     console.log('=== schema')
     console.log(schema)
+    */
   }
-  */
 
   async connectTo (id, topic, role) {
     super.connectTo(id, topic, role)
