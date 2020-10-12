@@ -4,10 +4,16 @@
     {{-- Navigation Actions --}}
     <div class="d-flex overflow-hidden pt-3 mr-4" id="harena-header">
 
-  <span class="inline-flex mr-4 rounded-md shadow ml-auto" id="header-login">
-    <a href="#" onclick="" class="inline-flex items-center px-4 py-2 text-base bg-white">
-      Log in
-    </a>
+  <span class="inline-flex mr-4 rounded-md shadow ml-auto bg-white" id="header-login">
+    <div id="login-block" >
+      <a href="/login" class="inline-flex items-center px-4 py-2 text-base bg-white">
+        Log in
+      </a>
+    </div>
+    <div id="logout-block" style="display: none;">
+      <dcc-button label="Log out" xstyle="theme"></dcc-button>
+      <dcc-rest id="harena-logout" bind="harena-logout" subscribe="button/Log out/clicked:post"></dcc-rest>
+    </div>
   </span>
 
 

@@ -4,23 +4,23 @@ class TokenController {
     //   this.redirectUnlogged();
     // }else
     //   this.checkToken();
-
     window.location.pathname !== '/' ? this.redirectUnlogged() : this.checkToken()
   }
 
   async checkToken (checked) {
-    let elem
+    let elemLogin
+    let elemLogout
     if (document.getElementById('harena-header')) {
-      elem = document.getElementById('header-login').firstElementChild
+      elemLogin = document.getElementById('login-block')
+      elemLogout = document.getElementById('logout-block')
     } else {
       return
     }
 
     if (checked) {
-      console.log('IM STUPIDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDd')
-      elem.setAttribute('onclick', 'LoginTest.i.logout()')
-      console.log(elem.onclick)
-      elem.innerHTML = 'Log out'
+      // elem.setAttribute('onclick', 'LoginTest.i.logout()')
+      elemLogin.style.display = 'none'
+      elemLogout.style.display = 'block'
       return
     }
 
@@ -30,8 +30,8 @@ class TokenController {
       withCredentials: true
 
     }
-    // console.log('=== check token request')
-    // console.log(DCCCommonServer.managerAddressAPI + 'auth/checkToken')
+    console.log('=== check token request')
+    console.log(DCCCommonServer.managerAddressAPI + 'auth/check')
     axios(config)
       .then(function (endpointResponse) {
       // return response.redirect('/')
@@ -41,12 +41,15 @@ class TokenController {
         if (endpointResponse.data === 'token valid') {
           console.log('token valid')
           // const elem = document.getElementById('header-login').firstElementChild
-          elem.onclick = 'LoginTest.i.logout()'
-          elem.innerHTML = 'Log out'
+          // elem.setAttribute('onclick', 'LoginTest.i.logout()')
+          // elem.href = '#'
+          elemLogin.style.display = 'none'
+          elemLogout.style.display = 'block'
         } else {
-          elem.href = '/login'
-          elem.onclick = ''
-          elem.innerHTML = 'Log in'
+          console.log('token invalid')
+
+          elemLogin.style.display = 'block'
+          elemLogout.style.display = 'none'
         }
       })
       .catch(function (error) {
@@ -61,11 +64,11 @@ class TokenController {
       url: DCCCommonServer.managerAddressAPI + 'auth/check',
       withCredentials: true
     }
-    console.log('=== check token request')
-    console.log(DCCCommonServer.managerAddressAPI + 'auth/check')
+    // console.log('=== check token request')
+    // console.log(DCCCommonServer.managerAddressAPI + 'auth/check')
     axios(config)
       .then(function (endpointResponse) {
-        console.log('=== check token redirect response')
+        // console.log('=== check token redirect response')
         // console.log(endpointResponse.data);
         endpointResponse.data === 'token valid' ? TokenController.instance.checkToken(true) : window.location.href = '/login'
       })
