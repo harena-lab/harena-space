@@ -11,8 +11,8 @@
       </a>
     </div>
     <div id="logout-block" style="display: none;">
-      <dcc-button label="Log out" xstyle="theme"></dcc-button>
-      <dcc-rest id="harena-logout" bind="harena-logout" subscribe="button/Log out/clicked:post"></dcc-rest>
+      <dcc-rest id="harena-logout" bind="harena-logout"></dcc-rest>
+      <dcc-submit bind="submit-logout" label="Logout" connect="harena-logout:service/request/post:submit">
     </div>
   </span>
 
