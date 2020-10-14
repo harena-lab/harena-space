@@ -53,9 +53,15 @@ class DCCDHTML extends DCCBase {
       let pr = prefix + r
       if (record[r] != null && typeof record[r] === 'object')
         html = this._replaceFields(html, pr, record[r])
-      else
-        html = html.replace(new RegExp('\{\{[ \t]*' + pr + '[ \t]*\}\}', 'igm'),
-                            (record[r] != null) ? record[r] : '')
+      else {
+        const content = (record[r] == null) ? '' :
+                          record[r].replace(/&/gm, '&amp;')
+                                   .replace(/"/gm, '&quot;')
+                                   .replace(/'/gm, '&#39;')
+                                   .replace(/</gm, '&lt;')
+                                   .replace(/>/gm, '&gt;')
+        html = html.replace(new RegExp('\{\{[ \t]*' + pr + '[ \t]*\}\}', 'igm'), content)
+      }
     }
     return html
   }
