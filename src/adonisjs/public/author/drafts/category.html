@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Authoring Environment</title>
+
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
+
+  <link rel="stylesheet" href="../css/author.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+  <script src="../../lib/jquery-3-4-1/jquery-3.4.1.slim.min.js"></script>
+  <script src="../../lib/popper-1-15-0/popper.min.js"></script>
+  <script src="../../lib/bootstrap-4.4.1/js/bootstrap.min.js"></script>
+
+  <script src="../../config/config.js"></script>
+  <script src="../../infra/bus.js"></script>
+  <script src="../../infra/basic.js"></script>
+  <script src="../../infra/dcc-common-server-proxy.js"></script>
+  <script src="../../infra/dcc-common-server-address.js"></script>
+  <script src="../../infra/token-validator.js"></script>
+
+  <script src="../../dccs/dcc.js"></script>
+  <script src="../../dccs/components/dcc-base.js "></script>
+  <script src="../../dccs/components/dcc-visual.js "></script>
+  <script src="../../dccs/components/dcc-block.js"></script>
+  <script src="../../dccs/components/dcc-button.js"></script>
+  <script src="../../dccs/components/dcc-notice-input.js"></script>
+
+  <script src="../../dccs/components/data/dcc-model.js"></script>
+  <script src="../../dccs/components/data/dcc-submit.js"></script>
+  <script src="../../dccs/components/data/dcc-record.js"></script>
+
+  <script src="../../dccs/components/web/dcc-include.js"></script>
+  <script src="../../dccs/components/web/dcc-dhtml.js"></script>
+  <script src="../../dccs/components/web/dcc-rest.js"></script>
+  <script src="../../infra/dcc-rest-proxy.js"></script>
+
+
+  <link rel="stylesheet" href="../../lib/fontawesome-5-10-1/css/all.min.css">
+  <link rel="stylesheet" href="../../lib/bootstrap-4.4.1/css/bootstrap.min.css">
+
+  <link rel="stylesheet" href="../../infra/css/common-player.css">
+  <link rel="stylesheet" href="../../infra/css/common-author.css">
+
+  <script src="../js/dcc-author-server-proxy.js"></script>
+
+  <script src="../js/create.js"></script>
+  <script src="../js/template-case.js"></script>
+  <script src="../js/draft.js"></script>
+
+
+
+</head>
+
+<div class="fixed-top">
+  <nav>
+    <div class="d-flex overflow-hidden pt-3 mr-4" id="harena-header">
+
+  <span class="inline-flex mr-4 rounded-md shadow ml-auto bg-white" id="header-login">
+    <div id="login-block" >
+      <a href="/login" class="inline-flex items-center px-4 py-2 text-base bg-white">
+        Log in
+      </a>
+    </div>
+    <div id="logout-block" style="display: none;">
+      <dcc-button label="Log out" xstyle="theme"></dcc-button>
+      <dcc-rest id="harena-logout" bind="harena-logout" subscribe="button/Log out/clicked:post"></dcc-rest>
+    </div>
+  </span>
+
+
+</div>
+</nav>
+</div>
+<body>
+  <!-- Create a section to place page content -->
+  <main role="main">
+    <div class="d-flex flex-column vh-100 vw-100 draft-author-padding hidden-overflow">
+
+      <!-- Create breadcrumbs -->
+      <div class="container-fluid zindex-fixed author-breadcrumb" >
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href='/author/home.html'>Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Drafts</li>
+          </ol>
+        </nav>
+      </div>
+      <!-- End of breadcrumbs -->
+
+      <div class="h-100 w-100 home-content-padding">
+        <div class="home-text mb-4">
+          <p>Choose a category to filter your cases.</p>
+        </div>
+        <div id="case-boxes" class="container-fluid h-100 draft-scroll-container">
+          <div class="d-flex justify-content-end mb-3">
+                <button type="button" name="draft-button-all" class="btn btn-secondary align-self-start" onclick="window.location.href='{{route('draft_all_cases')}}'">Show all cases</button>
+          </div>
+          <div class="d-flex scroll-x pb-4">
+
+              <dcc-rest id="harena-category-list" bind="harena-category-list"></dcc-rest>
+              <dcc-dhtml class="d-flex" connect="harena-category-list:service/request/get:retrieve">
+                {{@foreach . category}}
+                <div class="d-flex justify-content-center text-center draft-quest-container">
+                  <a href="/author/drafts/cases.html?id={{category.id}}">
+                    <img class="draft-quest-icon"  src="{{category.url}}">
+                    <h5 class="text-center text-wrap txt-visita-virtual" style="color:#505050 !important;">{{category.title}}</h5>
+                  </a>
+
+                </div>
+                {{@endfor}}
+              </dcc-dhtml>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <!-- end of div /.container -->
+
+</body>
+
+</html>
