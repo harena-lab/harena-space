@@ -95,14 +95,10 @@ class DCCCommonServer {
    */
 
   async casesList (topic, message) {
-    const header = {
-      async: true,
-      crossDomain: true,
+    const config = {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + DCCCommonServer.token
-      }
+      url: DCCCommonServer.managerAddressAPI + 'user/cases',
+      withCredentials: true
     }
     /*
       if (message.filterBy) {
@@ -120,15 +116,21 @@ class DCCCommonServer {
          DCCCommonServer.managerAddressAPI +
          ((message.user) ? "user/cases" : "cases"), header);
       */
-    const response = await fetch(
-      DCCCommonServer.managerAddressAPI + 'user/cases', header)
-    const jsonResponse = await response.json()
+    let jsonResponse
+    await axios(config)
+      .then(function (endpointResponse) {
+        jsonResponse = endpointResponse.data
+      })
+      .catch(function (error) {
+        console.log(error)
+        console.log(error.code)
+      })
     const busResponse = []
     for (const c in jsonResponse) {
       busResponse.push({
         id: jsonResponse[c].id,
-        title: jsonResponse[c].title,
-        icon: Basic.service.rootPath + 'resources/icons/mono-slide.svg'
+        title: jsonResponse[c].title
+        // icon: Basic.service.rootPath + 'resources/icons/mono-slide.svg'
       // svg : jsonResponse[c].svg
       })
     }
