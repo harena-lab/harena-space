@@ -7,9 +7,10 @@
 
 class AuthorManager {
   constructor () {
+    this.start = this.start.bind(this)
     MessageBus.ext.externalized = false
     MessageBus.page = new MessageBus(false)
-
+    MessageBus.int.subscribe('web/dhtml/record/updated', this.start)
     Basic.service.host = this
 
     Translator.instance.authoringRender = true
@@ -288,6 +289,7 @@ class AuthorManager {
     this._knots = this._compiledCase.knots
 
     // Basic.service.currentThemeFamily = this._compiledCase.theme
+
     Basic.service.composedThemeFamily(this._compiledCase.theme)
     if (this._compiledCase.title) { this._currentCaseTitle = this._compiledCase.title }
 

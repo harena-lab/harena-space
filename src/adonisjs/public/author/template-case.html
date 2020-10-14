@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	  <meta charset="utf-8">
+	  <title>Authoring Environment</title>
+
+	  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
+
+	  <link rel="stylesheet" href="css/author.css">
+
+	  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+	  <script src="../lib/jquery-3-4-1/jquery-3.4.1.slim.min.js"></script>
+	  <script src="../lib/popper-1-15-0/popper.min.js"></script>
+	  <script src="../lib/bootstrap-4.4.1/js/bootstrap.min.js"></script>
+
+	  <script src="../config/config.js"></script>
+	  <script src="../infra/bus.js"></script>
+	  <script src="../infra/basic.js"></script>
+	  <script src="../infra/dcc-common-server-proxy.js"></script>
+	  <script src="../infra/dcc-common-server-address.js"></script>
+	  <script src="../infra/token-validator.js"></script>
+
+	  <script src="../dccs/dcc.js"></script>
+	  <script src="../dccs/components/dcc-base.js "></script>
+	  <script src="../dccs/components/dcc-visual.js "></script>
+	  <script src="../dccs/components/dcc-block.js"></script>
+	  <script src="../dccs/components/dcc-button.js"></script>
+	  <script src="../dccs/components/dcc-notice-input.js"></script>
+
+	  <script src="../dccs/components/data/dcc-model.js"></script>
+	  <script src="../dccs/components/data/dcc-submit.js"></script>
+	  <script src="../dccs/components/data/dcc-record.js"></script>
+
+	  <script src="../dccs/components/web/dcc-include.js"></script>
+	  <script src="../dccs/components/web/dcc-dhtml.js"></script>
+	  <script src="../dccs/components/web/dcc-rest.js"></script>
+	  <script src="../infra/dcc-rest-proxy.js"></script>
+
+	  <link rel="stylesheet" href="../lib/fontawesome-5-10-1/css/all.min.css">
+	  <link rel="stylesheet" href="../lib/bootstrap-4.4.1/css/bootstrap.min.css">
+
+	  <link rel="stylesheet" href="../infra/css/common-player.css">
+	  <link rel="stylesheet" href="../infra/css/common-author.css">
+
+	  <script src="js/dcc-author-server-proxy.js"></script>
+
+	  <script src="js/create.js"></script>
+	  <script src="js/template-case.js"></script>
+	  <script src="js/draft.js"></script>
+
+	</head>
+
+  <body onload="TemplateToCase.s.storeCase()">
+    <!-- Create a section to place page content -->
+    <main role="main">
+      <div class="d-flex flex-column vh-100 vw-100 hidden-overflow">
+
+        <!-- Create breadcrumbs -->
+        <div class="container-fluid author-breadcrumb" >
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <!-- <li class="breadcrumb-item"><a href="home.html">Home</a></li> -->
+              <li class="breadcrumb-item"><a href="/author/home.html">Home</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Create</li>
+            </ol>
+          </nav>
+        </div>
+        <!-- End of breadcrumbs -->
+
+        <div class="h-100 w-100 create-case-padding scroll-y">
+          <div class="home-text">
+            <p id="template-title"> Creation form </p>
+          </div>
+
+          <div class="row" style="padding-bottom: 70px;">
+            <div class="col-md-6">
+              <form id="create-case-form">
+
+                <div class="form-group">
+                  <label for="case-title">Title</label>
+                  <input type="text" class="form-control" id="case-title" name="title" placeholder="Enter the title">
+                </div>
+                <div class="form-group">
+                  <label for="description">Description</label>
+                  <textarea class="form-control" id="description" name="description"></textarea>
+                </div>
+                <div class="form-group">
+                  <label for="creationDate">Creation Date</label>
+                  <input type="date" class="form-control" id="creationDate" name="creationDate">
+                </div>
+                <div class="form-group">
+                  <label for="language">Language</label>
+                  <select name="language" id="language">
+                     <option value="pt-BR">Portuguese (Brazil)</option>
+                     <option value="pt-PT">Portuguese (Portugal)</option>
+                     <option value="en">English</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="institution">Institution</label>
+                  <select name="institution" id="institution">
+                     <option value="unicamp">Unicamp</option>
+                     <option value="minho">Universidade do Minho</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="domain">Domain</label>
+                  <select name="domain" id="domain" value={{ caseDomain }}>
+                    <option value="Medicine">Medicine</option>
+                    <option value="Nurse">Nurse</option>
+                    <option value="Physioterapy">Physioterapy</option>
+                    <option value="Pharmacy">Pharmacy</option>
+                    <option value="Occupational Therapy">Occupational Therapy</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="complexity">Complexity</label>
+                  <select name="complexity" id="complexity" value={{caseComplexity}}>
+                    <option value="Undergraduate">Undergraduate</option>
+                    <option value="Postgraduate">Postgraduate</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="specialty">Specialty</label>
+                  <input type="text" class="form-control" id="specialty" name="specialty" placeholder="Inform the case specialty">
+                </div>
+                <div class="form-group">
+                  <label for="keywords">Keywords</label>
+                  <textarea class="form-control" id="keywords" name="keywords" aria-describedby="keywords-help"></textarea>
+                  <small id="keywords-help" class="form-text text-muted">Inform your keywords separated by semicolon.</small>
+                </div>
+                <input type="hidden" id="template" name="template" value="">
+                <input type="hidden" id="category" name="quest" value="">
+                <button id="btn-submit-form" class="btn btn-primary" role="button">Create</button>
+                <a class="btn btn-danger" href="/author/create.html" role="button">Cancel</a>
+
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <!-- end of div /.container -->
+  </body>
+</html>

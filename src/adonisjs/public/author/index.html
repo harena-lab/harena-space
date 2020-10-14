@@ -94,7 +94,7 @@
   <script src="js/author.js"></script>
 </head>
 
-<body onload="AuthorManager.author.start()">
+<body>
   <dcc-rest id="harena-case" bind="harena-case"></dcc-rest>
   <!-- Start of settings modal -->
   <dcc-dhtml id="dhtml-case" connect="harena-case:service/request/get:retrieve">
@@ -105,7 +105,7 @@
             <h3>Settings</h3>
             <form>
                 <input type="hidden" id="case_id" name="case_id" value="{{id}}">
-                <input type="hidden" id="case_source" name="case_source" value={{source}}>
+                <input type="hidden" id="case_source" name="case_source" value="{{source}}">
 
               <div class="form-group">
                 <label for="case_title">Title</label>
