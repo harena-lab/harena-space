@@ -1,0 +1,81 @@
+
+<div class="modal fade" id="settings-modal" tabindex="-1" role="dialog" aria-labelledby="settings-modal" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <h3>Settings</h3>
+        <form>
+
+          <input type="hidden" id="case_id" name="case_id" value="{{caseId}}">
+          <input type="hidden" id="case_source" name="case_source" value="{{caseSource}}">
+
+          <div class="form-group">
+            <label for="case_title">Title</label>
+            <input type="text" class="form-control" id="case_title" name="case_title" value="{{caseTitle}}" placeholder="Enter the title">
+          </div>
+          <div class="form-group">
+            <label for="description">Description</label>
+            <textarea class="form-control" id="description" name="description">{{caseDescription}}</textarea>
+          </div>
+          <div class="form-group">
+            <label for="creationDate">Creation Date</label>
+            <input type="date" class="form-control" id="creationDate" name="creationDate" value="{{caseOriginalDate}}">
+            {{-- <small id="keywords-help" class="form-text text-muted">Inform the date of case creation on Jacinto Moodle</small> --}}
+          </div>
+          <div class="form-group">
+            <label for="language">Language</label>
+            <select name="language" id="language" value={{caseLanguage}}>
+               <option value={{caseLanguage}} selected disabled hidden>{{caseLanguage}}</option>
+               <option value="pt-BR">Portuguese (Brazil)</option>
+               <option value="pt-PT">Portuguese (Portugal)</option>
+               <option value="en">English</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="institution">Institution</label>
+            <select name="institution" id="institution" value={{ caseInstitution }}>
+              <option value={{caseInstitution}} selected disabled hidden>{{caseInstitution}}</option>
+              <option value="unicamp">Unicamp</option>
+              <option value="minho">Universidade do Minho</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="domain">Domain</label>
+            <select name="domain" id="domain" value={{ caseDomain }}>
+              <option value={{ caseDomain }} selected disabled hidden>{{caseDomain}}</option>
+              <option value="Medicine">Medicine</option>
+              <option value="Nurse">Nurse</option>
+              <option value="Physioterapy">Physioterapy</option>
+              <option value="Pharmacy">Pharmacy</option>
+              <option value="Occupational Therapy">Occupational Therapy</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="complexity">Complexity</label>
+            <select name="complexity" id="complexity" value={{caseComplexity}}>
+               <option value={{caseComplexity}} selected disabled hidden>{{caseComplexity}}</option>
+               <option value="undergraduate">Undergraduate</option>
+               <option value="postgraduate">Postgraduate</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="specialty">Specialty</label>
+            <input type="text" class="form-control" id="specialty" name="specialty" value="{{caseSpecialty}}" placeholder="Inform the case specialty">
+          </div>
+          <div class="form-group">
+            <label for="keywords">Keywords</label>
+            <textarea class="form-control" id="keywords" name="keywords" aria-describedby="keywords-help">{{caseKeywords}}</textarea>
+            <small id="keywords-help" class="form-text text-muted">Inform your keywords separated by semicolon.</small>
+          </div>
+
+          <input type="hidden" id="source" name="source">
+          <button type="button" class="btn btn-secondary" id="btn-save-settings" data-toggle="modal" data-target="#settings-modal" >Save</button>
+          <dcc-button topic="control/case/save" label="SAVE" location="btn-save-settings" xstyle="out"></dcc-button>
+
+          <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
