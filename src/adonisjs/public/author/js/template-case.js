@@ -22,13 +22,13 @@ class TemplateToCase {
           // for (var pair of params.entries()) {
           //   console.log(pair[0] + ': ' + pair[1])
           // }
-          const endpointUrl = DCCCommonServer.managerAddressAPI + '/api/v1/case'
+          const endpointUrl = DCCCommonServer.managerAddressAPI + 'case'
           // console.log(params)
 
           // load template
           const templateRequest = {
             method: 'GET',
-            url: window.location.host + '/templates/' +
+            url: '/templates/' +
             params.get('template') + '.md'
           }
 
@@ -72,7 +72,7 @@ class TemplateToCase {
 
             const linkCase = {
               method: 'POST',
-              url: DCCCommonServer.managerAddressAPI + '/api/v1/category/link/case',
+              url: DCCCommonServer.managerAddressAPI + 'category/link/case',
               data: {
                 categoryId: params.get('quest'),
                 caseId: _caseId,
@@ -83,7 +83,6 @@ class TemplateToCase {
             await axios(linkCase)
               .then(function (endpointResponse) {
                 window.location.href = '/author/?id=' + _caseId
-                console.log('Case created!')
               })
               .catch(function (error) {
                 console.log(error)
