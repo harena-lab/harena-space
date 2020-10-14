@@ -16,7 +16,7 @@ class DCCDHTML extends DCCBase {
         html = this._replaceEach(html, this._record)
       else
         html = this._originalHTML.replace(/\{\{[ \t]*value[ \t]*\}\}/igm, this._record)
-      MessageBus.int.publish('web/dhtml/record/updated')
+      MessageBus.int.publish('web/dhtml/record/updated', DCCDHTML.elementTag)
     }
     this.innerHTML = html.replace(/\{\{[^}]*\}\}/igm, '')
   }
@@ -100,5 +100,6 @@ class DCCDHTML extends DCCBase {
 }
 
 (function () {
-  DCC.webComponent('dcc-dhtml', DCCDHTML)
+  DCCDHTML.elementTag = 'dcc-dhtml'
+  DCC.webComponent(DCCDHTML.elementTag, DCCDHTML)
 })()
