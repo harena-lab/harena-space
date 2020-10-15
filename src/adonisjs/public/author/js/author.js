@@ -202,7 +202,7 @@ class AuthorManager {
           break
         case 'control/leave/drafts': await this.caseSave()
         // window.location.href = 'draft.html';
-          window.location.href = '/drafts/category'
+          window.location.href = '/author/drafts/category'
           break
       }
     }
@@ -293,8 +293,8 @@ class AuthorManager {
     Basic.service.composedThemeFamily(this._compiledCase.theme)
     if (this._compiledCase.title) { this._currentCaseTitle = this._compiledCase.title }
 
-    console.log('***** COMPILED CASE *****')
-    console.log(this._compiledCase)
+    // console.log('***** COMPILED CASE *****')
+    // console.log(this._compiledCase)
   }
 
   async _showCase (selectKnot) {

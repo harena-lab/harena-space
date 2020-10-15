@@ -76,9 +76,9 @@ class DCCDHTML extends DCCBase {
   }
 
   recordUpdate (topic, message) {
-    console.log('=== record update')
-    console.log(topic)
-    console.log(message)
+    // console.log('=== record update')
+    // console.log(topic)
+    // console.log(message)
     this._record = ((message.body)
       ? ((message.body.value) ? message.body.value : message.body)
       : ((message.value) ? message.value : message))
@@ -88,10 +88,10 @@ class DCCDHTML extends DCCBase {
 
   async connectionReady (id, topic) {
     super.connectionReady (id, topic)
-    console.log('=== ready')
-    console.log(topic)
-    console.log(id)
-    console.log(this._connections)
+    // console.log('=== ready')
+    // console.log(topic)
+    // console.log(id)
+    // console.log(this._connections)
     if (topic == 'data/record/retrieve' || topic == 'service/request/get') {
       const response = await this.request('retrieve', null, id)
       this.recordUpdate(topic, response)

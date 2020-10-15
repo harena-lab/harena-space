@@ -16,66 +16,66 @@ const Helpers = use('Helpers')
 
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use('Route')
-
-Route.get('populate_modal', 'CaseController.populateModal')
-
-Route.get('/', ({ view }) =>
-  view.render('index')
-).as('index')
-
-Route.get('institution-registration', async ({ view }) => {
-  const pageTitle = 'Institution Registration'
-  return view.render('registration.institution', { pageTitle })
-})
-
-// Those routes should be only accessible
-// when you are not logged in
-Route.group(() => {
-  Route.get('signup', 'UserController.create').as('signup')
-  Route.get('login', 'AuthController.create').as('login')
-
-  Route.post('signup', 'UserController.signup').as('signup')
-  Route.post('login', 'AuthController.login').as('login')
-}).middleware(['guest'])
-
-Route.get('logout', 'AuthController.logout').as('logout')
-
-Route.get('author', 'CaseController.getCase').as('author_edit')
-
-Route.get('home', ({ view }) => {
-  return view.render('author.home')
-}).as('author_home')
-
-Route.get('create', ({ view }) => {
-  return view.render('author.create')
-}).as('author_create')
-
-Route.group(() => {
-  Route.get('', ({ view }) => {
-    return view.render('author.template-case')
-  })
-
-  Route.post('store', 'CaseController.store')
-  Route.post('update', 'CaseController.update')
-}).prefix('choose-template').as('author_template_case')
-
-// Route.get('drafts', ({ view }) => {
-//   return view.render('author.drafts')
-// }).as('cases_drafts')
-Route.group(() => {
-  Route.get('/', ({ view }) => {
-    return view.render('author.drafts')
-  }).as('draft_all_cases')
-
-  Route.get('quests', 'QuestController.getQuestsAuthor').as('draft_quests')
-  Route.get('categories', 'CategoryController.getCategories').as('draft_category')
-  Route.get('categories/:categoryId', 'CategoryController.getCasesByCategory').as('draft_category_cases')
-  Route.get('cases', 'QuestController.getCasesByQuestAuthor').as('draft_cases')
-}).prefix('drafts')
-
-Route.group(() => {
-  Route.post('link/case', 'CaseController.linkCase')
-}).prefix('/quest').middleware('auth')
+// 
+// Route.get('populate_modal', 'CaseController.populateModal')
+//
+// Route.get('/', ({ view }) =>
+//   view.render('index')
+// ).as('index')
+//
+// Route.get('institution-registration', async ({ view }) => {
+//   const pageTitle = 'Institution Registration'
+//   return view.render('registration.institution', { pageTitle })
+// })
+//
+// // Those routes should be only accessible
+// // when you are not logged in
+// Route.group(() => {
+//   Route.get('signup', 'UserController.create').as('signup')
+//   Route.get('login', 'AuthController.create').as('login')
+//
+//   Route.post('signup', 'UserController.signup').as('signup')
+//   Route.post('login', 'AuthController.login').as('login')
+// }).middleware(['guest'])
+//
+// Route.get('logout', 'AuthController.logout').as('logout')
+//
+// Route.get('author', 'CaseController.getCase').as('author_edit')
+//
+// Route.get('home', ({ view }) => {
+//   return view.render('author.home')
+// }).as('author_home')
+//
+// Route.get('create', ({ view }) => {
+//   return view.render('author.create')
+// }).as('author_create')
+//
+// Route.group(() => {
+//   Route.get('', ({ view }) => {
+//     return view.render('author.template-case')
+//   })
+//
+//   Route.post('store', 'CaseController.store')
+//   Route.post('update', 'CaseController.update')
+// }).prefix('choose-template').as('author_template_case')
+//
+// // Route.get('drafts', ({ view }) => {
+// //   return view.render('author.drafts')
+// // }).as('cases_drafts')
+// Route.group(() => {
+//   Route.get('/', ({ view }) => {
+//     return view.render('author.drafts')
+//   }).as('draft_all_cases')
+//
+//   Route.get('quests', 'QuestController.getQuestsAuthor').as('draft_quests')
+//   Route.get('categories', 'CategoryController.getCategories').as('draft_category')
+//   Route.get('categories/:categoryId', 'CategoryController.getCasesByCategory').as('draft_category_cases')
+//   Route.get('cases', 'QuestController.getCasesByQuestAuthor').as('draft_cases')
+// }).prefix('drafts')
+//
+// Route.group(() => {
+//   Route.post('link/case', 'CaseController.linkCase')
+// }).prefix('/quest').middleware('auth')
 
 /*
 let harenaManagerUrl =
@@ -86,21 +86,21 @@ Route.get('translator/playground', ({ view, request }) => {
   return Helpers.publicPath('translator/playground/index.html')
 })
 
-Route.get('player', 'QuestController.getQuests').as('player_home')
-
-Route.get('player/quest', 'QuestController.getCasesByQuest').as('player_quest')
-Route.get('player/case', ({ view, request }) => {
-  const caseId = request.input('id')
-  return view.render('player.player')
-}).as('player_case')
-
-Route.group(() => {
-  Route.get('signup', 'UserController.create').as('signup')
-  Route.get('login', 'AuthController.create').as('login')
-
-  Route.post('signup', 'UserController.signup').as('signup')
-  Route.post('login', 'AuthController.login').as('login')
-}).middleware(['guest'])
+// Route.get('player', 'QuestController.getQuests').as('player_home')
+//
+// Route.get('player/quest', 'QuestController.getCasesByQuest').as('player_quest')
+// Route.get('player/case', ({ view, request }) => {
+//   const caseId = request.input('id')
+//   return view.render('player.player')
+// }).as('player_case')
+//
+// Route.group(() => {
+//   Route.get('signup', 'UserController.create').as('signup')
+//   Route.get('login', 'AuthController.create').as('login')
+//
+//   Route.post('signup', 'UserController.signup').as('signup')
+//   Route.post('login', 'AuthController.login').as('login')
+// }).middleware(['guest'])
 
 const Env = use('Env')
 

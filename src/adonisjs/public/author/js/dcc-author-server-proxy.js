@@ -277,7 +277,7 @@ class DCCAuthorServer {
         'Content-Type': 'text/plain'
       }
     }
-    const response = await fetch('../templates/' + templatePath +
+    const response = await fetch(Basic.service.rootPath + 'templates/' + templatePath +
                                    '.md', header)
     const textResponse = await response.text()
     MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),

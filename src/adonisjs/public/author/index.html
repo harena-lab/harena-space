@@ -173,7 +173,7 @@
                 <small id="keywords-help" class="form-text text-muted">Inform your keywords separated by semicolon.</small>
               </div>
 
-              <input type="hidden" id="source" name="source">
+              <input type="hidden" id="source" name="source" value="{{source}}">
               <button type="button" class="btn btn-secondary" id="btn-save-settings" data-toggle="modal" data-target="#settings-modal" >Save</button>
               <dcc-button topic="control/case/save" label="SAVE" location="btn-save-settings" xstyle="out"></dcc-button>
 
@@ -200,10 +200,8 @@
             <li class="breadcrumb-item"><a href="/author/home">Home</a></li>
             <li class="breadcrumb-item">
               <div style="height: 15px;">
-                <a href="#">
                   <dcc-button topic="control/leave/drafts" label="Drafts" xstyle="out">
                   </dcc-button>
-                </a>
               </div>
             </li>
             <li class="breadcrumb-item active" aria-current="page">Edit case</li>
