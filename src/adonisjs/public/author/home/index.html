@@ -61,8 +61,11 @@
 	</head>
 
 	<body>
-		<!-- Login/logout header -->
-		<dcc-include src="/author/partials/header.html"></dcc-include>
+	  <script>
+	  	Basic.service.rootPath = '../../'
+	  </script>
+	  <!-- Login/logout header -->
+	  <dcc-include src="/author/partials/header.html"></dcc-include>
 	  <!-- Create a section to place page content -->
 	  <main role="main">
 	    <div class="d-flex flex-column vh-100 vw-100 home-author-padding hidden-overflow">
