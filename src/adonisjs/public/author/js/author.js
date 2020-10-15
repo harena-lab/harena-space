@@ -202,7 +202,7 @@ class AuthorManager {
           break
         case 'control/leave/drafts': await this.caseSave()
         // window.location.href = 'draft.html';
-          window.location.href = '/drafts/quests'
+          window.location.href = '/drafts/category'
           break
       }
     }

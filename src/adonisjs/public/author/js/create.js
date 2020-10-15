@@ -32,7 +32,7 @@ class TemplateManager {
               title: tl[t].name,
               description: tl[t].description
             })
-          window.location.href = 'template-case.html?template=' + this.id + '&category=' + tl[t].questId
+          window.location.href = '/author/create/case?template=' + this.id + '&category=' + tl[t].questId
         }
       )
     }

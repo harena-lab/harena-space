@@ -16,16 +16,18 @@ class TemplateToCase {
           document.querySelector('#category').value = _url.searchParams.get('category')
 
           const params = new FormData(document.querySelector('form'))
+
+          console.log(params.get('template'));
+          /*
           // params.set('template', _url.searchParams.get('template').replace(/__/ig, "/"))
           // params.set('quest', _url.searchParams.get('quest'))
-          console.log(params.get('template'));
           // for (var pair of params.entries()) {
           //   console.log(pair[0] + ': ' + pair[1])
           // }
-          const endpointUrl = DCCCommonServer.managerAddressAPI + 'case'
           // console.log(params)
 
           // load template
+          */
           const templateRequest = {
             method: 'GET',
             url: '/templates/' +
@@ -45,7 +47,7 @@ class TemplateToCase {
           if (markdown != null) {
             const config = {
               method: 'POST',
-              url: endpointUrl,
+              url: DCCCommonServer.managerAddressAPI + 'case',
               data: {
                 title: params.get('title'),
                 description: params.get('description'),

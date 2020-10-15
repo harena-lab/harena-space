@@ -1,12 +1,11 @@
 (function () {
-
   DCC.component(
     'submit-login',
     'dcc-submit',
     {
-      pos: function(response) {
-        window.location.href = '/'
+      pos: function (response) {
         // console.log(response)
+        window.location.href = '/'
       }
     }
   )
@@ -14,9 +13,9 @@
     'submit-logout',
     'dcc-submit',
     {
-      pos: function(response) {
+      pos: function (response) {
+        console.log(response)
         window.location.href = '/'
-        // console.log(response)
       }
     }
   )
