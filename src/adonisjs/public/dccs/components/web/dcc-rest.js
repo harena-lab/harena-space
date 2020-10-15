@@ -36,8 +36,8 @@ class DCCRest extends DCCBase {
   }
 
   async restRequest(method, parameters) {
-    console.log('=== rest request parameters')
-    console.log(parameters)
+    // console.log('=== rest request parameters')
+    // console.log(parameters)
 
     let result = null
 
@@ -86,8 +86,8 @@ class DCCRest extends DCCBase {
           }
         }
 
-        console.log("=== request header")
-        console.log(request)
+        // console.log("=== request header")
+        // console.log(request)
 
         /*
         const jsonResp = await fetch(url, request)
@@ -97,7 +97,7 @@ class DCCRest extends DCCBase {
 
         await axios(request)
           .then(function (endpointResponse) {
-            console.log(endpointResponse.status)
+            // console.log(endpointResponse.status)
             // MessageBus.ext.publish('data/service/' + opid, endpointResponse.data)
             result = endpointResponse.data
           })
@@ -120,7 +120,7 @@ class DCCRest extends DCCBase {
         }
         */
 
-        
+
       }
     }
     return result
