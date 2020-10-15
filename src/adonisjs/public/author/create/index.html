@@ -53,6 +53,9 @@
     <link rel="stylesheet" href="../../infra/css/common-player.css">
     <link rel="stylesheet" href="../../infra/css/common-author.css">
 
+    <script>
+      Basic.service.rootPath = '../../' 
+    </script>
     <script src="../js/dcc-author-server-proxy.js"></script>
 
     <script src="../js/create.js"></script>
@@ -61,6 +64,7 @@
   </head>
 
   <body onload="TemplateManager.instance.start()">
+
     <!-- Login/logout header -->
     <dcc-include src="/author/partials/header.html"></dcc-include>
     <!-- Create a section to place page content -->

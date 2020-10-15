@@ -78,7 +78,7 @@ class DCCAuthorServer {
         'Content-Type': 'application/json'
       }
     }
-    const response = await fetch('../templates/templates.json', header)
+    const response = await fetch(Basic.service.rootPath + 'templates/templates.json', header)
     const jsonResponse = await response.json()
     const busResponse = []
     for (const t in jsonResponse) {
