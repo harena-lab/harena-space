@@ -28,19 +28,28 @@
     <script src="../../dccs/components/dcc-button.js"></script>
     <script src="../../dccs/components/dcc-notice-input.js"></script>
 
-    <script src="../../dccs/components/data/dcc-model.js"></script>
-    <script src="../../dccs/components/data/dcc-submit.js"></script>
-    <script src="../../dccs/components/data/dcc-record.js"></script>
-
+    <script src="../../dccs/components/web/dcc-rest.js"></script>
     <script src="../../dccs/components/web/dcc-include.js"></script>
     <script src="../../dccs/components/web/dcc-dhtml.js"></script>
-    <script src="../../dccs/components/web/dcc-rest.js"></script>
+
+    <script src="../../dccs/components/data/dcc-submit.js"></script>
+    <script src="../../dccs/components/data/dcc-model.js"></script>
+    <script src="../../dccs/components/data/dcc-record.js"></script>
+
+    <script src="../../dccs/subscribe-dcc.js"></script>
+    <script src="../../dccs/trigger-dcc.js"></script>
+    <script src="../../dccs/property-dcc.js"></script>
+    <script src="../../dccs/connect-dcc.js"></script>
+
     <script src="../../infra/dcc-rest-proxy.js"></script>
+    <script src="../../infra/dcc-basic.js"></script>
 
 
     <link rel="stylesheet" href="../../lib/fontawesome-5-10-1/css/all.min.css">
     <link rel="stylesheet" href="../../lib/bootstrap-4.4.1/css/bootstrap.min.css">
 
+    <link rel="stylesheet" href="../../dccs/css/dccs.css">
+    <link rel="stylesheet" href="../../dccs/css/properties.css">
     <link rel="stylesheet" href="../../infra/css/common-player.css">
     <link rel="stylesheet" href="../../infra/css/common-author.css">
 
@@ -52,6 +61,8 @@
   </head>
 
   <body onload="DraftManager.instance.start()">
+    <!-- Login/logout header -->
+    <dcc-include src="/author/partials/header.html"></dcc-include>
     <!-- Create a section to place page content -->
     <main role="main">
       <div class="d-flex flex-column vh-100 vw-100 draft-author-padding hidden-overflow">
@@ -60,7 +71,7 @@
         <div class="container-fluid author-breadcrumb" >
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-              <li class="breadcrumb-item"><a href="/author/home.html">Home</a></li>
+              <li class="breadcrumb-item"><a href="/author/home">Home</a></li>
               <li class="breadcrumb-item active" aria-current="page">Drafts</li>
             </ol>
           </nav>
