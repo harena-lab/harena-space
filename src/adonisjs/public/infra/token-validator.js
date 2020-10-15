@@ -4,10 +4,14 @@ class TokenController {
     //   this.redirectUnlogged();
     // }else
     //   this.checkToken();
-    window.location.pathname !== '/' ? this.redirectUnlogged() : this.checkToken()
+    this._tokenChecked = false
+
+    this.checkToken = this.checkToken.bind(this)
+    MessageBus.int.subscribe('control/button/logout-button/ready', this.checkToken)
+    if (window.location.pathname !== '/') this.redirectUnlogged() // : this.checkToken()
   }
 
-  async checkToken (checked) {
+  async checkToken () {
     let elemLogin
     let elemLogout
     if (document.getElementById('harena-header')) {
@@ -17,7 +21,7 @@ class TokenController {
       return
     }
 
-    if (checked) {
+    if (this._tokenChecked) {
       // elem.setAttribute('onclick', 'LoginTest.i.logout()')
       elemLogin.style.display = 'none'
       elemLogout.style.display = 'block'
@@ -70,7 +74,8 @@ class TokenController {
       .then(function (endpointResponse) {
         // console.log('=== check token redirect response')
         // console.log(endpointResponse.data);
-        endpointResponse.data === 'token valid' ? TokenController.instance.checkToken(true) : window.location.href = '/login'
+        // endpointResponse.data === 'token valid' ? TokenController.instance.checkToken(true) : window.location.href = '/login'
+        endpointResponse.data === 'token valid' ? this._tokenChecked = true : window.location.href = '/login'
       })
 
       .catch(function (error) {

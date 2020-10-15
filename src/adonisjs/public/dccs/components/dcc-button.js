@@ -25,6 +25,12 @@ class DCCButton extends DCCBlock {
       this.navigationBlocked = this.navigationBlocked.bind(this)
       MessageBus.ext.subscribe('+/+/navigate/blocked', this.navigationBlocked)
     }
+
+    MessageBus.int.publish('control/button/' +
+      (this.hasAttribute('id')
+        ? this.id
+        : (this.hasAttribute('label') ? this.label : '')
+      ) + '/ready', this.elementTag())
   }
 
   /* Attribute Handling */
