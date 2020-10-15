@@ -159,13 +159,13 @@ class MessageBus {
    ***********************************/
 
   provides (id, topic, service) {
-    console.log('=== provides')
-    console.log(id)
-    console.log(topic)
+    // console.log('=== provides')
+    // console.log(id)
+    // console.log(topic)
     let status = true
     const key = id + ':' + topic
-    console.log(key)
-    console.log(this._connections[key])
+    // console.log(key)
+    // console.log(this._connections[key])
     if (this._providers[key])
       status = false
     else {
@@ -179,12 +179,12 @@ class MessageBus {
   }
 
   connect (id, topic, callback) {
-    console.log('=== connect')
-    console.log(id)
-    console.log(topic)
+    // console.log('=== connect')
+    // console.log(id)
+    // console.log(topic)
     const key = id + ':' + topic
-    console.log(key)
-    console.log(this._providers[key])
+    // console.log(key)
+    // console.log(this._providers[key])
     if (this._providers[key])
       callback.connectionReady(id, topic)
     else
@@ -195,11 +195,11 @@ class MessageBus {
   }
 
   async requestC (id, topic, message) {
-    console.log('=== request C:')
-    console.log(id)
-    console.log(topic)
-    console.log(message)
-    console.log(this._providers)
+    // console.log('=== request C:')
+    // console.log(id)
+    // console.log(topic)
+    // console.log(message)
+    // console.log(this._providers)
     let response = null
     const key = id + ':' + topic
     if (this._providers[key] != null)
