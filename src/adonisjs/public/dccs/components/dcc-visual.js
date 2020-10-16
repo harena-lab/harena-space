@@ -143,12 +143,13 @@ class DCCVisual extends DCCBase {
     let templateHTML = `
       <style>
         .controls {
-          position: absolute;
+          position: relative;
           left: 0px;
           top: 0px;
           width: {width}px;
           height: {height}px;
           background: rgba(0, 0, 0, 0.1);
+          z-index: 99
         }
       </style>
       <div class="controls"></div>`
@@ -158,8 +159,6 @@ class DCCVisual extends DCCBase {
       presentation._editControls(presentation._presentation) }
     else {
       const rect = presentation.getBoundingClientRect()
-      console.log('=== presentation')
-      console.log(presentation)
       templateHTML = templateHTML.replace(/\{left\}/gm, rect.left)
                                  .replace(/\{top\}/gm, rect.top)
                                  .replace(/\{width\}/gm, rect.width)

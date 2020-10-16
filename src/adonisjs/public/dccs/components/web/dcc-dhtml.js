@@ -3,23 +3,46 @@
 
 class DCCDHTML extends DCCBase {
   connectedCallback () {
+    /*
+    const undefinedOptions = this.querySelectorAll(':not(:defined)')
+
+    const promises = [...undefinedOptions].map(element => {
+      return customElements.whenDefined(element.localName)
+    })
+    await Promise.all(promises)
+    */
+
+    this.recordUpdate = this.recordUpdate.bind(this)
+    /*
     this._originalHTML = this.innerHTML
     console.log('=== original HTML')
     console.log(this._originalHTML)
-    this.recordUpdate = this.recordUpdate.bind(this)
+    */
     super.connectedCallback()
+    // this._renderHTML()
+  }
+
+  endReached() {
+    this._originalHTML = this.innerHTML.replace(/<end-dcc[^>]*>[^<]*<\/end-dcc>/igm, '')
+
     this._renderHTML()
+    console.log('=== pre original HTML')
+    console.log(this.innerHTML)
+    console.log('=== pre original HTML')
+    console.log(this.textContent)
   }
 
   _renderHTML () {
     let html = this._originalHTML
-    if (this._record != null) {
-      if (typeof this._record === 'object')
-        html = this._replaceEach(html, this._record)
-      else
-        html = this._originalHTML.replace(/\{\{[ \t]*value[ \t]*\}\}/igm, this._record)
+    if (html != null) {
+      if (this._record != null) {
+        if (typeof this._record === 'object')
+          html = this._replaceEach(html, this._record)
+        else
+          html = this._originalHTML.replace(/\{\{[ \t]*value[ \t]*\}\}/igm, this._record)
+      }
+      this.innerHTML = html.replace(/\{\{[^}]*\}\}/igm, '')
     }
-    this.innerHTML = html.replace(/\{\{[^}]*\}\}/igm, '')
   }
 
   _replaceEach (html, record) {
