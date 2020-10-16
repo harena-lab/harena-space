@@ -8,6 +8,7 @@ class DCCVisual extends DCCBase {
     this._presentationReady = false
     this._pendingHide = false
     this.selectListener = this.selectListener.bind(this)
+    this.mouseoverListener = this.mouseoverListener.bind(this)
   }
 
   /*
@@ -50,6 +51,7 @@ class DCCVisual extends DCCBase {
     presentation.style.cursor = 'pointer'
     presentation.dccid = this.id
     presentation.addEventListener('click', listener.selectListener)
+    presentation.addEventListener('mouseover', listener.mouseoverListener)
   }
 
   hide () {
@@ -101,6 +103,7 @@ class DCCVisual extends DCCBase {
 
   _editPresentation (presentation, listener) {
     presentation.removeEventListener('click', listener.selectListener)
+    presentation.removeEventListener('mouseover', listener.mouseoverListener)
     presentation.style.cursor = 'default'
     // check for a DCC inside a DCC
     if (presentation.tagName.toLowerCase().startsWith('dcc-')) { presentation.edit() } else {
@@ -128,6 +131,48 @@ class DCCVisual extends DCCBase {
     MessageBus.ext.publish('control/element/' + this.id + '/selected')
   }
 
+  mouseoverListener (event) {
+    this._editControls(this._presentation)
+  }
+
+  _editControls(presentation) {
+    this._editControlsPresentation(presentation)
+  }
+
+  _editControlsPresentation(presentation) {
+    let templateHTML = `
+      <style>
+        .controls {
+          position: absolute;
+          left: 0px;
+          top: 0px;
+          width: {width}px;
+          height: {height}px;
+          background: rgba(0, 0, 0, 0.1);
+        }
+      </style>
+      <div class="controls"></div>`
+
+    // check for a DCC inside a DCC
+    if (presentation.tagName.toLowerCase().startsWith('dcc-')) {
+      presentation._editControls(presentation._presentation) }
+    else {
+      const rect = presentation.getBoundingClientRect()
+      console.log('=== presentation')
+      console.log(presentation)
+      templateHTML = templateHTML.replace(/\{left\}/gm, rect.left)
+                                 .replace(/\{top\}/gm, rect.top)
+                                 .replace(/\{width\}/gm, rect.width)
+                                 .replace(/\{height\}/gm, rect.height)
+      console.log('=== template')
+      console.log(templateHTML)
+      const template = document.createElement('template')
+      template.innerHTML = templateHTML
+      presentation.appendChild(template.content.cloneNode(true))
+      // presentation.style.border = DCCVisual.selectedBorderStyle
+    }
+  }
+
   currentPresentation () {
     return (this._presentation) ? this._presentation : null
   }
@@ -147,7 +192,7 @@ class DCCMultiVisual extends DCCVisual {
     super._storePresentation(presentation)
     if (presentation != null) {
       this._presentationSet.push(
-        new PresentationDCC(presentation, this.id, role, presentationId))
+        new PresentationDCC(presentation, this.id, role, presentationId, this))
     }
   }
 
@@ -177,7 +222,7 @@ class DCCMultiVisual extends DCCVisual {
   }
 
   edit (role) {
-    for (const pr of this._presentationSet) {
+    for (let pr of this._presentationSet) {
       if ((pr._param == null && role == null) ||
              (pr._param != null && pr._param.role == role)) {
         this._editedPresentation = pr
@@ -198,25 +243,41 @@ class DCCMultiVisual extends DCCVisual {
     return (this._editedPresentation)
       ? this._editedPresentation._presentation : null
   }
+
+  _editControls(presentation, role) {
+    const pres = this._presentationSet.find(
+      pr => ((pr._param == null && role == null) ||
+             (pr._param != null && pr._param.role == role)))
+    if (pres != null)
+      this._editControlsPresentation(pres._presentation)
+  }
+
 }
 
 // manages individual in multiple visual DCCs
 class PresentationDCC {
-  constructor (presentation, id, role, presentationId) {
+  constructor (presentation, id, role, presentationId, owner) {
     this._presentation = presentation
     this._id = id
     this._param = null
+    this._owner = owner
     if (role != null || presentationId != null) {
       this._param = {}
       this._param.role = role
       this._param.presentationId = presentationId
     }
     this.selectListener = this.selectListener.bind(this)
+    this.mouseoverListener = this.mouseoverListener.bind(this)
   }
 
   selectListener () {
     MessageBus.ext.publish(
       'control/element/' + this._id + '/selected', this._param)
+  }
+
+  mouseoverListener (event) {
+    this._owner._editControls(this._presentation, 
+      (this._param != null && this._param.role != null) ? this._param.role : null)
   }
 }
 

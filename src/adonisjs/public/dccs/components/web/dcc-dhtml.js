@@ -4,6 +4,8 @@
 class DCCDHTML extends DCCBase {
   connectedCallback () {
     this._originalHTML = this.innerHTML
+    console.log('=== original HTML')
+    console.log(this._originalHTML)
     this.recordUpdate = this.recordUpdate.bind(this)
     super.connectedCallback()
     this._renderHTML()
@@ -76,9 +78,12 @@ class DCCDHTML extends DCCBase {
   }
 
   recordUpdate (topic, message) {
+<<<<<<< Updated upstream
     // console.log('=== record update')
     // console.log(topic)
     // console.log(message)
+=======
+>>>>>>> Stashed changes
     this._record = ((message.body)
       ? ((message.body.value) ? message.body.value : message.body)
       : ((message.value) ? message.value : message))
@@ -88,10 +93,13 @@ class DCCDHTML extends DCCBase {
 
   async connectionReady (id, topic) {
     super.connectionReady (id, topic)
+<<<<<<< Updated upstream
     // console.log('=== ready')
     // console.log(topic)
     // console.log(id)
     // console.log(this._connections)
+=======
+>>>>>>> Stashed changes
     if (topic == 'data/record/retrieve' || topic == 'service/request/get') {
       const response = await this.request('retrieve', null, id)
       this.recordUpdate(topic, response)
