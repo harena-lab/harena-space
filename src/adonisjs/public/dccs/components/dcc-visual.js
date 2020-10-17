@@ -162,7 +162,8 @@ class DCCVisual extends DCCBase {
     if (DCCVisual._editPanel == null) {
       // check for a DCC inside a DCC
       if (presentation.tagName.toLowerCase().startsWith('dcc-')) {
-        presentation._editControls(presentation._presentation) }
+        presentation._editControls(
+          presentation._presentation, presentation.selectListener) }
       else {
         const elementRect = presentation.getBoundingClientRect()
         let rect = {
@@ -340,12 +341,12 @@ class DCCMultiVisual extends DCCVisual {
       ? this._editedPresentation._presentation : null
   }
 
-  _editControls(presentation, role) {
+  _editControls (presentation, listener, role) {
     const pres = this._presentationSet.find(
       pr => ((pr._param == null && role == null) ||
              (pr._param != null && pr._param.role == role)))
     if (pres != null)
-      this._editControlsPresentation(pres._presentation, pres)
+      this._editControlsPresentation(pres._presentation, pres.selectListener)
   }
 
   /*
@@ -362,6 +363,10 @@ class DCCMultiVisual extends DCCVisual {
 // manages individual in multiple visual DCCs
 class PresentationDCC {
   constructor (presentation, id, role, presentationId, owner) {
+    console.log('=== presentation dcc')
+    console.log(id)
+    console.log(role)
+    console.log(presentationId)
     this._presentation = presentation
     this._id = id
     this._param = null
@@ -377,12 +382,15 @@ class PresentationDCC {
   }
 
   selectListener () {
+    console.log('=== trigger')
+    console.log(this._id)
+    console.log(this._param)
     MessageBus.ext.publish(
       'control/element/' + this._id + '/selected', this._param)
   }
 
   mouseoverListener (event) {
-    this._owner._editControls(this._presentation, 
+    this._owner._editControls(this._presentation, this.selectListener,
       (this._param != null && this._param.role != null) ? this._param.role : null)
   }
 

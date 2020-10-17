@@ -714,8 +714,13 @@ class AuthorManager {
 
   elementSelected (topic, message) {
     const dccId = MessageBus.extractLevel(topic, 3)
+    console.log('=== level 3')
+    console.log(dccId)
 
     this._collectEditableDCCs()
+
+    console.log('=== editable DCCs')
+    console.log(this._editableDCCs)
 
     const elSeq = parseInt(dccId.substring(3))
     let el = -1
@@ -731,6 +736,10 @@ class AuthorManager {
             : this._editableDCCs[dccId];
          */
       let dcc = this._editableDCCs[dccId]
+
+      console.log('=== dcc to edit')
+      console.log(dcc)
+
       const element = this._knots[this._knotSelected].content[el]
       /*
          console.log("=== element properties");
