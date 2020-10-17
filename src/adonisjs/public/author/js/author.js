@@ -122,9 +122,6 @@ class AuthorManager {
          this._caseLoad(authorState.caseId);
       */
 
-    console.log('=== case id')
-    console.log(caseid)
-
     if (caseid != null) { this._caseLoad(caseid) }
 
     /*
@@ -291,8 +288,6 @@ class AuthorManager {
   }
 
   async _compile (caseSource) {
-    console.log('*** case source')
-    console.log(caseSource)
     this._compiledCase =
          await Translator.instance.compileMarkdown(Basic.service.currentCaseId,
            caseSource)

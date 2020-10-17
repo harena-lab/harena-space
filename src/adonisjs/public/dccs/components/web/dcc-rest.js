@@ -136,9 +136,6 @@ class DCCRest extends DCCBase {
   }
 
   async notify (topic, message) {
-    console.log('=== message received')
-    console.log(topic)
-    console.log(message)
     if (message.role) {
       let parameters = {}
       let par = this._extractParameters(message)

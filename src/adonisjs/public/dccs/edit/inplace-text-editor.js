@@ -19,7 +19,7 @@ class EditDCCText extends EditDCC {
   }
 
   _buildEditor (dcc) {
-    InlineEditor.create(dcc, {extraPlugins: [_harenaCustomUploadAdapterPlugin]} )
+    ClassicEditor.create(dcc, {extraPlugins: [_harenaCustomUploadAdapterPlugin]} )
       .then( editor => {
         window.editor = editor;
         this._editor = editor;
