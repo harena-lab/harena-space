@@ -87,7 +87,6 @@
             <dcc-rest id="harena-category-cases" bind="harena-category-cases"></dcc-rest>
             <dcc-dhtml id="harena-dhtml-cases" connect="harena-category-cases:service/request/get:retrieve">
               {{@foreach . cases}}
-              <dcc-button label="Hello" xstyle="test"></dcc-button>
               <div id="b{{cases.id}}" class="row draft-author-case-container">
                 <div class="col draft-case-title">{{cases.title}}</div>
                 <div class="d-flex justify-content-end buttons-container">

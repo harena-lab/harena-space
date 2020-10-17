@@ -10,7 +10,7 @@ class AuthorManager {
     this.start = this.start.bind(this)
     MessageBus.ext.externalized = false
     MessageBus.page = new MessageBus(false)
-    MessageBus.int.subscribe('web/dhtml/record/updated', this.start)
+    // MessageBus.int.subscribe('web/dhtml/record/updated', this.start)
     Basic.service.host = this
 
     Translator.instance.authoringRender = true
@@ -121,6 +121,10 @@ class AuthorManager {
       } else
          this._caseLoad(authorState.caseId);
       */
+
+    console.log('=== case id')
+    console.log(caseid)
+
     if (caseid != null) { this._caseLoad(caseid) }
 
     /*
@@ -273,8 +277,13 @@ class AuthorManager {
     */
   async _caseLoad (caseId) {
     Basic.service.currentCaseId = caseId
+    /*
     const caseObj = await MessageBus.ext.request(
       'data/case/' + Basic.service.currentCaseId + '/get')
+    */
+
+    const caseObj = await MessageBus.ext.request(
+      'service/request/get', {caseId: caseId})
 
     this._currentCaseTitle = caseObj.message.title
     await this._compile(caseObj.message.source)
@@ -282,6 +291,8 @@ class AuthorManager {
   }
 
   async _compile (caseSource) {
+    console.log('*** case source')
+    console.log(caseSource)
     this._compiledCase =
          await Translator.instance.compileMarkdown(Basic.service.currentCaseId,
            caseSource)

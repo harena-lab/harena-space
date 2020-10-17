@@ -98,12 +98,13 @@
   <script src="js/author.js"></script>
 </head>
 
-<body>
+<body onload="AuthorManager.author.start()">
   <!-- Login/logout header -->
   <dcc-include src="/author/partials/header.html"></dcc-include>
   <!-- Start of settings modal -->
-  <dcc-rest id="harena-case" bind="harena-case"></dcc-rest>
-  <dcc-dhtml id="dhtml-case" connect="harena-case:service/request/get:retrieve">
+  <dcc-rest id="harena-case" bind="harena-case" subscribe="service/request/get:retrieve"></dcc-rest>
+  <!-- <dcc-dhtml id="dhtml-case" connect="harena-case:service/request/get:retrieve"> -->
+  <dcc-dhtml id="dhtml-case">
     <div class="modal fade" id="settings-modal" tabindex="-1" role="dialog" aria-labelledby="settings-modal" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">

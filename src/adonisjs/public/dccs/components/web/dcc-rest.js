@@ -36,9 +36,6 @@ class DCCRest extends DCCBase {
   }
 
   async restRequest(method, parameters) {
-    // console.log('=== rest request parameters')
-    // console.log(parameters)
-
     let result = null
 
     if (this._setup.environment)
@@ -139,6 +136,9 @@ class DCCRest extends DCCBase {
   }
 
   async notify (topic, message) {
+    console.log('=== message received')
+    console.log(topic)
+    console.log(message)
     if (message.role) {
       let parameters = {}
       let par = this._extractParameters(message)
@@ -147,7 +147,7 @@ class DCCRest extends DCCBase {
       else
         parameters = par
       // this.restRequest(message.role.toLowerCase(), parameters)
-      this.serviceRequest('service/request/' + message.role.toLowerCase(), parameters)
+      this.serviceRequest(topic, parameters)
     }
   }
 
@@ -155,7 +155,7 @@ class DCCRest extends DCCBase {
     return (message == null)
              ? {}
              : ((message.body)
-               ? ((message.body.value) ? message.body.value : message)
+               ? ((message.body.value) ? message.body.value : message.body)
                : ((message.value) ? message.value : message))
   }
 
