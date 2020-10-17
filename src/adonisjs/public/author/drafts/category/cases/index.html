@@ -86,6 +86,7 @@
           <div id="case-boxes" class="container-fluid h-100 scroll-y draft-scroll-container">
             <dcc-rest id="harena-category-cases" bind="harena-category-cases"></dcc-rest>
             <dcc-dhtml id="harena-dhtml-cases" connect="harena-category-cases:service/request/get:retrieve">
+              {{@foreach . cases}}
               <dcc-button label="Hello" xstyle="test"></dcc-button>
               <div id="b{{cases.id}}" class="row draft-author-case-container">
                 <div class="col draft-case-title">{{cases.title}}</div>
@@ -96,6 +97,7 @@
                   <div id="d{{cases.id}}" class="col author-panel-button">DELETE</div>
                 </div>
               </div>
+              {{@endfor}}
               <end-dcc></end-dcc>
             </dcc-dhtml>
           </div>

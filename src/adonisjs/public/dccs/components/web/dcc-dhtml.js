@@ -2,34 +2,15 @@
   *****************/
 
 class DCCDHTML extends DCCBase {
-  connectedCallback () {
-    /*
-    const undefinedOptions = this.querySelectorAll(':not(:defined)')
-
-    const promises = [...undefinedOptions].map(element => {
-      return customElements.whenDefined(element.localName)
-    })
-    await Promise.all(promises)
-    */
-
+  constructor() {
+    super()
     this.recordUpdate = this.recordUpdate.bind(this)
-    /*
-    this._originalHTML = this.innerHTML
-    console.log('=== original HTML')
-    console.log(this._originalHTML)
-    */
-    super.connectedCallback()
-    // this._renderHTML()
   }
 
   endReached() {
-    this._originalHTML = this.innerHTML.replace(/<end-dcc[^>]*>[^<]*<\/end-dcc>/igm, '')
-
+    this._originalHTML = this.innerHTML.replace(
+      /<end-dcc[^>]*>[^<]*<\/end-dcc>/igm, '')
     this._renderHTML()
-    console.log('=== pre original HTML')
-    console.log(this.innerHTML)
-    console.log('=== pre original HTML')
-    console.log(this.textContent)
   }
 
   _renderHTML () {
