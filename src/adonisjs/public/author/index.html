@@ -69,6 +69,7 @@
   <script src="../dccs/trigger-dcc.js"></script>
   <script src="../dccs/property-dcc.js"></script>
   <script src="../dccs/connect-dcc.js"></script>
+  <script src="../dccs/end-dcc.js"></script>
 
   <script src="../dccs/components/data/dcc-model.js"></script>
   <script src="../dccs/components/data/dcc-submit.js"></script>
@@ -103,8 +104,7 @@
   <dcc-include src="/author/partials/header.html"></dcc-include>
   <!-- Start of settings modal -->
   <dcc-rest id="harena-case" bind="harena-case" subscribe="service/request/get:retrieve"></dcc-rest>
-  <!-- <dcc-dhtml id="dhtml-case" connect="harena-case:service/request/get:retrieve"> -->
-  <dcc-dhtml id="dhtml-case">
+  <dcc-dhtml id="dhtml-case" subscribe="service/response/get/harena-case:update">
     <div class="modal fade" id="settings-modal" tabindex="-1" role="dialog" aria-labelledby="settings-modal" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -184,6 +184,7 @@
         </div>
       </div>
     </div>
+    <end-dcc></end-dcc>
   </dcc-dhtml>
   <!-- End of settings modal -->
 
