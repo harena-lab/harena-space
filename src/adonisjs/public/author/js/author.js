@@ -714,19 +714,23 @@ class AuthorManager {
 
   elementSelected (topic, message) {
     const dccId = MessageBus.extractLevel(topic, 3)
+    /*
     console.log('=== level 3')
     console.log(dccId)
+    */
 
     this._collectEditableDCCs()
 
+    /*
     console.log('=== editable DCCs')
     console.log(this._editableDCCs)
 
     console.log('=== knot selected')
     console.log(this._knots[this._knotSelected].content)
+    */
 
     const elSeq = parseInt(dccId.substring(3))
-    console.log(elSeq)
+    // console.log(elSeq)
     let el = -1
     for (el = 0; el < this._knots[this._knotSelected].content.length &&
                    this._knots[this._knotSelected].content[el].seq != elSeq; el++)
@@ -741,8 +745,10 @@ class AuthorManager {
          */
       let dcc = this._editableDCCs[dccId]
 
+      /*
       console.log('=== dcc to edit')
       console.log(dcc)
+      */
 
       const element = this._knots[this._knotSelected].content[el]
       /*

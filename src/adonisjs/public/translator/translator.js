@@ -1041,6 +1041,14 @@ class Translator {
         this._contextSelectHTMLAdjust)
       html = html.replace(Translator.contextHTML.close,
         this._contextSelectHTMLAdjust)
+
+      html = html.replace(/<video><source src="(https:\/\/drive.google.com[\w/]*\/[^/]+\/)([^/]*)"><\/video>/igm,
+                          '<figure class="media"><iframe src="$1preview" width="560" height="315"></iframe><oembed url="$1$2"></oembed></figure>')
+                 .replace(/<video><source src="([^"]+)"><\/video>/igm,
+                          '<figure class="media"><oembed url="$1"></oembed></figure>')
+
+      console.log('=== html from markdown')
+      console.log(html)
     }
     return html
   }
@@ -1052,6 +1060,7 @@ class Translator {
     html = html.replace(/<p><dcc-markdown id='dcc(\d+)'( author)?><\/p>/igm,
       "<dcc-markdown id='dcc$1'$2>")
       .replace(/<p><\/dcc-markdown><\/p>/igm, '</dcc-markdown>')
+
     return html
   }
 
