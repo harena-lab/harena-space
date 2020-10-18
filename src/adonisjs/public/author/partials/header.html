@@ -1,0 +1,17 @@
+<div class="fixed-top">
+  <nav>
+      <div class="d-flex overflow-hidden pt-3 mr-4" id="harena-header">
+      <span class="inline-flex mr-4 rounded-md shadow ml-auto bg-white" id="header-login">
+        <div id="login-block" >
+          <a href="/login" class="inline-flex items-center px-4 py-2 text-base bg-white">
+            Log in
+          </a>
+        </div>
+        <div id="logout-block" style="display: none;">
+          <dcc-rest id="harena-logout" bind="harena-logout"></dcc-rest>
+          <dcc-submit xstyle="inline-flex items-center px-4 py-2 text-base bg-white text-primary" id="logout-button" bind="submit-logout" label="Logout" connect="harena-logout:service/request/post:submit">
+        </div>
+      </span>
+    </div>
+  </nav>
+</div>

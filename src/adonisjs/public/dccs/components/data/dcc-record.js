@@ -10,8 +10,8 @@ class DCCRecord extends DCCBase {
     this.store = this.store.bind(this)
     this.retrieve = this.retrieve.bind(this)
     this.retrieveC = this.retrieveC.bind(this)
-    MessageBus.int.subscribeWithConnection('data/record/store', this.store)
-    MessageBus.int.subscribeWithConnection('data/record/retrieve', this.retrieve)
+    MessageBus.int.subscribe('data/record/store', this.store)
+    MessageBus.int.subscribe('data/record/retrieve', this.retrieve)
     if (this.hasAttribute('id'))
       MessageBus.page.provides(this.id, 'data/record/retrieve', this.retrieveC)
   }
@@ -68,5 +68,5 @@ class DCCRecord extends DCCBase {
 }
 
 (function () {
-  DCC.component('dcc-record', DCCRecord)
+  DCC.webComponent('dcc-record', DCCRecord)
 })()

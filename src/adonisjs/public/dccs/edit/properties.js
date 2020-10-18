@@ -26,12 +26,22 @@ class Properties {
   }
 
   editElementProperties (knots, knotid, el, dcc, role) {
+    /*
+    console.log('=== edit element properties')
+    console.log(knots)
+    console.log(knotid)
+    console.log(el)
+    console.log(dcc)
+    console.log(role)
+    */
     this._knots = knots
     const knotContent = knots[knotid].content
     const element = dcc.currentPresentation()
     const obj = knotContent[el]
+    // console.log(obj)
     this._item = -1
-    if (role != null && role.startsWith('item_')) { this._item = parseInt(role.substring(5)) - 1 }
+    if (role != null && role.startsWith('item_')) {
+      this._item = parseInt(role.substring(5)) - 1 }
     if (this._knotOriginalTitle) { delete this._knotOriginalTitle }
     const editp = this.editProperties(obj, role)
     // <TODO> Provisory
@@ -44,10 +54,12 @@ class Properties {
           this._editor = new EditDCCPlain(obj, dcc, editp.htmls)
           break
         case 'text':
+          /*
           console.log('=== vou editar aqui')
           console.log(knotContent)
           console.log(el)
           console.log(dcc)
+          */
           this._editor = new EditDCCText(knotContent, el, dcc, svg)
           break
         case 'shortStr':
@@ -157,6 +169,10 @@ class Properties {
   }
 
   _typeProfile (obj) {
+    /*
+    console.log('=== type profile')
+    console.log(obj)
+    */
     let profile = Properties.elProfiles[obj.type]
     if (Properties.hasSubtypes.includes(obj.type)) {
       profile = profile[
@@ -259,8 +275,10 @@ class Properties {
     const sufix = (details) ? '_d' : '_s'
     const panel = (details)
       ? this._panelDetails : this._editor.editorExtended
+    /*
     console.log('=== obj properties')
     console.log(this._objProperties)
+    */
     if (this._objProperties) {
       const profile = this._typeProfile(this._objProperties)
       let seq = 1
@@ -269,8 +287,10 @@ class Properties {
           if (!profile[p].composite) {
             if (details ||
                       (profile[p].visual && profile[p].visual.includes('panel'))) {
+              /*
               console.log('=== obj properties')
               console.log(this._objProperties)
+              */
               const objProperty =
                         await this._applySingleProperty(profile[p],
                           seq, panel, sufix, this._objProperties[p])
@@ -281,8 +301,10 @@ class Properties {
             for (const s in profile[p].composite) {
               if (details || (profile[p].visual &&
                          profile[p].visual.includes('panel'))) {
+                /*
                 console.log('=== obj properties')
                 console.log(this._objProperties)
+                */
                 const objProperty = await this._applySingleProperty(
                   profile[p].composite[s], seq, panel, sufix,
                   this._objProperties[p])

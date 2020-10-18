@@ -138,7 +138,7 @@ module.exports = {
     cookieOptions: {
       httpOnly: false,
       sameSite: true,
-      path: '/',
+      path: '/space',
       maxAge: 7200
     }
   }

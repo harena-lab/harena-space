@@ -78,7 +78,7 @@ class DCCAuthorServer {
         'Content-Type': 'application/json'
       }
     }
-    const response = await fetch('../templates/templates.json', header)
+    const response = await fetch(Basic.service.rootPath + 'templates/templates.json', header)
     const jsonResponse = await response.json()
     const busResponse = []
     for (const t in jsonResponse) {
@@ -131,44 +131,44 @@ class DCCAuthorServer {
           * Read the case before writing to preserve the fields not maintained
           * by the authoring environment.
           ********************************************************************/
+      /*
+        const headerRead = {
+          async: true,
+          crossDomain: true,
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + DCCCommonServer.token
+          }
+        }
 
-      // const headerRead = {
-      //   async: true,
-      //   crossDomain: true,
-      //   method: 'GET',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //     Authorization: 'Bearer ' + DCCCommonServer.token
-      //   }
-      // }
-      //
-      // const responseRead =
-      //       await fetch(DCCCommonServer.managerAddressAPI + 'case/' + caseId,
-      //         headerRead)
-      //
-      // const jsonRead = await responseRead.json()
+        const responseRead =
+              await fetch(DCCCommonServer.managerAddressAPI + 'case/' + caseId,
+                headerRead)
 
-      // write the case
+        const jsonRead = await responseRead.json()
 
-      // const header = {
-      //   async: true,
-      //   crossDomain: true,
-      //   method: 'PUT',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //     Authorization: 'Bearer ' + DCCCommonServer.token
-      //   },
-      //   body: JSON.stringify({
-      //     title: document.getElementById('case_title').value,
-      //     description: document.getElementById('description').value,
-      //     language: document.getElementById('language').value,
-      //     domain: document.getElementById('domain').value,
-      //     specialty: document.getElementById('specialty').value,
-      //     keywords: document.getElementById('keywords').value,
-      //     source: message.source
-      //   })
-      // }
+        write the case
 
+        const header = {
+          async: true,
+          crossDomain: true,
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + DCCCommonServer.token
+          },
+          body: JSON.stringify({
+            title: document.getElementById('case_title').value,
+            description: document.getElementById('description').value,
+            language: document.getElementById('language').value,
+            domain: document.getElementById('domain').value,
+            specialty: document.getElementById('specialty').value,
+            keywords: document.getElementById('keywords').value,
+            source: message.source
+          })
+        }
+      */
       const config = {
         method: 'PUT',
         url: DCCCommonServer.managerAddressAPI + 'case/' + caseId,
@@ -184,13 +184,11 @@ class DCCAuthorServer {
           complexity: document.getElementById('complexity').value,
           source: message.source
         },
-        headers: {
-          Authorization: 'Bearer ' + DCCCommonServer.token
-        }
+        withCredentials: true
       }
       console.log('=== save request')
       console.log(DCCCommonServer.managerAddressAPI + 'case/' + caseId)
-      axios(config)
+      await axios(config)
         .then(function (response) {
           // return response.redirect('/')
           console.log('=== save response')
@@ -202,10 +200,11 @@ class DCCAuthorServer {
           console.log('=== save error')
           console.log(error)
         })
-      // const response =
-      //       await fetch(DCCCommonServer.managerAddressAPI + 'case/' + caseId, header)
-      // console.log(response)
-      // const jsonResponse = await response.json()
+      /* const response =
+            await fetch(DCCCommonServer.managerAddressAPI + 'case/' + caseId, header)
+        console.log(response)
+        const jsonResponse = await response.json()
+      */
     } else {
       console.log('save failed else')
     }
@@ -213,6 +212,7 @@ class DCCAuthorServer {
 
   async deleteCase (topic, message) {
     const caseId = MessageBus.extractLevel(topic, 3)
+    /*
     const header = {
       async: true,
       crossDomain: true,
@@ -222,6 +222,7 @@ class DCCAuthorServer {
         Authorization: 'Bearer ' + DCCCommonServer.token
       }
     }
+
     const response =
          await fetch(DCCCommonServer.managerAddressAPI + 'case/' + caseId, header)
     console.log('=== delete case')
@@ -229,6 +230,24 @@ class DCCAuthorServer {
     const jsonResponse = await response.json()
     MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
       jsonResponse)
+    */
+    const config = {
+      method: 'DELETE',
+      url: DCCCommonServer.managerAddressAPI + 'case/' + caseId,
+      withCredentials: true
+    }
+    await axios(config)
+      .then(function (response) {
+        // return response.redirect('/')
+        console.log('=== delete case')
+        console.log(response)
+        MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
+          response)
+      })
+      .catch(function (error) {
+        console.log('=== delete case error')
+        console.log(error)
+      })
   }
 
   async loadModule (topic, message) {
@@ -258,7 +277,7 @@ class DCCAuthorServer {
         'Content-Type': 'text/plain'
       }
     }
-    const response = await fetch('../templates/' + templatePath +
+    const response = await fetch(Basic.service.rootPath + 'templates/' + templatePath +
                                    '.md', header)
     const textResponse = await response.text()
     MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
@@ -294,6 +313,7 @@ class DCCAuthorServer {
     const data = new FormData()
     if (message.file) { data.append('file', message.file) } else if (message.b64) { data.append('image', this.b64toBlob(message.b64)) }
     data.append('caseId', message.caseid)
+    /*
     const header = {
       async: true,
       crossDomain: true,
@@ -308,9 +328,6 @@ class DCCAuthorServer {
       mimeType: 'multipart/form-data',
       body: data
     }
-    // console.log("file: " + message.file);
-    // console.log("caseid: " + message.caseid);
-    // console.log(header);
     const response =
          await fetch(DCCCommonServer.managerAddressAPI + 'artifact', header)
     console.log('=== response image upload')
@@ -319,6 +336,29 @@ class DCCAuthorServer {
     console.log(jsonResponse)
     MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
       jsonResponse.filename)
+    */
+    const config = {
+      method: 'POST',
+      url: DCCCommonServer.managerAddressAPI + 'artifact',
+      data: data,
+      withCredentials: true
+    }
+    await axios(config)
+      .then(function (response) {
+        // return response.redirect('/')
+        console.log('=== response image upload')
+        console.log(response)
+        MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
+          response.data.filename)
+      })
+      .catch(function (error) {
+        console.log('=== delete case error')
+        console.log(error)
+      })
+    /* console.log("file: " + message.file);
+    // console.log("caseid: " + message.caseid);
+    console.log(header);
+    */
   }
 
   /*

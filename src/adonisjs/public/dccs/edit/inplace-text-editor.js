@@ -15,11 +15,25 @@ class EditDCCText extends EditDCC {
     this._element = el
     this._editDCC = dcc
     this._textChanged = false
+    this.handleConfirm = this.handleConfirm.bind(this)
+    MessageBus.int.subscribe('control/editor/edit/confirm', this.handleConfirm)
+    this.handleCancel = this.handleCancel.bind(this)
+    MessageBus.int.subscribe('control/editor/edit/cancel', this.handleCancel)
     this._buildEditor(dcc.currentPresentation())
   }
 
   _buildEditor (dcc) {
-    InlineEditor.create(dcc, {extraPlugins: [_harenaCustomUploadAdapterPlugin]} )
+    ClassicEditor.create(dcc,
+      {
+        extraPlugins: [_harenaCustomUploadAdapterPlugin],
+        mediaEmbed: {
+          extraProviders: [{
+             name: 'extraProvider',
+             url: /(^https:\/\/drive.google.com[\w/]*\/[^/]+\/)[^/]*/,
+             html: match => '<iframe src="' + match[1] + 'preview" width="560" height="315"></iframe>'
+           }]
+         }
+      } )
       .then( editor => {
         window.editor = editor;
         this._editor = editor;
@@ -58,7 +72,15 @@ class EditDCCText extends EditDCC {
       this._knotContent.splice(this._element + o, 0, objSet[o])
     }
 
-    // MessageBus.ext.publish('control/knot/update')
+  }
+
+  handleConfirm() {
+    this._updateTranslated()
+    MessageBus.ext.publish('control/knot/update')
+  }
+
+  handleCancel() {
+    MessageBus.ext.publish('control/knot/update')
   }
 
   async _translateContent (editContent, blockquote) {
@@ -71,9 +93,11 @@ class EditDCCText extends EditDCC {
                '<img$1title="$4"$3>')
       .replace(/<img([^>]*)><figcaption>([^<]*)<\/figcaption>/igm,
                '<img$1 title="$2">')
-      .replace(/<figure[^>]*style="width:([^;]*);">[^<]*<img([^>]*)><\/figure>/igm,
+      .replace(/<figure class="image[^>]*style="width:([^;]*);">[^<]*<img([^>]*)><\/figure>/igm,
                '<figure><img$2 width="$1" height="$1"></figure>')
-      .replace(/<figure[^>]*>[^<]*<img([^>]*)><\/figure>/igm, '<img$1>')
+      .replace(/<figure class="image[^>]*>[^<]*<img([^>]*)><\/figure>/igm, '<img$1>')
+      .replace(/<figure class="media"><oembed url="([^"]+)"><\/oembed><\/figure>/igm,
+               '<video><source src="$1"></video>')
       .replace(/<figure[^>]*>/igm, '')
       .replace(/<\/figure[^>]*>/igm, '')
 
@@ -83,6 +107,12 @@ class EditDCCText extends EditDCC {
 
     mdTranslate = mdTranslate
       .replace(/!\[null\]\(([^")]+)"([^"]+)"\)/igm, '![$2]($1"$2")')
+
+    // removing extra lines
+    mdTranslate = mdTranslate
+      .replace(/[ \t\n\r\f]*(\!\[[^\]]*\]\([^)]*\))[ \t\n\r\f]*/igm, '\n\n$1\n\n')
+      .replace(/[ \t\n\r\f]*(<video><source src="[^"]+"><\/video>)[ \t\n\r\f]*/igm, '\n\n$1\n\n')
+      .trim()
 
     console.log('=== html')
     console.log(mdTranslate)

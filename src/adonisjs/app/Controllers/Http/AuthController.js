@@ -5,11 +5,13 @@
 
 const Env = use('Env')
 const axios = use('axios')
+
 // var FormData = use('form-data')
 
 const { validate } = use('Validator')
 
 // const User = use('App/Models/User')
+
 
 class AuthController {
   create ({ view }) {
@@ -17,6 +19,8 @@ class AuthController {
   }
 
   async login ({ view, request, response }) {
+
+
     try {
       const params = request.all()
 
@@ -39,11 +43,13 @@ class AuthController {
       //   return response.redirect('back')
       // }
 
-      const endpointUrl = Env.get('HARENA_MANAGER_URL') + '/api/v1/auth/login'
+      // const endpointUrl = Env.get('HARENA_MANAGER_URL') + '/api/v1/auth/login'
+      const endpointUrl = Env.get('HARENA_MANAGER_URL') + '/api/v2/auth/login'
 
       var config = {
         method: 'post',
         url: endpointUrl,
+        withCredentials: true,
         data: {
           email: params.email,
           password: params.password
@@ -55,9 +61,34 @@ class AuthController {
           const responseUser = endpointResponse.data
           // session.put('username', responseUser.username)
           // await auth.loginViaId(responseUser.id)
-          response.cookie('token', responseUser.token)
-
-          return response.route('index')
+          // console.log(endpointResponse)
+          // console.log('jar')
+          // console.log(cookieJar)
+          // responseUser.cookie('adonis-remember-token', )
+          console.log(responseUser)
+          request.cookie('adonis-remember-token')
+          console.log('You are just dumb ==========================================================================')
+          console.log(request.cookie('adonis-remember-token'))
+// response.cookie('token', responseUser.token)
+          // const endpointUrl2 = Env.get('HARENA_MANAGER_URL') + '/api/v1/case/04ef4c85-1823-4955-81a5-2da6e30ca7a1'
+          //
+          // var config2 = {
+          //   method: 'get',
+          //   url: endpointUrl2,
+          //   withCredentials: true,
+          //       jar: cookieJar, // tough.CookieJar or boolean
+          // }
+          //
+          // await axios(config2)
+          //   .then(async function (endpointResponse2) {
+          //     console.log(endpointResponse2)
+          //   }).catch(function (error) {
+          //     // console.log(error)
+          //   })
+          //
+          // // response.cookie('token', responseUser.token)
+          //
+          // return response.route('index')
         })
         .catch(function (error) {
           console.log(error)
@@ -69,20 +100,18 @@ class AuthController {
 
   async logout ({ response, request }) {
     try {
-      const endpointUrl = Env.get('HARENA_MANAGER_URL') + '/api/v1/auth/logout'
+      const endpointUrl = Env.get('HARENA_MANAGER_URL') + '/api/v2/auth/logout'
 
       var config = {
         method: 'post',
         url: endpointUrl,
-        headers: {
-          Authorization: 'Bearer ' + request.cookie('token')
-        }
+        withCredentials: true
       }
 
       await axios(config)
         .then(async function (endpointResponse) {
-          response.clearCookie('token')
-
+          response.clearCookie('adonis-remember-token')
+          response.clearCookie('adonis-session')
           return response.route('index')
         })
         .catch(function (error) {

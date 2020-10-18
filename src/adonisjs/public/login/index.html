@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+<title> Log in | Harena </title>
+
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
+  <!-- @include('layout.template-min') -->
+  <link rel="stylesheet" href="../lib/fontawesome-5-10-1/css/all.min.css">
+  <link rel="stylesheet" href="../lib/bootstrap-4.4.1/css/bootstrap.min.css">
+
+  <link rel="stylesheet" href="../infra/css/common-player.css">
+  <link rel="stylesheet" href="../infra/css/common-author.css">
+
+  <script src="../lib/axios-0.20.0/axios.min.js"></script>
+
+  <script src="../config/config.js"></script>
+  <script src="../infra/bus.js"></script>
+  <script src="../infra/basic.js"></script>
+
+  <script src="../infra/dcc-common-server-proxy.js"></script>
+  <script src="../infra/dcc-common-server-address.js"></script>
+  <script src="../author/js/dcc-author-server-proxy.js "></script>
+
+  <script src="../dccs/dcc.js"></script>
+  <script src="../dccs/components/dcc-base.js "></script>
+  <script src="../dccs/components/dcc-visual.js "></script>
+  <script src="../dccs/components/dcc-block.js"></script>
+  <script src="../dccs/components/dcc-button.js"></script>
+  <script src="../dccs/components/data/dcc-submit.js"></script>
+  <script src="../dccs/components/web/dcc-rest.js"></script>
+  <script src="../dccs/components/dcc-notice-input.js"></script>
+
+  <script src="../infra/dcc-basic.js"></script>
+  <script src="../infra/dcc-rest-proxy.js"></script>
+
+</head>
+<body>
+  <!-- Create a section to place page content -->
+  <main role="main">
+    <div class="d-flex flex-column vh-100 vw-100 hidden-overflow">
+
+      <!-- Create breadcrumbs -->
+        <dcc-include src="../author/partials/header.html"> </dcc-include>
+      <!-- End of breadcrumbs -->
+
+      <div class="h-100 w-100 registration-padding">
+        <div>
+          <!--<p id="template-title"></p> -->
+        </div>
+
+        <h1>Log in</h1>
+
+
+        <div class="row">
+
+          <dcc-rest id="harena-login" bind="harena-login"></dcc-rest>
+          <form>
+            <div class="overflow-hidden bg-white shadow sm:rounded-lg">
+              <div class="px-4 py-5 sm:p-6">
+
+                  <div class="form-group">
+                    <div class="mt-1 sm:mt-0 sm:col-span-2">
+                      <div class="max-w-xs rounded-md shadow-sm">
+                        <input
+                          class="block w-full transition duration-150 ease-in-out form-input sm:text-sm sm:leading-5"
+                          id="email"
+                          name="email"
+                          type="text"
+                          placeholder="Enter email"
+                          autofocus>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Password Field -->
+                  <div class="form-group">
+                    <div class="mt-1 sm:mt-0 sm:col-span-2">
+                      <div class="max-w-xs rounded-md shadow-sm">
+                        <input
+                          class="block w-full transition duration-150 ease-in-out form-input sm:text-sm sm:leading-5"
+                          id="password"
+                          name="password"
+                          type="password"
+                          placeholder="Enter password"
+                          autofocus>
+                      </div>
+                    </div>
+                  </div>
+                <dcc-submit bind="submit-login" label="Login" connect="harena-login:service/request/post:submit">
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+  <!-- end of div /.container -->
+</body>
+</html>
