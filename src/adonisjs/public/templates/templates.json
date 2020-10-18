@@ -10,6 +10,12 @@
     "path": "simple/case/quiz_sequence",
     "icon": "simple/case/quiz_sequence.png",
     "scope": "case"},
+ "Desafio POCUS":
+   {"questId": "desafio-pocus",
+    "description": "Um desafio Point of Care Ultrasound (POCUS).",
+    "path": "simple/case/pocus_challenge",
+    "icon": "simple/case/pocus_challenge.png",
+    "scope": "case"},
  "Desafio de Eletrocardiograma":
    {"questId": "desafio-de-eletrocardiograma",
     "description": "Um desafio de eletrocardiograma.",
