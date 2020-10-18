@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Authoring Environment</title>
+
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
+
+    <link rel="stylesheet" href="../../../css/author.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script src="../../../../lib/jquery-3-4-1/jquery-3.4.1.slim.min.js"></script>
+    <script src="../../../../lib/popper-1-15-0/popper.min.js"></script>
+    <script src="../../../../lib/bootstrap-4.4.1/js/bootstrap.min.js"></script>
+
+    <script src="../../../../config/config.js"></script>
+    <script src="../../../../infra/bus.js"></script>
+    <script src="../../../../infra/basic.js"></script>
+    <script src="../../../../infra/dcc-common-server-proxy.js"></script>
+    <script src="../../../../infra/dcc-common-server-address.js"></script>
+    <script src="../../../../infra/token-validator.js"></script>
+
+    <script src="../../../../dccs/dcc.js"></script>
+    <script src="../../../../dccs/components/dcc-base.js "></script>
+    <script src="../../../../dccs/components/dcc-visual.js "></script>
+    <script src="../../../../dccs/components/dcc-block.js"></script>
+    <script src="../../../../dccs/components/dcc-button.js"></script>
+    <script src="../../../../dccs/components/dcc-notice-input.js"></script>
+
+    <script src="../../../../dccs/components/web/dcc-rest.js"></script>
+    <script src="../../../../dccs/components/web/dcc-include.js"></script>
+    <script src="../../../../dccs/components/web/dcc-dhtml.js"></script>
+
+    <script src="../../../../dccs/components/data/dcc-submit.js"></script>
+    <script src="../../../../dccs/components/data/dcc-model.js"></script>
+    <script src="../../../../dccs/components/data/dcc-record.js"></script>
+
+    <script src="../../../../dccs/subscribe-dcc.js"></script>
+    <script src="../../../../dccs/trigger-dcc.js"></script>
+    <script src="../../../../dccs/property-dcc.js"></script>
+    <script src="../../../../dccs/connect-dcc.js"></script>
+
+    <script src="../../../../infra/dcc-rest-proxy.js"></script>
+    <script src="../../../../infra/dcc-basic.js"></script>
+
+
+    <link rel="stylesheet" href="../../../../lib/fontawesome-5-10-1/css/all.min.css">
+    <link rel="stylesheet" href="../../../../lib/bootstrap-4.4.1/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="../../../../dccs/css/dccs.css">
+    <link rel="stylesheet" href="../../../../dccs/css/properties.css">
+    <link rel="stylesheet" href="../../../../infra/css/common-player.css">
+    <link rel="stylesheet" href="../../../../infra/css/common-author.css">
+
+    <script src="../../../js/dcc-author-server-proxy.js"></script>
+
+    <script src="../../../js/create.js"></script>
+    <script src="../../../js/template-case.js"></script>
+    <script src="../../../js/draft.js"></script>
+  </head>
+
+
+  <body>
+    <!-- Login/logout header -->
+    <dcc-include src="/author/partials/header.html"></dcc-include>
+    <!-- Create a section to place page content -->
+    <main role="main">
+      <div class="d-flex flex-column vh-100 vw-100 draft-author-padding hidden-overflow">
+
+        <!-- Create breadcrumbs -->
+        <div class="mr-auto author-breadcrumb" >
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="/author/home">Home</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Drafts</li>
+            </ol>
+          </nav>
+        </div>
+        <!-- End of breadcrumbs -->
+
+        <div class="h-100 w-100 draft-content-padding">
+          <div class="home-text mb-3">
+            <p>Continue editing your drafted cases.</p>
+          </div>
+          <div id="case-boxes" class="container-fluid h-100 scroll-y draft-scroll-container">
+            <dcc-rest id="harena-quest-cases" bind="harena-quest-cases"></dcc-rest>
+            <dcc-dhtml id="harena-dhtml-cases" connect="harena-quest-cases:service/request/get:retrieve">
+              {{@foreach . cases}}
+              <div id="b{{cases.id}}" class="row draft-author-case-container">
+                <div class="col draft-case-title">{{cases.title}}</div>
+                <div class="d-flex justify-content-end buttons-container">
+                  <div id="e{{cases.id}}" class="col author-panel-button"
+                    onclick="window.location.href='/author?id={{cases.id}}'">EDIT</div>
+                  <div id="p{{cases.id}}" class="col author-panel-button">PREVIEW</div>
+                  <div id="d{{cases.id}}" class="col author-panel-button">DELETE</div>
+                </div>
+              </div>
+              {{@endfor}}
+            </dcc-dhtml>
+            <!-- @each(c in cases)
+            <div id="b{{c.id}}" class="row draft-author-case-container">
+              <div class="col draft-case-title">{{c.title}}</div>
+              <div class="d-flex justify-content-end buttons-container">
+                <div id="e{{c.id}}" class="col author-panel-button" onclick="window.location.href='/author?id={{c.id}}'">EDIT</div>
+                <div id="p{{c.id}}" class="col author-panel-button">PREVIEW</div>
+                <div id="d{{c.id}}" class="col author-panel-button">DELETE</div>
+              </div>
+            </div>
+            @endeach -->
+
+          </div>
+        </div>
+      </div>
+    </main>
+    <!-- end of div /.container -->
+
+  </body>
+
+</html>

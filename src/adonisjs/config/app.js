@@ -236,7 +236,7 @@ module.exports = {
   cookie: {
     httpOnly: true,
     sameSite: false,
-    path: '/',
+    path: '/space',
     maxAge: 7200
   }
 }

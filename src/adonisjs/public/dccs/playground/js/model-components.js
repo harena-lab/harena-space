@@ -2,7 +2,7 @@
 
 (function () {
 
-DCC.contentComponent(
+DCC.component(
   'xkcd',
   'dcc-model',
   {
@@ -22,7 +22,7 @@ DCC.contentComponent(
   }
 )
 
-DCC.contentComponent(
+DCC.component(
   'coronavirus',
   'dcc-model',
   {
@@ -39,7 +39,7 @@ DCC.contentComponent(
   }
 )
 
-DCC.contentComponent(
+DCC.component(
   'user',
   'dcc-model',
   {

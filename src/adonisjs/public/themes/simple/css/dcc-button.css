@@ -22,15 +22,18 @@
 
 @media (orientation: landscape) {
    .dcc-button-theme {
-      height: 80px;
-      width: 800px;
+      width: 93%;
+      padding-top: 7px;
+      padding-bottom: 7px;
    }
 }
 
 @media (orientation: portrait) {
    .dcc-button-theme {
-      height: 140px;
-      width: 300px;
+      /* height: 140px; */
+      width: 90%;
+      padding-top: 7px;
+      padding-bottom: 7px;
    }
 }
 

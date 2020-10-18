@@ -7,9 +7,10 @@
 
 class AuthorManager {
   constructor () {
+    this.start = this.start.bind(this)
     MessageBus.ext.externalized = false
     MessageBus.page = new MessageBus(false)
-
+    // MessageBus.int.subscribe('web/dhtml/record/updated', this.start)
     Basic.service.host = this
 
     Translator.instance.authoringRender = true
@@ -120,6 +121,7 @@ class AuthorManager {
       } else
          this._caseLoad(authorState.caseId);
       */
+
     if (caseid != null) { this._caseLoad(caseid) }
 
     /*
@@ -201,7 +203,7 @@ class AuthorManager {
           break
         case 'control/leave/drafts': await this.caseSave()
         // window.location.href = 'draft.html';
-          window.location.href = '/drafts/quests'
+          window.location.href = '/author/drafts/category'
           break
       }
     }
@@ -272,8 +274,13 @@ class AuthorManager {
     */
   async _caseLoad (caseId) {
     Basic.service.currentCaseId = caseId
+    /*
     const caseObj = await MessageBus.ext.request(
       'data/case/' + Basic.service.currentCaseId + '/get')
+    */
+
+    const caseObj = await MessageBus.ext.request(
+      'service/request/get', {caseId: caseId})
 
     this._currentCaseTitle = caseObj.message.title
     await this._compile(caseObj.message.source)
@@ -288,11 +295,12 @@ class AuthorManager {
     this._knots = this._compiledCase.knots
 
     // Basic.service.currentThemeFamily = this._compiledCase.theme
+
     Basic.service.composedThemeFamily(this._compiledCase.theme)
     if (this._compiledCase.title) { this._currentCaseTitle = this._compiledCase.title }
 
-    console.log('***** COMPILED CASE *****')
-    console.log(this._compiledCase)
+    // console.log('***** COMPILED CASE *****')
+    // console.log(this._compiledCase)
   }
 
   async _showCase (selectKnot) {
@@ -706,10 +714,23 @@ class AuthorManager {
 
   elementSelected (topic, message) {
     const dccId = MessageBus.extractLevel(topic, 3)
+    /*
+    console.log('=== level 3')
+    console.log(dccId)
+    */
 
     this._collectEditableDCCs()
 
+    /*
+    console.log('=== editable DCCs')
+    console.log(this._editableDCCs)
+
+    console.log('=== knot selected')
+    console.log(this._knots[this._knotSelected].content)
+    */
+
     const elSeq = parseInt(dccId.substring(3))
+    // console.log(elSeq)
     let el = -1
     for (el = 0; el < this._knots[this._knotSelected].content.length &&
                    this._knots[this._knotSelected].content[el].seq != elSeq; el++)
@@ -723,6 +744,12 @@ class AuthorManager {
             : this._editableDCCs[dccId];
          */
       let dcc = this._editableDCCs[dccId]
+
+      /*
+      console.log('=== dcc to edit')
+      console.log(dcc)
+      */
+
       const element = this._knots[this._knotSelected].content[el]
       /*
          console.log("=== element properties");

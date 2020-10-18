@@ -2,16 +2,16 @@
   ************/
 
 class DCC {
-  static contentComponent(name, companion, content) {
-    DCC.components[companion.toLowerCase() + "." + name.toLowerCase()] = content;
-  }
-
-  static component(name, dccClass) {
+  static webComponent(name, dccClass) {
     customElements.define(name, dccClass)
   }
 
-  static retrieve(name, companion) {
-    return DCC.components[companion.toLowerCase() + "." + name.toLowerCase()];
+  static component(name, bind, setup) {
+    DCC.components[bind.toLowerCase() + "." + name.toLowerCase()] = setup;
+  }
+
+  static retrieve(name, bind) {
+    return DCC.components[bind.toLowerCase() + "." + name.toLowerCase()];
   }
 
   // <FUTURE>

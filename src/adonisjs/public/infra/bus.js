@@ -6,6 +6,8 @@ class MessageBus {
   constructor (externalized) {
     this._externalized = externalized
     this._listeners = []
+    this._providers = {}
+    this._connections = {}
   }
 
   get externalized () {
@@ -93,23 +95,6 @@ class MessageBus {
     }
   }
 
-  /*
-   connect(callback) {
-      const connection = MessageBus._connection;
-      this.subscribe("connection/" + connection, callback);
-      MessageBus._connection++;
-      return connection;
-   }
-
-   disconnect(connection, callback) {
-      this.unsubscribe("connection/" + connection, callback);
-   }
-
-   send(connection, message) {
-      this.publish("connection/" + connection, message);
-   }
-   */
-
   /* Checks if this topic has a subscriber */
   hasSubscriber (topic) {
     let hasSub = false
@@ -170,8 +155,77 @@ class MessageBus {
     }
   }
 
+  /* Connection-oriented communication
+   ***********************************/
+
+  provides (id, topic, service) {
+    // console.log('=== provides')
+    // console.log(id)
+    // console.log(topic)
+    let status = true
+    const key = id + ':' + topic
+    // console.log(key)
+    // console.log(this._connections[key])
+    if (this._providers[key])
+      status = false
+    else {
+      this._providers[key] = service
+      if (this._connections[key] != null) {
+        for (let c of this._connections[key])
+          c.connectionReady(id, topic)
+        delete this._connections[key]
+      }
+    }
+  }
+
+  connect (id, topic, callback) {
+    // console.log('=== connect')
+    // console.log(id)
+    // console.log(topic)
+    const key = id + ':' + topic
+    // console.log(key)
+    // console.log(this._providers[key])
+    if (this._providers[key])
+      callback.connectionReady(id, topic)
+    else
+      if (this._connections[key])
+        this._connections[key].push(callback)
+      else
+        this._connections[key] = [callback]
+  }
+
+  async requestC (id, topic, message) {
+    // console.log('=== request C:')
+    // console.log(id)
+    // console.log(topic)
+    // console.log(message)
+    // console.log(this._providers)
+    let response = null
+    const key = id + ':' + topic
+    if (this._providers[key] != null)
+      response = await this._providers[key](topic, message)
+    return response
+  }
+
+  /*
+   connect(callback) {
+      const connection = MessageBus._connection;
+      this.subscribe("connection/" + connection, callback);
+      MessageBus._connection++;
+      return connection;
+   }
+
+   disconnect(connection, callback) {
+      this.unsubscribe("connection/" + connection, callback);
+   }
+
+   send(connection, message) {
+      this.publish("connection/" + connection, message);
+   }
+   */
+
   /* Message analysis services
-      *************************/
+     *************************/
 
   static _convertRegExp (filter) {
     return new RegExp(filter.replace(/\//g, '\\/')
@@ -212,4 +266,5 @@ class MessageBus {
 
   MessageBus.int = new MessageBus(false)
   MessageBus.ext = new MessageBus(false)
+  MessageBus.page = new MessageBus(false)
 })()
