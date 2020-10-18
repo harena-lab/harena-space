@@ -59,6 +59,7 @@ class HarenaPlugin extends Plugin {
             // Callback executed once the image is clicked.
             view.on( 'execute', () => {
                 console.log('=== Harena confirm')
+                MessageBus.int.publish('control/editor/edit/confirm')
             } );
 
             return view;

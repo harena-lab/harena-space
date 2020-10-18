@@ -15,11 +15,23 @@ class EditDCCText extends EditDCC {
     this._element = el
     this._editDCC = dcc
     this._textChanged = false
+    this.handleConfirm = this.handleConfirm.bind(this)
+    MessageBus.int.subscribe('control/editor/edit/confirm', this.handleConfirm)
     this._buildEditor(dcc.currentPresentation())
   }
 
   _buildEditor (dcc) {
-    ClassicEditor.create(dcc, {extraPlugins: [_harenaCustomUploadAdapterPlugin]} )
+    ClassicEditor.create(dcc,
+      {
+        extraPlugins: [_harenaCustomUploadAdapterPlugin],
+        mediaEmbed: {
+          extraProviders: [{
+             name: 'extraProvider',
+             url: /(^https:\/\/drive.google.com[\w/]*\/[^/]+\/)[^/]*/,
+             html: match => '<iframe src="' + match[1] + 'preview" width="640" height="480"></iframe>'
+           }]
+         }
+      } )
       .then( editor => {
         window.editor = editor;
         this._editor = editor;
@@ -58,7 +70,12 @@ class EditDCCText extends EditDCC {
       this._knotContent.splice(this._element + o, 0, objSet[o])
     }
 
-    // MessageBus.ext.publish('control/knot/update')
+  }
+
+  handleConfirm() {
+    this._updateTranslated()
+    MessageBus.ext.publish('control/knot/update')
+    this._removeEditor()
   }
 
   async _translateContent (editContent, blockquote) {
