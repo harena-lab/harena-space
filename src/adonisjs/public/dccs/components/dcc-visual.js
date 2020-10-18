@@ -44,7 +44,9 @@ class DCCVisual extends DCCBase {
   }
 
   checkActivateAuthor () {
-    if (this.author && this._presentation) { this._activateAuthorPresentation(this._presentation, this) }
+    if (this.author && this._presentation) {
+      this._activateAuthorPresentation(this._presentation, this)
+    }
   }
 
   // author trigger attachment
@@ -52,6 +54,10 @@ class DCCVisual extends DCCBase {
     presentation.style.cursor = 'pointer'
     presentation.dccid = this.id
     // presentation.addEventListener('click', listener.selectListener)
+    /*
+    console.log('=== mouse over')
+    console.log(listener)
+    */
     presentation.addEventListener('mouseover', listener.mouseoverListener)
   }
 
@@ -108,7 +114,9 @@ class DCCVisual extends DCCBase {
     // presentation.removeEventListener('mouseout', listener.mouseoutListener)
     presentation.style.cursor = 'default'
     // check for a DCC inside a DCC
-    if (presentation.tagName.toLowerCase().startsWith('dcc-')) { presentation.edit() } else {
+    if (presentation.tagName.toLowerCase().startsWith('dcc-')) {
+      presentation.edit()
+    } else {
       if (presentation.style.border) { this._originalBorderStyle = presentation.style.border }
       presentation.style.border = DCCVisual.selectedBorderStyle
     }
@@ -120,7 +128,9 @@ class DCCVisual extends DCCBase {
 
   _reactivateAuthorPresentation (presentation, listener) {
     // check for a DCC inside a DCC
-    if (presentation.tagName.toLowerCase().startsWith('dcc-')) { presentation.reactivateAuthor() } else {
+    if (presentation.tagName.toLowerCase().startsWith('dcc-'))
+      { presentation.reactivateAuthor() }
+    else {
       if (this._originalBorderStyle) {
         presentation.style.border = this._originalBorderStyle
         delete this._originalBorderStyle
@@ -161,10 +171,15 @@ class DCCVisual extends DCCBase {
       this.mouseoutListener()
     if (DCCVisual._editPanel == null) {
       // check for a DCC inside a DCC
+      /*
       if (presentation.tagName.toLowerCase().startsWith('dcc-')) {
         presentation._editControls(
-          presentation._presentation, presentation.selectListener) }
+          presentation._presentation, this.selectListener) }
       else {
+      */
+        if (presentation.tagName.toLowerCase().includes('dcc-'))
+          presentation = presentation._presentation
+
         const elementRect = presentation.getBoundingClientRect()
         let rect = {
           top: -elementRect.height,
@@ -223,7 +238,7 @@ class DCCVisual extends DCCBase {
         DCCVisual._editPanel.panel.addEventListener('mouseout', this.mouseoutListener)
         // presentation.style.border = DCCVisual.selectedBorderStyle
       }
-    }
+    // }
   }
 
   /*
@@ -287,6 +302,11 @@ class DCCMultiVisual extends DCCVisual {
 
   _storePresentation (presentation, role, presentationId) {
     super._storePresentation(presentation)
+    /*
+    console.log('=== store presentation')
+    console.log(this.id)
+    console.log(presentationId)
+    */
     if (presentation != null) {
       this._presentationSet.push(
         new PresentationDCC(presentation, this.id, role, presentationId, this))
@@ -295,7 +315,12 @@ class DCCMultiVisual extends DCCVisual {
 
   checkActivateAuthor () {
     if (this.author) {
-      for (const pr of this._presentationSet) { this._activateAuthorPresentation(pr._presentation, pr) }
+      /*
+      console.log('=== check activate')
+      console.log(this._presentationSet)
+      */
+      for (const pr of this._presentationSet) {
+        this._activateAuthorPresentation(pr._presentation, pr) }
     }
   }
 
@@ -342,9 +367,15 @@ class DCCMultiVisual extends DCCVisual {
   }
 
   _editControls (presentation, listener, role) {
+    console.log('=== edit controls')
+    console.log(presentation)
+    console.log(listener)
+    console.log(role)
     const pres = this._presentationSet.find(
       pr => ((pr._param == null && role == null) ||
              (pr._param != null && pr._param.role == role)))
+    console.log('=== presentation set')
+    console.log(pres)
     if (pres != null)
       this._editControlsPresentation(pres._presentation, pres.selectListener)
   }
@@ -363,10 +394,12 @@ class DCCMultiVisual extends DCCVisual {
 // manages individual in multiple visual DCCs
 class PresentationDCC {
   constructor (presentation, id, role, presentationId, owner) {
+    /*
     console.log('=== presentation dcc')
     console.log(id)
     console.log(role)
     console.log(presentationId)
+    */
     this._presentation = presentation
     this._id = id
     this._param = null
@@ -382,14 +415,21 @@ class PresentationDCC {
   }
 
   selectListener () {
+    /*
     console.log('=== trigger')
     console.log(this._id)
     console.log(this._param)
+    */
     MessageBus.ext.publish(
       'control/element/' + this._id + '/selected', this._param)
   }
 
   mouseoverListener (event) {
+    /*
+    console.log('=== mol')
+    console.log(this._presentation)
+    console.log(this)
+    */
     this._owner._editControls(this._presentation, this.selectListener,
       (this._param != null && this._param.role != null) ? this._param.role : null)
   }
@@ -406,9 +446,9 @@ class PresentationDCC {
   DCCVisual.selectedBorderStyle = '3px dashed #000000'
 
   DCCVisual.templateHTML =
-`<div style="position: relative; top: {top}px; left: {left}px; width: {width}px; height: {height}px; background: rgba(0, 0, 0, 0.3); text-align: left" id="panel-presentation">
-  <div id="bt-edit-element" style="width: 16px; height: 16px; display: inline-block; margin-right: 10px; color: cyan">{edit}</div>
-  <div id="bt-expand-element" style="width: 16px; height: 16px; display: inline-block; color: cyan">{expand}</div>
+`<div style="position: relative; top: {top}px; left: {left}px; width: {width}px; height: {height}px; background: rgba(0, 0, 0, 0.5); text-align: left" id="panel-presentation">
+  <div id="bt-edit-element" style="width: 16px; height: 16px; display: inline-block; margin-right: 10px; color: white">{edit}</div>
+  <div id="bt-expand-element" style="width: 16px; height: 16px; display: inline-block; color: white">{expand}</div>
 </div>`
 
   // pen https://fontawesome.com/icons/pen?style=solid

@@ -722,7 +722,11 @@ class AuthorManager {
     console.log('=== editable DCCs')
     console.log(this._editableDCCs)
 
+    console.log('=== knot selected')
+    console.log(this._knots[this._knotSelected].content)
+
     const elSeq = parseInt(dccId.substring(3))
+    console.log(elSeq)
     let el = -1
     for (el = 0; el < this._knots[this._knotSelected].content.length &&
                    this._knots[this._knotSelected].content[el].seq != elSeq; el++)
