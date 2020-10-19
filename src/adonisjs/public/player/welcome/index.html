@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Welcome player | Harena </title>
+
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
+
+    <link rel="stylesheet" href="../../start/css/main.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script src="../../lib/jquery-3-4-1/jquery-3.4.1.slim.min.js"></script>
+    <script src="../../lib/popper-1-15-0/popper.min.js"></script>
+    <script src="../../lib/bootstrap-4.4.1/js/bootstrap.min.js"></script>
+
+    <script src="../../config/config.js"></script>
+    <script src="../../infra/bus.js"></script>
+    <script src="../../infra/basic.js"></script>
+    <script src="../../infra/dcc-common-server-proxy.js"></script>
+    <script src="../../infra/dcc-common-server-address.js"></script>
+    <script src="../../infra/token-validator.js"></script>
+
+    <script src="../../dccs/dcc.js"></script>
+    <script src="../../dccs/components/dcc-base.js "></script>
+    <script src="../../dccs/components/dcc-visual.js "></script>
+    <script src="../../dccs/components/dcc-block.js"></script>
+    <script src="../../dccs/components/dcc-button.js"></script>
+    <script src="../../dccs/components/dcc-notice-input.js"></script>
+
+    <script src="../../dccs/components/web/dcc-rest.js"></script>
+    <script src="../../dccs/components/web/dcc-include.js"></script>
+    <script src="../../dccs/components/web/dcc-dhtml.js"></script>
+
+    <script src="../../dccs/components/data/dcc-submit.js"></script>
+    <script src="../../dccs/components/data/dcc-model.js"></script>
+    <script src="../../dccs/components/data/dcc-record.js"></script>
+
+    <script src="../../dccs/subscribe-dcc.js"></script>
+    <script src="../../dccs/trigger-dcc.js"></script>
+    <script src="../../dccs/property-dcc.js"></script>
+    <script src="../../dccs/connect-dcc.js"></script>
+    <script src="../../dccs/end-dcc.js"></script>
+
+
+    <script src="../../infra/dcc-rest-proxy.js"></script>
+    <script src="../../infra/dcc-basic.js"></script>
+
+
+    <link rel="stylesheet" href="../../lib/fontawesome-5-10-1/css/all.min.css">
+    <link rel="stylesheet" href="../../lib/bootstrap-4.4.1/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="../../dccs/css/dccs.css">
+    <link rel="stylesheet" href="../../dccs/css/properties.css">
+    <link rel="stylesheet" href="../../infra/css/common-player.css">
+    <link rel="stylesheet" href="../../infra/css/common-author.css">
+
+    <script src="../../author/js/dcc-author-server-proxy.js"></script>
+
+    <script src="../../author/js/create.js"></script>
+    <script src="../../author/js/template-case.js"></script>
+    <script src="../../author/js/draft.js"></script>
+
+  </head>
+
+  <body>
+    <dcc-include src="../../author/partials/header.html"> </dcc-include>
+
+    <main role="main">
+
+      <div class="d-flex flex-column vh-100 vw-100 scroll-y player-welcome-padding">
+
+        <div class="container-fluid w-100 player-welcome-content">
+          <div class="d-flex justify-content-center">
+            <h1> Welcome Player </h1>
+          </div>
+          <div class="">
+            <h4 class="pb-5 text-center"> Choose a quest to start. </h4>
+
+          </div>
+
+          <div class="container-fluid">
+            <dcc-rest id="harena-player-quests" bind="harena-player-quests" subscribe="service/request/get:retrieve"></dcc-rest>
+            <div class="row row-cols-sm-2 row-cols-md-3 row-cols-lg-5 justify-content-center">
+              <dcc-dhtml class="d-flex" connect="harena-player-quests:service/request/get:retrieve">
+                {{@foreach . q}}
+                <div class="col text-center player-quest-container">
+                  <a href="/player/quest?id={{q.id}}&color={{q.color}}">
+                    <img class="player-quest-icon"  src="{{q.url}}">
+                    <h5 class="text-center text-wrap player-quest-icon-txt" style="color:{{q.color}} !important;">{{q.title}}</h5>
+                  </a>
+
+                </div>
+                {{@endfor}}
+                <end-dcc></end-dcc>
+              </dcc-dhtml>
+
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+  </body>
+
+
+</html>
