@@ -216,4 +216,50 @@
       }
     }
   )
+
+  DCC.component(
+    'harena-user-cases',
+    'dcc-rest',
+    {
+      environment: {
+        'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api
+      },
+      oas: {
+        paths: {
+          '{url-manager}/user/cases': {
+            'get': {
+              operationId: 'user-cases',
+              parameters: [
+                {name: 'url-manager',
+                 in: 'path'}
+              ]
+            }
+          }
+        }
+      }
+    }
+  )
+
+  DCC.component(
+    'harena-player-quests',
+    'dcc-rest',
+    {
+      environment: {
+        'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api
+      },
+      oas: {
+        paths: {
+          '{url-manager}/player/quests': {
+            'get': {
+              operationId: 'quests',
+              parameters: [
+                {name: 'url-manager',
+                 in: 'path'}
+              ]
+            }
+          }
+        }
+      }
+    }
+  )
 })()

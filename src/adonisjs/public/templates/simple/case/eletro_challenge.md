@@ -12,7 +12,7 @@ Write here the **lead-in**.
 
 * Submit -> Flow.Next
 
-# Feedback (detailed)
+# Feedback (detailed, end)
 
 {{feedback
 Enter Feedback.
@@ -36,5 +36,5 @@ ___ Data ___
   * evidence: http://purl.org/versum/evidence/
 * templates:
   * categories:
-    * detailed: simple/knot/description
-    * marker_quiz: simple/knot/quiz_question
+    * input: simple/knot/question_open
+    * detailed: simple/knot/feedback
