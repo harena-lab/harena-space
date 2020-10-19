@@ -446,8 +446,8 @@ class PresentationDCC {
   DCCVisual.selectedBorderStyle = '3px dashed #000000'
 
   DCCVisual.templateHTML =
-`<div style="position: relative; top: {top}px; left: {left}px; width: {width}px; height: {height}px; background: rgba(0, 0, 0, 0.5); text-align: left" id="panel-presentation">
-  <div id="bt-edit-element" style="width: 16px; height: 16px; display: inline-block; margin-right: 10px; color: white">{edit}</div>
+`<div style="position: relative; top: {top}px; left: {left}px; width: 75px; height: 50px; background: rgba(0, 0, 0, 0.5); text-align: left" id="panel-presentation">
+  <div id="bt-edit-element" style="width: 16px; height: 16px; display: inline-block; margin-left: 10px; margin-right: 10px; color: white">{edit}</div>
   <div id="bt-expand-element" style="width: 16px; height: 16px; display: inline-block; color: white">{expand}</div>
 </div>`
 
