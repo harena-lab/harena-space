@@ -133,7 +133,7 @@ ClassicEditor.defaultConfig = {
 			'mediaEmbed',
 			'undo',
 			'redo',
-      '|',
+      '|',           // Harena customization
       'confirmEdit', // Harena customization
       'cancelEdit'   // Harena customization
 		]
