@@ -88,9 +88,15 @@
             <dcc-dhtml id="harena-dhtml-cases" connect="harena-category-cases:service/request/get:retrieve">
               {{@foreach . cases}}
               <div id="b{{cases.id}}" class="row draft-author-case-container">
-                <div class="col draft-case-title">{{cases.title}}</div>
-                <div class="d-flex justify-content-end buttons-container">
-                  <div id="e{{cases.id}}" class="col author-panel-button"
+                <div class="col draft-case-title">
+                  {{cases.title}}
+                  <div class="row">
+                    Test
+                  </div>
+                </div>
+
+                <div class="d-flex justify-content-end justify-content-center buttons-container">
+                  <div id="e{{cases.id}}" class="col author-panel-button "
                     onclick="window.location.href='/author?id={{cases.id}}'">EDIT</div>
                   <div id="p{{cases.id}}" class="col author-panel-button">PREVIEW</div>
                   <div id="d{{cases.id}}" class="col author-panel-button">DELETE</div>

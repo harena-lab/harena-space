@@ -95,9 +95,10 @@ class DCCCommonServer {
    */
 
   async casesList (topic, message) {
+    const clearance = new URL(document.location).searchParams.get('clearance')
     const config = {
       method: 'GET',
-      url: DCCCommonServer.managerAddressAPI + 'user/cases',
+      url: DCCCommonServer.managerAddressAPI + 'user/cases?clearance=' + clearance,
       withCredentials: true
     }
     /*
