@@ -4,13 +4,20 @@
  */
 
 // The editor creator to use.
-import ClassicEditorBase from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import DecoupledEditorBase from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
 
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
+import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
+import FontSize from '@ckeditor/ckeditor5-font/src/fontsize';
+import FontFamily from '@ckeditor/ckeditor5-font/src/fontfamily';
+import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor';
+import FontBackgroundColor from '@ckeditor/ckeditor5-font/src/fontbackgroundcolor';
 import UploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
 import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
+import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
@@ -25,6 +32,7 @@ import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
 import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
+import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import List from '@ckeditor/ckeditor5-list/src/list';
 import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
@@ -47,7 +55,7 @@ import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
 import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
-export default class ClassicEditor extends ClassicEditorBase {}
+export default class DecoupledEditor extends DecoupledEditorBase {}
 
 // Harena customization
 class HarenaTablePlugin extends Plugin {
@@ -223,23 +231,31 @@ class HarenaPlugin extends Plugin {
 }
 
 // Plugins to include in the build.
-ClassicEditor.builtinPlugins = [
+DecoupledEditor.builtinPlugins = [
 	Essentials,
+	// Alignment,  -- Harena customization
+	// FontSize,   -- Harena customization
+	// FontFamily, -- Harena customization
+	// FontColor,  -- Harena customization
+	// FontBackgroundColor,  -- Harena customization
 	UploadAdapter,
 	Autoformat,
 	Bold,
 	Italic,
-	// BlockQuote,  -- Harena customization
+	// Strikethrough,  -- Harena customization
+	// Underline,      -- Harena customization
+  // BlockQuote,     -- Harena customization
 	CKFinder,
 	EasyImage,
-	// Heading,  -- Harena customization
+  // Heading,  -- Harena customization
 	Image,
 	ImageCaption,
 	ImageStyle,
   ImageResize, // Harena customization
 	ImageToolbar,
 	ImageUpload,
-	// Indent,  -- Harena customization
+	// Indent,       -- Harena customization
+	// IndentBlock,  -- Harena customization
 	Link,
 	List,
 	MediaEmbed,
@@ -253,24 +269,35 @@ ClassicEditor.builtinPlugins = [
 ];
 
 // Editor configuration.
-ClassicEditor.defaultConfig = {
+DecoupledEditor.defaultConfig = {
 	toolbar: {
 		items: [
-			// 'heading',  -- Harena customization
+      // 'heading',  -- Harena customization
+      // '|',
+			// 'fontfamily',
+			// 'fontsize',
+			// 'fontColor',
+			// 'fontBackgroundColor',
 			// '|',
 			'bold',
 			'italic',
-			'link',
-			'bulletedList',
+      'link',
+			// 'underline',  -- Harena customization
+			// 'strikethrough',
+			// '|',
+			// 'alignment',
+			// '|',
+      'bulletedList',
 			'numberedList',
 			'|',
-			// 'indent',
+			// 'indent',  -- Harena customization
 			// 'outdent',
 			// '|',
+      // 'blockQuote',
 			'imageUpload',
-			// 'blockQuote',  -- Harena customization
 			'insertTable',
 			'mediaEmbed',
+			'|',
 			'undo',
 			'redo',
       '|',           // Harena customization
@@ -279,20 +306,26 @@ ClassicEditor.defaultConfig = {
 		]
 	},
 	image: {
+		styles: [
+			'full',
+			'alignLeft',
+			'alignRight'
+		],
 		toolbar: [
-			// 'imageStyle:full',  -- Harena customization
-			// 'imageStyle:side',  -- Harena customization
-      // '|',                -- Harena customization
+			// 'imageStyle:alignLeft',   -- Harena customization
+			// 'imageStyle:full',        -- Harena customization
+			// 'imageStyle:alignRight',  -- Harena customization
+			// '|',
       'imageResize', // Harena customization
-			'|',
+      '|',
 			'imageTextAlternative'
 		]
 	},
 	table: {
 		contentToolbar: [
-			'tableColumnHarena',  // Harena customization
+      'tableColumnHarena',  // Harena customization
       'tableRowHarena'  // Harena customization
-			// 'mergeTableCells'  -- Harena customization
+      // 'mergeTableCells'  -- Harena customization
 		]
 	},
 	// This value must be kept in sync with the language defined in webpack.config.js.

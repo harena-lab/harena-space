@@ -140,6 +140,7 @@ class DCCVisual extends DCCBase {
   }
 
   selectListener (event) {
+    this._removeEditControls()
     MessageBus.ext.publish('control/element/' + this.id + '/selected')
   }
 
@@ -148,22 +149,19 @@ class DCCVisual extends DCCBase {
   }
 
   mouseoutListener (event) {
-    // event.target.parentNode.removeChild(event.target)
-    if (DCCVisual._editPanel != null) {
-      DCCVisual._editPanel.presentation.removeChild(DCCVisual._editPanel.panel)
-      DCCVisual._editPanel = null
-    }
+    this._removeEditControls()
   }
 
   _editControls(presentation, listener) {
     this._editControlsPresentation(presentation, listener)
   }
 
-  /*
   _removeEditControls(presentation) {
-    this._removeEditControlsPresentation(presentation)
+    if (DCCVisual._editPanel != null) {
+      DCCVisual._editPanel.presentation.removeChild(DCCVisual._editPanel.panel)
+      DCCVisual._editPanel = null
+    }
   }
-  */
 
   _editControlsPresentation(presentation, listener) {
     if (DCCVisual._editPanel != null &&
