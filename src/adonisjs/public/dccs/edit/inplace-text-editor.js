@@ -23,9 +23,13 @@ class EditDCCText extends EditDCC {
   }
 
   _buildEditor (dcc) {
-    ClassicEditor.create(dcc,
+    DecoupledEditor.create(dcc,
       {
         extraPlugins: [_harenaCustomUploadAdapterPlugin],
+        toolbar: {
+          isSticky: true,
+          viewportTopOffset : 0
+        },
         mediaEmbed: {
           extraProviders: [{
              name: 'extraProvider',
@@ -35,6 +39,9 @@ class EditDCCText extends EditDCC {
          }
       } )
       .then( editor => {
+        const toolbarContainer = document.querySelector('#toolbar-editor')
+        toolbarContainer.appendChild( editor.ui.view.toolbar.element );
+
         window.editor = editor;
         this._editor = editor;
         /*
@@ -53,6 +60,16 @@ class EditDCCText extends EditDCC {
       .catch( error => {
         console.error( 'There was a problem initializing the editor.', error );
     } );
+
+    /*
+    let stickyPanel = document.querySelector('.ck-sticky-panel')
+    console.log('===== sticky panel')
+    console.log(stickyPanel)
+    if (stickyPanel != null) {
+      stickyPanel.style.position = 'sticky'
+      stickyPanel.style.top = 0
+    }
+    */
   }
 
   async _updateTranslated () {
@@ -78,11 +95,17 @@ class EditDCCText extends EditDCC {
 
   handleConfirm() {
     this._updateTranslated()
+    this._removeToolbarPanel()
     MessageBus.ext.publish('control/knot/update')
   }
 
   handleCancel() {
+    this._removeToolbarPanel()
     MessageBus.ext.publish('control/knot/update')
+  }
+
+  _removeToolbarPanel() {
+    document.querySelector('#toolbar-editor').innerHTML = ''
   }
 
   async _translateContent (editContent, blockquote) {
