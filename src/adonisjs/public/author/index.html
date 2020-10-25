@@ -19,6 +19,7 @@
   <script src="../infra/basic.js"></script>
   <script src="../infra/dcc-common-server-proxy.js"></script>
   <script src="../infra/dcc-common-server-address.js"></script>
+  <script src="../infra/simple-page-tasks.js"></script>
   <script src="../infra/token-validator.js"></script>
 
   <link rel="stylesheet" href="../lib/fontawesome-5-10-1/css/all.min.css">
@@ -97,6 +98,10 @@
 </head>
 
 <body onload="AuthorManager.author.start()">
+  <div id="loading-page-container" class="d-flex flex-column justify-content-center align-items-center" style="position:absolute; top:50%; left:50%;">
+    <div class="spinner-border align-self-center" role="status" aria-hidden="true"></div>
+    <strong class="align-self-center">Loading...</strong>
+  </div>
   <!-- Login/logout header -->
   <dcc-include src="/author/partials/header.html"></dcc-include>
   <!-- Start of settings modal -->
@@ -170,21 +175,6 @@
                   <textarea class="form-control" id="keywords" name="keywords" aria-describedby="keywords-help">{{keywords}}</textarea>
                   <small id="keywords-help" class="form-text text-muted">Inform your keywords separated by semicolon.</small>
                 </div>
-                <div class="form-group">
-                  <h3>Case Visibility</h3>
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
-                    <label class="form-check-label" for="exampleRadios1">
-                      Private
-                    </label>
-                  </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2">
-                    <label class="form-check-label" for="exampleRadios2">
-                      All users from this university can play
-                    </label>
-                  </div>
-                </div>
 
               <input type="hidden" id="source" name="source" value="{{source}}">
               <button type="button" class="btn btn-secondary" id="btn-save-settings" data-toggle="modal" data-target="#settings-modal" >Save</button>
@@ -202,7 +192,7 @@
 
   <!-- Create a section to place page content -->
 
-  <main role="main">
+  <main role="main" class="invisible">
     <div id="main-panel"
          class="d-flex flex-column vh-100 vw-100 scroll-y index-boot-padding">
 

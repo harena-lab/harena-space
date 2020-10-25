@@ -8,6 +8,7 @@ class TemplateToCase {
   }
 
   async storeCase () {
+
     document.querySelector('#btn-submit-form').addEventListener('click',
       async function () {
         try {
