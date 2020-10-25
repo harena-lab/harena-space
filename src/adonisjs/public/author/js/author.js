@@ -284,7 +284,8 @@ class AuthorManager {
 
     this._currentCaseTitle = caseObj.message.title
     await this._compile(caseObj.message.source)
-    this._showCase()
+    await this._showCase()
+    MessageBus.ext.publish('control/case/ready')
   }
 
   async _compile (caseSource) {
