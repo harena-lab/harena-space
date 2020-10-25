@@ -159,6 +159,10 @@ class DCCButton extends DCCBlock {
   navigationBlocked () {
     this._active = true
   }
+
+  
+  // <TODO> provisory - deactivate button edit
+  _activateAuthorPresentation (presentation, listener) {}
 }
 
 (function () {

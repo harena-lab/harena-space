@@ -120,6 +120,9 @@ class DCCInputTyped extends DCCInput {
 
     this._presentationIsReady()
   }
+
+  // <TODO> provisory - deactivate button edit
+  _activateAuthorPresentation (presentation, listener) {}
 }
 
 (function () {
