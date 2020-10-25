@@ -60,6 +60,9 @@ class DCCDHTML extends DCCBase {
       if (record[r] != null && typeof record[r] === 'object')
         html = this._replaceFields(html, pr, record[r])
       else {
+        if(typeof record[r] === 'number') record[r] = record[r].toString()
+        // console.log(typeof record[r]);
+        // console.log(record[r]);
         const content = (record[r] == null) ? '' :
                           record[r].replace(/&/gm, '&amp;')
                                    .replace(/"/gm, '&quot;')
