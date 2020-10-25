@@ -37,6 +37,7 @@ class EditDCCText extends EditDCC {
       .then( editor => {
         window.editor = editor;
         this._editor = editor;
+        /*
         editor.editing.view.document.on( 'change:isFocused', ( evt, data, isFocused ) => {
           // console.log( `View document is focused: ${ isFocused }.` );
           if (!isFocused && this._textChanged) {
@@ -44,6 +45,7 @@ class EditDCCText extends EditDCC {
             this._updateTranslated()
           }
         } );
+        */
         editor.model.document.on( 'change:data', () => {
           this._textChanged = true
         } );
@@ -88,7 +90,7 @@ class EditDCCText extends EditDCC {
     console.log('=== content')
     console.log(editContent)
 
-    const htmlTranslate = editContent
+    let htmlTranslate = editContent
       .replace(/<img([^>]*)title="([^"]*)"([^>]*)><figcaption>([^<]*)<\/figcaption>/igm,
                '<img$1title="$4"$3>')
       .replace(/<img([^>]*)><figcaption>([^<]*)<\/figcaption>/igm,
@@ -100,6 +102,20 @@ class EditDCCText extends EditDCC {
                '<video><source src="$1"></video>')
       .replace(/<figure[^>]*>/igm, '')
       .replace(/<\/figure[^>]*>/igm, '')
+
+    if (htmlTranslate.includes('</table>')) {
+      let tables = htmlTranslate.split('</table>')
+      for (let tb in tables) {
+        if (tb < tables.length - 1 && !tables[tb].includes('</thead>')) {
+          tables[tb] = tables[tb].replace(/<tbody[^>]*>/im, '<thead>')
+          const frp = tables[tb].indexOf('</tr>')
+          tables[tb] = tables[tb].substring(0, frp).replace(/<td/igm, '<th')
+                                                   .replace(/<\/td>/igm, '</th>') +
+                       '</tr></thead>' + tables[tb].substring(frp + 5)
+        }
+      }
+      htmlTranslate = tables.join('</table>')
+    }
 
     let mt = new showdown.Converter()
     mt.setFlavor('github')

@@ -54,7 +54,7 @@ class AuthorCKEditor {
 
     let html = editor.getData();
 
-    const htmlTranslate = html
+    let htmlTranslate = html
       .replace(/<img([^>]*)title="([^"]*)"([^>]*)><figcaption>([^<]*)<\/figcaption>/igm,
                '<img$1title="$4"$3>')
       .replace(/<img([^>]*)><figcaption>([^<]*)<\/figcaption>/igm,
@@ -66,6 +66,21 @@ class AuthorCKEditor {
                '<video><source src="$1"></video>')
       .replace(/<figure[^>]*>/igm, '')
       .replace(/<\/figure[^>]*>/igm, '')
+
+    if (htmlTranslate.includes('</table>')) {
+      let tables = htmlTranslate.split('</table>')
+      console.log(tables)
+      for (let tb in tables) {
+        if (tb < tables.length - 1 && !tables[tb].includes('</thead>')) {
+          tables[tb] = tables[tb].replace(/<tbody[^>]*>/im, '<thead>')
+          const frp = tables[tb].indexOf('</tr>')
+          tables[tb] = tables[tb].substring(0, frp).replace(/<td/igm, '<th')
+                                                   .replace(/<\/td>/igm, '</th>') +
+                       '</tr></thead>' + tables[tb].substring(frp + 5)
+        }
+      }
+      htmlTranslate = tables.join('</table>')
+    }
 
     let mdTranslate = mt.makeMarkdown(htmlTranslate)
 

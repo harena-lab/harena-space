@@ -41,6 +41,7 @@ import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 
 // Harena customization
 import tableColumnIcon from '@ckeditor/ckeditor5-table/theme/icons/table-column.svg';
+import tableRowIcon from '@ckeditor/ckeditor5-table/theme/icons/table-row.svg';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
 import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
@@ -56,58 +57,6 @@ class HarenaTablePlugin extends Plugin {
     const dropdownTooltip = t('Column');
     const contentLanguageDirection = editor.locale.contentLanguageDirection;
     const isContentLtr = contentLanguageDirection === 'ltr';
-
-    /*
-    editor.ui.componentFactory.add( 'tableColumnHarena', locale => {
-      const dropdownView = createDropdown( locale );
-
-      dropdownView.set({
-        label: 'Column',
-        tooltip: true
-      });
-
-      dropdownView.buttonView.set( {
-        withText: false,
-        icon: tableColumnIcon,
-        tooltip: dropdownTooltip
-      });
-
-      const items = new Collection();
-
-      items.add({
-        type: 'button',
-        model: {
-          withText: true,
-          commandName: isContentLtr ? 'insertTableColumnRight' : 'insertTableColumnLeft',
-          label: t( 'Insert column right' )
-        }
-      });
-
-      items.add({
-        type: 'button',
-        model: {
-          withText: true,
-          commandName: 'removeTableColumn',
-          label: t( 'Delete column' )
-        }
-      });
-
-      items.add({
-        type: 'button',
-        model: {
-          withText: true,
-          commandName: 'selectTableColumn',
-          label: t( 'Select column' )
-        }
-      });
-
-      // Create a dropdown with a list inside the panel.
-      addListToDropdown( dropdownView, items )      
-
-      return dropdownView
-    } );
-  }
-  */
 
     editor.ui.componentFactory.add( 'tableColumnHarena', locale => {
       const options = [
@@ -136,8 +85,36 @@ class HarenaTablePlugin extends Plugin {
 
       return this._prepareDropdown( t( 'Column' ), tableColumnIcon, options, locale );
     } );
-  }
 
+
+    editor.ui.componentFactory.add( 'tableRowHarena', locale => {
+      const options = [
+        {
+          type: 'button',
+          model: {
+            commandName: 'insertTableRowBelow',
+            label: t( 'Insert row below' )
+          }
+        },
+        {
+          type: 'button',
+          model: {
+            commandName: 'removeTableRow',
+            label: t( 'Delete row' )
+          }
+        },
+        {
+          type: 'button',
+          model: {
+            commandName: 'selectTableRow',
+            label: t( 'Select row' )
+          }
+        }
+      ];
+
+      return this._prepareDropdown( t( 'Row' ), tableRowIcon, options, locale );
+    } );
+  }
 
   _prepareDropdown( label, icon, options, locale ) {
     const editor = this.editor;
@@ -313,9 +290,8 @@ ClassicEditor.defaultConfig = {
 	},
 	table: {
 		contentToolbar: [
-			'tableColumnHarena',
-      'insertTableColumnLeft',
-			'tableRow'
+			'tableColumnHarena',  // Harena customization
+      'tableRowHarena'  // Harena customization
 			// 'mergeTableCells'  -- Harena customization
 		]
 	},

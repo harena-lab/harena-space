@@ -1,0 +1,5 @@
+yarn run build
+cp build/ckeditor.js ~/git/harena-space/src/adonisjs/public/lib/ckeditor5
+cp build/ckeditor.js.map ~/git/harena-space/src/adonisjs/public/lib/ckeditor5
+cp build/translations/pt.js ~/git/harena-space/src/adonisjs/public/lib/ckeditor5/translations
+cp build/translations/pt-br.js ~/git/harena-space/src/adonisjs/public/lib/ckeditor5/translations
