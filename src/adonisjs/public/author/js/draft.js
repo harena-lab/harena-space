@@ -21,7 +21,7 @@ class DraftManager {
     this._boxesPanel = document.querySelector('#case-boxes')
     // this._draftSelect(authorState.userid, advanced);
     document.getElementsByClassName('buttons-container').length > 0
-      ? this._draftQuestCasesSelect(advanced) : this._draftSelect(advanced)
+      ? this._draftCategoryCasesSelect(advanced) : this._draftSelect(advanced)
   }
 
   async _draftSelect (advanced) {
@@ -76,8 +76,8 @@ class DraftManager {
     }
   }
 
-  async _draftQuestCasesSelect (advanced) {
-    console.log('Drafting cases by quest')
+  async _draftCategoryCasesSelect (advanced) {
+    console.log('Drafting cases by category')
     // const cases = await MessageBus.ext.request('data/case/*/list')
     // {user: userid});
 
