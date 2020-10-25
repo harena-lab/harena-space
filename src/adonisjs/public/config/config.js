@@ -10,7 +10,7 @@ class HarenaConfig {
     }
   }else {
     HarenaConfig.manager = {
-      url: document.location.host + '/manager',
+      url: 'https://' + document.location.host + '/manager',
       api: '/api/v1'
     }
   }
