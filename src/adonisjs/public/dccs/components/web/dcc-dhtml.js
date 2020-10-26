@@ -50,6 +50,7 @@ class DCCDHTML extends DCCBase {
         part += 3
       }
     }
+    // console.log('replace each');
     return html
   }
 
@@ -60,6 +61,9 @@ class DCCDHTML extends DCCBase {
       if (record[r] != null && typeof record[r] === 'object')
         html = this._replaceFields(html, pr, record[r])
       else {
+        if(typeof record[r] === 'number') record[r] = record[r].toString()
+        // console.log(typeof record[r]);
+        // console.log(record[r]);
         const content = (record[r] == null) ? '' :
                           record[r].replace(/&/gm, '&amp;')
                                    .replace(/"/gm, '&quot;')
@@ -69,6 +73,7 @@ class DCCDHTML extends DCCBase {
         html = html.replace(new RegExp('\{\{[ \t]*' + pr + '[ \t]*\}\}', 'igm'), content)
       }
     }
+    // console.log('replace fields');
     return html
   }
 
@@ -95,6 +100,9 @@ class DCCDHTML extends DCCBase {
       const response = await this.request('retrieve', null, id)
       this.recordUpdate(topic, response)
     }
+    // console.log('connection ready');
+    MessageBus.ext.publish('control/dhtml/ready')
+
   }
 }
 

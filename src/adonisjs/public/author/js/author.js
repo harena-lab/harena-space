@@ -284,7 +284,8 @@ class AuthorManager {
 
     this._currentCaseTitle = caseObj.message.title
     await this._compile(caseObj.message.source)
-    this._showCase()
+    await this._showCase()
+
   }
 
   async _compile (caseSource) {
@@ -299,8 +300,8 @@ class AuthorManager {
     Basic.service.composedThemeFamily(this._compiledCase.theme)
     if (this._compiledCase.title) { this._currentCaseTitle = this._compiledCase.title }
 
-    // console.log('***** COMPILED CASE *****')
-    // console.log(this._compiledCase)
+    console.log('***** COMPILED CASE *****')
+    console.log(this._compiledCase)
   }
 
   async _showCase (selectKnot) {
@@ -348,9 +349,9 @@ class AuthorManager {
       Basic.service.authorPropertyStore('caseId', Basic.service.currentCaseId)
 
       this._messageSpace.innerHTML = 'Saved'
-      setTimeout(this._clearMessage, 2000)
+      setTimeout(this._clearMessage, 500)
       const promise = new Promise((resolve, reject) => {
-        setTimeout(() => resolve('done!'), 2000)
+        setTimeout(() => resolve('done!'), 500)
       })
       const result = await promise
       this._messageSpace.innerHTML = ''
@@ -452,6 +453,7 @@ class AuthorManager {
     const template = await DCCNoticeInput.displayNotice(
       'Select a template for your knot.',
       'list', 'Select', 'Cancel', templateList)
+    console.log('template select end');
     return (template == 'Cancel') ? null : template
   }
 
@@ -534,6 +536,7 @@ class AuthorManager {
       this._renderKnot()
       // this._collectEditableDCCs();
       delete this._elementSelected
+      MessageBus.ext.publish('control/case/ready')
     }
   }
 

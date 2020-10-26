@@ -19,6 +19,7 @@
   <script src="../../infra/basic.js"></script>
   <script src="../../infra/dcc-common-server-proxy.js"></script>
   <script src="../../infra/dcc-common-server-address.js"></script>
+  <script src="../../infra/simple-page-tasks.js"></script>
   <script src="../../infra/token-validator.js"></script>
 
   <script>
@@ -99,21 +100,21 @@
 </head>
 <body onload="PlayerManager.player.startPlayer()">
   <dcc-rest id="harena-case" bind="harena-case" subscribe="service/request/get:retrieve"></dcc-rest>
-  <div class="sty-preview-panel" id="preview-panel" style="display:none">
+  <div class="sty-preview-panel" id="preview-panel">
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
         <li class="breadcrumb-item">
-          <a href="#">Return</a>
+          <a href="javascript:history.back()">Return</a>
         </li>
         <li class="breadcrumb-item active" aria-current="page">Player</li>
       </ol>
     </nav>
   </div>
-  <div id="main-panel" class="d-flex flex-column vh-100 vw-100 scroll-y index-boot-padding">
-    <div id="player-panel" style="border-color: #004270; border-radius: 9px;	border-style: solid;	border-width: 13px;	border-bottom-width: 30px">
-
+  <main role="main">
+    <div id="main-panel" class="d-flex flex-column pt-5 vh-100 vw-100 scroll-y index-boot-padding">
+      <div id="player-panel" style="border-color: #004270; border-radius: 9px;	border-style: solid;	border-width: 13px;	border-bottom-width: 30px">
+      </div>
     </div>
-
-  </div>
+  </main>
 </body>
 </html>

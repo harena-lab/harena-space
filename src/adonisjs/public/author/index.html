@@ -7,19 +7,19 @@
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
 
-
-
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
   <script src="../lib/jquery-3-4-1/jquery-3.4.1.slim.min.js"></script>
   <script src="../lib/popper-1-15-0/popper.min.js"></script>
   <script src="../lib/bootstrap-4.4.1/js/bootstrap.min.js"></script>
+  <script src="../lib/ckeditor5/ckeditor.js"></script>
 
   <script src="../config/config.js"></script>
   <script src="../infra/bus.js"></script>
   <script src="../infra/basic.js"></script>
   <script src="../infra/dcc-common-server-proxy.js"></script>
   <script src="../infra/dcc-common-server-address.js"></script>
+  <script src="../infra/simple-page-tasks.js"></script>
   <script src="../infra/token-validator.js"></script>
 
   <link rel="stylesheet" href="../lib/fontawesome-5-10-1/css/all.min.css">
@@ -35,8 +35,6 @@
   <script src="../context/context.js"></script>
 
   <script src="../lib/quill-1-3-7/quill.min.js"></script>
-  <script src="../lib/ckeditor5/ckeditor.js"></script>
-  <!-- <script src="https://cdn.ckeditor.com/ckeditor5/22.0.0/inline/ckeditor.js"></script> -->
   <script src="../lib/d3.min.js"></script>
 
   <script src="../dccs/dcc.js"></script>
@@ -114,65 +112,65 @@
                 <input type="hidden" id="case_id" name="case_id" value="{{id}}">
                 <input type="hidden" id="case_source" name="case_source" value="{{source}}">
 
-              <div class="form-group">
-                <label for="case_title">Title</label>
-                <input type="text" class="form-control" id="case_title" name="case_title" value="{{title}}" placeholder="Enter the title">
-              </div>
-              <div class="form-group">
-                <label for="description">Description</label>
-                <textarea class="form-control" id="description" name="description">{{description}}</textarea>
-              </div>
-              <div class="form-group">
-                <label for="creationDate">Creation Date</label>
-                <input type="date" class="form-control" id="creationDate" name="creationDate" value="{{original_date}}">
-                {{-- <small id="keywords-help" class="form-text text-muted">Inform the date of case creation on Jacinto Moodle</small> --}}
-              </div>
-              <div class="form-group">
-                <label for="language">Language</label>
-                <select name="language" id="language" value="{{language}}">
-                   <option value="{{language}}" selected disabled hidden>{{language}}</option>
-                   <option value="pt-BR">Portuguese (Brazil)</option>
-                   <option value="pt-PT">Portuguese (Portugal)</option>
-                   <option value="en">English</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="institution">Institution</label>
-                <select name="institution" id="institution" value="{{institution}}">
-                  <option value="{{institution}}" selected disabled hidden>{{institutionTitle}}</option>
-                  <option value="unicamp">Universidade Estadual de Campinas</option>
-                  <option value="minho">Universidade do Minho</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="domain">Domain</label>
-                <select name="domain" id="domain" value="{{domain}}">
-                  <option value="{{domain}}" selected disabled hidden>{{domain}}</option>
-                  <option value="Medicine">Medicine</option>
-                  <option value="Nurse">Nurse</option>
-                  <option value="Physioterapy">Physioterapy</option>
-                  <option value="Pharmacy">Pharmacy</option>
-                  <option value="Occupational Therapy">Occupational Therapy</option>
-                </select>
-              </div>
+                <div class="form-group">
+                  <label for="case_title">Title</label>
+                  <input type="text" class="form-control" id="case_title" name="case_title" value="{{title}}" placeholder="Enter the title">
+                </div>
+                <div class="form-group">
+                  <label for="description">Description</label>
+                  <textarea class="form-control" id="description" name="description">{{description}}</textarea>
+                </div>
+                <div class="form-group">
+                  <label for="creationDate">Creation Date</label>
+                  <input type="date" class="form-control" id="creationDate" name="creationDate" value="{{original_date}}">
+                  {{-- <small id="keywords-help" class="form-text text-muted">Inform the date of case creation on Jacinto Moodle</small> --}}
+                </div>
+                <div class="form-group">
+                  <label for="language">Language</label>
+                  <select name="language" id="language" value="{{language}}">
+                     <option value="{{language}}" selected disabled hidden>{{language}}</option>
+                     <option value="pt-BR">Portuguese (Brazil)</option>
+                     <option value="pt-PT">Portuguese (Portugal)</option>
+                     <option value="en">English</option>
+                  </select>
+                </div>
+                <!-- <div class="form-group">
+                  <label for="institution">Institution</label>
+                  <select name="institution" id="institution" value="{{institution}}">
+                    <option value="{{institution}}" selected disabled hidden>{{institutionTitle}}</option>
+                    <option value="unicamp">Universidade Estadual de Campinas</option>
+                    <option value="minho">Universidade do Minho</option>
+                  </select>
+                </div> -->
+                <div class="form-group">
+                  <label for="domain">Domain</label>
+                  <select name="domain" id="domain" value="{{domain}}">
+                    <option value="{{domain}}" selected disabled hidden>{{domain}}</option>
+                    <option value="Medicine">Medicine</option>
+                    <option value="Nurse">Nurse</option>
+                    <option value="Physioterapy">Physioterapy</option>
+                    <option value="Pharmacy">Pharmacy</option>
+                    <option value="Occupational Therapy">Occupational Therapy</option>
+                  </select>
+                </div>
 
-              <div class="form-group">
-                <label for="complexity">Complexity</label>
-                <select name="complexity" id="complexity" value="{{complexity}}">
-                   <option value="{{complexity}}" selected disabled hidden>{{complexity}}</option>
-                   <option value="undergraduate">Undergraduate</option>
-                   <option value="postgraduate">Postgraduate</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="specialty">Specialty</label>
-                <input type="text" class="form-control" id="specialty" name="specialty" value="{{specialty}}" placeholder="Inform the case specialty">
-              </div>
-              <div class="form-group">
-                <label for="keywords">Keywords</label>
-                <textarea class="form-control" id="keywords" name="keywords" aria-describedby="keywords-help">{{keywords}}</textarea>
-                <small id="keywords-help" class="form-text text-muted">Inform your keywords separated by semicolon.</small>
-              </div>
+                <div class="form-group">
+                  <label for="complexity">Complexity</label>
+                  <select name="complexity" id="complexity" value="{{complexity}}">
+                     <option value="{{complexity}}" selected disabled hidden>{{complexity}}</option>
+                     <option value="undergraduate">Undergraduate</option>
+                     <option value="postgraduate">Postgraduate</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="specialty">Specialty</label>
+                  <input type="text" class="form-control" id="specialty" name="specialty" value="{{specialty}}" placeholder="Inform the case specialty">
+                </div>
+                <div class="form-group">
+                  <label for="keywords">Keywords</label>
+                  <textarea class="form-control" id="keywords" name="keywords" aria-describedby="keywords-help">{{keywords}}</textarea>
+                  <small id="keywords-help" class="form-text text-muted">Inform your keywords separated by semicolon.</small>
+                </div>
 
               <input type="hidden" id="source" name="source" value="{{source}}">
               <button type="button" class="btn btn-secondary" id="btn-save-settings" data-toggle="modal" data-target="#settings-modal" >Save</button>
@@ -250,6 +248,7 @@
 
           </div> -->
         </nav>
+
       </div>
       <!-- End of toolbar -->
 
@@ -275,6 +274,7 @@
                 </div>
             </div>
             <div class="w-100">
+               <div id="toolbar-editor"></div>
                <div id="inplace-editor-wrapper" class="d-flex h-100 sticky-top std-border">
                  <div id="knot-panel" class="d-flex flex-column sty-knot-panel w-100 h-100 scroll-y">
 

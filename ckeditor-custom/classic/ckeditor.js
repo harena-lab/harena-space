@@ -34,13 +34,152 @@ import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
 
+// Harena customization - table dropdown
+import { addListToDropdown, createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
+import Model from '@ckeditor/ckeditor5-ui/src/model';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection';
+
 // Harena customization
+import tableColumnIcon from '@ckeditor/ckeditor5-table/theme/icons/table-column.svg';
+import tableRowIcon from '@ckeditor/ckeditor5-table/theme/icons/table-row.svg';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
 import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 export default class ClassicEditor extends ClassicEditorBase {}
+
+// Harena customization
+class HarenaTablePlugin extends Plugin {
+  init() {
+    const editor = this.editor;
+    const t = this.editor.t;
+    const dropdownTooltip = t('Column');
+    const contentLanguageDirection = editor.locale.contentLanguageDirection;
+    const isContentLtr = contentLanguageDirection === 'ltr';
+
+    editor.ui.componentFactory.add( 'tableColumnHarena', locale => {
+      const options = [
+        {
+          type: 'button',
+          model: {
+            commandName: isContentLtr ? 'insertTableColumnRight' : 'insertTableColumnLeft',
+            label: t( 'Insert column right' )
+          }
+        },
+        {
+          type: 'button',
+          model: {
+            commandName: 'removeTableColumn',
+            label: t( 'Delete column' )
+          }
+        },
+        {
+          type: 'button',
+          model: {
+            commandName: 'selectTableColumn',
+            label: t( 'Select column' )
+          }
+        }
+      ];
+
+      return this._prepareDropdown( t( 'Column' ), tableColumnIcon, options, locale );
+    } );
+
+
+    editor.ui.componentFactory.add( 'tableRowHarena', locale => {
+      const options = [
+        {
+          type: 'button',
+          model: {
+            commandName: 'insertTableRowBelow',
+            label: t( 'Insert row below' )
+          }
+        },
+        {
+          type: 'button',
+          model: {
+            commandName: 'removeTableRow',
+            label: t( 'Delete row' )
+          }
+        },
+        {
+          type: 'button',
+          model: {
+            commandName: 'selectTableRow',
+            label: t( 'Select row' )
+          }
+        }
+      ];
+
+      return this._prepareDropdown( t( 'Row' ), tableRowIcon, options, locale );
+    } );
+  }
+
+  _prepareDropdown( label, icon, options, locale ) {
+    const editor = this.editor;
+    const dropdownView = createDropdown( locale );
+    const commands = this._fillDropdownWithListOptions( dropdownView, options );
+
+    // Decorate dropdown's button.
+    dropdownView.buttonView.set( {
+      label,
+      icon,
+      tooltip: true
+    } );
+
+    // Make dropdown button disabled when all options are disabled.
+    dropdownView.bind( 'isEnabled' ).toMany( commands, 'isEnabled', ( ...areEnabled ) => {
+      return areEnabled.some( isEnabled => isEnabled );
+    } );
+
+    this.listenTo( dropdownView, 'execute', evt => {
+      editor.execute( evt.source.commandName );
+      editor.editing.view.focus();
+    } );
+
+    return dropdownView;
+  }
+
+  _fillDropdownWithListOptions( dropdownView, options ) {
+    const editor = this.editor;
+    const commands = [];
+    const itemDefinitions = new Collection();
+
+    for ( const option of options ) {
+      addListOption( option, editor, commands, itemDefinitions );
+    }
+
+    addListToDropdown( dropdownView, itemDefinitions, editor.ui.componentFactory );
+
+    return commands;
+  }
+}
+
+function addListOption( option, editor, commands, itemDefinitions ) {
+  const model = option.model = new Model( option.model );
+  const { commandName, bindIsOn } = option.model;
+
+  if ( option.type === 'button' || option.type === 'switchbutton' ) {
+    const command = editor.commands.get( commandName );
+
+    commands.push( command );
+
+    model.set( { commandName } );
+
+    model.bind( 'isEnabled' ).to( command );
+
+    if ( bindIsOn ) {
+      model.bind( 'isOn' ).to( command, 'value' );
+    }
+  }
+
+  model.set( {
+    withText: true
+  } );
+
+  itemDefinitions.add( option );
+}
 
 // Harena customization
 class HarenaPlugin extends Plugin {
@@ -90,17 +229,17 @@ ClassicEditor.builtinPlugins = [
 	Autoformat,
 	Bold,
 	Italic,
-	BlockQuote,
+	// BlockQuote,  -- Harena customization
 	CKFinder,
 	EasyImage,
-	Heading,
+	// Heading,  -- Harena customization
 	Image,
 	ImageCaption,
 	ImageStyle,
   ImageResize, // Harena customization
 	ImageToolbar,
 	ImageUpload,
-	Indent,
+	// Indent,  -- Harena customization
 	Link,
 	List,
 	MediaEmbed,
@@ -109,40 +248,41 @@ ClassicEditor.builtinPlugins = [
 	Table,
 	TableToolbar,
 	TextTransformation,
-  HarenaPlugin // Harena customization
+  HarenaTablePlugin, // Harena customization
+  HarenaPlugin       // Harena customization
 ];
 
 // Editor configuration.
 ClassicEditor.defaultConfig = {
 	toolbar: {
 		items: [
-			'heading',
-			'|',
+			// 'heading',  -- Harena customization
+			// '|',
 			'bold',
 			'italic',
 			'link',
 			'bulletedList',
 			'numberedList',
 			'|',
-			'indent',
-			'outdent',
-			'|',
+			// 'indent',
+			// 'outdent',
+			// '|',
 			'imageUpload',
-			'blockQuote',
+			// 'blockQuote',  -- Harena customization
 			'insertTable',
 			'mediaEmbed',
 			'undo',
 			'redo',
-      '|',
+      '|',           // Harena customization
       'confirmEdit', // Harena customization
       'cancelEdit'   // Harena customization
 		]
 	},
 	image: {
 		toolbar: [
-			'imageStyle:full',
-			'imageStyle:side',
-      '|',
+			// 'imageStyle:full',  -- Harena customization
+			// 'imageStyle:side',  -- Harena customization
+      // '|',                -- Harena customization
       'imageResize', // Harena customization
 			'|',
 			'imageTextAlternative'
@@ -150,9 +290,9 @@ ClassicEditor.defaultConfig = {
 	},
 	table: {
 		contentToolbar: [
-			'tableColumn',
-			'tableRow',
-			'mergeTableCells'
+			'tableColumnHarena',  // Harena customization
+      'tableRowHarena'  // Harena customization
+			// 'mergeTableCells'  -- Harena customization
 		]
 	},
 	// This value must be kept in sync with the language defined in webpack.config.js.

@@ -148,17 +148,20 @@
     {
       environment: {
         'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api,
-        'categoryId': new URL(document.location).searchParams.get('id')
+        'categoryId': new URL(document.location).searchParams.get('id'),
+        'clearance': new URL(document.location).searchParams.get('clearance')
       },
       oas: {
         paths: {
-          '{url-manager}/category/cases?categoryId={categoryId}': {
+          '{url-manager}/category/cases?categoryId={categoryId}&clearance={clearance}': {
             'get': {
               operationId: 'category-cases',
               parameters: [
                 {name: 'url-manager',
                  in: 'path'},
                 {name: 'categoryId',
+                  in: 'path'},
+                {name: 'clearance',
                   in: 'path'}
               ]
             }
@@ -222,15 +225,18 @@
     'dcc-rest',
     {
       environment: {
-        'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api
+        'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api,
+        'clearance': new URL(document.location).searchParams.get('clearance')
       },
       oas: {
         paths: {
-          '{url-manager}/user/cases': {
+          '{url-manager}/user/cases?clearance={clearance}': {
             'get': {
               operationId: 'user-cases',
               parameters: [
                 {name: 'url-manager',
+                 in: 'path'},
+                {name: 'clearence',
                  in: 'path'}
               ]
             }

@@ -108,13 +108,7 @@
                      <option value="en">English</option>
                   </select>
                 </div>
-                <div class="form-group">
-                  <label for="institution">Institution</label>
-                  <select name="institution" id="institution">
-                     <option value="unicamp">Universidade Estadual de Campinas</option>
-                     <option value="minho">Universidade do Minho</option>
-                  </select>
-                </div>
+
                 <div class="form-group">
                   <label for="domain">Domain</label>
                   <select name="domain" id="domain" value={{ caseDomain }}>
@@ -141,8 +135,25 @@
                   <textarea class="form-control" id="keywords" name="keywords" aria-describedby="keywords-help"></textarea>
                   <small id="keywords-help" class="form-text text-muted">Inform your keywords separated by semicolon.</small>
                 </div>
+								<!-- <div class="form-row">
+									<div class="col">
+										<label for="permissionEntity">Permission</label>
+	                  <select name="permissionEntity" id="permissionEntity" value={{PermissionEntity}}>
+	                    <option value="Institution">Institution</option>
+	                    <option value="Group">Group</option>
+											<option value="Course">Course</option>
+	                  </select>
+									</div>
+									<div id="permissionSubject" class="col">
+										<label for="permissionSubject">:</label>
+	                  <select name="permissionSubject" id="permissionSubject" value={{PermissionSubject}}>
+	                    <option value="Institution">Institution</option>
+	                    <option value="Group">Group</option>
+	                  </select>
+									</div>
+                </div> -->
                 <input type="hidden" id="template" name="template" value="">
-                <input type="hidden" id="category" name="quest" value="">
+                <input type="hidden" id="category" name="category" value="">
 
               </form>
 							<button id="btn-submit-form" class="btn btn-primary" role="button">Create</button>

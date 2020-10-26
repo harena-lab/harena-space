@@ -8,6 +8,7 @@ class TemplateToCase {
   }
 
   async storeCase () {
+
     document.querySelector('#btn-submit-form').addEventListener('click',
       async function () {
         try {
@@ -58,7 +59,7 @@ class TemplateToCase {
                 source: markdown,
                 original_date: params.get('creationDate'),
                 complexity: params.get('complexity'),
-                institution: params.get('institution')
+                // institution: params.get('institution')
               },
               withCredentials: true
             }
@@ -76,7 +77,7 @@ class TemplateToCase {
               method: 'POST',
               url: DCCCommonServer.managerAddressAPI + 'category/link/case',
               data: {
-                categoryId: params.get('quest'),
+                categoryId: params.get('category'),
                 caseId: _caseId,
                 orderPosition: 0
               },

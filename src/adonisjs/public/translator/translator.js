@@ -8,6 +8,7 @@ class Translator {
     this.authoringRender = false
 
     this._markdownTranslator = new showdown.Converter()
+    this._markdownTranslator.setFlavor('github')
   }
 
   /*
@@ -1307,7 +1308,7 @@ class Translator {
   _textMdToObj (markdown) {
     return {
       type: 'text',
-      subordinate: /^\t| [\t ]/.test(markdown),
+      subordinate: /^\t|^ [\t ]/.test(markdown),
       content: markdown
     }
   }

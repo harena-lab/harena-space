@@ -4,8 +4,11 @@
     'dcc-submit',
     {
       pos: function (response) {
-        // console.log(response)
-        window.location.href = '/'
+        // console.log(response['harena-login'])
+        if(response['harena-login']){
+          console.log('login successful');
+          window.location.href = '/'
+        }
       }
     }
   )
