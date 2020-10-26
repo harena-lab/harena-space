@@ -36,21 +36,13 @@ MessageBus.int.subscribe('control/button/logout-button/ready', this.checkToken)
           withCredentials: true
         }
 
-        // console.log('=== check token request')
-        // console.log(DCCCommonServer.managerAddressAPI + 'auth/check')
         await axios(config)
           .then(function (endpointResponse) {
-          // return response.redirect('/')
-          // console.log('=== check token response')
-          // console.log(endpointResponse.data);
+            if (endpointResponse.data.token === 'token valid') {
 
-            if (endpointResponse.data === 'token valid') {
-              // console.log('token valid')
-              // const elem = document.getElementById('header-login').firstElementChild
-              // elem.setAttribute('onclick', 'LoginTest.i.logout()')
-              // elem.href = '#'
               elemLogin.style.display = 'none'
               elemLogout.style.display = 'block'
+              document.querySelector('#logoutDropdownBtn').innerHTML = endpointResponse.data.username
             } else {
               // console.log('token invalid')
               elemLogin.style.display = 'block'
