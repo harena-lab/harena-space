@@ -10,7 +10,7 @@ class PageController {
         document.querySelector('main').classList.add('invisible')
       }
 
-      console.log(PageController.scriptsComplete)
+      // console.log(PageController.scriptsComplete)
     })
     MessageBus.ext.subscribe('control/dhtml/ready', this.removeLoadingIcon)
     MessageBus.ext.subscribe('control/case/ready', this.removeLoadingIcon)
@@ -28,7 +28,7 @@ class PageController {
       console.log(e)
     }
     PageController.scriptsComplete = true
-    console.log(PageController.scriptsComplete)
+    // console.log(PageController.scriptsComplete)
   }
 }
 (function () {

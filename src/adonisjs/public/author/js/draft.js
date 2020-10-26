@@ -20,8 +20,9 @@ class DraftManager {
     this._draftCategoryCasesSelect = this._draftCategoryCasesSelect.bind(this)
     this._boxesPanel = document.querySelector('#case-boxes')
     // this._draftSelect(authorState.userid, advanced);
-    document.getElementsByClassName('buttons-container').length > 0
-      ? MessageBus.ext.subscribe('control/dhtml/ready', this._draftCategoryCasesSelect) : this._draftSelect(advanced)
+    // document.getElementsByClassName('buttons-container').length > 0
+    //   ? MessageBus.ext.subscribe('control/dhtml/ready', this._draftCategoryCasesSelect) : this._draftSelect(advanced)
+    MessageBus.ext.subscribe('control/dhtml/ready', this._draftCategoryCasesSelect)
   }
 
   async _draftSelect (advanced) {
@@ -78,7 +79,7 @@ class DraftManager {
   }
 
   async _draftCategoryCasesSelect (advanced) {
-    console.log('Drafting cases by category')
+    // console.log('Drafting cases by category')
     // const cases = await MessageBus.ext.request('data/case/*/list')
     // {user: userid});
 
