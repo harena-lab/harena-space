@@ -39,12 +39,12 @@ MessageBus.int.subscribe('control/button/logout-button/ready', this.checkToken)
         await axios(config)
           .then(function (endpointResponse) {
             if (endpointResponse.data.token === 'token valid') {
-
+              console.log('token valid')
               elemLogin.style.display = 'none'
               elemLogout.style.display = 'block'
               document.querySelector('#logoutDropdownBtn').innerHTML = endpointResponse.data.username
             } else {
-              // console.log('token invalid')
+              console.log('token invalid')
               elemLogin.style.display = 'block'
               elemLogout.style.display = 'none'
             }
@@ -70,7 +70,7 @@ MessageBus.int.subscribe('control/button/logout-button/ready', this.checkToken)
         // console.log('=== check token redirect response')
         // console.log(endpointResponse.data);
         // endpointResponse.data === 'token valid' ? TokenController.instance.checkToken(true) : window.location.href = '/login'
-        endpointResponse.data === 'token valid' ? TokenController.instance.tokenChecked = true : window.location.href = '/user'
+        endpointResponse.data.token === 'token valid' ? TokenController.instance.tokenChecked = true : window.location.href = '/user'
       })
       .catch(function (error) {
         console.log('=== check redirect error')
