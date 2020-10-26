@@ -896,7 +896,7 @@ class Translator {
                      compiled[c].input.substring(compiled[c].input.lastIndexOf('.') + 1)
           }
         }
-        
+
         // reinserting context
         this._compileContext(knots, k)
       }
@@ -1048,8 +1048,8 @@ class Translator {
                  .replace(/<video><source src="([^"]+)"><\/video>/igm,
                           '<figure class="media"><oembed url="$1"></oembed></figure>')
 
-      console.log('=== html from markdown')
-      console.log(html)
+      // console.log('=== html from markdown')
+      // console.log(html)
     }
     return html
   }

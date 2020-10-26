@@ -73,6 +73,7 @@
         <div class="mr-auto author-breadcrumb" >
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="/">Welcome</a></li>
               <li class="breadcrumb-item"><a href="/author/home">Home</a></li>
               <li class="breadcrumb-item active" aria-current="page">Drafts</li>
             </ol>
@@ -85,7 +86,26 @@
             <p>Continue editing your drafted cases.</p>
           </div>
           <div id="case-boxes" class="container-fluid h-100 scroll-y draft-scroll-container">
+            <dcc-rest id="harena-cases" bind="harena-cases"></dcc-rest>
+            <dcc-dhtml id="harena-dhtml-cases" connect="harena-cases:service/request/get:retrieve">
+              {{@foreach . cases}}
+              <div id="b{{cases.id}}" class="row draft-author-case-container">
+                <div class="col draft-case-title">
+                  {{cases.title}}
+                  <div class="row">
+                    <h6>Created by {{cases.author_grade}}: {{cases.username}}</h6>
+                  </div>
+                </div>
 
+                <div class="d-flex justify-content-end justify-content-center buttons-container">
+                  <div id="e{{cases.id}}" class="col author-panel-button align-self-center pt-2 pb-2">EDIT</div>
+                  <div id="p{{cases.id}}" class="col author-panel-button align-self-center pt-2 pb-2">PREVIEW</div>
+                  <div id="d{{cases.id}}" class="col author-panel-button align-self-center pt-2 pb-2">DELETE</div>
+                </div>
+              </div>
+              {{@endfor}}
+              <end-dcc></end-dcc>
+            </dcc-dhtml>
           </div>
         </div>
       </div>

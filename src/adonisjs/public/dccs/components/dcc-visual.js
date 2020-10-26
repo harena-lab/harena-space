@@ -53,12 +53,17 @@ class DCCVisual extends DCCBase {
   _activateAuthorPresentation (presentation, listener) {
     presentation.style.cursor = 'pointer'
     presentation.dccid = this.id
-    // presentation.addEventListener('click', listener.selectListener)
-    /*
-    console.log('=== mouse over')
-    console.log(listener)
-    */
     presentation.addEventListener('mouseover', listener.mouseoverListener)
+  }
+
+  deactivateAuthor () {
+    if (this._presentation)
+      this._deactivateAuthorPresentation (this._presentation, this)
+  }
+
+  _deactivateAuthorPresentation (presentation, listener) {
+    presentation.removeEventListener('mouseover', listener.mouseoverListener)
+    presentation.style.cursor = 'default'
   }
 
   hide () {
@@ -109,10 +114,7 @@ class DCCVisual extends DCCBase {
   }
 
   _editPresentation (presentation, listener) {
-    // presentation.removeEventListener('click', listener.selectListener)
-    presentation.removeEventListener('mouseover', listener.mouseoverListener)
-    // presentation.removeEventListener('mouseout', listener.mouseoutListener)
-    presentation.style.cursor = 'default'
+    this.deactivateAuthor()
     // check for a DCC inside a DCC
     if (presentation.tagName.toLowerCase().startsWith('dcc-')) {
       presentation.edit()
@@ -313,13 +315,14 @@ class DCCMultiVisual extends DCCVisual {
 
   checkActivateAuthor () {
     if (this.author) {
-      /*
-      console.log('=== check activate')
-      console.log(this._presentationSet)
-      */
       for (const pr of this._presentationSet) {
         this._activateAuthorPresentation(pr._presentation, pr) }
     }
+  }
+
+  deactivateAuthor () {
+    for (const pr of this._presentationSet) {
+      this._deactivateAuthorPresentation(pr._presentation, pr) }
   }
 
   _hideReady () {
@@ -444,10 +447,10 @@ class PresentationDCC {
   DCCVisual.selectedBorderStyle = '3px dashed #000000'
 
   DCCVisual.templateHTML =
-`<div style="position: relative; top: {top}px; left: {left}px; width: 75px; height: 50px; background: rgba(0, 0, 0, 0.5); text-align: left" id="panel-presentation">
-  <div id="bt-edit-element" style="width: 16px; height: 16px; display: inline-block; margin-left: 10px; margin-right: 10px; color: white">{edit}</div>
-  <div id="bt-expand-element" style="width: 16px; height: 16px; display: inline-block; color: white">{expand}</div>
+`<div style="position: relative; top: {top}px; left: {left}px; width: 45px; height: 50px; background: rgba(0, 0, 0, 0.5); text-align: left" id="panel-presentation">
+  <div id="bt-edit-element" style="width: 100%; height: 100%; padding: 5px; display: inline-block; color: white">{edit}</div>
 </div>`
+//  <div id="bt-expand-element" style="width: 16px; height: 16px; display: inline-block; color: white">{expand}</div>
 
   // pen https://fontawesome.com/icons/pen?style=solid
   DCCVisual.buttonEditSVG =

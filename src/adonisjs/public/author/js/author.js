@@ -717,68 +717,25 @@ class AuthorManager {
 
   elementSelected (topic, message) {
     const dccId = MessageBus.extractLevel(topic, 3)
-    /*
-    console.log('=== level 3')
-    console.log(dccId)
-    */
-
     this._collectEditableDCCs()
-
-    /*
-    console.log('=== editable DCCs')
-    console.log(this._editableDCCs)
-
-    console.log('=== knot selected')
-    console.log(this._knots[this._knotSelected].content)
-    */
-
     const elSeq = parseInt(dccId.substring(3))
-    // console.log(elSeq)
     let el = -1
     for (el = 0; el < this._knots[this._knotSelected].content.length &&
-                   this._knots[this._knotSelected].content[el].seq != elSeq; el++)
+                 this._knots[this._knotSelected].content[el].seq != elSeq; el++)
     /* nothing */;
 
     if (el != -1) {
-      /*
-         const presentationId = (message == null) ? null : message.presentationId;
-         let dcc = (presentationId != null)
-            ? this._editableDCCs[presentationId]
-            : this._editableDCCs[dccId];
-         */
+      for (let edcc in this._editableDCCs)
+        if (this._editableDCCs[edcc].deactivateAuthor)
+          this._editableDCCs[edcc].deactivateAuthor()
+
       let dcc = this._editableDCCs[dccId]
-
-      /*
-      console.log('=== dcc to edit')
-      console.log(dcc)
-      */
-
       const element = this._knots[this._knotSelected].content[el]
-      /*
-         console.log("=== element properties");
-         console.log(element);
-         console.log("presentation-dcc-" + message);
-         console.log(Object.keys(this._editableDCCs));
-         */
-      // check if there is an option (trigger) element inside an input dcc
-      /*
-         let roleEdit = message;
-         if (element.type == "input" && element.subtype == "choice" &&
-             element.exclusive && message != "text" &&
-             this._editableDCCs["presentation-dcc-" + message]) {
-            dcc = this._editableDCCs["presentation-dcc-" + message];
-            roleEdit = null;
-            console.log("=== new dcc");
-            console.log(dcc);
-         }
-         this._elementSelected = el;
-         */
 
-      if (this._previousEditedDCC) { this._previousEditedDCC.reactivateAuthor() }
+      // if (this._previousEditedDCC) { this._previousEditedDCC.reactivateAuthor() }
 
       const role = (message != null) ? message.role : null
 
-      // dcc.edit((presentationId != null) ? null : role);
       dcc.edit(role)
 
       this._previousEditedDCC = dcc

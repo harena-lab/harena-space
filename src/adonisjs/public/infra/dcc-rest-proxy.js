@@ -51,6 +51,33 @@
   )
 
   DCC.component(
+    'harena-change-password',
+    'dcc-rest',
+    {
+      environment: {
+        'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api
+      },
+      oas: {
+        paths: {
+          '{url-manager}/user/password': {
+            'put': {
+              operationId: 'change-password',
+              parameters: [
+                {name: 'url-manager',
+                 in: 'path'},
+                {name: 'oldPassword',
+                 in: 'query'},
+                {name: 'newPassword',
+                 in: 'query'},
+              ]
+            }
+          }
+        }
+      }
+    }
+  )
+
+  DCC.component(
     'harena-create-case',
     'dcc-rest',
     {
@@ -161,6 +188,32 @@
                  in: 'path'},
                 {name: 'categoryId',
                   in: 'path'},
+                {name: 'clearance',
+                  in: 'path'}
+              ]
+            }
+          }
+        }
+      }
+    }
+  )
+
+  DCC.component(
+    'harena-cases',
+    'dcc-rest',
+    {
+      environment: {
+        'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api,
+        'clearance': new URL(document.location).searchParams.get('clearance')
+      },
+      oas: {
+        paths: {
+          '{url-manager}/user/cases?clearance={clearance}': {
+            'get': {
+              operationId: 'cases-list',
+              parameters: [
+                {name: 'url-manager',
+                 in: 'path'},
                 {name: 'clearance',
                   in: 'path'}
               ]
