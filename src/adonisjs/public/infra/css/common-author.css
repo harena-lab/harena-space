@@ -28,7 +28,7 @@ nav.navbar {
 }
 
 .author-breadcrumb{
-  z-index: 1040;
+  z-index: 1051;
 }
 
 /* Content padding in author case creation page*/
@@ -259,9 +259,6 @@ nav.navbar {
 }
 .home-author-padding{
   background-color: #ffffff;
-  padding-left: 80px;
-  padding-right: 80px;
-  padding-top: 60px;
 }
 .draft-author-padding{
 	background-color: #ffffff;
