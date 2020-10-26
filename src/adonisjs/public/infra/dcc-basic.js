@@ -27,16 +27,22 @@
     'submit-change-password',
     'dcc-submit',
     {
-      pos: function (response) {
+      pos: async function (response) {
         console.log(response['harena-change-password'])
         const responseContainer = document.querySelector('#updatePasswordResponse')
         responseContainer.innerHTML = response['harena-change-password']
         if(response['harena-change-password'] === 'Password changed successfully.'){
-        responseContainer.classList.add('text-success')
-      }else{
-        responseContainer.classList.add('text-danger')
-      }
-
+          console.log('if')
+          responseContainer.classList.remove('text-danger')
+          responseContainer.classList.add('text-success')
+          const promise = new Promise((resolve, reject) => {
+            setTimeout(() => resolve(window.location.href = '/'), 1000)
+          })
+        }else {
+          console.log('else')
+          responseContainer.classList.remove('text-success')
+          responseContainer.classList.add('text-danger')
+        }
       }
     }
   )
