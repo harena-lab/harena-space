@@ -22,4 +22,22 @@
       }
     }
   )
+
+  DCC.component(
+    'submit-change-password',
+    'dcc-submit',
+    {
+      pos: function (response) {
+        console.log(response['harena-change-password'])
+        const responseContainer = document.querySelector('#updatePasswordResponse')
+        responseContainer.innerHTML = response['harena-change-password']
+        if(response['harena-change-password'] === 'Password changed successfully.'){
+        responseContainer.classList.add('text-success')
+      }else{
+        responseContainer.classList.add('text-danger')
+      }
+
+      }
+    }
+  )
 })()
