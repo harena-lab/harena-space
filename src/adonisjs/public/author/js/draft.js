@@ -17,11 +17,11 @@ class DraftManager {
     }
 
     // const authorState = Basic.service.authorStateRetrieve();
-
+    this._draftCategoryCasesSelect = this._draftCategoryCasesSelect.bind(this)
     this._boxesPanel = document.querySelector('#case-boxes')
     // this._draftSelect(authorState.userid, advanced);
     document.getElementsByClassName('buttons-container').length > 0
-      ? this._draftCategoryCasesSelect(advanced) : this._draftSelect(advanced)
+      ? MessageBus.ext.subscribe('control/dhtml/ready', this._draftCategoryCasesSelect) : this._draftSelect(advanced)
   }
 
   async _draftSelect (advanced) {
@@ -74,6 +74,7 @@ class DraftManager {
         )
       }
     }
+    MessageBus.ext.publish('control/dhtml/ready')
   }
 
   async _draftCategoryCasesSelect (advanced) {
@@ -111,12 +112,12 @@ class DraftManager {
           function () {
             MessageBus.int.publish('control/case/delete', editButton.id.substring(1))
           })
-        if (advanced) {
-          downloadButton.addEventListener('click',
-            function () {
-              MessageBus.int.publish('control/case/download', this.id.substring(1))
-            })
-        }
+        // if (advanced) {
+        //   downloadButton.addEventListener('click',
+        //     function () {
+        //       MessageBus.int.publish('control/case/download', this.id.substring(1))
+        //     })
+        // }
       }
     }
   }
@@ -128,8 +129,9 @@ class DraftManager {
            'input')
     if (decision.toLowerCase() == 'yes') {
       await MessageBus.ext.request('data/case/' + message + '/delete')
-      const box = this._boxesPanel.querySelector('#b' + message)
-      this._boxesPanel.removeChild(box)
+      // console.log(message);
+      this._boxesPanel.querySelector('#b' + message).remove()
+      // this._boxesPanel.removeChild(box)
     }
   }
 

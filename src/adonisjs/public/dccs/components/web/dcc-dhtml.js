@@ -50,6 +50,7 @@ class DCCDHTML extends DCCBase {
         part += 3
       }
     }
+    // console.log('replace each');
     return html
   }
 
@@ -72,6 +73,7 @@ class DCCDHTML extends DCCBase {
         html = html.replace(new RegExp('\{\{[ \t]*' + pr + '[ \t]*\}\}', 'igm'), content)
       }
     }
+    // console.log('replace fields');
     return html
   }
 
@@ -98,6 +100,9 @@ class DCCDHTML extends DCCBase {
       const response = await this.request('retrieve', null, id)
       this.recordUpdate(topic, response)
     }
+    // console.log('connection ready');
+    MessageBus.ext.publish('control/dhtml/ready')
+
   }
 }
 
