@@ -1,5 +1,6 @@
 class TokenController {
   constructor () {
+
     this._tokenChecked = false
     this.checkToken = this.checkToken.bind(this)
 MessageBus.int.subscribe('control/button/logout-button/ready', this.checkToken)
@@ -20,6 +21,7 @@ MessageBus.int.subscribe('control/button/logout-button/ready', this.checkToken)
 
   async checkToken () {
     if (document.getElementById('harena-header')) {
+
       const elemLogin = document.getElementById('login-block')
       const elemLogout = document.getElementById('logout-block')
 
@@ -28,7 +30,6 @@ MessageBus.int.subscribe('control/button/logout-button/ready', this.checkToken)
         elemLogin.style.display = 'none'
         elemLogout.style.display = 'block'
       } else {
-        // console.log(TokenController.instance.tokenChecked)
         const config = {
           method: 'GET',
           url: DCCCommonServer.managerAddressAPI + 'auth/check',
@@ -77,7 +78,7 @@ MessageBus.int.subscribe('control/button/logout-button/ready', this.checkToken)
         // console.log('=== check token redirect response')
         // console.log(endpointResponse.data);
         // endpointResponse.data === 'token valid' ? TokenController.instance.checkToken(true) : window.location.href = '/login'
-        endpointResponse.data === 'token valid' ? TokenController.instance.tokenChecked = true : window.location.href = '/login'
+        endpointResponse.data === 'token valid' ? TokenController.instance.tokenChecked = true : window.location.href = '/user'
       })
       .catch(function (error) {
         console.log('=== check redirect error')

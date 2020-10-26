@@ -51,6 +51,33 @@
   )
 
   DCC.component(
+    'harena-change-password',
+    'dcc-rest',
+    {
+      environment: {
+        'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api
+      },
+      oas: {
+        paths: {
+          '{url-manager}/user/password': {
+            'put': {
+              operationId: 'change-password',
+              parameters: [
+                {name: 'url-manager',
+                 in: 'path'},
+                {name: 'oldPassword',
+                 in: 'query'},
+                {name: 'newPassword',
+                 in: 'query'},
+              ]
+            }
+          }
+        }
+      }
+    }
+  )
+
+  DCC.component(
     'harena-create-case',
     'dcc-rest',
     {
