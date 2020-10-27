@@ -199,6 +199,32 @@
   )
 
   DCC.component(
+    'harena-cases',
+    'dcc-rest',
+    {
+      environment: {
+        'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api,
+        'clearance': new URL(document.location).searchParams.get('clearance')
+      },
+      oas: {
+        paths: {
+          '{url-manager}/user/cases?clearance={clearance}': {
+            'get': {
+              operationId: 'cases-list',
+              parameters: [
+                {name: 'url-manager',
+                 in: 'path'},
+                {name: 'clearance',
+                  in: 'path'}
+              ]
+            }
+          }
+        }
+      }
+    }
+  )
+
+  DCC.component(
     'harena-quest-list',
     'dcc-rest',
     {

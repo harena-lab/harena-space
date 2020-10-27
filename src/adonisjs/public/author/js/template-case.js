@@ -16,8 +16,8 @@ class TemplateToCase {
           document.querySelector('#template').value = _url.searchParams.get('template').replace(/__/ig, '/')
           document.querySelector('#category').value = _url.searchParams.get('category')
 
-          const params = new FormData(document.querySelector('form'))
-
+          const params = new FormData(document.querySelector('#create-case-form'))
+          console.log(params);
           console.log(params.get('template'));
           /*
           // params.set('template', _url.searchParams.get('template').replace(/__/ig, "/"))
