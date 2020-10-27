@@ -4,10 +4,26 @@
     'dcc-submit',
     {
       pos: function (response) {
-        // console.log(response['harena-login'])
-        if(response['harena-login']){
-          console.log('login successful');
-          window.location.href = '/'
+        console.log(response['harena-login']['response'])
+        if(response['harena-login']['response'] === 'Login successful'){
+          // console.log('login successful');
+          if(document.querySelector('#login-message-alert')){
+            document.querySelector('#login-message-alert').innerHTML = response['harena-login']['response']
+            document.querySelector('#login-message-alert').classList.add('alert-success')
+            document.querySelector('#login-message-alert').classList.remove('alert-danger')
+
+          }
+          const promise = new Promise((resolve, reject) => {
+            setTimeout(() => resolve(window.location.href = '/'), 1000)
+          })
+        }else if (response['harena-login']['response'] === 'Email or password incorrect'){
+          // console.log('login failed, password or email incorrect');
+          if(document.querySelector('#login-message-alert')){
+            document.querySelector('#login-message-alert').innerHTML = response['harena-login']['response']
+            document.querySelector('#login-message-alert').classList.add('alert-danger')
+            document.querySelector('#login-message-alert').classList.remove('alert-success')
+
+          }
         }
       }
     }
