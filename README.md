@@ -9,7 +9,7 @@
 
 Web-based front-end module of [Harena](https://github.com/datasci4health/harena) environment.
 
-Harena is available at https://harena.ds4h.org/.
+Harena is available at https://jacinto.harena.org/.
 
 <!-- platform that includes: authoring environment, player engine and the Versum narrative scripting language translator. -->
 
