@@ -11,20 +11,23 @@
             <button id="loginDropdownBtn" class="btn btn-light shadow text-primary pl-4 pt-1 dropdown-toggle " type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Login
             </button>
-            <form class="dropdown-menu p-4 mr-5">
+            <form class="needs-validation dropdown-menu p-4 mr-5" novalidate>
               <div class="form-group">
                 <label for="email">Email address</label>
                 <input type="email" class="form-control" id="email" name="email" placeholder="email@example.com" required>
+                <div class="invalid-feedback">
+                  Please type a valid email.
+                </div>
               </div>
               <div class="form-group">
                 <label for="password">Password</label>
                 <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
               </div>
-              <button class="btn btn-outline-primary" type="submit" id="btn-login">Submit form</button>
-              <dcc-submit bind="submit-login" location="btn-login" label="Login" xstyle="out" connect="harena-login:service/request/post:submit">
+              <!-- <button class="btn btn-outline-primary" id="btn-login">Submit form</button> -->
+              <dcc-submit id="btn-submit-login" bind="submit-login" label="Login" xstyle="btn btn-outline-primary" connect="harena-login:service/request/post:submit"></dcc-submit>
+              <div id="login-message-alert" class="alert mt-3" role="alert">
+              </div>
             </form>
-            <div id="login-message-alert" class="alert mt-3" role="alert">
-            </div>
           <!-- </div> -->
         </div>
         <div id="logout-block" style="display: none;">
