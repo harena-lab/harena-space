@@ -138,7 +138,7 @@ class DCCButton extends DCCBlock {
   }
 
   _computeTrigger () {
-    if (this._active) {
+    if (this._active && this._checkPre()) {
       const message = { sourceType: DCCButton.elementTag }
       if (this.hasAttribute('variable')) {
         const v = (this.variable.includes(':'))
@@ -154,6 +154,13 @@ class DCCButton extends DCCBlock {
         MessageBus.ext.publish(topic, message)
       }
     }
+  }
+
+  _checkPre() {
+    let result = true
+    if (this._setup != null && this._setup.pre != null)
+      result = this._setup.pre()
+    return result
   }
 
   navigationBlocked () {

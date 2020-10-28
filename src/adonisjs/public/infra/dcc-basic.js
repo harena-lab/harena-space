@@ -3,6 +3,12 @@
     'submit-login',
     'dcc-submit',
     {
+      pre: function (message, form, schema) {
+        let check = true
+        if (message.value.login.length == 0)
+          check = false
+        return check
+      },
       pos: function (response) {
         // console.log(response['harena-login'])
         if(response['harena-login']){
