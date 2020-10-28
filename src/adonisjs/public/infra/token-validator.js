@@ -66,6 +66,7 @@ class TokenController {
         } catch (e) {
           // console.log(e)
         }
+        MessageBus.ext.publish('control/validate/ready')
       }else{
         window.addEventListener("load", function(event) {
           try {
@@ -85,7 +86,7 @@ class TokenController {
           } catch (e) {
             // console.log(e)
           }
-
+          MessageBus.ext.publish('control/validate/ready')
         });
       }
   }

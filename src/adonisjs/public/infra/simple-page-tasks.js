@@ -15,6 +15,7 @@ class PageController {
     })
     MessageBus.ext.subscribe('control/dhtml/ready', this.removeLoadingIcon)
     MessageBus.ext.subscribe('control/case/ready', this.removeLoadingIcon)
+    MessageBus.ext.subscribe('control/validate/ready', this.removeLoadingIcon)
   }
 
   async removeLoadingIcon(){
@@ -38,10 +39,33 @@ class PageController {
     });
 
   }
+
+  async harenaVersionFootNote(){
+    if(!sessionStorage.getItem('harena-version')){
+      const config = {
+        url: 'https://api.github.com/repos/harena-lab/harena-space/releases/latest',
+      }
+      await axios(config)
+      .then(function (endpointResponse) {
+        sessionStorage.setItem('harena-version', endpointResponse.data.tag_name)
+        console.log(endpointResponse.data.tag_name)
+
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
+    }
+    window.addEventListener("load", function(event) {
+      if(document.querySelector('#version-footnote'))
+        document.querySelector('#version-footnote')
+          .innerHTML = 'Harena Version - ' + sessionStorage.getItem('harena-version')
+    })
+  }
 }
 (function () {
   PageController.instance = new PageController()
   PageController.instance.controlDropdownMenu()
+  PageController.instance.harenaVersionFootNote()
   PageController.loadingBox =
   `<div id="loading-page-container" class="d-flex flex-column justify-content-center align-items-center" style="position:absolute; top:50%; left:50%;">
     <div class="spinner-border align-self-center" role="status" aria-hidden="true"></div>
