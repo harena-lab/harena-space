@@ -1,109 +1,109 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <!-- meta tags -->
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <head>
+    <!-- meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-  <link rel="stylesheet" href="author/css/author.css">
+    <link rel="stylesheet" href="author/css/author.css">
 
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 
-  <script src="./lib/jquery-3-4-1/jquery-3.4.1.slim.min.js"></script>
-  <script src="./lib/popper-1-15-0/popper.min.js"></script>
-  <script src="./lib/bootstrap-4.4.1/js/bootstrap.bundle.min.js"></script>
+    <script src="./lib/jquery-3-4-1/jquery-3.4.1.slim.min.js"></script>
+    <script src="./lib/popper-1-15-0/popper.min.js"></script>
+    <script src="./lib/bootstrap-4.4.1/js/bootstrap.bundle.min.js"></script>
 
-  <script src="config/config.js"></script>
-  <script src="infra/bus.js"></script>
-  <script src="infra/basic.js"></script>
-  <script src="infra/dcc-common-server-proxy.js"></script>
-  <script src="infra/dcc-common-server-address.js"></script>
-  <script src="infra/token-validator.js"></script>
+    <script src="config/config.js"></script>
+    <script src="infra/bus.js"></script>
+    <script src="infra/basic.js"></script>
+    <script src="infra/dcc-common-server-proxy.js"></script>
+    <script src="infra/dcc-common-server-address.js"></script>
+    <script src="/infra/simple-page-tasks.js"></script>
+    <script src="infra/token-validator.js"></script>
 
-  <script src="dccs/dcc.js"></script>
-  <script src="dccs/components/dcc-base.js "></script>
-  <script src="dccs/components/dcc-visual.js "></script>
-  <script src="dccs/components/dcc-block.js"></script>
-  <script src="dccs/components/dcc-button.js"></script>
-  <script src="dccs/components/dcc-notice-input.js"></script>
+    <script src="dccs/dcc.js"></script>
+    <script src="dccs/components/dcc-base.js "></script>
+    <script src="dccs/components/dcc-visual.js "></script>
+    <script src="dccs/components/dcc-block.js"></script>
+    <script src="dccs/components/dcc-button.js"></script>
+    <script src="dccs/components/dcc-notice-input.js"></script>
 
-  <script src="dccs/components/web/dcc-rest.js"></script>
-  <script src="dccs/components/web/dcc-include.js"></script>
-  <script src="dccs/components/web/dcc-dhtml.js"></script>
+    <script src="dccs/components/web/dcc-rest.js"></script>
+    <script src="dccs/components/web/dcc-include.js"></script>
+    <script src="dccs/components/web/dcc-dhtml.js"></script>
 
-  <script src="dccs/components/data/dcc-submit.js"></script>
-  <script src="dccs/components/data/dcc-model.js"></script>
-  <script src="dccs/components/data/dcc-record.js"></script>
+    <script src="dccs/components/data/dcc-submit.js"></script>
+    <script src="dccs/components/data/dcc-model.js"></script>
+    <script src="dccs/components/data/dcc-record.js"></script>
 
-  <script src="dccs/subscribe-dcc.js"></script>
-  <script src="dccs/trigger-dcc.js"></script>
-  <script src="dccs/property-dcc.js"></script>
-  <script src="dccs/connect-dcc.js"></script>
+    <script src="dccs/subscribe-dcc.js"></script>
+    <script src="dccs/trigger-dcc.js"></script>
+    <script src="dccs/property-dcc.js"></script>
+    <script src="dccs/connect-dcc.js"></script>
 
-  <script src="infra/dcc-rest-proxy.js"></script>
-  <script src="infra/dcc-basic.js"></script>
+    <script src="infra/dcc-rest-proxy.js"></script>
+    <script src="infra/dcc-basic.js"></script>
 
 
-  <link rel="stylesheet" href="lib/fontawesome-5-10-1/css/all.min.css">
-  <link rel="stylesheet" href="lib/bootstrap-4.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="lib/fontawesome-5-10-1/css/all.min.css">
+    <link rel="stylesheet" href="lib/bootstrap-4.4.1/css/bootstrap.min.css">
 
-  <link rel="stylesheet" href="dccs/css/dccs.css">
-  <link rel="stylesheet" href="dccs/css/properties.css">
-  <link rel="stylesheet" href="infra/css/common-player.css">
-  <link rel="stylesheet" href="infra/css/common-author.css">
+    <link rel="stylesheet" href="dccs/css/dccs.css">
+    <link rel="stylesheet" href="dccs/css/properties.css">
+    <link rel="stylesheet" href="infra/css/common-player.css">
+    <link rel="stylesheet" href="infra/css/common-author.css">
 
-  <script src="author/js/dcc-author-server-proxy.js"></script>
+    <script src="author/js/dcc-author-server-proxy.js"></script>
 
-  <script src="author/js/create.js"></script>
-  <script src="author/js/template-case.js"></script>
-  <script src="author/js/draft.js"></script>
-  <!-- Reference CSS -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-  <link rel="stylesheet" href="start/css/main.css"/>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato"/>
+    <script src="author/js/create.js"></script>
+    <script src="author/js/template-case.js"></script>
+    <script src="author/js/draft.js"></script>
+    <!-- Reference CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="start/css/main.css"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato"/>
 
-  <!-- Favicon -->
-  <link rel="shortcut icon" href="#">
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="#">
 
-  <title>Phil Muchbetter Game</title>
+    <title>Phil Muchbetter Game</title>
 
-</head>
+  </head>
 
-<body onload="TokenController.instance.checkToken()">
-  <!-- Login/logout header -->
-  <dcc-include src="/author/partials/header.html"></dcc-include>
-  <div class="d-flex vh-100 vw-100" style="background-color: rgb(245,245,245);">
-    <div class="d-flex w-100 mx-5 home-image-margin" style="">
+  <body onload="TokenController.instance.checkToken()">
+    <!-- Login/logout header -->
+    <dcc-include src="/author/partials/header.html"></dcc-include>
+      <main>
+        <div class="d-flex vh-100 vw-100" style="background-color: rgb(245,245,245);">
+          <div class="d-flex w-100 mx-5 home-image-margin" style="">
 
-      <div class="d-flex ml-auto flex-column align-items-center justify-content-center align-items-center">
-        <div class="d-flex flex-column">
-          <h1 class="home-header-text"> Jacinto Bemelhor: a clinical reasoning game</h1>
-          <p class="home-p-text">Join us in this adventure of becoming a doctor</p>
-          <div class="container-fluid">
-            <div class="row">
-              <div class="col-4 lets-play rounded-pill" onclick="location.href='/author/home'">Author</div>
-              <div class="col-4 ml-4 lets-play rounded-pill" onclick="location.href='/player/home?clearance=1&published=1'">Player</div>
+            <div class="d-flex ml-auto flex-column align-items-center justify-content-center align-items-center">
+              <div class="d-flex flex-column">
+                <h1 class="home-header-text"> Jacinto Bemelhor: a clinical reasoning game</h1>
+                <p class="home-p-text">Join us in this adventure of becoming a doctor</p>
+                <div class="container-fluid">
+                  <div class="row">
+                    <div class="col-4 lets-play rounded-pill" onclick="location.href='/author/home'">Author</div>
+                    <div class="col-4 ml-4 lets-play rounded-pill" onclick="location.href='/player/home?clearance=1&published=1'">Player</div>
+                  </div>
+
+                </div>
+              </div>
             </div>
-
+            <div class="d-flex ml-auto w-50 flex-column align-items-center justify-content-center"
+              style="background: url('start/img/background_home.jpeg');">
+              <div>
+                <img src="start/img/home_icon.png" alt="" class="h-100 float-right" id="home-image"/>
+              </div>
+            </div>
           </div>
         </div>
+      </main>
+      <div id="version-footnote" class="fixed-bottom" style="text-align:center">
       </div>
-      <div class="d-flex ml-auto w-50 flex-column align-items-center justify-content-center"
-        style="background: url('start/img/background_home.jpeg');">
-        <div>
-          <img src="start/img/home_icon.png" alt="" class="h-100 float-right" id="home-image"/>
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <script src="start/js/Js_Anim.js"> </script>
+  </body>
 
-  <div class="fixed-bottom" style="text-align:center">
-    Version Harena - v1.2.0
-  </div>
-
-</body>
 </html>

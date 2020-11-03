@@ -11,21 +11,16 @@ class TokenController {
 
   set tokenChecked (newValue) {
     this._tokenChecked = newValue
-    // console.log('new value: ' + this._tokenChecked)
   }
 
   get tokenChecked () {
-    // console.log(this._tokenChecked)
     return this._tokenChecked
   }
 
   async checkToken () {
     if (document.getElementById('harena-header')) {
 
-      if (TokenController.instance.tokenChecked) {
-        // elem.setAttribute('onclick', 'LoginTest.i.logout()')
-        // TokenController.instance.changeHeaderButtons('token valid')
-      } else {
+      if (!TokenController.instance.tokenChecked) {
         const config = {
           method: 'GET',
           url: DCCCommonServer.managerAddressAPI + 'auth/check',
@@ -34,7 +29,6 @@ class TokenController {
 
         await axios(config)
           .then(function (endpointResponse) {
-            // console.log('check token');
             TokenController.instance.changeHeaderButtons(endpointResponse.data)
           })
           .catch(function (error) {
@@ -66,6 +60,7 @@ class TokenController {
         } catch (e) {
           // console.log(e)
         }
+        MessageBus.ext.publish('control/validate/ready')
       }else{
         window.addEventListener("load", function(event) {
           try {
@@ -85,7 +80,7 @@ class TokenController {
           } catch (e) {
             // console.log(e)
           }
-
+          MessageBus.ext.publish('control/validate/ready')
         });
       }
   }
@@ -96,14 +91,14 @@ class TokenController {
       url: DCCCommonServer.managerAddressAPI + 'auth/check',
       withCredentials: true
     }
-    // console.log('=== check token request')
-    // console.log(DCCCommonServer.managerAddressAPI + 'auth/check')
     await axios(config)
       .then(function (endpointResponse) {
-        // console.log('=== check token redirect response')
-        // console.log(endpointResponse.data)
-        // endpointResponse.data === 'token valid' ? TokenController.instance.checkToken(true) : window.location.href = '/login'
-        endpointResponse.data.token === 'token valid' ? TokenController.instance.changeHeaderButtons(endpointResponse.data) : window.location.href = '/user'
+        if(endpointResponse.data.token === 'token valid'){
+          TokenController.instance.tokenChecked = true
+          TokenController.instance.changeHeaderButtons(endpointResponse.data)
+        } else{
+          window.location.href = '/user'
+        }
       })
       .catch(function (error) {
         console.log('=== check redirect error')

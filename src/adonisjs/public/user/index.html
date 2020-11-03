@@ -44,53 +44,32 @@
           <dcc-include src="../author/partials/header.html"> </dcc-include>
         <!-- End of breadcrumbs -->
 
-        <div class="h-100 w-100 registration-padding">
-          <div>
-            <!--<p id="template-title"></p> -->
-          </div>
+        <div class="d-flex justify-content-center w-100 registration-padding">
 
-          <h1>Log in</h1>
-
-
-          <div class="row">
-
+          <div class="w-md-50">
+            <h1 class="text-center">Log in</h1>
             <dcc-rest id="harena-login" bind="harena-login"></dcc-rest>
-            <form>
-              <div class="overflow-hidden bg-white shadow sm:rounded-lg">
-                <div class="px-4 py-5 sm:p-6">
-
+              <div class="bg-white shadow sm:rounded-lg">
+                <div class="px-5 py-5 w-100">
+                  <form class="needs-validation" novalidate>
                     <div class="form-group">
-                      <div class="mt-1 sm:mt-0 sm:col-span-2">
-                        <div class="max-w-xs rounded-md shadow-sm">
-                          <input
-                            class="block w-full transition duration-150 ease-in-out form-input sm:text-sm sm:leading-5"
-                            id="email"
-                            name="email"
-                            type="text"
-                            placeholder="Enter email"
-                            autofocus>
-                        </div>
+                      <label for="email">Email address</label>
+                      <input type="email" class="form-control" id="email" name="email" placeholder="email@example.com" required>
+                      <div class="invalid-feedback">
+                        Please type a valid email.
                       </div>
                     </div>
-
-                    <!-- Password Field -->
                     <div class="form-group">
-                      <div class="mt-1 sm:mt-0 sm:col-span-2">
-                        <div class="max-w-xs rounded-md shadow-sm">
-                          <input
-                            class="block w-full transition duration-150 ease-in-out form-input sm:text-sm sm:leading-5"
-                            id="password"
-                            name="password"
-                            type="password"
-                            placeholder="Enter password"
-                            autofocus>
-                        </div>
-                      </div>
+                      <label for="password">Password</label>
+                      <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
                     </div>
-                  <dcc-submit bind="submit-login" label="Login" connect="harena-login:service/request/post:submit">
+                    <!-- <button class="btn btn-outline-primary" id="btn-login">Submit form</button> -->
+                    <dcc-submit id="btn-submit-login" bind="submit-login" label="Login" xstyle="btn btn-outline-primary" connect="harena-login:service/request/post:submit"></dcc-submit>
+                    <div id="login-message-alert" class="alert mt-3" role="alert">
+                    </div>
+                  </form>
                 </div>
               </div>
-            </form>
           </div>
         </div>
       </div>
