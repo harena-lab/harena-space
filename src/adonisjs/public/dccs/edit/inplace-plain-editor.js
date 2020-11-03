@@ -25,6 +25,10 @@ class EditDCCPlain extends EditDCC {
       if (ep.clicked == 'confirm') {
         this._objProperties[this._objField] =
                this._editElement.innerHTML.trim().replace(/<br>$/i, '')
+        console.log('=== ep clicked')
+        console.log(JSON.stringify(this._objProperties))
+        console.log(this._objField)
+        console.log(this._objProperties[this._objField])
       } else { this._editElement.innerHTML = this._originalEdit }
     }
     /*

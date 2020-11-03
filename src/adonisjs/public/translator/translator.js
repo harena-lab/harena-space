@@ -128,7 +128,8 @@ class Translator {
             this._knotMdToObj(knotBlocks[kb].match(Translator.element.knot.mark))
       transObj.render = true
       let label = transObj.title
-      if (transObj.level == 1) { knotCtx[0] = { label: label, obj: transObj } } else {
+      if (transObj.level == 1) { knotCtx[0] = { label: label, obj: transObj } }
+      else {
         let upper = -1
         for (let l = transObj.level - 2; l >= 0 && upper == -1; l--) {
           if (knotCtx[l] != null) { upper = l }
@@ -136,12 +137,16 @@ class Translator {
 
         if (upper != -1) {
           label = knotCtx[upper].label + '.' + label
-          knotCtx[upper].obj.render = false
+          if (transObj.categories && !transObj.categories.includes('note'))
+            knotCtx[upper].obj.render = false
         }
         knotCtx[transObj.level - 1] = { label: label, obj: transObj }
       }
       const knotId = label.replace(/ /g, '_')
-      if (kb == 1) { compiledCase.start = knotId } else if (transObj.categories && transObj.categories.indexOf('start') >= 0) { compiledCase.start = knotId }
+      if (kb == 1)
+        { compiledCase.start = knotId }
+      else if (transObj.categories && transObj.categories.includes('start'))
+        { compiledCase.start = knotId }
       if (compiledCase.knots[knotId]) {
         if (!compiledCase._error) { compiledCase._error = [] }
         compiledCase._error.push('Duplicate knots title: ' + label)
@@ -878,8 +883,14 @@ class Translator {
       if (knots[k].inheritance) {
         const target = this.findContext(knots, k, knots[k].inheritance)
         if (knots[target]) {
-          if (!knots[k].categories && knots[target].categories) { knots[k].categories = knots[target].categories }
-          knots[k].content = JSON.parse(JSON.stringify(knots[target].content))
+          if (knots[target].categories) {
+            if (knots[k].categories)
+              knot[k].categories = knot[k].categories.concat(knots[target].categories)
+            else
+              knots[k].categories = knots[target].categories
+          }
+          knots[k].content =
+            JSON.parse(JSON.stringify(knots[target].content)).concat(knots[k].content)
         }
 
         // adjusting the context
@@ -968,7 +979,8 @@ class Translator {
     const themes = (knot.categories)
       ? knot.categories : ['knot']
     for (const tp in themes) {
-      if (!this._themeSet[themes[tp]]) {
+      if (!Translator.markerCategories.includes(themes[tp]) &&
+          !this._themeSet[themes[tp]]) {
         const templ = await
         this.loadTheme(themes[tp])
         if (templ != '') { this._themeSet[themes[tp]] = templ } else {
@@ -989,10 +1001,11 @@ class Translator {
       console.log(finalHTML);
       */
     for (let tp = themes.length - 1; tp >= 0; tp--) {
-      finalHTML = this._themeSet[themes[tp]]
-        .replace(/{knot}/igm, finalHTML)
-        .replace(/{background-path}/igm, backPath)
-        .replace(/{background-alternative}/igm, backAlt)
+      if (!Translator.markerCategories.includes(themes[tp]))
+        finalHTML = this._themeSet[themes[tp]]
+          .replace(/{knot}/igm, finalHTML)
+          .replace(/{background-path}/igm, backPath)
+          .replace(/{background-alternative}/igm, backAlt)
     }
     return finalHTML
   }
@@ -1261,7 +1274,8 @@ class Translator {
       }
     }
 
-    if (matchArray[4] != null) { knot.inheritance = matchArray[4].trim() } else if (matchArray[7] != null) { knot.inheritance = matchArray[7].trim() }
+    if (matchArray[4] != null) { knot.inheritance = matchArray[4].trim() }
+    else if (matchArray[7] != null) { knot.inheritance = matchArray[7].trim() }
 
     if (matchArray[1] != null) { knot.level = matchArray[1].trim().length } else
     if (matchArray[8][0] == '=') { knot.level = 1 } else { knot.level = 2 }
@@ -2265,6 +2279,9 @@ class Translator {
 
   Translator.marksAnnotationInside =
     /(?:([^\:\n\r\f]+)\:)?([^=\n\r\f]+)(?:=([\w \t%]*)(?:\/([\w \t%]*))?)?/im
+
+  // Categories that do not have a correspondent theme
+  Translator.markerCategories = ['start', 'end', 'division']
 
   // <TODO> this is a different approach indicating characteristic by type
   // (homogenize?)

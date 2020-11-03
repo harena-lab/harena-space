@@ -746,7 +746,7 @@ class AuthorManager {
         ? this._editableDCCs[presentationId] : dcc
 
       Properties.s.editElementProperties(
-        this._knots, this._knotSelected, el, dcc, role)
+        this._knots, this._knotSelected, el, dcc, role, message.buttonType)
     }
   }
 

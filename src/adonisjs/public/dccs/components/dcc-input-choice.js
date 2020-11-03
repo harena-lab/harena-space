@@ -333,6 +333,12 @@ class DCCInputChoice extends DCCInput {
     MessageBus.int.publish('var/' + this.variable + '/group_input/ready',
       DCCInputChoice.elementTag)
   }
+
+  editButtons () {
+    return super.editButtons().concat([DCCVisual.editDCCExpand])
+  }
+
+  editExpandListener() {}
 }
 
 (function () {

@@ -7,7 +7,7 @@ class DCCVisual extends DCCBase {
     super()
     this._presentationReady = false
     this._pendingHide = false
-    this.selectListener = this.selectListener.bind(this)
+    this.editListener = this.editListener.bind(this)
     this.mouseoverListener = this.mouseoverListener.bind(this)
     this.mouseoutListener = this.mouseoutListener.bind(this)
   }
@@ -141,13 +141,14 @@ class DCCVisual extends DCCBase {
     this._activateAuthorPresentation(presentation, listener)
   }
 
-  selectListener (event) {
+  editListener (buttonType) {
     this._removeEditControls()
-    MessageBus.ext.publish('control/element/' + this.id + '/selected')
+    MessageBus.ext.publish('control/element/' + this.id + '/selected',
+      {buttonType: buttonType})
   }
 
   mouseoverListener (event) {
-    this._editControls(this._presentation, this.selectListener)
+    this._editControls(this._presentation, this)
   }
 
   mouseoutListener (event) {
@@ -180,12 +181,13 @@ class DCCVisual extends DCCBase {
         if (presentation.tagName.toLowerCase().includes('dcc-'))
           presentation = presentation._presentation
 
+        const edButtons = this.editButtons()
         const elementRect = presentation.getBoundingClientRect()
         let rect = {
           top: -elementRect.height,
           left: 0,
-          width: elementRect.width,
-          height: elementRect.height
+          width: 45 * edButtons.length,
+          height: 50
         }
 
         /*
@@ -220,25 +222,37 @@ class DCCVisual extends DCCBase {
           .replace(/\{left\}/gm, rect.left)
           .replace(/\{width\}/gm, rect.width)
           .replace(/\{height\}/gm, rect.height)
-          .replace(/\{edit\}/gm, DCCVisual.buttonEditSVG)
-          .replace(/\{expand\}/gm, DCCVisual.buttonExpandSVG)
+
+        for (let eb of edButtons)
+          templateHTML += DCCVisual.buttonHTML.replace(/\{type\}/gm, eb.type)
+                                              .replace(/\{svg\}/gm, eb.svg)
+
+        templateHTML += '</div>'
+
         const template = document.createElement('template')
         template.innerHTML = templateHTML
         const panelNode = template.content.cloneNode(true)
         presentation.appendChild(panelNode)
         const panel = presentation.querySelector('#panel-presentation')
+
+        for (let eb of edButtons) {
+          const eedcc = new editEventDCC(eb.type, listener)
+          panel.querySelector('#edit-dcc-' + eb.type)
+               .addEventListener('click', eedcc.editListener)
+        }
+        
+        /*
         let btEdit = panel.querySelector('#bt-edit-element')
-        btEdit.addEventListener('click', listener)
+        btEdit.addEventListener('click', listener['selectListener'])
+        */
+
         DCCVisual._editPanel = {
           presentation: presentation,
           node: panelNode,
           panel: panel
         }
-        // DCCVisual._editPanel.addEventListener('mouseleave', this.mouseoutListener)
         DCCVisual._editPanel.panel.addEventListener('mouseout', this.mouseoutListener)
-        // presentation.style.border = DCCVisual.selectedBorderStyle
       }
-    // }
   }
 
   /*
@@ -292,6 +306,10 @@ class DCCVisual extends DCCBase {
   _storePresentation (presentation) {
     this._presentation = presentation
   }
+
+  editButtons () {
+    return [DCCVisual.editDCCDefault]
+  }
 }
 
 class DCCMultiVisual extends DCCVisual {
@@ -302,11 +320,6 @@ class DCCMultiVisual extends DCCVisual {
 
   _storePresentation (presentation, role, presentationId) {
     super._storePresentation(presentation)
-    /*
-    console.log('=== store presentation')
-    console.log(this.id)
-    console.log(presentationId)
-    */
     if (presentation != null) {
       this._presentationSet.push(
         new PresentationDCC(presentation, this.id, role, presentationId, this))
@@ -368,17 +381,11 @@ class DCCMultiVisual extends DCCVisual {
   }
 
   _editControls (presentation, listener, role) {
-    console.log('=== edit controls')
-    console.log(presentation)
-    console.log(listener)
-    console.log(role)
     const pres = this._presentationSet.find(
       pr => ((pr._param == null && role == null) ||
              (pr._param != null && pr._param.role == role)))
-    console.log('=== presentation set')
-    console.log(pres)
     if (pres != null)
-      this._editControlsPresentation(pres._presentation, pres.selectListener)
+      this._editControlsPresentation(pres._presentation, pres)
   }
 
   /*
@@ -395,12 +402,6 @@ class DCCMultiVisual extends DCCVisual {
 // manages individual in multiple visual DCCs
 class PresentationDCC {
   constructor (presentation, id, role, presentationId, owner) {
-    /*
-    console.log('=== presentation dcc')
-    console.log(id)
-    console.log(role)
-    console.log(presentationId)
-    */
     this._presentation = presentation
     this._id = id
     this._param = null
@@ -410,28 +411,19 @@ class PresentationDCC {
       this._param.role = role
       this._param.presentationId = presentationId
     }
-    this.selectListener = this.selectListener.bind(this)
+    this.editListener = this.editListener.bind(this)
     this.mouseoverListener = this.mouseoverListener.bind(this)
     // this.mouseoutListener = this.mouseoutListener.bind(this)
   }
 
-  selectListener () {
-    /*
-    console.log('=== trigger')
-    console.log(this._id)
-    console.log(this._param)
-    */
+  editListener (buttonType) {
+    this._param.buttonType = buttonType
     MessageBus.ext.publish(
       'control/element/' + this._id + '/selected', this._param)
   }
 
   mouseoverListener (event) {
-    /*
-    console.log('=== mol')
-    console.log(this._presentation)
-    console.log(this)
-    */
-    this._owner._editControls(this._presentation, this.selectListener,
+    this._owner._editControls(this._presentation, this,
       (this._param != null && this._param.role != null) ? this._param.role : null)
   }
 
@@ -443,25 +435,48 @@ class PresentationDCC {
   */
 }
 
+
+class editEventDCC {
+  constructor(buttonType, listener) {
+    this._buttonType = buttonType
+    this._listener = listener
+    this.editListener = this.editListener.bind(this)
+  }
+
+  editListener(event) {
+    this._listener.editListener(this._buttonType)
+  }
+}
+
 (function () {
   DCCVisual.selectedBorderStyle = '3px dashed #000000'
 
   DCCVisual.templateHTML =
-`<div style="position: relative; top: {top}px; left: {left}px; width: 45px; height: 50px; background: rgba(0, 0, 0, 0.5); text-align: left" id="panel-presentation">
-  <div id="bt-edit-element" style="width: 100%; height: 100%; padding: 5px; display: inline-block; color: white">{edit}</div>
-</div>`
+`<div id="panel-presentation" style="position: relative; top: {top}px; left: {left}px; width: {width}px; height: {height}px; background: rgba(0, 0, 0, 0.5); text-align: left; display: flex; flex-direction: row;">`
+
+  DCCVisual.buttonHTML =
+`  <div id="edit-dcc-{type}" style="width: 45px; height: 50px">
+    <div style="width: 25px; height: 30px; margin: 10px; color: white">{svg}</div>
+  </div>`
+//  bt-edit-element
 //  <div id="bt-expand-element" style="width: 16px; height: 16px; display: inline-block; color: white">{expand}</div>
 
   // pen https://fontawesome.com/icons/pen?style=solid
-  DCCVisual.buttonEditSVG =
+  DCCVisual.editDCCDefault = {
+    type: 'default',
+    svg:
 `<svg viewBox="0 0 512 512">
 <path fill="currentColor" d="M290.74 93.24l128.02 128.02-277.99 277.99-114.14 12.6C11.35 513.54-1.56 500.62.14 485.34l12.7-114.22 277.9-277.88zm207.2-19.06l-60.11-60.11c-18.75-18.75-49.16-18.75-67.91 0l-56.55 56.55 128.02 128.02 56.55-56.55c18.75-18.76 18.75-49.16 0-67.91z">
 </path></svg>`
+  }
 
   // external-link-alt https://fontawesome.com/icons/external-link-alt?style=solid
-  DCCVisual.buttonExpandSVG =
+  DCCVisual.editDCCExpand = {
+    type: 'expand',
+    svg:
 `<svg viewBox="0 0 512 512">
 <path fill="currentColor" d="M432,320H400a16,16,0,0,0-16,16V448H64V128H208a16,16,0,0,0,16-16V80a16,16,0,0,0-16-16H48A48,48,0,0,0,0,112V464a48,48,0,0,0,48,48H400a48,48,0,0,0,48-48V336A16,16,0,0,0,432,320ZM488,0h-128c-21.37,0-32.05,25.91-17,41l35.73,35.73L135,320.37a24,24,0,0,0,0,34L157.67,377a24,24,0,0,0,34,0L435.28,133.32,471,169c15,15,41,4.5,41-17V24A24,24,0,0,0,488,0Z">
 </path></svg>`
+  }
 
 })()
