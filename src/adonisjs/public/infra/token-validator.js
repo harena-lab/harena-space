@@ -41,7 +41,7 @@ class TokenController {
 
   async changeHeaderButtons(response){
 
-      if (document.readyState === 'complete') {
+      if (document.readyState === 'complete' && document.querySelector('#logout-block')) {
 
         try {
           const elemLogin = document.querySelector('#login-block')
@@ -62,26 +62,30 @@ class TokenController {
         }
         MessageBus.ext.publish('control/validate/ready')
       }else{
-        window.addEventListener("load", function(event) {
-          try {
-            const elemLogin = document.querySelector('#login-block')
-            const elemLogout = document.querySelector('#logout-block')
-
-            if(response.token === 'token valid'){
-              // console.log(response.token)
-              elemLogin.style.display = 'none'
-              elemLogout.style.display = 'block'
-              document.querySelector('#logoutDropdownBtn').innerHTML = response.username
-            }else{
-              // console.log(response.token)
-              elemLogin.style.display = 'block'
-              elemLogout.style.display = 'none'
-            }
-          } catch (e) {
-            // console.log(e)
-          }
-          MessageBus.ext.publish('control/validate/ready')
-        });
+        setTimeout(function(){
+          TokenController.instance.changeHeaderButtons(response)
+        }, 200)
+        /* window.addEventListener("load", function(event) {
+        //   try {
+        //     const elemLogin = document.querySelector('#login-block')
+        //     const elemLogout = document.querySelector('#logout-block')
+        //
+        //     if(response.token === 'token valid'){
+        //       // console.log(response.token)
+        //       elemLogin.style.display = 'none'
+        //       elemLogout.style.display = 'block'
+        //       document.querySelector('#logoutDropdownBtn').innerHTML = response.username
+        //     }else{
+        //       // console.log(response.token)
+        //       elemLogin.style.display = 'block'
+        //       elemLogout.style.display = 'none'
+        //     }
+        //   } catch (e) {
+        //     // console.log(e)
+        //   }
+        //   console.log('============')
+        //   MessageBus.ext.publish('control/validate/ready')
+      });*/
       }
   }
 

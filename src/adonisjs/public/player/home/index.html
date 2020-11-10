@@ -67,9 +67,10 @@
     <!-- Create a section to place page content -->
     <main role="main">
       <div class="d-flex flex-column vh-100 vw-100 draft-author-padding hidden-overflow">
-
+        <!-- Login/logout header -->
+        <dcc-include src="/author/partials/header.html"> </dcc-include>
         <!-- Create breadcrumbs -->
-        <div class="container-fluid" >
+        <div class="ml-4 mr-auto zindex-fixed author-breadcrumb" >
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item"><a href="/">Welcome</a></li>
