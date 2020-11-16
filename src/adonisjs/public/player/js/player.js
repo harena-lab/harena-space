@@ -68,12 +68,11 @@ class PlayerManager {
           break
         case 'knot/<</navigate': this.startCase()
           const flowStart = this._nextFlowKnot()
-          const startKnot =
-                                       (flowStart != null)
-                                         ? flowStart.target
-                                         : (DCCPlayerServer.localEnv)
-                                           ? DCCPlayerServer.playerObj.start
-                                           : this._compiledCase.start
+          const startKnot = (flowStart != null)
+                               ? flowStart.target
+                               : (DCCPlayerServer.localEnv)
+                                 ? DCCPlayerServer.playerObj.start
+                                 : this._compiledCase.start
           // console.log("=== start");
           // console.log(startKnot);
           this._state.historyRecord(startKnot)
@@ -297,11 +296,13 @@ class PlayerManager {
               let lastLevel = 0
               let lastK = null
               for (const k in this._knots) {
-                if (this._knots[k].level > lastLevel) { lastK = k } else {
-                  flow.push({ target: lastK })
-                  lastK = k
+                if (!this._knots[k].categories || !this._knots[k].categories.includes('note')) {
+                  if (this._knots[k].level > lastLevel) { lastK = k } else {
+                    flow.push({ target: lastK })
+                    lastK = k
+                  }
+                  lastLevel = this._knots[k].level
                 }
-                lastLevel = this._knots[k].level
               }
               if (lastK != null) { flow.push({ target: lastK }) }
             } else {
@@ -318,6 +319,9 @@ class PlayerManager {
   }
 
   async knotLoad (knotName, parameter) {
+    console.log('=== load knot')
+    console.log(knotName)
+
     this._currentKnot = knotName
 
     if (this._knots[knotName].categories &&
