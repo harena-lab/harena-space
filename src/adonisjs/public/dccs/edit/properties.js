@@ -12,6 +12,9 @@ class Properties {
     this.applyPropertiesShort = this.applyPropertiesShort.bind(this)
     MessageBus.ext.subscribe('properties/apply/short',
       this.applyPropertiesShort)
+    this.closeProperties = this.closeProperties.bind(this)
+    MessageBus.ext.subscribe('properties/cancel/short',
+      this.closeProperties)
   }
 
   attachPanelDetails (panel) {
@@ -20,30 +23,21 @@ class Properties {
 
   editKnotProperties (obj, knotId, presentation, extra) {
     this._knotOriginalTitle = obj.title
-    const editp = this.editProperties(obj)
+    const editp = this.editProperties(obj, 'default')
     this._editor = new EditDCCProperties(null, presentation,
       editp.htmls + extra)
   }
 
-  editElementProperties (knots, knotid, el, dcc, role) {
-    /*
-    console.log('=== edit element properties')
-    console.log(knots)
-    console.log(knotid)
-    console.log(el)
-    console.log(dcc)
-    console.log(role)
-    */
+  editElementProperties (knots, knotid, el, dcc, role, buttonType) {
     this._knots = knots
     const knotContent = knots[knotid].content
     const element = dcc.currentPresentation()
     const obj = knotContent[el]
-    // console.log(obj)
     this._item = -1
     if (role != null && role.startsWith('item_')) {
       this._item = parseInt(role.substring(5)) - 1 }
     if (this._knotOriginalTitle) { delete this._knotOriginalTitle }
-    const editp = this.editProperties(obj, role)
+    const editp = this.editProperties(obj, role, buttonType)
     // <TODO> Provisory
     const svg = ['jacinto', 'simple-svg']
       .includes(Basic.service.currentThemeFamily)
@@ -54,12 +48,6 @@ class Properties {
           this._editor = new EditDCCPlain(obj, dcc, editp.htmls)
           break
         case 'text':
-          /*
-          console.log('=== vou editar aqui')
-          console.log(knotContent)
-          console.log(el)
-          console.log(dcc)
-          */
           this._editor = new EditDCCText(knotContent, el, dcc, svg)
           break
         case 'shortStr':
@@ -72,54 +60,38 @@ class Properties {
         case 'option':
           if (this._item > -1) {
             const keys = Object.keys(obj.options)
-            // <TODO> improve in the future
-            this._itemEdit = { edit: keys[this._item] }
-            this._editor = new EditDCCPlain(
-              this._itemEdit, dcc, editp.htmls, 'edit')
+            if (buttonType == 'default') {
+              // <TODO> improve in the future
+              this._itemEdit = { edit: keys[this._item] }
+              this._editor = new EditDCCPlain(
+                this._itemEdit, dcc, editp.htmls, 'edit')
+            } else {
+              const op = obj.options[keys[this._item]]
+              if (op.contextTarget != null) {
+                let knotc = knots[op.contextTarget].content
+                let elo = -1
+                for (let ct in knotc)
+                  if (knotc[ct].type == "text" || knotc[ct].type == "text-block")
+                    elo = parseInt(ct)
+                if (elo > -1)
+                  this._editor = new EditDCCText(knotc, elo, null, svg, true)
+              }
+
+            }
           }
           break
       }
     } else { this._editor = new EditDCCProperties(obj, dcc, editp.htmls) }
-    /*
-      switch (obj.type) {
-         case "text":
-         case "text-block":
-            this._editor = new EditDCCText(knotContent, el, element, svg);
-            break;
-         case "entity":
-            if (role)
-               switch (role) {
-                  case "text":
-                  case "entity": this._editor =
-                                    new EditDCCText(knotContent, el, element, svg);
-                                 break;
-                  case "image":  this._editor = new EditDCCImage(obj, element);
-                                 break;
-               }
-            else
-               this._editor = new EditDCCText(knotContent, el, element, svg);
-            break;
-         case "option":
-            if (obj.image)
-               this._editor = new EditDCCImage(obj, element);
-            else
-               this._editor = new EditDCCPlain(obj, "label", dcc, htmlProp);
-            break;
-      }
-      */
   }
 
   /*
     * Structure of the editable object
     */
-  editProperties (obj, role) {
-    // console.log("=== obj/role");
-    // console.log(obj);
-    // console.log(role);
-
+  editProperties (obj, role, buttonType) {
     this._objProperties = obj
+    this._buttonType = buttonType
 
-    const profile = this._typeProfile(obj)
+    const profile = this._typeProfile(obj)[buttonType]
     let seq = 1
     let htmlD = ''
     let htmlS = ''
@@ -169,10 +141,6 @@ class Properties {
   }
 
   _typeProfile (obj) {
-    /*
-    console.log('=== type profile')
-    console.log(obj)
-    */
     let profile = Properties.elProfiles[obj.type]
     if (Properties.hasSubtypes.includes(obj.type)) {
       profile = profile[
@@ -237,14 +205,20 @@ class Properties {
           .replace(/\[value\]/igm, value[op])
         sub++
       }
-    } else if (property.type == 'option' && role.startsWith('item_') &&
+    } 
+    else if (property.type == 'option' && role.startsWith('item_') &&
                  this._item > -1) {
       // items inside an option type
-      const keys = Object.keys(value)
-      fields = Properties.fieldTypes.text
-        .replace(/\[label\]/igm, property.label)
-        .replace(/\[value\]/igm, value[keys[this._item]].message)
-    } else {
+      // <TODO> disabled (temporary)
+      /*
+        const keys = Object.keys(value)
+        fields = Properties.fieldTypes.text
+          .replace(/\[label\]/igm, property.label)
+          .replace(/\[value\]/igm, value[keys[this._item]].message)
+      */
+      fields = ''
+    }
+    else {
       fields = Properties.fieldTypes[property.type]
         .replace(/\[label\]/igm, property.label)
         .replace(/\[value\]/igm, value)
@@ -275,18 +249,16 @@ class Properties {
     const sufix = (details) ? '_d' : '_s'
     const panel = (details)
       ? this._panelDetails : this._editor.editorExtended
-    /*
     console.log('=== obj properties')
     console.log(this._objProperties)
-    */
     if (this._objProperties) {
-      const profile = this._typeProfile(this._objProperties)
+      const profile = this._typeProfile(this._objProperties)[this._buttonType]
       let seq = 1
       for (const p in profile) {
         if (profile[p].type != 'void') {
           if (!profile[p].composite) {
             if (details ||
-                      (profile[p].visual && profile[p].visual.includes('panel'))) {
+                (profile[p].visual && profile[p].visual.includes('panel'))) {
               /*
               console.log('=== obj properties')
               console.log(this._objProperties)
@@ -301,10 +273,6 @@ class Properties {
             for (const s in profile[p].composite) {
               if (details || (profile[p].visual &&
                          profile[p].visual.includes('panel'))) {
-                /*
-                console.log('=== obj properties')
-                console.log(this._objProperties)
-                */
                 const objProperty = await this._applySingleProperty(
                   profile[p].composite[s], seq, panel, sufix,
                   this._objProperties[p])
@@ -330,10 +298,21 @@ class Properties {
         delete this._knotOriginalTitle
       }
 
+      /*
       delete this._objProperties
       MessageBus.ext.publish('control/knot/update')
       if (!details) { MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message)) }
+      */
     }
+    this.closeProperties(topic, message, details)
+  }
+
+  closeProperties(topic, message, details) {
+    if (this._objProperties) {
+      delete this._objProperties
+      MessageBus.ext.publish('control/knot/update')
+    }
+    if (!details) { MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message)) }
   }
 
   async _applySingleProperty (property, seq, panel, sufix, previous) {
@@ -357,10 +336,15 @@ class Properties {
       case 'option':
         objProperty = {}
         let i = 0
+        console.log('=== updating option')
+        console.log(previous)
+        console.log(this._itemEdit)
         for (const item in previous) {
           if (i == this._item) {
             if (this._itemEdit.edit.trim().length > 0) {
-              previous[item].message = field.value.trim()
+              // <TODO> provisory test (field disabled)
+              if (field != null)
+                previous[item].message = field.value.trim()
               objProperty[this._itemEdit.edit] = previous[item]
             }
           } else { objProperty[item] = previous[item] }
@@ -404,7 +388,7 @@ class Properties {
 // Properties.selectiveRoles = ["entity", "image", "text", "slider", "input"];
 
   Properties.elProfiles = {
-    knot: {
+    knot: {default: {
       title: {
         type: 'shortStr',
         label: 'Title',
@@ -418,22 +402,22 @@ class Properties {
         type: 'shortStr',
         label: 'Level'
       }
-    },
-    text: {
+    }},
+    text: {default: {
       content: {
         type: 'text',
         label: 'Text',
         visual: 'inline'
       }
-    },
-    'text-block': {
+    }},
+    'text-block': {default: {
       content: {
         type: 'text',
         label: 'Text',
         visual: 'inline'
       }
-    },
-    image: {
+    }},
+    image: {default: {
       alternative: {
         type: 'shortStr',
         label: 'Label'
@@ -443,8 +427,8 @@ class Properties {
         label: 'Image',
         visual: 'inline'
       }
-    },
-    option: {
+    }},
+    option: {default: {
       label: {
         type: 'shortStr',
         label: 'Label',
@@ -460,8 +444,8 @@ class Properties {
         label: 'message',
         visual: 'panel'
       }
-    },
-    entity: {
+    }},
+    entity: {default: {
       entity: {
         type: 'shortStr',
         label: 'Entity',
@@ -488,9 +472,9 @@ class Properties {
         visual: 'inline',
         role: 'text'
       }
-    },
+    }},
     input: {
-      short: {
+      short: {default: {
       /*
       subtype: {type: "select",
                 options: Translator.inputSubtype,
@@ -519,8 +503,8 @@ class Properties {
           label: 'Vocabularies',
           visual: 'panel'
         }
-      },
-      text: {
+      }},
+      text: {default: {
         input: {
           type: 'void',
           visual: 'inline',
@@ -543,8 +527,8 @@ class Properties {
           label: 'Vocabularies',
           visual: 'panel'
         }
-      },
-      slider: {
+      }},
+      slider: {default: {
         slider: {
           type: 'void',
           visual: 'inline',
@@ -581,28 +565,38 @@ class Properties {
           label: 'Index',
           visual: 'panel'
         }
-      },
+      }},
       choice: {
-        input: {
-          type: 'void',
-          visual: 'inline',
-          role: 'input'
+        default: {
+          options: {
+            type: 'option',
+            label: 'Message',
+            visual: 'inline-panel',
+            role: 'item'
+          }
         },
-        text: {
-          type: 'text',
-          label: 'Statement',
-          visual: 'inline',
-          role: 'text'
-        },
-        variable: {
-          type: 'variable',
-          label: 'Variable'
-        },
-        options: {
-          type: 'option',
-          label: 'Message',
-          visual: 'inline-panel',
-          role: 'item'
+        expand: {
+          input: {
+            type: 'void',
+            visual: 'inline',
+            role: 'input'
+          },
+          text: {
+            type: 'text',
+            label: 'Statement',
+            visual: 'inline',
+            role: 'text'
+          },
+          variable: {
+            type: 'variable',
+            label: 'Variable'
+          },
+          options: {
+            type: 'option',
+            label: 'Message',
+            visual: 'inline-panel',
+            role: 'item'
+          }
         }
       /*
       options: {type: "propertyValue",

@@ -11,9 +11,11 @@ class EditDCC {
     this._editorWrapper = this._fetchEditorWrapper()
     this._editorContainer = this._fetchEditorContainer()
     this._containerRect = this._editorWrapper.getBoundingClientRect()
-    this._elementWrapper = this._fetchElementWrapper()
-    this._elementWrapperRect = this._elementWrapper.getBoundingClientRect()
-    this._elementRect = this._editElement.getBoundingClientRect()
+    if (dcc != null) {
+      this._elementWrapper = this._fetchElementWrapper()
+      this._elementWrapperRect = this._elementWrapper.getBoundingClientRect()
+      this._elementRect = this._editElement.getBoundingClientRect()
+    }
   }
 
   get editorExtended () {
@@ -28,7 +30,10 @@ class EditDCC {
   }
 
   async _handleEditorAction (action) {
-    if (action === 'confirm') { await MessageBus.ext.request('properties/apply/short') } else if (this._editDCC != null) { this._editDCC.reactivateAuthor() }
+    if (action === 'confirm') {
+      await MessageBus.ext.request('properties/apply/short')
+    } else {await MessageBus.ext.request('properties/cancel/short')}
+    // else if (this._editDCC != null) { this._editDCC.reactivateAuthor() }
     this.closeEditor()
   }
 

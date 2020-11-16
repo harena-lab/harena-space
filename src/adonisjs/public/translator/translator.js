@@ -128,7 +128,8 @@ class Translator {
             this._knotMdToObj(knotBlocks[kb].match(Translator.element.knot.mark))
       transObj.render = true
       let label = transObj.title
-      if (transObj.level == 1) { knotCtx[0] = { label: label, obj: transObj } } else {
+      if (transObj.level == 1) { knotCtx[0] = { label: label, obj: transObj } }
+      else {
         let upper = -1
         for (let l = transObj.level - 2; l >= 0 && upper == -1; l--) {
           if (knotCtx[l] != null) { upper = l }
@@ -136,12 +137,16 @@ class Translator {
 
         if (upper != -1) {
           label = knotCtx[upper].label + '.' + label
-          knotCtx[upper].obj.render = false
+          if (transObj.categories && !transObj.categories.includes('note'))
+            knotCtx[upper].obj.render = false
         }
         knotCtx[transObj.level - 1] = { label: label, obj: transObj }
       }
       const knotId = label.replace(/ /g, '_')
-      if (kb == 1) { compiledCase.start = knotId } else if (transObj.categories && transObj.categories.indexOf('start') >= 0) { compiledCase.start = knotId }
+      if (kb == 1)
+        { compiledCase.start = knotId }
+      else if (transObj.categories && transObj.categories.includes('start'))
+        { compiledCase.start = knotId }
       if (compiledCase.knots[knotId]) {
         if (!compiledCase._error) { compiledCase._error = [] }
         compiledCase._error.push('Duplicate knots title: ' + label)
@@ -878,8 +883,16 @@ class Translator {
       if (knots[k].inheritance) {
         const target = this.findContext(knots, k, knots[k].inheritance)
         if (knots[target]) {
-          if (!knots[k].categories && knots[target].categories) { knots[k].categories = knots[target].categories }
-          knots[k].content = JSON.parse(JSON.stringify(knots[target].content))
+          if (knots[target].categories) {
+            if (knots[k].categories)
+              knot[k].categories = knot[k].categories.concat(knots[target].categories)
+            else
+              knots[k].categories = knots[target].categories
+          }
+          let inherited = JSON.parse(JSON.stringify(knots[target].content))
+          for (let ct of inherited)
+            ct.inherited = true
+          knots[k].content =inherited.concat(knots[k].content)
         }
 
         // adjusting the context
@@ -968,7 +981,8 @@ class Translator {
     const themes = (knot.categories)
       ? knot.categories : ['knot']
     for (const tp in themes) {
-      if (!this._themeSet[themes[tp]]) {
+      if (!Translator.markerCategories.includes(themes[tp]) &&
+          !this._themeSet[themes[tp]]) {
         const templ = await
         this.loadTheme(themes[tp])
         if (templ != '') { this._themeSet[themes[tp]] = templ } else {
@@ -989,10 +1003,11 @@ class Translator {
       console.log(finalHTML);
       */
     for (let tp = themes.length - 1; tp >= 0; tp--) {
-      finalHTML = this._themeSet[themes[tp]]
-        .replace(/{knot}/igm, finalHTML)
-        .replace(/{background-path}/igm, backPath)
-        .replace(/{background-alternative}/igm, backAlt)
+      if (!Translator.markerCategories.includes(themes[tp]))
+        finalHTML = this._themeSet[themes[tp]]
+          .replace(/{knot}/igm, finalHTML)
+          .replace(/{background-path}/igm, backPath)
+          .replace(/{background-alternative}/igm, backAlt)
     }
     return finalHTML
   }
@@ -1109,43 +1124,20 @@ class Translator {
     */
   assembleMarkdown (compiledCase) {
     let md = ''
-    /*
-      for (let kn in compiledCase.knots)
-         md += compiledCase.knots[kn]._source;
-      */
+    console.log('=== Assemble Markdown')
+    console.log(compiledCase)
     for (const kn in compiledCase.knots) {
       // toCompile indicates a part generated only with markdown (by newKnot)
       // and cannot inversely generate markdown
       if (compiledCase.knots[kn].toCompile) {
-        /*
-            const lastType = Translator.element[compiledCase.knots[kn].content[
-               compiledCase.knots[kn].content.length-1].type];
-            md += compiledCase.knots[kn]._source +
-                  ((lastType !== undefined &&
-                    lastType.line !== undefined &&
-                    lastType.line) ? "\n" : "");
-            */
         md += compiledCase.knots[kn]._source
       } else {
         md += compiledCase.knots[kn]._sourceHead + '\n'
-        if (compiledCase.knots[kn].inheritance) { md += '\n' } else {
-          for (const ct in compiledCase.knots[kn].content) {
-          /*
-                  let knotType =
-                     Translator.element[compiledCase.knots[kn].content[ct].type];
-                  */
-            const content = compiledCase.knots[kn].content[ct]
-            // const knotType = Translator.element[content.type];
-            /*
-                  console.log("=== knot type");
-                  console.log(compiledCase.knots[kn].content[ct].type);
-                  console.log(knotType);
-                  console.log(compiledCase.knots[kn].content[ct]._source +
-                        ((knotType !== undefined &&
-                          knotType.line !== undefined &&
-                          knotType.line) ? "\n" : ""));
-                  */
+        let newContent = 0
+        for (const ct in compiledCase.knots[kn].content) {
+          const content = compiledCase.knots[kn].content[ct]
 
+          if (!content.inherited) {
             // linefeed of the merged block (if block), otherwise linefeed of the content
             md += content._source +
                         (((content.mergeLine === undefined &&
@@ -1153,24 +1145,11 @@ class Translator {
                           (content.mergeLine !== undefined &&
                            content.mergeLine))
                           ? '\n' : '')
-
-            /*
-                  md += content._source +
-                        (((knotType !== undefined &&
-                           content.mergeLine === undefined &&
-                           knotType.line !== undefined &&
-                           knotType.line) ||
-                          (content.mergeLine !== undefined &&
-                           content.mergeLine))
-                        ? "\n" : "");
-                  */
-          /*
-                  console.log((knotType !== undefined &&
-                          knotType.line !== undefined &&
-                          knotType.line));
-                  */
+            newContent++
           }
         }
+        if (newContent == 0)
+          md += '\n'
       }
     }
 
@@ -1261,7 +1240,8 @@ class Translator {
       }
     }
 
-    if (matchArray[4] != null) { knot.inheritance = matchArray[4].trim() } else if (matchArray[7] != null) { knot.inheritance = matchArray[7].trim() }
+    if (matchArray[4] != null) { knot.inheritance = matchArray[4].trim() }
+    else if (matchArray[7] != null) { knot.inheritance = matchArray[7].trim() }
 
     if (matchArray[1] != null) { knot.level = matchArray[1].trim().length } else
     if (matchArray[8][0] == '=') { knot.level = 1 } else { knot.level = 2 }
@@ -2201,7 +2181,7 @@ class Translator {
       subtext: 'value'
     },
     option: {
-      mark: /^[ \t]*([\+\*])[ \t]+([^&<> \t\n\r\f][^&<>\n\r\f]*)?((?:(?:(?:&lt;)|<)?-(?:(?:&gt;)|>))|(?:\(-\)))[ \t]*([^"\n\r\f(]+)(?:"([^"\n\r\f]*)")?[ \t]*(?:(\>)?\(\(([^)]*)\)\))?(\?)?[ \t]*$/im
+      mark: /^[ \t]*([\+\*])[ \t]+([^&<> \t\n\r\f][^&<>\n\r\f]*)?((?:(?:(?:&lt;)|<)?-(?:(?:&gt;)|>))|(?:\(-\)))[ \t]*([^">\n\r\f(]+)(?:"([^"\n\r\f]*)")?[ \t]*(?:(\>)?\(\(([^)]*)\)\))?(\?)?[ \t]*$/im
     },
     'divert-script': {
       mark: /^[ \t]*(?:\(([\w\.]+)[ \t]*(==|>|<|>=|<=|&gt;|&lt;|&gt;=|&lt;=)[ \t]*((?:"[^"\n\r\f]+")|(?:\-?\d+(?:\.\d+)?)|(?:[\w\.]+))\)[ \t]*)?-(?:(?:&gt;)|>)[ \t]*([^"\n\r\f]+)(?:"([^"\n\r\f]+)")?[ \t]*$/im
@@ -2265,6 +2245,9 @@ class Translator {
 
   Translator.marksAnnotationInside =
     /(?:([^\:\n\r\f]+)\:)?([^=\n\r\f]+)(?:=([\w \t%]*)(?:\/([\w \t%]*))?)?/im
+
+  // Categories that do not have a correspondent theme
+  Translator.markerCategories = ['start', 'end', 'division']
 
   // <TODO> this is a different approach indicating characteristic by type
   // (homogenize?)

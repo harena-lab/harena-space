@@ -8,19 +8,14 @@ class DCCBase extends HTMLElement {
     this.edit = this.edit.bind(this)
     this.toNotify = this.toNotify.bind(this)
     this.notify = this.notify.bind(this)
-    // console.log('=== dcc id')
-    // console.log(this.id)
   }
 
   connectedCallback () {
-    // console.log('=== callback')
-    // console.log(this.id)
     if (this.hasAttribute('bind'))
       this._setup = DCC.retrieve(this.bind.toLowerCase(), this.nodeName.toLowerCase())
     if (this.hasAttribute('subscribe'))
       this._subscribeTopic(this.subscribe)
     if (this.hasAttribute('connect')) {
-      // console.log('=== has connection')
       this._connectTo(this.connect)
     }
   }
@@ -81,18 +76,11 @@ class DCCBase extends HTMLElement {
     if (colon != -1) {
       this._subsrole = topicRole.substring(colon + 1)
       MessageBus.ext.subscribe(topicRole.substring(0, colon), this.toNotify)
-      // console.log('=== subscribed')
-      // console.log(topicRole.substring(colon + 1))
-      // console.log(topicRole.substring(0, colon))
     } else
       MessageBus.ext.subscribe(topicRole, this.notify)
   }
 
   toNotify (topic, message) {
-    // console.log('=== to notify')
-    // console.log(this._subsrole)
-    // console.log(topic)
-    // console.log(message)
     this.notify(topic, {role: this._subsrole, body: message})
   }
 
@@ -111,8 +99,6 @@ class DCCBase extends HTMLElement {
   }
 
   _connectTo (idTopicRole) {
-    // console.log('=== base connect to')
-    // console.log(idTopicRole)
     const colonId = idTopicRole.indexOf(':')
     const colonRole = idTopicRole.lastIndexOf(':')
     if (colonId != -1 && colonRole != -1) {
@@ -126,10 +112,6 @@ class DCCBase extends HTMLElement {
 
   // connects this DCC to another
   connectTo (id, topic, role) {
-    // console.log('=== connection')
-    // console.log(id)
-    // console.log(topic)
-    // console.log(role)
     if (id != null && topic != null && role != null) {
       if (this._connections == null) this._connections = {}
       if (this._connections[role] == null) this._connections[role] = []
@@ -158,8 +140,6 @@ class DCCBase extends HTMLElement {
 
   async multiRequest (role, message) {
     let response = {}
-    // console.log('=== multi request')
-    // console.log(this._connections)
     if (this._connections != null && this._connections[role] != null)
       for (let c of this._connections[role])
         response[c.id] = await MessageBus.page.requestC(c.id, c.topic, message)

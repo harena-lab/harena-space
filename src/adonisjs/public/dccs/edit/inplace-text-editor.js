@@ -9,21 +9,48 @@ function _harenaCustomUploadAdapterPlugin( editor ) {
 }
 
 class EditDCCText extends EditDCC {
-  constructor (knotContent, el, dcc, svg) {
-    super(dcc, dcc.currentPresentation())
+  constructor (knotContent, el, dcc, svg, floating) {
+    super(dcc, (dcc != null) ? dcc.currentPresentation() : null)
+    console.log('=== another editor')
     this._knotContent = knotContent
     this._element = el
-    this._editDCC = dcc
+    // this._editDCC = dcc
     this._textChanged = false
     this.handleConfirm = this.handleConfirm.bind(this)
     MessageBus.int.subscribe('control/editor/edit/confirm', this.handleConfirm)
     this.handleCancel = this.handleCancel.bind(this)
     MessageBus.int.subscribe('control/editor/edit/cancel', this.handleCancel)
-    this._buildEditor(dcc.currentPresentation())
+
+    let presentation = null
+    if (floating) {
+      const template = document.createElement('template')
+      template.innerHTML = EditDCCText.templateFloating
+        .replace('[content]',
+                 Translator.instance.generateKnotHTML([knotContent[el]], false))
+      // this._shadow = this.attachShadow({ mode: 'open' })
+      console.log('=== new instance')
+      // embeds all clone to enable deleting it
+      this._editorInstance = document.createElement('div')
+      this._editorInstance.appendChild(template.content.cloneNode(true))
+      this._editorWrapper.appendChild(this._editorInstance)
+      /*
+      this._editorContainer.appendChild(template.content.cloneNode(true))
+      this._editorInstance =
+        this._editorContainer.querySelector('#presentation-inline-modal')
+      */
+      presentation = this._editorInstance.querySelector('#presentation-inline-editor')
+      this._toolbarContainer =
+        this._editorInstance.querySelector('#presentation-inline-toolbar')
+    } else {
+      presentation = dcc.currentPresentation()
+      this._toolbarContainer = document.querySelector('#toolbar-editor')
+    }
+
+    this._buildEditor(presentation)
   }
 
-  _buildEditor (dcc) {
-    DecoupledEditor.create(dcc,
+  _buildEditor (presentation) {
+    DecoupledEditor.create(presentation,
       {
         extraPlugins: [_harenaCustomUploadAdapterPlugin],
         mediaEmbed: {
@@ -35,8 +62,8 @@ class EditDCCText extends EditDCC {
          }
       } )
       .then( editor => {
-        const toolbarContainer = document.querySelector('#toolbar-editor')
-        toolbarContainer.appendChild( editor.ui.view.toolbar.element );
+        // const toolbarContainer = document.querySelector('#toolbar-editor')
+        this._toolbarContainer.appendChild( editor.ui.view.toolbar.element );
 
         window.editor = editor;
         this._editor = editor;
@@ -68,7 +95,8 @@ class EditDCCText extends EditDCC {
     // redefines the sequence according to the new elements
     const seq = this._knotContent[this._element].seq
     const shift = objSet.length - 1
-    for (let s = this._element + 1; s < this._knotContent.length; s++) { this._knotContent[s].seq += shift }
+    for (let s = this._element + 1; s < this._knotContent.length; s++)
+      { this._knotContent[s].seq += shift }
 
     // removes the previous element and insert the new one
     this._knotContent.splice(this._element, 1)
@@ -76,18 +104,24 @@ class EditDCCText extends EditDCC {
       objSet[o].seq = seq + o
       this._knotContent.splice(this._element + o, 0, objSet[o])
     }
+  }
 
+  _closeEditor() {
+    MessageBus.int.unsubscribe('control/editor/edit/confirm', this.handleConfirm)
+    MessageBus.int.unsubscribe('control/editor/edit/cancel', this.handleCancel)
+    if (this._editorInstance)
+      this._editorWrapper.removeChild(this._editorInstance)
+    this._removeToolbarPanel()
+    MessageBus.ext.publish('control/knot/update')
   }
 
   handleConfirm() {
     this._updateTranslated()
-    this._removeToolbarPanel()
-    MessageBus.ext.publish('control/knot/update')
+    this._closeEditor()
   }
 
   handleCancel() {
-    this._removeToolbarPanel()
-    MessageBus.ext.publish('control/knot/update')
+    this._closeEditor()
   }
 
   _removeToolbarPanel() {
@@ -139,6 +173,10 @@ class EditDCCText extends EditDCC {
       .replace(/[ \t\n\r\f]*(<video><source src="[^"]+"><\/video>)[ \t\n\r\f]*/igm, '\n\n$1\n\n')
       .trim()
 
+    // changing bullets from - to +
+    mdTranslate = mdTranslate
+      .replace(/^-[ \t]/igm, '* ')
+
     console.log('=== html')
     console.log(mdTranslate)
     const unity = { _source: mdTranslate }
@@ -158,3 +196,38 @@ class EditDCCText extends EditDCC {
     return unity.content
   }
 }
+
+(function () {
+EditDCCText.templateFloating =
+`<style>
+  .dsty-border-editor {
+     border-radius: 1px;
+     box-shadow: 0px 0px 0px 20px rgba(0,0,0,0.5);
+     margin: 15px;
+  }
+  .dsty-border {
+     border: 1px solid black;
+     border-radius: 5px;
+     margin: 5px;
+  }
+  .dsty-editor {
+     position: absolute;
+     margin: auto;
+     top: 0;
+     right: 0;
+     bottom: 0;
+     left: 0;
+     z-index: 100;
+     width: 600px;
+     height: 400px;
+     overflow: hidden;
+     display: flex;
+     background: white;
+     flex-direction: column;
+  }
+ </style>
+ <div class="dsty-editor dsty-border-editor">
+   <div id="presentation-inline-toolbar"></div>
+   <div id="presentation-inline-editor">[content]</div>
+ </div>`
+})()

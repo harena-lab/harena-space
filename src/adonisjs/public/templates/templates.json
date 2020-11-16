@@ -1,8 +1,8 @@
 {"Quiz da Emergência":
    {"questId": "quiz-da-emergencia",
     "description": "Um quiz com quatro alternativas.",
-    "path": "simple/case/quiz_short",
-    "icon": "simple/case/quiz_short.png",
+    "path": "simple/case/quiz_long",
+    "icon": "simple/case/quiz_long.png",
     "scope": "case"},
  "Decisões Extremas":
    {"questId": "decisoes-extremas",
