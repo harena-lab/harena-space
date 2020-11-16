@@ -889,8 +889,10 @@ class Translator {
             else
               knots[k].categories = knots[target].categories
           }
-          knots[k].content =
-            JSON.parse(JSON.stringify(knots[target].content)).concat(knots[k].content)
+          let inherited = JSON.parse(JSON.stringify(knots[target].content))
+          for (let ct of inherited)
+            ct.inherited = true
+          knots[k].content =inherited.concat(knots[k].content)
         }
 
         // adjusting the context
@@ -1122,43 +1124,20 @@ class Translator {
     */
   assembleMarkdown (compiledCase) {
     let md = ''
-    /*
-      for (let kn in compiledCase.knots)
-         md += compiledCase.knots[kn]._source;
-      */
+    console.log('=== Assemble Markdown')
+    console.log(compiledCase)
     for (const kn in compiledCase.knots) {
       // toCompile indicates a part generated only with markdown (by newKnot)
       // and cannot inversely generate markdown
       if (compiledCase.knots[kn].toCompile) {
-        /*
-            const lastType = Translator.element[compiledCase.knots[kn].content[
-               compiledCase.knots[kn].content.length-1].type];
-            md += compiledCase.knots[kn]._source +
-                  ((lastType !== undefined &&
-                    lastType.line !== undefined &&
-                    lastType.line) ? "\n" : "");
-            */
         md += compiledCase.knots[kn]._source
       } else {
         md += compiledCase.knots[kn]._sourceHead + '\n'
-        if (compiledCase.knots[kn].inheritance) { md += '\n' } else {
-          for (const ct in compiledCase.knots[kn].content) {
-          /*
-                  let knotType =
-                     Translator.element[compiledCase.knots[kn].content[ct].type];
-                  */
-            const content = compiledCase.knots[kn].content[ct]
-            // const knotType = Translator.element[content.type];
-            /*
-                  console.log("=== knot type");
-                  console.log(compiledCase.knots[kn].content[ct].type);
-                  console.log(knotType);
-                  console.log(compiledCase.knots[kn].content[ct]._source +
-                        ((knotType !== undefined &&
-                          knotType.line !== undefined &&
-                          knotType.line) ? "\n" : ""));
-                  */
+        let newContent = 0
+        for (const ct in compiledCase.knots[kn].content) {
+          const content = compiledCase.knots[kn].content[ct]
 
+          if (!content.inherited) {
             // linefeed of the merged block (if block), otherwise linefeed of the content
             md += content._source +
                         (((content.mergeLine === undefined &&
@@ -1166,24 +1145,11 @@ class Translator {
                           (content.mergeLine !== undefined &&
                            content.mergeLine))
                           ? '\n' : '')
-
-            /*
-                  md += content._source +
-                        (((knotType !== undefined &&
-                           content.mergeLine === undefined &&
-                           knotType.line !== undefined &&
-                           knotType.line) ||
-                          (content.mergeLine !== undefined &&
-                           content.mergeLine))
-                        ? "\n" : "");
-                  */
-          /*
-                  console.log((knotType !== undefined &&
-                          knotType.line !== undefined &&
-                          knotType.line));
-                  */
+            newContent++
           }
         }
+        if (newContent == 0)
+          md += '\n'
       }
     }
 
@@ -2215,7 +2181,7 @@ class Translator {
       subtext: 'value'
     },
     option: {
-      mark: /^[ \t]*([\+\*])[ \t]+([^&<> \t\n\r\f][^&<>\n\r\f]*)?((?:(?:(?:&lt;)|<)?-(?:(?:&gt;)|>))|(?:\(-\)))[ \t]*([^"\n\r\f(]+)(?:"([^"\n\r\f]*)")?[ \t]*(?:(\>)?\(\(([^)]*)\)\))?(\?)?[ \t]*$/im
+      mark: /^[ \t]*([\+\*])[ \t]+([^&<> \t\n\r\f][^&<>\n\r\f]*)?((?:(?:(?:&lt;)|<)?-(?:(?:&gt;)|>))|(?:\(-\)))[ \t]*([^">\n\r\f(]+)(?:"([^"\n\r\f]*)")?[ \t]*(?:(\>)?\(\(([^)]*)\)\))?(\?)?[ \t]*$/im
     },
     'divert-script': {
       mark: /^[ \t]*(?:\(([\w\.]+)[ \t]*(==|>|<|>=|<=|&gt;|&lt;|&gt;=|&lt;=)[ \t]*((?:"[^"\n\r\f]+")|(?:\-?\d+(?:\.\d+)?)|(?:[\w\.]+))\)[ \t]*)?-(?:(?:&gt;)|>)[ \t]*([^"\n\r\f]+)(?:"([^"\n\r\f]+)")?[ \t]*$/im

@@ -12,6 +12,9 @@ class Properties {
     this.applyPropertiesShort = this.applyPropertiesShort.bind(this)
     MessageBus.ext.subscribe('properties/apply/short',
       this.applyPropertiesShort)
+    this.closeProperties = this.closeProperties.bind(this)
+    MessageBus.ext.subscribe('properties/cancel/short',
+      this.closeProperties)
   }
 
   attachPanelDetails (panel) {
@@ -57,10 +60,24 @@ class Properties {
         case 'option':
           if (this._item > -1) {
             const keys = Object.keys(obj.options)
-            // <TODO> improve in the future
-            this._itemEdit = { edit: keys[this._item] }
-            this._editor = new EditDCCPlain(
-              this._itemEdit, dcc, editp.htmls, 'edit')
+            if (buttonType == 'default') {
+              // <TODO> improve in the future
+              this._itemEdit = { edit: keys[this._item] }
+              this._editor = new EditDCCPlain(
+                this._itemEdit, dcc, editp.htmls, 'edit')
+            } else {
+              const op = obj.options[keys[this._item]]
+              if (op.contextTarget != null) {
+                let knotc = knots[op.contextTarget].content
+                let elo = -1
+                for (let ct in knotc)
+                  if (knotc[ct].type == "text" || knotc[ct].type == "text-block")
+                    elo = parseInt(ct)
+                if (elo > -1)
+                  this._editor = new EditDCCText(knotc, elo, null, svg, true)
+              }
+
+            }
           }
           break
       }
@@ -188,14 +205,20 @@ class Properties {
           .replace(/\[value\]/igm, value[op])
         sub++
       }
-    } else if (property.type == 'option' && role.startsWith('item_') &&
+    } 
+    else if (property.type == 'option' && role.startsWith('item_') &&
                  this._item > -1) {
       // items inside an option type
-      const keys = Object.keys(value)
-      fields = Properties.fieldTypes.text
-        .replace(/\[label\]/igm, property.label)
-        .replace(/\[value\]/igm, value[keys[this._item]].message)
-    } else {
+      // <TODO> disabled (temporary)
+      /*
+        const keys = Object.keys(value)
+        fields = Properties.fieldTypes.text
+          .replace(/\[label\]/igm, property.label)
+          .replace(/\[value\]/igm, value[keys[this._item]].message)
+      */
+      fields = ''
+    }
+    else {
       fields = Properties.fieldTypes[property.type]
         .replace(/\[label\]/igm, property.label)
         .replace(/\[value\]/igm, value)
@@ -235,7 +258,7 @@ class Properties {
         if (profile[p].type != 'void') {
           if (!profile[p].composite) {
             if (details ||
-                      (profile[p].visual && profile[p].visual.includes('panel'))) {
+                (profile[p].visual && profile[p].visual.includes('panel'))) {
               /*
               console.log('=== obj properties')
               console.log(this._objProperties)
@@ -250,10 +273,6 @@ class Properties {
             for (const s in profile[p].composite) {
               if (details || (profile[p].visual &&
                          profile[p].visual.includes('panel'))) {
-                /*
-                console.log('=== obj properties')
-                console.log(this._objProperties)
-                */
                 const objProperty = await this._applySingleProperty(
                   profile[p].composite[s], seq, panel, sufix,
                   this._objProperties[p])
@@ -279,10 +298,21 @@ class Properties {
         delete this._knotOriginalTitle
       }
 
+      /*
       delete this._objProperties
       MessageBus.ext.publish('control/knot/update')
       if (!details) { MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message)) }
+      */
     }
+    this.closeProperties(topic, message, details)
+  }
+
+  closeProperties(topic, message, details) {
+    if (this._objProperties) {
+      delete this._objProperties
+      MessageBus.ext.publish('control/knot/update')
+    }
+    if (!details) { MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message)) }
   }
 
   async _applySingleProperty (property, seq, panel, sufix, previous) {
@@ -312,7 +342,9 @@ class Properties {
         for (const item in previous) {
           if (i == this._item) {
             if (this._itemEdit.edit.trim().length > 0) {
-              previous[item].message = field.value.trim()
+              // <TODO> provisory test (field disabled)
+              if (field != null)
+                previous[item].message = field.value.trim()
               objProperty[this._itemEdit.edit] = previous[item]
             }
           } else { objProperty[item] = previous[item] }
@@ -539,7 +571,7 @@ class Properties {
           options: {
             type: 'option',
             label: 'Message',
-            visual: 'inline',
+            visual: 'inline-panel',
             role: 'item'
           }
         },
@@ -562,8 +594,8 @@ class Properties {
           options: {
             type: 'option',
             label: 'Message',
-            visual: 'inline',
-            role: 'panel'
+            visual: 'inline-panel',
+            role: 'item'
           }
         }
       /*
