@@ -12,24 +12,6 @@ class DCCVisual extends DCCBase {
     this.mouseoutListener = this.mouseoutListener.bind(this)
   }
 
-  /*
-   static get observedAttributes() {
-      return DCCBase.observedAttributes.concat(["style"]);
-   }
-
-   static get replicatedAttributes() {
-      return DCCBase.replicatedAttributes.concat(["style"]);
-   }
-
-   get style() {
-      return this.getAttribute("style");
-   }
-
-   set style(newValue) {
-      this.setAttribute("style", newValue);
-   }
-   */
-
   connectedCallback () {
     super.connectedCallback()
     this.checkActivateAuthor()
@@ -161,7 +143,8 @@ class DCCVisual extends DCCBase {
 
   _removeEditControls(presentation) {
     if (DCCVisual._editPanel != null) {
-      DCCVisual._editPanel.presentation.removeChild(DCCVisual._editPanel.panel)
+      // DCCVisual._editPanel.presentation.removeChild(DCCVisual._editPanel.panel)
+      document.body.removeChild(DCCVisual._editPanel.panel)
       DCCVisual._editPanel = null
     }
   }
@@ -182,40 +165,14 @@ class DCCVisual extends DCCBase {
           presentation = presentation._presentation
 
         const edButtons = this.editButtons()
-        const elementRect = presentation.getBoundingClientRect()
+        const abPosition = this.absolutePosition(presentation)
+
         let rect = {
-          top: -elementRect.height,
-          left: 0,
+          top: abPosition.y,
+          left: abPosition.x,
           width: 45 * edButtons.length,
           height: 50
         }
-
-        /*
-        const wrapper = ['relative', 'absolute', 'fixed']
-        let parent = presentation.parentNode
-        while (parent != null &&
-               (parent.style == null || parent.style.position == null ||
-                !wrapper.includes(parent.style.position))) {
-          console.log('=== parent')
-          console.log(parent.style)
-          parent = parent.parentNode
-        }
-        if (parent != null) {
-          const parentRect = parent.getBoundingClientRect()
-          rect.top = elementRect.top - parentRect.top
-          rect.left = elementRect.left - parentRect.left
-        }
-        */
-        /*
-        const elWrapper = this._fetchEditorWrapper()
-        if (elWrapper != null) {
-          console.log('=== parent')
-          const parentRect = elWrapper.getBoundingClientRect()
-          console.log(parentRect)
-          rect.top = elementRect.top - parentRect.top
-          rect.left = elementRect.left - parentRect.left
-        }
-        */
 
         let templateHTML = DCCVisual.templateHTML
           .replace(/\{top\}/gm, rect.top)
@@ -232,8 +189,9 @@ class DCCVisual extends DCCBase {
         const template = document.createElement('template')
         template.innerHTML = templateHTML
         const panelNode = template.content.cloneNode(true)
-        presentation.appendChild(panelNode)
-        const panel = presentation.querySelector('#panel-presentation')
+        // presentation.appendChild(panelNode)
+        document.body.appendChild(panelNode)
+        const panel = document.body.querySelector('#panel-presentation')
 
         for (let eb of edButtons) {
           const eedcc = new editEventDCC(eb.type, listener)
@@ -241,11 +199,6 @@ class DCCVisual extends DCCBase {
                .addEventListener('click', eedcc.editListener)
         }
         
-        /*
-        let btEdit = panel.querySelector('#bt-edit-element')
-        btEdit.addEventListener('click', listener['selectListener'])
-        */
-
         DCCVisual._editPanel = {
           presentation: presentation,
           node: panelNode,
@@ -255,49 +208,16 @@ class DCCVisual extends DCCBase {
       }
   }
 
-  /*
-  _fetchElementWrapper (element) {
-    let elWrapper = element
-    if (element != null &&
-        element.xstyle && element.xstyle != 'out' &&
-        element.xstyle != 'out-image') {
-      let ew = elWrapper.parentNode
-      while (ew != null && (!ew.id || !ew.id.endsWith('-wrapper'))) { ew = ew.parentNode }
-      // otherwise, finds the element outside dccs
-      if (ew != null && ew.id && ew.id.endsWith('-wrapper') &&
-             ew.id != 'inplace-editor-wrapper') { elWrapper = ew } else if (elWrapper.parentNode != null &&
-                  elWrapper.parentNode.nodeType == 1) {
-        elWrapper = elWrapper.parentNode
-        while (elWrapper.nodeName.toLowerCase().startsWith('dcc-') &&
-                   elWrapper.parentNode != null &&
-                   elWrapper.parentNode.nodeType == 1) { elWrapper = elWrapper.parentNode }
-      }
+  absolutePosition(element) {
+    let x = 0
+    let y = 0
+    while (element && !isNaN(element.offsetLeft) && !isNaN(element.offsetTop)) {
+      x += element.offsetLeft - element.scrollLeft;
+      y += element.offsetTop - element.scrollTop;
+      element = element.offsetParent;
     }
-    return elWrapper
+    return {x: x, y: y};
   }
-  */
-
-  // fetches the editor container
-  /*
-  _fetchEditorWrapper () {
-    let container = document
-    if (window.parent && window.parent.document) {
-      const cont = window.parent.document.querySelector(
-        '#inplace-editor-wrapper')
-      if (cont != null) { container = cont }
-    }
-    return container
-  }
-  */
-
-  /*
-  _removeEditControlsPresentation(presentation) {
-    if (this._editPanel != null) {
-      presentation.removeChild(this._editPanel)
-      delete this._editPanel
-    }
-  }
-  */
 
   currentPresentation () {
     return (this._presentation) ? this._presentation : null
@@ -347,7 +267,8 @@ class DCCMultiVisual extends DCCVisual {
   }
 
   _attachTriggerReady (event, trigger) {
-    for (const pr of this._presentationSet) { this._attachTriggerPresentation(event, trigger, pr._presentation) }
+    for (const pr of this._presentationSet) {
+      this._attachTriggerPresentation(event, trigger, pr._presentation) }
   }
 
   removeTrigger (event, trigger) {
@@ -387,16 +308,6 @@ class DCCMultiVisual extends DCCVisual {
     if (pres != null)
       this._editControlsPresentation(pres._presentation, pres)
   }
-
-  /*
-  _removeControls(presentation, role) {
-    const pres = this._presentationSet.find(
-      pr => ((pr._param == null && role == null) ||
-             (pr._param != null && pr._param.role == role)))
-    if (pres != null)
-      this._removeControlsPresentation(pres._presentation)
-  }
-  */
 }
 
 // manages individual in multiple visual DCCs
@@ -452,14 +363,12 @@ class editEventDCC {
   DCCVisual.selectedBorderStyle = '3px dashed #000000'
 
   DCCVisual.templateHTML =
-`<div id="panel-presentation" style="position: relative; top: {top}px; left: {left}px; width: {width}px; height: {height}px; background: rgba(0, 0, 0, 0.5); text-align: left; display: flex; flex-direction: row;">`
+`<div id="panel-presentation" style="position: absolute; top: {top}px; left: {left}px; width: {width}px; height: {height}px; background: rgba(0, 0, 0, 0.5); text-align: left; display: flex; flex-direction: row;">`
 
   DCCVisual.buttonHTML =
 `  <div id="edit-dcc-{type}" style="width: 45px; height: 50px">
     <div style="width: 25px; height: 30px; margin: 10px; color: white">{svg}</div>
   </div>`
-//  bt-edit-element
-//  <div id="bt-expand-element" style="width: 16px; height: 16px; display: inline-block; color: white">{expand}</div>
 
   // pen https://fontawesome.com/icons/pen?style=solid
   DCCVisual.editDCCDefault = {
