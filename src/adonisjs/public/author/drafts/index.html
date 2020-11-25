@@ -81,11 +81,11 @@
         </div>
         <!-- End of breadcrumbs -->
 
-        <div class="h-100 w-100 draft-content-padding">
-          <div class="home-text mb-5">
+        <div class="h-100 w-100 draft-content-padding scroll-y">
+          <div class="home-text">
             <p>Continue editing your drafted cases.</p>
           </div>
-          <div id="case-boxes" class="container-fluid h-100 scroll-y draft-scroll-container">
+          <div id="case-boxes" class="container-fluid draft-scroll-container">
             <dcc-rest id="harena-cases" bind="harena-cases"></dcc-rest>
             <dcc-dhtml id="harena-dhtml-cases" connect="harena-cases:service/request/get:retrieve">
               {{@foreach . cases}}
