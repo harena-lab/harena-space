@@ -733,7 +733,7 @@ class AuthorManager {
       */
 
       let dcc = this._editableDCCs[dccId]
-      dcc.deactivateAuthor()
+      // dcc.deactivateAuthorCurrent()
       const element = this._knots[this._knotSelected].content[el]
 
       // if (this._previousEditedDCC) { this._previousEditedDCC.reactivateAuthor() }

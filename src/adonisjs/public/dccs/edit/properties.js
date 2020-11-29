@@ -6,12 +6,14 @@
 
 class Properties {
   constructor () {
-    this.applyPropertiesDetails = this.applyPropertiesDetails.bind(this)
-    MessageBus.ext.subscribe('properties/apply/details',
-      this.applyPropertiesDetails)
+    // this.applyPropertiesDetails = this.applyPropertiesDetails.bind(this)
+    this.applyProperties = this.applyProperties.bind(this)
+    MessageBus.ext.subscribe('properties/apply/+', this.applyProperties)
+    /*
     this.applyPropertiesShort = this.applyPropertiesShort.bind(this)
     MessageBus.ext.subscribe('properties/apply/short',
       this.applyPropertiesShort)
+    */
     this.closeProperties = this.closeProperties.bind(this)
     MessageBus.ext.subscribe('properties/cancel/short',
       this.closeProperties)
@@ -42,7 +44,7 @@ class Properties {
     const svg = ['jacinto', 'simple-svg']
       .includes(Basic.service.currentThemeFamily)
     if (editp.inlineProperty != null) {
-      if (this._editor != null) { this._editor.closeEditor() }
+      if (this._editor != null && this._editor.closeEditor) { this._editor.closeEditor() }
       switch (editp.inlineProfile.type) {
         case 'void':
           this._editor = new EditDCCPlain(obj, dcc, editp.htmls)
@@ -231,12 +233,6 @@ class Properties {
   }
 
   /*
-   clearProperties() {
-      this._panelDetails.innerHTML = "";
-      this._panelDetailsButtons.style.display = "none";
-   }
-   */
-
   async applyPropertiesDetails (topic, message) {
     this._applyProperties(topic, message, true)
   }
@@ -244,8 +240,11 @@ class Properties {
   async applyPropertiesShort (topic, message) {
     this._applyProperties(topic, message, false)
   }
+  */
 
-  async _applyProperties (topic, message, details) {
+  async applyProperties (topic, message) {
+    const applyType = MessageBus.extractLevel(topic, 3)
+    const details = (applyType == 'details')
     const sufix = (details) ? '_d' : '_s'
     const panel = (details)
       ? this._panelDetails : this._editor.editorExtended
@@ -259,10 +258,6 @@ class Properties {
           if (!profile[p].composite) {
             if (details ||
                 (profile[p].visual && profile[p].visual.includes('panel'))) {
-              /*
-              console.log('=== obj properties')
-              console.log(this._objProperties)
-              */
               const objProperty =
                         await this._applySingleProperty(profile[p],
                           seq, panel, sufix, this._objProperties[p])
@@ -571,7 +566,7 @@ class Properties {
           options: {
             type: 'option',
             label: 'Message',
-            visual: 'inline-panel',
+            visual: 'inline',
             role: 'item'
           }
         },

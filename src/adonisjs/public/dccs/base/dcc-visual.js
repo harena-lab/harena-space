@@ -29,6 +29,22 @@ class DCCVisual extends DCCBase {
     return shadow.querySelector('#presentation-dcc')
   }
 
+  currentPresentation () {
+    return (this._editedPresentation)
+      ? this._editedPresentation._presentation
+      : this._presentation
+  }
+
+  _setPresentation (presentation, role, presentationId) {
+    if (presentation != null) {
+      this._presentation = presentation
+      this._presentationSet.push(presentation)
+      if (DCC.editable && this.author)
+        this._presentationSetEditable.push(
+          new PresentationDCC(presentation, this.id, role, presentationId, this))
+    }
+  }
+
   checkActivateAuthor () {
     if (this.author) {
       for (const pr of this._presentationSetEditable) {
@@ -46,6 +62,14 @@ class DCCVisual extends DCCBase {
   deactivateAuthor () {
     for (const pr of this._presentationSetEditable) {
       this._deactivateAuthorPresentation(pr._presentation, pr) }
+  }
+
+  deactivateAuthorCurrent () {
+    const presentation = (this._editedPresentation)
+      ? this._editedPresentation
+      : (this._presentationSetEditable.length > 0) ? this._presentationSetEditable[0] : null
+    if (presentation != null)
+      this._deactivateAuthorPresentation(presentation._presentation, presentation)
   }
 
   _deactivateAuthorPresentation (presentation, listener) {
@@ -110,7 +134,7 @@ class DCCVisual extends DCCBase {
   }
 
   _editPresentation (presentation, listener) {
-    this.deactivateAuthor()
+    this.deactivateAuthorCurrent()
     // check for a DCC inside a DCC
     if (presentation.tagName.toLowerCase().startsWith('dcc-')) {
       presentation.edit()
@@ -183,51 +207,51 @@ class DCCVisual extends DCCBase {
           presentation._presentation, this.selectListener) }
       else {
       */
-        if (presentation.tagName.toLowerCase().includes('dcc-'))
-          presentation = presentation._presentation
+      if (presentation.tagName.toLowerCase().includes('dcc-'))
+        presentation = presentation._presentation
 
-        const edButtons = this.editButtons()
-        const abPosition = this.absolutePosition(presentation)
+      const edButtons = this.editButtons()
+      const abPosition = this.absolutePosition(presentation)
 
-        let rect = {
-          top: abPosition.y,
-          left: abPosition.x,
-          width: 45 * edButtons.length,
-          height: 50
-        }
-
-        let templateHTML = DCCVisual.templateHTML
-          .replace(/\{top\}/gm, rect.top)
-          .replace(/\{left\}/gm, rect.left)
-          .replace(/\{width\}/gm, rect.width)
-          .replace(/\{height\}/gm, rect.height)
-
-        for (let eb of edButtons)
-          templateHTML += DCCVisual.buttonHTML.replace(/\{type\}/gm, eb.type)
-                                              .replace(/\{svg\}/gm, eb.svg)
-
-        templateHTML += '</div>'
-
-        const template = document.createElement('template')
-        template.innerHTML = templateHTML
-        const panelNode = template.content.cloneNode(true)
-        // presentation.appendChild(panelNode)
-        document.body.appendChild(panelNode)
-        const panel = document.body.querySelector('#panel-presentation')
-
-        for (let eb of edButtons) {
-          const eedcc = new editEventDCC(eb.type, listener)
-          panel.querySelector('#edit-dcc-' + eb.type)
-               .addEventListener('click', eedcc.editListener)
-        }
-        
-        DCCVisual._editPanel = {
-          presentation: presentation,
-          node: panelNode,
-          panel: panel
-        }
-        DCCVisual._editPanel.panel.addEventListener('mouseout', this.mouseoutListener)
+      let rect = {
+        top: abPosition.y,
+        left: abPosition.x,
+        width: 45 * edButtons.length,
+        height: 50
       }
+
+      let templateHTML = DCCVisual.templateHTML
+        .replace(/\{top\}/gm, rect.top)
+        .replace(/\{left\}/gm, rect.left)
+        .replace(/\{width\}/gm, rect.width)
+        .replace(/\{height\}/gm, rect.height)
+
+      for (let eb of edButtons)
+        templateHTML += DCCVisual.buttonHTML.replace(/\{type\}/gm, eb.type)
+                                            .replace(/\{svg\}/gm, eb.svg)
+
+      templateHTML += '</div>'
+
+      const template = document.createElement('template')
+      template.innerHTML = templateHTML
+      const panelNode = template.content.cloneNode(true)
+      // presentation.appendChild(panelNode)
+      document.body.appendChild(panelNode)
+      const panel = document.body.querySelector('#panel-presentation')
+
+      for (let eb of edButtons) {
+        const eedcc = new editEventDCC(eb.type, listener)
+        panel.querySelector('#edit-dcc-' + eb.type)
+             .addEventListener('click', eedcc.editListener)
+      }
+      
+      DCCVisual._editPanel = {
+        presentation: presentation,
+        node: panelNode,
+        panel: panel
+      }
+      DCCVisual._editPanel.panel.addEventListener('mouseout', this.mouseoutListener)
+    }
   }
 
   absolutePosition(element) {
@@ -239,22 +263,6 @@ class DCCVisual extends DCCBase {
       element = element.offsetParent;
     }
     return {x: x, y: y};
-  }
-
-  currentPresentation () {
-    return (this._editedPresentation)
-      ? this._editedPresentation._presentation
-      : this._presentation
-  }
-
-  _setPresentation (presentation, role, presentationId) {
-    if (presentation != null) {
-      this._presentation = presentation
-      this._presentationSet.push(presentation)
-      if (DCC.editable && this.author)
-        this._presentationSetEditable.push(
-          new PresentationDCC(presentation, this.id, role, presentationId, this))
-    }
   }
 
   editButtons () {
@@ -322,7 +330,7 @@ class editEventDCC {
 `<div id="panel-presentation" style="position: absolute; top: {top}px; left: {left}px; width: {width}px; height: {height}px; background: rgba(0, 0, 0, 0.5); text-align: left; display: flex; flex-direction: row;">`
 
   DCCVisual.buttonHTML =
-`  <div id="edit-dcc-{type}" style="width: 45px; height: 50px">
+`  <div id="edit-dcc-{type}" style="width: 45px; height: 50px; cursor: pointer;">
     <div style="width: 25px; height: 30px; margin: 10px; color: white">{svg}</div>
   </div>`
 
