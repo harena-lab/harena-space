@@ -13,7 +13,7 @@ class DCCAnnotation extends DCCVisual {
     if (!this.shadowRoot) {
       const shadow = this.attachShadow({ mode: 'open' })
       shadow.appendChild(template.content.cloneNode(true))
-      this._presentation = shadow.querySelector('#presentation-dcc')
+      this._setPresentation(shadow.querySelector('#presentation-dcc'))
       this._presentationIsReady()
     }
     super.connectedCallback()

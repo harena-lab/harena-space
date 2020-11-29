@@ -12,8 +12,7 @@ class DCCImage extends DCCVisual {
     }
     html += '>'
 
-    // this._presentation = this.querySelector("#presentation-dcc");
-    this._presentation = this._shadowHTML(html)
+    this._setPresentation(this._shadowHTML(html))
     this._presentationIsReady()
     super.connectedCallback()
   }

@@ -12,6 +12,7 @@ class AuthorManager {
     MessageBus.page = new MessageBus(false)
     // MessageBus.int.subscribe('web/dhtml/record/updated', this.start)
     Basic.service.host = this
+    DCC.editable = true
 
     Translator.instance.authoringRender = true
 
@@ -725,11 +726,14 @@ class AuthorManager {
     /* nothing */;
 
     if (el != -1) {
+      /*
       for (let edcc in this._editableDCCs)
         if (this._editableDCCs[edcc].deactivateAuthor)
           this._editableDCCs[edcc].deactivateAuthor()
+      */
 
       let dcc = this._editableDCCs[dccId]
+      dcc.deactivateAuthor()
       const element = this._knots[this._knotSelected].content[el]
 
       // if (this._previousEditedDCC) { this._previousEditedDCC.reactivateAuthor() }

@@ -135,7 +135,8 @@ class EditDCC {
          this._buildExtendedPanel(html, modality)
 
     this._fetchEditorContainer().appendChild(this._editorExtended)
-    this._editDCC.parentNode.insertBefore(this._fetchEditorContainer(), this._editDCC.nextSibling)
+    this._editDCC.parentNode.insertBefore(
+      this._fetchEditorContainer(), this._editDCC.nextSibling)
     this._editDCC._presentation.focus()
 
     const promise = new Promise((resolve, reject) => {
@@ -171,21 +172,6 @@ class EditDCC {
     const panelExtended = document.createElement('div')
     panelExtended.classList.add('inplace-editor-floating')
     panelExtended.innerHTML = html
-
-    // panelExtended.style.left = this._transformRelativeX(
-    //   this._elementRect.left - this._containerRect.left)
-
-    // tests the middle of the element against the middle of the container
-    // if (modality != 'properties' ||
-    //       (this._elementRect.top + (this._elementRect.height / 2) >
-    //        this._containerRect.top + (this._containerRect.height / 2))) {
-    //   panelExtended.style.bottom = this._transformRelativeY(
-    //     this._containerRect.height -
-    //         (this._elementRect.top - this._containerRect.top))
-    // } else {
-    //   panelExtended.style.top =
-    //         this._transformRelativeY(this._elementRect.bottom - this._containerRect.top)
-    // }
 
     this._extendedSub = {
       cancel: panelExtended.querySelector('#ext-cancel'),

@@ -36,7 +36,7 @@ class DCCStateSelect extends DCCVisual {
     this._shadow = this.attachShadow({ mode: 'open' })
     this._shadow.appendChild(template.content.cloneNode(true))
 
-    this._presentation = this._shadow.querySelector('#presentation-dcc')
+    this._setPresentation(this.querySelector('#presentation-dcc'))
     this._presentationState = this._shadow.querySelector('#presentation-state')
 
     this.completeId = this.id

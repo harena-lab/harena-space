@@ -7,6 +7,10 @@ class DCCVisual extends DCCBase {
     super()
     this._presentationReady = false
     this._pendingHide = false
+    this._presentation = null
+    this._presentationSet = []
+    this._presentationSetEditable = []
+
     this.editListener = this.editListener.bind(this)
     this.mouseoverListener = this.mouseoverListener.bind(this)
     this.mouseoutListener = this.mouseoutListener.bind(this)
@@ -26,8 +30,9 @@ class DCCVisual extends DCCBase {
   }
 
   checkActivateAuthor () {
-    if (this.author && this._presentation) {
-      this._activateAuthorPresentation(this._presentation, this)
+    if (this.author) {
+      for (const pr of this._presentationSetEditable) {
+        this._activateAuthorPresentation(pr._presentation, pr) }
     }
   }
 
@@ -39,8 +44,8 @@ class DCCVisual extends DCCBase {
   }
 
   deactivateAuthor () {
-    if (this._presentation)
-      this._deactivateAuthorPresentation (this._presentation, this)
+    for (const pr of this._presentationSetEditable) {
+      this._deactivateAuthorPresentation(pr._presentation, pr) }
   }
 
   _deactivateAuthorPresentation (presentation, listener) {
@@ -53,11 +58,11 @@ class DCCVisual extends DCCBase {
   }
 
   _hideReady () {
-    this._presentation.style.display = 'none'
+    for (const pr of this._presentationSet) { pr.style.display = 'none' }
   }
 
   show () {
-    this._presentation.style.display = 'initial'
+    for (const pr of this._presentationSet) { pr.style.display = 'initial' }
   }
 
   // an external trigger attachment from TriggerDCC
@@ -66,7 +71,8 @@ class DCCVisual extends DCCBase {
   }
 
   _attachTriggerReady (event, trigger) {
-    this._attachTriggerPresentation(event, trigger, this._presentation)
+    for (const pr of this._presentationSet) {
+      this._attachTriggerPresentation(event, trigger, pr) }
   }
 
   _attachTriggerPresentation (event, trigger, presentation) {
@@ -75,7 +81,10 @@ class DCCVisual extends DCCBase {
   }
 
   removeTrigger (event, trigger) {
-    this._presentation.removeEventListener(event, trigger)
+    for (const pr of this._presentationSet) {
+      if (event == 'click') { pr.style.cursor = 'default' }
+      pr.removeEventListener(event, trigger)
+    }
   }
 
   _presentationIsReady () {
@@ -90,9 +99,14 @@ class DCCVisual extends DCCBase {
     }
   }
 
-  // ignores role argument
-  edit () {
-    this._editPresentation(this._presentation, this)
+  edit (role) {
+    for (let pr of this._presentationSetEditable) {
+      if ((pr._param == null && role == null) ||
+             (pr._param != null && pr._param.role == role)) {
+        this._editedPresentation = pr
+        this._editPresentation(pr._presentation, pr)
+      }
+    }
   }
 
   _editPresentation (presentation, listener) {
@@ -107,7 +121,11 @@ class DCCVisual extends DCCBase {
   }
 
   reactivateAuthor () {
-    this._reactivateAuthorPresentation(this._presentation, this)
+    if (this._editedPresentation) {
+      this._reactivateAuthorPresentation(this._editedPresentation._presentation,
+        this._editedPresentation)
+      delete this._editedPresentation
+    }
   }
 
   _reactivateAuthorPresentation (presentation, listener) {
@@ -137,8 +155,12 @@ class DCCVisual extends DCCBase {
     this._removeEditControls()
   }
 
-  _editControls(presentation, listener) {
-    this._editControlsPresentation(presentation, listener)
+  _editControls (presentation, listener, role) {
+    const pres = this._presentationSetEditable.find(
+      pr => ((pr._param == null && role == null) ||
+             (pr._param != null && pr._param.role == role)))
+    if (pres != null)
+      this._editControlsPresentation(pres._presentation, pres)
   }
 
   _removeEditControls(presentation) {
@@ -220,11 +242,19 @@ class DCCVisual extends DCCBase {
   }
 
   currentPresentation () {
-    return (this._presentation) ? this._presentation : null
+    return (this._editedPresentation)
+      ? this._editedPresentation._presentation
+      : this._presentation
   }
 
-  _storePresentation (presentation) {
-    this._presentation = presentation
+  _setPresentation (presentation, role, presentationId) {
+    if (presentation != null) {
+      this._presentation = presentation
+      this._presentationSet.push(presentation)
+      if (DCC.editable && this.author)
+        this._presentationSetEditable.push(
+          new PresentationDCC(presentation, this.id, role, presentationId, this))
+    }
   }
 
   editButtons () {
@@ -232,85 +262,7 @@ class DCCVisual extends DCCBase {
   }
 }
 
-class DCCMultiVisual extends DCCVisual {
-  constructor () {
-    super()
-    this._presentationSet = []
-  }
-
-  _storePresentation (presentation, role, presentationId) {
-    super._storePresentation(presentation)
-    if (presentation != null) {
-      this._presentationSet.push(
-        new PresentationDCC(presentation, this.id, role, presentationId, this))
-    }
-  }
-
-  checkActivateAuthor () {
-    if (this.author) {
-      for (const pr of this._presentationSet) {
-        this._activateAuthorPresentation(pr._presentation, pr) }
-    }
-  }
-
-  deactivateAuthor () {
-    for (const pr of this._presentationSet) {
-      this._deactivateAuthorPresentation(pr._presentation, pr) }
-  }
-
-  _hideReady () {
-    for (const pr of this._presentationSet) { pr._presentation.style.display = 'none' }
-  }
-
-  show () {
-    for (const pr of this._presentationSet) { pr._presentation.style.display = 'initial' }
-  }
-
-  _attachTriggerReady (event, trigger) {
-    for (const pr of this._presentationSet) {
-      this._attachTriggerPresentation(event, trigger, pr._presentation) }
-  }
-
-  removeTrigger (event, trigger) {
-    for (const pr of this._presentationSet) {
-      if (event == 'click') { pr._presentation.style.cursor = 'default' }
-      pr._presentation.removeEventListener(event, trigger)
-    }
-  }
-
-  edit (role) {
-    for (let pr of this._presentationSet) {
-      if ((pr._param == null && role == null) ||
-             (pr._param != null && pr._param.role == role)) {
-        this._editedPresentation = pr
-        this._editPresentation(pr._presentation, pr)
-      }
-    }
-  }
-
-  reactivateAuthor () {
-    if (this._editedPresentation) {
-      this._reactivateAuthorPresentation(this._editedPresentation._presentation,
-        this._editedPresentation)
-      delete this._editedPresentation
-    }
-  }
-
-  currentPresentation () {
-    return (this._editedPresentation)
-      ? this._editedPresentation._presentation : null
-  }
-
-  _editControls (presentation, listener, role) {
-    const pres = this._presentationSet.find(
-      pr => ((pr._param == null && role == null) ||
-             (pr._param != null && pr._param.role == role)))
-    if (pres != null)
-      this._editControlsPresentation(pres._presentation, pres)
-  }
-}
-
-// manages individual in multiple visual DCCs
+// manages multiple presentation in visual DCCs
 class PresentationDCC {
   constructor (presentation, id, role, presentationId, owner) {
     this._presentation = presentation
@@ -320,7 +272,8 @@ class PresentationDCC {
     if (role != null || presentationId != null) {
       this._param = {}
       this._param.role = role
-      this._param.presentationId = presentationId
+      if (presentationId != null)
+        this._param.presentationId = presentationId
     }
     this.editListener = this.editListener.bind(this)
     this.mouseoverListener = this.mouseoverListener.bind(this)
@@ -328,7 +281,10 @@ class PresentationDCC {
   }
 
   editListener (buttonType) {
-    this._param.buttonType = buttonType
+    if (this._param == null)
+      this._param = {buttonType}
+    else
+      this._param.buttonType = buttonType
     MessageBus.ext.publish(
       'control/element/' + this._id + '/selected', this._param)
   }

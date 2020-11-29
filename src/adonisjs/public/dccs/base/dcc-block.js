@@ -6,7 +6,7 @@
  *   * "out"  -> apply an style externally defined with the name "trigger-button-template"
 **************************************************************************/
 
-class DCCBlock extends DCCMultiVisual {
+class DCCBlock extends DCCVisual {
   constructor () {
     super()
 
@@ -196,7 +196,7 @@ class DCCBlock extends DCCMultiVisual {
         : '#presentation-dcc' +
                                              ((role) ? '-' + role : ''))
     }
-    this._storePresentation(presentation, role, presentationId)
+    this._setPresentation(presentation, role, presentationId)
     this.checkActivateAuthor()
     return presentation
   }

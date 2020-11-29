@@ -26,8 +26,9 @@ class DCCGraph extends DCCVisual {
       delete this._graphObj
     }
 
-    this._presentation = this._shadowHTML(html)
-    this._presentation.appendChild(this._graph.presentation)
+    let presentation = this._shadowHTML(html)
+    presentation.appendChild(this._graph.presentation)
+    this._setPresentation(presentation)
     super.connectedCallback()
     this._presentationIsReady()
   }
@@ -182,8 +183,7 @@ class DCCNode extends DCCGraphPiece {
     }
     if (this.hasAttribute('id')) { prenode.id = this.id }
     this._node = new GraphNode(prenode)
-
-    this._presentation = this._node.presentation
+    this._setPresentation(this._node.presentation)
     this._space.addPiece('node', this._node)
     this._presentationIsReady()
   }
@@ -258,7 +258,8 @@ class DCCEdge extends DCCGraphPiece {
         label: this.label
       }, this._space.graph)
 
-      this._presentation = edge.presentation
+      this._setPresentation(edge.presentation)
+
       this._space.addPiece('edge', edge)
       this._presentationIsReady()
     }
@@ -300,9 +301,7 @@ class Graph {
 
     this.cleanGraph()
 
-    this._presentation =
-         document.createElementNS('http://www.w3.org/2000/svg', 'g')
-
+    this._presentation = document.createElementNS('http://www.w3.org/2000/svg', 'g')
     this._layout = GraphLayout.create(layout)
     this._layout.attach(this)
   }
@@ -408,7 +407,6 @@ class GraphNode extends GraphPiece {
 
     this._presentation =
          document.createElementNS('http://www.w3.org/2000/svg', 'g')
-
     this._rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
     this._rect.setAttribute('rx', 10)
     this._setDimensions(this._rect)
@@ -608,9 +606,7 @@ class GraphEdge extends GraphPiece {
           edge.target = graph.nodes[targetIndex]
           Object.assign(this._edge, edge)
 
-          this._presentation =
-                  document.createElementNS('http://www.w3.org/2000/svg', 'g')
-
+          this._presentation = document.createElementNS('http://www.w3.org/2000/svg', 'g')
           this._line = document.createElementNS(
             'http://www.w3.org/2000/svg', 'line')
           this._line.classList.add('dcc-edge-theme')

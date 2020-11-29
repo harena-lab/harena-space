@@ -107,7 +107,7 @@ class DCCCharacter extends DCCVisual {
     const shadow = this.attachShadow({ mode: 'open' })
     shadow.appendChild(template.content.cloneNode(true))
 
-    this._presentation = shadow.querySelector('#presentation-dcc')
+    this._setPresentation(shadow.querySelector('#presentation-dcc'))
     this._recordImages = shadow.querySelector('#record-images')
     this._presentationIsReady()
 

@@ -140,7 +140,7 @@ class DCCLivelyTalk extends DCCVisual {
     this._shadow = this.attachShadow({ mode: 'open' })
     this._shadow.appendChild(template.content.cloneNode(true))
 
-    this._presentation = this._shadow.querySelector('#presentation-dcc')
+    this._setPresentation(this._shadow.querySelector('#presentation-dcc'))
 
     const charImg = 'images/' + this.character.toLowerCase()
       .replace(/ /igm, '_') + '-icon.png'
