@@ -324,28 +324,16 @@ class AuthorManager {
     */
   async caseSave () {
     document.getElementById('btn-save-draft').innerHTML = 'SAVING...'
+    await Properties.s.closePreviousProperties()
     if (Basic.service.currentCaseId != null && this._compiledCase != null) {
       this._checkKnotModification(this._renderState)
-
-      /*
-         if (this._temporaryCase) {
-            const caseTitle =
-               await DCCNoticeInput.displayNotice("Inform a title for your case:",
-                                                  "input");
-            this._currentCaseTitle = caseTitle;
-            this._temporaryCase = false;
-         }
-         */
 
       const md = Translator.instance.assembleMarkdown(this._compiledCase)
       const status = await MessageBus.ext.request(
         'data/case/' + Basic.service.currentCaseId + '/set',
-        { // title: this._currentCaseTitle,
-          format: 'markdown',
+        { format: 'markdown',
           source: md
         })
-
-      // console.log('Case saved! Status: ' + status.message)
 
       Basic.service.authorPropertyStore('caseId', Basic.service.currentCaseId)
 
@@ -701,6 +689,14 @@ class AuthorManager {
 
   _renderKnot () {
     if (this._renderState == 1) {
+      /*
+      const promise = new Promise((resolve, reject) => {
+        const rendered = 'control/render/finished'
+        MessageBus.ext.subscribe(rendered, function(e) {resolve()})
+        this._knotPanel.innerHTML = this._htmlKnot + '<dcc-message message="' + rendered + '"></dcc-message>'
+      })
+      await promise
+      */
       this._knotPanel.innerHTML = this._htmlKnot
     } else {
       this._presentEditor(this._knots[this._knotSelected]._source)
@@ -716,9 +712,21 @@ class AuthorManager {
     }
   }
 
-  elementSelected (topic, message) {
+  async elementSelected (topic, message) {
+    console.log('=== element selected')
+    console.log(topic)
+    console.log(message)
+
+    await Properties.s.closePreviousProperties()
+
     const dccId = MessageBus.extractLevel(topic, 3)
+    console.log('=== dcc id')
+    console.log(dccId)
+
     this._collectEditableDCCs()
+    console.log('=== editable dccs')
+    console.log(this._editableDCCs)
+
     const elSeq = parseInt(dccId.substring(3))
     let el = -1
     for (el = 0; el < this._knots[this._knotSelected].content.length &&
@@ -732,9 +740,13 @@ class AuthorManager {
           this._editableDCCs[edcc].deactivateAuthor()
       */
 
-      let dcc = this._editableDCCs[dccId]
+      // let dcc = this._editableDCCs[dccId]
+      let dcc = await this._editableDCCWait(dccId)
       // dcc.deactivateAuthorCurrent()
       const element = this._knots[this._knotSelected].content[el]
+
+      console.log('=== dcc (1)')
+      console.log(dcc)
 
       // if (this._previousEditedDCC) { this._previousEditedDCC.reactivateAuthor() }
 
@@ -746,12 +758,34 @@ class AuthorManager {
 
       // check for a dcc inside a dcc
       const presentationId = (message == null) ? null : message.presentationId
+      /*
       dcc = (presentationId != null)
         ? this._editableDCCs[presentationId] : dcc
+      */
+      if (presentationId != null)
+        dcc = await this._editableDCCWait(presentationId)
+
+      console.log('=== dcc (2)')
+      console.log(dcc)
 
       Properties.s.editElementProperties(
         this._knots, this._knotSelected, el, dcc, role, message.buttonType)
     }
+  }
+
+  async _editableDCCWait (dccId) {
+    let result = this._editableDCCs[dccId]
+    const panel = this._knotPanel
+    while (result == null) {
+      const promise = new Promise((resolve, reject) => {
+        setTimeout(function(){
+          result = panel.querySelector('#' + dccId)
+          resolve()
+        }, 100)
+      })
+      await promise
+    }
+    return result
   }
 
   // creates an element if there is no element of the same type
@@ -824,7 +858,7 @@ class AuthorManager {
       this._renderKnot()
       // this._collectEditableDCCs();
     }
-    if (topic != null)
+    if (topic != null && message != null)
       MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message))
   }
 

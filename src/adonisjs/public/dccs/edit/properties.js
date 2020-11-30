@@ -23,20 +23,19 @@ class Properties {
     this._panelDetails = panel
   }
 
-  async editKnotProperties (obj, knotId, presentation, extra) {
+  async closePreviousProperties () {
     if (this._editor != null)
       await this._editor.handleConfirm()
+  }
 
+  editKnotProperties (obj, knotId, presentation, extra) {
     this._knotOriginalTitle = obj.title
     const editp = this.editProperties(obj, 'default')
     this._editor = new EditDCCProperties(null, presentation,
       editp.htmls + extra, this)
   }
 
-  async editElementProperties (knots, knotid, el, dcc, role, buttonType) {
-    if (this._editor != null)
-      await this._editor.handleConfirm()
-
+  editElementProperties (knots, knotid, el, dcc, role, buttonType) {
     this._knots = knots
     const knotContent = knots[knotid].content
     const element = dcc.currentPresentation()
@@ -56,7 +55,7 @@ class Properties {
           this._editor = new EditDCCPlain(obj, dcc, editp.htmls, this)
           break
         case 'text':
-          this._editor = new EditDCCText(knotContent, el, dcc, svg, this)
+          this._editor = new EditDCCText(knotContent, el, dcc, svg, false, this)
           break
         case 'shortStr':
           this._editor = new EditDCCPlain(obj, dcc, editp.htmls,

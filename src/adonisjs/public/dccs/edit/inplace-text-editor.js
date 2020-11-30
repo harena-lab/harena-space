@@ -106,22 +106,23 @@ class EditDCCText extends EditDCC {
     }
   }
 
-  _closeEditor() {
+  async _closeEditor() {
     MessageBus.int.unsubscribe('control/editor/edit/confirm', this.handleConfirm)
     MessageBus.int.unsubscribe('control/editor/edit/cancel', this.handleCancel)
     if (this._editorInstance)
       this._editorWrapper.removeChild(this._editorInstance)
     this._removeToolbarPanel()
-    MessageBus.ext.publish('control/knot/update')
+    await this._properties.closeProperties()
+    // MessageBus.ext.publish('control/knot/update')
   }
 
-  handleConfirm() {
+  async handleConfirm() {
     this._updateTranslated()
-    this._closeEditor()
+    await this._closeEditor()
   }
 
-  handleCancel() {
-    this._closeEditor()
+  async handleCancel() {
+    await this._closeEditor()
   }
 
   _removeToolbarPanel() {
