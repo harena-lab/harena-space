@@ -2,14 +2,16 @@
   ***************************/
 
 class EditDCCPlain {
-  constructor (obj, dcc, htmlProp, field) {
+  constructor (obj, dcc, htmlProp, field, properties) {
     if (field != null) {
+      /*
       this.handleConfirm = this.handleConfirm.bind(this)
       MessageBus.ext.subscribe('control/element/+/selected', this.handleConfirm)
-
+      */
       this._objProperties = obj
       this._editElement = dcc.currentPresentation()
       this._objField = field
+      this._properties = properties
       this._originalEdit = this._editElement.innerHTML
       this._editElement.contentEditable = true
       this._editElement.focus()
@@ -17,10 +19,14 @@ class EditDCCPlain {
   }
 
   handleConfirm () {
+    console.log('=== handle confirm')
+    console.log(this._objField)
+    console.log(this._editElement.innerHTML)
     this._editElement.contentEditable = false
     this._objProperties[this._objField] =
            this._editElement.innerHTML.trim().replace(/<br>$/i, '')
-    MessageBus.ext.request('properties/apply/short')
+    this._properties.applyProperties(false)
+    // MessageBus.ext.request('properties/apply/short')
   }
 
   // <FUTURE>?

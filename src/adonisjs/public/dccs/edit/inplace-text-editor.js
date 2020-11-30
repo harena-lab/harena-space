@@ -9,8 +9,8 @@ function _harenaCustomUploadAdapterPlugin( editor ) {
 }
 
 class EditDCCText extends EditDCC {
-  constructor (knotContent, el, dcc, svg, floating) {
-    super(dcc, (dcc != null) ? dcc.currentPresentation() : null)
+  constructor (knotContent, el, dcc, svg, floating, properties) {
+    super(dcc, (dcc != null) ? dcc.currentPresentation() : null, properties)
     console.log('=== another editor')
     this._knotContent = knotContent
     this._element = el

@@ -5,32 +5,38 @@
  */
 
 class Properties {
+  /*
   constructor () {
-    // this.applyPropertiesDetails = this.applyPropertiesDetails.bind(this)
-    this.applyProperties = this.applyProperties.bind(this)
-    MessageBus.ext.subscribe('properties/apply/+', this.applyProperties)
-    /*
+    this.applyPropertiesDetails = this.applyPropertiesDetails.bind(this)
+    MessageBus.ext.subscribe('properties/apply/details',
+      this.applyPropertiesDetails)
     this.applyPropertiesShort = this.applyPropertiesShort.bind(this)
     MessageBus.ext.subscribe('properties/apply/short',
       this.applyPropertiesShort)
-    */
     this.closeProperties = this.closeProperties.bind(this)
     MessageBus.ext.subscribe('properties/cancel/short',
       this.closeProperties)
   }
+  */
 
   attachPanelDetails (panel) {
     this._panelDetails = panel
   }
 
   editKnotProperties (obj, knotId, presentation, extra) {
+    if (this._editor != null)
+      this._editor.handleConfirm()
+
     this._knotOriginalTitle = obj.title
     const editp = this.editProperties(obj, 'default')
     this._editor = new EditDCCProperties(null, presentation,
-      editp.htmls + extra)
+      editp.htmls + extra, this)
   }
 
   editElementProperties (knots, knotid, el, dcc, role, buttonType) {
+    if (this._editor != null)
+      this._editor.handleConfirm()
+
     this._knots = knots
     const knotContent = knots[knotid].content
     const element = dcc.currentPresentation()
@@ -47,17 +53,17 @@ class Properties {
       if (this._editor != null && this._editor.closeEditor) { this._editor.closeEditor() }
       switch (editp.inlineProfile.type) {
         case 'void':
-          this._editor = new EditDCCPlain(obj, dcc, editp.htmls)
+          this._editor = new EditDCCPlain(obj, dcc, editp.htmls, this)
           break
         case 'text':
-          this._editor = new EditDCCText(knotContent, el, dcc, svg)
+          this._editor = new EditDCCText(knotContent, el, dcc, svg, this)
           break
         case 'shortStr':
           this._editor = new EditDCCPlain(obj, dcc, editp.htmls,
-            editp.inlineProperty)
+            editp.inlineProperty, this)
           break
         case 'image':
-          this._editor = new EditDCCImage(obj, dcc, editp.htmls)
+          this._editor = new EditDCCImage(obj, dcc, editp.htmls, this)
           break
         case 'option':
           if (this._item > -1) {
@@ -66,7 +72,7 @@ class Properties {
               // <TODO> improve in the future
               this._itemEdit = { edit: keys[this._item] }
               this._editor = new EditDCCPlain(
-                this._itemEdit, dcc, editp.htmls, 'edit')
+                this._itemEdit, dcc, editp.htmls, 'edit', this)
             } else {
               const op = obj.options[keys[this._item]]
               if (op.contextTarget != null) {
@@ -76,14 +82,14 @@ class Properties {
                   if (knotc[ct].type == "text" || knotc[ct].type == "text-block")
                     elo = parseInt(ct)
                 if (elo > -1)
-                  this._editor = new EditDCCText(knotc, elo, null, svg, true)
+                  this._editor = new EditDCCText(knotc, elo, null, svg, true, this)
               }
 
             }
           }
           break
       }
-    } else { this._editor = new EditDCCProperties(obj, dcc, editp.htmls) }
+    } else { this._editor = new EditDCCProperties(obj, dcc, editp.htmls, this) }
   }
 
   /*
@@ -234,17 +240,15 @@ class Properties {
 
   /*
   async applyPropertiesDetails (topic, message) {
-    this._applyProperties(topic, message, true)
+    this._applyProperties(true, topic, message)
   }
 
   async applyPropertiesShort (topic, message) {
-    this._applyProperties(topic, message, false)
+    this._applyProperties(false, topic, message)
   }
   */
 
-  async applyProperties (topic, message) {
-    const applyType = MessageBus.extractLevel(topic, 3)
-    const details = (applyType == 'details')
+  async applyProperties (details) {
     const sufix = (details) ? '_d' : '_s'
     const panel = (details)
       ? this._panelDetails : this._editor.editorExtended
@@ -299,21 +303,23 @@ class Properties {
       if (!details) { MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message)) }
       */
     }
-    this.closeProperties(topic, message, details)
+    this.closeProperties(details)
   }
 
-  closeProperties(topic, message, details) {
+  closeProperties(details) {
+    if (this._editor != null)
+      this._editor = null;
     if (this._objProperties) {
       delete this._objProperties
       MessageBus.ext.publish('control/knot/update')
     }
-    if (!details) { MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message)) }
+    // if (!details) {MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message)) }
   }
 
   async _applySingleProperty (property, seq, panel, sufix, previous) {
     let objProperty = null
-    const field =
-         panel.querySelector('#pfield' + seq + sufix)
+    const field = (panel != null) ?
+         panel.querySelector('#pfield' + seq + sufix) : null
     switch (property.type) {
       case 'shortStr' :
       case 'text':
@@ -566,7 +572,7 @@ class Properties {
           options: {
             type: 'option',
             label: 'Message',
-            visual: 'inline',
+            visual: 'inline-panel',
             role: 'item'
           }
         },

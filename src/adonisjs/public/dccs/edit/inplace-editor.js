@@ -3,10 +3,11 @@
  */
 
 class EditDCC {
-  constructor (dcc, presentation) {
+  constructor (dcc, presentation, properties) {
     this._closed = false
     this._editDCC = dcc
     this._editElement = presentation
+    this._properties = properties
     this._editorExtended = null
     this._editorWrapper = this._fetchEditorWrapper()
     this._editorContainer = this._fetchEditorContainer()
@@ -29,10 +30,22 @@ class EditDCC {
     return ep
   }
 
-  async _handleEditorAction (action) {
+  handleConfirm () {
+    this._handleEditorAction('confirm')
+  }
+
+  handleCancel () {
+    this._handleEditorAction('cancel')
+  }
+
+  _handleEditorAction (action) {
     if (action === 'confirm') {
-      await MessageBus.ext.request('properties/apply/short')
-    } else {await MessageBus.ext.request('properties/cancel/short')}
+      this._properties.applyProperties(false)
+      // await MessageBus.ext.request('properties/apply/short')
+    } else {
+      this._properties.closeProperties(false)
+    }
+      //await MessageBus.ext.request('properties/cancel/short')}
     // else if (this._editDCC != null) { this._editDCC.reactivateAuthor() }
     this.closeEditor()
   }
@@ -202,8 +215,8 @@ class EditDCC {
 }
 
 class EditDCCProperties extends EditDCC {
-  constructor (dcc, presentation, htmlProp) {
-    super(dcc, presentation)
+  constructor (dcc, presentation, htmlProp, properties) {
+    super(dcc, presentation, properties)
     this._componentEditor(htmlProp)
   }
 
