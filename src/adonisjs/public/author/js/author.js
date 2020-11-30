@@ -200,7 +200,7 @@ class AuthorManager {
             this.requestCurrentCaseId(topic, message);
             break;
          */
-        case 'control/knot/update': this.knotUpdate(message)
+        case 'control/knot/update': this.knotUpdate(topic, message)
           break
         case 'control/leave/drafts': await this.caseSave()
         // window.location.href = 'draft.html';
@@ -817,13 +817,15 @@ class AuthorManager {
     }
   }
 
-  async knotUpdate () {
+  async knotUpdate (topic, message) {
     if (this._knotSelected != null) {
       this._htmlKnot = await Translator.instance.generateHTML(
         this._knots[this._knotSelected])
       this._renderKnot()
       // this._collectEditableDCCs();
     }
+    if (topic != null)
+      MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message))
   }
 
   knotRename (newTitle) {

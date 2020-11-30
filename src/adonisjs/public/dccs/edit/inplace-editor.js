@@ -30,20 +30,20 @@ class EditDCC {
     return ep
   }
 
-  handleConfirm () {
-    this._handleEditorAction('confirm')
+  async handleConfirm () {
+    await this._handleEditorAction('confirm')
   }
 
-  handleCancel () {
-    this._handleEditorAction('cancel')
+  async handleCancel () {
+    await this._handleEditorAction('cancel')
   }
 
-  _handleEditorAction (action) {
+  async _handleEditorAction (action) {
     if (action === 'confirm') {
-      this._properties.applyProperties(false)
+      await this._properties.applyProperties(false)
       // await MessageBus.ext.request('properties/apply/short')
     } else {
-      this._properties.closeProperties(false)
+      await this._properties.closeProperties(false)
     }
       //await MessageBus.ext.request('properties/cancel/short')}
     // else if (this._editDCC != null) { this._editDCC.reactivateAuthor() }

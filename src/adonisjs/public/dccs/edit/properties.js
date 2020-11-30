@@ -23,9 +23,9 @@ class Properties {
     this._panelDetails = panel
   }
 
-  editKnotProperties (obj, knotId, presentation, extra) {
+  async editKnotProperties (obj, knotId, presentation, extra) {
     if (this._editor != null)
-      this._editor.handleConfirm()
+      await this._editor.handleConfirm()
 
     this._knotOriginalTitle = obj.title
     const editp = this.editProperties(obj, 'default')
@@ -33,9 +33,9 @@ class Properties {
       editp.htmls + extra, this)
   }
 
-  editElementProperties (knots, knotid, el, dcc, role, buttonType) {
+  async editElementProperties (knots, knotid, el, dcc, role, buttonType) {
     if (this._editor != null)
-      this._editor.handleConfirm()
+      await this._editor.handleConfirm()
 
     this._knots = knots
     const knotContent = knots[knotid].content
@@ -303,15 +303,15 @@ class Properties {
       if (!details) { MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message)) }
       */
     }
-    this.closeProperties(details)
+    await this.closeProperties(details)
   }
 
-  closeProperties(details) {
+  async closeProperties(details) {
     if (this._editor != null)
       this._editor = null;
     if (this._objProperties) {
       delete this._objProperties
-      MessageBus.ext.publish('control/knot/update')
+      await MessageBus.ext.request('control/knot/update')
     }
     // if (!details) {MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message)) }
   }

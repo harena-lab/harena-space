@@ -18,14 +18,14 @@ class EditDCCPlain {
     }
   }
 
-  handleConfirm () {
+  async handleConfirm () {
     console.log('=== handle confirm')
     console.log(this._objField)
     console.log(this._editElement.innerHTML)
     this._editElement.contentEditable = false
     this._objProperties[this._objField] =
            this._editElement.innerHTML.trim().replace(/<br>$/i, '')
-    this._properties.applyProperties(false)
+    await this._properties.applyProperties(false)
     // MessageBus.ext.request('properties/apply/short')
   }
 
