@@ -713,19 +713,11 @@ class AuthorManager {
   }
 
   async elementSelected (topic, message) {
-    console.log('=== element selected')
-    console.log(topic)
-    console.log(message)
-
     await Properties.s.closePreviousProperties()
 
     const dccId = MessageBus.extractLevel(topic, 3)
-    console.log('=== dcc id')
-    console.log(dccId)
 
     this._collectEditableDCCs()
-    console.log('=== editable dccs')
-    console.log(this._editableDCCs)
 
     const elSeq = parseInt(dccId.substring(3))
     let el = -1
@@ -742,17 +734,13 @@ class AuthorManager {
 
       // let dcc = this._editableDCCs[dccId]
       let dcc = await this._editableDCCWait(dccId)
-      // dcc.deactivateAuthorCurrent()
       const element = this._knots[this._knotSelected].content[el]
-
-      console.log('=== dcc (1)')
-      console.log(dcc)
 
       // if (this._previousEditedDCC) { this._previousEditedDCC.reactivateAuthor() }
 
       const role = (message != null) ? message.role : null
 
-      dcc.edit(role)
+      // dcc.deactivateAuthorCurrent()
 
       this._previousEditedDCC = dcc
 
@@ -762,11 +750,10 @@ class AuthorManager {
       dcc = (presentationId != null)
         ? this._editableDCCs[presentationId] : dcc
       */
+      const parentDCC = dcc
       if (presentationId != null)
         dcc = await this._editableDCCWait(presentationId)
-
-      console.log('=== dcc (2)')
-      console.log(dcc)
+      parentDCC.edit(role)
 
       Properties.s.editElementProperties(
         this._knots, this._knotSelected, el, dcc, role, message.buttonType)
