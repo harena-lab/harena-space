@@ -132,10 +132,10 @@ class DCCInputOption extends DCCInput {
           .replace('[checked]', this.hasAttribute('checked') ? ' checked' : '')
 
       // === presentation setup (DCC Block)
-      this._presentation = await this._applyRender(html, 'innerHTML', 'input')
+      let presentation = await this._applyRender(html, 'innerHTML', 'input')
 
       // === post presentation setup
-      this._presentation.addEventListener('change', this.inputChanged)
+      presentation.addEventListener('change', this.inputChanged)
 
       this._presentationIsReady()
     }

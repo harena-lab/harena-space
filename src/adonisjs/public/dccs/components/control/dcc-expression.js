@@ -49,7 +49,7 @@ class DCCExpression extends DCCVisual {
 
     // <TODO> provisory solution due to message ordering
     if (!this._updated) { this.innerHTML = result }
-    this._presentation = this
+    this._setPresentation(this)
     this._presentationIsReady()
 
     super.connectedCallback()

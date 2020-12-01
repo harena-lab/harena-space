@@ -31,7 +31,7 @@ class DCCState extends DCCBlock {
           // else
           // this._presentationHandler(c.currentPresentation());
           this._stateDCCs[c.role] = c
-          this._storePresentation(c.currentPresentation(), c.role)
+          this._setPresentation(c.currentPresentation(), c.role)
         }
       }
       this._presentationIsReady()

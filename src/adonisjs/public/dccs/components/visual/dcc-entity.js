@@ -104,7 +104,7 @@ class DCCEntity extends DCCBlock {
         .replace('[entity]', this.entity)
         .replace('[text]', ((this._text) ? this._text : ''))
       await this._applyRender(html, 'innerHTML')
-      // this._storePresentation(presentation);
+      // this._setPresentation(presentation);
       // if (this._presentation != null)
       //    this._presentationEntity.push(this._presentation);
     }

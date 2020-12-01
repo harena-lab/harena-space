@@ -1,43 +1,54 @@
 /* Editor for DCC Plain Texts
   ***************************/
 
-class EditDCCPlain extends EditDCC {
-  constructor (obj, dcc, htmlProp, field) {
-    super(dcc, dcc.currentPresentation())
-    this._objProperties = obj
-    if (field != null) { this._objField = field }
-    this._componentEditor(htmlProp)
+class EditDCCPlain {
+  constructor (obj, dcc, htmlProp, field, properties) {
+    if (field != null) {
+      /*
+      this.handleConfirm = this.handleConfirm.bind(this)
+      MessageBus.ext.subscribe('control/element/+/selected', this.handleConfirm)
+      */
+      this._objProperties = obj
+      this._editElement = dcc.currentPresentation()
+      this._objField = field
+      this._properties = properties
+      this._originalEdit = this._editElement.innerHTML
+      this._editElement.contentEditable = true
+      this._editElement.focus()
+    }
   }
 
+  async handleConfirm () {
+    this._editElement.contentEditable = false
+    this._objProperties[this._objField] =
+           this._editElement.innerHTML.trim().replace(/<br>$/i, '')
+    await this._properties.applyProperties(false)
+    // MessageBus.ext.request('properties/apply/short')
+  }
+
+  // <FUTURE>?
+  /*
+  handleCancel () {
+    this._editElement.contentEditable = false
+    this._editElement.innerHTML = this._originalEdit
+    MessageBus.ext.request('properties/cancel/short')
+  }
+  */
+
+  /*
   async _componentEditor (htmlProp) {
     if (this._objField != null) {
       this._originalEdit = this._editElement.innerHTML
       this._editElement.contentEditable = true
     }
-    /*
-      let ep = await this._extendedPanel(
-            EditDCCPlain.propertiesTemplate.replace("[properties]", htmlProp),
-               "properties");
-      */
-    const ep = await this._buildEditor(htmlProp)
     if (this._objField != null) {
       this._editElement.contentEditable = false
       if (ep.clicked == 'confirm') {
         this._objProperties[this._objField] =
                this._editElement.innerHTML.trim().replace(/<br>$/i, '')
-        console.log('=== ep clicked')
-        console.log(JSON.stringify(this._objProperties))
-        console.log(this._objField)
-        console.log(this._objProperties[this._objField])
       } else { this._editElement.innerHTML = this._originalEdit }
     }
-    /*
-      if (ep.clicked == "confirm")
-         await MessageBus.ext.request("properties/apply/short");
-      else
-         this._editDCC.reactivateAuthor();
-      this._removeExtendedPanel();
-      */
     this._handleEditorAction(ep.clicked)
   }
+  */
 }

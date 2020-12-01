@@ -2,7 +2,7 @@
  * Group of DCCs
  */
 
-class DCCGroup extends DCCMultiVisual {
+class DCCGroup extends DCCVisual {
   connectedCallback () {
     super.connectedCallback()
 
@@ -17,7 +17,7 @@ class DCCGroup extends DCCMultiVisual {
     Promise.all(promises).then(() => {
       const children = this.querySelectorAll('*')
       for (const c of children) {
-        if (c.tagName && c.tagName.toLowerCase().startsWith('dcc-')) { this._storePresentation(c.currentPresentation()) }
+        if (c.tagName && c.tagName.toLowerCase().startsWith('dcc-')) { this._setPresentation(c.currentPresentation()) }
       }
       this._presentationIsReady()
     })

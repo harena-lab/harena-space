@@ -3,7 +3,8 @@
 
 class DCCWeb extends DCCVisual {
   connectedCallback () {
-    if (this.hasAttribute('location')) { this._presentation = document.querySelector('#' + this.location) }
+    if (this.hasAttribute('location')) {
+      this._setPresentation(this.querySelector('#' + this.location)) }
     this._presentationIsReady()
     super.connectedCallback()
   }

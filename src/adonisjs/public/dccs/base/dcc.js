@@ -32,4 +32,7 @@ class DCC {
 
 (function () {
   DCC.components = {}
+
+  // defines if the environment will support DCC editing
+  DCC.editable = false
 })()
