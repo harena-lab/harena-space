@@ -10,10 +10,6 @@ class DCCVisual extends DCCBase {
     this._presentation = null
     this._presentationSet = []
     this._presentationSetEditable = []
-
-    // this.editListener = this.editListener.bind(this)
-    // this.mouseoverListener = this.mouseoverListener.bind(this)
-    // this.mouseoutListener = this.mouseoutListener.bind(this)
   }
 
   connectedCallback () {
@@ -47,51 +43,29 @@ class DCCVisual extends DCCBase {
 
   checkActivateAuthor () {
     if (this.author) {
-      for (const pr of this._presentationSetEditable) {
-        // this._activateAuthorPresentation(pr._presentation, pr)
+      for (const pr of this._presentationSetEditable)
         pr.activateListener(this.id)
+    }
+  }
+
+  deactivateAuthor () {
+    for (const pr of this._presentationSetEditable)
+      pr.deactivateListener()
+  }
+
+  edit (role) {
+    for (let pr of this._presentationSetEditable) {
+      if ((pr._param == null && role == null) ||
+          (pr._param != null && pr._param.role == role)) {
+        this._editedPresentation = pr
+        pr.deactivateClick()
       }
     }
   }
 
-  // author trigger attachment
-  /*
-  _activateAuthorPresentation (presentation, listener) {
-    presentation.style.cursor = 'pointer'
-    presentation.dccid = this.id
-    presentation.addEventListener('mouseover', listener.mouseoverListener)
-    presentation.addEventListener('mouseout', listener.mouseoutListener)
-    presentation.addEventListener('click', listener.mouseclickListener)
+  editButtons () {
+    return []
   }
-  */
-
-  deactivateAuthor () {
-    for (const pr of this._presentationSetEditable) {
-      pr.deactivateListener()
-      // this._deactivateAuthorPresentation(pr._presentation, pr)
-    }
-  }
-
-  /*
-  deactivateAuthorCurrent () {
-    const presentation = (this._editedPresentation)
-      ? this._editedPresentation
-      : (this._presentationSetEditable.length > 0) ? this._presentationSetEditable[0] : null
-    if (presentation != null)
-      this._deactivateAuthorPresentation(presentation._presentation, presentation)
-  }
-  */
-
-  /*
-  _deactivateAuthorPresentation (presentation, listener) {
-    console.log('=== deactivate')
-    console.log(listener)
-    presentation.removeEventListener('mouseover', listener.mouseoverListener)
-    presentation.removeEventListener('mouseout', listener.mouseoutListener)
-    presentation.removeEventListener('click', listener.mouseclickListener)
-    presentation.style.cursor = 'default'
-  }
-  */
 
   hide () {
     if (this._presentationReady) { this._hideReady() } else { this._pendingHide = true }
@@ -138,91 +112,6 @@ class DCCVisual extends DCCBase {
       this._hideReady()
     }
   }
-
-  edit (role) {
-    console.log('=== edit role')
-    console.log(this._presentationSetEditable)
-    console.log(role)
-    for (let pr of this._presentationSetEditable) {
-      if ((pr._param == null && role == null) ||
-          (pr._param != null && pr._param.role == role)) {
-        this._editedPresentation = pr
-        // this._editPresentation(pr._presentation, pr)
-        pr.deactivateListener()
-        // this._deactivateAuthorPresentation(pr._presentation, pr)
-      }
-    }
-  }
-
-  /*
-  _editPresentation (presentation, listener) {
-    // this.deactivateAuthorCurrent()
-    // check for a DCC inside a DCC
-    if (presentation.tagName.toLowerCase().startsWith('dcc-')) {
-      presentation.edit()
-    } else {
-      this._deactivateAuthorPresentation(presentation, listener)
-      // if (presentation.style.border) { this._originalBorderStyle = presentation.style.border }
-      // presentation.style.border = DCCVisual.selectedBorderStyle
-    }
-  }
-  */
-
-  /*
-  reactivateAuthor () {
-    if (this._editedPresentation) {
-      this._reactivateAuthorPresentation(this._editedPresentation._presentation,
-        this._editedPresentation)
-      delete this._editedPresentation
-    }
-  }
-
-  _reactivateAuthorPresentation (presentation, listener) {
-    // check for a DCC inside a DCC
-    if (presentation.tagName.toLowerCase().startsWith('dcc-'))
-      { presentation.reactivateAuthor() }
-    else {
-      if (this._originalBorderStyle) {
-        presentation.style.border = this._originalBorderStyle
-        delete this._originalBorderStyle
-      } else { presentation.style.border = 'none' }
-    }
-    this._activateAuthorPresentation(presentation, listener)
-  }
-  */
-
-  /*
-  editListener (buttonType) {
-    this._removeEditControls()
-    MessageBus.ext.publish('control/element/' + this.id + '/selected',
-      {buttonType: buttonType})
-  }
-  */
-
-  /*
-  mouseoverListener (event) {
-    this._editControls(this._presentation, this)
-  }
-
-  mouseoutListener (event) {
-    this._removeEditControls()
-  }
-  */
-
-  /*
-  _editControls (presentation, listener, role) {
-    const pres = this._presentationSetEditable.find(
-      pr => ((pr._param == null && role == null) ||
-             (pr._param != null && pr._param.role == role)))
-    if (pres != null) {
-      this._editControlsPresentation(pres._presentation, pres)
-    }
-  }
-  */
-
-  editButtons () {
-    return []
-  }
 }
 
 // manages multiple presentation in visual DCCs
@@ -247,22 +136,24 @@ class PresentationDCC {
 
   activateListener (dccid) {
     if (!this._activated) {
-      console.log('=== activate')
-      console.log(this)
       this._presentation.style.cursor = 'pointer'
       this._presentation.dccid = dccid
       this._presentation.addEventListener('mouseover', this.mouseoverListener)
-      this._presentation.addEventListener('mouseout', this.mouseoutListener)
+      // this._presentation.addEventListener('mouseout', this.mouseoutListener)
       this._presentation.addEventListener('click', this.mouseclickListener)      
     }
     this._activated = true
   }
 
   deactivateListener () {
-    console.log('=== deactivate')
-    console.log(this)
     this._presentation.removeEventListener('mouseover', this.mouseoverListener)
-    this._presentation.removeEventListener('mouseout', this.mouseoutListener)
+    // this._presentation.removeEventListener('mouseout', this.mouseoutListener)
+    this._presentation.removeEventListener('click', this.mouseclickListener)
+    this._presentation.style.cursor = 'default'
+    this._activated = false
+  }
+
+  deactivateClick () {
     this._presentation.removeEventListener('click', this.mouseclickListener)
     this._presentation.style.cursor = 'default'
   }
@@ -289,34 +180,31 @@ class PresentationDCC {
   }
 
   _removeEditControls() {
-    if (DCCVisual._editPanel != null) {
-      document.body.removeChild(DCCVisual._editPanel.panel)
-      DCCVisual._editPanel = null
+    if (DCCVisual._lastEditState != null) {
+      if (DCCVisual._lastEditState.panel != null)
+        document.body.removeChild(DCCVisual._lastEditState.panel)
+      DCCVisual._lastEditState.presentation.style.border = DCCVisual._lastEditState.originalBorder
+      DCCVisual._lastEditState = null
     }
-    let presentation = this._presentation
-    if (presentation.tagName.toLowerCase().includes('dcc-'))
-      presentation = presentation._presentation
-    if (this._originalBorderStyle) {
-      presentation.style.border = this._originalBorderStyle
-      delete this._originalBorderStyle
-    } else { presentation.style.border = 'none' }
   }
 
   _editControls() {
     let presentation = this._presentation
-    if (DCCVisual._editPanel != null &&
-        DCCVisual._editPanel.presentation != presentation)
+    if (DCCVisual._lastEditState != null &&
+        DCCVisual._lastEditState.presentation != presentation)
       this.mouseoutListener()
-    if (DCCVisual._editPanel == null) {
+    if (DCCVisual._lastEditState == null) {
       // check for a DCC inside a DCC
       if (presentation.tagName.toLowerCase().includes('dcc-'))
         presentation = presentation._presentation
 
       // border
-      if (presentation.style.border) { this._originalBorderStyle = presentation.style.border }
+      let originalBorder = 'none'
+      if (presentation.style.border) { originalBorder = presentation.style.border }
       presentation.style.border = DCCVisual.selectedBorderStyle
 
       const edButtons = this._owner.editButtons()
+      let panel = null
       if (edButtons.length > 0) {
         const abPosition = this.absolutePosition(presentation)
 
@@ -341,23 +229,20 @@ class PresentationDCC {
 
         const template = document.createElement('template')
         template.innerHTML = templateHTML
-        const panelNode = template.content.cloneNode(true)
-        // presentation.appendChild(panelNode)
-        document.body.appendChild(panelNode)
-        const panel = document.body.querySelector('#panel-presentation')
-
+        document.body.appendChild(template.content.cloneNode(true))
+        panel = document.body.querySelector('#panel-presentation')
+ 
         for (let eb of edButtons) {
           const eedcc = new editEventDCC(eb.type, this)
-          panel.querySelector('#edit-dcc-' + eb.type)
-               .addEventListener('click', eedcc.editListener)
+          const bpanel = panel.querySelector('#edit-dcc-' + eb.type)
+          bpanel.addEventListener('click', eedcc.editListener)
         }
-        
-        DCCVisual._editPanel = {
-          presentation: presentation,
-          node: panelNode,
-          panel: panel
-        }
-        DCCVisual._editPanel.panel.addEventListener('mouseout', this.mouseoutListener)
+        panel.addEventListener('mouseout', this.mouseoutListener)
+      }
+      DCCVisual._lastEditState = {
+        presentation: presentation,
+        originalBorder: originalBorder,
+        panel: panel
       }
     }
   }
@@ -395,6 +280,7 @@ class editEventDCC {
   }
 
   editListener(event) {
+    console.log('=== edit listener', this._buttonType)
     this._listener.editListener(this._buttonType)
   }
 }
