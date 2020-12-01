@@ -48,11 +48,14 @@ class DCCVisual extends DCCBase {
   checkActivateAuthor () {
     if (this.author) {
       for (const pr of this._presentationSetEditable) {
-        this._activateAuthorPresentation(pr._presentation, pr) }
+        // this._activateAuthorPresentation(pr._presentation, pr)
+        pr.activateListener(this.id)
+      }
     }
   }
 
   // author trigger attachment
+  /*
   _activateAuthorPresentation (presentation, listener) {
     presentation.style.cursor = 'pointer'
     presentation.dccid = this.id
@@ -60,10 +63,13 @@ class DCCVisual extends DCCBase {
     presentation.addEventListener('mouseout', listener.mouseoutListener)
     presentation.addEventListener('click', listener.mouseclickListener)
   }
+  */
 
   deactivateAuthor () {
     for (const pr of this._presentationSetEditable) {
-      this._deactivateAuthorPresentation(pr._presentation, pr) }
+      pr.deactivateListener()
+      // this._deactivateAuthorPresentation(pr._presentation, pr)
+    }
   }
 
   /*
@@ -76,13 +82,16 @@ class DCCVisual extends DCCBase {
   }
   */
 
+  /*
   _deactivateAuthorPresentation (presentation, listener) {
     console.log('=== deactivate')
+    console.log(listener)
     presentation.removeEventListener('mouseover', listener.mouseoverListener)
     presentation.removeEventListener('mouseout', listener.mouseoutListener)
     presentation.removeEventListener('click', listener.mouseclickListener)
     presentation.style.cursor = 'default'
   }
+  */
 
   hide () {
     if (this._presentationReady) { this._hideReady() } else { this._pendingHide = true }
@@ -139,7 +148,8 @@ class DCCVisual extends DCCBase {
           (pr._param != null && pr._param.role == role)) {
         this._editedPresentation = pr
         // this._editPresentation(pr._presentation, pr)
-        this._deactivateAuthorPresentation(pr._presentation, pr)
+        pr.deactivateListener()
+        // this._deactivateAuthorPresentation(pr._presentation, pr)
       }
     }
   }
@@ -222,6 +232,7 @@ class PresentationDCC {
     this._id = id
     this._param = null
     this._owner = owner
+    this._activated = false
     if (role != null || presentationId != null) {
       this._param = {}
       this._param.role = role
@@ -234,6 +245,28 @@ class PresentationDCC {
     this.mouseclickListener = this.mouseclickListener.bind(this)
   }
 
+  activateListener (dccid) {
+    if (!this._activated) {
+      console.log('=== activate')
+      console.log(this)
+      this._presentation.style.cursor = 'pointer'
+      this._presentation.dccid = dccid
+      this._presentation.addEventListener('mouseover', this.mouseoverListener)
+      this._presentation.addEventListener('mouseout', this.mouseoutListener)
+      this._presentation.addEventListener('click', this.mouseclickListener)      
+    }
+    this._activated = true
+  }
+
+  deactivateListener () {
+    console.log('=== deactivate')
+    console.log(this)
+    this._presentation.removeEventListener('mouseover', this.mouseoverListener)
+    this._presentation.removeEventListener('mouseout', this.mouseoutListener)
+    this._presentation.removeEventListener('click', this.mouseclickListener)
+    this._presentation.style.cursor = 'default'
+  }
+
   editListener (buttonType) {
     if (this._param == null)
       this._param = {buttonType}
@@ -244,11 +277,6 @@ class PresentationDCC {
   }
 
   mouseoverListener (event) {
-    /*
-    this._owner._editControls(this._presentation, this,
-      (this._param != null && this._param.role != null) ? this._param.role : null)
-    */
-
     this._editControls()
   }
 
@@ -262,7 +290,6 @@ class PresentationDCC {
 
   _removeEditControls() {
     if (DCCVisual._editPanel != null) {
-      // DCCVisual._editPanel.presentation.removeChild(DCCVisual._editPanel.panel)
       document.body.removeChild(DCCVisual._editPanel.panel)
       DCCVisual._editPanel = null
     }
@@ -282,12 +309,6 @@ class PresentationDCC {
       this.mouseoutListener()
     if (DCCVisual._editPanel == null) {
       // check for a DCC inside a DCC
-      /*
-      if (presentation.tagName.toLowerCase().startsWith('dcc-')) {
-        presentation._editControls(
-          presentation._presentation, this.selectListener) }
-      else {
-      */
       if (presentation.tagName.toLowerCase().includes('dcc-'))
         presentation = presentation._presentation
 

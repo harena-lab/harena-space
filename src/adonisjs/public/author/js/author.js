@@ -760,6 +760,7 @@ class AuthorManager {
     }
   }
 
+  // waits the element to be rendered (edit after a refresh when changes the edit from elements)
   async _editableDCCWait (dccId) {
     let result = this._editableDCCs[dccId]
     const panel = this._knotPanel
