@@ -85,7 +85,7 @@ class DCCButton extends DCCBlock {
   async _renderInterface () {
     // === pre presentation setup
     let html
-    if (this.xstyle.startsWith('out')) { html = this.label } else {
+    if (this.hasAttribute('location') && this.location != '#in') { html = this.label } else {
       // html = DCCButton.templateStyle;
       if (this.hasAttribute('image')) {
         html = DCCButton.templateElements.image

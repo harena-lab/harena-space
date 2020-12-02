@@ -249,7 +249,7 @@ class DCCInputChoice extends DCCInput {
              child.tagName.toLowerCase() == DCCInputOption.elementTag) {
         nop++
         const element = (this.target || child.target)
-          ? "<dcc-button id='presentation-dcc-[id]' xstyle='theme' topic='[target]' label='[statement]' divert='round' message='[value]' variable='[variable]:label'></dcc-button>"
+          ? "<dcc-button id='presentation-dcc-[id]' location='#in' topic='[target]' label='[statement]' divert='round' message='[value]' variable='[variable]:label'></dcc-button>"
             .replace('[id]', varid + '_' + nop)
             .replace('[target]', (child.target) ? child.target : this.target)
             .replace('[statement]', child._statement)
