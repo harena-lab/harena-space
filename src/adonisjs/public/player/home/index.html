@@ -80,12 +80,12 @@
         </div>
         <!-- End of breadcrumbs -->
 
-        <div class="h-100 w-100 player-cases-content-padding rounded-top" style="border-color: #{{color}} !important;">
-          <div class="home-text mb-5">
+        <div class="h-100 w-100 player-cases-content-padding rounded-top scroll-y" style="border-color: #{{color}} !important;">
+          <div class="home-text">
             <p>Choose a case to play.</p>
           </div>
           <dcc-rest id="harena-user-cases" bind="harena-user-cases" subscribe="service/request/get:retrieve"></dcc-rest>
-          <div id="case-boxes" class="container-fluid h-100 scroll-y draft-scroll-container">
+          <div id="case-boxes" class="container-fluid draft-scroll-container">
             <dcc-dhtml connect="harena-user-cases:service/request/get:retrieve">
               {{@foreach . c}}
               <div id="b{{c.id}}" class="row draft-author-case-container">
