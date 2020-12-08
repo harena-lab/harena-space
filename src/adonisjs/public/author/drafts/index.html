@@ -55,6 +55,10 @@
     <link rel="stylesheet" href="../../infra/css/common-player.css">
     <link rel="stylesheet" href="../../infra/css/common-author.css">
 
+    <script>
+      Basic.service.rootPath = '../../'
+    </script>
+
     <script src="../js/dcc-author-server-proxy.js"></script>
 
     <script src="../js/create.js"></script>
@@ -80,10 +84,31 @@
           </nav>
         </div>
         <!-- End of breadcrumbs -->
-
         <div class="h-100 w-100 draft-content-padding scroll-y">
-          <div class="home-text">
+          <div class="home-text" style="height: auto !important;">
             <p>Continue editing your drafted cases.</p>
+          </div>
+          <div class="home-author-padding" id="filter-container">
+            <form class="pl-2 align-items-center row">,
+              <div class="p-2">Filter by: </div>
+              <input type="hidden" id="clearance" value="4">
+              <div class="pr-3">
+                <select name="fInstitution" class="custom-select custom-select-sm">
+                  <option selected value="">Institution</option>
+                  <option value="c5562bfd-9a94-40f0-b08a-3627e3e417e0">Minho</option>
+                  <option value="db05d3fd-03ec-4be8-bddd-2d78fbb173b6">Unicamp</option>
+                </select>
+              </div>
+              <div class="pr-3">
+                <select name="fUserType" class="custom-select custom-select-sm">
+                  <option selected value="">User type</option>
+                  <option value="professor">Professor</option>
+                  <option value="aluno">Aluno</option>
+                </select>
+              </div>
+              <dcc-submit label="Filter" xstyle="btn btn-secondary"></dcc-submit>
+            </form>
+            <dcc-rest bind="harena-cases" subscribe="button/Filter/clicked:get"></dcc-rest>
           </div>
           <div id="case-boxes" class="container-fluid draft-scroll-container">
             <dcc-rest id="harena-cases" bind="harena-cases"></dcc-rest>
@@ -93,7 +118,7 @@
                 <div class="col draft-case-title">
                   {{cases.title}}
                   <div class="row">
-                    <h6>Created by {{cases.author_grade}}: {{cases.username}}</h6>
+                    <h6>Created by {{cases.author_grade}}: {{cases.username}} ({{cases.institution_acronym}})</h6>
                   </div>
                 </div>
 

@@ -213,9 +213,10 @@
               operationId: 'cases-list',
               parameters: [
                 {name: 'url-manager',
-                 in: 'path'},
+                in: 'path'},
                 {name: 'clearance',
-                  in: 'path'}
+                in: 'path'}
+
               ]
             }
           }
@@ -311,6 +312,29 @@
           '{url-manager}/player/quests': {
             'get': {
               operationId: 'quests',
+              parameters: [
+                {name: 'url-manager',
+                 in: 'path'}
+              ]
+            }
+          }
+        }
+      }
+    }
+  )
+  //Retrieves all institutions from database
+  DCC.component(
+    'harena-institutions',
+    'dcc-rest',
+    {
+      environment: {
+        'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api,
+      },
+      oas: {
+        paths: {
+          '{url-manager}/institutions': {
+            'get': {
+              operationId: 'institutions-list',
               parameters: [
                 {name: 'url-manager',
                  in: 'path'}
