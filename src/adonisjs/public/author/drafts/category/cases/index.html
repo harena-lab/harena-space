@@ -82,13 +82,42 @@
         </div>
         <!-- End of breadcrumbs -->
 
-        <div class="h-100 w-100 draft-content-padding">
-          <div class="home-text mb-3">
+        <div class="h-100 w-100 draft-content-padding scroll-y">
+          <div class="home-text" style="height: auto !important;">
             <p>Continue editing your drafted cases.</p>
           </div>
-          <div id="case-boxes" class="container-fluid h-100 scroll-y draft-scroll-container">
+          <div class="home-author-padding rounded" id="filter-container">
+            <form class="pl-2 align-items-center row">
+              <div class="p-2">Filter by: </div>
+              <!-- <input type="hidden" id="" value=""> -->
+              <div class="pr-3">
+                <dcc-rest id="harena-institutions" bind="harena-institutions"></dcc-rest>
+                <dcc-dhtml id="harena-dhtml-institutions" connect="harena-institutions:service/request/get:retrieve">
+
+                  <select id="fInstitution" name="fInstitution" class="custom-select custom-select-sm">
+                    <option selected value="">Institution</option>
+                    {{@foreach . institution}}
+                    <option value={{institution.id}}>{{institution.acronym}}</option>
+                    {{@endfor}}
+                  </select>
+
+                  <end-dcc></end-dcc>
+                </dcc-dhtml>
+              </div>
+              <div class="pr-3">
+                <select id="fUserType" name="fUserType" class="custom-select custom-select-sm">
+                  <option selected value="">User type</option>
+                  <option value="professor">Professor</option>
+                  <option value="aluno">Aluno</option>
+                </select>
+              </div>
+              <dcc-submit label="Filter" xstyle="btn btn-secondary" topic="cases/request/get"></dcc-submit>
+            </form>
+            <dcc-rest id="harena-cases-filter" bind="harena-category-cases" subscribe="cases/request/get:retrieve"></dcc-rest>
+          </div>
+          <div id="case-boxes" class="container-fluid draft-scroll-container">
             <dcc-rest id="harena-category-cases" bind="harena-category-cases"></dcc-rest>
-            <dcc-dhtml id="harena-dhtml-cases" connect="harena-category-cases:service/request/get:retrieve">
+            <dcc-dhtml id="harena-dhtml-cases" connect="harena-category-cases:service/request/get:retrieve"  subscribe="service/response/get/harena-cases-filter:update">
               {{@foreach . cases}}
               <div id="b{{cases.id}}" class="row draft-author-case-container">
                 <div class="col draft-case-title">

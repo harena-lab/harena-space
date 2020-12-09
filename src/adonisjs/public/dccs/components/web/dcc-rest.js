@@ -36,6 +36,8 @@ class DCCRest extends DCCBase {
   }
 
   async restRequest(method, parameters) {
+    // console.log('============ rest method')
+    // console.log(method)
     let result = null
 
     if (this._setup.environment)

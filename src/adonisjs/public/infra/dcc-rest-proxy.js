@@ -180,16 +180,20 @@
       },
       oas: {
         paths: {
-          '{url-manager}/category/cases?categoryId={categoryId}&clearance={clearance}': {
+          '{url-manager}/category/cases': {
             'get': {
               operationId: 'category-cases',
               parameters: [
                 {name: 'url-manager',
-                 in: 'path'},
-                {name: 'categoryId',
                   in: 'path'},
+                {name: 'categoryId',
+                  in: 'query'},
                 {name: 'clearance',
-                  in: 'path'}
+                  in: 'query'},
+                {name: 'fInstitution',
+                  in: 'query'},
+                {name: 'fUserType',
+                  in: 'query'}
               ]
             }
           }
@@ -208,14 +212,18 @@
       },
       oas: {
         paths: {
-          '{url-manager}/user/cases?clearance={clearance}': {
+          '{url-manager}/user/cases': {
             'get': {
               operationId: 'cases-list',
               parameters: [
                 {name: 'url-manager',
-                 in: 'path'},
+                  in: 'path'},
                 {name: 'clearance',
-                  in: 'path'}
+                  in: 'query'},
+                {name: 'fInstitution',
+                  in: 'query'},
+                {name: 'fUserType',
+                  in: 'query'}
               ]
             }
           }
@@ -274,32 +282,6 @@
   )
 
   DCC.component(
-    'harena-user-cases',
-    'dcc-rest',
-    {
-      environment: {
-        'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api,
-        'clearance': new URL(document.location).searchParams.get('clearance')
-      },
-      oas: {
-        paths: {
-          '{url-manager}/user/cases?clearance={clearance}': {
-            'get': {
-              operationId: 'user-cases',
-              parameters: [
-                {name: 'url-manager',
-                 in: 'path'},
-                {name: 'clearence',
-                 in: 'path'}
-              ]
-            }
-          }
-        }
-      }
-    }
-  )
-
-  DCC.component(
     'harena-player-quests',
     'dcc-rest',
     {
@@ -311,6 +293,29 @@
           '{url-manager}/player/quests': {
             'get': {
               operationId: 'quests',
+              parameters: [
+                {name: 'url-manager',
+                 in: 'path'}
+              ]
+            }
+          }
+        }
+      }
+    }
+  )
+  //Retrieves all institutions from database
+  DCC.component(
+    'harena-institutions',
+    'dcc-rest',
+    {
+      environment: {
+        'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api,
+      },
+      oas: {
+        paths: {
+          '{url-manager}/institutions': {
+            'get': {
+              operationId: 'institutions-list',
               parameters: [
                 {name: 'url-manager',
                  in: 'path'}
