@@ -65,7 +65,10 @@ class DCCRest extends DCCBase {
             for (let p of pathDetails[method].parameters)
               if (p.in != null && p.in == 'query')
                 body[p.name] = parameters[p.name]
-            request.data = body
+            if (request.method == 'GET')
+              request.params = body
+            else
+              request.data = body
           }
         }
 
