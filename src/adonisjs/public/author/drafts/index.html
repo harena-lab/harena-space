@@ -88,16 +88,23 @@
           <div class="home-text" style="height: auto !important;">
             <p>Continue editing your drafted cases.</p>
           </div>
-          <div class="home-author-padding" id="filter-container">
+          <div class="home-author-padding rounded" id="filter-container">
             <form class="pl-2 align-items-center row">
               <div class="p-2">Filter by: </div>
               <!-- <input type="hidden" id="" value=""> -->
               <div class="pr-3">
-                <select id="fInstitution" name="fInstitution" class="custom-select custom-select-sm">
-                  <option selected value="">Institution</option>
-                  <option value="c5562bfd-9a94-40f0-b08a-3627e3e417e0">Minho</option>
-                  <option value="db05d3fd-03ec-4be8-bddd-2d78fbb173b6">Unicamp</option>
-                </select>
+                <dcc-rest id="harena-institutions" bind="harena-institutions"></dcc-rest>
+                <dcc-dhtml id="harena-dhtml-institutions" connect="harena-institutions:service/request/get:retrieve">
+
+                  <select id="fInstitution" name="fInstitution" class="custom-select custom-select-sm">
+                    <option selected value="">Institution</option>
+                    {{@foreach . institution}}
+                    <option value={{institution.id}}>{{institution.acronym}}</option>
+                    {{@endfor}}
+                  </select>
+
+                  <end-dcc></end-dcc>
+                </dcc-dhtml>
               </div>
               <div class="pr-3">
                 <select id="fUserType" name="fUserType" class="custom-select custom-select-sm">

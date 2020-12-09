@@ -180,16 +180,20 @@
       },
       oas: {
         paths: {
-          '{url-manager}/category/cases?categoryId={categoryId}&clearance={clearance}': {
+          '{url-manager}/category/cases': {
             'get': {
               operationId: 'category-cases',
               parameters: [
                 {name: 'url-manager',
-                 in: 'path'},
-                {name: 'categoryId',
                   in: 'path'},
+                {name: 'categoryId',
+                  in: 'query'},
                 {name: 'clearance',
-                  in: 'path'}
+                  in: 'query'},
+                {name: 'fInstitution',
+                  in: 'query'},
+                {name: 'fUserType',
+                  in: 'query'}
               ]
             }
           }
@@ -213,13 +217,13 @@
               operationId: 'cases-list',
               parameters: [
                 {name: 'url-manager',
-                in: 'path'},
+                  in: 'path'},
                 {name: 'clearance',
-                in: 'query'},
+                  in: 'query'},
                 {name: 'fInstitution',
-                in: 'query'},
+                  in: 'query'},
                 {name: 'fUserType',
-                in: 'query'}
+                  in: 'query'}
               ]
             }
           }
@@ -268,32 +272,6 @@
                 {name: 'url-manager',
                  in: 'path'},
                 {name: 'questId',
-                 in: 'path'}
-              ]
-            }
-          }
-        }
-      }
-    }
-  )
-
-  DCC.component(
-    'harena-user-cases',
-    'dcc-rest',
-    {
-      environment: {
-        'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api,
-        'clearance': new URL(document.location).searchParams.get('clearance')
-      },
-      oas: {
-        paths: {
-          '{url-manager}/user/cases?clearance={clearance}': {
-            'get': {
-              operationId: 'user-cases',
-              parameters: [
-                {name: 'url-manager',
-                 in: 'path'},
-                {name: 'clearence',
                  in: 'path'}
               ]
             }
