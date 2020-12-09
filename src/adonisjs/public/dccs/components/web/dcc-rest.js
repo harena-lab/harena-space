@@ -36,6 +36,8 @@ class DCCRest extends DCCBase {
   }
 
   async restRequest(method, parameters) {
+    // console.log('============ rest method')
+    // console.log(method)
     let result = null
 
     if (this._setup.environment)
@@ -79,7 +81,7 @@ class DCCRest extends DCCBase {
             for (let p of pathDetails[method].parameters)
               if (p.in != null && p.in == 'query')
                 body[p.name] = parameters[p.name]
-            request.data = body
+            request.params = body
           }
         }
 

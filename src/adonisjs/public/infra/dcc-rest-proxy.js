@@ -208,15 +208,18 @@
       },
       oas: {
         paths: {
-          '{url-manager}/user/cases?clearance={clearance}': {
+          '{url-manager}/user/cases': {
             'get': {
               operationId: 'cases-list',
               parameters: [
                 {name: 'url-manager',
                 in: 'path'},
                 {name: 'clearance',
-                in: 'path'}
-
+                in: 'query'},
+                {name: 'fInstitution',
+                in: 'query'},
+                {name: 'fUserType',
+                in: 'query'}
               ]
             }
           }

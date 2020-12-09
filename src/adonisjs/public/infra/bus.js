@@ -245,6 +245,10 @@ class MessageBus {
     * Returns the label at a specific level of the message.
     */
   static extractLevel (topic, level) {
+    // console.log('============ topic')
+    // console.log(topic)
+    // console.log('============ level')
+    // console.log(level)
     let label = null
     if (topic != null) {
       const levelSet = topic.split('/')
