@@ -54,21 +54,7 @@ class DCCRest extends DCCBase {
           method: method.toUpperCase(),
           url: url,
           withCredentials: true
-          /*
-          async: true,
-          crossDomain: true,
-          headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*'
-          }
-          */
         }
-
-        /*
-        if (this._setup.credentials && this._setup.credentials == 'use' &&
-            DCCRest.token)
-          request.headers['Authorization'] = 'Bearer ' + DCCRest.token
-        */
 
         let pathDetails = this._setup.oas.paths[paths[0]]
         let opid = ''
@@ -83,15 +69,6 @@ class DCCRest extends DCCBase {
           }
         }
 
-        // console.log("=== request header")
-        // console.log(request)
-
-        /*
-        const jsonResp = await fetch(url, request)
-          .then(response => response.json())
-          .catch(error => console.log('error', error))
-        */
-
         await axios(request)
           .then(function (endpointResponse) {
             // console.log(endpointResponse.status)
@@ -101,22 +78,6 @@ class DCCRest extends DCCBase {
           .catch(function (error) {
             console.log(error)
           })
-
-        /*
-        if (this._setup.credentials && this._setup.credentials == 'store') {
-          if (jsonResp.token) {
-            DCCRest.token = jsonResp.token
-            // removes to avoid sending to the bus
-            delete jsonResp.token
-          }
-          if (jsonResp.refreshToken) {
-            DCCRest.refreshToken = jsonResp.refreshToken
-            // removes to avoid sending to the bus
-            delete jsonResp.refreshToken
-          }
-        }
-        */
-
 
       }
     }
@@ -143,7 +104,6 @@ class DCCRest extends DCCBase {
         parameters[MessageBus.extractLevel(topic, 2)] = par
       else
         parameters = par
-      // this.restRequest(message.role.toLowerCase(), parameters)
       this.serviceRequest(topic, parameters)
     }
   }

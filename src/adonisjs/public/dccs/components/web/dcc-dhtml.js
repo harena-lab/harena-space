@@ -38,7 +38,8 @@ class DCCDHTML extends DCCBase {
       if (part < eachBlocks.length) {
         let field = eachBlocks[part]
         let item = eachBlocks[part+1]
-        let phtml = eachBlocks[part+2]
+        const vhtml = eachBlocks[part+2].split(/\{\{[ \t]*@endfor[ \t]*\}\}/im)
+        let phtml = vhtml[0]
         const it = (field == '.') ? record : record[field]
         for (let i of it) {
           let shtml = phtml
@@ -47,10 +48,11 @@ class DCCDHTML extends DCCBase {
             shtml, (field == '.') ? item : item + '.' + field, i)
           html += shtml
         }
+        if (vhtml.length > 0)
+          html += this._replaceFields(vhtml[1], '', record)
         part += 3
       }
     }
-    // console.log('replace each');
     return html
   }
 
