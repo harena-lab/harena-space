@@ -84,7 +84,7 @@
           <div class="home-text" style="height: auto !important;">
             <p>Choose a case to play.</p>
           </div>
-          <div class="home-author-padding rounded" id="filter-container">
+          <div class="home-author-padding rounded row sticky-top" style="z-index:3;">
             <form class="pl-2 align-items-center row">
               <div class="p-2">Filter by: </div>
               <!-- <input type="hidden" id="" value=""> -->
@@ -114,7 +114,7 @@
             <dcc-rest id="harena-cases-filter" bind="harena-category-cases" subscribe="cases/request/get:retrieve"></dcc-rest>
           </div>
           <div id="case-boxes" class="container-fluid draft-scroll-container">
-            <dcc-rest id="harena-cases" bind="harena-cases" subscribe="service/request/get:retrieve"></dcc-rest>
+            <dcc-rest id="harena-cases" bind="harena-category-cases" subscribe="service/request/get:retrieve"></dcc-rest>
             <dcc-dhtml id="harena-dhtml-cases" connect="harena-cases:service/request/get:retrieve" subscribe="service/response/get/harena-cases-filter:update">
               {{@foreach . cases}}
               <div id="b{{c.id}}" class="row draft-author-case-container">

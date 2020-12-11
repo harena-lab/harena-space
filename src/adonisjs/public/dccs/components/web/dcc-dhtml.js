@@ -94,6 +94,7 @@ class DCCDHTML extends DCCBase {
       : ((message.value) ? message.value : message))
     this._renderHTML()
     MessageBus.int.publish('web/dhtml/record/updated', DCCDHTML.elementTag)
+    MessageBus.int.publish('control/dhtml/updated')
   }
 
   async connectionReady (id, topic) {
@@ -102,7 +103,6 @@ class DCCDHTML extends DCCBase {
       const response = await this.request('retrieve', null, id)
       this.recordUpdate(topic, response)
     }
-    // console.log('connection ready');
     MessageBus.ext.publish('control/dhtml/ready')
 
   }

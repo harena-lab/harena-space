@@ -233,6 +233,40 @@
   )
 
   DCC.component(
+    'harena-share-cases',
+    'dcc-rest',
+    {
+      environment: {
+        'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api,
+        // 'table_id': sessionStorage.getItem('caseList'),
+      },
+      oas: {
+        paths: {
+          '{url-manager}/case/share': {
+            'post': {
+              operationId: 'share-cases',
+              parameters: [
+                {name: 'url-manager',
+                  in: 'path'},
+                {name: 'clearance',
+                  in: 'query'},
+                {name: 'entity',
+                  in: 'query'},
+                {name: 'subject',
+                  in: 'query'},
+                {name: 'clearance',
+                  in: 'query'},
+                {name: 'table_id',
+                  in: 'query'}
+              ]
+            }
+          }
+        }
+      }
+    }
+  )
+
+  DCC.component(
     'harena-quest-list',
     'dcc-rest',
     {

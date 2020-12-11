@@ -168,6 +168,8 @@ nav.navbar {
   min-width: 25%;
   margin: 10px;
   padding: 5px;
+  border-radius: 5px;
+
 }
 .draft-author-case-container:hover{
   background-color: #ffffff;

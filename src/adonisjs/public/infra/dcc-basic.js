@@ -61,7 +61,7 @@
     'dcc-submit',
     {
       pos: function (response) {
-        console.log(response)
+        // console.log(response)
         window.location.href = '/'
       }
     }

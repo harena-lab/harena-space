@@ -22,7 +22,7 @@ class DraftManager {
     // this._draftSelect(authorState.userid, advanced);
     // document.getElementsByClassName('buttons-container').length > 0
     //   ? MessageBus.ext.subscribe('control/dhtml/ready', this._draftCategoryCasesSelect) : this._draftSelect(advanced)
-    MessageBus.ext.subscribe('control/dhtml/ready', this._draftCategoryCasesSelect)
+    MessageBus.int.subscribe('control/dhtml/updated', this._draftCategoryCasesSelect)
   }
 
   async _draftSelect (advanced) {
@@ -84,16 +84,74 @@ class DraftManager {
     // {user: userid});
 
     const cl = document.getElementsByClassName('buttons-container')
-    // for (var i in cl){
-    //   let test = cl[i].children
-    //   for(var e in )
-    // }
+    const caseListInput = document.querySelector('#table_id')
+
+
+    if(document.querySelector('#select-all-checkbox')){
+      const selectAllCases = document.querySelector('#select-all-checkbox')
+      var caseList = new Array()
+      selectAllCases.addEventListener('click',
+      function () {
+
+        for (var c in cl){
+          try {
+            var editButton = cl[c].children[0]
+            const caseContainer = document.querySelector('#b'+editButton.id.substring(1))
+            const shareCheckbox = document.querySelector('#c'+editButton.id.substring(1))
+            if(selectAllCases.checked){
+              // console.log('============ all checked')
+              shareCheckbox.checked = true
+              selectAllCases.nextElementSibling.innerHTML = 'Unselect All'
+              caseContainer.style.backgroundColor = '#769fdb'
+              caseContainer.firstElementChild.style.color = '#fff'
+            } else{
+              // console.log('============all unchecked')
+              shareCheckbox.checked = false
+              selectAllCases.nextElementSibling.innerHTML = 'Select All'
+              caseContainer.style.backgroundColor = ''
+              caseContainer.firstElementChild.style.color = '#808080'
+            }
+          } catch (e) {
+            break
+          }
+        }
+      })
+    }
+
     for (const c in cl) {
       if (cl[c].children) {
         const editButton = cl[c].children[0]
-        // console.log(editButton.id.substring(2))
         const previewButton = cl[c].children[1]
         const deleteButton = cl[c].children[2]
+
+        const caseContainer = document.querySelector('#b'+editButton.id.substring(1))
+        const shareCheckbox = document.querySelector('#c'+editButton.id.substring(1))
+
+        caseContainer.addEventListener('click',
+          function () {
+
+            shareCheckbox.click()
+          })
+
+        shareCheckbox.addEventListener('change',
+          function () {
+            // console.log('============ click checkbox')
+            if(shareCheckbox.checked){
+              // console.log('============ checkbox checked')
+              caseList.push(shareCheckbox.value)
+              document.querySelector('#table_id').value = caseList
+              // sessionStorage.setItem('caseList', caseList)
+              caseContainer.style.backgroundColor = '#769fdb'
+              caseContainer.firstElementChild.style.color = '#fff'
+            }else{
+              // console.log('============ checkbox unchecked')
+              caseList.splice(caseList.indexOf(shareCheckbox.value), 1)
+              document.querySelector('#table_id').value = caseList
+              // sessionStorage.setItem('caseList', caseList)
+              caseContainer.style.backgroundColor = ''
+              caseContainer.firstElementChild.style.color = '#808080'
+            }
+          })
 
         editButton.addEventListener('click',
           function () {
@@ -120,9 +178,10 @@ class DraftManager {
         //     })
         // }
       }
-    }
-  }
 
+    }
+
+  }
   async deleteCase (topic, message) {
     const decision =
          await DCCNoticeInput.displayNotice(
