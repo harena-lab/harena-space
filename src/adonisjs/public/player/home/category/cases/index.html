@@ -57,11 +57,13 @@
 
   <script src="/author/js/dcc-author-server-proxy.js"></script>
 
-  <script src="/author/js/template-case.js"></script>
-  <script src="/author/js/draft.js"></script>
+  <script src="/player/js/caselist.js"></script>
+
+  <!-- <script src="/author/js/template-case.js"></script>
+  <script src="/author/js/draft.js"></script> -->
 </head>
 
-  <body onload="DraftManager.instance.start()">
+  <body>
     <!-- Login/logout header -->
     <dcc-include src="/author/partials/header.html"></dcc-include>
     <!-- Create a section to place page content -->
@@ -117,15 +119,15 @@
             <dcc-rest id="harena-cases" bind="harena-category-cases" subscribe="service/request/get:retrieve"></dcc-rest>
             <dcc-dhtml id="harena-dhtml-cases" connect="harena-cases:service/request/get:retrieve" subscribe="service/response/get/harena-cases-filter:update">
               {{@foreach . cases}}
-              <div id="b{{c.id}}" class="row draft-author-case-container">
+              <div id="b{{cases.id}}" class="row draft-author-case-container">
                 <div class="col draft-case-title">
                   {{cases.title}}
                   <div class="row">
                     <h6>Created by {{cases.author_grade}}: {{cases.username}} ({{cases.institution_acronym}})</h6>
                   </div>
                 </div>
-                <div class="d-flex justify-content-end ">
-                  <div id="e{{cases.id}}" class="col author-panel-button align-self-center pt-2 pb-2" onclick="location.href='/player/case?id={{cases.id}}'">VIEW</div>
+                <div class="d-flex justify-content-end buttons-container">
+                  <div id="v{{cases.id}}" class="col author-panel-button align-self-center pt-2 pb-2">VIEW</div>
                 </div>
               </div>
               {{@endfor}}

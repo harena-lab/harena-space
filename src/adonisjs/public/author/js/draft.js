@@ -127,7 +127,7 @@ class DraftManager {
         const caseContainer = document.querySelector('#b'+editButton.id.substring(1))
         const shareCheckbox = document.querySelector('#c'+editButton.id.substring(1))
 
-        caseContainer.addEventListener('click',
+        caseContainer.firstElementChild.addEventListener('click',
           function () {
 
             shareCheckbox.click()

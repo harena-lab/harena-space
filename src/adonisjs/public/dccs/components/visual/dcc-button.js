@@ -152,6 +152,9 @@ class DCCButton extends DCCBlock {
           ? this.topic : 'button/' + this.label + '/clicked'
         if (this.hasAttribute('message')) { message.value = this.message }
         MessageBus.ext.publish(topic, message)
+        // console.log('============ dcc-button')
+        // console.log(topic)
+        // console.log(message)
       }
     }
   }
@@ -167,7 +170,7 @@ class DCCButton extends DCCBlock {
     this._active = true
   }
 
-  
+
   // <TODO> provisory - deactivate button edit
   _activateAuthorPresentation (presentation, listener) {}
 }
