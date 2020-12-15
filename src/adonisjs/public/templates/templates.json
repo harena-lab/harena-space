@@ -34,6 +34,12 @@
     "path": "simple/case/virtual_visit",
     "icon": "simple/case/virtual_visit.png",
     "scope": "case"},
+ "Podcast":
+   {"questId": "podcast",
+    "description": "Podcast.",
+    "path": "simple/case/podcast",
+    "icon": "simple/case/podcast.png",
+    "scope": "case"},
  "Quiz Block":
    {"description": "Single question quiz with four options.",
     "path": "simple/knot/quiz",
