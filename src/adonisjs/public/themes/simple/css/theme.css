@@ -108,8 +108,14 @@
 
 /* Trigger DCC */
 
+.dcc-button-theme, .dcc-button-theme-inline {
+  color: white;
+}
+
 .dcc-button-theme {
+   border-radius: 10px;
    font-size: 3vmin;
+   margin-bottom: .5rem;
    /* vertical center */
    display: flex;
    flex-direction: column;
@@ -119,11 +125,6 @@
    margin-left: auto;
    margin-right: auto;
    text-align: center;
-
-   color: white;
-   /* padding: 12px 0px 0px 0px; */
-   border-radius: 10px;
-   margin-bottom: .5rem;
 }
 
 @media (orientation: landscape) {

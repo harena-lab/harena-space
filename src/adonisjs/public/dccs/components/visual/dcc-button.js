@@ -14,11 +14,6 @@ class DCCButton extends DCCBlock {
   }
 
   connectedCallback () {
-    if (this.type == '+' && !this.hasAttribute('location')) {
-      this.location = '#in'
-      this.xstyle = 'theme'
-    }
-
     super.connectedCallback()
 
     if (this.hasAttribute('topic') && this.topic.endsWith('/navigate')) {
@@ -37,15 +32,7 @@ class DCCButton extends DCCBlock {
 
   static get observedAttributes () {
     return DCCBlock.observedAttributes.concat(
-      ['type', 'link', 'topic', 'message', 'variable'])
-  }
-
-  get type () {
-    return this.getAttribute('type')
-  }
-
-  set type (newValue) {
-    this.setAttribute('type', newValue)
+      ['link', 'topic', 'message', 'variable'])
   }
 
   get link () {
@@ -80,21 +67,30 @@ class DCCButton extends DCCBlock {
     this.setAttribute('variable', newValue)
   }
 
+  get inline () {
+    return this.hasAttribute('inline')
+  }
+
+  set inline (isInline) {
+    if (isInline) { this.setAttribute('inline', '') } else { this.removeAttribute('inline') }
+  }
+
   /* Rendering */
 
   async _renderInterface () {
     // === pre presentation setup
     let html
     if (this.hasAttribute('location') && this.location != '#in') { html = this.label } else {
+      const bsty = this._renderStyle() + ((this.inline) ? '-inline' : '')
       // html = DCCButton.templateStyle;
       if (this.hasAttribute('image')) {
         html = DCCButton.templateElements.image
-          .replace('[render]', this._renderStyle())
+          .replace('[render]', bsty)
           .replace('[label]', this.label)
           .replace('[image]', this.image)
       } else {
         html = DCCButton.templateElements.regular
-          .replace('[render]', this._renderStyle())
+          .replace('[render]', bsty)
           .replace('[label]', this.label)
       }
     }
@@ -152,9 +148,6 @@ class DCCButton extends DCCBlock {
           ? this.topic : 'button/' + this.label + '/clicked'
         if (this.hasAttribute('message')) { message.value = this.message }
         MessageBus.ext.publish(topic, message)
-        // console.log('============ dcc-button')
-        // console.log(topic)
-        // console.log(message)
       }
     }
   }

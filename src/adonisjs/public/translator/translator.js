@@ -233,7 +233,7 @@ class Translator {
 
     this._compileMerge(knot)
 
-    this._compileContext(knotSet, knotId)
+    this._compileContext(knotSet, knotId, knot.content)
 
     // this._compileCompose(compiledKnot);
 
@@ -349,8 +349,7 @@ class Translator {
   /*
     * Gives context to links and variables
     */
-  _compileContext (knotSet, knotId) {
-    const compiled = knotSet[knotId].content
+  _compileContext (knotSet, knotId, compiled) {
     let defaultInput = 1
     for (const c in compiled) {
       if (compiled[c].type == 'input') {
@@ -384,7 +383,8 @@ class Translator {
                   compiled[c].type == 'divert') {
         compiled[c].contextTarget =
                this._findTarget(knotSet, knotId, compiled[c].target)
-      }
+      } else if (compiled[c].type == 'text-block')
+        this._compileContext(knotSet, knotId, compiled[c].content)
       /*
          {
             let target = compiled[c].target.replace(/ /g, "_");
@@ -465,11 +465,6 @@ class Translator {
     // third cycle - define the identity of each item: field or list
     for (let c = 1; c < compiled.length; c++) {
       if (compiled[c].type == 'item') {
-      /*
-            console.log("=== item");
-            console.log(compiled);
-            console.log(c);
-            */
         let u = c - 1
         while (u >= 0 && (compiled[u].type == 'linefeed' ||
                    (Translator.element[compiled[u].type] &&
@@ -559,13 +554,6 @@ class Translator {
     const levelHierarchy = []
     for (let c = 0; c < compiled.length; c++) {
       if (compiled[c].type == 'field') {
-        /*
-            console.log("=== field");
-            console.log(lastRoot);
-            console.log(lastField);
-            console.log(lastLevel);
-            console.log(compiled[c]);
-            */
         if (lastRoot == null || !compiled[c].subordinate) {
           if (compiled[c].value == null) { compiled[c].value = {} }
           lastRoot = compiled[c]
@@ -893,6 +881,11 @@ class Translator {
           for (let ct of inherited)
             ct.inherited = true
           knots[k].content =inherited.concat(knots[k].content)
+          let seq = 1
+          for (let c in knots[k].content) {
+            knots[k].content[c].seq = seq
+            seq++;
+          }
         }
 
         // adjusting the context
@@ -911,7 +904,7 @@ class Translator {
         }
 
         // reinserting context
-        this._compileContext(knots, k)
+        this._compileContext(knots, k, compiled)
       }
     }
   }
@@ -1062,9 +1055,6 @@ class Translator {
                           '<figure class="media"><iframe src="$1preview" width="560" height="315"></iframe><oembed url="$1$2"></oembed></figure>')
                  .replace(/<video><source src="([^"]+)"><\/video>/igm,
                           '<figure class="media"><oembed url="$1"></oembed></figure>')
-
-      // console.log('=== html from markdown')
-      // console.log(html)
     }
     return html
   }
@@ -1570,7 +1560,6 @@ class Translator {
     return Translator.htmlTemplates.option
       .replace('[seq]', obj.seq)
       .replace('[author]', this.authorAttr)
-      .replace('[subtype]', obj.subtype)
       .replace('[target]', this._transformNavigationMessage(obj.contextTarget))
       .replace('[display]', label)
       .replace('[divert]',
@@ -2255,7 +2244,7 @@ class Translator {
   Translator.isLine = ['knot', 'field', 'item', 'option', 'divert-script', 'entity', 'input',
     'compute', 'context-open']
   Translator.textBlockCandidate = ['select', 'annotation', 'text', 'mention', 'image',
-    'output']
+    'output', 'divert']
   Translator.scriptable = ['compute', 'divert-script']
 
   Translator.fieldSet = ['vocabularies', 'answers', 'states', 'labels']

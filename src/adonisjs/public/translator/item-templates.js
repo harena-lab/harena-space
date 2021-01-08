@@ -29,9 +29,9 @@
     image:
 '<figure class="image[imgresized]"[resize]><img src="[path]"[alt]>[caption]</figure>',
     option:
-'<dcc-button id=\'dcc[seq]\'[author] type=\'[subtype]\' topic=\'[target]\' label=\'[display]\'[divert][message][image]></dcc-button>',
+'<dcc-button id=\'dcc[seq]\'[author] topic=\'[target]\' label=\'[display]\'[divert][message][image]></dcc-button>',
     divert:
-'<dcc-button id=\'dcc[seq]\'[author] type=\'+\' topic=\'[target]\' label=\'[display]\' divert=\'[divert]\'></dcc-button>',
+'<dcc-button id=\'dcc[seq]\'[author] topic=\'[target]\' label=\'[display]\' divert=\'[divert]\' location=\'#in\' inline></dcc-button>',
     'divert-script':
 '-&gt; [target][parameter]<br>',
     entity:

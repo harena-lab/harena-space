@@ -16,6 +16,8 @@ class PlayerManager {
     MessageBus.ext.subscribe('case/+/navigate', this.navigateEvent)
     MessageBus.ext.subscribe('variable/+/navigate', this.navigateEvent)
 
+    this._notesStack = []
+
     // <TODO> temporary
     this.produceReport = this.produceReport.bind(this)
     MessageBus.int.subscribe('/report/get', this.produceReport)
@@ -64,7 +66,19 @@ class PlayerManager {
       }
 
       switch (topic) {
-        case 'knot/</navigate': if (this._state.historyHasPrevious()) { this.knotLoad(this._state.historyPrevious()) }
+        case 'knot/</navigate':
+          if (this._notesStack.length > 0) {
+            const panel = this._notesStack.pop()
+            this._mainPanel.removeChild(panel)
+          }
+          if (this._state.historyHasPrevious()) {
+            // removes the panel to rebuild it
+            if (this._notesStack.length > 0) {
+              const panel = this._notesStack.pop()
+              this._mainPanel.removeChild(panel)
+            }
+            this.knotLoad(this._state.historyPrevious())
+          }
           break
         case 'knot/<</navigate': this.startCase()
           const flowStart = this._nextFlowKnot()
@@ -284,8 +298,6 @@ class PlayerManager {
       const content = this._compiledCase.layers.Flow.content
       let flow = null
       let c = 0
-      console.log('=== metaparameter')
-      console.log(this._state.metaparameter)
       while (c < content.length && flow == null) {
         if (content[c].type == 'field' &&
                 (!this._state.metaparameter ||
@@ -319,9 +331,6 @@ class PlayerManager {
   }
 
   async knotLoad (knotName, parameter) {
-    console.log('=== load knot')
-    console.log(knotName)
-
     this._currentKnot = knotName
 
     if (this._knots[knotName].categories &&
@@ -343,8 +352,6 @@ class PlayerManager {
              this._knots[knotName].categories.includes('script')) { MetaPlayer.player.play(this._knots[knotName], this._state) } else {
         const knot = await Translator.instance.generateHTML(
           this._knots[knotName])
-        console.log('=== theme settings')
-        console.log(Translator.instance.themeSettings.note)
         let note = false
         if (this._knots[knotName].categories && Translator.instance.themeSettings &&
             Translator.instance.themeSettings.note) {
@@ -395,12 +402,13 @@ class PlayerManager {
     div.style.right = 0
     div.style.bottom = 0
     div.style.left = 0
-    div.style.width = (dimensions.width * 0.7) + 'px'
-    div.style.height = (dimensions.height * 0.7) + 'px'
+    div.style.width = (dimensions.width * (0.7 - this._notesStack.length * 0.1)) + 'px'
+    div.style.height = (dimensions.height * (0.7 - this._notesStack.length * 0.1)) + 'px'
 
     div.innerHTML = knot
 
     this._mainPanel.appendChild(div)
+    this._notesStack.push(div)
   }
 
   /*
