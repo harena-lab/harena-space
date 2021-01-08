@@ -725,7 +725,7 @@ class Translator {
               type: 'input',
               subtype: 'choice',
               exclusive: true,
-              scramble: true,
+              shuffle: true,
               options: {}
             }, compiled[c - 1]._source)
           this._transferOption(optionGroup.options, compiled[c-1])
@@ -1945,7 +1945,7 @@ class Translator {
     let md = ''
 
     if (obj.subtype == 'choice' && obj.exclusive == true &&
-          obj.scramble == true) {
+        obj.shuffle == true) {
       let first = true
       for (const op in obj.options) {
         if (!first) { md += '\n' }

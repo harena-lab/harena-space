@@ -108,7 +108,6 @@ class DCCInputOption extends DCCInput {
     return 'input'
   }
 
-  // _injectDCC(presentation, render) {
   async _renderInterface () {
     if (this._parent == null) {
       // === pre presentation setup
@@ -172,7 +171,7 @@ class DCCInputChoice extends DCCInput {
 
   static get observedAttributes () {
     return DCCInput.observedAttributes.concat(
-      ['exclusive', 'target'])
+      ['exclusive', 'shuffle', 'target'])
   }
 
   get exclusive () {
@@ -181,6 +180,14 @@ class DCCInputChoice extends DCCInput {
 
   set exclusive (isExclusive) {
     if (isExclusive) { this.setAttribute('exclusive', '') } else { this.removeAttribute('exclusive') }
+  }
+
+  get shuffle () {
+    return this.hasAttribute('shuffle')
+  }
+
+  set shuffle (isShuffle) {
+    if (isShuffle) { this.setAttribute('shuffle', '') } else { this.removeAttribute('shuffle') }
   }
 
   get target () {
@@ -212,7 +219,6 @@ class DCCInputChoice extends DCCInput {
     return 'input'
   }
 
-  // _injectDCC(presentation, render) {
   async _renderInterface () {
     // === pre presentation setup
     // Fetch all the children that are not defined yet
@@ -243,10 +249,9 @@ class DCCInputChoice extends DCCInput {
     const varid = this.variable.replace(/\./g, '_')
     let inStatement = true
     let statement = ''
-    // for (let o of this._options) {
     while (child != null) {
       if (child.tagName &&
-             child.tagName.toLowerCase() == DCCInputOption.elementTag) {
+          child.tagName.toLowerCase() == DCCInputOption.elementTag) {
         nop++
         const element = (this.target || child.target)
           ? "<dcc-button id='presentation-dcc-[id]' location='#in' topic='[target]' label='[statement]' divert='round' message='[value]' variable='[variable]:label'></dcc-button>"
@@ -268,39 +273,48 @@ class DCCInputChoice extends DCCInput {
       } else {
         const element = (child.nodeType == 3) ? child.textContent : child.outerHTML
         if (inStatement && this._statement == null) { statement += element } else { html.push([0, element]) }
-        /*
-            if (child.nodeType == 3)
-               html += child.textContent;
-            else
-               html += child.outerHTML;
-            */
       }
       child = child.nextSibling
-      // v++;
     }
     if (statement.length > 0) { this._statement = statement }
     this.innerHTML = ''
 
     // === presentation setup (DCC Block)
-    /*
-      if (this.hasAttribute("xstyle") && this.xstyle.startsWith("out") &&
-          this._statement != null) {
-      */
     if (this._statement != null) {
       await this._applyRender(
         '<p>' + this._statement + '</p>', 'innerHTML', 'text', 'presentation-dcc', false)
     }
 
-    // presentation = await this._applyRender(html, "innerHTML", "input");
+    let vop = []
+    let oop = []
+    nop = 0
+    for (let h of html) {
+      if (h[0] == 1) {
+        vop.push(h[1])
+        oop.push(nop)
+        nop++
+      }
+    }
+    if (this.shuffle && !this.author) oop = this._shuffle(oop)
+
+    let presentation
+    for (let o of oop) {
+      presentation =
+               await this._applyRender(
+                 vop[o], 'innerHTML', 'item_' + (o+1),
+                 'presentation-dcc-' + varid + '_' + (o+1), false)
+      presentation.addEventListener('change', this.inputChanged)
+      this._options.push(presentation)
+    }
+
+    /*
     let presentation
     nop = 0
     for (const h of html) {
       // <TODO> temporarily disabled
-      /*
-         if (h[0] == 0)
-            await this._applyRender(h[1], "innerHTML", "input");
-         else {
-         */
+      // if (h[0] == 0)
+      //       await this._applyRender(h[1], "innerHTML", "input");
+      // else {
       if (h[0] == 1) {
         nop++
         presentation =
@@ -311,6 +325,7 @@ class DCCInputChoice extends DCCInput {
         this._options.push(presentation)
       }
     }
+    */
 
     // === post presentation setup
     /*
@@ -332,6 +347,18 @@ class DCCInputChoice extends DCCInput {
     // <TODO> align with dcc-state-select
     MessageBus.int.publish('var/' + this.variable + '/group_input/ready',
       DCCInputChoice.elementTag)
+  }
+
+  _shuffle(array) {
+    let currentIndex = array.length, temporaryValue, randomIndex
+    while (currentIndex > 0) {
+      randomIndex = Math.floor(Math.random() * currentIndex)
+      currentIndex--
+      temporaryValue = array[currentIndex]
+      array[currentIndex] = array[randomIndex]
+      array[randomIndex] = temporaryValue
+    }
+    return array
   }
 
   editButtons () {
