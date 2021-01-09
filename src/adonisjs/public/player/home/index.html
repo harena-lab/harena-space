@@ -112,6 +112,9 @@
                   <option value="aluno">Aluno</option>
                 </select>
               </div>
+              <div class="pr-3" style="width: 120px;">
+                <input type="text" class="form-control custom-select-sm" id="fSpecialty" placeholder="Specialty">
+              </div>
               <dcc-submit label="Filter" xstyle="btn btn-secondary" topic="cases/request/get"></dcc-submit>
             </form>
             <dcc-rest id="harena-cases-filter" bind="harena-cases" subscribe="cases/request/get:retrieve"></dcc-rest>

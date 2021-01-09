@@ -193,6 +193,8 @@
                 {name: 'fInstitution',
                   in: 'query'},
                 {name: 'fUserType',
+                  in: 'query'},
+                {name: 'fSpecialty',
                   in: 'query'}
               ]
             }
@@ -223,6 +225,8 @@
                 {name: 'fInstitution',
                   in: 'query'},
                 {name: 'fUserType',
+                  in: 'query'},
+                {name: 'fSpecialty',
                   in: 'query'}
               ]
             }
