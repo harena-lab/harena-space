@@ -169,7 +169,7 @@
               <dcc-submit id="filter-submit" label="Filter" xstyle="btn btn-secondary" topic="cases/request/get"></dcc-submit>
             </form>
             <dcc-rest id="harena-cases-filter" bind="harena-cases" subscribe="cases/request/get:retrieve"></dcc-rest>
-
+            <!-- Containers to selectAll/share cases -->
             <!-- <div class="form-check mt-2 ml-auto" id="share-checkbox">
               <input class="form-check-input" type="checkbox" id="select-all-checkbox">
               <label for="select-all-checkbox">Select All</label>
@@ -182,11 +182,12 @@
             <dcc-rest id="harena-cases" bind="harena-cases"></dcc-rest>
             <dcc-dhtml id="harena-dhtml-cases" connect="harena-cases:service/request/get:retrieve" subscribe="service/response/get/harena-cases-filter:update">
               {{@foreach . cases}}
-              <div class="col">
+              <!-- checkbox for selecting cases -->
+              <!-- <div class="col">
                 <div class="form-check" id="share-checkbox">
                   <input class="form-check-input" type="checkbox" id="c{{cases.id}}" value="{{cases.id}}">
                 </div>
-              </div>
+              </div> -->
               <div id="b{{cases.id}}" class="row draft-author-case-container">
                 <div class="col draft-case-title">
                   <label class="ml-2">{{cases.title}}</label>
