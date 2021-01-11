@@ -377,6 +377,7 @@ class PlayerManager {
     MessageBus.page = new MessageBus(false)
 
     this._mainPanel.innerHTML = knot
+    document.querySelector('#main-panel').scrollTo(0, 0)
 
     // <TODO> Local Environment - Future
     /*
