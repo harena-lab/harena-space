@@ -94,7 +94,7 @@ _searchTree(current, knotid) {
 
     // <TODO> provisory
     const specialKnot = ['note', 'notice', 'notice_wide', 'notice_exam_zoom',
-      'expansion']
+      'expansion', 'master', 'master_top', 'master_bottom']
 
     const templatesCats = author.templatesCategories
 

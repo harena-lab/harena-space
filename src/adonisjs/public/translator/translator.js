@@ -872,15 +872,21 @@ class Translator {
         const target = this.findContext(knots, k, knots[k].inheritance)
         if (knots[target]) {
           if (knots[target].categories) {
-            if (knots[k].categories)
-              knot[k].categories = knot[k].categories.concat(knots[target].categories)
-            else
-              knots[k].categories = knots[target].categories
+            if (!knots[k].categories)
+              knots[k].categories = []
+            for (let c of knots[target].categories)
+              if (!['master', 'master_top', 'master_bottom'].includes(c))
+                knots[k].categories.push(c)
+            knots[k].categoriesInherited = knots[target].categories
           }
           let inherited = JSON.parse(JSON.stringify(knots[target].content))
           for (let ct of inherited)
             ct.inherited = true
-          knots[k].content =inherited.concat(knots[k].content)
+          if (knots[target].categories &&
+              knots[target].categories.includes('master_bottom'))
+            knots[k].content = knots[k].content.concat(inherited)
+          else
+            knots[k].content = inherited.concat(knots[k].content)
           let seq = 1
           for (let c in knots[k].content) {
             knots[k].content[c].seq = seq
@@ -1072,7 +1078,8 @@ class Translator {
 
   objToHTML (obj, superseq) {
     let html
-    if (obj.render !== undefined && !obj.render) { html = '' } else {
+    if ((obj.render !== undefined && !obj.render) ||
+        (obj.inherited && this.authoringRender)) { html = '' } else {
       switch (obj.type) {
         case 'blockquote': html = this._blockquoteObjToHTML(obj); break
         case 'text' : html = this._textObjToHTML(obj, superseq); break
@@ -1243,12 +1250,15 @@ class Translator {
     * Knot Obj to Md
     */
   _knotObjToMd (obj) {
+    let categories = obj.categories
+    if (obj.categories && obj.categoriesInherited)
+      categories = obj.categories.filter(c => !obj.categoriesInherited.includes(c))
     return Translator.markdownTemplates.knot
       .replace('[level]', '#'.repeat(obj.level))
       .replace('[title]', obj.title)
       .replace('[categories]',
-        (obj.categories)
-          ? ' (' + obj.categories.join(',') + ')' : '')
+        (categories)
+          ? ' (' + categories.join(',') + ')' : '')
       .replace('[inheritance]',
         (obj.inheritance)
           ? ': ' + obj.inheritance : '')
@@ -2236,7 +2246,8 @@ class Translator {
     /(?:([^\:\n\r\f]+)\:)?([^=\n\r\f]+)(?:=([\w \t%]*)(?:\/([\w \t%]*))?)?/im
 
   // Categories that do not have a correspondent theme
-  Translator.markerCategories = ['start', 'end', 'division']
+  Translator.markerCategories = ['start', 'end', 'division', 'master',
+                                 'master_top', 'master_bottom']
 
   // <TODO> this is a different approach indicating characteristic by type
   // (homogenize?)

@@ -1,4 +1,4 @@
-# Presentation (input)
+# Presentation (input): Feedback
 
 **Patient Data**
 
@@ -25,10 +25,10 @@ Write here the history.
 Write here the **POCUS questions**.
 }}
 
-{{ultrasound
-**Ultrasounds**
+{{exams
+**POCUS exams**
 
-Insert here the **ultrasound references**.
+Insert here the **POCUS videos**.
 }}
 
 {{conclusion
@@ -36,6 +36,8 @@ Insert here the **ultrasound references**.
 
 Write here about your **conclusion**.
 }}
+
+# Feedback (master_bottom)
 
 **Feedback**
 ? feedback
