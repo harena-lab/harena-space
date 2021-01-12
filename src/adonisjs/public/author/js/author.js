@@ -178,8 +178,11 @@ class AuthorManager {
           break
         case 'control/knot/edit': this.knotEdit()
           break
+        /*
+        <TODO> temporarily disabled
         case 'control/knot/markdown': this.knotMarkdown()
           break
+        */
         case 'control/knot/rename': this.knotRename(message)
           break
         case 'control/element/selected/down':
@@ -360,11 +363,11 @@ class AuthorManager {
     */
   async caseMarkdown () {
     const nextState = (this._renderState != 3) ? 3 : 1
-    if (this._renderState != 3) {
+    if (nextState == 3) {
       this._originalMd = Translator.instance.assembleMarkdown(this._compiledCase)
       this._presentEditor(this._originalMd)
     } else {
-      this._checkKnotModification(nextState)
+      await this._checkKnotModification(nextState)
       this._renderState = nextState
       this._renderKnot()
     }
@@ -389,9 +392,10 @@ class AuthorManager {
   /*
     * Check if the knot was modified to update it
     */
-  _checkKnotModification (nextState) {
+  async _checkKnotModification (nextState) {
     // (1) render slide; (2) edit knot; (3) edit case
     let modified = false
+    /* <TODO> temporarily disabled
     if (this._renderState === 2) {
       if (this._editor != null) {
         const editorText = this._retrieveEditorText()
@@ -402,13 +406,15 @@ class AuthorManager {
           Translator.instance.compileKnotMarkdown(this._knots, this._knotSelected)
         }
       }
-    } else if (this._renderState === 3) {
+    } else 
+    */
+    if (this._renderState === 3) {
       if (this._editor != null) {
         const editorText = this._retrieveEditorText()
         if (!this._originalMd || this._originalMd !== editorText) {
           modified = true
           if (nextState != 3) { delete this._originalMd }
-          this._compile(editorText)
+          await this._compile(editorText)
           if (nextState == 3) { this._renderState = 1 }
           this._showCase()
         }
@@ -698,9 +704,12 @@ class AuthorManager {
       await promise
       */
       this._knotPanel.innerHTML = this._htmlKnot
-    } else {
+    }
+    /* <TODO> temporarily disabled
+    else {
       this._presentEditor(this._knots[this._knotSelected]._source)
     }
+    */
   }
 
   _collectEditableDCCs () {
@@ -881,7 +890,9 @@ class AuthorManager {
 
   /*
     * ACTION: control-edit
+    * <TODO> temporarily disabled
     */
+  /*
   async knotMarkdown () {
     if (this._knotSelected != null) {
       const nextState = (this._renderState != 2) ? 2 : 1
@@ -893,6 +904,7 @@ class AuthorManager {
       this._renderKnot()
     }
   }
+  */
 
   /*
     * ACTION: control-play
