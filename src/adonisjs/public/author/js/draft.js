@@ -59,7 +59,7 @@ class DraftManager {
           Basic.service.authorPropertyStore('caseId', this.id.substring(1))
           window.location.href = '/player/case?id=' +
                                       this.id.substring(1) +
-                                      '&preview'
+                                      '&preview=1'
         }
       )
       deleteButton.addEventListener('click',
@@ -166,7 +166,7 @@ class DraftManager {
             Basic.service.authorPropertyStore('caseId', editButton.id.substring(1))
             window.location.href = '/player/case?id=' +
                                          previewButton.id.substring(1) +
-                                         '&preview'
+                                         '&preview=1'
           })
         deleteButton.addEventListener('click',
           function () {

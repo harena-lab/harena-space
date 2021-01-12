@@ -322,7 +322,7 @@ h5{
 
 .breadcrumb-item + .breadcrumb-item {
   padding-left: 10px;
-  margin-left: 20px;
+  margin-left: 9px;
 }
 
 .breadcrumb-item::marker {

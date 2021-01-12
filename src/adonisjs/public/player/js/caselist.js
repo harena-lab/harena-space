@@ -30,8 +30,15 @@ class CaseQueueManager {
           const caseIndex = casePlaylist.indexOf(viewButton.id.substring(1))
           casePlaylist = casePlaylist.slice(caseIndex + 1)
           sessionStorage.setItem('caseQueue', JSON.stringify(casePlaylist))
-          window.location.href =
-          '/player/case?id=' + viewButton.id.substring(1)
+          if((new URL(document.location).pathname.includes('category'))){
+            window.location.href =
+            '/player/case?id=' + viewButton.id.substring(1) +
+            '&list=' + (new URL(document.location).searchParams.get('id'))
+          }else{
+            window.location.href =
+            '/player/case?id=' + viewButton.id.substring(1) +
+            '&list=all'
+          }
         })
       }
     }
