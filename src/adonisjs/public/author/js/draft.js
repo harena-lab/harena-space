@@ -123,8 +123,9 @@ class DraftManager {
         const editButton = cl[c].children[0]
         const previewButton = cl[c].children[1]
         const deleteButton = cl[c].children[2]
-
         const caseContainer = document.querySelector('#b'+editButton.id.substring(1))
+
+        if(document.querySelector('#c'+editButton.id.substring(1))){
         const shareCheckbox = document.querySelector('#c'+editButton.id.substring(1))
 
         caseContainer.firstElementChild.addEventListener('click',
@@ -152,7 +153,7 @@ class DraftManager {
               caseContainer.firstElementChild.style.color = '#808080'
             }
           })
-
+        }
         editButton.addEventListener('click',
           function () {
             Basic.service.authorPropertyStore('caseId', editButton.id.substring(1))
