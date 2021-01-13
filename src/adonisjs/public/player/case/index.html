@@ -101,15 +101,16 @@
 </head>
 <body onload="PlayerManager.player.startPlayer()">
   <dcc-rest id="harena-case" bind="harena-case" subscribe="service/request/get:retrieve"></dcc-rest>
-  <div class="mr-auto author-breadcrumb" id="preview-panel">
+  <!-- <div class="mr-auto author-breadcrumb" id="preview-panel"> -->
+  <div class="sty-preview-panel" id="preview-panel">
     <nav aria-label="breadcrumb">
       <ol id="breadcrumb-group" class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/">Welcome</a></li>
+        <!-- <li class="breadcrumb-item"><a href="/">Welcome</a></li> -->
         <li class="breadcrumb-item"><a href="/player/home/category">Categories</a></li>
         <li id="case-list-breadcrumb" class="breadcrumb-item">
           <a href="javascript:history.back()">Case List</a>
         </li>
-        <li id="current-breadcrumb" class="breadcrumb-item active" aria-current="page">Current Case</li>
+        <!-- <li id="current-breadcrumb" class="breadcrumb-item active" aria-current="page">Current Case</li> -->
       </ol>
     </nav>
   </div>
