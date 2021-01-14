@@ -135,8 +135,8 @@ class DCCBlock extends DCCVisual {
     if (this.xstyle.startsWith('out') &&
           this.hasAttribute('location') && this.location != '#in') {
       /*
-          * outer target interface
-          */
+       * outer target interface
+       */
       presentation = document.querySelector('#' + this.location + sufix)
       if (presentation != null) {
         if (sufix == '-image' && this.hasAttribute('image')) {
@@ -157,8 +157,8 @@ class DCCBlock extends DCCVisual {
       }
     } else {
       /*
-          * complete internal interface
-          */
+       * complete internal interface
+       */
       // check if there is a "presentation-dcc"
       const presentationDCC = /id=['"]presentation-dcc.*['"]/im
       if (!presentationDCC.test(html)) {

@@ -171,7 +171,7 @@ class DCCInputChoice extends DCCInput {
 
   static get observedAttributes () {
     return DCCInput.observedAttributes.concat(
-      ['exclusive', 'shuffle', 'target'])
+      ['exclusive', 'shuffle', 'reveal', 'target'])
   }
 
   get exclusive () {
@@ -188,6 +188,14 @@ class DCCInputChoice extends DCCInput {
 
   set shuffle (isShuffle) {
     if (isShuffle) { this.setAttribute('shuffle', '') } else { this.removeAttribute('shuffle') }
+  }
+
+  get reveal () {
+    return this.getAttribute('reveal')
+  }
+
+  set reveal (newValue) {
+    this.setAttribute('reveal', newValue)
   }
 
   get target () {
@@ -281,30 +289,44 @@ class DCCInputChoice extends DCCInput {
 
     // === presentation setup (DCC Block)
     if (this._statement != null) {
+      console.log('=== statement input')
+      console.log(this._statement)
       await this._applyRender(
         '<p>' + this._statement + '</p>', 'innerHTML', 'text', 'presentation-dcc', false)
     }
 
-    let vop = []
     let oop = []
-    nop = 0
-    for (let h of html) {
-      if (h[0] == 1) {
-        vop.push(h[1])
-        oop.push(nop)
-        nop++
-      }
-    }
+    const reveal =
+      (!this.hasAttribute('reveal') || this.reveal == 'integral') && !this.shuffle
+    for (let h in html)
+      if ((html[h][0] == 0 && reveal) || html[h][0] == 1)
+        oop.push(h)
+
     if (this.shuffle && !this.author) oop = this._shuffle(oop)
 
     let presentation
+    nop = 0
+    console.log('=== considered options')
+    console.log(oop)
+    console.log(html)
     for (let o of oop) {
-      presentation =
-               await this._applyRender(
-                 vop[o], 'innerHTML', 'item_' + (o+1),
-                 'presentation-dcc-' + varid + '_' + (o+1), false)
-      presentation.addEventListener('change', this.inputChanged)
-      this._options.push(presentation)
+      if (html[o][0] == 0) {
+        if (reveal && html[o][1].trim().length > 0) {
+            await this._applyRender(html[o][1], 'innerHTML', 'input',
+                                                'choice_text_' + o, false)
+            console.log(html[o][1])
+        }
+      }
+      else {
+        nop++
+        presentation =
+                 await this._applyRender(
+                   html[o][1], 'innerHTML', 'item_' + nop,
+                   'presentation-dcc-' + varid + '_' + nop, false)
+        presentation.addEventListener('change', this.inputChanged)
+        this._options.push(presentation)
+        console.log(html[o][1])
+      }
     }
 
     /*
