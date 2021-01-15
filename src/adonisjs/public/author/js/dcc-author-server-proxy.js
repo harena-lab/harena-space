@@ -88,7 +88,8 @@ class DCCAuthorServer {
           name: t,
           icon: 'template_fix/' + jsonResponse[t].icon,
           description: jsonResponse[t].description,
-          questId: jsonResponse[t].questId
+          questId: jsonResponse[t].questId,
+          environment: jsonResponse[t].environment
         })
       }
     }

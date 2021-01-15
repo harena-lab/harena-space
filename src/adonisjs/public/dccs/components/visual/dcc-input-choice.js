@@ -291,8 +291,10 @@ class DCCInputChoice extends DCCInput {
     if (this._statement != null) {
       console.log('=== statement input')
       console.log(this._statement)
-      await this._applyRender(
-        '<p>' + this._statement + '</p>', 'innerHTML', 'text', 'presentation-dcc', false)
+      let stm = this._statement
+      if (this.hasAttribute('statement')) stm = '<p>' + stm + '</p>'
+      await this._applyRender('<span id="presentation-dcc">' + stm + '</span>',
+        'innerHTML', 'text', 'presentation-dcc', false)
     }
 
     let oop = []
@@ -306,14 +308,11 @@ class DCCInputChoice extends DCCInput {
 
     let presentation
     nop = 0
-    console.log('=== considered options')
-    console.log(oop)
-    console.log(html)
     for (let o of oop) {
       if (html[o][0] == 0) {
         if (reveal && html[o][1].trim().length > 0) {
-            await this._applyRender(html[o][1], 'innerHTML', 'input',
-                                                'choice_text_' + o, false)
+            await this._applyRender('<span id="presentation-dcc">' + html[o][1] + '</span>',
+              'innerHTML', 'input', 'presentation-dcc', false)
             console.log(html[o][1])
         }
       }

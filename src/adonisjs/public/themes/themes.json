@@ -3,7 +3,12 @@
     "path": "minimal",
     "icon": "mono-slide.svg",
     "svg" : "false"},
- "Classic":
+ "Plain":
+   {"description": "Plain format.",
+    "path": "plain",
+    "icon": "mono-slide.svg",
+    "svg" : "false"},
+  "Classic":
    {"description": "Will be the classic basic format.",
     "path": "classic",
     "icon": "mono-slide.svg",

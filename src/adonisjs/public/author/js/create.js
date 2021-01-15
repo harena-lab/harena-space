@@ -2,6 +2,13 @@ class TemplateManager {
   async start () {
     const authorState = Basic.service.authorStateRetrieve()
 
+    const params = window.location.search.substr(1)
+    this._mode = null
+    if (params != null && params.length > 0) {
+      this._mode = params.match(/mode=([\w-]+)/i)
+      this._mode = (this._mode == null) ? null : this._mode[1]
+    }
+
     this._boxesPanel = document.querySelector('#template-boxes')
     this._templateSelect()
   }
@@ -12,29 +19,31 @@ class TemplateManager {
 
     const tl = templateList.message
     for (const t in tl) {
-      const tid = tl[t].id.replace(/\//ig, '__')
-      const template = document.createElement('template')
-      const imageIcon = Basic.service.imageResolver(tl[t].icon)
-      template.innerHTML = TemplateManager.templateBox
-        .replace('[id]', tid)
-        .replace('[icon]', imageIcon)
-        .replace('[title]', tl[t].name)
-        .replace('[description]', tl[t].description)
-      this._boxesPanel.appendChild(template.content.cloneNode(true))
-      const box = this._boxesPanel.querySelector('#' + tid)
-      box.addEventListener('click',
-        function () {
-          const tid = this.id.replace(/__/ig, '/')
-          Basic.service.authorPropertyStore('template',
-            {
-              id: tid,
-              icon: imageIcon,
-              title: tl[t].name,
-              description: tl[t].description
-            })
-          window.location.href = '/author/create/case?template=' + this.id + '&category=' + tl[t].questId
-        }
-      )
+      if (tl[t].environment != 'development' || (this._mode != null && this._mode == 'advanced')) {
+        const tid = tl[t].id.replace(/\//ig, '__')
+        const template = document.createElement('template')
+        const imageIcon = Basic.service.imageResolver(tl[t].icon)
+        template.innerHTML = TemplateManager.templateBox
+          .replace('[id]', tid)
+          .replace('[icon]', imageIcon)
+          .replace('[title]', tl[t].name)
+          .replace('[description]', tl[t].description)
+        this._boxesPanel.appendChild(template.content.cloneNode(true))
+        const box = this._boxesPanel.querySelector('#' + tid)
+        box.addEventListener('click',
+          function () {
+            const tid = this.id.replace(/__/ig, '/')
+            Basic.service.authorPropertyStore('template',
+              {
+                id: tid,
+                icon: imageIcon,
+                title: tl[t].name,
+                description: tl[t].description
+              })
+            window.location.href = '/author/create/case?template=' + this.id + '&category=' + tl[t].questId
+          }
+        )
+      }
     }
     MessageBus.ext.publish('control/dhtml/ready')
   }
