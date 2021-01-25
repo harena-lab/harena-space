@@ -62,7 +62,7 @@ class Translator {
     if (this._themeSettings) { delete this._themeSettings }
     if (compiledCase.theme) {
       const themeSt = await MessageBus.int.request(
-        'data/theme_family/' + Basic.service.decomposeThemeFamily(compiledCase.theme).family +
+        'data/theme_family/' + Basic.service.decomposeThemeFamily(compiledCase.theme).family.toLowerCase() +
         '/settings')
       if (themeSt != null) { this._themeSettings = themeSt.message }
     }
@@ -717,26 +717,30 @@ class Translator {
 
     // ninth cycle - aggregates options
     let optionGroup = null
+    let subtype = null
     for (let c = 1; c < compiled.length; c++) {
-      if (compiled[c].type == 'option' && compiled[c].subtype == '+') {
-        if (compiled[c - 1].type == 'option' && compiled[c - 1].subtype == '+') {
+      if (compiled[c].type == 'option') {
+        let stype = compiled[c].subtype
+        if (compiled[c-1].type == 'option' && compiled[c].subtype == subtype) {
           optionGroup = this._initializeObject(
             {
               type: 'input',
               subtype: 'choice',
               exclusive: true,
-              shuffle: true,
+              shuffle: (subtype == '+'),
               options: {}
             }, compiled[c - 1]._source)
           this._transferOption(optionGroup.options, compiled[c-1])
-          compiled[c - 1] = optionGroup
+          compiled[c-1] = optionGroup
         }
-        if (optionGroup != null) {
+        if (optionGroup != null && compiled[c].subtype == subtype) {
           this._transferOption(optionGroup.options, compiled[c])
           optionGroup._source += '\n' + compiled[c]._source
           compiled.splice(c, 1)
           c--
-        }
+        } else
+          optionGroup = null
+        subtype = stype
       } else { optionGroup = null }
       compiled[c].seq = c + 1
     }
@@ -1013,8 +1017,8 @@ class Translator {
 
   async loadTheme (themeName) {
     const themeObj = await MessageBus.ext.request(
-      'data/theme/' + Basic.service.currentThemeFamily +
-            '.' + themeName + '/get')
+      'data/theme/' + Basic.service.currentThemeFamily.toLowerCase() +
+            '.' + themeName.toLowerCase() + '/get')
     return themeObj.message
   }
 
@@ -1651,6 +1655,8 @@ class Translator {
       label: matchArray[2].trim()
     }
     if (item.subordinate) { item.level = this._computeLevel(matchArray[1]) }
+    console.log('=== item')
+    console.log(item)
     return item
   }
 
@@ -1894,10 +1900,14 @@ class Translator {
           .replace('[option]', op)
         if (typeof obj.options[op] === 'string') {
           choice = choice.replace('[target]', '')
-            .replace('[value]', obj.options[op])
+                         .replace('[value]', obj.options[op])
+        } else if (typeof obj.options[op] === 'boolean') {
+          choice = choice.replace('[target]', '')
+                         .replace('[value]', op)
         } else {
           choice = choice.replace('[target]',
-            "target='" + this._transformNavigationMessage(obj.options[op].contextTarget) + "' ")
+            ((obj.options[op].contextTarget == null) ? '' :
+              "target='" + this._transformNavigationMessage(obj.options[op].contextTarget) + "' "))
             .replace('[value]', obj.options[op].message)
         }
         statement += choice
@@ -1912,7 +1922,7 @@ class Translator {
 
     let extraAttr = ''
     for (const atr in obj) {
-      if (!coreAttributes.includes(atr) && obj[atr] != 'false') {
+      if (!coreAttributes.includes(atr) && obj[atr] != 'false' && obj[atr]) {
         extraAttr += ' ' + atr +
                          ((obj[atr] == 'true') ? '' : "='" + obj[atr] + "'")
       }
@@ -2176,7 +2186,7 @@ class Translator {
       subtext: 'value'
     },
     item: {
-      mark: /^( {2}|\t[ \t]*)(?:[\+\*])[ \t]+([\w.\/\?&#\-][\w.\/\?&#\- \t]*)$/im,
+      mark: /^((?:  |\t)[ \t]*)(?:[\+\*])[ \t]+([\w.\/\?&#\-][\w.\/\?&#\- \t]*)$/im,
       subtext: 'value'
     },
     option: {

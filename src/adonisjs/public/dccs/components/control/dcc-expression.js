@@ -38,9 +38,15 @@ class DCCExpression extends DCCVisual {
       if (this._index == null) {
         // <TODO> provisory unfold
         if (typeof result.message === 'object') {
-          const values = []
-          for (const v in result.message) {
-            if (result.message[v].state == '+') { values.push(result.message[v].content) }
+          let values = []
+          if (Array.isArray(result.message)) {
+            values = result.message
+          } else {
+            for (const v in result.message) {
+              // <TODO> I don't remember the role of '+'
+              // if (result.message[v].state == '+') { values.push(result.message[v].content) }
+              values.push(v + ': ' + result.message[v])
+            }
           }
           result = this._valuesToHTML(values)
         } else { result = result.message }

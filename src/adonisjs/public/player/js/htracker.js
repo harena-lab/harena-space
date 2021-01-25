@@ -75,7 +75,8 @@ class Tracker {
     const v = MessageBus.extractLevel(topic, 2)
     if (v != null) {
       this._variables[v] = value
-      if (this._mandatoryFilled[v] !== undefined) { this._mandatoryFilled[v].filled = (value.length > 0) }
+      if (this._mandatoryFilled[v] !== undefined) {
+        this._mandatoryFilled[v].filled = (value.length > 0) }
     }
   }
 

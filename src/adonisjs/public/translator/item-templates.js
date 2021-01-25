@@ -43,7 +43,7 @@
     choice:
 '<dcc-input-option [target]value="[value]">[option]</dcc-input-option><br>',
     output:
-'<dcc-expression id=\'dcc[seq]\'[author] expression=\'[variable][index]\'[variant]></dcc-expression>',
+'<dcc-expression id=\'dcc[seq]\'[author] expression=\'[variable][index]\'[variant] active></dcc-expression>',
     compute:
 '<dcc-compute instruction=\'[instruction]\'></dcc-compute>',
     domain:

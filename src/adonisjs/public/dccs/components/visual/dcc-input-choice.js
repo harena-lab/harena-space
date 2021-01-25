@@ -209,11 +209,24 @@ class DCCInputChoice extends DCCInput {
   /* Event handling */
 
   inputChanged (event) {
+    if (this.exclusive)
+      this._value = event.target.value
+    else if (this._value == null) {
+      if (event.target.checked) this._value = [event.target.value]
+    } else {
+      if (event.target.checked)
+        this._value.push(event.target.value)
+      else {
+        const index = this._value.indexOf(event.target.value)
+        if (index > -1) this._value.splice(index, 1)
+      }
+    }
+
     this.changed = true
     MessageBus.ext.publish('var/' + this.variable + '/changed',
       {
         sourceType: DCCInputChoice.elementTag,
-        value: event.target.value
+        value: this._value
       })
   }
 
@@ -289,42 +302,47 @@ class DCCInputChoice extends DCCInput {
 
     // === presentation setup (DCC Block)
     if (this._statement != null) {
-      console.log('=== statement input')
-      console.log(this._statement)
       let stm = this._statement
       if (this.hasAttribute('statement')) stm = '<p>' + stm + '</p>'
       await this._applyRender('<span id="presentation-dcc">' + stm + '</span>',
         'innerHTML', 'text', 'presentation-dcc', false)
     }
 
-    let oop = []
+    let oop = []   // positions of html items
+    let oopN = []  // positions in oop (to control shuffle)
+    let no = 0
     const reveal =
       (!this.hasAttribute('reveal') || this.reveal == 'integral') && !this.shuffle
     for (let h in html)
-      if ((html[h][0] == 0 && reveal) || html[h][0] == 1)
+      if ((html[h][0] == 0 && reveal) || html[h][0] == 1) {
         oop.push(h)
+        oopN.push(no)
+        no++
+      }
 
-    if (this.shuffle && !this.author) oop = this._shuffle(oop)
+    const shuffle = this.shuffle && !this.author
+    if (shuffle) oopN = this._shuffle(oopN)
 
     let presentation
     nop = 0
-    for (let o of oop) {
-      if (html[o][0] == 0) {
-        if (reveal && html[o][1].trim().length > 0) {
-            await this._applyRender('<span id="presentation-dcc">' + html[o][1] + '</span>',
+    for (let o of oopN) {
+      if (html[oop[o]][0] == 0) {
+        if (reveal && html[oop[o]][1].trim().length > 0) {
+            await this._applyRender('<span id="presentation-dcc">' + html[oop[o]][1] + '</span>',
               'innerHTML', 'input', 'presentation-dcc', false)
-            console.log(html[o][1])
+            console.log(html[oop[o]][1])
         }
       }
       else {
         nop++
+        let presId = (shuffle) ? o+1 : nop
         presentation =
                  await this._applyRender(
-                   html[o][1], 'innerHTML', 'item_' + nop,
-                   'presentation-dcc-' + varid + '_' + nop, false)
+                   html[oop[o]][1], 'innerHTML', 'item_' + nop,
+                   'presentation-dcc-' + varid + '_' + presId, false)
         presentation.addEventListener('change', this.inputChanged)
         this._options.push(presentation)
-        console.log(html[o][1])
+        console.log(html[oop[o]][1])
       }
     }
 

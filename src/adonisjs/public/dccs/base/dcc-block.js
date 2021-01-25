@@ -126,6 +126,13 @@ class DCCBlock extends DCCVisual {
     *          otherwise will decide according to the context
     */
   async _applyRender (html, outTarget, role, presentationId, shadow) {
+    console.log('=== apply render')
+    console.log(html)
+    console.log(outTarget)
+    console.log(role)
+    console.log(presentationId)
+    console.log(shadow)
+
     const sufix = (role && role.length > 0)
       ? ((DCCBlock.defaultRoles.includes(role)) ? '' : '-' + role) : ''
 
@@ -133,7 +140,7 @@ class DCCBlock extends DCCVisual {
     // location #in to indicate the location attribute is not absent
     // but is not outside
     if (this.xstyle.startsWith('out') &&
-          this.hasAttribute('location') && this.location != '#in') {
+        this.hasAttribute('location') && this.location != '#in') {
       /*
        * outer target interface
        */
