@@ -358,10 +358,12 @@ class Graph {
   cleanGraph () {
     if (this._nodes)
       for (let n of this._nodes)
-        this._presentation.removeChild(n.presentation)
+        if (n.presentation != null)
+          this._presentation.removeChild(n.presentation)
     if (this._edges)
       for (let e of this._edges)
-        this._presentation.removeChild(e.presentation)
+        if (e.presentation != null)
+          this._presentation.removeChild(e.presentation)
     this._nodes = []
     this._edges = []
   }
