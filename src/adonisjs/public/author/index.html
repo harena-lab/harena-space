@@ -95,6 +95,7 @@
     <script src="js/dcc-author-server-proxy.js"></script>
     <script src="js/panels.js"></script>
     <script src="js/navigator.js"></script>
+    <script src="js/comments.js"></script>
     <script src="js/author.js"></script>
   </head>
 
@@ -284,8 +285,9 @@
                 </div>
               </div>
               <div id="properties-expansion" class="sty-navigation-expansion">
-                  <dcc-button id="button-expand-prop" topic="control/properties/expand" label="Expand" image="/author/icons/icon-expansion-left.svg"></dcc-button>
+                  <dcc-button id="button-expand-prop" topic="control/properties/expand" label="Expand" image="/author/icons/icon-properties.svg"></dcc-button>
                   <dcc-button id="button-retract-prop" topic="control/properties/retract" label="Retract" image="/author/icons/icon-expansion-right.svg" style="display:none"></dcc-button>
+                  <dcc-button id="button-comments-nav" topic="control/comments/expand" label="Comment" image="/author/icons/icon-comment.svg"></dcc-button>
               </div>
             </div>
           <!-- End of container displaying the case -->
@@ -298,7 +300,7 @@
                     <div class="control-button"><dcc-button topic="control/element/option/new" label="Text" image="icons/icon-dcc-button.svg"></dcc-button></div>
                  </div>
                -->
-                 <div id="properties-block" class="sty-properties-block std-border">
+                 <div id="properties-block" class="sty-properties-block std-border" style="display:none">
                     <div id="properties-panel" class="styp-properties-panel"></div>
                     <div id="properties-buttons">
                        <dcc-button xstyle="in" topic="properties/apply/details" label="APPLY"></dcc-button>
@@ -307,6 +309,13 @@
                        <div class="control-button"><dcc-button xstyle="in" topic="control/element/selected/down" label="Element Down" image="icons/icon-move-down.svg"></dcc-button></div>
                        <div class="control-button"><dcc-button xstyle="in" topic="control/element/selected/delete" label="Delete Element" image="icons/icon-delete.svg"></dcc-button></div>
                      -->
+                    </div>
+                 </div>
+                 <div id="comments-block" class="sty-properties-block std-border" style="display:none">
+                    <div id="comments-toolbar"></div>
+                    <div id="comments-editor"></div>
+                    <div id="properties-buttons">
+                       <dcc-button xstyle="in" topic="comments/apply" label="COMMENT"></dcc-button>
                     </div>
                  </div>
               </div>

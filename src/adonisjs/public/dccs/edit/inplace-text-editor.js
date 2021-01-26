@@ -4,7 +4,7 @@
 function _harenaCustomUploadAdapterPlugin( editor ) {
     editor.plugins.get( 'FileRepository' ).createUploadAdapter = ( loader ) => {
         // Configure the URL to the upload script in your back-end here!
-        return new HarenaUploadAdapter( loader, Basic.service.currentCaseId, DCCCommonServer.token );
+        return new HarenaUploadAdapter(loader, Basic.service.currentCaseId, DCCCommonServer.token);
     };
 }
 
@@ -59,7 +59,11 @@ class EditDCCText extends EditDCC {
              url: /(^https:\/\/drive.google.com[\w/]*\/[^/]+\/)[^/]*/,
              html: match => '<iframe src="' + match[1] + 'preview" width="560" height="315"></iframe>'
            }]
-         }
+         },
+        harena: {
+          confirm: 'control/editor/edit/confirm',
+          cancel:  'control/editor/edit/cancel'
+        }
       } )
       .then( editor => {
         // const toolbarContainer = document.querySelector('#toolbar-editor')

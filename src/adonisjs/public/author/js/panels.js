@@ -25,6 +25,7 @@ class Panels {
     this._buttonRetractNav = document.querySelector('#button-retract-nav')
     this._buttonExpandProp = document.querySelector('#button-expand-prop')
     this._buttonRetractProp = document.querySelector('#button-retract-prop')
+    this._buttonCommentsNav = document.querySelector('#button-comments-nav')
 
     this._elementsBlock = document.querySelector('#elements-block')
     this._elementsMain = document.querySelector('#elements-main')
@@ -37,6 +38,9 @@ class Panels {
     this.setupPropertiesRetract = this.setupPropertiesRetract.bind(this)
     MessageBus.ext.subscribe('control/properties/retract',
       this.setupPropertiesRetract)
+    this.setupCommentsExpand = this.setupCommentsExpand.bind(this)
+    MessageBus.ext.subscribe('control/comments/expand',
+      this.setupCommentsExpand)
   }
 
   _setupKnotHeight () {
@@ -45,10 +49,8 @@ class Panels {
   }
 
   setupHiddenNavigator () {
-    // this._navigationBlock.style.flex = "20%";
     this._navigationBlock.classList.remove('w-25')
     this._navigationBlock.style.display = 'none'
-    // this._knotPanel.style.flex = "80%";
     this._knotMain.classList.remove('w-' + this._knotPanelSize)
     this._knotPanelSize += 25
     this._knotMain.classList.add('w-' + this._knotPanelSize)
@@ -57,8 +59,6 @@ class Panels {
   }
 
   setupVisibleNavigator () {
-    // this._navigationBlock.style.flex = "20%";
-    // this._knotPanel.style.flex = "80%";
     this._knotMain.classList.remove('w-' + this._knotPanelSize)
     this._knotPanelSize -= 25
     this._knotMain.classList.add('w-' + this._knotPanelSize)
@@ -85,8 +85,6 @@ class Panels {
       this._propertiesVisible = true
     }
     this._knotMain.classList.remove('w-' + this._knotPanelSize)
-    // this._navigationBlock.style.flex = "80%";
-    // this._knotPanel.style.flex = "20%";
     this._navigationBlock.classList.remove('w-25')
     this._navigationBlock.classList.add('w-100')
     this._buttonExpandNav.style.display = 'none'
@@ -98,6 +96,7 @@ class Panels {
     this._propertiesVisible = false
     this._buttonRetractProp.style.display = 'none'
     this._buttonExpandProp.style.display = 'initial'
+    this._buttonCommentsNav.style.display = 'initial'
     this._elementsBlock.style.display = 'none'
     this._elementsMain.classList.remove('w-25')
     this._knotMain.classList.remove('w-' + this._knotPanelSize)
@@ -105,10 +104,11 @@ class Panels {
     this._knotMain.classList.add('w-' + this._knotPanelSize)
   }
 
-  setupPropertiesExpand () {
+  setupPropertiesPanelExpand () {
     this._propertiesVisible = true
     this._buttonRetractProp.style.display = 'initial'
     this._buttonExpandProp.style.display = 'none'
+    this._buttonCommentsNav.style.display = 'none'
     this._elementsBlock.style.display = 'initial'
     this._knotMain.classList.remove('w-' + this._knotPanelSize)
     this._knotPanelSize -= 25
@@ -116,11 +116,23 @@ class Panels {
     this._elementsMain.classList.add('w-25')
   }
 
+  setupPropertiesExpand () {
+    this.setupPropertiesPanelExpand()
+    document.querySelector('#properties-block').style.display = 'initial'
+    document.querySelector('#comments-block').style.display = 'none'
+  }
+
+  setupCommentsExpand () {
+    this.setupPropertiesPanelExpand()
+    document.querySelector('#properties-block').style.display = 'none'
+    document.querySelector('#comments-block').style.display = 'initial'
+    MessageBus.int.publish('control/comments/editor')
+  }
+
   setupProperties () {
     this._navigationBlock.style.flex = '10%'
     this._knotPanel.style.flex = '60%'
     this._propertiesPanel.style.display = 'initial'
-    // this._propertiesPanel.style.flex = "30%";
   }
 
   lockNonEditPanels () {

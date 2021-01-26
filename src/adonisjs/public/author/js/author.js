@@ -527,10 +527,10 @@ class AuthorManager {
       this._checkKnotModification(this._renderState)
       this._knotSelected = knotid
       this._htmlKnot = await Translator.instance.generateHTML(
-        this._knots[this._knotSelected])
+        this._knots[knotid])
       this._renderKnot()
-      // this._collectEditableDCCs();
       delete this._elementSelected
+      this._comments = new Comments(this._compiledCase, knotid)
       MessageBus.ext.publish('control/case/ready')
     }
   }
@@ -853,7 +853,6 @@ class AuthorManager {
       this._htmlKnot = await Translator.instance.generateHTML(
         this._knots[this._knotSelected])
       this._renderKnot()
-      // this._collectEditableDCCs();
     }
     if (topic != null && message != null)
       MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message))
