@@ -88,7 +88,7 @@ class Translator {
   _indexLayers (markdown, compiledCase) {
     const layerBlocks = markdown.split(Translator.marksLayerTitle)
 
-    for (var lb = 1; lb < layerBlocks.length; lb += 2) {
+    for (let lb = 1; lb < layerBlocks.length; lb += 2) {
       const layer = {
         _source: layerBlocks[lb + 1]
       }
@@ -1215,8 +1215,16 @@ class Translator {
   }
 
   /*
-    * Knot Md to Obj
-    */
+   * Extracts the title of the first knot (to be used in templates conversion)
+   */
+  extractKnotTitle (knotMd) {
+    const knotObj = this._knotMdToObj(Translator.element.knot.mark.exec(knotMd))
+    return knotObj.title
+  }
+
+  /*
+   * Knot Md to Obj
+   */
   _knotMdToObj (matchArray) {
     const knot = {
       type: 'knot'
@@ -1655,8 +1663,6 @@ class Translator {
       label: matchArray[2].trim()
     }
     if (item.subordinate) { item.level = this._computeLevel(matchArray[1]) }
-    console.log('=== item')
-    console.log(item)
     return item
   }
 

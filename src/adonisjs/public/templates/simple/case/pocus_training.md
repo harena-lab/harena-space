@@ -1,4 +1,4 @@
-# Presentation (input): Feedback
+# Presentation (detailed)
 
 **Patient Data**
 
@@ -25,25 +25,15 @@ Write here the history.
 Write here the **POCUS questions**.
 }}
 
-{{exams
-**POCUS exams**
+* Next -> Flow.Next
 
-Insert here the **POCUS videos**.
-}}
+# Conclusion (detailed)
 
 {{conclusion
 **Conclusion**
 
 Write here about your **conclusion**.
 }}
-
-# Feedback (master_bottom)
-
-**Feedback**
-? feedback
-  * type: text
-
-* Submit Feedback -> Case.Next
 
 ___ Flow ___
 
@@ -57,5 +47,16 @@ ___ Data ___
   * evidence: http://purl.org/versum/evidence/
 * templates:
   * categories:
-    * input: simple/knot/question_open
-    * detailed: simple/knot/feedback
+    * detailed:
+      * Lungs: simple/knot/pt_lungs
+      * Cava: simple/knot/pt_cava
+      * Heart: simple/knot/pt_heart
+      * Lower Limbs: simple/knot/pt_llv
+      * Abdomen: simple/knot/pt_abdomen
+      * Aorta: simple/knot/pt_aorta
+      * Urinary: simple/knot/pt_urinary
+      * Vesicle: simple/knot/pt_vesicle
+      * E-FAST: simple/knot/pt_efast
+      * Soft Parts: simple/knot/pt_soft
+      * Articulate: simple/knot/pt_articulate
+      * Ocular: simple/knot/pt_ocular

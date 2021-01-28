@@ -582,7 +582,27 @@ class AuthorManager {
 
       let markdown = await MessageBus.ext.request('data/template/' +
                               template.replace(/\//g, '.') + '/get')
+      
+      const templateTitle = Translator.instance.extractKnotTitle(markdown.message)
+      let ktitle = templateTitle
 
+      let kn =0
+      if (!ktitle.includes('_knot_number_') && this._knots[ktitle] != null) {
+        ktitle += ' _knot_number_'
+        kn = 1
+      }
+
+      let knotId
+      do {
+        kn++
+        knotId = ktitle.replace('_knot_number_', kn).replace(/ /, '_')
+      } while (this._knots[knotId] != null)
+      const knotMd = ktitle.replace('_knot_number_', kn)
+
+      console.log('=== k title')
+      console.log(knotId)
+
+      /*
       let last = 1
       for (const k in this._knots) {
         const kNumber = k.search(/Knot_[\d]+$/)
@@ -597,6 +617,9 @@ class AuthorManager {
       const knotMd = 'Knot_' + last
 
       markdown = markdown.message.replace('_Knot_Name_', knotMd) + '\n'
+      */
+
+      markdown = markdown.message.replace(templateTitle, knotMd) + '\n'
 
       const newKnotSet = {}
       for (const k in this._knots) {

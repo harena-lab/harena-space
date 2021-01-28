@@ -7,9 +7,8 @@ class DCCContextMenu {
       .replace('{css}', Basic.service.themeStyleResolver('dcc-context-menu.css'))
       .replace('{left}', x)
       .replace('{top}', y)
-    let presentation = document.createElement('div')
-    presentation.appendChild(template.content.cloneNode(true))
-    this._setPresentation(presentation)
+    this._presentation = document.createElement('div')
+    this._presentation.appendChild(template.content.cloneNode(true))
     const content = this._presentation.querySelector('#menu-content')
 
     for (const i in items) {
