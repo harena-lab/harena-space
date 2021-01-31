@@ -133,9 +133,10 @@ class DCCButton extends DCCBlock {
     return 'action'
   }
 
-  _computeTrigger () {
+  async _computeTrigger () {
     if (this._active && this._checkPre()) {
       const message = { sourceType: DCCButton.elementTag }
+      await this.multiRequest('click', message)
       if (this.hasAttribute('variable')) {
         const v = (this.variable.includes(':'))
           ? this.variable.substring(0, this.variable.indexOf(':')) : this.variable

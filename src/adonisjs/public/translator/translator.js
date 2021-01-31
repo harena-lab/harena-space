@@ -759,6 +759,8 @@ class Translator {
         options[compiledItem.label].state = compiledItem.state
         options[compiledItem.label].operation = compiledItem.operation
       }
+      if (compiledItem.compute)
+        options[compiledItem.label].compute = compiledItem.compute
   }
 
   // check if both are quoted or subordinated
@@ -1551,11 +1553,18 @@ class Translator {
     if (matchArray[3] != null) { option.divert = matchArray[3].trim() }
     if (matchArray[4] != null) { option.target = matchArray[4].trim() }
     if (matchArray[5] != null) { option.message = matchArray[5].trim() }
+
+    // <TODO> backwards compatibility -- remove in the future?
     if (matchArray[6] != null)
       { option.operation = matchArray[6].trim() }
     else if (matchArray[8] != null)
       { option.operation = matchArray[8].trim() }
     if (matchArray[7] != null) { option.state = matchArray[7].trim() }
+
+    // compute element inside option
+    if (matchArray[9] != null)
+      option.compute = matchArray[9].trim()
+    //  option.compute = this._computeMdToObj(['', matchArray[9], matchArray[10], matchArray[11]], true)
 
     return option
   }
@@ -1589,6 +1598,15 @@ class Translator {
       .replace('[message]',
         (obj.message == null) ? '' : " message='" + obj.message + "'")
       .replace('[image]', optionalImage)
+      .replace('[connect]',
+        (obj.compute == null) ? '' :
+           Translator.htmlSubTemplates.compute.connect
+             .replace('[seq]', obj.seq))
+      .replace('[compute]',
+        (obj.compute == null) ? '' :
+           Translator.htmlSubTemplates.compute.component
+             .replace('[seq]', obj.seq)
+             .replace('[expression]', obj.compute))
   }
 
   _transformNavigationMessage (target) {
@@ -1915,6 +1933,8 @@ class Translator {
             ((obj.options[op].contextTarget == null) ? '' :
               "target='" + this._transformNavigationMessage(obj.options[op].contextTarget) + "' "))
             .replace('[value]', obj.options[op].message)
+            .replace('[compute]',
+              (obj.options[op].compute == null) ? '' : ' compute="' + obj.options[op].compute + '"')
         }
         statement += choice
       }
@@ -2043,12 +2063,14 @@ class Translator {
   /*
     * Compute Md to Obj
     */
-  _computeMdToObj (matchArray) {
-    const sentence = {
-      type: 'compute',
-      operator: matchArray[2],
-      value: matchArray[3].trim()
-    }
+  _computeMdToObj (matchArray, withoutType) {
+    let sentence = {}
+
+    if (!withoutType)
+      sentence.type = 'compute'
+
+    sentence.operator = matchArray[2]
+    sentence.value = matchArray[3].trim()
 
     if (matchArray[1] != null) { sentence.variable = matchArray[1].trim() }
 
@@ -2172,6 +2194,12 @@ class Translator {
   Translator.marksLayerTitle = /^[ \t]*\_{2,}((?:.(?!\_{2,}))*.)(?:\_{2,})?[ \t]*$/igm
   Translator.marksKnotTitle = /((?:^[ \t]*(?:#+)[ \t]*(?:[^\( \t\n\r\f][^\(\n\r\f]*)(?:\((?:\w[\w \t,]*)\))?(?:\:[ \t]*[^\(\n\r\f][^\(\n\r\f\t]*)?[ \t]*#*[ \t]*$)|(?:^[ \t]*(?:[^\( \t\n\r\f][^\(\n\r\f]*)(?:\((?:\w[\w \t,]*)\))?(?:\:[ \t]*[^\(\n\r\f][^\(\n\r\f\t]*)?[ \t]*[\f\n\r][\n\r]?(?:==+|--+)$))/igm
 
+  Translator.fragment = {
+    // compute: '~[ \\t]*(\\w+)?[ \\t]*([+\\-*/=])[ \\t]*(\\d+(?:\\.\\d+)?)',
+    compute: '~[ \\t]*([\\w+\\-*/= \\t]+\\??)',
+    option: '^[ \\t]*([\\+\\*])[ \\t]+([^&<> \\t\\n\\r\\f][^&<>\\n\\r\\f]*)?((?:(?:(?:&lt;)|<)?-(?:(?:&gt;)|>))|(?:\\(-\\)))[ \\t]*([^">~\\n\\r\\f(]+)(?:"([^"\\n\\r\\f]*)")?[ \\t]*(?:(\\>)?\\(\\(([^)]*)\\)\\))?(\\?)?[ \\t]*'
+  }
+
   Translator.element = {
     knot: {
       mark: /(?:^[ \t]*(#+)[ \t]*([^\( \t\n\r\f\:][^\(\n\r\f\:]*)(?:\((\w[\w \t,]*)\))?[ \t]*(?:\:[ \t]*([^\(\n\r\f][^\(\n\r\f\t]*))?[ \t]*#*[ \t]*$)|(?:^[ \t]*([^\( \t\n\r\f\:][^\(\n\r\f\:]*)(?:\((\w[\w \t,]*)\))?[ \t]*(?:\:[ \t]*([^\(\n\r\f][^\(\n\r\f\t]*))?[ \t]*[\f\n\r][\n\r]?(==+|--+)$)/im,
@@ -2196,7 +2224,9 @@ class Translator {
       subtext: 'value'
     },
     option: {
-      mark: /^[ \t]*([\+\*])[ \t]+([^&<> \t\n\r\f][^&<>\n\r\f]*)?((?:(?:(?:&lt;)|<)?-(?:(?:&gt;)|>))|(?:\(-\)))[ \t]*([^">\n\r\f(]+)(?:"([^"\n\r\f]*)")?[ \t]*(?:(\>)?\(\(([^)]*)\)\))?(\?)?[ \t]*$/im
+      mark: new RegExp(Translator.fragment.option +
+                       '(?:' + Translator.fragment.compute + ')?[ \\t]*$', 'im')
+      // mark: /^[ \t]*([\+\*])[ \t]+([^&<> \t\n\r\f][^&<>\n\r\f]*)?((?:(?:(?:&lt;)|<)?-(?:(?:&gt;)|>))|(?:\(-\)))[ \t]*([^">\n\r\f(]+)(?:"([^"\n\r\f]*)")?[ \t]*(?:(\>)?\(\(([^)]*)\)\))?(\?)?[ \t]*$/im
     },
     'divert-script': {
       mark: /^[ \t]*(?:\(([\w\.]+)[ \t]*(==|>|<|>=|<=|&gt;|&lt;|&gt;=|&lt;=)[ \t]*((?:"[^"\n\r\f]+")|(?:\-?\d+(?:\.\d+)?)|(?:[\w\.]+))\)[ \t]*)?-(?:(?:&gt;)|>)[ \t]*([^"\n\r\f]+)(?:"([^"\n\r\f]+)")?[ \t]*$/im
@@ -2226,7 +2256,8 @@ class Translator {
       inline: true
     },
     compute: {
-      mark: /~[ \t]*(\w+)?[ \t]*([+\-*/=])[ \t]*(\d+(?:\.\d+)?)$/im
+      mark: new RegExp(Translator.fragment.compute + '$', 'im')
+      // mark: /~[ \t]*(\w+)?[ \t]*([+\-*/=])[ \t]*(\d+(?:\.\d+)?)$/im
     },
     'context-open': {
       mark: /\{\{(?:([^\:\n\r\f]+)\:)?([\w \t\+\-\*\."=%]+)?(?:\/([\w \t\.\:]+)\/)?$/im

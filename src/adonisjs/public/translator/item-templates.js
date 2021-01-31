@@ -29,7 +29,7 @@
     image:
 '<figure class="image[imgresized]"[resize]><img src="[path]"[alt]>[caption]</figure>',
     option:
-'<dcc-button id=\'dcc[seq]\'[author] topic=\'[target]\' label=\'[display]\'[divert][message][image]></dcc-button>',
+'<dcc-button id=\'dcc[seq]\'[author] topic=\'[target]\' label=\'[display]\'[divert][message][image][connect]></dcc-button>[compute]',
     divert:
 '<dcc-button id=\'dcc[seq]\'[author] topic=\'[target]\' label=\'[display]\' divert=\'[divert]\' location=\'#in\' inline></dcc-button>',
     'divert-script':
@@ -41,15 +41,22 @@
     input:
 '<dcc-[dcc] id=\'dcc[seq]\'[author][extra]>[statement]</dcc-[dcc]>',
     choice:
-'<dcc-input-option [target]value="[value]">[option]</dcc-input-option><br>',
+'<dcc-input-option [target]value="[value]"[compute]>[option]</dcc-input-option><br>',
     output:
 '<dcc-expression id=\'dcc[seq]\'[author] expression=\'[variable][index]\'[variant] active></dcc-expression>',
     compute:
-'<dcc-compute instruction=\'[instruction]\'></dcc-compute>',
+'<dcc-compute expression=\'[instruction]\' onload></dcc-compute>',
     domain:
 '[natural]',
     select:
 '<dcc-state-select id=\'dcc[seq]\'[author][answer]>[expression]</dcc-state-select>'
+  }
+
+  Translator.htmlSubTemplates = {
+    compute: {
+      connect: ' connect="dcc[seq]-compute:compute/update:click"',
+      component: '<dcc-compute id="dcc[seq]-compute" expression="[expression]"></dcc-compute>'
+    }
   }
 
   Translator.htmlFlatTemplates = {

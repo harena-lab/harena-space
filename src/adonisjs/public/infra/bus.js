@@ -113,7 +113,7 @@ class MessageBus {
 
   async request (requestTopic, requestMessage, responseTopic) {
     let rt
-    let rm = (requestMessage) || null
+    let rm = (requestMessage != null) ? requestMessage : null
     if (responseTopic) { rt = responseTopic } else {
       if (rm == null) { rm = {} } else if (typeof rm !== 'object') { rm = { body: rm } }
       rm.responseStamp = MessageBus._stamp
@@ -158,14 +158,15 @@ class MessageBus {
   /* Connection-oriented communication
    ***********************************/
 
+  /*
+   * Components declare provided services. Each topic defines a service.
+   *   id: unique id of the component that offers the service
+   *   topic: topic related to the provided service
+   *   service: the component method that implements the service
+   */
   provides (id, topic, service) {
-    // console.log('=== provides')
-    // console.log(id)
-    // console.log(topic)
     let status = true
     const key = id + ':' + topic
-    // console.log(key)
-    // console.log(this._connections[key])
     if (this._providers[key])
       status = false
     else {
@@ -178,6 +179,13 @@ class MessageBus {
     }
   }
 
+  /*
+   * Connects a component to another one based on the id and a topic (service).
+   *   id: id of the component that offers the service
+   *   topic: topic related to the provided service
+   *   callback: instance that will be notified as soon as the service is
+   *             connected
+   */
   connect (id, topic, callback) {
     // console.log('=== connect')
     // console.log(id)
@@ -194,12 +202,11 @@ class MessageBus {
         this._connections[key] = [callback]
   }
 
+  /*
+   * Triggers a service defined by an id and topic, sending an optional
+   * message to it.
+   */
   async requestC (id, topic, message) {
-    // console.log('=== request C:')
-    // console.log(id)
-    // console.log(topic)
-    // console.log(message)
-    // console.log(this._providers)
     let response = null
     const key = id + ':' + topic
     if (this._providers[key] != null)

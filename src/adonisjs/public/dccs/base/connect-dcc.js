@@ -6,8 +6,6 @@ class ConnectDCC extends HTMLElement {
     if (this.hasAttribute('to') && this.hasAttribute('topic') && this.hasAttribute('role')) {
       this._fromObj = (this.hasAttribute('from'))
         ? document.querySelector('#' + this.from) : this.parentNode
-      console.log("=== to connect")
-      console.log(this._fromObj)
       this._fromObj.connectTo(this.to, this.topic, this.role)
     }
   }

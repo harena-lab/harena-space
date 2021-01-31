@@ -124,6 +124,9 @@ class PlayState {
   variableGet (topic, message) {
     let id = MessageBus.extractLevel(topic, 2)
 
+    if (id != null)
+      id = id.toLowerCase()
+
     /*
     console.log('=== variable request')
     console.log(id)
@@ -132,7 +135,7 @@ class PlayState {
     console.log(this._state.variables)
     */
 
-    if (id.startsWith('Previous.')) {
+    if (id != null && id.startsWith('previous.')) {
       const previousKnot = this.historyPreviousId()
       if (previousKnot != null) { id = previousKnot + '.' + id.substring(9) }
     }
@@ -166,10 +169,19 @@ class PlayState {
     }
   }
 
-  variableSet (topic, value) {
+  variableSet (topic, message) {
+    console.log('=== variable set')
+    console.log(topic)
+    console.log(message)
     const id = MessageBus.extractLevel(topic, 2)
-    if (id != null) { this._state.variables[id] = value }
+    let status = false
+    if (id != null) {
+      this._state.variables[id.toLowerCase()] = message
+      status = true
+    }
     this._stateStore()
+    MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
+      status)
   }
 
   /*

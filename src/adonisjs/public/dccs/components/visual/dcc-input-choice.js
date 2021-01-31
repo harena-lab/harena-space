@@ -44,7 +44,7 @@ class DCCInputOption extends DCCInput {
 
   static get observedAttributes () {
     return DCCInput.observedAttributes.concat(
-      ['parent', 'exclusive', 'checked', 'target', 'value'])
+      ['parent', 'exclusive', 'checked', 'target', 'value', 'compute'])
   }
 
   get parent () {
@@ -85,6 +85,14 @@ class DCCInputOption extends DCCInput {
 
   set value (newValue) {
     this.setAttribute('value', newValue)
+  }
+
+  get compute () {
+    return this.getAttribute('compute')
+  }
+
+  set compute (newValue) {
+    this.setAttribute('compute', newValue)
   }
 
   /* Event handling */
@@ -274,15 +282,23 @@ class DCCInputChoice extends DCCInput {
       if (child.tagName &&
           child.tagName.toLowerCase() == DCCInputOption.elementTag) {
         nop++
+        let iid = varid + '_' + nop
         const element = (this.target || child.target)
-          ? "<dcc-button id='presentation-dcc-[id]' location='#in' topic='[target]' label='[statement]' divert='round' message='[value]' variable='[variable]:label'></dcc-button>"
-            .replace('[id]', varid + '_' + nop)
+          ? "<dcc-button id='presentation-dcc-[id]' location='#in' topic='[target]' label='[statement]' divert='round' message='[value]' variable='[variable]:label'[connect]></dcc-button>[compute]"
+            .replace('[id]', iid)
             .replace('[target]', (child.target) ? child.target : this.target)
             .replace('[statement]', child._statement)
             .replace('[value]', child.value)
             .replace('[variable]', this.variable)
+            .replace('[connect]', (child.compute == null) ? '' :
+              ' connect="presentation-dcc-[id]-compute:compute/update:click"'
+                .replace('[id]', iid))
+            .replace('[compute]', (child.compute == null) ? '' :
+              '<dcc-compute id="presentation-dcc-[id]-compute" expression="[expression]"></dcc-compute>'
+                .replace('[id]', iid)
+                .replace('[expression]', child.compute))
           : "<input id='presentation-dcc-[id]' type='[exclusive]' name='[variable]' value='[value]'[checked]>[statement]</input>"
-            .replace('[id]', varid + '_' + nop)
+            .replace('[id]', iid)
             .replace('[exclusive]',
               (this.hasAttribute('exclusive') ? 'radio' : 'checkbox'))
             .replace('[variable]', this.variable)
@@ -330,7 +346,6 @@ class DCCInputChoice extends DCCInput {
         if (reveal && html[oop[o]][1].trim().length > 0) {
             await this._applyRender('<span id="presentation-dcc">' + html[oop[o]][1] + '</span>',
               'innerHTML', 'input', 'presentation-dcc', false)
-            console.log(html[oop[o]][1])
         }
       }
       else {
@@ -342,7 +357,6 @@ class DCCInputChoice extends DCCInput {
                    'presentation-dcc-' + varid + '_' + presId, false)
         presentation.addEventListener('change', this.inputChanged)
         this._options.push(presentation)
-        console.log(html[oop[o]][1])
       }
     }
 
