@@ -170,9 +170,6 @@ class PlayState {
   }
 
   variableSet (topic, message) {
-    console.log('=== variable set')
-    console.log(topic)
-    console.log(message)
     const id = MessageBus.extractLevel(topic, 2)
     let status = false
     if (id != null) {

@@ -88,7 +88,7 @@
                     </select>
                 </div>
                 <div class="form-group col-md-6">
-                  <dcc-dhtml connect="harena-institutions:service/request/get:retrieve">
+                  <dcc-dhtml connect="retrieve:harena-institutions:service/request/get">
                     <label for="subject">Select an option:</label>
 
                     <select class="custom-select" id="subject" name="subject">
@@ -144,7 +144,7 @@
               <div class="p-2 ml-4">Filter by: </div>
               <div class="pr-3">
                 <dcc-rest id="harena-institutions" bind="harena-institutions"></dcc-rest>
-                <dcc-dhtml id="harena-dhtml-institutions" connect="harena-institutions:service/request/get:retrieve">
+                <dcc-dhtml id="harena-dhtml-institutions" connect="retrieve:harena-institutions:service/request/get">
 
                   <select id="fInstitution" name="fInstitution" class="custom-select custom-select-sm">
                     <option selected value="">Institution</option>
@@ -180,7 +180,7 @@
           </div>
           <div id="case-boxes" class="draft-scroll-container">
             <dcc-rest id="harena-cases" bind="harena-cases"></dcc-rest>
-            <dcc-dhtml id="harena-dhtml-cases" connect="harena-cases:service/request/get:retrieve" subscribe="service/response/get/harena-cases-filter:update">
+            <dcc-dhtml id="harena-dhtml-cases" connect="retrieve:harena-cases:service/request/get" subscribe="service/response/get/harena-cases-filter:update">
               {{@foreach . cases}}
               <!-- checkbox for selecting cases -->
               <!-- <div class="col">

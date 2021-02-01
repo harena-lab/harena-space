@@ -16,6 +16,14 @@ class DCCButton extends DCCBlock {
   connectedCallback () {
     super.connectedCallback()
 
+    if (this.hasAttribute('id')) {
+      this.changeDisplay = this.changeDisplay.bind(this)
+      MessageBus.page.provides(this.id, 'style/display/initial',
+                               this.changeDisplay)
+      MessageBus.page.provides(this.id, 'style/display/none',
+                               this.changeDisplay)
+    }
+
     if (this.hasAttribute('topic') && this.topic.endsWith('/navigate')) {
       this.navigationBlocked = this.navigationBlocked.bind(this)
       MessageBus.ext.subscribe('+/+/navigate/blocked', this.navigationBlocked)
@@ -164,6 +172,14 @@ class DCCButton extends DCCBlock {
     this._active = true
   }
 
+  changeDisplay(topic, message) {
+    if (this._presentation != null) {
+      if (topic == 'style/display/none')
+        this._presentation.style.display = 'none'
+      else
+        this._presentation.style.display = 'initial'
+    }
+  }
 
   // <TODO> provisory - deactivate button edit
   _activateAuthorPresentation (presentation, listener) {}

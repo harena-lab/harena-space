@@ -46,7 +46,7 @@ class DCCExpression extends DCCVisual {
       if (this._compiled != null) {
         if (this.active) {
           this.variableUpdated = this.variableUpdated.bind(this)
-          const variables = DCCCompute.filterVariables(this._compiled)
+          const variables = DCCCompute.filterVariables(this._compiled, false)
           // MessageBus.ext.subscribe(
           //   'var/' + this._variable + '/set', this.variableUpdated)
           for (let v of variables)
@@ -66,7 +66,7 @@ class DCCExpression extends DCCVisual {
   }
 
   async _showResult () {
-    let result = await DCCCompute.computeExpression(this._compiled, false)
+    let result = await DCCCompute.computeExpression(this._compiled)
     // let result = await MessageBus.ext.request('var/' + this._variable + '/get')
     if (result == null) {
       result = ''

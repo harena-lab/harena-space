@@ -3,10 +3,10 @@
  */
 
 class DCCSubmit extends DCCButton {
-  async connectTo (id, topic, role) {
-    super.connectTo(id, topic, role)
-    if (role == 'schema') {
-      const result = await this.request(role, null, id)
+  async connectTo (trigger, id, topic) {
+    super.connectTo(trigger, id, topic)
+    if (trigger == 'schema') {
+      const result = await this.request(trigger, null, id)
       if (result != null && result[id] != null)
         this._schema = result[id]
     }

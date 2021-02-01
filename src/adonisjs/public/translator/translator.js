@@ -1540,7 +1540,8 @@ class Translator {
       */
 
     const option = {
-      type: 'option'
+      type: 'option',
+      subordinate: /^\t|^ [\t ]/.test(matchArray[0])
     }
 
     option.subtype = (matchArray[1] != null) ? matchArray[1].trim() : '_'
@@ -2063,7 +2064,17 @@ class Translator {
   /*
     * Compute Md to Obj
     */
-  _computeMdToObj (matchArray, withoutType) {
+  _computeMdToObj (matchArray) {
+    const compute = {
+      type: 'compute',
+      expression: matchArray[1].trim()
+    }
+
+    if (matchArray[2] != null) compute.conditional = true
+
+    return compute
+
+    /*
     let sentence = {}
 
     if (!withoutType)
@@ -2075,19 +2086,22 @@ class Translator {
     if (matchArray[1] != null) { sentence.variable = matchArray[1].trim() }
 
     return sentence
+    */
   }
 
   /*
     * Compute Obj to HTML
     */
   _computeObjToHTML (obj) {
+    /*
     const variable = (obj.variable != null)
       ? obj.variable : Translator.defaultVariable
 
     const instruction = variable + obj.operator + obj.value
+    */
 
     return Translator.htmlTemplates.compute
-      .replace('[instruction]', instruction)
+      .replace('[expression]', obj.expression)
   }
 
   /*
@@ -2196,7 +2210,7 @@ class Translator {
 
   Translator.fragment = {
     // compute: '~[ \\t]*(\\w+)?[ \\t]*([+\\-*/=])[ \\t]*(\\d+(?:\\.\\d+)?)',
-    compute: '~[ \\t]*([\\w+\\-*/= \\t]+\\??)',
+    compute: '~[ \\t]*([\\w+\\-*/= :<>\\t]+)(\\?)?',
     option: '^[ \\t]*([\\+\\*])[ \\t]+([^&<> \\t\\n\\r\\f][^&<>\\n\\r\\f]*)?((?:(?:(?:&lt;)|<)?-(?:(?:&gt;)|>))|(?:\\(-\\)))[ \\t]*([^">~\\n\\r\\f(]+)(?:"([^"\\n\\r\\f]*)")?[ \\t]*(?:(\\>)?\\(\\(([^)]*)\\)\\))?(\\?)?[ \\t]*'
   }
 

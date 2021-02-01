@@ -29,10 +29,10 @@ class DCCRest extends DCCBase {
     */
   }
 
-  async connectTo (id, topic, role) {
-    super.connectTo(id, topic, role)
-    if (role == 'schema')
-      this._schema = await this.request(role, null, id)
+  async connectTo (trigger, id, topic) {
+    super.connectTo(trigger, id, topic)
+    if (trigger == 'schema')
+      this._schema = await this.request(trigger, null, id)
   }
 
   async restRequest(method, parameters) {

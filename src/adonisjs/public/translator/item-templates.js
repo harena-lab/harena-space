@@ -45,7 +45,7 @@
     output:
 '<dcc-expression id=\'dcc[seq]\'[author] expression=\'[variable][index]\'[variant] active></dcc-expression>',
     compute:
-'<dcc-compute expression=\'[instruction]\' onload></dcc-compute>',
+'<dcc-compute expression=\'[expression]\' onload></dcc-compute>',
     domain:
 '[natural]',
     select:
@@ -54,7 +54,7 @@
 
   Translator.htmlSubTemplates = {
     compute: {
-      connect: ' connect="dcc[seq]-compute:compute/update:click"',
+      connect: ' connect="click:dcc[seq]-compute:compute/update"',
       component: '<dcc-compute id="dcc[seq]-compute" expression="[expression]"></dcc-compute>'
     }
   }

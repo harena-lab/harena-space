@@ -101,7 +101,7 @@
                 </div>
                 @endeach -->
                 <dcc-rest id="harena-quest-list" bind="harena-quest-list"></dcc-rest>
-                <dcc-dhtml class="d-flex" connect="harena-quest-list:service/request/get:retrieve">
+                <dcc-dhtml class="d-flex" connect="retrieve:harena-quest-list:service/request/get">
                   {{@foreach . quest}}
                   <div class="d-flex justify-content-center text-center draft-quest-container">
                     <a href="/author/drafts/quest/cases?id={{quest.id}}">

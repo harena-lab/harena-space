@@ -3,10 +3,11 @@
 
 class ConnectDCC extends HTMLElement {
   connectedCallback () {
-    if (this.hasAttribute('to') && this.hasAttribute('topic') && this.hasAttribute('role')) {
+    if (this.hasAttribute('trigger') &&
+        this.hasAttribute('to') && this.hasAttribute('topic')) {
       this._fromObj = (this.hasAttribute('from'))
         ? document.querySelector('#' + this.from) : this.parentNode
-      this._fromObj.connectTo(this.to, this.topic, this.role)
+      this._fromObj.connectTo(this.trigger, this.to, this.topic)
     }
   }
 
@@ -14,7 +15,7 @@ class ConnectDCC extends HTMLElement {
       **********/
 
   static get observedAttributes () {
-    return ['from', 'to', 'topic', 'role']
+    return ['from', 'trigger', 'to', 'topic']
   }
 
   get from () {
@@ -23,6 +24,14 @@ class ConnectDCC extends HTMLElement {
 
   set from (newValue) {
     this.setAttribute('from', newValue)
+  }
+
+  get trigger () {
+    return this.getAttribute('trigger')
+  }
+
+  set trigger (newValue) {
+    this.setAttribute('trigger', newValue)
   }
 
   get to () {
@@ -39,14 +48,6 @@ class ConnectDCC extends HTMLElement {
 
   set topic (newValue) {
     this.setAttribute('topic', newValue)
-  }
-
-  get role () {
-    return this.getAttribute('role')
-  }
-
-  set role (newValue) {
-    this.setAttribute('role', newValue)
   }
 }
 

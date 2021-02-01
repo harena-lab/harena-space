@@ -86,7 +86,7 @@
           </div>
           <div id="case-boxes" class="container-fluid h-100 scroll-y draft-scroll-container">
             <dcc-rest id="harena-quest-cases" bind="harena-quest-cases"></dcc-rest>
-            <dcc-dhtml id="harena-dhtml-cases" connect="harena-quest-cases:service/request/get:retrieve">
+            <dcc-dhtml id="harena-dhtml-cases" connect="retrieve:harena-quest-cases:service/request/get">
               {{@foreach . cases}}
               <div id="b{{cases.id}}" class="row draft-author-case-container">
                 <div class="col draft-case-title">{{cases.title}}</div>

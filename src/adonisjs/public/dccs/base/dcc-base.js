@@ -98,24 +98,32 @@ class DCCBase extends HTMLElement {
     this._connectTo(newValue)
   }
 
-  _connectTo (idTopicRole) {
-    const colonId = idTopicRole.indexOf(':')
-    const colonRole = idTopicRole.lastIndexOf(':')
-    if (colonId != -1 && colonRole != -1) {
+  _connectTo (triggerIdTopic) {
+    const colonTrigger = triggerIdTopic.indexOf(':')
+    const colonId = triggerIdTopic.lastIndexOf(':')
+    if (colonTrigger != -1 && colonId != -1) {
       this.connectTo(
-        idTopicRole.substring(0, colonId),
-        idTopicRole.substring(colonId + 1, colonRole),
-        idTopicRole.substring(colonRole+1)
+        triggerIdTopic.substring(0, colonTrigger),
+        triggerIdTopic.substring(colonTrigger + 1, colonId),
+        triggerIdTopic.substring(colonId+1)
       )
     }
   }
 
-  // connects this DCC to another
-  connectTo (id, topic, role) {
-    if (id != null && topic != null && role != null) {
+  /*
+   * Connects this DCC to another
+   *   trigger - event in this component that triggers the request through
+   *             this connection
+   *   id - identification of the target component to be connected
+   *   topic - identifies, in the target component, the specific services
+   *           related to this connection (services are related to topics
+   *           and declared in the bus provides interface)
+   */
+  connectTo (trigger, id, topic) {
+    if (trigger != null && id != null && topic != null) {
       if (this._connections == null) this._connections = {}
-      if (this._connections[role] == null) this._connections[role] = []
-      this._connections[role].push({id: id, topic: topic})
+      if (this._connections[trigger] == null) this._connections[trigger] = []
+      this._connections[trigger].push({id: id, topic: topic})
       MessageBus.page.connect(id, topic, this)
     }
   }
@@ -124,24 +132,25 @@ class DCCBase extends HTMLElement {
     /* implemented in the subclasses */
   }
 
-  async request (role, message, id) {
+  async request (trigger, message, id) {
     let response = null
-    if (this._connections != null && this._connections[role] != null)
+    if (this._connections != null && this._connections[trigger] != null)
       if (id != null) {
-        const conId = this._connections[role].find(con => con.id == id)
+        const conId = this._connections[trigger].find(con => con.id == id)
         response =
             await MessageBus.page.requestC(id, conId.topic, message)
       } else
         response =
             await MessageBus.page.requestC(
-              this._connections[role][0].id, this._connections[role][0].topic, message)
+              this._connections[trigger][0].id,
+              this._connections[trigger][0].topic, message)
     return response
   }
 
-  async multiRequest (role, message) {
+  async multiRequest (trigger, message) {
     let response = {}
-    if (this._connections != null && this._connections[role] != null)
-      for (let c of this._connections[role])
+    if (this._connections != null && this._connections[trigger] != null)
+      for (let c of this._connections[trigger])
         response[c.id] = await MessageBus.page.requestC(c.id, c.topic, message)
     return response
   }

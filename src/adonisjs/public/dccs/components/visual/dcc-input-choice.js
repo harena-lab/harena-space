@@ -291,7 +291,7 @@ class DCCInputChoice extends DCCInput {
             .replace('[value]', child.value)
             .replace('[variable]', this.variable)
             .replace('[connect]', (child.compute == null) ? '' :
-              ' connect="presentation-dcc-[id]-compute:compute/update:click"'
+              ' connect="click:presentation-dcc-[id]-compute:compute/update"'
                 .replace('[id]', iid))
             .replace('[compute]', (child.compute == null) ? '' :
               '<dcc-compute id="presentation-dcc-[id]-compute" expression="[expression]"></dcc-compute>'

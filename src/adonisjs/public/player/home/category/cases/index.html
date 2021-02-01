@@ -92,7 +92,7 @@
               <!-- <input type="hidden" id="" value=""> -->
               <div class="pr-3">
                 <dcc-rest id="harena-institutions" bind="harena-institutions"></dcc-rest>
-                <dcc-dhtml id="harena-dhtml-institutions" connect="harena-institutions:service/request/get:retrieve">
+                <dcc-dhtml id="harena-dhtml-institutions" connect="retrieve:harena-institutions:service/request/get">
 
                   <select id="fInstitution" name="fInstitution" class="custom-select custom-select-sm">
                     <option selected value="">Institution</option>
@@ -120,7 +120,7 @@
           </div>
           <div id="case-boxes" class="container-fluid draft-scroll-container">
             <dcc-rest id="harena-cases" bind="harena-category-cases" subscribe="service/request/get:retrieve"></dcc-rest>
-            <dcc-dhtml id="harena-dhtml-cases" connect="harena-cases:service/request/get:retrieve" subscribe="service/response/get/harena-cases-filter:update">
+            <dcc-dhtml id="harena-dhtml-cases" connect="retrieve:harena-cases:service/request/get" subscribe="service/response/get/harena-cases-filter:update">
               {{@foreach . cases}}
               <div id="b{{cases.id}}" class="row draft-author-case-container">
                 <div class="col draft-case-title">

@@ -82,7 +82,7 @@
           <div class="container-fluid">
             <dcc-rest id="harena-player-quests" bind="harena-player-quests" subscribe="service/request/get:retrieve"></dcc-rest>
             <div class="row row-cols-sm-2 row-cols-md-3 row-cols-lg-5 justify-content-center">
-              <dcc-dhtml class="d-flex" connect="harena-player-quests:service/request/get:retrieve">
+              <dcc-dhtml class="d-flex" connect="retrieve:harena-player-quests:service/request/get">
                 {{@foreach . q}}
                 <div class="col text-center player-quest-container">
                   <a href="/player/quest?id={{q.id}}&color={{q.color}}">

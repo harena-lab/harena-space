@@ -8,48 +8,25 @@ class DCCCompute extends DCCBase {
   async connectedCallback () {
     super.connectedCallback()
 
-    if (this.hasAttribute('id')) {
-      this.update = this.update.bind(this)
+    this.update = this.update.bind(this)
+
+    if (this.hasAttribute('id'))
       MessageBus.page.provides(this.id, 'compute/update', this.update)
-    }
 
     this._compiled = null
     if (this.hasAttribute('expression')) {
       this._compiled =
         DCCCompute.compileStatementSet(this.expression.toLowerCase())
       if (this._compiled != null && this.onload)
-        await DCCCompute.computeExpression(this._compiled, true)
-    }
-
-    /*
-    if (this.hasAttribute('expression')) {
-      if (this.expression == 'case=0') {
-        MessageBus.ext.publish('case/completed', '')
-      } else {
-        const trans = /(\w+)?[ \t]*([+\-/=])[ \t]*(\d+(?:\.\d+)?)/im
-        const elements = trans.exec(this.expression)
-
-        const variable = elements[1]
-        const operation = elements[2]
-        const value = parseInt(elements[3])
-
-        let varValue = value
-        if (operation != '=') {
-          const varM = await MessageBus.ext.request('var/' + variable + '/get')
-          varValue = parseInt(varM.message)
-
-          switch (operation) {
-            case '+': varValue += value; break
-            case '-': varValue -= value; break
-            case '*': varValue *= value; break
-            case '/': varValue /= value; break
-          }
+        await this.update()
+        if (this.active) {
+          const variables = DCCCompute.filterVariables(this._compiled, false)
+          console.log('=== filter variables')
+          console.log(variables)
+          for (let v of variables)
+            MessageBus.ext.subscribe('var/' + v + '/set', this.update)
         }
-
-        MessageBus.ext.publish('var/' + variable + '/set', varValue)
-      }
     }
-    */
   }
 
   /*
@@ -57,7 +34,7 @@ class DCCCompute extends DCCBase {
     */
 
   static get observedAttributes () {
-    return DCCBase.observedAttributes.concat(['expression', 'onload'])
+    return DCCBase.observedAttributes.concat(['expression', 'onload', 'active'])
   }
 
   get expression () {
@@ -76,14 +53,32 @@ class DCCCompute extends DCCBase {
     if (isOnload) { this.setAttribute('onload', '') } else { this.removeAttribute('onload') }
   }
 
+  // defines if the display is activelly updated
+  get active () {
+    return this.hasAttribute('active')
+  }
+
+  set active (isActive) {
+    if (isActive) {
+      this.setAttribute('active', '')
+    } else {
+      this.removeAttribute('active')
+    }
+  }
+
   notify (topic, message) {
     if (message.role && message.role.toLowerCase() == 'update')
       this.update()
   }
 
-  update() {
-    console.log('=== update compute')
-    DCCCompute.computeExpression(this._compiled, true)
+  async update() {
+    const result = await DCCCompute.computeExpression(this._compiled)
+    console.log('=== compute update')
+    console.log(result)
+    if (result)
+      await this.multiRequest('true', null)
+    else
+      await this.multiRequest('false', null)
   }
 
   /*
@@ -136,10 +131,10 @@ class DCCCompute extends DCCBase {
   }
 
   /*
-    * Compiles an expression and converts it to a polish reverse notation
-    * * caseSensitive - converts all field in lower case
-    *                   (avoid transformations during its execution)
-    */
+   * Compiles an expression and converts it to a polish reverse notation
+   * * caseSensitive - converts all field in lower case
+   *                   (avoid transformations during its execution)
+   */
   static compileExpression (expression) {
     const compiled = []
     const stack = []
@@ -156,27 +151,34 @@ class DCCCompute extends DCCBase {
         }
       }
       if (matchStart > -1) {
-        const matchContent = mdfocus.match(DCCCompute.element[selected])[0]
+        let matchContent = mdfocus.match(DCCCompute.element[selected])[0]
+        const matchSize = matchContent.length
+        matchContent = matchContent.trim()
 
         switch (selected) {
           case 'number':
-            compiled.push([DCCCompute.role.number,
-              (matchContent.includes('.'))
-                ? parseFloat(matchContent) : parseInt(matchContent)])
+            compiled.push([DCCCompute.role.number, Number(matchContent)])
+              // (matchContent.includes('.'))
+                // ? parseFloat(matchContent) : parseInt(matchContent)])
             break
           case 'arithmetic':
+          case 'power':
+          case 'logic':
+          case 'not':
+          case 'comparison':
             const pri = DCCCompute.precedence[matchContent]
-            while (stack.length > 0 && pri <= stack[stack.length - 1][1]) { compiled.push([DCCCompute.role.arithmetic, stack.pop()[0]]) }
+            while (stack.length > 0 && pri <= stack[stack.length - 1][1]) {
+              compiled.push([DCCCompute.role.operator, stack.pop()[0]]) }
             stack.push([matchContent, pri])
             break
-          case 'power':
-            stack.push([matchContent, DCCCompute.precedence[matchContent]])
-            break
+          // case 'power':
+          //   stack.push([matchContent, DCCCompute.precedence[matchContent]])
+          //   break
           case 'openParentheses':
             stack.push([matchContent, DCCCompute.precedence[matchContent]])
             break
           case 'closeParentheses':
-            while (stack.length > 0 && stack[stack.length - 1][0] != '(') { compiled.push([DCCCompute.role.arithmetic, stack.pop()[0]]) }
+            while (stack.length > 0 && stack[stack.length - 1][0] != '(') { compiled.push([DCCCompute.role.operator, stack.pop()[0]]) }
             if (stack.length > 0) {
               stack.pop()
               if (stack.length > 0 && stack[stack.length - 1][1] ==
@@ -194,16 +196,21 @@ class DCCCompute extends DCCBase {
             break
         }
 
-        const matchSize = matchContent.length
-        if (matchStart + matchSize >= mdfocus.length) { matchStart = -1 } else { mdfocus = mdfocus.substring(matchStart + matchSize) }
+        if (matchStart + matchSize >= mdfocus.length) {
+          matchStart = -1
+        } else {
+          mdfocus = mdfocus.substring(matchStart + matchSize)
+        }
       }
     } while (matchStart > -1)
     const size = stack.length
     for (let s = 0; s < size; s++) {
       const op = stack.pop()
       compiled.push([(op[1] == DCCCompute.precedence.function)
-        ? DCCCompute.role.function : DCCCompute.role.arithmetic, op[0]])
+        ? DCCCompute.role.function : DCCCompute.role.operator, op[0]])
     }
+    console.log('=== compiled')
+    console.log(compiled)
     return compiled
   }
 
@@ -211,7 +218,7 @@ class DCCCompute extends DCCBase {
    * Computes a set of expressions, updating variables.
    * It returns the value of the last variable.
    */
-  static async computeExpression (compiledSet, autoAssign) {
+  static async computeExpression (compiledSet) {
     let result = null
     for (let s of compiledSet) {
       await DCCCompute.updateVariables(s[1])
@@ -221,23 +228,37 @@ class DCCCompute extends DCCBase {
       } else if (compiledSet.length == 1) {
         result = DCCCompute.computeCompiled(s[1])
         // looks for a variable inside the expression
+        /*
         if (autoAssign) {
           let variable = s[1].find(el => el[0] == 3)
           if (variable)
             await MessageBus.ext.request('var/' + variable[1] + '/set', result)
         }
+        */
       }
     }
     return result
   }
 
-  static filterVariables (compiledSet) {
+  static filterVariables (compiledSet, includeAssigned) {
+    let assigned = []
+    if (!includeAssigned)
+      assigned = DCCCompute.filterAssignedVariables(compiledSet)
     let variables = []
     for (let s of compiledSet) {
       for (let c of s[1])
-        if (c[0] == DCCCompute.role.variable && !variables.includes(c[1]))
+        if (c[0] == DCCCompute.role.variable && !variables.includes(c[1]) &&
+            !assigned.includes[c[1]])
           variables.push(c[1])
     }
+    return variables
+  }
+
+  static filterAssignedVariables (compiledSet) {
+    let variables = []
+    for (let s of compiledSet)
+      if (s[0] != null && !varibles.include(s[0]))
+        variables.push(s[0])
     return variables
   }
 
@@ -269,14 +290,26 @@ class DCCCompute extends DCCBase {
     for (const c of compiled) {
       switch (c[0]) {
         case 1: stack.push(c[1]); break
-        case 2: const b = stack.pop()
-          const a = stack.pop()
-          switch (c[1]) {
-            case '+': stack.push(a + b); break
-            case '-': stack.push(a - b); break
-            case '*': stack.push(a * b); break
-            case '/': stack.push(a / b); break
-            case '^': stack.push(Math.pow(a, b)); break
+        case 2:
+          const b = stack.pop()
+          if (c[1] == 'not')
+            stack.push(!b)
+          else {
+            const a = stack.pop()
+            switch (c[1]) {
+              case '+': stack.push(a + b); break
+              case '-': stack.push(a - b); break
+              case '*': stack.push(a * b); break
+              case '/': stack.push(a / b); break
+              case '^': stack.push(Math.pow(a, b)); break
+              case '>': stack.push(a > b); break;
+              case '<': stack.push(a < b); break;
+              case '>=': stack.push(a >= b); break;
+              case '<=': stack.push(a <= b); break;
+              case '<>': stack.push(a != b); break;
+              case 'or': stack.push(a || b); break;
+              case 'and': stack.push(a && b); break;
+            }
           }
           break
         case 3: stack.push(c[2]); break
@@ -307,30 +340,42 @@ class DCCCompute extends DCCBase {
 
   DCCCompute.role = {
     number: 1,
-    arithmetic: 2,
+    operator: 2,
     variable: 3,
     function: 4
   }
 
   DCCCompute.precedence = {
-    '(': 1,
-    '-': 2,
-    '+': 2,
-    '/': 3,
-    '*': 3,
-    '^': 4,
-    function: 5
+    'or': 1,
+    'and': 2,
+    '=': 3,
+    '>': 3,
+    '<': 3,
+    '>=': 3,
+    '<=': 3,
+    '<>': 3,
+    '-': 4,
+    '+': 4,
+    '/': 5,
+    '*': 5,
+    '^': 6,
+    'not': 7,
+    function: 8,
+    '(': 9
   }
 
   DCCCompute.element = {
     number: /([\d]*\.[\d]+)|([\d]+)/im,
-    arithmetic: /[\+\-*/]/im,
-    power: /\^/im,
-    openParentheses: /\(/im,
-    closeParentheses: /\)/im,
+    arithmetic: /[ \t]*[\+\-*/][ \t]*/im,
+    logic: /[ \t]*and[ \t]*|[ \t]*or[ \t]*/im,
+    power: /[ \t]*\^[ \t]*/im,
+    not: /[ \t]*not[ \t]*/im,
+    comparison: /[ \t]*(?:[<>=](?!=))|>=|<=|<>[ \t]*/im,
+    openParentheses: /[ \t]*\([ \t]*/im,
+    closeParentheses: /[ \t]*\)[ \t]*/im,
     function: /[\w \t\.]+(?=\()/im,
     variable: /[\w \t\.]+(?!\()/im
   }
 
-  DCCCompute.assignment = /([\w \t\.]+)=/im
+  DCCCompute.assignment = /([\w \t\.]+)\:=[ \t]*/im
 })()
