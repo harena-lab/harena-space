@@ -277,9 +277,14 @@ class PlayerManager {
   }
 
   async _caseLoad (caseid) {
-    Basic.service.currentCaseId = new URL(document.location).searchParams.get('id')
+    Basic.service.currentCaseId =
+      new URL(document.location).searchParams.get('id')
+    /*
     const caseObj = await MessageBus.ext.request(
       'service/request/get', {caseId: Basic.service.currentCaseId})
+    */
+    const caseObj = await MessageBus.ext.request(
+      'data/case/' + Basic.service.currentCaseId + '/get')
 
     this._currentCaseTitle = caseObj.message.title
 

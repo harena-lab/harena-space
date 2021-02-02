@@ -32,16 +32,6 @@ Feedback for Distractor 3.
 
 **You answered:** ^Previous.input1^.
 
-___ Flow ___
+___ Template ___
 
-* Sequential:
-  * _sequential_
-
-___ Data ___
-
-* theme: simple(red)
-* namespaces:
-  * evidence: http://purl.org/versum/evidence/
-* templates:
-  * categories:
-    * detailed: simple/knot/description
+* template: simple/case/quiz_long

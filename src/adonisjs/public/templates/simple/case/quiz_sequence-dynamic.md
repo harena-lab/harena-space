@@ -74,16 +74,6 @@ Write here the **feedback**.
 
 **You answered:** ^Previous.input1^.
 
-___ Flow ___
+___ Template ___
 
-* Sequential:
-  * _sequential_
-
-___ Data ___
-
-* theme: simple(purple)
-* namespaces:
-  * evidence: http://purl.org/versum/evidence/
-* templates:
-  * categories:
-    * quiz: simple/knot/quiz
+* template: simple/case/quiz_sequence

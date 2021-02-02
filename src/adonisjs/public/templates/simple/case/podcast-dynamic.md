@@ -51,16 +51,6 @@ Write here the final Feedback.
 
 * Next Virtual Visit -> Case.Next
 
-___ Flow ___
+___ Template ___
 
-* Sequential:
-  * _sequential_
-
-___ Data ___
-
-* theme: simple(blue)
-* namespaces:
-  * evidence: http://purl.org/versum/evidence/
-* templates:
-  * categories:
-    * input: simple/knot/visit_day
+* template: simple/case/podcast

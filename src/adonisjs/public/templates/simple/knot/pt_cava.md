@@ -19,3 +19,7 @@ Photo 2
 ![POCUS Image](template/pocus_image.png)
 
 * Next -> Flow.Next
+
+{{comments
+* template: simple/knot/pt_cava
+}}

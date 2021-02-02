@@ -744,6 +744,18 @@ class Translator {
       } else { optionGroup = null }
       compiled[c].seq = c + 1
     }
+
+    // tenth cycle - hide comments
+    let inComment = false
+    for (let c = 1; c < compiled.length; c++) {
+      if (compiled[c].type == 'context-open' &&
+          compiled[c].context == 'comments')
+        inComment = true
+      else if (compiled[c].type == 'context-close' && inComment)
+        inComment = false
+      else if (inComment)
+        compiled[c].render = false
+    }
   }
 
   _transferOption(options, compiledItem) {
@@ -1125,10 +1137,8 @@ class Translator {
   /*
     * Put together all source fragments
     */
-  assembleMarkdown (compiledCase) {
+  assembleMarkdown (compiledCase, includeStatic) {
     let md = ''
-    console.log('=== Assemble Markdown')
-    console.log(compiledCase)
     for (const kn in compiledCase.knots) {
       // toCompile indicates a part generated only with markdown (by newKnot)
       // and cannot inversely generate markdown
@@ -1156,9 +1166,13 @@ class Translator {
       }
     }
 
+    // <TODO> provisory
+    const dynamicLayers = ['Template', 'Comments']
+
     for (const l in compiledCase.layers) {
-      md += Translator.markdownTemplates.layer.replace('[title]', l) +
-               compiledCase.layers[l]._source
+      if (includeStatic || dynamicLayers.includes(l))
+        md += Translator.markdownTemplates.layer.replace('[title]', l) +
+                 compiledCase.layers[l]._source
     }
     return md
   }
@@ -1188,6 +1202,8 @@ class Translator {
       case 'image': element._source = this._imageObjToMd(element)
         break
       case 'option': element._source = this._optionObjToMd(element)
+        break
+      case 'field': element._source = this._fieldObjToMd(element)
         break
       case 'entity': element._source = this._entityObjToMd(element)
         break
@@ -1671,6 +1687,27 @@ class Translator {
     */
   _fieldObjToHTML (obj) {
     return obj.presentation
+  }
+
+  _fieldObjToMd (obj) {
+    let level = 0
+    let fieldObj = {}
+    fieldObj[obj.field] = obj.value
+    return this._visitFields(fieldObj, 0)
+  }
+
+  _visitFields (fields, level) {
+    let md = ''
+    const spaces = ' '.repeat(level)
+    for (let f in fields) {
+      md += spaces + "* " + f + ': '
+      if (typeof fields[f] === 'object')
+        md += '\n' + this._visitFields(fields[f], level+2)
+      else if (typeof fields[f] === 'string')
+        md += '"' + fields[f].replace(/"/gm, '\\"') + '"\n'
+      else md += fields[f] + '\n'
+    }
+    return md
   }
 
   _itemMdToObj (matchArray) {
@@ -2228,7 +2265,7 @@ class Translator {
       inline: true
     },
     field: {
-      mark: /^([ \t]*)(?:[\+\*])[ \t]+([\w.\/\?&#\-][\w.\/\?&#\- \t]*):[ \t]*([^&>\n\r\f]+)?(?:-(?:(?:&gt;)|>)[ \t]*([^\(\n\r\f]+))?$/im,
+      mark: /^([ \t]*)(?:[\+\*])[ \t]+([\w.\/\?&#\-][\w.\/\?&#\- \t]*):[ \t]*([^&>\n\r\f"][^&>\n\r\f]*)?("[^"]*")?(?:-(?:(?:&gt;)|>)[ \t]*([^\(\n\r\f]+))?$/im,
       subfield: true,
       subimage: true,
       subtext: 'value'

@@ -278,18 +278,30 @@ class AuthorManager {
     */
   async _caseLoad (caseId) {
     Basic.service.currentCaseId = caseId
+
+    const caseObj = await MessageBus.ext.request('data/case/' + caseId + '/get')
+
     /*
     const caseObj = await MessageBus.ext.request(
-      'data/case/' + Basic.service.currentCaseId + '/get')
-    */
-
-    const caseObj = await MessageBus.ext.request(
       'service/request/get', {caseId: caseId})
+
+    let source = caseObj.message.source
+    const template =
+      source.match(/^___ Template ___[\n]*\*[ \t]+template[ \t]*:[ \t]*(.+)$/im)
+    if (template != null && template[1] != null) {
+      console.log('=== template')
+      console.log(template)
+      const templateMd =
+        await MessageBus.ext.request(
+          'data/template/' + template[1].replace(/\//g, '.') +
+            '/get', {static: true})
+      source += templateMd.message
+    }
+    */
 
     this._currentCaseTitle = caseObj.message.title
     await this._compile(caseObj.message.source)
     await this._showCase()
-
   }
 
   async _compile (caseSource) {
@@ -331,7 +343,7 @@ class AuthorManager {
     if (Basic.service.currentCaseId != null && this._compiledCase != null) {
       this._checkKnotModification(this._renderState)
 
-      const md = Translator.instance.assembleMarkdown(this._compiledCase)
+      const md = Translator.instance.assembleMarkdown(this._compiledCase, false)
       const status = await MessageBus.ext.request(
         'data/case/' + Basic.service.currentCaseId + '/set',
         { format: 'markdown',
@@ -354,7 +366,7 @@ class AuthorManager {
   async updateSourceField () {
     this._checkKnotModification(this._renderState)
     const source = document.querySelector('#source')
-    const md = Translator.instance.assembleMarkdown(this._compiledCase)
+    const md = Translator.instance.assembleMarkdown(this._compiledCase, false)
     source.value = md
   }
 
@@ -364,7 +376,8 @@ class AuthorManager {
   async caseMarkdown () {
     const nextState = (this._renderState != 3) ? 3 : 1
     if (nextState == 3) {
-      this._originalMd = Translator.instance.assembleMarkdown(this._compiledCase)
+      this._originalMd = Translator.instance.assembleMarkdown(
+        this._compiledCase, true)
       this._presentEditor(this._originalMd)
     } else {
       await this._checkKnotModification(nextState)
@@ -406,7 +419,7 @@ class AuthorManager {
           Translator.instance.compileKnotMarkdown(this._knots, this._knotSelected)
         }
       }
-    } else 
+    } else
     */
     if (this._renderState === 3) {
       if (this._editor != null) {
@@ -530,6 +543,8 @@ class AuthorManager {
         this._knots[knotid])
       this._renderKnot()
       delete this._elementSelected
+      if (this._comments != null)
+        this._comments.close()
       this._comments = new Comments(this._compiledCase, knotid)
       MessageBus.ext.publish('control/case/ready')
     }
@@ -582,7 +597,7 @@ class AuthorManager {
 
       let markdown = await MessageBus.ext.request('data/template/' +
                               template.replace(/\//g, '.') + '/get')
-      
+
       const templateTitle = Translator.instance.extractKnotTitle(markdown.message)
       let ktitle = templateTitle
 
@@ -636,7 +651,8 @@ class AuthorManager {
       this._compiledCase.knots = newKnotSet
       this._knots = newKnotSet
 
-      const md = Translator.instance.assembleMarkdown(this._compiledCase)
+      const md = Translator.instance.assembleMarkdown(
+        this._compiledCase, true)
       await this._compile(md)
 
       let newSelected = null
@@ -895,7 +911,7 @@ class AuthorManager {
     this._compiledCase.knots = newKnotSet
     this._knots = newKnotSet
 
-    const md = Translator.instance.assembleMarkdown(this._compiledCase)
+    const md = Translator.instance.assembleMarkdown(this._compiledCase, true)
     this._compile(md)
     this._showCase()
 

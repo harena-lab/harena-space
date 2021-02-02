@@ -24,17 +24,6 @@ Enter Feedback.
 
 * Next -> Flow.Next
 
-___ Flow ___
+___ Template ___
 
-* Sequential:
-  * _sequential_
-
-___ Data ___
-
-* theme: simple(yellow)
-* namespaces:
-  * evidence: http://purl.org/versum/evidence/
-* templates:
-  * categories:
-    * input: simple/knot/question_open
-    * detailed: simple/knot/feedback
+* template: simple/case/radio_challenge

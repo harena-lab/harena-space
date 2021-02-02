@@ -143,7 +143,7 @@ class DCCCommonServer {
   }
 
   async loadCase (topic, message) {
-    let caseObj
+    let caseComplete
 
     if (HarenaConfig.local) {
       this._caseScript = document.createElement('script')
@@ -151,10 +151,28 @@ class DCCCommonServer {
       document.head.appendChild(this._caseScript)
       // <TODO> adjust topic
       const caseM = await MessageBus.int.waitMessage('control/case/load/ready')
-      caseObj = caseM.message
+      caseComplete = caseM.message
     } else {
+      // <TODO> the topic service/request/get is extremely fragile -- refactor
+      const caseId = MessageBus.extractLevel(topic, 3)
+      const caseObj = await MessageBus.ext.request(
+        'service/request/get', {caseId: caseId})
+
+      caseComplete = caseObj.message
+      const template =
+        caseComplete.source.
+          match(/^___ Template ___[\n]*\*[ \t]+template[ \t]*:[ \t]*(.+)$/im)
+      if (template != null && template[1] != null) {
+        const templateMd =
+          await MessageBus.ext.request(
+            'data/template/' + template[1].replace(/\//g, '.') +
+              '/get', {static: true})
+        caseComplete.source += templateMd.message
+      }
+      /*
       const caseId = MessageBus.extractLevel(topic, 3)
       if (document.querySelector('#settings-modal') == null) {
+
         const header = {
           async: true,
           crossDomain: true,
@@ -192,12 +210,16 @@ class DCCCommonServer {
             .replace(/\\"/gm, '"')
         }
       }
+      */
     }
 
     // console.log('====================Case object');
     // console.log(caseObj);
 
-    MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message), caseObj)
+    console.log('=== case complete')
+    console.log(caseComplete)
+    MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
+                           caseComplete)
   }
 
   async themeFamilySettings (topic, message) {

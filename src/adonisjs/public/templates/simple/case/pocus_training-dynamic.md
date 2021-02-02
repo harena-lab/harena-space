@@ -2,9 +2,9 @@
 
 **Patient Data**
 
-* **Age:** 
+* **Age:**
 
-* **Gender:** 
+* **Gender:**
 
 {{history
 **History**
@@ -27,6 +27,10 @@ Write here the **POCUS questions**.
 
 * Next -> Flow.Next
 
+{{comments
+* template: simple/knot/pt_presentation
+}}
+
 # Conclusion (detailed)
 
 {{conclusion
@@ -35,6 +39,10 @@ Write here the **POCUS questions**.
 Write here about your **conclusion**.
 }}
 
+{{comments
+* template: simple/knot/pt_conclusion
+}}
+
 ___ Template ___
 
-* Template: simple/pocus_training
+* template: simple/case/pocus_training

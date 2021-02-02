@@ -114,6 +114,11 @@
       subtype: '*',
       label: 'Button',
       target: 'Target'
+    },
+    field: {
+      type: 'field',
+      field: 'name',
+      value: 'content'
     }
   }
 })()

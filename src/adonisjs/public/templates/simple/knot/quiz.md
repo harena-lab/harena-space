@@ -1,4 +1,4 @@
-# _Knot_Name_ (quiz)
+# Quiz_knot_number_ (quiz)
 
 Write here the **stem** of your question.
 

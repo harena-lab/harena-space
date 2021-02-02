@@ -4,11 +4,13 @@
  * Manages comments for each knot in a case.
  */
 
+/*
 function _harenaCustomUploadAdapterPluginComments( editor ) {
     editor.plugins.get( 'FileRepository' ).createUploadAdapter = ( loader ) => {
         return new HarenaUploadAdapter(loader, Basic.service.currentCaseId, DCCCommonServer.token);
     };
 }
+*/
 
 class Comments {
   constructor (compiledCase, knotid) {
@@ -18,7 +20,47 @@ class Comments {
     MessageBus.int.subscribe('control/comments/editor', this.activateComments)
   }
 
-  activateComments () {
+  async activateComments () {
+    let content = this._compiledCase.knots[this._knotid].content
+
+    const comments =
+      content.findIndex(
+        el => el.type == 'context-open' && el.context == 'comments')
+
+    if (comments != -1) {
+      this._template = -1
+      for (let c = comments+1;
+           c < content.length && content[c].type != 'context-close'; c++) {
+        if (content[c].type == 'field' && content[c].field == 'template') {
+          this._template = c
+          break
+        }
+      }
+      if (this._template != -1) {
+        const tmpl = await MessageBus.ext.request(
+          'data/template_comments/' +
+          content[this._template].value.replace(/\//g, '.') + '/get')
+        const form = '<dcc-dhtml><form>' + tmpl.message +
+                     '<dcc-submit label="COMMENT" xstyle="in" topic="control/comments/edit/confirm"></dcc-submit>' +
+                     '</form><end-dcc></end-dcc></dcc-dhtml>'
+        document.querySelector('#comments-display').innerHTML = form
+
+        this._comments = -1
+        for (let c = this._template+1;
+             c < content.length && content[c].type != 'context-close'; c++) {
+          if (content[c].type == 'field' && content[c].field == 'comments') {
+            this._comments = c
+            break
+          }
+        }
+      }
+    }
+
+    this.commentsConfirm = this.commentsConfirm.bind(this)
+    MessageBus.ext.subscribe('control/comments/edit/confirm',
+                             this.commentsConfirm)
+
+    /*
     let cKnot = -1
     if (this._compiledCase != null && this._compiledCase.layers.Comments != null) {
       const comments = this._compiledCase.layers.Comments.content
@@ -39,7 +81,7 @@ class Comments {
           cKnot++
         }
         this._knotPos = cKnot
-        document.querySelector('#comments-display').innerHTML = html
+        // document.querySelector('#comments-display').innerHTML = html
       }
     }
 
@@ -56,7 +98,7 @@ class Comments {
         mediaEmbed: {
           extraProviders: [{
              name: 'extraProvider',
-             url: /(^https:\/\/drive.google.com[\w/]*\/[^/]+\/)[^/]*/,
+             url: / /,
              html: match => '<iframe src="' + match[1] + 'preview" width="560" height="315"></iframe>'
            }]
          },
@@ -77,9 +119,34 @@ class Comments {
       .catch( error => {
         console.error( 'There was a problem initializing the editor.', error );
     } );
+    */
   }
 
-  commentsConfirm() {
+  commentsConfirm(topic, message) {
+    let content = this._compiledCase.knots[this._knotid].content
+    let commentElement
+    if (this._comments > -1) {
+      commentElement = content[this._comments]
+      commentElement.value = message.value
+    } else {
+      commentElement = Translator.objTemplates.field
+      commentElement.field = 'comments'
+      commentElement.value = message.value
+      let seq = content[this._template].seq + 1
+      commentElement.seq = content[this._template].seq + 1
+      content.splice(this._template + 1, 0, commentElement)
+      for (let c = this._template+2; c < content.length; c++) {
+        seq++
+        content[c].seq = seq
+      }
+      this._comments = this._template + 1
+    }
+    Translator.instance.updateElementMarkdown(commentElement)
+
+    console.log('=== Comment ok')
+    console.log(content)
+
+    /*
     let comments = this._compiledCase.layers.Comments.content
     let seq = comments[this._knotPos].seq
     let linefeed1 = {
@@ -89,7 +156,7 @@ class Comments {
     }
     comments.splice(this._knotPos, 0, linefeed1)
     Translator.instance.updateElementMarkdown(linefeed1)
-    
+
     const text = {
       type: 'text',
       content: this._editor.getData(),
@@ -114,9 +181,12 @@ class Comments {
 
     console.log('*** NEW LAYER ***')
     console.log(this._compiledCase.layers.Comments.content)
+    */
   }
 
-  commentsCancel () {
-
+  close() {
+    MessageBus.int.unsubscribe('control/comments/editor', this.activateComments)
+    MessageBus.ext.unsubscribe('control/comments/edit/confirm',
+                               this.commentsConfirm)
   }
 }

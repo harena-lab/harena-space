@@ -29,6 +29,7 @@ class TemplateToCase {
 
           // load template
           */
+          /*
           const templateRequest = {
             method: 'GET',
             url: '/templates/' +
@@ -44,6 +45,13 @@ class TemplateToCase {
               console.log(error)
               console.log(error.code)
             })
+          */
+
+          const templateMd =
+            await MessageBus.ext.request(
+              'data/template/' + params.get('template').replace(/\//g, '.') +
+                '/get', {static: false})
+          let markdown = templateMd.message
 
           if (markdown != null) {
             const config = {
