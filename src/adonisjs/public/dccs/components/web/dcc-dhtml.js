@@ -63,19 +63,35 @@ class DCCDHTML extends DCCBase {
       if (record[r] != null && typeof record[r] === 'object')
         html = this._replaceFields(html, pr, record[r])
       else {
-        if(typeof record[r] === 'number') record[r] = record[r].toString()
-        // console.log(typeof record[r]);
-        // console.log(record[r]);
+        if (typeof record[r] === 'number') record[r] = record[r].toString()
         const content = (record[r] == null) ? '' :
                           record[r].replace(/&/gm, '&amp;')
                                    .replace(/"/gm, '&quot;')
                                    .replace(/'/gm, '&#39;')
                                    .replace(/</gm, '&lt;')
                                    .replace(/>/gm, '&gt;')
-        html = html.replace(new RegExp('\{\{[ \t]*' + pr + '[ \t]*\}\}', 'igm'), content)
+        html = html.replace(
+          new RegExp('\{\{[ \\t]*' + pr + '[ \\t]*\}\}', 'igm'), content)
+
+        let condExp = '\{\{[ \\t]*([^?\}]+)[ \\t]*\\?[ \\t]*' + pr +
+                      '[ \\t]*:[ \\t]*([^\}]+)[ \\t]*\}\}(?:="")?'
+        let conditions = html.match(new RegExp(condExp, 'igm'))
+        console.log('=== all matches')
+        console.log(html)
+        console.log(condExp)
+        console.log(conditions)
+        if (conditions != null)
+          for (let c of conditions) {
+            let inside = c.match(new RegExp(condExp, 'im'))
+            html = html.replace(
+              new RegExp('\{\{[ \\t]*' + inside[1] + '[ \\t]*\\?[ \\t]*' + pr +
+                         '[ \\t]*:[ \\t]*' + inside[2] + '[ \\t]*\}\}(?:="")?',
+                         'igm'),
+              ((inside[2] == '' + content) ? inside[1] : '')
+            )
+          }
       }
     }
-    // console.log('replace fields');
     return html
   }
 

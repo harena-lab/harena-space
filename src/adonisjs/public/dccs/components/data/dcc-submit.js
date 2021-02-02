@@ -35,8 +35,13 @@ class DCCSubmit extends DCCButton {
           form = form.parentNode
         message.value = {}
         if (form != null)
-          for (let f of form)
-            message.value[f.id] = f.value
+          for (let f of form) {
+            if (f.type == 'radio' || f.type == 'checkbox') {
+              if (f.checked)
+                message.value[f.id] = f.value
+            } else
+              message.value[f.id] = f.value
+          }
       }
       if (this._checkPre(message, form)) {
           if (this._connections != null) {

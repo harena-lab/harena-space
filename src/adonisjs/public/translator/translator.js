@@ -1657,12 +1657,16 @@ class Translator {
             !!((matchArray[1][0] === '\t' || matchArray[1].length > 1)),
       field: matchArray[2].trim()
     }
-    if (matchArray[3] != null) { field.value = matchArray[3].trim() }
+    if (matchArray[3] != null) {
+      field.value = matchArray[3].trim()
+    } else if (matchArray[4] != null) {
+      field.value = matchArray[4].trim()
+    }
     if (Translator.fieldSet.includes(field.field) && field.value) {
       field.value = field.value.split(',')
       for (const fv in field.value) { field.value[fv] = field.value[fv].trim() }
     }
-    if (matchArray[4] != null) { field.target = matchArray[4].trim() }
+    if (matchArray[5] != null) { field.target = matchArray[5].trim() }
     if (field.subordinate) { field.level = this._computeLevel(matchArray[1]) }
     return field
   }
@@ -1704,7 +1708,7 @@ class Translator {
       if (typeof fields[f] === 'object')
         md += '\n' + this._visitFields(fields[f], level+2)
       else if (typeof fields[f] === 'string')
-        md += '"' + fields[f].replace(/"/gm, '\\"') + '"\n'
+        md += "'" + fields[f].replace(/'/gm, '"') + "'\n"
       else md += fields[f] + '\n'
     }
     return md
@@ -2265,7 +2269,7 @@ class Translator {
       inline: true
     },
     field: {
-      mark: /^([ \t]*)(?:[\+\*])[ \t]+([\w.\/\?&#\-][\w.\/\?&#\- \t]*):[ \t]*([^&>\n\r\f"][^&>\n\r\f]*)?("[^"]*")?(?:-(?:(?:&gt;)|>)[ \t]*([^\(\n\r\f]+))?$/im,
+      mark: /^([ \t]*)(?:[\+\*])[ \t]+([\w.\/\?&#\-][\w.\/\?&#\- \t]*):[ \t]*([^&>\n\r\f'][^&>\n\r\f]*)?(?:'([^']*)')?(?:-(?:(?:&gt;)|>)[ \t]*([^\(\n\r\f]+))?$/im,
       subfield: true,
       subimage: true,
       subtext: 'value'

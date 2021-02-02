@@ -40,7 +40,7 @@ class Comments {
         const tmpl = await MessageBus.ext.request(
           'data/template_comments/' +
           content[this._template].value.replace(/\//g, '.') + '/get')
-        const form = '<dcc-dhtml><form>' + tmpl.message +
+        const form = '<dcc-dhtml subscribe="data/comments/get:update"><form>' + tmpl.message +
                      '<dcc-submit label="COMMENT" xstyle="in" topic="control/comments/edit/confirm"></dcc-submit>' +
                      '</form><end-dcc></end-dcc></dcc-dhtml>'
         document.querySelector('#comments-display').innerHTML = form
@@ -50,6 +50,9 @@ class Comments {
              c < content.length && content[c].type != 'context-close'; c++) {
           if (content[c].type == 'field' && content[c].field == 'comments') {
             this._comments = c
+            console.log('=== publishing')
+            console.log(content[c].value)
+            MessageBus.ext.publish('data/comments/get', content[c].value)
             break
           }
         }
