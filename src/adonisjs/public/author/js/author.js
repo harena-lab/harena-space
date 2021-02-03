@@ -355,6 +355,7 @@ class AuthorManager {
   async caseSave () {
     document.getElementById('btn-save-draft').innerHTML = 'SAVING...'
     await Properties.s.closePreviousProperties()
+    await this._updateActiveComments()
     if (Basic.service.currentCaseId != null && this._compiledCase != null) {
       this._checkKnotModification(this._renderState)
 
@@ -560,17 +561,19 @@ class AuthorManager {
         this._knots[knotid])
       this._renderKnot()
       delete this._elementSelected
-      if (this._comments != null) {
-        if (this._comments.activated)
-          await MessageBus.ext.request('control/comments/submit')
-        this._comments.close()
-      }
+      await this._updateActiveComments()
       this._comments = new Comments(this._compiledCase, knotid)
-      console.log('=== comments visible')
-      console.log(Panels.s.commentsVisible)
       if (Panels.s.commentsVisible)
         this._comments.activateComments()
       MessageBus.ext.publish('control/case/ready')
+    }
+  }
+
+  async _updateActiveComments() {
+    if (this._comments != null) {
+      if (this._comments.activated)
+        await MessageBus.ext.request('control/comments/submit')
+      this._comments.close()
     }
   }
 
