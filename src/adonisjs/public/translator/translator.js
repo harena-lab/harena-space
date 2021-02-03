@@ -1168,13 +1168,19 @@ class Translator {
     }
 
     // <TODO> provisory
-    const dynamicLayers = ['Template', 'Comments']
+    if (compiledCase.layers) {
+      const dynamicLayers = ['Template', 'Comments']
 
-    for (const l in compiledCase.layers) {
-      if (includeStatic || dynamicLayers.includes(l))
-        md += Translator.markdownTemplates.layer.replace('[title]', l) +
-                 compiledCase.layers[l]._source
+      const includeAllLayers =
+        includeStatic || !Object.keys(compiledCase.layers).includes('Template')
+
+      for (const l in compiledCase.layers) {
+        if (includeAllLayers || dynamicLayers.includes(l))
+          md += Translator.markdownTemplates.layer.replace('[title]', l) +
+                   compiledCase.layers[l]._source
+      }
     }
+
     return md
   }
 
