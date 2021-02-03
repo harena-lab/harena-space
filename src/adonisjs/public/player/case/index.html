@@ -102,27 +102,28 @@
 
 </head>
   <body onload="PlayerManager.player.startPlayer()">
-  <div class="d-flex flex-column vh-100 vw-100 hidden-overflow">
-    <dcc-rest id="harena-case" bind="harena-case" subscribe="service/request/get:retrieve"></dcc-rest>
-    <div class="mr-auto author-breadcrumb" id="preview-panel">
-    <!-- <div class="sty-preview-panel" id="preview-panel"> -->
-      <nav aria-label="breadcrumb">
-        <ol id="breadcrumb-group" class="breadcrumb">
-          <li class="breadcrumb-item"><a href="/">Welcome</a></li>
-          <li class="breadcrumb-item"><a href="/player/home/category">Categories</a></li>
-          <li id="case-list-breadcrumb" class="breadcrumb-item">
-            <a href="javascript:history.back()">Case List</a>
-          </li>
-          <li id="current-breadcrumb" class="breadcrumb-item active" aria-current="page">Current Case</li>
-        </ol>
-      </nav>
-    </div>
+  <!-- <div class="d-flex flex-column vh-100 vw-100 hidden-overflow"> -->
+
     <main role="main">
-      <div id="main-panel" class="d-flex flex-column pt-5 vh-100 vw-100 scroll-y index-boot-padding">
-        <div id="player-panel" style="border-color: #004270; border-radius: 9px;	border-style: solid;	border-width: 13px;	border-bottom-width: 100px">
+      <div id="main-panel" class="d-flex flex-column vh-100 vw-100 scroll-y index-boot-padding">
+        <dcc-rest id="harena-case" bind="harena-case" subscribe="service/request/get:retrieve"></dcc-rest>
+        <div class="mr-auto author-breadcrumb" id="preview-panel">
+        <!-- <div class="sty-preview-panel" id="preview-panel"> -->
+          <nav aria-label="breadcrumb">
+            <ol id="breadcrumb-group" class="breadcrumb">
+              <li class="breadcrumb-item"><a href="/">Welcome</a></li>
+              <li class="breadcrumb-item"><a href="/player/home/category">Categories</a></li>
+              <li id="case-list-breadcrumb" class="breadcrumb-item">
+                <a href="javascript:history.back()">Case List</a>
+              </li>
+              <li id="current-breadcrumb" class="breadcrumb-item active" aria-current="page">Current Case</li>
+            </ol>
+          </nav>
+        </div>
+        <div id="player-panel" style="border-color: #004270; border-radius: 9px;	border-style: solid;	border-width: 13px;	border-bottom-width: 30px">
         </div>
       </div>
     </main>
-  </div>
+  <!-- </div> -->
 </body>
 </html>
