@@ -1,0 +1,36 @@
+<label for="details"><h3>Comments</h3></label>
+<textarea class="form-control" id="details" name="details" placeholder="Enter the comments">
+{{details}}
+</textarea>
+
+<h3>Video Subxifóide ou subcostal</h3>
+<h4>Gain</h4>
+<input type="radio" id="video_sub_gain"
+       name="video_sub_gain" value="1" {{checked?video_sub_gain:1}}>
+<label for="video_sub_gain">1. little</label>
+<input type="radio" id="video_sub_gain"
+       name="video_sub_gain" value="2" {{checked?video_sub_gain:2}}>
+<label for="video_sub_gain">2. excessive</label>
+<input type="radio" id="video_sub_gain"
+       name="video_sub_gain" value="3" {{checked?video_sub_gain:3}}>
+<label for="video_sub_gain">3. appropriate</label>
+<h4>Depth</h4>
+<input type="radio" id="video_sub_depth"
+       name="video_sub_depth" value="1" {{checked?video_sub_depth:1}}>
+<label for="video_sub_depth">1. little</label>
+<input type="radio" id="video_sub_depth"
+       name="video_sub_depth" value="2" {{checked?video_sub_depth:2}}>
+<label for="video_sub_depth">2. excessive</label>
+<input type="radio" id="video_sub_depth"
+       name="video_sub_depth" value="3" {{checked?video_sub_depth:3}}>
+<label for="video_sub_depth">3. appropriate</label>
+<h4>Anatomical References</h4>
+<input type="radio" id="video_sub_anatomical"
+       name="video_sub_anatomical" value="1" {{checked?video_sub_anatomical:1}}>
+<label for="video_sub_anatomical">1. absent</label>
+<input type="radio" id="video_sub_anatomical"
+       name="video_sub_anatomical" value="2" {{checked?video_sub_anatomical:2}}>
+<label for="video_sub_anatomical">2. partially present</label>
+<input type="radio" id="video_sub_anatomical"
+       name="video_sub_anatomical" value="3" {{checked?video_sub_anatomical:3}}>
+<label for="video_sub_anatomical">3. present</label>
