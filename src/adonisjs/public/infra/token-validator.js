@@ -29,6 +29,9 @@ class TokenController {
 
         await axios(config)
           .then(function (endpointResponse) {
+            sessionStorage.setItem('harena-user-grade', endpointResponse.data.grade)
+            sessionStorage.setItem('harena-user-institution', endpointResponse.data.institution)
+
             TokenController.instance.changeHeaderButtons(endpointResponse.data)
           })
           .catch(function (error) {
@@ -99,6 +102,9 @@ class TokenController {
       .then(function (endpointResponse) {
         if(endpointResponse.data.token === 'token valid'){
           TokenController.instance.tokenChecked = true
+          sessionStorage.setItem('harena-user-grade', endpointResponse.data.grade)
+          sessionStorage.setItem('harena-user-institution', endpointResponse.data.institution)
+
           TokenController.instance.changeHeaderButtons(endpointResponse.data)
         } else{
           window.location.href = '/user'

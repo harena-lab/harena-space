@@ -109,7 +109,7 @@ class AuthorManager {
     this._navigationPanel = document.querySelector('#navigation-panel')
     this._knotPanel = document.querySelector('#knot-panel')
     this._messageSpace = document.querySelector('#message-space')
-
+    this.authorizeCommentSection()
     // this._userid = await Basic.service.signin();
 
     /*
@@ -136,6 +136,21 @@ class AuthorManager {
       */
     $('#settings-modal').on('shown.bs.modal', this.updateSourceField)
     // this.caseLoadSelect();
+  }
+
+  async authorizeCommentSection(){
+    // console.log('============')
+    // console.log(sessionStorage.getItem('harena-user-grade'))
+    if(sessionStorage.getItem('harena-user-grade') !== 'professor'){
+      let disabledFieldSet = document.createElement('fieldset')
+      disabledFieldSet.setAttribute('disabled','true')
+      let commentsBlock = document.querySelector('#comments-block')
+      commentsBlock.setAttribute('data-toggle','tooltip')
+      commentsBlock.setAttribute('data-placement','top')
+      commentsBlock.setAttribute('title','Comments are "view-only" for students.')
+      document.querySelector('#elements-block').insertBefore(disabledFieldSet,commentsBlock)
+      disabledFieldSet.appendChild(commentsBlock)
+    }
   }
 
   /*

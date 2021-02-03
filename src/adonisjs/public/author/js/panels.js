@@ -125,7 +125,7 @@ class Panels {
   setupCommentsExpand () {
     this.setupPropertiesPanelExpand()
     document.querySelector('#properties-block').style.display = 'none'
-    document.querySelector('#comments-block').style.display = 'initial'
+    document.querySelector('#comments-block').style.display = 'block'
     MessageBus.int.publish('control/comments/editor')
   }
 
