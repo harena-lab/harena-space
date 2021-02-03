@@ -12,6 +12,7 @@ class Panels {
   constructor () {
     this._knotPanelSize = 75
     this._propertiesVisible = false
+    this._commentsVisible = false
 
     this._systemPanel = document.querySelector('#system-panel')
     this._toolbarPanel = document.querySelector('#toolbar-panel')
@@ -41,6 +42,10 @@ class Panels {
     this.setupCommentsExpand = this.setupCommentsExpand.bind(this)
     MessageBus.ext.subscribe('control/comments/expand',
       this.setupCommentsExpand)
+  }
+
+  get commentsVisible () {
+    return this._commentsVisible
   }
 
   _setupKnotHeight () {
@@ -102,6 +107,7 @@ class Panels {
     this._knotMain.classList.remove('w-' + this._knotPanelSize)
     this._knotPanelSize += 25
     this._knotMain.classList.add('w-' + this._knotPanelSize)
+    this._commentsVisible = false
   }
 
   setupPropertiesPanelExpand () {
@@ -120,11 +126,13 @@ class Panels {
     this.setupPropertiesPanelExpand()
     document.querySelector('#properties-block').style.display = 'initial'
     document.querySelector('#comments-block').style.display = 'none'
+    this._commentsVisible = false
   }
 
   setupCommentsExpand () {
     this.setupPropertiesPanelExpand()
     document.querySelector('#properties-block').style.display = 'none'
+    this._commentsVisible = true
     document.querySelector('#comments-block').style.display = 'block'
     MessageBus.int.publish('control/comments/editor')
   }

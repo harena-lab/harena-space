@@ -3,12 +3,35 @@
  */
 
 class DCCSubmit extends DCCButton {
+  connectedCallback () {
+    super.connectedCallback()
+    if (this.hasAttribute('id')) {
+      this.computeSubmit = this.computeSubmit.bind(this)
+      MessageBus.page.provides(this.id, 'control/submit',
+                               this.computeSubmit)
+    }
+  }
+
   async connectTo (trigger, id, topic) {
     super.connectTo(trigger, id, topic)
     if (trigger == 'schema') {
       const result = await this.request(trigger, null, id)
       if (result != null && result[id] != null)
         this._schema = result[id]
+    }
+  }
+
+  async computeSubmit () {
+    this._active = true
+    await this._computeTrigger()
+  }
+
+  async notify (topic, message) {
+    // super.notify(topic, message)
+    if (message.role != null && message.role == 'submit') {
+      await this.computeSubmit()
+      MessageBus.ext.publish(
+        MessageBus.buildResponseTopic(topic, message.body))
     }
   }
 

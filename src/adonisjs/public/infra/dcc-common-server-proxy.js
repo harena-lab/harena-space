@@ -216,8 +216,8 @@ class DCCCommonServer {
     // console.log('====================Case object');
     // console.log(caseObj);
 
-    console.log('=== case complete')
-    console.log(caseComplete)
+    // console.log('=== case complete')
+    // console.log(caseComplete)
     MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
                            caseComplete)
   }

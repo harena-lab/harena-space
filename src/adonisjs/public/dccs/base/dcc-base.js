@@ -20,6 +20,15 @@ class DCCBase extends HTMLElement {
     }
   }
 
+  disconnectedCallback () {
+    if (this._substopic != null) {
+      if (this._subsrole != null)
+        MessageBus.ext.unsubscribe(this._substopic, this.toNotify)
+      else
+        MessageBus.ext.unsubscribe(this._substopic, this.notify)
+    }
+  }
+
   static get observedAttributes () {
     return ['id', 'role', 'author', 'bind', 'subscribe', 'connect']
   }
@@ -74,10 +83,13 @@ class DCCBase extends HTMLElement {
   _subscribeTopic (topicRole) {
     const colon = topicRole.lastIndexOf(':')
     if (colon != -1) {
+      this._substopic = topicRole.substring(0, colon)
       this._subsrole = topicRole.substring(colon + 1)
-      MessageBus.ext.subscribe(topicRole.substring(0, colon), this.toNotify)
-    } else
+      MessageBus.ext.subscribe(this._substopic, this.toNotify)
+    } else {
+      this._substopic = topicRole
       MessageBus.ext.subscribe(topicRole, this.notify)
+    }
   }
 
   toNotify (topic, message) {

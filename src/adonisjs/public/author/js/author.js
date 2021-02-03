@@ -488,6 +488,8 @@ class AuthorManager {
     // let knotid = MessageBus.extractLevel(topic, 3);
     const knotid =
          (message == null || message === '') ? this._knotSelected : message
+    console.log('=== knot selected')
+    console.log(knotid)
     if (knotid != null) {
       /*
          console.log("=== miniatureF");
@@ -558,9 +560,16 @@ class AuthorManager {
         this._knots[knotid])
       this._renderKnot()
       delete this._elementSelected
-      if (this._comments != null)
+      if (this._comments != null) {
+        if (this._comments.activated)
+          await MessageBus.ext.request('control/comments/submit')
         this._comments.close()
+      }
       this._comments = new Comments(this._compiledCase, knotid)
+      console.log('=== comments visible')
+      console.log(Panels.s.commentsVisible)
+      if (Panels.s.commentsVisible)
+        this._comments.activateComments()
       MessageBus.ext.publish('control/case/ready')
     }
   }
@@ -854,7 +863,8 @@ class AuthorManager {
   elementNew (topic, message) {
     const elementType = MessageBus.extractLevel(topic, 3)
     const newElement = (message == null)
-      ? Translator.objTemplates[elementType] : message
+      ? JSON.parse(JSON.stringify(Translator.objTemplates[elementType]))
+      : message
     newElement.seq = this._knots[this._knotSelected].content[
       this._knots[this._knotSelected].content.length - 1].seq + 1
     this._knots[this._knotSelected].content.push(newElement)

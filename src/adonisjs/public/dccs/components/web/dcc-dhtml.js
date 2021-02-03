@@ -76,10 +76,6 @@ class DCCDHTML extends DCCBase {
         let condExp = '\{\{[ \\t]*([^?\}]+)[ \\t]*\\?[ \\t]*' + pr +
                       '[ \\t]*:[ \\t]*([^\}]+)[ \\t]*\}\}(?:="")?'
         let conditions = html.match(new RegExp(condExp, 'igm'))
-        console.log('=== all matches')
-        console.log(html)
-        console.log(condExp)
-        console.log(conditions)
         if (conditions != null)
           for (let c of conditions) {
             let inside = c.match(new RegExp(condExp, 'im'))

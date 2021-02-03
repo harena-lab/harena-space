@@ -16,11 +16,19 @@ class Comments {
   constructor (compiledCase, knotid) {
     this._compiledCase = compiledCase
     this._knotid = knotid
+    this._activated = false
     this.activateComments = this.activateComments.bind(this)
     MessageBus.int.subscribe('control/comments/editor', this.activateComments)
   }
 
+  get activated() {
+    return this._activated
+  }
+
   async activateComments () {
+    console.log('************* activate comments')
+    this._activated = true
+
     let content = this._compiledCase.knots[this._knotid].content
 
     const comments =
@@ -40,9 +48,9 @@ class Comments {
         const tmpl = await MessageBus.ext.request(
           'data/template_comments/' +
           content[this._template].value.replace(/\//g, '.') + '/get')
-        const form = '<dcc-dhtml subscribe="data/comments/get:update"><form>' + tmpl.message +
-                     '<dcc-submit label="COMMENT" xstyle="in" topic="control/comments/edit/confirm"></dcc-submit>' +
-                     '</form><end-dcc></end-dcc></dcc-dhtml>'
+        const form = '<form><dcc-dhtml subscribe="data/comments/get:update">' + tmpl.message +
+                     '<end-dcc></end-dcc></dcc-dhtml>' +
+                     '<dcc-submit label="COMMENT" xstyle="in" subscribe="control/comments/submit:submit" topic="control/comments/edit/confirm" display="none"></dcc-submit></form>'
         document.querySelector('#comments-display').innerHTML = form
 
         this._comments = -1
@@ -128,15 +136,20 @@ class Comments {
   commentsConfirm(topic, message) {
     let content = this._compiledCase.knots[this._knotid].content
     let commentElement
+    for (let v in message.value)
+      if (typeof message.value[v] === 'string')
+        message.value[v] = message.value[v].trim()
     if (this._comments > -1) {
       commentElement = content[this._comments]
       commentElement.value = message.value
     } else {
-      commentElement = Translator.objTemplates.field
+      commentElement = JSON.parse(JSON.stringify(Translator.objTemplates.field))
       commentElement.field = 'comments'
       commentElement.value = message.value
       let seq = content[this._template].seq + 1
       commentElement.seq = content[this._template].seq + 1
+      console.log('=== comments template')
+      console.log(commentElement)
       content.splice(this._template + 1, 0, commentElement)
       for (let c = this._template+2; c < content.length; c++) {
         seq++
@@ -145,9 +158,6 @@ class Comments {
       this._comments = this._template + 1
     }
     Translator.instance.updateElementMarkdown(commentElement)
-
-    console.log('=== Comment ok')
-    console.log(content)
 
     /*
     let comments = this._compiledCase.layers.Comments.content
@@ -188,8 +198,10 @@ class Comments {
   }
 
   close() {
+    console.log('*** unsubscribed')
     MessageBus.int.unsubscribe('control/comments/editor', this.activateComments)
-    MessageBus.ext.unsubscribe('control/comments/edit/confirm',
-                               this.commentsConfirm)
+    if (this._activated)
+      MessageBus.ext.unsubscribe('control/comments/edit/confirm',
+                                 this.commentsConfirm)
   }
 }

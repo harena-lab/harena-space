@@ -665,7 +665,7 @@ class Translator {
       // manages elements subordinated to the knot
       else if ((c == 0 || (c == 1 && compiled[c - 1].type == 'linefeed')) &&
                   compiled[c].subordinate && compiled[c].type == 'image') {
-        console.log('=== image back')
+        // console.log('=== image back')
         unity.background = {
           alternative: compiled[c].alternative,
           path: compiled[c].path
@@ -1190,8 +1190,10 @@ class Translator {
       case 'text': element._source = this._textObjToMd(element)
         break
       case 'text-block':
+        /*
         console.log('=== update markdown text block')
         console.log(element)
+        */
         element._source = ''
         for (const sub of element.content) {
           this.updateElementMarkdown(sub)
@@ -1628,8 +1630,10 @@ class Translator {
       .replace(
         '[show]', (this._conditionNext == obj.seq) ? ' display="none"' : '')
 
+      /*
       console.log('=== button')
       console.log(option)
+      */
 
       if (this._conditionNext == obj.seq)
         this._conditionNext = -1

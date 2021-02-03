@@ -16,6 +16,15 @@ class SubscribeDCC extends HTMLElement {
     }
   }
 
+  /*
+  disconnectedCallback () {
+    if (!this.hasAttribute('role')) {
+      MessageBus.ext.unsubscribe(this.topic, this._targetObj.notify) }
+    else {
+      MessageBus.ext.unsubscribe(this.topic, this.publishWithRole) }
+  }
+  */
+
   publishWithRole (topic, message) {
     console.log('=== target publish with role')
     console.log(this._targetObj)
