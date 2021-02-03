@@ -10,9 +10,6 @@ class DCCCompute extends DCCBase {
 
     this.update = this.update.bind(this)
 
-    if (this.hasAttribute('id'))
-      MessageBus.page.provides(this.id, 'compute/update', this.update)
-
     this._compiled = null
     if (this.hasAttribute('expression')) {
       this._compiled =
@@ -27,6 +24,9 @@ class DCCCompute extends DCCBase {
             MessageBus.ext.subscribe('var/' + v + '/set', this.update)
         }
     }
+
+    if (this.hasAttribute('id'))
+      MessageBus.page.provides(this.id, 'compute/update', this.update)
   }
 
   /*
@@ -79,6 +79,14 @@ class DCCCompute extends DCCBase {
       await this.multiRequest('true', null)
     else
       await this.multiRequest('false', null)
+  }
+
+  async connectionReady (id, topic) {
+    console.log('=== connection ready')
+    console.log(this._compiled)
+    super.connectionReady (id, topic)
+    if (this._compiled != null)
+      this.update()
   }
 
   /*

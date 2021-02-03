@@ -249,6 +249,7 @@ class Translator {
     let mdfocus = unity._source
 
     this._objSequence = 0
+    this._conditionNext = -1
 
     let matchStart
     do {
@@ -1605,7 +1606,7 @@ class Translator {
       if (lastDot > -1) { label = label.substr(lastDot + 1) }
     }
 
-    return Translator.htmlTemplates.option
+    const option = Translator.htmlTemplates.option
       .replace('[seq]', obj.seq)
       .replace('[author]', this.authorAttr)
       .replace('[target]', this._transformNavigationMessage(obj.contextTarget))
@@ -1624,6 +1625,16 @@ class Translator {
            Translator.htmlSubTemplates.compute.component
              .replace('[seq]', obj.seq)
              .replace('[expression]', obj.compute))
+      .replace(
+        '[show]', (this._conditionNext == obj.seq) ? ' display="none"' : '')
+
+      console.log('=== button')
+      console.log(option)
+
+      if (this._conditionNext == obj.seq)
+        this._conditionNext = -1
+
+      return option
   }
 
   _transformNavigationMessage (target) {
@@ -2008,6 +2019,11 @@ class Translator {
       .replace('[variable]', obj.variable)
       .replace('[statement]', statement)
       .replace('[extra]', extraAttr)
+      .replace(
+        '[show]', (this._conditionNext == obj.seq) ? ' display="none"' : '')
+
+    if (this._conditionNext == obj.seq)
+      this._conditionNext = -1
 
     if (obj.subtype == 'group select') {
       // <TODO> weak strategy -- improve
@@ -2134,15 +2150,30 @@ class Translator {
     * Compute Obj to HTML
     */
   _computeObjToHTML (obj) {
-    /*
-    const variable = (obj.variable != null)
-      ? obj.variable : Translator.defaultVariable
+    let compute
+    if (obj.conditional) {
+      const timer = obj.expression.match(/timer[ \t]*=[ \t]*(\d+)/im)
+      if (timer != null && timer[1]) {
+        compute = Translator.htmlTemplates.timer
+          .replace('[cycles]', timer[1])
+          .replace(/\[to\]/igm, (obj.seq+1))
+      } else {
+        compute = Translator.htmlTemplates.compute
+          .replace('[expression]', obj.expression)
+          .replace('[connect]', ' connect="true:dcc' + (obj.seq+1) +
+                   ':style/display/initial"')
+        compute += Translator.htmlTemplates.compute
+          .replace('[expression]', obj.expression)
+          .replace('[connect]', ' connect="false:dcc' + (obj.seq+1) +
+                   ':style/display/none"')
+      }
+      this._conditionNext = obj.seq + 1
+    } else
+      compute = Translator.htmlTemplates.compute
+                  .replace('[expression]', obj.expression)
+                  .replace('[connect]', '')
 
-    const instruction = variable + obj.operator + obj.value
-    */
-
-    return Translator.htmlTemplates.compute
-      .replace('[expression]', obj.expression)
+    return compute
   }
 
   /*

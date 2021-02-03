@@ -29,7 +29,7 @@
     image:
 '<figure class="image[imgresized]"[resize]><img src="[path]"[alt]>[caption]</figure>',
     option:
-'<dcc-button id=\'dcc[seq]\'[author] topic=\'[target]\' label=\'[display]\'[divert][message][image][connect]></dcc-button>[compute]',
+'<dcc-button id=\'dcc[seq]\'[author] topic=\'[target]\' label=\'[display]\'[divert][message][image][connect][show]></dcc-button>[compute]',
     divert:
 '<dcc-button id=\'dcc[seq]\'[author] topic=\'[target]\' label=\'[display]\' divert=\'[divert]\' location=\'#in\' inline></dcc-button>',
     'divert-script':
@@ -39,25 +39,31 @@
     mention:
 '<b>[entity]: </b>',
     input:
-'<dcc-[dcc] id=\'dcc[seq]\'[author][extra]>[statement]</dcc-[dcc]>',
+'<dcc-[dcc] id=\'dcc[seq]\'[author][extra][show]>[statement]</dcc-[dcc]>',
     choice:
 '<dcc-input-option [target]value="[value]"[compute]>[option]</dcc-input-option><br>',
     output:
 '<dcc-expression id=\'dcc[seq]\'[author] expression=\'[variable][index]\'[variant] active></dcc-expression>',
     compute:
-'<dcc-compute expression=\'[expression]\' onload></dcc-compute>',
+'<dcc-compute expression=\'[expression]\'[connect] onload></dcc-compute>',
+    timer:
+`<dcc-timer cycles="[cycles]" interval="1000" autostart>
+  <connect-dcc trigger="begin" to="dcc[to]" topic="style/display/none"></connect-dcc>
+  <connect-dcc trigger="cycle" to="dcc[to]" topic="style/display/none"></connect-dcc>
+  <connect-dcc trigger="end" to="dcc[to]" topic="style/display/initial"></connect-dcc>
+</dcc-timer>`,
     domain:
 '[natural]',
     select:
 '<dcc-state-select id=\'dcc[seq]\'[author][answer]>[expression]</dcc-state-select>'
   }
 
-  Translator.htmlSubTemplates = {
-    compute: {
-      connect: ' connect="click:dcc[seq]-compute:compute/update"',
-      component: '<dcc-compute id="dcc[seq]-compute" expression="[expression]"></dcc-compute>'
-    }
+Translator.htmlSubTemplates = {
+  compute: {
+    connect: ' connect="click:dcc[seq]-compute:compute/update"',
+    component: '<dcc-compute id="dcc[seq]-compute" expression="[expression]"></dcc-compute>'
   }
+}
 
   Translator.htmlFlatTemplates = {
     entity:

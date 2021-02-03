@@ -1,5 +1,3 @@
-# Knot
-
 ___ Flow ___
 
 * Sequential:

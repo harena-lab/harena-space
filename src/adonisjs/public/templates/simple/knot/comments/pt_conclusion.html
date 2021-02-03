@@ -2,19 +2,49 @@
 <textarea class="form-control" id="details" name="details" placeholder="Enter the comments">
 {{details}}
 </textarea>
-<h3>Likert Scale</h3>
-<input type="radio" id="likert"
-       name="likert" value="1" {{checked?likert:1}}>
-<label for="likert">1</label>
-<input type="radio" id="likert"
-       name="likert" value="2" {{checked?likert:2}}>
-<label for="likert">2</label>
-<input type="radio" id="likert"
-       name="likert" value="3" {{checked?likert:3}}>
-<label for="likert">3</label>
-<input type="radio" id="likert"
-       name="likert" value="4" {{checked?likert:4}}>
-<label for="likert">4</label>
-<input type="radio" id="likert"
-       name="likert" value="5" {{checked?likert:5}}>
-<label for="likert">5</label>
+
+<hr>
+
+<h3>Ultrasound Skills (Likert Scale)</h3>
+
+<h4>1. Indication for the examination</h4>
+<p>If applicable. Reviewing patient history and knowing why the examination is indicated.</p>
+
+<input type="radio" id="likert_examination"
+       name="likert_examination" value="1" {{checked?likert_examination:1}}>
+<label for="likert_examination">1. Displays poor knowledge of the indication for the examination</label>
+<br>
+
+<input type="radio" id="likert_examination"
+       name="likert_examination" value="2" {{checked?likert_examination:2}}>
+<label for="likert_examination">2</label>
+<br>
+
+<input type="radio" id="likert_examination"
+       name="likert_examination" value="3" {{checked?likert_examination:3}}>
+<label for="likert_examination">3. Displays some knowledge of the indication for the
+examination</label>
+<br>
+
+<input type="radio" id="likert_examination"
+       name="likert_examination" value="4" {{checked?likert_examination:4}}>
+<label for="likert_examination">4</label>
+<br>
+
+<input type="radio" id="likert_examination"
+       name="likert_examination" value="5" {{checked?likert_examination:5}}>
+<label for="likert_examination">5. Displays ample knowledge of the indication for the
+examination</label>
+<br>
+
+<h4>2. Applied knowledge of ultrasound equipment</h4>
+
+<h4>3. Image optimization</h4>
+
+<h4>4. Systematic examination</h4>
+
+<h4>5. Interpretation of images</h4>
+
+<h4>6. Documentation of examination</h4>
+
+<h4>7. Medical decision making</h4>

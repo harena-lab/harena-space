@@ -15,6 +15,7 @@ class PlayerManager {
     MessageBus.ext.subscribe('flow/+/navigate', this.navigateEvent)
     MessageBus.ext.subscribe('case/+/navigate', this.navigateEvent)
     MessageBus.ext.subscribe('variable/+/navigate', this.navigateEvent)
+    MessageBus.ext.subscribe('session/close', this.navigateEvent)
 
     this._notesStack = []
 
@@ -52,7 +53,8 @@ class PlayerManager {
     let mandatoryEmpty = null
     const mandatoryM = await MessageBus.int.request('var/*/input/mandatory/get')
     for (const m in mandatoryM.message) {
-      if (mandatoryM.message[m].filled == false && mandatoryEmpty == null) { mandatoryEmpty = mandatoryM.message[m].message }
+      if (mandatoryM.message[m].filled == false && mandatoryEmpty == null) {
+        mandatoryEmpty = mandatoryM.message[m].message }
     }
 
     if (mandatoryEmpty != null) {
@@ -126,6 +128,9 @@ class PlayerManager {
                      (this._previewCase ? '&preview' : ''), '_self')
           }
           break
+        case 'session/close':
+          this.sessionClose()
+          break
         default: if (MessageBus.matchFilter(topic, 'knot/+/navigate') ||
                          MessageBus.matchFilter(topic, 'variable/+/navigate')) {
           /*
@@ -160,7 +165,7 @@ class PlayerManager {
           window.open('index.html?case=' + target +
                            (this._previewCase ? '&preview' : ''), '_self')
         }
-          break
+        break
       }
     }
   }
@@ -340,7 +345,8 @@ class PlayerManager {
     this._currentKnot = knotName
 
     if (this._knots[knotName].categories &&
-          this._knots[knotName].categories.includes('end')) { MessageBus.ext.publish('case/completed', '') }
+        this._knots[knotName].categories.includes('end'))
+    { MessageBus.ext.publish('case/completed', '') }
 
     // <TODO> Local Environment - Future
     /*
@@ -376,7 +382,7 @@ class PlayerManager {
 
   async sessionClose (topic, message) {
     this._state.sessionCompleted()
-    // await Basic.service.
+    window.open('../home/category/cases/?id=podcast&clearance=1', '_self')
   }
 
   presentKnot (knot) {

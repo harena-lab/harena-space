@@ -6,7 +6,7 @@ class DCCVisual extends DCCBase {
   constructor () {
     super()
     this._presentationReady = false
-    this._pendingHide = false
+    this._pendingDisplay = false
     this._presentation = null
     this._presentationSet = []
     this._presentationSetEditable = []
@@ -15,6 +15,45 @@ class DCCVisual extends DCCBase {
   connectedCallback () {
     super.connectedCallback()
     this.checkActivateAuthor()
+    this._updateDisplay()
+    if (this.hasAttribute('id')) {
+      this.changeDisplay = this.changeDisplay.bind(this)
+      MessageBus.page.provides(this.id, 'style/display/initial',
+                               this.changeDisplay)
+      MessageBus.page.provides(this.id, 'style/display/none',
+                               this.changeDisplay)
+    }
+  }
+
+  static get observedAttributes () {
+    return DCCBase.observedAttributes.concat(
+      ['display'])
+  }
+
+  get display () {
+    return this.getAttribute('display')
+  }
+
+  set display (newValue) {
+    this.setAttribute('display', newValue)
+    this._updateDisplay()
+  }
+
+  _updateDisplay () {
+    if (this._presentationReady) {
+      for (const pr of this._presentationSet)
+        pr.style.display = this.display
+    } else
+      this._pendingDisplay = true
+  }
+
+  changeDisplay(topic, message) {
+    if (this._presentation != null) {
+      if (topic == 'style/display/none')
+        this.display = 'none'
+      else
+        this.display = 'initial'
+    }
   }
 
   _shadowHTML (html) {
@@ -68,15 +107,19 @@ class DCCVisual extends DCCBase {
   }
 
   hide () {
-    if (this._presentationReady) { this._hideReady() } else { this._pendingHide = true }
+    // if (this._presentationReady) { this._hideReady() } else { this._pendingDisplay = true }
+    this.display = 'none'
   }
 
+  /*
   _hideReady () {
     for (const pr of this._presentationSet) { pr.style.display = 'none' }
   }
+  */
 
   show () {
-    for (const pr of this._presentationSet) { pr.style.display = 'initial' }
+    // for (const pr of this._presentationSet) { pr.style.display = 'initial' }
+    this.display = 'initial'
   }
 
   // an external trigger attachment from TriggerDCC
@@ -107,9 +150,10 @@ class DCCVisual extends DCCBase {
       for (const t of this._pendingTrigger) { this._attachTriggerReady(t[0], t[1]) }
     }
     this._pendingTrigger = null
-    if (this._pendingHide) {
-      this._pendingHide = false
-      this._hideReady()
+    if (this._pendingDisplay) {
+      this._pendingDisplay = false
+      this._updateDisplay()
+      // this._hideReady()
     }
   }
 }
@@ -140,7 +184,7 @@ class PresentationDCC {
       this._presentation.dccid = dccid
       this._presentation.addEventListener('mouseover', this.mouseoverListener)
       // this._presentation.addEventListener('mouseout', this.mouseoutListener)
-      this._presentation.addEventListener('click', this.mouseclickListener)      
+      this._presentation.addEventListener('click', this.mouseclickListener)
     }
     this._activated = true
   }
@@ -231,7 +275,7 @@ class PresentationDCC {
         template.innerHTML = templateHTML
         document.body.appendChild(template.content.cloneNode(true))
         panel = document.body.querySelector('#panel-presentation')
- 
+
         for (let eb of edButtons) {
           const eedcc = new editEventDCC(eb.type, this)
           const bpanel = panel.querySelector('#edit-dcc-' + eb.type)
