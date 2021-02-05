@@ -127,14 +127,6 @@ class PlayState {
     if (id != null)
       id = id.toLowerCase()
 
-    /*
-    console.log('=== variable request')
-    console.log(id)
-
-    console.log('=== variables')
-    console.log(this._state.variables)
-    */
-
     if (id != null && id.startsWith('previous.')) {
       const previousKnot = this.historyPreviousId()
       if (previousKnot != null) { id = previousKnot + '.' + id.substring(9) }
@@ -173,7 +165,12 @@ class PlayState {
     const id = MessageBus.extractLevel(topic, 2)
     let status = false
     if (id != null) {
-      this._state.variables[id.toLowerCase()] = message
+      if (id == '*') {
+        const vars = (message.value != null) ? message.value : message
+        for (let v in vars)
+          this._state.variables[v] = vars[v]
+      } else
+        this._state.variables[id.toLowerCase()] = message
       status = true
     }
     this._stateStore()
