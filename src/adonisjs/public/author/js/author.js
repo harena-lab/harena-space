@@ -139,9 +139,10 @@ class AuthorManager {
   }
 
   async authorizeCommentSection(){
-    // console.log('============')
-    // console.log(sessionStorage.getItem('harena-user-grade'))
-    if(sessionStorage.getItem('harena-user-grade') !== 'professor'){
+    let userGrade = sessionStorage.getItem('harena-user-grade')
+    if(userGrade !== 'professor'
+    && userGrade !== 'admin'
+    && userGrade !== 'coordinator'){
       let disabledFieldSet = document.createElement('fieldset')
       disabledFieldSet.setAttribute('disabled','true')
       let commentsBlock = document.querySelector('#comments-block')
