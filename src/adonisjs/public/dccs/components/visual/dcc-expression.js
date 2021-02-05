@@ -49,6 +49,7 @@ class DCCExpression extends DCCVisual {
           const variables = DCCCompute.filterVariables(this._compiled, false)
           // MessageBus.ext.subscribe(
           //   'var/' + this._variable + '/set', this.variableUpdated)
+          MessageBus.ext.subscribe('var/*/set', this.variableUpdated)
           for (let v of variables)
             MessageBus.ext.subscribe(
               'var/' + v + '/set', this.variableUpdated)
