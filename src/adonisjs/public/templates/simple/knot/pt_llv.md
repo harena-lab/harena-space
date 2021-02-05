@@ -2,52 +2,56 @@
 
 **Lower Limb Veins - POCUS Exam Videos:**
 
-{{findings
-Describe here your findings concerning the following videos.
-}}
-
 **Right Lower Limb**
 
-Femoral D1
+Video - Femoral D1
 
 <video><source src="https://drive.google.com/file/d/1nibC-An5Ufj3fmQCPydpo2AKDc7ovxpZ/view?usp=sharing"></video>
 
-Femoral D2
+Video - Femoral D2
 
 <video><source src="https://drive.google.com/file/d/1nibC-An5Ufj3fmQCPydpo2AKDc7ovxpZ/view?usp=sharing"></video>
 
-Femoral D3
+Video - Femoral D3
 
 <video><source src="https://drive.google.com/file/d/1nibC-An5Ufj3fmQCPydpo2AKDc7ovxpZ/view?usp=sharing"></video>
 
-Poplitea D1
+Video - Poplitea D1
 
-<video><source src="https://drive.google.com/file/d/1nibC-An5Ufj3fmQCPydpo2AKDc7ovxpZ/view?usp=sharing"></video> 
+<video><source src="https://drive.google.com/file/d/1nibC-An5Ufj3fmQCPydpo2AKDc7ovxpZ/view?usp=sharing"></video>
 
-Poplitea D2
+Video - Poplitea D2
 
 <video><source src="https://drive.google.com/file/d/1nibC-An5Ufj3fmQCPydpo2AKDc7ovxpZ/view?usp=sharing"></video>
 
 **Left Lower Limb**
 
-Femoral E1
+Video - Femoral E1
 
 <video><source src="https://drive.google.com/file/d/1nibC-An5Ufj3fmQCPydpo2AKDc7ovxpZ/view?usp=sharing"></video>
 
-Femoral E2
+Video - Femoral E2
 
 <video><source src="https://drive.google.com/file/d/1nibC-An5Ufj3fmQCPydpo2AKDc7ovxpZ/view?usp=sharing"></video>
 
-Femoral E3
+Video - Femoral E3
 
 <video><source src="https://drive.google.com/file/d/1nibC-An5Ufj3fmQCPydpo2AKDc7ovxpZ/view?usp=sharing"></video>
 
-Poplitea E1
+Video - Poplitea E1
 
 <video><source src="https://drive.google.com/file/d/1nibC-An5Ufj3fmQCPydpo2AKDc7ovxpZ/view?usp=sharing"></video>
 
-Poplitea E2
+Video - Poplitea E2
 
 <video><source src="https://drive.google.com/file/d/1nibC-An5Ufj3fmQCPydpo2AKDc7ovxpZ/view?usp=sharing"></video>
+
+{{findings
+Describe here your findings concerning the following videos.
+}}
 
 * Next -> Flow.Next
+
+{{comments
+* template: simple/knot/pt_llv
+}}
