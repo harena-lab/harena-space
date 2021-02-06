@@ -773,7 +773,7 @@ class GraphLayoutDG extends GraphLayout {
 
   DCCGraph.svgTemplate =
 `<style>@import "[css]"</style>
-<div id="grid-wrapper" style="overflow:scroll;width:[width-div];height:100%">
+<div id="grid-wrapper">
 <svg id="presentation-dcc" width="[width]" height="[height]" xmlns="http://www.w3.org/2000/svg">
 </svg>
 </div>`

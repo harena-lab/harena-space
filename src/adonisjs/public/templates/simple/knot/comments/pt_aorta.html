@@ -1,0 +1,358 @@
+<label for="details"><h3>Comments</h3></label>
+<textarea class="form-control" id="details" name="details" placeholder="Enter the comments">
+{{details}}
+</textarea>
+<hr>
+<h3>Image - Ao proximal</h3>
+<hr>
+<h4 class="mt-1">Gain</h4>
+<div class="bg-light border border-secondary rounded pl-2">
+  <div class="form-check">
+    <input type="radio" id="image_ao_prox_gain1"
+      name="image_ao_prox_gain" value="1" class="form-check-input" {{checked?image_ao_prox_gain1:1}}>
+    <label for="image_ao_prox_gain1" class="form-check-label">1. little</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="image_ao_prox_gain2"
+      name="image_ao_prox_gain" value="2" class="form-check-input" {{checked?image_ao_prox_gain2:2}}>
+    <label for="image_ao_prox_gain2" class="form-check-label">2. excessive</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="image_ao_prox_gain3"
+      name="image_ao_prox_gain" value="3" class="form-check-input" {{checked?image_ao_prox_gain3:3}}>
+    <label for="image_ao_prox_gain3" class="form-check-label">3. appropriate</label>
+  </div>
+</div>
+<h4 class="mt-1">Depth</h4>
+<div class="bg-light border border-secondary rounded pl-2">
+  <div class="form-check">
+    <input type="radio" id="image_ao_prox_depth1"
+      name="image_ao_prox_depth" value="1" class="form-check-input" {{checked?image_ao_prox_depth1:1}}>
+    <label for="image_ao_prox_depth1" class="form-check-label">1. little</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="image_ao_prox_depth2"
+      name="image_ao_prox_depth" value="2" class="form-check-input" {{checked?image_ao_prox_depth2:2}}>
+    <label for="image_ao_prox_depth2" class="form-check-label">2. excessive</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="image_ao_prox_depth3"
+      name="image_ao_prox_depth" value="3" class="form-check-input" {{checked?image_ao_prox_depth3:3}}>
+    <label for="image_ao_prox_depth3" class="form-check-label">3. appropriate</label>
+  </div>
+</div>
+<h4 class="mt-1">Anatomical References</h4>
+<div class="bg-light border border-secondary rounded pl-2">
+  <div class="form-check">
+    <input type="radio" id="image_ao_prox_anatomical1"
+      name="image_ao_prox_anatomical" value="1" class="form-check-input" {{checked?image_ao_prox_anatomical1:1}}>
+    <label for="image_ao_prox_anatomical1" class="form-check-label">1. absent</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="image_ao_prox_anatomical2"
+      name="image_ao_prox_anatomical" value="2" class="form-check-input" {{checked?image_ao_prox_anatomical2:2}}>
+    <label for="image_ao_prox_anatomical2" class="form-check-label">2. partially present</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="image_ao_prox_anatomical3"
+      name="image_ao_prox_anatomical" value="3" class="form-check-input" {{checked?image_ao_prox_anatomical3:3}}>
+    <label for="image_ao_prox_anatomical3" class="form-check-label">3. present</label>
+  </div>
+</div>
+<hr>
+<h3>Video - Ao distal</h3>
+<hr>
+<h4 class="mt-1">Gain</h4>
+<div class="bg-light border border-secondary rounded pl-2">
+  <div class="form-check">
+    <input type="radio" id="video_ao_distal_gain1"
+      name="video_ao_distal_gain" value="1" class="form-check-input" {{checked?video_ao_distal_gain1:1}}>
+    <label for="video_ao_distal_gain1" class="form-check-label">1. little</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_ao_distal_gain2"
+      name="video_ao_distal_gain" value="2" class="form-check-input" {{checked?video_ao_distal_gain2:2}}>
+    <label for="video_ao_distal_gain2" class="form-check-label">2. excessive</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_ao_distal_gain3"
+      name="video_ao_distal_gain" value="3" class="form-check-input" {{checked?video_ao_distal_gain3:3}}>
+    <label for="video_ao_distal_gain3" class="form-check-label">3. appropriate</label>
+  </div>
+</div>
+<h4 class="mt-1">Depth</h4>
+<div class="bg-light border border-secondary rounded pl-2">
+  <div class="form-check">
+    <input type="radio" id="video_ao_distal_depth1"
+      name="video_ao_distal_depth" value="1" class="form-check-input" {{checked?video_ao_distal_depth1:1}}>
+    <label for="video_ao_distal_depth1" class="form-check-label">1. little</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_ao_distal_depth2"
+      name="video_ao_distal_depth" value="2" class="form-check-input" {{checked?video_ao_distal_depth2:2}}>
+    <label for="video_ao_distal_depth2" class="form-check-label">2. excessive</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_ao_distal_depth3"
+      name="video_ao_distal_depth" value="3" class="form-check-input" {{checked?video_ao_distal_depth3:3}}>
+    <label for="video_ao_distal_depth3" class="form-check-label">3. appropriate</label>
+  </div>
+</div>
+<h4 class="mt-1">Anatomical References</h4>
+<div class="bg-light border border-secondary rounded pl-2">
+  <div class="form-check">
+    <input type="radio" id="video_ao_distal_anatomical1"
+      name="video_ao_distal_anatomical" value="1" class="form-check-input" {{checked?video_ao_distal_anatomical1:1}}>
+    <label for="video_ao_distal_anatomical1" class="form-check-label">1. absent</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_ao_distal_anatomical2"
+      name="video_ao_distal_anatomical" value="2" class="form-check-input" {{checked?video_ao_distal_anatomical2:2}}>
+    <label for="video_ao_distal_anatomical2" class="form-check-label">2. partially present</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_ao_distal_anatomical3"
+      name="video_ao_distal_anatomical" value="3" class="form-check-input" {{checked?video_ao_distal_anatomical3:3}}>
+    <label for="video_ao_distal_anatomical3" class="form-check-label">3. present</label>
+  </div>
+</div>
+<hr>
+<h3>Image - Ao distal</h3>
+<hr>
+<h4 class="mt-1">Gain</h4>
+<div class="bg-light border border-secondary rounded pl-2">
+  <div class="form-check">
+    <input type="radio" id="image_ao_distal_gain1"
+      name="image_ao_distal_gain" value="1" class="form-check-input" {{checked?image_ao_distal_gain1:1}}>
+    <label for="image_ao_distal_gain1" class="form-check-label">1. little</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="image_ao_distal_gain2"
+      name="image_ao_distal_gain" value="2" class="form-check-input" {{checked?image_ao_distal_gain2:2}}>
+    <label for="image_ao_distal_gain2" class="form-check-label">2. excessive</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="image_ao_distal_gain3"
+      name="image_ao_distal_gain" value="3" class="form-check-input" {{checked?image_ao_distal_gain3:3}}>
+    <label for="image_ao_distal_gain3" class="form-check-label">3. appropriate</label>
+  </div>
+</div>
+<h4 class="mt-1">Depth</h4>
+<div class="bg-light border border-secondary rounded pl-2">
+  <div class="form-check">
+    <input type="radio" id="image_ao_distal_depth1"
+      name="image_ao_distal_depth" value="1" class="form-check-input" {{checked?image_ao_distal_depth1:1}}>
+    <label for="image_ao_distal_depth1" class="form-check-label">1. little</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="image_ao_distal_depth2"
+      name="image_ao_distal_depth" value="2" class="form-check-input" {{checked?image_ao_distal_depth2:2}}>
+    <label for="image_ao_distal_depth2" class="form-check-label">2. excessive</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="image_ao_distal_depth3"
+      name="image_ao_distal_depth" value="3" class="form-check-input" {{checked?image_ao_distal_depth3:3}}>
+    <label for="image_ao_distal_depth3" class="form-check-label">3. appropriate</label>
+  </div>
+</div>
+<h4 class="mt-1">Anatomical References</h4>
+<div class="bg-light border border-secondary rounded pl-2">
+  <div class="form-check">
+    <input type="radio" id="image_ao_distal_anatomical1"
+      name="image_ao_distal_anatomical" value="1" class="form-check-input" {{checked?image_ao_distal_anatomical1:1}}>
+    <label for="image_ao_distal_anatomical1" class="form-check-label">1. absent</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="image_ao_distal_anatomical2"
+      name="image_ao_distal_anatomical" value="2" class="form-check-input" {{checked?image_ao_distal_anatomical2:2}}>
+    <label for="image_ao_distal_anatomical2" class="form-check-label">2. partially present</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="image_ao_distal_anatomical3"
+      name="image_ao_distal_anatomical" value="3" class="form-check-input" {{checked?image_ao_distal_anatomical3:3}}>
+    <label for="image_ao_distal_anatomical3" class="form-check-label">3. present</label>
+  </div>
+</div>
+<hr>
+<h3>Image - Ilíacas</h3>
+<hr>
+<h4 class="mt-1">Gain</h4>
+<div class="bg-light border border-secondary rounded pl-2">
+  <div class="form-check">
+    <input type="radio" id="image_illiacas_gain1"
+      name="image_illiacas_gain" value="1" class="form-check-input" {{checked?image_illiacas_gain1:1}}>
+    <label for="image_illiacas_gain1" class="form-check-label">1. little</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="image_illiacas_gain2"
+      name="image_illiacas_gain" value="2" class="form-check-input" {{checked?image_illiacas_gain2:2}}>
+    <label for="image_illiacas_gain2" class="form-check-label">2. excessive</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="image_illiacas_gain3"
+      name="image_illiacas_gain" value="3" class="form-check-input" {{checked?image_illiacas_gain3:3}}>
+    <label for="image_illiacas_gain3" class="form-check-label">3. appropriate</label>
+  </div>
+</div>
+<h4 class="mt-1">Depth</h4>
+<div class="bg-light border border-secondary rounded pl-2">
+  <div class="form-check">
+    <input type="radio" id="image_illiacas_depth1"
+      name="image_illiacas_depth" value="1" class="form-check-input" {{checked?image_illiacas_depth1:1}}>
+    <label for="image_illiacas_depth1" class="form-check-label">1. little</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="image_illiacas_depth2"
+      name="image_illiacas_depth" value="2" class="form-check-input" {{checked?image_illiacas_depth2:2}}>
+    <label for="image_illiacas_depth2" class="form-check-label">2. excessive</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="image_illiacas_depth3"
+      name="image_illiacas_depth" value="3" class="form-check-input" {{checked?image_illiacas_depth3:3}}>
+    <label for="image_illiacas_depth3" class="form-check-label">3. appropriate</label>
+  </div>
+</div>
+<h4 class="mt-1">Anatomical References</h4>
+<div class="bg-light border border-secondary rounded pl-2">
+  <div class="form-check">
+    <input type="radio" id="image_illiacas_anatomical1"
+      name="image_illiacas_anatomical" value="1" class="form-check-input" {{checked?image_illiacas_anatomical1:1}}>
+    <label for="image_illiacas_anatomical1" class="form-check-label">1. absent</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="image_illiacas_anatomical2"
+      name="image_illiacas_anatomical" value="2" class="form-check-input" {{checked?image_illiacas_anatomical2:2}}>
+    <label for="image_illiacas_anatomical2" class="form-check-label">2. partially present</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="image_illiacas_anatomical3"
+      name="image_illiacas_anatomical" value="3" class="form-check-input" {{checked?image_illiacas_anatomical3:3}}>
+    <label for="image_illiacas_anatomical3" class="form-check-label">3. present</label>
+  </div>
+</div>
+<hr>
+<h3>Image - Ao medial</h3>
+<hr>
+<h4 class="mt-1">Gain</h4>
+
+<div class="bg-light border border-secondary rounded pl-2">
+  <div class="form-check">
+    <input type="radio" id="image_ao_medial_gain1"
+      name="image_ao_medial_gain" value="1" class="form-check-input" {{checked?image_ao_medial_gain1:1}}>
+    <label for="image_ao_medial_gain1" class="form-check-label">1. little</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="image_ao_medial_gain2"
+      name="image_ao_medial_gain" value="2" class="form-check-input" {{checked?image_ao_medial_gain2:2}}>
+    <label for="image_ao_medial_gain2" class="form-check-label">2. excessive</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="image_ao_medial_gain3"
+      name="image_ao_medial_gain" value="3" class="form-check-input" {{checked?image_ao_medial_gain3:3}}>
+    <label for="image_ao_medial_gain3" class="form-check-label">3. appropriate</label>
+  </div>
+</div>
+
+<h4 class="mt-1">Depth</h4>
+
+<div class="bg-light border border-secondary rounded pl-2">
+  <div class="form-check">
+    <input type="radio" id="image_ao_medial_depth1"
+      name="image_ao_medial_depth" value="1" class="form-check-input" {{checked?image_ao_medial_depth1:1}}>
+    <label for="image_ao_medial_depth1" class="form-check-label">1. little</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="image_ao_medial_depth2"
+      name="image_ao_medial_depth" value="2" class="form-check-input" {{checked?image_ao_medial_depth2:2}}>
+    <label for="image_ao_medial_depth2" class="form-check-label">2. excessive</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="image_ao_medial_depth3"
+      name="image_ao_medial_depth" value="3" class="form-check-input" {{checked?image_ao_medial_depth3:3}}>
+    <label for="image_ao_medial_depth3" class="form-check-label">3. appropriate</label>
+  </div>
+</div>
+
+<h4 class="mt-1">Anatomical References</h4>
+
+<div class="bg-light border border-secondary rounded pl-2">
+  <div class="form-check">
+    <input type="radio" id="image_ao_medial_anatomical1"
+      name="image_ao_medial_anatomical" value="1" class="form-check-input" {{checked?image_ao_medial_anatomical1:1}}>
+    <label for="image_ao_medial_anatomical1" class="form-check-label">1. absent</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="image_ao_medial_anatomical2"
+      name="image_ao_medial_anatomical" value="2" class="form-check-input" {{checked?image_ao_medial_anatomical2:2}}>
+    <label for="image_ao_medial_anatomical2" class="form-check-label">2. partially present</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="image_ao_medial_anatomical3"
+      name="image_ao_medial_anatomical" value="3" class="form-check-input" {{checked?image_ao_medial_anatomical3:3}}>
+    <label for="image_ao_medial_anatomical3" class="form-check-label">3. present</label>
+  </div>
+</div>
+<hr>
+<h3>Video - Varredura ao longitudinal</h3>
+<hr>
+<h4 class="mt-1">Gain</h4>
+
+<div class="bg-light border border-secondary rounded pl-2">
+  <div class="form-check">
+    <input type="radio" id="video_var_ao_long_gain1"
+      name="video_var_ao_long_gain" value="1" class="form-check-input" {{checked?video_var_ao_long_gain1:1}}>
+    <label for="video_var_ao_long_gain1" class="form-check-label">1. little</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_var_ao_long_gain2"
+      name="video_var_ao_long_gain" value="2" class="form-check-input" {{checked?video_var_ao_long_gain2:2}}>
+    <label for="video_var_ao_long_gain2" class="form-check-label">2. excessive</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_var_ao_long_gain3"
+      name="video_var_ao_long_gain" value="3" class="form-check-input" {{checked?video_var_ao_long_gain3:3}}>
+    <label for="video_var_ao_long_gain3" class="form-check-label">3. appropriate</label>
+  </div>
+</div>
+
+<h4 class="mt-1">Depth</h4>
+
+<div class="bg-light border border-secondary rounded pl-2">
+  <div class="form-check">
+    <input type="radio" id="video_var_ao_long_depth1"
+      name="video_var_ao_long_depth" value="1" class="form-check-input" {{checked?video_var_ao_long_depth1:1}}>
+    <label for="video_var_ao_long_depth1" class="form-check-label">1. little</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_var_ao_long_depth2"
+      name="video_var_ao_long_depth" value="2" class="form-check-input" {{checked?video_var_ao_long_depth2:2}}>
+    <label for="video_var_ao_long_depth2" class="form-check-label">2. excessive</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_var_ao_long_depth3"
+      name="video_var_ao_long_depth" value="3" class="form-check-input" {{checked?video_var_ao_long_depth3:3}}>
+    <label for="video_var_ao_long_depth3" class="form-check-label">3. appropriate</label>
+  </div>
+</div>
+
+<h4 class="mt-1">Anatomical References</h4>
+
+<div class="bg-light border border-secondary rounded pl-2">
+  <div class="form-check">
+    <input type="radio" id="video_var_ao_long_anatomical1"
+      name="video_var_ao_long_anatomical" value="1" class="form-check-input" {{checked?video_var_ao_long_anatomical1:1}}>
+    <label for="video_var_ao_long_anatomical1" class="form-check-label">1. absent</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_var_ao_long_anatomical2"
+      name="video_var_ao_long_anatomical" value="2" class="form-check-input" {{checked?video_var_ao_long_anatomical2:2}}>
+    <label for="video_var_ao_long_anatomical2" class="form-check-label">2. partially present</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_var_ao_long_anatomical3"
+      name="video_var_ao_long_anatomical" value="3" class="form-check-input" {{checked?video_var_ao_long_anatomical3:3}}>
+    <label for="video_var_ao_long_anatomical3" class="form-check-label">3. present</label>
+  </div>
+</div>
+
+<hr>
