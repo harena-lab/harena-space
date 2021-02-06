@@ -62,8 +62,13 @@ class MessageBus {
 
     if (this._externalized) {
       if (DCCCommonServer.loggerAddressAPI) {
-        let extMessage = (message != null) ? message : {}
-        if (typeof message !== 'object') { extMessage = { content: message } }
+        const currentDateTime = new Date()
+        let extMessage = {
+          localTime: currentDateTime.toJSON()
+        }
+        if (message != null) extMessage.content = message
+        // let extMessage = (message != null) ? message : {}
+        // if (typeof message !== 'object') { extMessage = { content: message } }
         let extTopic = topic
         if (this._runningCase != null) {
           extMessage.track = {

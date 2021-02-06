@@ -138,8 +138,7 @@ class PlayerManager {
                         console.log(target);
                         */
           if (MessageBus.matchFilter(topic, 'variable/+/navigate')) {
-            const result =
-                              await MessageBus.ext.request('var/' + target + '/get')
+            const result = await MessageBus.ext.request('var/' + target + '/get')
             target = Translator.instance.findContext(
               this._compiledCase.knots, this._currentKnot,
               result.message)
@@ -344,10 +343,6 @@ class PlayerManager {
   async knotLoad (knotName, parameter) {
     this._currentKnot = knotName
 
-    if (this._knots[knotName].categories &&
-        this._knots[knotName].categories.includes('end'))
-    { MessageBus.ext.publish('case/completed', '') }
-
     // <TODO> Local Environment - Future
     /*
       this._knotScript = document.createElement("script");
@@ -374,6 +369,10 @@ class PlayerManager {
       }
     }
     MessageBus.ext.publish('knot/' + knotName + '/start')
+
+    if (this._knots[knotName].categories &&
+        this._knots[knotName].categories.includes('end'))
+    { MessageBus.ext.publish('case/completed', {knotid: knotName}) }
   }
 
   caseCompleted (topic, message) {
