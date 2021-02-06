@@ -18,8 +18,6 @@ class DCCCompute extends DCCBase {
         await this.update()
         if (this.active) {
           const variables = DCCCompute.filterVariables(this._compiled, false)
-          console.log('=== filter variables')
-          console.log(variables)
           for (let v of variables)
             MessageBus.ext.subscribe('var/' + v + '/set', this.update)
         }
@@ -73,8 +71,6 @@ class DCCCompute extends DCCBase {
 
   async update() {
     const result = await DCCCompute.computeExpression(this._compiled)
-    console.log('=== compute update')
-    console.log(result)
     if (result)
       await this.multiRequest('true', null)
     else
@@ -82,8 +78,6 @@ class DCCCompute extends DCCBase {
   }
 
   async connectionReady (id, topic) {
-    console.log('=== connection ready')
-    console.log(this._compiled)
     super.connectionReady (id, topic)
     if (this._compiled != null)
       this.update()

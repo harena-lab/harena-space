@@ -2358,13 +2358,13 @@ class Translator {
     'context-open': {
       mark: /\{\{(?:([^\:\n\r\f]+)\:)?([\w \t\+\-\*\."=%]+)?(?:\/([\w \t\.\:]+)\/)?$/im
     },
-    'context-close': { mark: /\}\}/im },
+    'context-close': { mark: /^[ \t]*\}\}/im },
     select: {
       mark: /\{([^\}\n\r\f]+)\}(?:\(([^\)\n\r\f]+)\))?(?:\/([^\/\n\r\f]+)\/)/im,
       inline: true
     },
     annotation: {
-      mark: /\{([^\}\n\r\f]+)\}(?:\(([^\)\n\r\f]+)\))?/im,
+      mark: /(?<!\{)\{(?!\{)([^\}\n\r\f]+)\}(?:\(([^\)\n\r\f]+)\))?/im,
       inline: true
     },
     linefeed: {
