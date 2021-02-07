@@ -98,8 +98,17 @@ class LayoutController {
 
         inputPropertyValue.value = '1'
       }
-      this.feedbackButtonCaseState()
 
+      this.feedbackButtonCaseState()
+      
+      if(new URL(document.location).searchParams.get('fdbk')){
+        setTimeout(function(){
+          document.querySelector('#button-comments-nav').click()
+          MessageBus.ext.publish('control/properties/expand')
+          MessageBus.ext.publish('control/comments/expand')
+          MessageBus.int.publish('control/comments/editor')
+        }, 500)
+      }
     }
 
   }
@@ -187,7 +196,6 @@ class LayoutController {
           casePropertyRest.remove()
           btnFeedback.firstElementChild.innerHTML = 'Feedback Sent'
           btnFeedback.firstElementChild.classList.add('disabled')
-          console.log(btnFeedback.firstElementChild.classList)
           btnFeedback.style.pointerEvents = 'none'
           caseDccSubmit.removeAttribute('topic')
           caseDccSubmit.removeAttribute('connect')
