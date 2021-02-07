@@ -175,8 +175,9 @@ class DCCAuthorServer {
       */
       const config = {
         method: 'PUT',
-        url: DCCCommonServer.managerAddressAPI + 'case/' + caseId,
+        url: DCCCommonServer.managerAddressAPI + 'case',
         data: {
+          caseId: caseId,
           title: document.getElementById('case_title').value,
           description: document.getElementById('description').value,
           language: document.getElementById('language').value,
@@ -237,7 +238,10 @@ class DCCAuthorServer {
     */
     const config = {
       method: 'DELETE',
-      url: DCCCommonServer.managerAddressAPI + 'case/' + caseId,
+      url: DCCCommonServer.managerAddressAPI + 'case',
+      data: {
+        caseId: caseId
+      },
       withCredentials: true
     }
     await axios(config)

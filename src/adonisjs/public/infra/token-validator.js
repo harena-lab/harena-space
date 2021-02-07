@@ -31,7 +31,8 @@ class TokenController {
           .then(function (endpointResponse) {
             sessionStorage.setItem('harena-user-grade', endpointResponse.data.grade)
             sessionStorage.setItem('harena-user-institution', endpointResponse.data.institution)
-
+            sessionStorage.setItem('harena-user-institution-id', endpointResponse.data.institutionId)
+            MessageBus.int.publish('data/user/info', endpointResponse.data)
             TokenController.instance.changeHeaderButtons(endpointResponse.data)
           })
           .catch(function (error) {
@@ -104,6 +105,7 @@ class TokenController {
           TokenController.instance.tokenChecked = true
           sessionStorage.setItem('harena-user-grade', endpointResponse.data.grade)
           sessionStorage.setItem('harena-user-institution', endpointResponse.data.institution)
+          MessageBus.int.publish('data/user/info', endpointResponse.data)
 
           TokenController.instance.changeHeaderButtons(endpointResponse.data)
         } else{
