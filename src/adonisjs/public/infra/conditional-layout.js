@@ -23,15 +23,25 @@ class LayoutController {
   }
 
   async startController(){
-    await MessageBus.ext.waitMessage('control/case/ready')
 
-    this.dynamicAuthor()
+    await MessageBus.int.waitMessage('control/html/ready')
+
+    if(new URL(document.location).pathname == '/author/'){
+      this.dynamicAuthor()
+    }
+    if(new URL(document.location).pathname == '/author/home/'){
+      this.dynamicMenu()
+    }else if(new URL(document.location).pathname == '/author/drafts/feedback/'){
+      this.dynamicCaseListFeedback()
+    }
+
   }
 
   async busMessages(){
     LayoutController.user = await MessageBus.int.waitMessage('data/user/info')
-    LayoutController.case = await MessageBus.ext.waitMessage('service/response/get/harena-case')
-
+    if(new URL(document.location).pathname == '/author/'){
+      LayoutController.case = await MessageBus.ext.waitMessage('service/response/get/harena-case')
+    }
   }
 
   async dynamicAuthor (){
@@ -86,20 +96,50 @@ class LayoutController {
 
         await formProp.appendChild(dccSubmitProp)
 
-        // btnFeedback.title = "Sets feedback as finished (for your student's knowlegde)"
         inputPropertyValue.value = '1'
       }
       this.feedbackButtonCaseState()
 
-      if(LayoutController.user.message.institution === 'hcpa'){
-
-      }
     }
 
   }
 
   async dynamicMenu (){
 
+    if(LayoutController.user.message.institution === 'hcpa' && document.querySelector('#home-btn-container')){
+      const btnContainer = document.querySelector('#home-btn-container')
+      const btnFeedback = document.createElement('template')
+      btnFeedback.innerHTML =
+        `<a id="home-btn-feedback" href="/author/drafts/feedback?clearance=4&prop=feedback" class="d-flex flex-column align-items-center
+         justify-content-center home-author-box-content home-author-case-box" style="height:50%; font-size: 30px;">
+          Feedbacks
+          <div class="home-author-sub-text">
+            Feedback case list.
+          </div>
+        </a>`
+        if(!document.querySelector('#home-btn-feedback')){
+          btnContainer.appendChild(btnFeedback.content.cloneNode(true))
+        }
+    }
+  }
+
+  async dynamicCaseListFeedback (){
+    console.log('============ starting dynamic list')
+    if(LayoutController.user.message.grade === 'professor'
+    || LayoutController.user.message.grade === 'coordinator'){
+      document.querySelector('#txt-draft-presentation').innerHTML = 'Students cases with feedback request'
+      //Selects all divs that start the attribute 'id' with 'e'
+      const caseButtons = document.querySelectorAll('div.author-panel-button[id^="e"]')
+
+      for (let d in caseButtons){
+
+        if(caseButtons[d].nodeName === 'DIV'){
+
+          caseButtons[d].innerHTML = 'EDIT FEEDBACK'
+        }
+
+      }
+    }
   }
 
   async feedbackButtonCaseState (propValue){
@@ -119,7 +159,7 @@ class LayoutController {
           btnFeedback.firstElementChild.innerHTML = 'Feedback Recieved'
         }
 
-        btnFeedback.setAttribute('disabled','disabled')
+        btnFeedback.firstElementChild.classList.add('disabled')
         btnFeedback.style.pointerEvents = 'none'
         document.querySelector('#dcc-submit-feedback').removeAttribute('topic')
         document.querySelector('#dcc-submit-feedback').removeAttribute('connect')
@@ -146,7 +186,8 @@ class LayoutController {
         if(LayoutController.case.message.property.feedback == 1){
           casePropertyRest.remove()
           btnFeedback.firstElementChild.innerHTML = 'Feedback Sent'
-          btnFeedback.setAttribute('disabled','disabled')
+          btnFeedback.firstElementChild.classList.add('disabled')
+          console.log(btnFeedback.firstElementChild.classList)
           btnFeedback.style.pointerEvents = 'none'
           caseDccSubmit.removeAttribute('topic')
           caseDccSubmit.removeAttribute('connect')

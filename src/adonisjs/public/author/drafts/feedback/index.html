@@ -2,11 +2,11 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Authoring Environment</title>
+    <title>Authoring Environment - Feedback</title>
 
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
 
-    <link rel="stylesheet" href="../css/author.css">
+    <link rel="stylesheet" href="/author/css/author.css">
 
     <script src="/lib/axios-0.21.0/axios.min.js"></script>
 
@@ -21,6 +21,7 @@
     <script src="/infra/dcc-common-server-address.js"></script>
     <script src="/infra/simple-page-tasks.js"></script>
     <script src="/infra/token-validator.js"></script>
+    <script src="/infra/conditional-layout.js"></script>
 
     <script src="/dccs/base/dcc.js"></script>
     <script src="/dccs/base/dcc-base.js "></script>
@@ -73,52 +74,6 @@
     <div id="alert-feedback" class="alert alert-success ml-2 mt-5" role="alert" style="position:absolute; display:none;">
     </div>
 
-    <!-- Share casel modal -->
-    <dcc-rest id="harena-share-cases" bind="harena-share-cases" subscribe="share/request/post:retrieve"></dcc-rest>
-    <div class="modal fade" id="share-modal" tabindex="-1" role="dialog" aria-labelledby="share-modal" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-body">
-            <form>
-              <div class="form-row">
-                <div class="form-group col-md-6">
-                  <label for="entity">Share with:</label>
-                    <select class="custom-select" id="entity" name="entity">
-                      <option value="institution">Institution</option>
-                    </select>
-                </div>
-                <div class="form-group col-md-6">
-                  <dcc-dhtml connect="retrieve:harena-institutions:service/request/get">
-                    <label for="subject">Select an option:</label>
-
-                    <select class="custom-select" id="subject" name="subject">
-                      <option selected></option>
-                      {{@foreach . institution}}
-                      <option value="{{institution.id}}">{{institution.title}}</option>
-                      {{@endfor}}
-                    </select>
-                    <end-dcc></end-dcc>
-                  </dcc-dhtml>
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label for="clearance">Permission to: </label>
-                <select class="custom-select" id="clearance" name="clearance">
-                  <option value="1">Play</option>
-                  <option value="4">Edit</option>
-                </select>
-              </div>
-              <input type="hidden" name="table_id" id="table_id" value="">
-              <dcc-submit label="Share" xstyle="btn btn-success" data-dismiss="modal" topic="share/request/post"></dcc-submit>
-              <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- End Share case modal -->
-
     <!-- Create a section to place page content -->
     <main role="main">
       <div class="d-flex flex-column vh-100 vw-100 draft-author-padding hidden-overflow">
@@ -129,21 +84,21 @@
             <ol class="breadcrumb">
               <li class="breadcrumb-item"><a href="/">Welcome</a></li>
               <li class="breadcrumb-item"><a href="/author/home">Home</a></li>
-              <li class="breadcrumb-item active" aria-current="page">Drafts</li>
+              <li class="breadcrumb-item active" aria-current="page">Feedback</li>
             </ol>
           </nav>
         </div>
         <!-- End of breadcrumbs -->
         <div class="h-100 w-100 draft-content-padding scroll-y">
           <div class="home-text" style="height: auto !important;">
-            <p>Continue editing your drafted cases.</p>
+            <p id="txt-draft-presentation">Your cases with requested feedback.</p>
           </div>
 
           <div class="home-author-padding rounded row sticky-top" style="z-index:3;">
             <form class="pl-2 align-items-center row" id="filter-form">
               <div class="p-2 ml-4">Filter by: </div>
               <div class="pr-3">
-                <dcc-rest id="harena-institutions" bind="harena-institutions"></dcc-rest>
+                <!-- <dcc-rest id="harena-institutions" bind="harena-institutions"></dcc-rest>
                 <dcc-dhtml id="harena-dhtml-institutions" connect="retrieve:harena-institutions:service/request/get">
 
                   <select id="fInstitution" name="fInstitution" class="custom-select custom-select-sm">
@@ -154,7 +109,7 @@
                   </select>
 
                   <end-dcc></end-dcc>
-                </dcc-dhtml>
+                </dcc-dhtml> -->
               </div>
               <div class="pr-3">
                 <select id="fUserType" name="fUserType" class="custom-select custom-select-sm">
@@ -166,17 +121,16 @@
               <div class="pr-3" style="width: 120px;">
                 <input type="text" class="form-control custom-select-sm" id="fSpecialty" placeholder="Specialty">
               </div>
+              <div class="pr-3">
+                <select id="fPropertyValue" name="fPropertyValue" class="custom-select custom-select-sm">
+                  <option selected value="">Feedback status</option>
+                  <option value="0">Waiting</option>
+                  <option value="1">Complete</option>
+                </select>
+              </div>
               <dcc-submit id="filter-submit" label="Filter" xstyle="btn btn-secondary" topic="cases/request/get"></dcc-submit>
             </form>
             <dcc-rest id="harena-cases-filter" bind="harena-cases" subscribe="cases/request/get:retrieve"></dcc-rest>
-            <!-- Containers to selectAll/share cases -->
-            <!-- <div class="form-check mt-2 ml-auto" id="share-checkbox">
-              <input class="form-check-input" type="checkbox" id="select-all-checkbox">
-              <label for="select-all-checkbox">Select All</label>
-            </div>
-            <button type="button" class="btn btn-success mr-4 m-1" data-toggle="modal" data-target="#share-modal">
-              Share cases
-            </button> -->
           </div>
           <div id="case-boxes" class="draft-scroll-container">
             <dcc-rest id="harena-cases" bind="harena-cases"></dcc-rest>
@@ -193,14 +147,12 @@
                   <label class="ml-2">{{cases.title}}</label>
 
                   <div class="row">
-                    <h6>Created by {{cases.author_grade}}: {{cases.username}} ({{cases.institution_acronym}})</h6>
+                    <h6>Created by: {{cases.username}} ({{cases.institution_acronym}}) || {{cases.feedback}}</h6>
                   </div>
                 </div>
 
                 <div class="d-flex justify-content-end justify-content-center buttons-container">
-                  <div id="e{{cases.id}}" class="col author-panel-button align-self-center pt-2 pb-2">EDIT</div>
-                  <div id="p{{cases.id}}" class="col author-panel-button align-self-center pt-2 pb-2">PREVIEW</div>
-                  <div id="d{{cases.id}}" class="col author-panel-button align-self-center pt-2 pb-2">DELETE</div>
+                  <div id="e{{cases.id}}" class="col author-panel-button align-self-center pt-2 pb-2">VIEW FEEDBACK</div>
                 </div>
               </div>
               {{@endfor}}

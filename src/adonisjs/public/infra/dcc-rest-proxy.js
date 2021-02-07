@@ -210,7 +210,8 @@
     {
       environment: {
         'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api,
-        'clearance': new URL(document.location).searchParams.get('clearance')
+        'clearance': new URL(document.location).searchParams.get('clearance'),
+        'fProperty': new URL(document.location).searchParams.get('prop'),
       },
       oas: {
         paths: {
@@ -227,6 +228,10 @@
                 {name: 'fUserType',
                   in: 'query'},
                 {name: 'fSpecialty',
+                  in: 'query'},
+                {name: 'fProperty',
+                  in: 'query'},
+                {name: 'fPropertyValue',
                   in: 'query'}
               ]
             }

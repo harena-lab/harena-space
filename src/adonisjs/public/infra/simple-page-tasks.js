@@ -20,11 +20,18 @@ class PageController {
 
   async removeLoadingIcon(){
     if(document.querySelector('#loading-page-container')){
-      document.querySelector('main').classList.remove('invisible')
-      document.querySelector('#loading-page-container').remove()
+      setTimeout(function(){
+        document.querySelector('main').classList.remove('invisible')
+        if(document.querySelector('#loading-page-container'))
+          document.querySelector('#loading-page-container').remove()
+        MessageBus.int.publish('control/html/ready')
+      }, 500)
     }
     try {
-      document.querySelector('main').classList.remove('invisible')
+      setTimeout(function(){
+        document.querySelector('main').classList.remove('invisible')
+      }, 3000)
+
     } catch (e) {
       console.log('Error while trying to remove class "invisible" of "main" element');
       console.log(e)
