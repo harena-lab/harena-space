@@ -45,7 +45,7 @@ class LayoutController {
   }
 
   async dynamicAuthor (){
-
+    
     if(LayoutController.case.message.category_id === 'pocus-training'
     && LayoutController.user.message.institution === 'hcpa'){
       const toolbarDiv = document.querySelector('#div-toolbar-rightside')
@@ -75,7 +75,7 @@ class LayoutController {
         dccSubmitProp.setAttribute('bind','submit-case-property')
         dccSubmitProp.setAttribute('xstyle','btn btn-secondary m-1')
         dccSubmitProp.setAttribute('label','Set Feedback Complete')
-        dccSubmitProp.setAttribute('topic','service/request/pos')
+        dccSubmitProp.setAttribute('topic','service/request/post')
         dccSubmitProp.setAttribute('connect','submit:harena-case-property:service/request/post')
         dccSubmitProp.setAttribute('data-toggle','tooltip')
         dccSubmitProp.setAttribute('data-placement','top')
@@ -190,11 +190,11 @@ class LayoutController {
       let caseDccSubmit = document.querySelector('#dcc-submit-feedback')
 
       if(LayoutController.case.message.property.feedback){
-        btnFeedback.firstElementChild.innerHTML = 'Set Feedback Complete'
+        btnFeedback.firstElementChild.innerHTML = 'Notify as Complete'
 
         if(LayoutController.case.message.property.feedback == 1){
           casePropertyRest.remove()
-          btnFeedback.firstElementChild.innerHTML = 'Feedback Sent'
+          btnFeedback.firstElementChild.innerHTML = 'Notified as Complete'
           btnFeedback.firstElementChild.classList.add('disabled')
           btnFeedback.style.pointerEvents = 'none'
           caseDccSubmit.removeAttribute('topic')
