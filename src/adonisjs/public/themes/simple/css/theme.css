@@ -60,7 +60,7 @@
    /* position: absolute; */
    bottom: 0px;
    width: 100%;
-   display: flex;
+   /* display: flex; */
    flex-direction: row;
 }
 

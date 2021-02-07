@@ -40,7 +40,7 @@
 
            setTimeout(function(){
              window.location.href = '/'
-           }, 2500)
+           }, 2000)
         }else if (response['harena-login']['response'] === 'Email or password incorrect'){
           // console.log('login failed, password or email incorrect');
           if(document.querySelector('#login-message-alert')){
@@ -87,6 +87,17 @@
           responseContainer.classList.remove('text-success')
           responseContainer.classList.add('text-danger')
         }
+      }
+    }
+  )
+
+  DCC.component(
+    'submit-case-property',
+    'dcc-submit',
+    {
+      pos: function (response) {
+        console.log('============ pos dcc-submit prop')
+        console.log(response)
       }
     }
   )

@@ -161,7 +161,7 @@ class DCCDHTML extends DCCBase {
       const response = await this.request('retrieve', null, id)
       this.recordUpdate(topic, response)
     }
-    MessageBus.ext.publish('control/dhtml/ready')
+    MessageBus.int.publish('control/dhtml/ready')
   }
 }
 
