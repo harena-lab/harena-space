@@ -95,9 +95,16 @@
     'submit-case-property',
     'dcc-submit',
     {
-      pos: function (response) {
-        console.log('============ pos dcc-submit prop')
-        console.log(response)
+      pos: async function (response) {
+        // console.log('============ pos dcc-submit prop')
+        // console.log(response)
+        let propValue = null
+        if(response['harena-case-property']['case_property']){
+          propValue = response['harena-case-property']['case_property']['value']
+        }else{
+          propValue = response['harena-case-property']['value']
+        }
+        LayoutController.instance.feedbackButtonCaseState(propValue)
       }
     }
   )

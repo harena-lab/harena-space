@@ -430,6 +430,19 @@
                 {name: 'property_value',
                   in: 'query'},
               ]
+            },
+            'put': {
+              operationId: 'case-property-put',
+              parameters: [
+                {name: 'url-manager',
+                  in: 'path'},
+                {name: 'case_id',
+                  in: 'query'},
+                {name: 'property_title',
+                  in: 'query'},
+                {name: 'property_value',
+                  in: 'query'},
+              ]
             }
           }
         }
@@ -443,7 +456,6 @@
     {
       environment: {
         'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api,
-        'property_title': 'feedback',
         'case_id': new URL(document.location).searchParams.get('id'),
       },
       oas: {
