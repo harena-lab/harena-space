@@ -45,18 +45,18 @@ class LayoutController {
   }
 
   async dynamicAuthor (){
-    
+
     if(LayoutController.case.message.category_id === 'pocus-training'
     && LayoutController.user.message.institution === 'hcpa'){
       const toolbarDiv = document.querySelector('#div-toolbar-rightside')
       toolbarDiv.innerHTML =
-      `<dcc-rest id="harena-ask-feedback" bind="harena-ask-feedback"
+      `<div class="home-author-sub-text align-self-center" style="color:#808080">FEEDBACK:</div>
+      <dcc-rest id="harena-ask-feedback" bind="harena-ask-feedback"
       subscribe="service/request/post:retrieve"></dcc-rest>
-      <dcc-rest id="harena-case-property" bind="harena-case-property"></dcc-rest>
+      <dcc-rest id="harena-case-property" bind="harena-case-property" subscribe="service/request/post:retrieve"></dcc-rest>
       <form id="form-case-property">
       <input type="hidden" id="property_value" name="property_value" value="">
       <input type="hidden" id="property_title" name="property_title" value="feedback">
-
 
       </form>`
       // ------------------------------------------------------------------------------- //
@@ -74,13 +74,14 @@ class LayoutController {
         dccSubmitProp.setAttribute('id','dcc-submit-feedback')
         dccSubmitProp.setAttribute('bind','submit-case-property')
         dccSubmitProp.setAttribute('xstyle','btn btn-secondary m-1')
-        dccSubmitProp.setAttribute('label','Set Feedback Complete')
+        dccSubmitProp.setAttribute('label', "Send to Professor")
         dccSubmitProp.setAttribute('topic','service/request/post')
-        dccSubmitProp.setAttribute('connect','submit:harena-case-property:service/request/post')
+        // dccSubmitProp.setAttribute('connect','submit:harena-case-property:service/request/post')
         dccSubmitProp.setAttribute('data-toggle','tooltip')
         dccSubmitProp.setAttribute('data-placement','top')
         dccSubmitProp.setAttribute('title',"Send case for professor's feedback")
         await formProp.appendChild(dccSubmitProp)
+
         inputPropertyValue.value = '0'
 
       }else if(userGrade === 'professor' || userGrade === 'coordinator'){
@@ -100,7 +101,7 @@ class LayoutController {
       }
 
       this.feedbackButtonCaseState()
-      
+
       if(new URL(document.location).searchParams.get('fdbk')){
         setTimeout(function(){
           document.querySelector('#button-comments-nav').click()
@@ -109,6 +110,7 @@ class LayoutController {
           MessageBus.int.publish('control/comments/editor')
         }, 500)
       }
+
     }
 
   }
@@ -163,9 +165,9 @@ class LayoutController {
       if(LayoutController.case.message.property.feedback){
         if(LayoutController.case.message.property.feedback == 0){
 
-          btnFeedback.firstElementChild.innerHTML = 'Waiting Feedback'
+          btnFeedback.firstElementChild.innerHTML = 'Sent'
         }else {
-          btnFeedback.firstElementChild.innerHTML = 'Feedback Recieved'
+          btnFeedback.firstElementChild.innerHTML = 'Recieved'
         }
 
         btnFeedback.firstElementChild.classList.add('disabled')
@@ -181,6 +183,15 @@ class LayoutController {
           console.log(e)
         }
       }
+      btnFeedback.addEventListener("click", function(event) {
+          btnFeedback.firstElementChild.innerHTML = 'Sent'
+          btnFeedback.firstElementChild.classList.add('disabled')
+          btnFeedback.style.pointerEvents = 'none'
+          document.querySelector('#dcc-submit-feedback').removeAttribute('topic')
+          document.querySelector('#dcc-submit-feedback').removeAttribute('connect')
+          document.querySelector('#harena-case-property').remove()
+          document.querySelector('#harena-ask-feedback').remove()
+      })
 
     }else if(userGrade === 'professor' || userGrade === 'coordinator'){
       if(document.querySelector('#harena-ask-feedback'))
@@ -207,6 +218,9 @@ class LayoutController {
           }
 
         }
+        btnFeedback.addEventListener("click", function(event) {
+            btnFeedback.firstElementChild.innerHTML = 'Notified as Complete'
+          })
       }
     }
   }
