@@ -1,8 +1,13 @@
 class Tracker {
   constructor () {
     this._variables = {}
+    this._varUpdated = {}
+    // this._varChanged = {} <FUTURE>
     this._mandatoryFilled = {}
     this._groupInput = null
+
+    this._knotTrack = []
+    this._caseCompleted = false
 
     this.inputReady = this.inputReady.bind(this)
     MessageBus.int.subscribe('var/+/input/ready', this.inputReady)
@@ -20,6 +25,12 @@ class Tracker {
     MessageBus.ext.subscribe('var/+/state_changed', this.stateChanged)
     this.allMandatoryFilled = this.allMandatoryFilled.bind(this)
     MessageBus.int.subscribe('var/*/input/mandatory/get', this.allMandatoryFilled)
+
+    this.knotStart = this.knotStart.bind(this)
+    MessageBus.ext.subscribe('knot/+/start', this.knotStart)
+    this.caseCompleted = this.caseCompleted.bind(this)
+    MessageBus.ext.subscribe('case/completed', this.caseCompleted)
+    MessageBus.ext.subscribe('session/close', this.caseCompleted)
 
     this.submitVariables = this.submitVariables.bind(this)
     MessageBus.ext.subscribe('control/input/submit', this.submitVariables)
@@ -51,13 +62,12 @@ class Tracker {
 
   inputTyped (topic, message) {
     this._updateVariable(topic, message.value)
+    // this._changedVariable(topic, message.value) <FUTURE>
   }
 
   inputChanged (topic, message) {
-    console.log('=== update input variable')
-    console.log(topic)
-    console.log(message)
     this._updateVariable(topic, message.value)
+    // this._changedVariable(topic, message.value) <FUTURE>
   }
 
   stateChanged (topic, message) {
@@ -68,19 +78,64 @@ class Tracker {
   }
 
   submitVariables (topic, message) {
-    for (const v in this._variables) { MessageBus.ext.publish('var/' + v + '/set', this._variables[v]) }
+    for (const v in this._variables) {
+      if (this._varUpdated[v] == null || this._varUpdated[v]) {
+        MessageBus.ext.publish('var/' + v + '/set', this._variables[v])
+        this._varUpdated[v] = false
+      }
+    }
   }
+
+  /* <FUTURE>
+  _changedVariable (topic, value) {
+    const v = MessageBus.extractLevel(topic, 2)
+    if (v != null) {
+      if (this._varChanged[v] == null)
+        this._varChanged[v] = []
+      const currentDateTime = new Date()
+      this._varChanged[v].push(
+        {value: value, timestamp: currentDateTime.toJSON()})
+      this._updateVariable(topic, value)
+    }
+  }
+  */
 
   _updateVariable (topic, value) {
     const v = MessageBus.extractLevel(topic, 2)
     if (v != null) {
       this._variables[v] = value
-      if (this._mandatoryFilled[v] !== undefined) { this._mandatoryFilled[v].filled = (value.length > 0) }
+      this._varUpdated[v] = true
+      if (this._mandatoryFilled[v] !== undefined) {
+        this._mandatoryFilled[v].filled = (value.length > 0) }
     }
   }
 
   allMandatoryFilled (topic, message) {
     MessageBus.int.publish(MessageBus.buildResponseTopic(topic, message),
       this._mandatoryFilled)
+  }
+
+  knotStart (topic, message) {
+    const k = MessageBus.extractLevel(topic, 2)
+    const currentDateTime = new Date()
+    this._knotTrack.push(
+      {knotid: k,
+       timeStart: currentDateTime.toJSON()})
+  }
+
+  caseCompleted (topic, message) {
+    if (!this._caseCompleted) {
+      const currentDateTime = new Date()
+      let kt = {
+        event: topic,
+        timeCompleted: currentDateTime.toJSON()
+      }
+      if (message && message.knotid)
+        kt.knotid = message.knotid
+      this._knotTrack.push(kt)
+      MessageBus.ext.publish('case/summary',
+        {knotTrack: this._knotTrack,
+         variables: this._variables})
+    }
   }
 }

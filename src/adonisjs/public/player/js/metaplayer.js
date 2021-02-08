@@ -13,7 +13,7 @@ class MetaPlayer {
       if (script.length > 0) { state.metascriptRecord(script) }
       console.log(first)
       console.log(script)
-      DCCCompute.computeInstructionObj(first)
+      DCCCompute.computeExpressionObj(first)
     }
   }
 

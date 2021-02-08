@@ -7,94 +7,99 @@
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
 
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="/lib/axios-0.21.0/axios.min.js"></script>
 
-    <script src="../lib/jquery-3-4-1/jquery-3.4.1.slim.min.js"></script>
-    <script src="../lib/popper-1-15-0/popper.min.js"></script>
-    <script src="../lib/bootstrap-4.4.1/js/bootstrap.min.js"></script>
-    <script src="../lib/ckeditor5/ckeditor.js"></script>
+    <script src="/lib/jquery-3-4-1/jquery-3.4.1.slim.min.js"></script>
+    <script src="/lib/popper-1-15-0/popper.min.js"></script>
+    <script src="/lib/bootstrap-4.4.1/js/bootstrap.min.js"></script>
+    <script src="/lib/ckeditor5/ckeditor.js"></script>
 
-    <script src="../config/config.js"></script>
-    <script src="../infra/bus.js"></script>
-    <script src="../infra/basic.js"></script>
-    <script src="../infra/dcc-common-server-proxy.js"></script>
-    <script src="../infra/dcc-common-server-address.js"></script>
-    <script src="../infra/simple-page-tasks.js"></script>
-    <script src="../infra/token-validator.js"></script>
+    <script src="/config/config.js"></script>
+    <script src="/infra/bus.js"></script>
+    <script src="/infra/basic.js"></script>
+    <script src="/infra/dcc-common-server-proxy.js"></script>
+    <script src="/infra/dcc-common-server-address.js"></script>
+    <script src="/infra/simple-page-tasks.js"></script>
+    <script src="/infra/token-validator.js"></script>
+    <script src="/infra/conditional-layout.js"></script>
 
-    <link rel="stylesheet" href="../lib/fontawesome-5-10-1/css/all.min.css">
-    <link rel="stylesheet" href="../lib/bootstrap-4.4.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../lib/quill-1-3-7/quill.snow.css">
+    <link rel="stylesheet" href="/lib/fontawesome-5-10-1/css/all.min.css">
+    <link rel="stylesheet" href="/lib/bootstrap-4.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/lib/quill-1-3-7/quill.snow.css">
 
     <link rel="stylesheet" href="css/author.css">
-    <link rel="stylesheet" href="../dccs/css/dccs.css">
-    <link rel="stylesheet" href="../dccs/css/properties.css">
-    <link rel="stylesheet" href="../infra/css/common-player.css">
-    <link rel="stylesheet" href="../infra/css/common-author.css">
+    <link rel="stylesheet" href="/dccs/css/dccs.css">
+    <link rel="stylesheet" href="/dccs/css/properties.css">
+    <link rel="stylesheet" href="/infra/css/common-player.css">
+    <link rel="stylesheet" href="/infra/css/common-author.css">
 
-    <script src="../context/context.js"></script>
+    <script src="/context/context.js"></script>
 
-    <script src="../lib/quill-1-3-7/quill.min.js"></script>
-    <script src="../lib/d3.min.js"></script>
+    <script src="/lib/quill-1-3-7/quill.min.js"></script>
+    <script src="/lib/d3.min.js"></script>
 
-    <script src="../dccs/dcc.js"></script>
-    <script src="../dccs/components/dcc-base.js"></script>
-    <script src="../dccs/components/dcc-visual.js"></script>
-    <script src="../dccs/components/dcc-markdown.js"></script>
-    <script src="../dccs/components/dcc-annotation.js"></script>
-    <script src="../dccs/components/dcc-image.js"></script>
-    <script src="../dccs/components/dcc-expression.js"></script>
-    <script src="../dccs/components/dcc-block.js"></script>
-    <script src="../dccs/components/dcc-button.js"></script>
-    <script src="../dccs/components/dcc-character.js"></script>
-    <script src="../dccs/components/dcc-lively-dialog.js"></script>
-    <script src="../dccs/components/dcc-notice-input.js"></script>
-    <script src="../dccs/components/dcc-context-menu.js"></script>
-    <script src="../dccs/components/dcc-state-select.js"></script>
-    <script src="../dccs/components/dcc-image-marker.js"></script>
-    <script src="../dccs/components/dcc-styler.js"></script>
-    <script src="../dccs/components/dcc-entity.js"></script>
-    <script src="../dccs/components/dcc-input.js"></script>
-    <script src="../dccs/components/dcc-input-typed.js"></script>
-    <script src="../dccs/components/dcc-input-choice.js"></script>
-    <script src="../dccs/components/dcc-input-table.js"></script>
-    <script src="../dccs/components/dcc-slider.js"></script>
-    <script src="../dccs/components/dcc-compute.js"></script>
-    <script src="../dccs/components/dcc-report.js"></script>
-    <script src="../dccs/components/dcc-graph.js"></script>
+    <script src="../dccs/base/dcc.js"></script>
+    <script src="../dccs/base/dcc-base.js"></script>
+    <script src="../dccs/base/dcc-visual.js"></script>
+    <script src="../dccs/components/visual/dcc-markdown.js"></script>
+    <script src="../dccs/components/visual/dcc-annotation.js"></script>
+    <script src="../dccs/components/visual/dcc-image.js"></script>
+    <script src="../dccs/components/visual/dcc-expression.js"></script>
+    <script src="../dccs/base/dcc-block.js"></script>
+    <script src="../dccs/components/visual/dcc-button.js"></script>
+    <script src="../dccs/components/visual/dcc-character.js"></script>
+    <script src="../dccs/components/visual/dcc-lively-dialog.js"></script>
+    <script src="../dccs/components/visual/dcc-notice-input.js"></script>
+    <script src="../dccs/components/visual/dcc-context-menu.js"></script>
+    <script src="../dccs/components/visual/dcc-state-select.js"></script>
+    <script src="../dccs/components/visual/dcc-image-marker.js"></script>
+    <script src="../dccs/base/dcc-styler.js"></script>
+    <script src="../dccs/components/visual/dcc-entity.js"></script>
+    <script src="../dccs/components/visual/dcc-input.js"></script>
+    <script src="../dccs/components/visual/dcc-input-typed.js"></script>
+    <script src="../dccs/components/visual/dcc-input-choice.js"></script>
+    <script src="../dccs/components/visual/dcc-input-table.js"></script>
+    <script src="../dccs/components/visual/dcc-slider.js"></script>
+    <script src="../dccs/components/visual/dcc-report.js"></script>
+    <script src="../dccs/components/visual/dcc-graph.js"></script>
 
-    <script src="../dccs/subscribe-dcc.js"></script>
-    <script src="../dccs/trigger-dcc.js"></script>
-    <script src="../dccs/property-dcc.js"></script>
-    <script src="../dccs/connect-dcc.js"></script>
-    <script src="../dccs/end-dcc.js"></script>
+    <script src="../dccs/components/control/dcc-timer.js"></script>
+    <script src="../dccs/components/control/dcc-message.js"></script>
+    <script src="../dccs/components/control/dcc-compute.js"></script>
 
-    <script src="../dccs/components/data/dcc-model.js"></script>
-    <script src="../dccs/components/data/dcc-submit.js"></script>
-    <script src="../dccs/components/data/dcc-record.js"></script>
+    <script src="/dccs/base/subscribe-dcc.js"></script>
+    <script src="/dccs/base/trigger-dcc.js"></script>
+    <script src="/dccs/base/property-dcc.js"></script>
+    <script src="/dccs/base/connect-dcc.js"></script>
+    <script src="/dccs/base/end-dcc.js"></script>
 
-    <script src="../dccs/components/web/dcc-include.js"></script>
-    <script src="../dccs/components/web/dcc-dhtml.js"></script>
-    <script src="../dccs/components/web/dcc-rest.js"></script>
+    <script src="/dccs/components/data/dcc-model.js"></script>
+    <script src="/dccs/components/data/dcc-submit.js"></script>
+    <script src="/dccs/components/data/dcc-record.js"></script>
 
-    <script src="../infra/dcc-rest-proxy.js"></script>
-    <script src="../infra/dcc-basic.js"></script>
+    <script src="/dccs/components/web/dcc-include.js"></script>
+    <script src="/dccs/components/web/dcc-dhtml.js"></script>
+    <script src="/dccs/components/web/dcc-rest.js"></script>
 
-    <script src="../lib/showdown-2-0-0/showdown.min.js"></script>
-    <script src="../translator/translator.js"></script>
-    <script src="../translator/item-templates.js"></script>
+    <script src="/infra/dcc-rest-proxy.js"></script>
+    <script src="/infra/dcc-basic.js"></script>
 
-    <script src="../dccs/edit/properties.js"></script>
-    <script src="../dccs/edit/upload-adapter.js"></script>
-    <script src="../dccs/edit/inplace-editor.js"></script>
-    <script src="../dccs/edit/inplace-plain-editor.js"></script>
-    <script src="../dccs/edit/inplace-text-editor.js"></script>
-    <script src="../dccs/edit/inplace-image-editor.js"></script>
+    <script src="/lib/showdown-2-0-0/showdown.min.js"></script>
+    <script src="/translator/translator.js"></script>
+    <script src="/translator/item-templates.js"></script>
 
-    <script src="js/dcc-author-server-proxy.js"></script>
-    <script src="js/panels.js"></script>
-    <script src="js/navigator.js"></script>
-    <script src="js/author.js"></script>
+    <script src="/dccs/edit/properties.js"></script>
+    <script src="/dccs/edit/upload-adapter.js"></script>
+    <script src="/dccs/edit/inplace-editor.js"></script>
+    <script src="/dccs/edit/inplace-plain-editor.js"></script>
+    <script src="/dccs/edit/inplace-text-editor.js"></script>
+    <script src="/dccs/edit/inplace-image-editor.js"></script>
+
+    <script src="/author/js/dcc-author-server-proxy.js"></script>
+    <script src="/author/js/panels.js"></script>
+    <script src="/author/js/navigator.js"></script>
+    <script src="/author/js/comments.js"></script>
+    <script src="/author/js/author.js"></script>
   </head>
 
   <body onload="AuthorManager.author.start()">
@@ -201,7 +206,7 @@
               <li class="breadcrumb-item"><a href="/author/home">Home</a></li>
               <li class="breadcrumb-item">
                 <div style="height: 15px;">
-                    <dcc-button topic="control/leave/drafts" label="Drafts" xstyle="out">
+                    <dcc-button topic="control/leave/drafts" label="Drafts" xstyle="none">
                     </dcc-button>
                 </div>
               </li>
@@ -214,7 +219,7 @@
         <!-- Page title and description -->
         <div class="container-fluid">
           <h1>Edit case</h1>
-          <p class="lead">Here's how your case will appear to students. You can also edit them. </p>
+          <p class="lead">Here's how your case will appear to students. You can also edit the elements. </p>
         </div>
         <!-- End of page title and description -->
 
@@ -238,6 +243,11 @@
 
 
             </div>
+            <div class="d-flex justify-content-center col-6 ">
+              <div id="div-toolbar-rightside" class="d-flex ">
+
+              </div>
+            </div>
   <!--          <div class="navbar-sub col-2">
               <div class="custom-control custom-switch" data-on="success" data-off="default">
                 <input type="checkbox" class="custom-control-input" id="preview-switch">
@@ -248,32 +258,32 @@
             <!-- <div class="col-2">
 
             </div> -->
-          </nav>
-
         </div>
         <!-- End of toolbar -->
 
         <div class="d-flex h-75">
-          <!-- Container displayng the flow of the case -->
-            <div id="navigation-block" class="w-25" style="position:relative">
+          <!-- Container displaying the flow of the case -->
+          <!--  -->
+            <div id="navigatior-block" class="w-25" style="width: 13% !important; min-width: 125px !important;">
               <div class="sty-navigation-block">
                 <div class="sty-navigation-panel std-border">
                   <div id="navigation-panel"></div>
-                  <dcc-graph id="navigation-graph" width="500" height="300" action="control/knot/selected">
+                  <dcc-graph id="navigation-graph" action="control/knot/selected" style="overflow:auto !important;">
                   </dcc-graph>
                 </div>
               </div>
             </div>
-          <!-- End of container displayng the flow of the case -->
+            <div id="navigator-expansion" class="sty-navigation-expansion">
+              <div id="navigation-set" class="sty-navigation-set">
+                <dcc-button id="button-expand-nav" topic="control/navigator/expand" label="Expand" image="/author/icons/icon-expansion-right.svg"></dcc-button>
+                <dcc-button id="button-retract-nav" topic="control/navigator/retract" label="Retract" image="/author/icons/icon-expansion-left.svg"></dcc-button>
+              </div>
+            </div>
+          <!-- End of container displaying the flow of the case -->
 
           <!-- Container displaying the case -->
-            <div class="w-75 d-flex" id="knot-main">
-              <div id="navigator-expansion" class="sty-navigation-expansion">
-                  <div id="navigation-set" class="sty-navigation-set">
-                    <dcc-button id="button-expand-nav" topic="control/navigator/expand" label="Expand" image="/author/icons/icon-expansion-right.svg"></dcc-button>
-                    <dcc-button id="button-retract-nav" topic="control/navigator/retract" label="Retract" image="/author/icons/icon-expansion-left.svg"></dcc-button>
-                  </div>
-              </div>
+            <div class="d-flex" id="knot-main" style="width: 100%">
+
               <div class="w-100">
                  <div id="toolbar-editor"></div>
                  <div id="inplace-editor-wrapper" class="d-flex h-100 sticky-top std-border">
@@ -282,14 +292,20 @@
                    </div>
                 </div>
               </div>
-              <div id="properties-expansion" class="sty-navigation-expansion">
-                  <dcc-button id="button-expand-prop" topic="control/properties/expand" label="Expand" image="/author/icons/icon-expansion-left.svg"></dcc-button>
-                  <dcc-button id="button-retract-prop" topic="control/properties/retract" label="Retract" image="/author/icons/icon-expansion-right.svg" style="display:none"></dcc-button>
-              </div>
+
             </div>
           <!-- End of container displaying the case -->
+
+          <!-- Container displaying the properties/comments of the case -->
+          <div id="properties-expansion" class="sty-navigation-expansion">
+            <div id="properties-set" class="sty-navigation-set">
+              <dcc-button id="button-expand-prop" topic="control/properties/expand" label="Expand" image="/author/icons/icon-properties.svg"></dcc-button>
+              <dcc-button id="button-retract-prop" topic="control/properties/retract" label="Retract" image="/author/icons/icon-expansion-right.svg" style="display:none"></dcc-button>
+              <dcc-button id="button-comments-nav" topic="control/comments/expand" label="Comment" image="/author/icons/icon-comment.svg"></dcc-button>
+            </div>
+          </div>
             <div id="elements-main" class="d-flex">
-              <div id="elements-block" class="sty-elements-block" style="position:relative; display:none">
+              <div id="elements-block" class="sty-elements-block" style="position:relative; display:none; overflow-y:auto !important; overflow-x:hidden !important;">
                  <!--
                  <div id="elements-panel" class="sty-control-panel std-border">
                     <div class="control-button"><dcc-button topic="control/element/text/new" label="Text" image="icons/icon-dcc-text.svg"></dcc-button></div>
@@ -297,7 +313,7 @@
                     <div class="control-button"><dcc-button topic="control/element/option/new" label="Text" image="icons/icon-dcc-button.svg"></dcc-button></div>
                  </div>
                -->
-                 <div id="properties-block" class="sty-properties-block std-border">
+                 <div id="properties-block" class="sty-properties-block std-border" style="display:none">
                     <div id="properties-panel" class="styp-properties-panel"></div>
                     <div id="properties-buttons">
                        <dcc-button xstyle="in" topic="properties/apply/details" label="APPLY"></dcc-button>
@@ -308,12 +324,16 @@
                      -->
                     </div>
                  </div>
+                 <div id="comments-block" class="sty-properties-block std-border" style="display:none">
+                    <div id="comments-display" class="d-flex flex-column sty-knot-panel p-1" style="overflow-y:auto !important; overflow-x:hidden !important;"></div>
+                 </div>
               </div>
             </div>
-  </div>
+          <!-- End of container displaying the properties/comments of the case -->
+        </div>
 
-  </div>
-  </main>
+      </div>
+    </main>
   <!-- end of div /.container -->
 
   </body>

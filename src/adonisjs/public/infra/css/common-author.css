@@ -168,6 +168,8 @@ nav.navbar {
   min-width: 25%;
   margin: 10px;
   padding: 5px;
+  border-radius: 5px;
+
 }
 .draft-author-case-container:hover{
   background-color: #ffffff;
@@ -435,7 +437,7 @@ nav.navbar {
 
 .btn-secondary {
   border-color: #707070;
-  background-color: #a6a6a6;
+  /* background-color: #a6a6a6; */
   font-weight: bold;
   text-transform: uppercase;
 }
@@ -491,7 +493,7 @@ nav.navbar {
 
 .breadcrumb-item + .breadcrumb-item {
   padding-left: 10px;
-  margin-left: 20px;
+  margin-left: 9px;
 }
 
 .breadcrumb-item::marker {

@@ -294,9 +294,8 @@ h5{
   border-top-left-radius: 0.94rem;
   border-top-right-radius: 0.94rem;
 
-  padding-left: 70px;
-  padding-right: 70px;
-  padding-top: 70px;
+  padding-left: 2px;
+  padding-top: 2px;
 }
 
 .breadcrumb {
@@ -323,7 +322,7 @@ h5{
 
 .breadcrumb-item + .breadcrumb-item {
   padding-left: 10px;
-  margin-left: 20px;
+  margin-left: 9px;
 }
 
 .breadcrumb-item::marker {

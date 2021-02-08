@@ -94,7 +94,7 @@ _searchTree(current, knotid) {
 
     // <TODO> provisory
     const specialKnot = ['note', 'notice', 'notice_wide', 'notice_exam_zoom',
-      'expansion']
+      'expansion', 'master', 'master_top', 'master_bottom']
 
     const templatesCats = author.templatesCategories
 
@@ -122,18 +122,24 @@ _searchTree(current, knotid) {
 
         // attach menus to nodes
         const items = {}
-        const templatesNewKnot = []
+        const templatesNewKnot = {}
         if (knots[k].categories && templatesCats != null) {
           const templateCatIds = Object.keys(templatesCats)
-          for (const cat of knots[k].categories) {
-            if (templateCatIds.includes(cat) &&
-                   !templatesNewKnot.includes(templatesCats[cat])) { templatesNewKnot.push(templatesCats[cat]) }
+          for (let cat of knots[k].categories) {
+            if (templateCatIds.includes(cat)) {
+              const templs = templatesCats[cat]
+              if (typeof templs === 'string')
+                templatesNewKnot[templs.substring(templs.lastIndexOf('/') + 1)] = templs
+              else
+                for (let tp in templs)
+                  templatesNewKnot[tp] = templs[tp]
+            }
           }
-          for (const tnn of templatesNewKnot) {
-            items['add ' + tnn.substring(tnn.lastIndexOf('/') + 1)] =
+          for (const tnn in templatesNewKnot) {
+            items['add ' + tnn] =
                   {
                     topic: 'control/knot/new',
-                    message: { knotid: k, template: tnn }
+                    message: { knotid: k, template: templatesNewKnot[tnn] }
                   }
           }
         }

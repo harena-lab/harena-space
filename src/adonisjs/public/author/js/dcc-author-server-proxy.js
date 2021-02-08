@@ -11,6 +11,9 @@ class DCCAuthorServer {
     MessageBus.ext.subscribe('data/module/+/get', this.loadModule)
     this.loadTemplate = this.loadTemplate.bind(this)
     MessageBus.ext.subscribe('data/template/+/get', this.loadTemplate)
+    this.loadTemplateComments = this.loadTemplateComments.bind(this)
+    MessageBus.ext.subscribe('data/template_comments/+/get',
+      this.loadTemplateComments)
     this.saveCase = this.saveCase.bind(this)
     MessageBus.ext.subscribe('data/case/+/set', this.saveCase)
     this.newCase = this.newCase.bind(this)
@@ -88,7 +91,8 @@ class DCCAuthorServer {
           name: t,
           icon: 'template_fix/' + jsonResponse[t].icon,
           description: jsonResponse[t].description,
-          questId: jsonResponse[t].questId
+          questId: jsonResponse[t].questId,
+          environment: jsonResponse[t].environment
         })
       }
     }
@@ -171,8 +175,9 @@ class DCCAuthorServer {
       */
       const config = {
         method: 'PUT',
-        url: DCCCommonServer.managerAddressAPI + 'case/' + caseId,
+        url: DCCCommonServer.managerAddressAPI + 'case',
         data: {
+          caseId: caseId,
           title: document.getElementById('case_title').value,
           description: document.getElementById('description').value,
           language: document.getElementById('language').value,
@@ -233,7 +238,10 @@ class DCCAuthorServer {
     */
     const config = {
       method: 'DELETE',
-      url: DCCCommonServer.managerAddressAPI + 'case/' + caseId,
+      url: DCCCommonServer.managerAddressAPI + 'case',
+      data: {
+        caseId: caseId
+      },
       withCredentials: true
     }
     await axios(config)
@@ -269,6 +277,7 @@ class DCCAuthorServer {
   async loadTemplate (topic, message) {
     const templatePath =
          MessageBus.extractLevel(topic, 3).replace(/\./g, '/')
+    /*
     const header = {
       async: true,
       crossDomain: true,
@@ -277,11 +286,60 @@ class DCCAuthorServer {
         'Content-Type': 'text/plain'
       }
     }
-    const response = await fetch(Basic.service.rootPath + 'templates/' + templatePath +
-                                   '.md', header)
-    const textResponse = await response.text()
-    MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-      textResponse)
+    */
+
+    const sd = templatePath.includes('/knot/') ? '' :
+      ((message != null && message.static) ? '-static' : '-dynamic')
+
+    const serviceRequest = {
+      method: 'GET',
+      url: '/templates/' + templatePath + sd + '.md'
+    }
+    let serviceResponse = null
+    await axios(serviceRequest)
+      .then(function (endpointResponse) {
+        serviceResponse = endpointResponse.data
+    })
+      .catch(function (error) {
+        console.log('=== load ' + sd + ' template error')
+        console.log(error)
+        console.log(error.code)
+    })
+
+    // const response = await fetch(Basic.service.rootPath + 'templates/' + templatePath +
+    //                                '.md', header)
+    // const textResponse = await response.text()
+    if (serviceResponse != null)
+      MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
+        serviceResponse)
+  }
+
+  async loadTemplateComments (topic, message) {
+    const templatePath =
+         MessageBus.extractLevel(topic, 3).replace(/\./g, '/')
+
+    const bar = templatePath.lastIndexOf('/')
+    const path = templatePath.substring(0, bar) + '/comments' +
+                 templatePath.substring(bar)
+
+    const serviceRequest = {
+      method: 'GET',
+      url: '/templates/' + path + '.html'
+    }
+    let serviceResponse = null
+    await axios(serviceRequest)
+      .then(function (endpointResponse) {
+        serviceResponse = endpointResponse.data
+    })
+      .catch(function (error) {
+        console.log('=== load comments template error')
+        console.log(error)
+        console.log(error.code)
+    })
+
+    if (serviceResponse != null)
+      MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
+        serviceResponse)
   }
 
   b64toBlob (imageURL) {

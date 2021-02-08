@@ -3,12 +3,35 @@
  */
 
 class DCCSubmit extends DCCButton {
-  async connectTo (id, topic, role) {
-    super.connectTo(id, topic, role)
-    if (role == 'schema') {
-      const result = await this.request(role, null, id)
+  connectedCallback () {
+    super.connectedCallback()
+    if (this.hasAttribute('id')) {
+      this.computeSubmit = this.computeSubmit.bind(this)
+      MessageBus.page.provides(this.id, 'control/submit',
+                               this.computeSubmit)
+    }
+  }
+
+  async connectTo (trigger, id, topic) {
+    super.connectTo(trigger, id, topic)
+    if (trigger == 'schema') {
+      const result = await this.request(trigger, null, id)
       if (result != null && result[id] != null)
         this._schema = result[id]
+    }
+  }
+
+  async computeSubmit () {
+    this._active = true
+    await this._computeTrigger()
+  }
+
+  async notify (topic, message) {
+    // super.notify(topic, message)
+    if (message.role != null && message.role == 'submit') {
+      await this.computeSubmit()
+      MessageBus.ext.publish(
+        MessageBus.buildResponseTopic(topic, message.body))
     }
   }
 
@@ -35,8 +58,13 @@ class DCCSubmit extends DCCButton {
           form = form.parentNode
         message.value = {}
         if (form != null)
-          for (let f of form)
-            message.value[f.id] = f.value
+          for (let f of form) {
+            if (f.type == 'radio' || f.type == 'checkbox') {
+              if (f.checked)
+                message.value[f.id] = f.value
+            } else
+              message.value[f.id] = f.value
+          }
       }
       if (this._checkPre(message, form)) {
           if (this._connections != null) {

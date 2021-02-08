@@ -12,6 +12,7 @@ class AuthorManager {
     MessageBus.page = new MessageBus(false)
     // MessageBus.int.subscribe('web/dhtml/record/updated', this.start)
     Basic.service.host = this
+    DCC.editable = true
 
     Translator.instance.authoringRender = true
 
@@ -108,7 +109,7 @@ class AuthorManager {
     this._navigationPanel = document.querySelector('#navigation-panel')
     this._knotPanel = document.querySelector('#knot-panel')
     this._messageSpace = document.querySelector('#message-space')
-
+    this.authorizeCommentSection()
     // this._userid = await Basic.service.signin();
 
     /*
@@ -135,6 +136,22 @@ class AuthorManager {
       */
     $('#settings-modal').on('shown.bs.modal', this.updateSourceField)
     // this.caseLoadSelect();
+  }
+
+  async authorizeCommentSection(){
+    let userGrade = sessionStorage.getItem('harena-user-grade')
+    if(userGrade !== 'professor'
+    && userGrade !== 'admin'
+    && userGrade !== 'coordinator'){
+      let disabledFieldSet = document.createElement('fieldset')
+      disabledFieldSet.setAttribute('disabled','true')
+      let commentsBlock = document.querySelector('#comments-block')
+      commentsBlock.setAttribute('data-toggle','tooltip')
+      commentsBlock.setAttribute('data-placement','top')
+      commentsBlock.setAttribute('title','Comments are "view-only" for students.')
+      document.querySelector('#elements-block').insertBefore(disabledFieldSet,commentsBlock)
+      disabledFieldSet.appendChild(commentsBlock)
+    }
   }
 
   /*
@@ -177,8 +194,11 @@ class AuthorManager {
           break
         case 'control/knot/edit': this.knotEdit()
           break
+        /*
+        <TODO> temporarily disabled
         case 'control/knot/markdown': this.knotMarkdown()
           break
+        */
         case 'control/knot/rename': this.knotRename(message)
           break
         case 'control/element/selected/down':
@@ -199,7 +219,7 @@ class AuthorManager {
             this.requestCurrentCaseId(topic, message);
             break;
          */
-        case 'control/knot/update': this.knotUpdate(message)
+        case 'control/knot/update': this.knotUpdate(topic, message)
           break
         case 'control/leave/drafts': await this.caseSave()
         // window.location.href = 'draft.html';
@@ -274,18 +294,30 @@ class AuthorManager {
     */
   async _caseLoad (caseId) {
     Basic.service.currentCaseId = caseId
+
+    const caseObj = await MessageBus.ext.request('data/case/' + caseId + '/get')
+
     /*
     const caseObj = await MessageBus.ext.request(
-      'data/case/' + Basic.service.currentCaseId + '/get')
-    */
-
-    const caseObj = await MessageBus.ext.request(
       'service/request/get', {caseId: caseId})
+
+    let source = caseObj.message.source
+    const template =
+      source.match(/^___ Template ___[\n]*\*[ \t]+template[ \t]*:[ \t]*(.+)$/im)
+    if (template != null && template[1] != null) {
+      console.log('=== template')
+      console.log(template)
+      const templateMd =
+        await MessageBus.ext.request(
+          'data/template/' + template[1].replace(/\//g, '.') +
+            '/get', {static: true})
+      source += templateMd.message
+    }
+    */
 
     this._currentCaseTitle = caseObj.message.title
     await this._compile(caseObj.message.source)
     await this._showCase()
-
   }
 
   async _compile (caseSource) {
@@ -323,28 +355,17 @@ class AuthorManager {
     */
   async caseSave () {
     document.getElementById('btn-save-draft').innerHTML = 'SAVING...'
+    await Properties.s.closePreviousProperties()
+    await this._updateActiveComments()
     if (Basic.service.currentCaseId != null && this._compiledCase != null) {
       this._checkKnotModification(this._renderState)
 
-      /*
-         if (this._temporaryCase) {
-            const caseTitle =
-               await DCCNoticeInput.displayNotice("Inform a title for your case:",
-                                                  "input");
-            this._currentCaseTitle = caseTitle;
-            this._temporaryCase = false;
-         }
-         */
-
-      const md = Translator.instance.assembleMarkdown(this._compiledCase)
+      const md = Translator.instance.assembleMarkdown(this._compiledCase, false)
       const status = await MessageBus.ext.request(
         'data/case/' + Basic.service.currentCaseId + '/set',
-        { // title: this._currentCaseTitle,
-          format: 'markdown',
+        { format: 'markdown',
           source: md
         })
-
-      // console.log('Case saved! Status: ' + status.message)
 
       Basic.service.authorPropertyStore('caseId', Basic.service.currentCaseId)
 
@@ -362,7 +383,7 @@ class AuthorManager {
   async updateSourceField () {
     this._checkKnotModification(this._renderState)
     const source = document.querySelector('#source')
-    const md = Translator.instance.assembleMarkdown(this._compiledCase)
+    const md = Translator.instance.assembleMarkdown(this._compiledCase, false)
     source.value = md
   }
 
@@ -371,11 +392,12 @@ class AuthorManager {
     */
   async caseMarkdown () {
     const nextState = (this._renderState != 3) ? 3 : 1
-    if (this._renderState != 3) {
-      this._originalMd = Translator.instance.assembleMarkdown(this._compiledCase)
+    if (nextState == 3) {
+      this._originalMd = Translator.instance.assembleMarkdown(
+        this._compiledCase, true)
       this._presentEditor(this._originalMd)
     } else {
-      this._checkKnotModification(nextState)
+      await this._checkKnotModification(nextState)
       this._renderState = nextState
       this._renderKnot()
     }
@@ -400,9 +422,10 @@ class AuthorManager {
   /*
     * Check if the knot was modified to update it
     */
-  _checkKnotModification (nextState) {
+  async _checkKnotModification (nextState) {
     // (1) render slide; (2) edit knot; (3) edit case
     let modified = false
+    /* <TODO> temporarily disabled
     if (this._renderState === 2) {
       if (this._editor != null) {
         const editorText = this._retrieveEditorText()
@@ -413,13 +436,15 @@ class AuthorManager {
           Translator.instance.compileKnotMarkdown(this._knots, this._knotSelected)
         }
       }
-    } else if (this._renderState === 3) {
+    } else
+    */
+    if (this._renderState === 3) {
       if (this._editor != null) {
         const editorText = this._retrieveEditorText()
         if (!this._originalMd || this._originalMd !== editorText) {
           modified = true
           if (nextState != 3) { delete this._originalMd }
-          this._compile(editorText)
+          await this._compile(editorText)
           if (nextState == 3) { this._renderState = 1 }
           this._showCase()
         }
@@ -465,6 +490,8 @@ class AuthorManager {
     // let knotid = MessageBus.extractLevel(topic, 3);
     const knotid =
          (message == null || message === '') ? this._knotSelected : message
+    console.log('=== knot selected')
+    console.log(knotid)
     if (knotid != null) {
       /*
          console.log("=== miniatureF");
@@ -532,11 +559,22 @@ class AuthorManager {
       this._checkKnotModification(this._renderState)
       this._knotSelected = knotid
       this._htmlKnot = await Translator.instance.generateHTML(
-        this._knots[this._knotSelected])
+        this._knots[knotid])
       this._renderKnot()
-      // this._collectEditableDCCs();
       delete this._elementSelected
+      await this._updateActiveComments()
+      this._comments = new Comments(this._compiledCase, knotid)
+      if (Panels.s.commentsVisible)
+        this._comments.activateComments()
       MessageBus.ext.publish('control/case/ready')
+    }
+  }
+
+  async _updateActiveComments() {
+    if (this._comments != null) {
+      if (this._comments.activated)
+        await MessageBus.ext.request('control/comments/submit')
+      this._comments.close()
     }
   }
 
@@ -588,6 +626,26 @@ class AuthorManager {
       let markdown = await MessageBus.ext.request('data/template/' +
                               template.replace(/\//g, '.') + '/get')
 
+      const templateTitle = Translator.instance.extractKnotTitle(markdown.message)
+      let ktitle = templateTitle
+
+      let kn =0
+      if (!ktitle.includes('_knot_number_') && this._knots[ktitle] != null) {
+        ktitle += ' _knot_number_'
+        kn = 1
+      }
+
+      let knotId
+      do {
+        kn++
+        knotId = ktitle.replace('_knot_number_', kn).replace(/ /, '_')
+      } while (this._knots[knotId] != null)
+      const knotMd = ktitle.replace('_knot_number_', kn)
+
+      console.log('=== k title')
+      console.log(knotId)
+
+      /*
       let last = 1
       for (const k in this._knots) {
         const kNumber = k.search(/Knot_[\d]+$/)
@@ -602,6 +660,9 @@ class AuthorManager {
       const knotMd = 'Knot_' + last
 
       markdown = markdown.message.replace('_Knot_Name_', knotMd) + '\n'
+      */
+
+      markdown = markdown.message.replace(templateTitle, knotMd) + '\n'
 
       const newKnotSet = {}
       for (const k in this._knots) {
@@ -618,7 +679,8 @@ class AuthorManager {
       this._compiledCase.knots = newKnotSet
       this._knots = newKnotSet
 
-      const md = Translator.instance.assembleMarkdown(this._compiledCase)
+      const md = Translator.instance.assembleMarkdown(
+        this._compiledCase, true)
       await this._compile(md)
 
       let newSelected = null
@@ -700,10 +762,21 @@ class AuthorManager {
 
   _renderKnot () {
     if (this._renderState == 1) {
+      /*
+      const promise = new Promise((resolve, reject) => {
+        const rendered = 'control/render/finished'
+        MessageBus.ext.subscribe(rendered, function(e) {resolve()})
+        this._knotPanel.innerHTML = this._htmlKnot + '<dcc-message message="' + rendered + '"></dcc-message>'
+      })
+      await promise
+      */
       this._knotPanel.innerHTML = this._htmlKnot
-    } else {
+    }
+    /* <TODO> temporarily disabled
+    else {
       this._presentEditor(this._knots[this._knotSelected]._source)
     }
+    */
   }
 
   _collectEditableDCCs () {
@@ -715,9 +788,13 @@ class AuthorManager {
     }
   }
 
-  elementSelected (topic, message) {
+  async elementSelected (topic, message) {
+    await Properties.s.closePreviousProperties()
+
     const dccId = MessageBus.extractLevel(topic, 3)
+
     this._collectEditableDCCs()
+
     const elSeq = parseInt(dccId.substring(3))
     let el = -1
     for (el = 0; el < this._knots[this._knotSelected].content.length &&
@@ -725,29 +802,54 @@ class AuthorManager {
     /* nothing */;
 
     if (el != -1) {
+      /*
       for (let edcc in this._editableDCCs)
         if (this._editableDCCs[edcc].deactivateAuthor)
           this._editableDCCs[edcc].deactivateAuthor()
+      */
 
-      let dcc = this._editableDCCs[dccId]
+      // let dcc = this._editableDCCs[dccId]
+      let dcc = await this._editableDCCWait(dccId)
       const element = this._knots[this._knotSelected].content[el]
 
       // if (this._previousEditedDCC) { this._previousEditedDCC.reactivateAuthor() }
 
       const role = (message != null) ? message.role : null
 
-      dcc.edit(role)
+      // dcc.deactivateAuthorCurrent()
 
       this._previousEditedDCC = dcc
 
       // check for a dcc inside a dcc
       const presentationId = (message == null) ? null : message.presentationId
+      /*
       dcc = (presentationId != null)
         ? this._editableDCCs[presentationId] : dcc
+      */
+      const parentDCC = dcc
+      if (presentationId != null)
+        dcc = await this._editableDCCWait(presentationId)
+      parentDCC.edit(role)
 
       Properties.s.editElementProperties(
-        this._knots, this._knotSelected, el, dcc, role)
+        this._knots, this._knotSelected, el, dcc, role, message.buttonType)
     }
+  }
+
+  // waits the element to be rendered (edit after a refresh when changes the edit from elements)
+  async _editableDCCWait (dccId) {
+    let result = this._editableDCCs[dccId]
+    const panel = this._knotPanel
+    while (result == null) {
+      const promise = new Promise((resolve, reject) => {
+        setTimeout(function(){
+          result = panel.querySelector('#' + dccId)
+          resolve()
+        }, 100)
+      })
+      await promise
+    }
+    return result
   }
 
   // creates an element if there is no element of the same type
@@ -765,7 +867,8 @@ class AuthorManager {
   elementNew (topic, message) {
     const elementType = MessageBus.extractLevel(topic, 3)
     const newElement = (message == null)
-      ? Translator.objTemplates[elementType] : message
+      ? JSON.parse(JSON.stringify(Translator.objTemplates[elementType]))
+      : message
     newElement.seq = this._knots[this._knotSelected].content[
       this._knots[this._knotSelected].content.length - 1].seq + 1
     this._knots[this._knotSelected].content.push(newElement)
@@ -813,13 +916,14 @@ class AuthorManager {
     }
   }
 
-  async knotUpdate () {
+  async knotUpdate (topic, message) {
     if (this._knotSelected != null) {
       this._htmlKnot = await Translator.instance.generateHTML(
         this._knots[this._knotSelected])
       this._renderKnot()
-      // this._collectEditableDCCs();
     }
+    if (topic != null && message != null)
+      MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message))
   }
 
   knotRename (newTitle) {
@@ -836,7 +940,7 @@ class AuthorManager {
     this._compiledCase.knots = newKnotSet
     this._knots = newKnotSet
 
-    const md = Translator.instance.assembleMarkdown(this._compiledCase)
+    const md = Translator.instance.assembleMarkdown(this._compiledCase, true)
     this._compile(md)
     this._showCase()
 
@@ -853,7 +957,9 @@ class AuthorManager {
 
   /*
     * ACTION: control-edit
+    * <TODO> temporarily disabled
     */
+  /*
   async knotMarkdown () {
     if (this._knotSelected != null) {
       const nextState = (this._renderState != 2) ? 2 : 1
@@ -865,6 +971,7 @@ class AuthorManager {
       this._renderKnot()
     }
   }
+  */
 
   /*
     * ACTION: control-play

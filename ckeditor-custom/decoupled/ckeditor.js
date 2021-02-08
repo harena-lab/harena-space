@@ -35,6 +35,7 @@ import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import List from '@ckeditor/ckeditor5-list/src/list';
+import ListStyle from '@ckeditor/ckeditor5-list/src/liststyle';
 import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
@@ -205,7 +206,8 @@ class HarenaPlugin extends Plugin {
 
             // Callback executed once the image is clicked.
             view.on( 'execute', () => {
-                MessageBus.int.publish('control/editor/edit/confirm')
+                const confirm = editor.config.get('harena.confirm')
+                MessageBus.int.publish(confirm)
             } );
 
             return view;
@@ -222,7 +224,8 @@ class HarenaPlugin extends Plugin {
 
             // Callback executed once the image is clicked.
             view.on( 'execute', () => {
-              MessageBus.int.publish('control/editor/edit/cancel')
+                const cancel = editor.config.get('harena.cancel')
+                MessageBus.int.publish(cancel)
             } );
 
             return view;
@@ -258,6 +261,7 @@ DecoupledEditor.builtinPlugins = [
 	// IndentBlock,  -- Harena customization
 	Link,
 	List,
+  ListStyle,
 	MediaEmbed,
 	Paragraph,
 	PasteFromOffice,

@@ -29,13 +29,15 @@ class DCCRest extends DCCBase {
     */
   }
 
-  async connectTo (id, topic, role) {
-    super.connectTo(id, topic, role)
-    if (role == 'schema')
-      this._schema = await this.request(role, null, id)
+  async connectTo (trigger, id, topic) {
+    super.connectTo(trigger, id, topic)
+    if (trigger == 'schema')
+      this._schema = await this.request(trigger, null, id)
   }
 
   async restRequest(method, parameters) {
+    // console.log('============ rest method')
+    // console.log(method)
     let result = null
 
     if (this._setup.environment)
@@ -54,21 +56,7 @@ class DCCRest extends DCCBase {
           method: method.toUpperCase(),
           url: url,
           withCredentials: true
-          /*
-          async: true,
-          crossDomain: true,
-          headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*'
-          }
-          */
         }
-
-        /*
-        if (this._setup.credentials && this._setup.credentials == 'use' &&
-            DCCRest.token)
-          request.headers['Authorization'] = 'Bearer ' + DCCRest.token
-        */
 
         let pathDetails = this._setup.oas.paths[paths[0]]
         let opid = ''
@@ -79,18 +67,12 @@ class DCCRest extends DCCBase {
             for (let p of pathDetails[method].parameters)
               if (p.in != null && p.in == 'query')
                 body[p.name] = parameters[p.name]
-            request.data = body
+            if (request.method == 'GET')
+              request.params = body
+            else
+              request.data = body
           }
         }
-
-        // console.log("=== request header")
-        // console.log(request)
-
-        /*
-        const jsonResp = await fetch(url, request)
-          .then(response => response.json())
-          .catch(error => console.log('error', error))
-        */
 
         await axios(request)
           .then(function (endpointResponse) {
@@ -101,22 +83,6 @@ class DCCRest extends DCCBase {
           .catch(function (error) {
             console.log(error)
           })
-
-        /*
-        if (this._setup.credentials && this._setup.credentials == 'store') {
-          if (jsonResp.token) {
-            DCCRest.token = jsonResp.token
-            // removes to avoid sending to the bus
-            delete jsonResp.token
-          }
-          if (jsonResp.refreshToken) {
-            DCCRest.refreshToken = jsonResp.refreshToken
-            // removes to avoid sending to the bus
-            delete jsonResp.refreshToken
-          }
-        }
-        */
-
 
       }
     }
@@ -143,7 +109,6 @@ class DCCRest extends DCCBase {
         parameters[MessageBus.extractLevel(topic, 2)] = par
       else
         parameters = par
-      // this.restRequest(message.role.toLowerCase(), parameters)
       this.serviceRequest(topic, parameters)
     }
   }

@@ -8,7 +8,6 @@
 
    <link rel="stylesheet" href="../../lib/fontawesome-5-10-1/css/all.min.css">
    <link rel="stylesheet" href="../../lib/bootstrap-4.4.1/css/bootstrap.min.css">
-   <link href="../../lib/quill-1-3-7/quill.snow.css" rel="stylesheet">
 
    <link rel="stylesheet" href="../../infra/css/common-player.css">
    <link rel="stylesheet" href="../../infra/css/common-author.css">
@@ -16,7 +15,6 @@
    <script src="../../lib/jquery-3-4-1/jquery-3.4.1.slim.min.js"></script>
    <script src="../../lib/popper-1-15-0/popper.min.js"></script>
    <script src="../../lib/bootstrap-4.4.1/js/bootstrap.min.js"></script>
-   <script src="../../lib/quill-1-3-7/quill.min.js"></script>
 
    <script src="../../config/config-standalone.js"></script>
 
@@ -24,39 +22,44 @@
    <script src="../../infra/basic.js"></script>
    <script src="../../infra/dcc-common-server-proxy.js"></script>
 
-   <script src="../../dccs/subscribe-dcc.js"></script>
-   <script src="../../dccs/trigger-dcc.js"></script>
-   <script src="../../dccs/property-dcc.js"></script>
-   <script src="../../dccs/components/dcc-base.js"></script>
-   <script src="../../dccs/components/dcc-timer.js"></script>
-   <script src="../../dccs/components/dcc-visual.js"></script>
-   <script src="../../dccs/components/dcc-markdown.js"></script>
-   <script src="../../dccs/components/dcc-annotation.js"></script>
-   <script src="../../dccs/components/dcc-image.js"></script>
-   <script src="../../dccs/components/dcc-expression.js"></script>
-   <script src="../../dccs/components/dcc-block.js"></script>
-   <script src="../../dccs/components/dcc-state.js"></script>
-   <script src="../../dccs/components/dcc-group.js"></script>
-   <script src="../../dccs/components/dcc-button.js"></script>
-   <script src="../../dccs/components/dcc-character.js"></script>
-   <script src="../../dccs/components/dcc-lively-dialog.js"></script>
-   <script src="../../dccs/components/dcc-notice-input.js"></script>
-   <script src="../../dccs/components/dcc-state-select.js"></script>
-   <script src="../../dccs/components/dcc-image-marker.js"></script>
-   <script src="../../dccs/components/dcc-styler.js"></script>
-   <script src="../../dccs/components/dcc-entity.js"></script>
-   <script src="../../dccs/components/dcc-input.js"></script>
-   <script src="../../dccs/components/dcc-input-typed.js"></script>
-   <script src="../../dccs/components/dcc-input-choice.js"></script>
-   <script src="../../dccs/components/dcc-input-table.js"></script>
-   <script src="../../dccs/components/dcc-slider.js"></script>
-   <script src="../../dccs/components/dcc-compute.js"></script>
-   <script src="../../dccs/components/dcc-report.js"></script>
-   <script src="../../dccs/components/dcc-web.js"></script>
-   <script src="../../dccs/components/dcc-graph.js"></script>
+   <script src="../../dccs/base/dcc.js"></script>
+   <script src="../../dccs/base/subscribe-dcc.js"></script>
+   <script src="../../dccs/base/connect-dcc.js"></script>
+   <script src="../../dccs/base/trigger-dcc.js"></script>
+   <script src="../../dccs/base/property-dcc.js"></script>
+   <script src="../../dccs/base/dcc-base.js"></script>
+   <script src="../../dccs/base/end-dcc.js"></script>
 
-   <script src="../../dccs/components/dcc-rss.js"></script>
-   <script src="../../dccs/components/dcc-aggregator.js"></script>
+   <script src="../../dccs/components/control/dcc-timer.js"></script>
+   <script src="../../dccs/base/dcc-visual.js"></script>
+   <script src="../../dccs/components/visual/dcc-markdown.js"></script>
+   <script src="../../dccs/components/visual/dcc-annotation.js"></script>
+   <script src="../../dccs/components/visual/dcc-image.js"></script>
+   <script src="../../dccs/components/visual/dcc-expression.js"></script>
+   <script src="../../dccs/base/dcc-block.js"></script>
+   <script src="../../dccs/components/visual/dcc-state.js"></script>
+   <script src="../../dccs/components/visual/dcc-group.js"></script>
+   <script src="../../dccs/components/visual/dcc-button.js"></script>
+   <script src="../../dccs/components/visual/dcc-character.js"></script>
+   <script src="../../dccs/components/visual/dcc-lively-dialog.js"></script>
+   <script src="../../dccs/components/visual/dcc-notice-input.js"></script>
+   <script src="../../dccs/components/visual/dcc-state-select.js"></script>
+   <script src="../../dccs/components/visual/dcc-image-marker.js"></script>
+   <script src="../../dccs/base/dcc-styler.js"></script>
+   <script src="../../dccs/components/visual/dcc-entity.js"></script>
+   <script src="../../dccs/components/visual/dcc-input.js"></script>
+   <script src="../../dccs/components/visual/dcc-input-typed.js"></script>
+   <script src="../../dccs/components/visual/dcc-input-choice.js"></script>
+   <script src="../../dccs/components/visual/dcc-input-table.js"></script>
+   <script src="../../dccs/components/visual/dcc-slider.js"></script>
+   <script src="../../dccs/components/control/dcc-compute.js"></script>
+   <script src="../../dccs/components/visual/dcc-report.js"></script>
+   <script src="../../dccs/components/web/dcc-web.js"></script>
+   <script src="../../dccs/components/visual/dcc-graph.js"></script>
+
+   <script src="../../dccs/components/web/dcc-rss.js"></script>
+   <script src="../../dccs/components/web/dcc-aggregator.js"></script>
+   <script src="../../dccs/components/web/dcc-dhtml.js"></script>
 
    <script src="../../dccs/components/web/dcc-include.js"></script>
 
@@ -68,6 +71,8 @@
    <script src="../../dccs/components/cell/rule-dcc-cell-transition.js"></script>
    <script src="../../dccs/components/cell/rule-dcc-cell-neighbor.js"></script>
    <script src="../../dccs/components/cell/rule-dcc-cell-expression.js"></script>
+
+   <script src="../../player/js/state.js"></script>
 
    <script>
       function start() {
@@ -108,8 +113,9 @@
 
 <body onload="start()">
    <script>
-      MessageBus.page = new MessageBus(false);
-      Basic.service.rootPath = "../../";
+      MessageBus.page = new MessageBus(false)
+      Basic.service.rootPath = "../../"
+      new PlayState()
    </script>
 
   <main role="main">

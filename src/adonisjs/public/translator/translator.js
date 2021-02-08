@@ -62,7 +62,7 @@ class Translator {
     if (this._themeSettings) { delete this._themeSettings }
     if (compiledCase.theme) {
       const themeSt = await MessageBus.int.request(
-        'data/theme_family/' + Basic.service.decomposeThemeFamily(compiledCase.theme).family +
+        'data/theme_family/' + Basic.service.decomposeThemeFamily(compiledCase.theme).family.toLowerCase() +
         '/settings')
       if (themeSt != null) { this._themeSettings = themeSt.message }
     }
@@ -88,7 +88,7 @@ class Translator {
   _indexLayers (markdown, compiledCase) {
     const layerBlocks = markdown.split(Translator.marksLayerTitle)
 
-    for (var lb = 1; lb < layerBlocks.length; lb += 2) {
+    for (let lb = 1; lb < layerBlocks.length; lb += 2) {
       const layer = {
         _source: layerBlocks[lb + 1]
       }
@@ -128,7 +128,8 @@ class Translator {
             this._knotMdToObj(knotBlocks[kb].match(Translator.element.knot.mark))
       transObj.render = true
       let label = transObj.title
-      if (transObj.level == 1) { knotCtx[0] = { label: label, obj: transObj } } else {
+      if (transObj.level == 1) { knotCtx[0] = { label: label, obj: transObj } }
+      else {
         let upper = -1
         for (let l = transObj.level - 2; l >= 0 && upper == -1; l--) {
           if (knotCtx[l] != null) { upper = l }
@@ -136,12 +137,16 @@ class Translator {
 
         if (upper != -1) {
           label = knotCtx[upper].label + '.' + label
-          knotCtx[upper].obj.render = false
+          if (transObj.categories && !transObj.categories.includes('note'))
+            knotCtx[upper].obj.render = false
         }
         knotCtx[transObj.level - 1] = { label: label, obj: transObj }
       }
       const knotId = label.replace(/ /g, '_')
-      if (kb == 1) { compiledCase.start = knotId } else if (transObj.categories && transObj.categories.indexOf('start') >= 0) { compiledCase.start = knotId }
+      if (kb == 1)
+        { compiledCase.start = knotId }
+      else if (transObj.categories && transObj.categories.includes('start'))
+        { compiledCase.start = knotId }
       if (compiledCase.knots[knotId]) {
         if (!compiledCase._error) { compiledCase._error = [] }
         compiledCase._error.push('Duplicate knots title: ' + label)
@@ -228,7 +233,7 @@ class Translator {
 
     this._compileMerge(knot)
 
-    this._compileContext(knotSet, knotId)
+    this._compileContext(knotSet, knotId, knot.content)
 
     // this._compileCompose(compiledKnot);
 
@@ -244,6 +249,7 @@ class Translator {
     let mdfocus = unity._source
 
     this._objSequence = 0
+    this._conditionNext = -1
 
     let matchStart
     do {
@@ -344,8 +350,7 @@ class Translator {
   /*
     * Gives context to links and variables
     */
-  _compileContext (knotSet, knotId) {
-    const compiled = knotSet[knotId].content
+  _compileContext (knotSet, knotId, compiled) {
     let defaultInput = 1
     for (const c in compiled) {
       if (compiled[c].type == 'input') {
@@ -379,7 +384,8 @@ class Translator {
                   compiled[c].type == 'divert') {
         compiled[c].contextTarget =
                this._findTarget(knotSet, knotId, compiled[c].target)
-      }
+      } else if (compiled[c].type == 'text-block')
+        this._compileContext(knotSet, knotId, compiled[c].content)
       /*
          {
             let target = compiled[c].target.replace(/ /g, "_");
@@ -460,11 +466,6 @@ class Translator {
     // third cycle - define the identity of each item: field or list
     for (let c = 1; c < compiled.length; c++) {
       if (compiled[c].type == 'item') {
-      /*
-            console.log("=== item");
-            console.log(compiled);
-            console.log(c);
-            */
         let u = c - 1
         while (u >= 0 && (compiled[u].type == 'linefeed' ||
                    (Translator.element[compiled[u].type] &&
@@ -554,13 +555,6 @@ class Translator {
     const levelHierarchy = []
     for (let c = 0; c < compiled.length; c++) {
       if (compiled[c].type == 'field') {
-        /*
-            console.log("=== field");
-            console.log(lastRoot);
-            console.log(lastField);
-            console.log(lastLevel);
-            console.log(compiled[c]);
-            */
         if (lastRoot == null || !compiled[c].subordinate) {
           if (compiled[c].value == null) { compiled[c].value = {} }
           lastRoot = compiled[c]
@@ -671,7 +665,7 @@ class Translator {
       // manages elements subordinated to the knot
       else if ((c == 0 || (c == 1 && compiled[c - 1].type == 'linefeed')) &&
                   compiled[c].subordinate && compiled[c].type == 'image') {
-        console.log('=== image back')
+        // console.log('=== image back')
         unity.background = {
           alternative: compiled[c].alternative,
           path: compiled[c].path
@@ -724,28 +718,44 @@ class Translator {
 
     // ninth cycle - aggregates options
     let optionGroup = null
+    let subtype = null
     for (let c = 1; c < compiled.length; c++) {
-      if (compiled[c].type == 'option' && compiled[c].subtype == '+') {
-        if (compiled[c - 1].type == 'option' && compiled[c - 1].subtype == '+') {
+      if (compiled[c].type == 'option') {
+        let stype = compiled[c].subtype
+        if (compiled[c-1].type == 'option' && compiled[c].subtype == subtype) {
           optionGroup = this._initializeObject(
             {
               type: 'input',
               subtype: 'choice',
               exclusive: true,
-              scramble: true,
+              shuffle: (subtype == '+'),
               options: {}
             }, compiled[c - 1]._source)
           this._transferOption(optionGroup.options, compiled[c-1])
-          compiled[c - 1] = optionGroup
+          compiled[c-1] = optionGroup
         }
-        if (optionGroup != null) {
+        if (optionGroup != null && compiled[c].subtype == subtype) {
           this._transferOption(optionGroup.options, compiled[c])
           optionGroup._source += '\n' + compiled[c]._source
           compiled.splice(c, 1)
           c--
-        }
+        } else
+          optionGroup = null
+        subtype = stype
       } else { optionGroup = null }
       compiled[c].seq = c + 1
+    }
+
+    // tenth cycle - hide comments
+    let inComment = false
+    for (let c = 1; c < compiled.length; c++) {
+      if (compiled[c].type == 'context-open' &&
+          compiled[c].context == 'comments')
+        inComment = true
+      else if (compiled[c].type == 'context-close' && inComment)
+        inComment = false
+      else if (inComment)
+        compiled[c].render = false
     }
   }
 
@@ -762,6 +772,8 @@ class Translator {
         options[compiledItem.label].state = compiledItem.state
         options[compiledItem.label].operation = compiledItem.operation
       }
+      if (compiledItem.compute)
+        options[compiledItem.label].compute = compiledItem.compute
   }
 
   // check if both are quoted or subordinated
@@ -878,8 +890,27 @@ class Translator {
       if (knots[k].inheritance) {
         const target = this.findContext(knots, k, knots[k].inheritance)
         if (knots[target]) {
-          if (!knots[k].categories && knots[target].categories) { knots[k].categories = knots[target].categories }
-          knots[k].content = JSON.parse(JSON.stringify(knots[target].content))
+          if (knots[target].categories) {
+            if (!knots[k].categories)
+              knots[k].categories = []
+            for (let c of knots[target].categories)
+              if (!['master', 'master_top', 'master_bottom'].includes(c))
+                knots[k].categories.push(c)
+            knots[k].categoriesInherited = knots[target].categories
+          }
+          let inherited = JSON.parse(JSON.stringify(knots[target].content))
+          for (let ct of inherited)
+            ct.inherited = true
+          if (knots[target].categories &&
+              knots[target].categories.includes('master_bottom'))
+            knots[k].content = knots[k].content.concat(inherited)
+          else
+            knots[k].content = inherited.concat(knots[k].content)
+          let seq = 1
+          for (let c in knots[k].content) {
+            knots[k].content[c].seq = seq
+            seq++;
+          }
         }
 
         // adjusting the context
@@ -898,7 +929,7 @@ class Translator {
         }
 
         // reinserting context
-        this._compileContext(knots, k)
+        this._compileContext(knots, k, compiled)
       }
     }
   }
@@ -968,7 +999,8 @@ class Translator {
     const themes = (knot.categories)
       ? knot.categories : ['knot']
     for (const tp in themes) {
-      if (!this._themeSet[themes[tp]]) {
+      if (!Translator.markerCategories.includes(themes[tp]) &&
+          !this._themeSet[themes[tp]]) {
         const templ = await
         this.loadTheme(themes[tp])
         if (templ != '') { this._themeSet[themes[tp]] = templ } else {
@@ -989,18 +1021,19 @@ class Translator {
       console.log(finalHTML);
       */
     for (let tp = themes.length - 1; tp >= 0; tp--) {
-      finalHTML = this._themeSet[themes[tp]]
-        .replace(/{knot}/igm, finalHTML)
-        .replace(/{background-path}/igm, backPath)
-        .replace(/{background-alternative}/igm, backAlt)
+      if (!Translator.markerCategories.includes(themes[tp]))
+        finalHTML = this._themeSet[themes[tp]]
+          .replace(/{knot}/igm, finalHTML)
+          .replace(/{background-path}/igm, backPath)
+          .replace(/{background-alternative}/igm, backAlt)
     }
     return finalHTML
   }
 
   async loadTheme (themeName) {
     const themeObj = await MessageBus.ext.request(
-      'data/theme/' + Basic.service.currentThemeFamily +
-            '.' + themeName + '/get')
+      'data/theme/' + Basic.service.currentThemeFamily.toLowerCase() +
+            '.' + themeName.toLowerCase() + '/get')
     return themeObj.message
   }
 
@@ -1047,9 +1080,6 @@ class Translator {
                           '<figure class="media"><iframe src="$1preview" width="560" height="315"></iframe><oembed url="$1$2"></oembed></figure>')
                  .replace(/<video><source src="([^"]+)"><\/video>/igm,
                           '<figure class="media"><oembed url="$1"></oembed></figure>')
-
-      // console.log('=== html from markdown')
-      // console.log(html)
     }
     return html
   }
@@ -1067,7 +1097,8 @@ class Translator {
 
   objToHTML (obj, superseq) {
     let html
-    if (obj.render !== undefined && !obj.render) { html = '' } else {
+    if ((obj.render !== undefined && !obj.render) ||
+        (obj.inherited && this.authoringRender)) { html = '' } else {
       switch (obj.type) {
         case 'blockquote': html = this._blockquoteObjToHTML(obj); break
         case 'text' : html = this._textObjToHTML(obj, superseq); break
@@ -1107,45 +1138,20 @@ class Translator {
   /*
     * Put together all source fragments
     */
-  assembleMarkdown (compiledCase) {
+  assembleMarkdown (compiledCase, includeStatic) {
     let md = ''
-    /*
-      for (let kn in compiledCase.knots)
-         md += compiledCase.knots[kn]._source;
-      */
     for (const kn in compiledCase.knots) {
       // toCompile indicates a part generated only with markdown (by newKnot)
       // and cannot inversely generate markdown
       if (compiledCase.knots[kn].toCompile) {
-        /*
-            const lastType = Translator.element[compiledCase.knots[kn].content[
-               compiledCase.knots[kn].content.length-1].type];
-            md += compiledCase.knots[kn]._source +
-                  ((lastType !== undefined &&
-                    lastType.line !== undefined &&
-                    lastType.line) ? "\n" : "");
-            */
         md += compiledCase.knots[kn]._source
       } else {
         md += compiledCase.knots[kn]._sourceHead + '\n'
-        if (compiledCase.knots[kn].inheritance) { md += '\n' } else {
-          for (const ct in compiledCase.knots[kn].content) {
-          /*
-                  let knotType =
-                     Translator.element[compiledCase.knots[kn].content[ct].type];
-                  */
-            const content = compiledCase.knots[kn].content[ct]
-            // const knotType = Translator.element[content.type];
-            /*
-                  console.log("=== knot type");
-                  console.log(compiledCase.knots[kn].content[ct].type);
-                  console.log(knotType);
-                  console.log(compiledCase.knots[kn].content[ct]._source +
-                        ((knotType !== undefined &&
-                          knotType.line !== undefined &&
-                          knotType.line) ? "\n" : ""));
-                  */
+        let newContent = 0
+        for (const ct in compiledCase.knots[kn].content) {
+          const content = compiledCase.knots[kn].content[ct]
 
+          if (!content.inherited) {
             // linefeed of the merged block (if block), otherwise linefeed of the content
             md += content._source +
                         (((content.mergeLine === undefined &&
@@ -1153,31 +1159,28 @@ class Translator {
                           (content.mergeLine !== undefined &&
                            content.mergeLine))
                           ? '\n' : '')
-
-            /*
-                  md += content._source +
-                        (((knotType !== undefined &&
-                           content.mergeLine === undefined &&
-                           knotType.line !== undefined &&
-                           knotType.line) ||
-                          (content.mergeLine !== undefined &&
-                           content.mergeLine))
-                        ? "\n" : "");
-                  */
-          /*
-                  console.log((knotType !== undefined &&
-                          knotType.line !== undefined &&
-                          knotType.line));
-                  */
+            newContent++
           }
         }
+        if (newContent == 0)
+          md += '\n'
       }
     }
 
-    for (const l in compiledCase.layers) {
-      md += Translator.markdownTemplates.layer.replace('[title]', l) +
-               compiledCase.layers[l]._source
+    // <TODO> provisory
+    if (compiledCase.layers) {
+      const dynamicLayers = ['Template', 'Comments']
+
+      const includeAllLayers =
+        includeStatic || !Object.keys(compiledCase.layers).includes('Template')
+
+      for (const l in compiledCase.layers) {
+        if (includeAllLayers || dynamicLayers.includes(l))
+          md += Translator.markdownTemplates.layer.replace('[title]', l) +
+                   compiledCase.layers[l]._source
+      }
     }
+
     return md
   }
 
@@ -1193,8 +1196,10 @@ class Translator {
       case 'text': element._source = this._textObjToMd(element)
         break
       case 'text-block':
+        /*
         console.log('=== update markdown text block')
         console.log(element)
+        */
         element._source = ''
         for (const sub of element.content) {
           this.updateElementMarkdown(sub)
@@ -1206,6 +1211,8 @@ class Translator {
       case 'image': element._source = this._imageObjToMd(element)
         break
       case 'option': element._source = this._optionObjToMd(element)
+        break
+      case 'field': element._source = this._fieldObjToMd(element)
         break
       case 'entity': element._source = this._entityObjToMd(element)
         break
@@ -1235,8 +1242,16 @@ class Translator {
   }
 
   /*
-    * Knot Md to Obj
-    */
+   * Extracts the title of the first knot (to be used in templates conversion)
+   */
+  extractKnotTitle (knotMd) {
+    const knotObj = this._knotMdToObj(Translator.element.knot.mark.exec(knotMd))
+    return knotObj.title
+  }
+
+  /*
+   * Knot Md to Obj
+   */
   _knotMdToObj (matchArray) {
     const knot = {
       type: 'knot'
@@ -1261,7 +1276,8 @@ class Translator {
       }
     }
 
-    if (matchArray[4] != null) { knot.inheritance = matchArray[4].trim() } else if (matchArray[7] != null) { knot.inheritance = matchArray[7].trim() }
+    if (matchArray[4] != null) { knot.inheritance = matchArray[4].trim() }
+    else if (matchArray[7] != null) { knot.inheritance = matchArray[7].trim() }
 
     if (matchArray[1] != null) { knot.level = matchArray[1].trim().length } else
     if (matchArray[8][0] == '=') { knot.level = 1 } else { knot.level = 2 }
@@ -1273,12 +1289,15 @@ class Translator {
     * Knot Obj to Md
     */
   _knotObjToMd (obj) {
+    let categories = obj.categories
+    if (obj.categories && obj.categoriesInherited)
+      categories = obj.categories.filter(c => !obj.categoriesInherited.includes(c))
     return Translator.markdownTemplates.knot
       .replace('[level]', '#'.repeat(obj.level))
       .replace('[title]', obj.title)
       .replace('[categories]',
-        (obj.categories)
-          ? ' (' + obj.categories.join(',') + ')' : '')
+        (categories)
+          ? ' (' + categories.join(',') + ')' : '')
       .replace('[inheritance]',
         (obj.inheritance)
           ? ': ' + obj.inheritance : '')
@@ -1546,7 +1565,8 @@ class Translator {
       */
 
     const option = {
-      type: 'option'
+      type: 'option',
+      subordinate: /^\t|^ [\t ]/.test(matchArray[0])
     }
 
     option.subtype = (matchArray[1] != null) ? matchArray[1].trim() : '_'
@@ -1559,11 +1579,18 @@ class Translator {
     if (matchArray[3] != null) { option.divert = matchArray[3].trim() }
     if (matchArray[4] != null) { option.target = matchArray[4].trim() }
     if (matchArray[5] != null) { option.message = matchArray[5].trim() }
+
+    // <TODO> backwards compatibility -- remove in the future?
     if (matchArray[6] != null)
       { option.operation = matchArray[6].trim() }
     else if (matchArray[8] != null)
       { option.operation = matchArray[8].trim() }
     if (matchArray[7] != null) { option.state = matchArray[7].trim() }
+
+    // compute element inside option
+    if (matchArray[9] != null)
+      option.compute = matchArray[9].trim()
+    //  option.compute = this._computeMdToObj(['', matchArray[9], matchArray[10], matchArray[11]], true)
 
     return option
   }
@@ -1587,10 +1614,9 @@ class Translator {
       if (lastDot > -1) { label = label.substr(lastDot + 1) }
     }
 
-    return Translator.htmlTemplates.option
+    const option = Translator.htmlTemplates.option
       .replace('[seq]', obj.seq)
       .replace('[author]', this.authorAttr)
-      .replace('[subtype]', obj.subtype)
       .replace('[target]', this._transformNavigationMessage(obj.contextTarget))
       .replace('[display]', label)
       .replace('[divert]',
@@ -1598,6 +1624,27 @@ class Translator {
       .replace('[message]',
         (obj.message == null) ? '' : " message='" + obj.message + "'")
       .replace('[image]', optionalImage)
+      .replace('[connect]',
+        (obj.compute == null) ? '' :
+           Translator.htmlSubTemplates.compute.connect
+             .replace('[seq]', obj.seq))
+      .replace('[compute]',
+        (obj.compute == null) ? '' :
+           Translator.htmlSubTemplates.compute.component
+             .replace('[seq]', obj.seq)
+             .replace('[expression]', obj.compute))
+      .replace(
+        '[show]', (this._conditionNext == obj.seq) ? ' display="none"' : '')
+
+      /*
+      console.log('=== button')
+      console.log(option)
+      */
+
+      if (this._conditionNext == obj.seq)
+        this._conditionNext = -1
+
+      return option
   }
 
   _transformNavigationMessage (target) {
@@ -1631,12 +1678,16 @@ class Translator {
             !!((matchArray[1][0] === '\t' || matchArray[1].length > 1)),
       field: matchArray[2].trim()
     }
-    if (matchArray[3] != null) { field.value = matchArray[3].trim() }
+    if (matchArray[3] != null) {
+      field.value = matchArray[3].trim()
+    } else if (matchArray[4] != null) {
+      field.value = matchArray[4].trim()
+    }
     if (Translator.fieldSet.includes(field.field) && field.value) {
       field.value = field.value.split(',')
       for (const fv in field.value) { field.value[fv] = field.value[fv].trim() }
     }
-    if (matchArray[4] != null) { field.target = matchArray[4].trim() }
+    if (matchArray[5] != null) { field.target = matchArray[5].trim() }
     if (field.subordinate) { field.level = this._computeLevel(matchArray[1]) }
     return field
   }
@@ -1661,6 +1712,27 @@ class Translator {
     */
   _fieldObjToHTML (obj) {
     return obj.presentation
+  }
+
+  _fieldObjToMd (obj) {
+    let level = 0
+    let fieldObj = {}
+    fieldObj[obj.field] = obj.value
+    return this._visitFields(fieldObj, 0)
+  }
+
+  _visitFields (fields, level) {
+    let md = ''
+    const spaces = ' '.repeat(level)
+    for (let f in fields) {
+      md += spaces + "* " + f + ': '
+      if (typeof fields[f] === 'object')
+        md += '\n' + this._visitFields(fields[f], level+2)
+      else if (typeof fields[f] === 'string')
+        md += "'" + fields[f].replace(/'/gm, '"') + "'\n"
+      else md += fields[f] + '\n'
+    }
+    return md
   }
 
   _itemMdToObj (matchArray) {
@@ -1915,11 +1987,17 @@ class Translator {
           .replace('[option]', op)
         if (typeof obj.options[op] === 'string') {
           choice = choice.replace('[target]', '')
-            .replace('[value]', obj.options[op])
+                         .replace('[value]', obj.options[op])
+        } else if (typeof obj.options[op] === 'boolean') {
+          choice = choice.replace('[target]', '')
+                         .replace('[value]', op)
         } else {
           choice = choice.replace('[target]',
-            "target='" + this._transformNavigationMessage(obj.options[op].contextTarget) + "' ")
+            ((obj.options[op].contextTarget == null) ? '' :
+              "target='" + this._transformNavigationMessage(obj.options[op].contextTarget) + "' "))
             .replace('[value]', obj.options[op].message)
+            .replace('[compute]',
+              (obj.options[op].compute == null) ? '' : ' compute="' + obj.options[op].compute + '"')
         }
         statement += choice
       }
@@ -1933,7 +2011,7 @@ class Translator {
 
     let extraAttr = ''
     for (const atr in obj) {
-      if (!coreAttributes.includes(atr) && obj[atr] != 'false') {
+      if (!coreAttributes.includes(atr) && obj[atr] != 'false' && obj[atr]) {
         extraAttr += ' ' + atr +
                          ((obj[atr] == 'true') ? '' : "='" + obj[atr] + "'")
       }
@@ -1951,6 +2029,11 @@ class Translator {
       .replace('[variable]', obj.variable)
       .replace('[statement]', statement)
       .replace('[extra]', extraAttr)
+      .replace(
+        '[show]', (this._conditionNext == obj.seq) ? ' display="none"' : '')
+
+    if (this._conditionNext == obj.seq)
+      this._conditionNext = -1
 
     if (obj.subtype == 'group select') {
       // <TODO> weak strategy -- improve
@@ -1976,7 +2059,7 @@ class Translator {
     let md = ''
 
     if (obj.subtype == 'choice' && obj.exclusive == true &&
-          obj.scramble == true) {
+        obj.shuffle == true) {
       let first = true
       for (const op in obj.options) {
         if (!first) { md += '\n' }
@@ -2049,28 +2132,58 @@ class Translator {
     * Compute Md to Obj
     */
   _computeMdToObj (matchArray) {
-    const sentence = {
+    const compute = {
       type: 'compute',
-      operator: matchArray[2],
-      value: matchArray[3].trim()
+      expression: matchArray[1].trim()
     }
+
+    if (matchArray[2] != null) compute.conditional = true
+
+    return compute
+
+    /*
+    let sentence = {}
+
+    if (!withoutType)
+      sentence.type = 'compute'
+
+    sentence.operator = matchArray[2]
+    sentence.value = matchArray[3].trim()
 
     if (matchArray[1] != null) { sentence.variable = matchArray[1].trim() }
 
     return sentence
+    */
   }
 
   /*
     * Compute Obj to HTML
     */
   _computeObjToHTML (obj) {
-    const variable = (obj.variable != null)
-      ? obj.variable : Translator.defaultVariable
+    let compute
+    if (obj.conditional) {
+      const timer = obj.expression.match(/timer[ \t]*=[ \t]*(\d+)/im)
+      if (timer != null && timer[1]) {
+        compute = Translator.htmlTemplates.timer
+          .replace('[cycles]', timer[1])
+          .replace(/\[to\]/igm, (obj.seq+1))
+      } else {
+        compute = Translator.htmlTemplates.compute
+          .replace('[expression]', obj.expression)
+          .replace('[connect]', ' connect="true:dcc' + (obj.seq+1) +
+                   ':style/display/initial"')
+        compute += Translator.htmlTemplates.compute
+          .replace('[expression]', obj.expression)
+          .replace('[connect]', ' connect="false:dcc' + (obj.seq+1) +
+                   ':style/display/none"')
+      }
+      this._conditionNext = obj.seq + 1
+    } else
+      compute = Translator.htmlTemplates.compute
+                  .replace('[expression]', obj.expression)
+                  .replace('[connect]', '')
 
-    const instruction = variable + obj.operator + obj.value
-
-    return Translator.htmlTemplates.compute
-      .replace('[instruction]', instruction)
+    return compute
   }
 
   /*
@@ -2177,6 +2290,12 @@ class Translator {
   Translator.marksLayerTitle = /^[ \t]*\_{2,}((?:.(?!\_{2,}))*.)(?:\_{2,})?[ \t]*$/igm
   Translator.marksKnotTitle = /((?:^[ \t]*(?:#+)[ \t]*(?:[^\( \t\n\r\f][^\(\n\r\f]*)(?:\((?:\w[\w \t,]*)\))?(?:\:[ \t]*[^\(\n\r\f][^\(\n\r\f\t]*)?[ \t]*#*[ \t]*$)|(?:^[ \t]*(?:[^\( \t\n\r\f][^\(\n\r\f]*)(?:\((?:\w[\w \t,]*)\))?(?:\:[ \t]*[^\(\n\r\f][^\(\n\r\f\t]*)?[ \t]*[\f\n\r][\n\r]?(?:==+|--+)$))/igm
 
+  Translator.fragment = {
+    // compute: '~[ \\t]*(\\w+)?[ \\t]*([+\\-*/=])[ \\t]*(\\d+(?:\\.\\d+)?)',
+    compute: '~[ \\t]*([\\w+\\-*/= :<>\\t]+)(\\?)?',
+    option: '^[ \\t]*([\\+\\*])[ \\t]+([^&<> \\t\\n\\r\\f][^&<>\\n\\r\\f]*)?((?:(?:(?:&lt;)|<)?-(?:(?:&gt;)|>))|(?:\\(-\\)))[ \\t]*([^">~\\n\\r\\f(]+)(?:"([^"\\n\\r\\f]*)")?[ \\t]*(?:(\\>)?\\(\\(([^)]*)\\)\\))?(\\?)?[ \\t]*'
+  }
+
   Translator.element = {
     knot: {
       mark: /(?:^[ \t]*(#+)[ \t]*([^\( \t\n\r\f\:][^\(\n\r\f\:]*)(?:\((\w[\w \t,]*)\))?[ \t]*(?:\:[ \t]*([^\(\n\r\f][^\(\n\r\f\t]*))?[ \t]*#*[ \t]*$)|(?:^[ \t]*([^\( \t\n\r\f\:][^\(\n\r\f\:]*)(?:\((\w[\w \t,]*)\))?[ \t]*(?:\:[ \t]*([^\(\n\r\f][^\(\n\r\f\t]*))?[ \t]*[\f\n\r][\n\r]?(==+|--+)$)/im,
@@ -2191,17 +2310,19 @@ class Translator {
       inline: true
     },
     field: {
-      mark: /^([ \t]*)(?:[\+\*])[ \t]+([\w.\/\?&#\-][\w.\/\?&#\- \t]*):[ \t]*([^&>\n\r\f]+)?(?:-(?:(?:&gt;)|>)[ \t]*([^\(\n\r\f]+))?$/im,
+      mark: /^([ \t]*)(?:[\+\*])[ \t]+([\w.\/\?&#\-][\w.\/\?&#\- \t]*):[ \t]*([^&>\n\r\f'][^&>\n\r\f]*)?(?:'([^']*)')?(?:-(?:(?:&gt;)|>)[ \t]*([^\(\n\r\f]+))?$/im,
       subfield: true,
       subimage: true,
       subtext: 'value'
     },
     item: {
-      mark: /^( {2}|\t[ \t]*)(?:[\+\*])[ \t]+([\w.\/\?&#\-][\w.\/\?&#\- \t]*)$/im,
+      mark: /^((?:  |\t)[ \t]*)(?:[\+\*])[ \t]+([\w.\/\?&#\-][\w.\/\?&#\- \t]*)$/im,
       subtext: 'value'
     },
     option: {
-      mark: /^[ \t]*([\+\*])[ \t]+([^&<> \t\n\r\f][^&<>\n\r\f]*)?((?:(?:(?:&lt;)|<)?-(?:(?:&gt;)|>))|(?:\(-\)))[ \t]*([^"\n\r\f(]+)(?:"([^"\n\r\f]*)")?[ \t]*(?:(\>)?\(\(([^)]*)\)\))?(\?)?[ \t]*$/im
+      mark: new RegExp(Translator.fragment.option +
+                       '(?:' + Translator.fragment.compute + ')?[ \\t]*$', 'im')
+      // mark: /^[ \t]*([\+\*])[ \t]+([^&<> \t\n\r\f][^&<>\n\r\f]*)?((?:(?:(?:&lt;)|<)?-(?:(?:&gt;)|>))|(?:\(-\)))[ \t]*([^">\n\r\f(]+)(?:"([^"\n\r\f]*)")?[ \t]*(?:(\>)?\(\(([^)]*)\)\))?(\?)?[ \t]*$/im
     },
     'divert-script': {
       mark: /^[ \t]*(?:\(([\w\.]+)[ \t]*(==|>|<|>=|<=|&gt;|&lt;|&gt;=|&lt;=)[ \t]*((?:"[^"\n\r\f]+")|(?:\-?\d+(?:\.\d+)?)|(?:[\w\.]+))\)[ \t]*)?-(?:(?:&gt;)|>)[ \t]*([^"\n\r\f]+)(?:"([^"\n\r\f]+)")?[ \t]*$/im
@@ -2231,18 +2352,19 @@ class Translator {
       inline: true
     },
     compute: {
-      mark: /~[ \t]*(\w+)?[ \t]*([+\-*/=])[ \t]*(\d+(?:\.\d+)?)$/im
+      mark: new RegExp(Translator.fragment.compute + '$', 'im')
+      // mark: /~[ \t]*(\w+)?[ \t]*([+\-*/=])[ \t]*(\d+(?:\.\d+)?)$/im
     },
     'context-open': {
       mark: /\{\{(?:([^\:\n\r\f]+)\:)?([\w \t\+\-\*\."=%]+)?(?:\/([\w \t\.\:]+)\/)?$/im
     },
-    'context-close': { mark: /\}\}/im },
+    'context-close': { mark: /^[ \t]*\}\}/im },
     select: {
       mark: /\{([^\}\n\r\f]+)\}(?:\(([^\)\n\r\f]+)\))?(?:\/([^\/\n\r\f]+)\/)/im,
       inline: true
     },
     annotation: {
-      mark: /\{([^\}\n\r\f]+)\}(?:\(([^\)\n\r\f]+)\))?/im,
+      mark: /(?<!\{)\{(?!\{)([^\}\n\r\f]+)\}(?:\(([^\)\n\r\f]+)\))?/im,
       inline: true
     },
     linefeed: {
@@ -2266,13 +2388,17 @@ class Translator {
   Translator.marksAnnotationInside =
     /(?:([^\:\n\r\f]+)\:)?([^=\n\r\f]+)(?:=([\w \t%]*)(?:\/([\w \t%]*))?)?/im
 
+  // Categories that do not have a correspondent theme
+  Translator.markerCategories = ['start', 'end', 'division', 'master',
+                                 'master_top', 'master_bottom']
+
   // <TODO> this is a different approach indicating characteristic by type
   // (homogenize?)
   Translator.subordinatorElement = ['entity']
   Translator.isLine = ['knot', 'field', 'item', 'option', 'divert-script', 'entity', 'input',
     'compute', 'context-open']
   Translator.textBlockCandidate = ['select', 'annotation', 'text', 'mention', 'image',
-    'output']
+    'output', 'divert']
   Translator.scriptable = ['compute', 'divert-script']
 
   Translator.fieldSet = ['vocabularies', 'answers', 'states', 'labels']

@@ -1,7 +1,19 @@
 # Build directions
 
-Copy this source to the directory `ckeditor5/packages/ckeditor5-build-classic`
+Copy this source to the directory `ckeditor5/packages/ckeditor5-build-decoupled-document`
 
 First time run: `npm install` inside the directory
 
+Rebuild the source and copy the files: `./harena-build`
+
+or
+
 Rebuild the source: `yarn run build`
+
+To install Yarn:
+
+`npm install yarn --global`
+
+or
+
+`npm install yarn@1.22.5 --global`

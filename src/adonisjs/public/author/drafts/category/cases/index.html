@@ -8,7 +8,7 @@
 
     <link rel="stylesheet" href="../../../css/author.css">
 
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="/lib/axios-0.21.0/axios.min.js"></script>
 
     <script src="../../../../lib/jquery-3-4-1/jquery-3.4.1.slim.min.js"></script>
     <script src="../../../../lib/popper-1-15-0/popper.min.js"></script>
@@ -22,12 +22,12 @@
     <script src="../../../../infra/simple-page-tasks.js"></script>
     <script src="../../../../infra/token-validator.js"></script>
 
-    <script src="../../../../dccs/dcc.js"></script>
-    <script src="../../../../dccs/components/dcc-base.js "></script>
-    <script src="../../../../dccs/components/dcc-visual.js "></script>
-    <script src="../../../../dccs/components/dcc-block.js"></script>
-    <script src="../../../../dccs/components/dcc-button.js"></script>
-    <script src="../../../../dccs/components/dcc-notice-input.js"></script>
+    <script src="../../../../dccs/base/dcc.js"></script>
+    <script src="../../../../dccs/base/dcc-base.js "></script>
+    <script src="../../../../dccs/base/dcc-visual.js "></script>
+    <script src="../../../../dccs/base/dcc-block.js"></script>
+    <script src="../../../../dccs/components/visual/dcc-button.js"></script>
+    <script src="../../../../dccs/components/visual/dcc-notice-input.js"></script>
 
     <script src="../../../../dccs/components/web/dcc-rest.js"></script>
     <script src="../../../../dccs/components/web/dcc-include.js"></script>
@@ -37,11 +37,11 @@
     <script src="../../../../dccs/components/data/dcc-model.js"></script>
     <script src="../../../../dccs/components/data/dcc-record.js"></script>
 
-    <script src="../../../../dccs/subscribe-dcc.js"></script>
-    <script src="../../../../dccs/trigger-dcc.js"></script>
-    <script src="../../../../dccs/property-dcc.js"></script>
-    <script src="../../../../dccs/connect-dcc.js"></script>
-    <script src="../../../../dccs/end-dcc.js"></script>
+    <script src="../../../../dccs/base/subscribe-dcc.js"></script>
+    <script src="../../../../dccs/base/trigger-dcc.js"></script>
+    <script src="../../../../dccs/base/property-dcc.js"></script>
+    <script src="../../../../dccs/base/connect-dcc.js"></script>
+    <script src="../../../../dccs/base/end-dcc.js"></script>
 
     <script src="../../../../infra/dcc-rest-proxy.js"></script>
     <script src="../../../../infra/dcc-basic.js"></script>
@@ -66,6 +66,56 @@
   <body onload="DraftManager.instance.start()">
     <!-- Login/logout header -->
     <dcc-include src="/author/partials/header.html"></dcc-include>
+
+    <div id="alert-feedback" class="alert alert-success ml-2 mt-5" role="alert" style="position:absolute; display:none;">
+    </div>
+
+    <!-- Share casel modal -->
+    <dcc-rest id="harena-share-cases" bind="harena-share-cases" subscribe="share/request/post:retrieve"></dcc-rest>
+    <div class="modal fade" id="share-modal" tabindex="-1" role="dialog" aria-labelledby="share-modal" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-body">
+            <form>
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="entity">Share with:</label>
+                    <select class="custom-select" id="entity" name="entity">
+                      <option value="institution">Institution</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
+                  <dcc-dhtml connect="retrieve:harena-institutions:service/request/get">
+                    <label for="subject">Select an option:</label>
+
+                    <select class="custom-select" id="subject" name="subject">
+                      <option selected></option>
+                      {{@foreach . institution}}
+                      <option value="{{institution.id}}">{{institution.title}}</option>
+                      {{@endfor}}
+                    </select>
+                    <end-dcc></end-dcc>
+                  </dcc-dhtml>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="clearance">Permission to: </label>
+                <select class="custom-select" id="clearance" name="clearance">
+                  <option value="1">Play</option>
+                  <option value="4">Edit</option>
+                </select>
+              </div>
+              <input type="hidden" name="table_id" id="table_id" value="">
+              <dcc-submit label="Share" xstyle="btn btn-success" data-dismiss="modal" topic="share/request/post"></dcc-submit>
+              <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Share case modal -->
+
     <!-- Create a section to place page content -->
     <main role="main">
       <div class="d-flex flex-column vh-100 vw-100 draft-author-padding hidden-overflow">
@@ -82,25 +132,75 @@
         </div>
         <!-- End of breadcrumbs -->
 
-        <div class="h-100 w-100 draft-content-padding">
-          <div class="home-text mb-3">
+        <div class="h-100 w-100 draft-content-padding scroll-y">
+          <div class="home-text" style="height: auto !important;">
             <p>Continue editing your drafted cases.</p>
           </div>
-          <div id="case-boxes" class="container-fluid h-100 scroll-y draft-scroll-container">
+          <div class="home-author-padding rounded row sticky-top" style="z-index:3;">
+            <form class="pl-2 align-items-center row" id="filter-form">
+              <div class="p-2 ml-4">Filter by: </div>
+              <div class="pr-3">
+                <dcc-rest id="harena-institutions" bind="harena-institutions"></dcc-rest>
+                <dcc-dhtml id="harena-dhtml-institutions" connect="retrieve:harena-institutions:service/request/get">
+
+                  <select id="fInstitution" name="fInstitution" class="custom-select custom-select-sm">
+                    <option selected value="">Institution</option>
+                    {{@foreach . institution}}
+                    <option value={{institution.id}}>{{institution.acronym}}</option>
+                    {{@endfor}}
+                  </select>
+
+                  <end-dcc></end-dcc>
+                </dcc-dhtml>
+              </div>
+              <div class="pr-3">
+                <select id="fUserType" name="fUserType" class="custom-select custom-select-sm">
+                  <option selected value="">User type</option>
+                  <option value="professor">Professor</option>
+                  <option value="aluno">Aluno</option>
+                </select>
+              </div>
+              <div class="pr-3" style="width: 120px;">
+                <input type="text" class="form-control custom-select-sm" id="fSpecialty" placeholder="Specialty">
+              </div>
+              <dcc-submit id="filter-submit" label="Filter" xstyle="btn btn-secondary" topic="cases/request/get"></dcc-submit>
+            </form>
+            <dcc-rest id="harena-cases-filter" bind="harena-cases" subscribe="cases/request/get:retrieve"></dcc-rest>
+
+            <!-- Containers to selectAll/share cases -->
+            <!-- <div class="form-check mt-2 ml-auto" id="share-checkbox">
+              <input class="form-check-input" type="checkbox" id="select-all-checkbox">
+              <label for="select-all-checkbox">Select All</label>
+            </div>
+            <button type="button" class="btn btn-success mr-4 m-1" data-toggle="modal" data-target="#share-modal">
+              Share cases
+            </button> -->
+            <!-- End of containers to selectAll/share cases -->
+          </div>
+
+          <div id="case-boxes" class="container-fluid draft-scroll-container">
             <dcc-rest id="harena-category-cases" bind="harena-category-cases"></dcc-rest>
-            <dcc-dhtml id="harena-dhtml-cases" connect="harena-category-cases:service/request/get:retrieve">
+            <dcc-dhtml id="harena-dhtml-cases" connect="retrieve:harena-category-cases:service/request/get"  subscribe="service/response/get/harena-cases-filter:update">
               {{@foreach . cases}}
+
+              <!-- checkbox for selecting cases -->
+              <!-- <div class="col">
+                <div class="form-check" id="share-checkbox">
+                  <input class="form-check-input" type="checkbox" id="c{{cases.id}}" value="{{cases.id}}">
+                </div>
+              </div> -->
+              <!-- end of checkbox for selecting cases -->
               <div id="b{{cases.id}}" class="row draft-author-case-container">
                 <div class="col draft-case-title">
-                  {{cases.title}}
+                  <label class="ml-2">{{cases.title}}</label>
+
                   <div class="row">
-                    <h6>Created by {{cases.author_grade}}: {{cases.username}}</h6>
+                    <h6>Created by {{cases.author_grade}}: {{cases.username}} ({{cases.institution_acronym}})</h6>
                   </div>
                 </div>
 
                 <div class="d-flex justify-content-end justify-content-center buttons-container">
-                  <div id="e{{cases.id}}" class="col author-panel-button align-self-center pt-2 pb-2"
-                    onclick="window.location.href='/author?id={{cases.id}}'">EDIT</div>
+                  <div id="e{{cases.id}}" class="col author-panel-button align-self-center pt-2 pb-2">EDIT</div>
                   <div id="p{{cases.id}}" class="col author-panel-button align-self-center pt-2 pb-2">PREVIEW</div>
                   <div id="d{{cases.id}}" class="col author-panel-button align-self-center pt-2 pb-2">DELETE</div>
                 </div>

@@ -22,7 +22,7 @@ class AuthorVersumManager {
   async translate (topic, message) {
     Translator.instance.authoringRender = false
 
-    Basic.service.currentThemeFamily = 'zombie'
+    Basic.service.currentThemeFamily = 'plain'
     DCCCommonServer.instance.local = true
 
     const compiled = await Translator.instance.compileMarkdown(

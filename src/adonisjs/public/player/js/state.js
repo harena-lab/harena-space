@@ -124,29 +124,29 @@ class PlayState {
   variableGet (topic, message) {
     let id = MessageBus.extractLevel(topic, 2)
 
-    /*
-    console.log('=== variable request')
-    console.log(id)
+    if (id != null)
+      id = id.toLowerCase()
 
-    console.log('=== variables')
-    console.log(this._state.variables)
-    */
-
-    if (id.startsWith('Previous.')) {
+    if (id != null && id.startsWith('previous.')) {
       const previousKnot = this.historyPreviousId()
       if (previousKnot != null) { id = previousKnot + '.' + id.substring(9) }
     }
 
-    // tries to give a scope to the variable
-    if (id != null && this._state.variables[id] == null) {
-      const currentKnot = this.historyCurrent()
-      if (currentKnot != null &&
-          this._state.variables[currentKnot + '.' + id] != null) { id = currentKnot + '.' + id }
-    }
-
-    if (id != null) {
+    if (id == '*')
       MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-        this._state.variables[id])
+                             this._state.variables)
+    else {
+      // tries to give a scope to the variable
+      if (id != null && this._state.variables[id] == null) {
+        const currentKnot = this.historyCurrent()
+        if (currentKnot != null &&
+            this._state.variables[currentKnot + '.' + id] != null) { id = currentKnot + '.' + id }
+      }
+
+      if (id != null) {
+        MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
+          this._state.variables[id])
+      }
     }
   }
 
@@ -166,11 +166,26 @@ class PlayState {
     }
   }
 
-  variableSet (topic, value) {
+  variableSet (topic, message) {
     const id = MessageBus.extractLevel(topic, 2)
-    if (id != null) { this._state.variables[id] = value }
+    let status = false
+    const content =
+      (message.responseStamp != null && message.body != null) ?
+      message.body : message
+
+    if (id != null) {
+      if (id == '*') {
+        const vars = (content.value != null) ? content.value : content
+        for (let v in vars)
+          this._state.variables[v] = vars[v]
+      } else
+        this._state.variables[id.toLowerCase()] = content
+      status = true
+    }
     this._stateStore()
-  }
+    MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
+      status)
+ }
 
   /*
     * Navigation History

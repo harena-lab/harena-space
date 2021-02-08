@@ -1,4 +1,4 @@
-# _Knot_Name_ (input)
+# Question_knot_number_ (input)
 
 {{stem
 Write here the **stem**.

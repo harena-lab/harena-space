@@ -15,6 +15,9 @@ class PlayerManager {
     MessageBus.ext.subscribe('flow/+/navigate', this.navigateEvent)
     MessageBus.ext.subscribe('case/+/navigate', this.navigateEvent)
     MessageBus.ext.subscribe('variable/+/navigate', this.navigateEvent)
+    MessageBus.ext.subscribe('session/close', this.navigateEvent)
+
+    this._notesStack = []
 
     // <TODO> temporary
     this.produceReport = this.produceReport.bind(this)
@@ -28,6 +31,7 @@ class PlayerManager {
 
     // <TODO> provisory
     // this._nextKnot = 1;
+
   }
 
   /*
@@ -49,7 +53,8 @@ class PlayerManager {
     let mandatoryEmpty = null
     const mandatoryM = await MessageBus.int.request('var/*/input/mandatory/get')
     for (const m in mandatoryM.message) {
-      if (mandatoryM.message[m].filled == false && mandatoryEmpty == null) { mandatoryEmpty = mandatoryM.message[m].message }
+      if (mandatoryM.message[m].filled == false && mandatoryEmpty == null) {
+        mandatoryEmpty = mandatoryM.message[m].message }
     }
 
     if (mandatoryEmpty != null) {
@@ -64,16 +69,27 @@ class PlayerManager {
       }
 
       switch (topic) {
-        case 'knot/</navigate': if (this._state.historyHasPrevious()) { this.knotLoad(this._state.historyPrevious()) }
+        case 'knot/</navigate':
+          if (this._notesStack.length > 0) {
+            const panel = this._notesStack.pop()
+            this._mainPanel.removeChild(panel)
+          }
+          if (this._state.historyHasPrevious()) {
+            // removes the panel to rebuild it
+            if (this._notesStack.length > 0) {
+              const panel = this._notesStack.pop()
+              this._mainPanel.removeChild(panel)
+            }
+            this.knotLoad(this._state.historyPrevious())
+          }
           break
         case 'knot/<</navigate': this.startCase()
           const flowStart = this._nextFlowKnot()
-          const startKnot =
-                                       (flowStart != null)
-                                         ? flowStart.target
-                                         : (DCCPlayerServer.localEnv)
-                                           ? DCCPlayerServer.playerObj.start
-                                           : this._compiledCase.start
+          const startKnot = (flowStart != null)
+                               ? flowStart.target
+                               : (DCCPlayerServer.localEnv)
+                                 ? DCCPlayerServer.playerObj.start
+                                 : this._compiledCase.start
           // console.log("=== start");
           // console.log(startKnot);
           this._state.historyRecord(startKnot)
@@ -112,6 +128,9 @@ class PlayerManager {
                      (this._previewCase ? '&preview' : ''), '_self')
           }
           break
+        case 'session/close':
+          this.sessionClose()
+          break
         default: if (MessageBus.matchFilter(topic, 'knot/+/navigate') ||
                          MessageBus.matchFilter(topic, 'variable/+/navigate')) {
           /*
@@ -119,8 +138,7 @@ class PlayerManager {
                         console.log(target);
                         */
           if (MessageBus.matchFilter(topic, 'variable/+/navigate')) {
-            const result =
-                              await MessageBus.ext.request('var/' + target + '/get')
+            const result = await MessageBus.ext.request('var/' + target + '/get')
             target = Translator.instance.findContext(
               this._compiledCase.knots, this._currentKnot,
               result.message)
@@ -146,7 +164,7 @@ class PlayerManager {
           window.open('index.html?case=' + target +
                            (this._previewCase ? '&preview' : ''), '_self')
         }
-          break
+        break
       }
     }
   }
@@ -263,9 +281,14 @@ class PlayerManager {
   }
 
   async _caseLoad (caseid) {
-    Basic.service.currentCaseId = new URL(document.location).searchParams.get('id')
+    Basic.service.currentCaseId =
+      new URL(document.location).searchParams.get('id')
+    /*
     const caseObj = await MessageBus.ext.request(
       'service/request/get', {caseId: Basic.service.currentCaseId})
+    */
+    const caseObj = await MessageBus.ext.request(
+      'data/case/' + Basic.service.currentCaseId + '/get')
 
     this._currentCaseTitle = caseObj.message.title
 
@@ -285,8 +308,6 @@ class PlayerManager {
       const content = this._compiledCase.layers.Flow.content
       let flow = null
       let c = 0
-      console.log('=== metaparameter')
-      console.log(this._state.metaparameter)
       while (c < content.length && flow == null) {
         if (content[c].type == 'field' &&
                 (!this._state.metaparameter ||
@@ -297,11 +318,13 @@ class PlayerManager {
               let lastLevel = 0
               let lastK = null
               for (const k in this._knots) {
-                if (this._knots[k].level > lastLevel) { lastK = k } else {
-                  flow.push({ target: lastK })
-                  lastK = k
+                if (!this._knots[k].categories || !this._knots[k].categories.includes('note')) {
+                  if (this._knots[k].level > lastLevel) { lastK = k } else {
+                    flow.push({ target: lastK })
+                    lastK = k
+                  }
+                  lastLevel = this._knots[k].level
                 }
-                lastLevel = this._knots[k].level
               }
               if (lastK != null) { flow.push({ target: lastK }) }
             } else {
@@ -320,9 +343,6 @@ class PlayerManager {
   async knotLoad (knotName, parameter) {
     this._currentKnot = knotName
 
-    if (this._knots[knotName].categories &&
-          this._knots[knotName].categories.includes('end')) { MessageBus.ext.publish('case/completed', '') }
-
     // <TODO> Local Environment - Future
     /*
       this._knotScript = document.createElement("script");
@@ -339,8 +359,6 @@ class PlayerManager {
              this._knots[knotName].categories.includes('script')) { MetaPlayer.player.play(this._knots[knotName], this._state) } else {
         const knot = await Translator.instance.generateHTML(
           this._knots[knotName])
-        console.log('=== theme settings')
-        console.log(Translator.instance.themeSettings.note)
         let note = false
         if (this._knots[knotName].categories && Translator.instance.themeSettings &&
             Translator.instance.themeSettings.note) {
@@ -351,6 +369,10 @@ class PlayerManager {
       }
     }
     MessageBus.ext.publish('knot/' + knotName + '/start')
+
+    if (this._knots[knotName].categories &&
+        this._knots[knotName].categories.includes('end'))
+    { MessageBus.ext.publish('case/completed', {knotid: knotName}) }
   }
 
   caseCompleted (topic, message) {
@@ -359,13 +381,14 @@ class PlayerManager {
 
   async sessionClose (topic, message) {
     this._state.sessionCompleted()
-    // await Basic.service.
+    window.open('../home/category/cases/?id=podcast&clearance=1', '_self')
   }
 
   presentKnot (knot) {
     MessageBus.page = new MessageBus(false)
 
     this._mainPanel.innerHTML = knot
+    document.querySelector('#main-panel').scrollTo(0, 0)
 
     // <TODO> Local Environment - Future
     /*
@@ -391,12 +414,13 @@ class PlayerManager {
     div.style.right = 0
     div.style.bottom = 0
     div.style.left = 0
-    div.style.width = (dimensions.width * 0.7) + 'px'
-    div.style.height = (dimensions.height * 0.7) + 'px'
+    div.style.width = (dimensions.width * (0.7 - this._notesStack.length * 0.1)) + 'px'
+    div.style.height = (dimensions.height * (0.7 - this._notesStack.length * 0.1)) + 'px'
 
     div.innerHTML = knot
 
     this._mainPanel.appendChild(div)
+    this._notesStack.push(div)
   }
 
   /*

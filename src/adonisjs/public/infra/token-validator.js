@@ -29,6 +29,10 @@ class TokenController {
 
         await axios(config)
           .then(function (endpointResponse) {
+            sessionStorage.setItem('harena-user-grade', endpointResponse.data.grade)
+            sessionStorage.setItem('harena-user-institution', endpointResponse.data.institution)
+            sessionStorage.setItem('harena-user-institution-id', endpointResponse.data.institutionId)
+            MessageBus.int.publish('data/user/info', endpointResponse.data)
             TokenController.instance.changeHeaderButtons(endpointResponse.data)
           })
           .catch(function (error) {
@@ -41,7 +45,7 @@ class TokenController {
 
   async changeHeaderButtons(response){
 
-      if (document.readyState === 'complete') {
+      if (document.readyState === 'complete' && document.querySelector('#logout-block')) {
 
         try {
           const elemLogin = document.querySelector('#login-block')
@@ -62,26 +66,30 @@ class TokenController {
         }
         MessageBus.ext.publish('control/validate/ready')
       }else{
-        window.addEventListener("load", function(event) {
-          try {
-            const elemLogin = document.querySelector('#login-block')
-            const elemLogout = document.querySelector('#logout-block')
-
-            if(response.token === 'token valid'){
-              // console.log(response.token)
-              elemLogin.style.display = 'none'
-              elemLogout.style.display = 'block'
-              document.querySelector('#logoutDropdownBtn').innerHTML = response.username
-            }else{
-              // console.log(response.token)
-              elemLogin.style.display = 'block'
-              elemLogout.style.display = 'none'
-            }
-          } catch (e) {
-            // console.log(e)
-          }
-          MessageBus.ext.publish('control/validate/ready')
-        });
+        setTimeout(function(){
+          TokenController.instance.changeHeaderButtons(response)
+        }, 200)
+        /* window.addEventListener("load", function(event) {
+        //   try {
+        //     const elemLogin = document.querySelector('#login-block')
+        //     const elemLogout = document.querySelector('#logout-block')
+        //
+        //     if(response.token === 'token valid'){
+        //       // console.log(response.token)
+        //       elemLogin.style.display = 'none'
+        //       elemLogout.style.display = 'block'
+        //       document.querySelector('#logoutDropdownBtn').innerHTML = response.username
+        //     }else{
+        //       // console.log(response.token)
+        //       elemLogin.style.display = 'block'
+        //       elemLogout.style.display = 'none'
+        //     }
+        //   } catch (e) {
+        //     // console.log(e)
+        //   }
+        //   console.log('============')
+        //   MessageBus.ext.publish('control/validate/ready')
+      });*/
       }
   }
 
@@ -95,6 +103,10 @@ class TokenController {
       .then(function (endpointResponse) {
         if(endpointResponse.data.token === 'token valid'){
           TokenController.instance.tokenChecked = true
+          sessionStorage.setItem('harena-user-grade', endpointResponse.data.grade)
+          sessionStorage.setItem('harena-user-institution', endpointResponse.data.institution)
+          MessageBus.int.publish('data/user/info', endpointResponse.data)
+
           TokenController.instance.changeHeaderButtons(endpointResponse.data)
         } else{
           window.location.href = '/user'

@@ -3,17 +3,20 @@
  */
 
 class EditDCC {
-  constructor (dcc, presentation) {
+  constructor (dcc, presentation, properties) {
     this._closed = false
     this._editDCC = dcc
     this._editElement = presentation
+    this._properties = properties
     this._editorExtended = null
     this._editorWrapper = this._fetchEditorWrapper()
     this._editorContainer = this._fetchEditorContainer()
     this._containerRect = this._editorWrapper.getBoundingClientRect()
-    this._elementWrapper = this._fetchElementWrapper()
-    this._elementWrapperRect = this._elementWrapper.getBoundingClientRect()
-    this._elementRect = this._editElement.getBoundingClientRect()
+    if (dcc != null) {
+      this._elementWrapper = this._fetchElementWrapper()
+      this._elementWrapperRect = this._elementWrapper.getBoundingClientRect()
+      this._elementRect = this._editElement.getBoundingClientRect()
+    }
   }
 
   get editorExtended () {
@@ -27,8 +30,23 @@ class EditDCC {
     return ep
   }
 
+  async handleConfirm () {
+    await this._handleEditorAction('confirm')
+  }
+
+  async handleCancel () {
+    await this._handleEditorAction('cancel')
+  }
+
   async _handleEditorAction (action) {
-    if (action === 'confirm') { await MessageBus.ext.request('properties/apply/short') } else if (this._editDCC != null) { this._editDCC.reactivateAuthor() }
+    if (action === 'confirm') {
+      await this._properties.applyProperties(false)
+      // await MessageBus.ext.request('properties/apply/short')
+    } else {
+      await this._properties.closeProperties(false)
+    }
+      //await MessageBus.ext.request('properties/cancel/short')}
+    // else if (this._editDCC != null) { this._editDCC.reactivateAuthor() }
     this.closeEditor()
   }
 
@@ -130,7 +148,8 @@ class EditDCC {
          this._buildExtendedPanel(html, modality)
 
     this._fetchEditorContainer().appendChild(this._editorExtended)
-    this._editDCC.parentNode.insertBefore(this._fetchEditorContainer(), this._editDCC.nextSibling)
+    this._editDCC.parentNode.insertBefore(
+      this._fetchEditorContainer(), this._editDCC.nextSibling)
     this._editDCC._presentation.focus()
 
     const promise = new Promise((resolve, reject) => {
@@ -167,21 +186,6 @@ class EditDCC {
     panelExtended.classList.add('inplace-editor-floating')
     panelExtended.innerHTML = html
 
-    // panelExtended.style.left = this._transformRelativeX(
-    //   this._elementRect.left - this._containerRect.left)
-
-    // tests the middle of the element against the middle of the container
-    // if (modality != 'properties' ||
-    //       (this._elementRect.top + (this._elementRect.height / 2) >
-    //        this._containerRect.top + (this._containerRect.height / 2))) {
-    //   panelExtended.style.bottom = this._transformRelativeY(
-    //     this._containerRect.height -
-    //         (this._elementRect.top - this._containerRect.top))
-    // } else {
-    //   panelExtended.style.top =
-    //         this._transformRelativeY(this._elementRect.bottom - this._containerRect.top)
-    // }
-
     this._extendedSub = {
       cancel: panelExtended.querySelector('#ext-cancel'),
       content: panelExtended.querySelector('#ext-content')
@@ -211,8 +215,8 @@ class EditDCC {
 }
 
 class EditDCCProperties extends EditDCC {
-  constructor (dcc, presentation, htmlProp) {
-    super(dcc, presentation)
+  constructor (dcc, presentation, htmlProp, properties) {
+    super(dcc, presentation, properties)
     this._componentEditor(htmlProp)
   }
 

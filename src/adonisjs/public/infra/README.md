@@ -100,18 +100,6 @@ All the internal paths are mapped to the external paths prefixing the path by: `
     response topic: `case/<case id>/set/status`
            message: `<status>` - status of the opperation.
 
-* `case/<case id>/set` - Saves the markdown of the case.
-
-  response topic: `case/<case id>/version`
-           message: `<version id>` - id of the previous case version.
-
-
-* `case/<case id>/prepare` - Prepares the environment where the case will run in HTML.
-
-  message: `{templateFamily: <template_family id>}` - template family to generate the HTML version of the case.
-
-  response topic: `case/<case id>/prepare/status`
-           message: `<status>` - status of the preparation.
 ### Entity: `knot`
 `<knot title>` - The title given by the author to the knot in the case.
 `<knot id>` - Uniquely identifies a knot. Derived from the knot title replacing spaces for underscores (as we do not use spaces in the topics).
@@ -119,10 +107,6 @@ All the internal paths are mapped to the external paths prefixing the path by: `
 * `knot/<knot id>/selected` - A knot has been selected in the authoring environment.
 
   message: `<knot title>`
-
-* `knot/<knot id>/set` - Save a HTML version of the knot.
-
-  message: `{caseId: <case id>, format: "html", source: <html source>}`
 
 * `knot/<knot id>/navigate` - The player navigates to a specific knot.
 * `knot/</navigate`
