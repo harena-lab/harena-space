@@ -2,23 +2,23 @@
 
 **Heart - POCUS Exam Videos:**
 
-Video - Subxifóide / subscostal
+Video - Sub-xifoide / subscostal
 
 <video><source src="https://drive.google.com/file/d/1nibC-An5Ufj3fmQCPydpo2AKDc7ovxpZ/view?usp=sharing"></video>
 
-Video - Paraesternal longa
+Video - Para-esternal longa
 
 <video><source src="https://drive.google.com/file/d/1nibC-An5Ufj3fmQCPydpo2AKDc7ovxpZ/view?usp=sharing"></video>
 
-Video - Paraesternal curta nível V. aortica
+Video - Para-esternal curta nível V. aortica
 
 <video><source src="https://drive.google.com/file/d/1nibC-An5Ufj3fmQCPydpo2AKDc7ovxpZ/view?usp=sharing"></video>
 
-Video - Paraesternal curta nível mitral
+Video - Para-esternal curta nível mitral
 
 <video><source src="https://drive.google.com/file/d/1nibC-An5Ufj3fmQCPydpo2AKDc7ovxpZ/view?usp=sharing"></video>
 
-Video - Paraesternal curta nível papilares
+Video - Para-esternal curta nível papilares
 
 <video><source src="https://drive.google.com/file/d/1nibC-An5Ufj3fmQCPydpo2AKDc7ovxpZ/view?usp=sharing"></video>
 
