@@ -70,6 +70,7 @@ class Comments {
     this.commentsConfirm = this.commentsConfirm.bind(this)
     MessageBus.ext.subscribe('control/comments/edit/confirm',
                              this.commentsConfirm)
+   this.toggleRadioFindings()
 
     /*
     let cKnot = -1
@@ -133,13 +134,45 @@ class Comments {
     */
   }
 
+  toggleRadioFindings(){
+
+    const radioList = document.querySelectorAll(`input[id*="achados"][id$="1"]`)
+    if(radioList){
+      radioList.forEach(function(el) {
+
+        if(el.hasAttribute('checked')){
+          el.setAttribute('pastcheck','true')
+          el.previousElementSibling.setAttribute('pastcheck','false')
+        }else{
+          el.setAttribute('pastcheck','false')
+          el.previousElementSibling.setAttribute('pastcheck','true')
+        }
+        el.addEventListener("click", function(){
+
+          if(el.getAttribute('pastcheck') == 'true'){
+            el.previousElementSibling.checked = true
+            el.previousElementSibling.setAttribute('pastcheck','true')
+            el.setAttribute('pastcheck','false')
+          }else if(el.getAttribute('pastcheck') == 'false'){
+            el.checked = true
+            el.previousElementSibling.setAttribute('pastcheck','false')
+            el.setAttribute('pastcheck','true')
+          }
+        })
+      })
+    }
+  }
+
   commentsConfirm(topic, message) {
+    console.log('============')
+    console.log('confirming comments')
     let content = this._compiledCase.knots[this._knotid].content
     let commentElement
     for (let v in message.value)
       if (typeof message.value[v] === 'string')
         message.value[v] = message.value[v].trim()
     if (this._comments > -1) {
+      console.log('greater that -1')
       commentElement = content[this._comments]
       commentElement.value = message.value
     } else {
