@@ -37,12 +37,15 @@
 }
 
 .sty-message-space {
-   flex: 25%;
-   max-width: 25%;
-   max-height: 48px;
-   font-size: 20pt;
-   font-weight: bold;
-   color: blue;
+	position: absolute;
+	font-size: 30pt;
+	font-weight: bold;
+	color: #c5c5ca;
+	height: 100vh;
+	width: 100vw;
+	background-color: #040404ab;
+	z-index: 3000;
+	vertical-align: middle;
 }
 
 .sty-work-panel {

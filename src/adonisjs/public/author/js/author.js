@@ -354,7 +354,9 @@ class AuthorManager {
     * ACTION: control-save
     */
   async caseSave () {
+    this._messageSpace.classList.remove('invisible')
     document.getElementById('btn-save-draft').innerHTML = 'SAVING...'
+    this._messageSpace.firstElementChild.innerHTML = 'SAVING...'
     await Properties.s.closePreviousProperties()
     await this._updateActiveComments()
     if (Basic.service.currentCaseId != null && this._compiledCase != null) {
@@ -369,13 +371,14 @@ class AuthorManager {
 
       Basic.service.authorPropertyStore('caseId', Basic.service.currentCaseId)
 
-      this._messageSpace.innerHTML = 'Saved'
-      setTimeout(this._clearMessage, 500)
+      this._messageSpace.firstElementChild.innerHTML = 'SAVED!'
+      setTimeout(this._clearMessage, 800)
+      // this._messageSpace.classList.add('invisible')
       const promise = new Promise((resolve, reject) => {
         setTimeout(() => resolve('done!'), 500)
       })
       const result = await promise
-      this._messageSpace.innerHTML = ''
+      this._messageSpace.classList.add('invisible')
       document.getElementById('btn-save-draft').innerHTML = 'SAVE'
     }
   }

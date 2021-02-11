@@ -103,6 +103,11 @@
   </head>
 
   <body onload="AuthorManager.author.start()">
+    <!-- message div -->
+    <div id="message-space" class="sty-message-space vh-100 vw-100 text-center invisible" style="overflow:hidden; !important">
+      <span style="vertical-align: middle;top: 50%;position: absolute;"
+      class="rounded"></span>
+    </div>
     <!-- Login/logout header -->
     <dcc-include src="/author/partials/header.html"></dcc-include>
     <!-- Start of settings modal -->
@@ -183,6 +188,7 @@
 
                 <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
               </form>
+              
             </div>
           </div>
         </div>
@@ -235,7 +241,7 @@
               <button type="button" class="btn btn-secondary m-1" data-toggle="modal" data-target="#settings-modal">
                 Settings
               </button>
-              <span class="sty-message-space" id="message-space"></span>
+
 
               <div id="advanced-mode" style="display:none">
                 <dcc-button topic="control/case/markdown" label="MARKDOWN" xstyle="in"></dcc-button>
@@ -331,8 +337,8 @@
             </div>
           <!-- End of container displaying the properties/comments of the case -->
         </div>
-
       </div>
+
     </main>
   <!-- end of div /.container -->
 
