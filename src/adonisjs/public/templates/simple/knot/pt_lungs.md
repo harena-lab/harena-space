@@ -42,7 +42,7 @@ Video - Lateroinferior E
 
 <video><source src="https://drive.google.com/file/d/1nibC-An5Ufj3fmQCPydpo2AKDc7ovxpZ/view?usp=sharing"></video>
 
-Video - Posterorsuperior D
+Video - Posterosuperior D
 
 <video><source src="https://drive.google.com/file/d/1nibC-An5Ufj3fmQCPydpo2AKDc7ovxpZ/view?usp=sharing"></video>
 

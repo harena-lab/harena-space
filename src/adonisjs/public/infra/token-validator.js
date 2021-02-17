@@ -32,6 +32,9 @@ class TokenController {
             sessionStorage.setItem('harena-user-grade', endpointResponse.data.grade)
             sessionStorage.setItem('harena-user-institution', endpointResponse.data.institution)
             sessionStorage.setItem('harena-user-institution-id', endpointResponse.data.institutionId)
+            // localStorage.setItem('harena-user-grade', endpointResponse.data.grade)
+            // localStorage.setItem('harena-user-institution', endpointResponse.data.institution)
+            // localStorage.setItem('harena-user-institution-id', endpointResponse.data.institutionId)
             MessageBus.int.publish('data/user/info', endpointResponse.data)
             TokenController.instance.changeHeaderButtons(endpointResponse.data)
           })
@@ -105,6 +108,10 @@ class TokenController {
           TokenController.instance.tokenChecked = true
           sessionStorage.setItem('harena-user-grade', endpointResponse.data.grade)
           sessionStorage.setItem('harena-user-institution', endpointResponse.data.institution)
+          sessionStorage.setItem('harena-user-institution-id', endpointResponse.data.institutionId)
+          // localStorage.setItem('harena-user-grade', endpointResponse.data.grade)
+          // localStorage.setItem('harena-user-institution', endpointResponse.data.institution)
+          // localStorage.setItem('harena-user-institution-id', endpointResponse.data.institutionId)
           MessageBus.int.publish('data/user/info', endpointResponse.data)
 
           TokenController.instance.changeHeaderButtons(endpointResponse.data)
