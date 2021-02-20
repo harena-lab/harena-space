@@ -4,11 +4,11 @@
 
 Video - Varredura longitudinal
 
-<video><source src="https://drive.google.com/file/d/1nibC-An5Ufj3fmQCPydpo2AKDc7ovxpZ/view?usp=sharing"></video>
+<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
 
 Video - Varredura transversal
 
-<video><source src="https://drive.google.com/file/d/1nibC-An5Ufj3fmQCPydpo2AKDc7ovxpZ/view?usp=sharing"></video>
+<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
 
 Image - Medidas no longitudinal
 

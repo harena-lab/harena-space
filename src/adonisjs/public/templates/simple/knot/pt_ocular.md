@@ -4,11 +4,11 @@
 
 Video - Varredura plano longitudinal
 
-<video><source src="https://drive.google.com/file/d/1nibC-An5Ufj3fmQCPydpo2AKDc7ovxpZ/view?usp=sharing"></video>
+<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
 
 Video - Varredura plano transversal
 
-<video><source src="https://drive.google.com/file/d/1nibC-An5Ufj3fmQCPydpo2AKDc7ovxpZ/view?usp=sharing"></video>
+<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
 
 Image - Medida do diâmetro nervo óptico
 

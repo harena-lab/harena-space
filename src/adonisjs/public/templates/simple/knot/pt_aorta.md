@@ -8,7 +8,7 @@ Image - Ao proximal
 
 Video - Ao distal
 
-<video><source src="https://drive.google.com/file/d/1nibC-An5Ufj3fmQCPydpo2AKDc7ovxpZ/view?usp=sharing"></video>
+<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
 
 Image - Ao distal
 
@@ -24,7 +24,7 @@ Image - Ao medial
 
 Video - Varredura ao longitudinal
 
-<video><source src="https://drive.google.com/file/d/1nibC-An5Ufj3fmQCPydpo2AKDc7ovxpZ/view?usp=sharing"></video>
+<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
 
 {{findings
 Describe here your findings concerning the following video and photos.
