@@ -131,126 +131,48 @@
 <hr>
 <h3>Image 1</h3>
 <hr>
-<h4 class="mt-1">Gain</h4>
+
+<h4 class="mt-1">Measurement</h4>
 
 <div class="bg-light border border-secondary rounded pl-2">
   <div class="form-check">
-    <input type="radio" id="image1_gain1"
-      name="image1_gain" value="1" class="form-check-input" {{checked?image1_gain1:1}}>
-    <label for="image1_gain1" class="form-check-label">1. little</label>
+    <input type="radio" id="image1_measurement_not_performed"
+      name="image1_measurement" value="not_performed" class="form-check-input" {{checked?image1_measurement_not_performed:not_performed}}>
+    <label for="image1_measurement_not_performed" class="form-check-label">1. not performed</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="image1_gain2"
-      name="image1_gain" value="2" class="form-check-input" {{checked?image1_gain2:2}}>
-    <label for="image1_gain2" class="form-check-label">2. excessive</label>
+    <input type="radio" id="image1_measurement_correct"
+      name="image1_measurement" value="correct" class="form-check-input" {{checked?image1_measurement_correct:correct}}>
+    <label for="image1_measurement_correct" class="form-check-label">2. correct</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="image1_gain3"
-      name="image1_gain" value="3" class="form-check-input" {{checked?image1_gain3:3}}>
-    <label for="image1_gain3" class="form-check-label">3. appropriate</label>
-  </div>
-</div>
-
-<h4 class="mt-1">Depth</h4>
-
-<div class="bg-light border border-secondary rounded pl-2">
-  <div class="form-check">
-    <input type="radio" id="image1_depth1"
-      name="image1_depth" value="1" class="form-check-input" {{checked?image1_depth1:1}}>
-    <label for="image1_depth1" class="form-check-label">1. little</label>
-  </div>
-  <div class="form-check">
-    <input type="radio" id="image1_depth2"
-      name="image1_depth" value="2" class="form-check-input" {{checked?image1_depth2:2}}>
-    <label for="image1_depth2" class="form-check-label">2. excessive</label>
-  </div>
-  <div class="form-check">
-    <input type="radio" id="image1_depth3"
-      name="image1_depth" value="3" class="form-check-input" {{checked?image1_depth3:3}}>
-    <label for="image1_depth3" class="form-check-label">3. appropriate</label>
-  </div>
-</div>
-
-<h4 class="mt-1">Anatomical References</h4>
-
-<div class="bg-light border border-secondary rounded pl-2">
-  <div class="form-check">
-    <input type="radio" id="image1_anatomical1"
-      name="image1_anatomical" value="1" class="form-check-input" {{checked?image1_anatomical1:1}}>
-    <label for="image1_anatomical1" class="form-check-label">1. absent</label>
-  </div>
-  <div class="form-check">
-    <input type="radio" id="image1_anatomical2"
-      name="image1_anatomical" value="2" class="form-check-input" {{checked?image1_anatomical2:2}}>
-    <label for="image1_anatomical2" class="form-check-label">2. partially present</label>
-  </div>
-  <div class="form-check">
-    <input type="radio" id="image1_anatomical3"
-      name="image1_anatomical" value="3" class="form-check-input" {{checked?image1_anatomical3:3}}>
-    <label for="image1_anatomical3" class="form-check-label">3. present</label>
+    <input type="radio" id="image1_measurement_incorrect"
+      name="image1_measurement" value="incorrect" class="form-check-input" {{checked?image1_measurement_incorrect:incorrect}}>
+    <label for="image1_measurement_incorrect" class="form-check-label">3. incorrect</label>
   </div>
 </div>
 
 <hr>
 <h3>Image 2</h3>
 <hr>
-<h4 class="mt-1">Gain</h4>
+
+<h4 class="mt-1">Measurement</h4>
 
 <div class="bg-light border border-secondary rounded pl-2">
   <div class="form-check">
-    <input type="radio" id="image2_gain1"
-      name="image2_gain" value="1" class="form-check-input" {{checked?image2_gain1:1}}>
-    <label for="image2_gain1" class="form-check-label">1. little</label>
+    <input type="radio" id="image2_measurement_not_performed"
+      name="image2_measurement" value="not_performed" class="form-check-input" {{checked?image2_measurement_not_performed:not_performed}}>
+    <label for="image2_measurement_not_performed" class="form-check-label">1. not performed</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="image2_gain2"
-      name="image2_gain" value="2" class="form-check-input" {{checked?image2_gain2:2}}>
-    <label for="image2_gain2" class="form-check-label">2. excessive</label>
+    <input type="radio" id="image2_measurement_correct"
+      name="image2_measurement" value="correct" class="form-check-input" {{checked?image2_measurement_correct:correct}}>
+    <label for="image2_measurement_correct" class="form-check-label">2. correct</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="image2_gain3"
-      name="image2_gain" value="3" class="form-check-input" {{checked?image2_gain3:3}}>
-    <label for="image2_gain3" class="form-check-label">3. appropriate</label>
-  </div>
-</div>
-
-<h4 class="mt-1">Depth</h4>
-
-<div class="bg-light border border-secondary rounded pl-2">
-  <div class="form-check">
-    <input type="radio" id="image2_depth1"
-      name="image2_depth" value="1" class="form-check-input" {{checked?image2_depth1:1}}>
-    <label for="image2_depth1" class="form-check-label">1. little</label>
-  </div>
-  <div class="form-check">
-    <input type="radio" id="image2_depth2"
-      name="image2_depth" value="2" class="form-check-input" {{checked?image2_depth2:2}}>
-    <label for="image2_depth2" class="form-check-label">2. excessive</label>
-  </div>
-  <div class="form-check">
-    <input type="radio" id="image2_depth3"
-      name="image2_depth" value="3" class="form-check-input" {{checked?image2_depth3:3}}>
-    <label for="image2_depth3" class="form-check-label">3. appropriate</label>
-  </div>
-</div>
-
-<h4 class="mt-1">Anatomical References</h4>
-
-<div class="bg-light border border-secondary rounded pl-2">
-  <div class="form-check">
-    <input type="radio" id="image2_anatomical1"
-      name="image2_anatomical" value="1" class="form-check-input" {{checked?image2_anatomical1:1}}>
-    <label for="image2_anatomical1" class="form-check-label">1. absent</label>
-  </div>
-  <div class="form-check">
-    <input type="radio" id="image2_anatomical2"
-      name="image2_anatomical" value="2" class="form-check-input" {{checked?image2_anatomical2:2}}>
-    <label for="image2_anatomical2" class="form-check-label">2. partially present</label>
-  </div>
-  <div class="form-check">
-    <input type="radio" id="image2_anatomical3"
-      name="image2_anatomical" value="3" class="form-check-input" {{checked?image2_anatomical3:3}}>
-    <label for="image2_anatomical3" class="form-check-label">3. present</label>
+    <input type="radio" id="image2_measurement_incorrect"
+      name="image2_measurement" value="incorrect" class="form-check-input" {{checked?image2_measurement_incorrect:incorrect}}>
+    <label for="image2_measurement_incorrect" class="form-check-label">3. incorrect</label>
   </div>
 </div>
 

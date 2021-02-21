@@ -19,6 +19,12 @@ Write here the history.
 * problem 2
 }}
 
+{{hypothesis
+**Main Hypothesis**
+
+Write here the **Main Hypothesis**.
+}}
+
 {{questions
 **POCUS Questions**
 

@@ -357,8 +357,19 @@ class AuthorManager {
     this._messageSpace.classList.remove('invisible')
     document.getElementById('btn-save-draft').innerHTML = 'SAVING...'
     this._messageSpace.firstElementChild.innerHTML = 'SAVING...'
+    let timeoutExceeded
+    new Promise((resolve, reject) => {
+      timeoutExceeded = setTimeout(() => {resolve()}, 5000)
+
+    })
+    .then(function (rej) {
+      AuthorManager.author._messageSpace.firstElementChild.innerHTML = 'Error ocurred. Trying again...'
+      setTimeout(() => {AuthorManager.author.caseSave()}, 3000)
+    })
     await Properties.s.closePreviousProperties()
     await this._updateActiveComments()
+    clearTimeout(timeoutExceeded)
+
     if (Basic.service.currentCaseId != null && this._compiledCase != null) {
       this._checkKnotModification(this._renderState)
 
@@ -373,12 +384,22 @@ class AuthorManager {
 
       this._messageSpace.firstElementChild.innerHTML = 'SAVED!'
       setTimeout(this._clearMessage, 800)
-      // this._messageSpace.classList.add('invisible')
+      // let timeoutExceeded
+      // new Promise((resolve, reject) => {
+      //   timeoutExceeded = setTimeout(() => {resolve()}, 5000)
+      //
+      // })
+      //   .then((res) => {this._messageSpace.firstElementChild.innerHTML = 'Error!'})
+      // clearTimeout(timeoutExceeded)
       const promise = new Promise((resolve, reject) => {
         setTimeout(() => resolve('done!'), 500)
       })
       const result = await promise
       this._messageSpace.classList.add('invisible')
+      document.getElementById('btn-save-draft').innerHTML = 'SAVE'
+    } else{
+      this._messageSpace.firstElementChild.innerHTML = 'Error...try again.'
+      setTimeout(this._messageSpace.classList.add('invisible'), 1500)
       document.getElementById('btn-save-draft').innerHTML = 'SAVE'
     }
   }
