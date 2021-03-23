@@ -128,7 +128,7 @@ class PlayState {
       id = id.toLowerCase()
 
     if (id != null && id.startsWith('previous.')) {
-      const previousKnot = this.historyPreviousId()
+      const previousKnot = this.historyPreviousId().toLowerCase()
       if (previousKnot != null) { id = previousKnot + '.' + id.substring(9) }
     }
 

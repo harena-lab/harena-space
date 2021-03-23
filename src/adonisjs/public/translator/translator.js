@@ -587,6 +587,40 @@ class Translator {
       }
     }
 
+    // ninth cycle - aggregates options
+    let optionGroup = null
+    let subtype = null
+    for (let c = 1; c < compiled.length; c++) {
+      const pr = (c > 1 && compiled[c - 1].type == 'linefeed') ? c - 2 : c - 1
+      if (compiled[c].type == 'option') {
+        let stype = compiled[c].subtype
+        if (compiled[pr].type == 'option' && compiled[c].subtype == subtype) {
+          optionGroup = this._initializeObject(
+            {
+              type: 'input',
+              subtype: 'choice',
+              exclusive: true,
+              shuffle: (subtype == '+'),
+              options: {}
+            }, compiled[pr]._source)
+          this._transferOption(optionGroup.options, compiled[pr])
+          compiled[pr] = optionGroup
+        }
+        if (optionGroup != null && compiled[c].subtype == subtype) {
+          this._transferOption(optionGroup.options, compiled[c])
+          optionGroup._source += '\n' + compiled[c]._source
+          const shift = c - pr
+          compiled.splice(c - shift + 1, shift)
+          c -= shift
+        } else
+          optionGroup = null
+        subtype = stype
+      } else if (compiled[c].type != 'linefeed') {
+        optionGroup = null
+      }
+      compiled[c].seq = c + 1
+    }
+
     // seventh cycle - computes subordinate elements
     for (let c = 0; c < compiled.length; c++) {
       const pr = (c > 1 && compiled[c - 1].type == 'linefeed') ? c - 2 : c - 1
@@ -715,36 +749,6 @@ class Translator {
     }
 
     this._compileMergeLinefeeds(unity)
-
-    // ninth cycle - aggregates options
-    let optionGroup = null
-    let subtype = null
-    for (let c = 1; c < compiled.length; c++) {
-      if (compiled[c].type == 'option') {
-        let stype = compiled[c].subtype
-        if (compiled[c-1].type == 'option' && compiled[c].subtype == subtype) {
-          optionGroup = this._initializeObject(
-            {
-              type: 'input',
-              subtype: 'choice',
-              exclusive: true,
-              shuffle: (subtype == '+'),
-              options: {}
-            }, compiled[c - 1]._source)
-          this._transferOption(optionGroup.options, compiled[c-1])
-          compiled[c-1] = optionGroup
-        }
-        if (optionGroup != null && compiled[c].subtype == subtype) {
-          this._transferOption(optionGroup.options, compiled[c])
-          optionGroup._source += '\n' + compiled[c]._source
-          compiled.splice(c, 1)
-          c--
-        } else
-          optionGroup = null
-        subtype = stype
-      } else { optionGroup = null }
-      compiled[c].seq = c + 1
-    }
 
     // tenth cycle - hide comments
     let inComment = false
@@ -1979,28 +1983,40 @@ class Translator {
     const subtype = (obj.subtype)
       ? subtypeMap[obj.subtype] : subtypeMap.short
 
-    let statement = (obj.text) ? obj.text : ''
+    let statement =
+      (obj.text) ?
+         this._markdownTranslator.makeHtml(obj.text)
+           .replace(/<\/?p>/igm, '')
+           : ''
+
+    console.log('=== obj options')
+    console.log(obj.options)
+
     if (subtype == 'input-choice' && obj.options) {
       statement += '<br>'
       for (const op in obj.options) {
         let choice = Translator.htmlTemplates.choice
           .replace('[option]', op)
+          .replace('[seq]', obj.seq)
         if (typeof obj.options[op] === 'string') {
           choice = choice.replace('[target]', '')
-                         .replace('[value]', obj.options[op])
+                         .replace('[value]', 'value="' + obj.options[op] + '"')
         } else if (typeof obj.options[op] === 'boolean') {
           choice = choice.replace('[target]', '')
-                         .replace('[value]', op)
+                         .replace('[value]', 'value="' + op + '"')
         } else {
           choice = choice.replace('[target]',
             ((obj.options[op].contextTarget == null) ? '' :
               "target='" + this._transformNavigationMessage(obj.options[op].contextTarget) + "' "))
-            .replace('[value]', obj.options[op].message)
+            .replace('[value]',
+              ((obj.options[op].message) ? 'value="' + obj.options[op].message + '"' : ''))
             .replace('[compute]',
               (obj.options[op].compute == null) ? '' : ' compute="' + obj.options[op].compute + '"')
         }
         statement += choice
       }
+      console.log('=== statement options')
+      console.log(statement)
     }
 
     // <TODO> provisory - weak strategy (only one per case)
@@ -2043,6 +2059,9 @@ class Translator {
         if (obj.show == 'answer') { this._playerInputShow = '#answer' } else { this._playerInputShow = obj.variable }
       }
     }
+
+    console.log('=== resulting HTML')
+    console.log(input)
 
     return input
   }
@@ -2293,7 +2312,7 @@ class Translator {
   Translator.fragment = {
     // compute: '~[ \\t]*(\\w+)?[ \\t]*([+\\-*/=])[ \\t]*(\\d+(?:\\.\\d+)?)',
     compute: '~[ \\t]*([\\w+\\-*/= :<>\\t]+)(\\?)?',
-    option: '^[ \\t]*([\\+\\*])[ \\t]+([^&<> \\t\\n\\r\\f][^&<>\\n\\r\\f]*)?((?:(?:(?:&lt;)|<)?-(?:(?:&gt;)|>))|(?:\\(-\\)))[ \\t]*([^">~\\n\\r\\f(]+)(?:"([^"\\n\\r\\f]*)")?[ \\t]*(?:(\\>)?\\(\\(([^)]*)\\)\\))?(\\?)?[ \\t]*'
+    option: '^[ \\t]*([\\+\\*])[ \\t]+((?:[^<\\n\\r\\f]|<(?!-))*)?((?:(?:(?:&lt;)|<)?-(?:(?:&gt;)|>))|(?:\\(-\\)))[ \\t]*([^">~\\n\\r\\f(]+)(?:"([^"\\n\\r\\f]*)")?[ \\t]*(?:(\\>)?\\(\\(([^)]*)\\)\\))?(\\?)?[ \\t]*'
   }
 
   Translator.element = {

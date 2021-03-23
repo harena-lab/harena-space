@@ -125,7 +125,7 @@ class DCCInputOption extends DCCInput {
               ? '' : this._statement
 
       const html = (this.target)
-        ? "<dcc-button id='[id]' xstyle='theme' topic='[target]' label='[statement]' divert='round' message='[value]' variable='[variable]:label'></dcc-button>"
+        ? "<dcc-button id='[id]' xstyle='theme' topic='[target]' label='[statement]' divert='round' message='[value]' variable='[variable]'></dcc-button>"
           .replace('[id]', varid + nop)
           .replace('[target]', this.target)
           .replace('[statement]', child._statement)
@@ -284,7 +284,7 @@ class DCCInputChoice extends DCCInput {
         nop++
         let iid = varid + '_' + nop
         const element = (this.target || child.target)
-          ? "<dcc-button id='presentation-dcc-[id]' location='#in' topic='[target]' label='[statement]' divert='round' message='[value]' variable='[variable]:label'[connect]></dcc-button>[compute]"
+          ? "<dcc-button id='presentation-dcc-[id]' location='#in' topic='[target]' label='[statement]' divert='round' message='[value]' variable='[variable]'[connect]></dcc-button>[compute]"
             .replace('[id]', iid)
             .replace('[target]', (child.target) ? child.target : this.target)
             .replace('[statement]', child._statement)
@@ -359,6 +359,9 @@ class DCCInputChoice extends DCCInput {
         this._options.push(presentation)
       }
     }
+
+    console.log('=== input presentation')
+    console.log(presentation)
 
     /*
     let presentation
