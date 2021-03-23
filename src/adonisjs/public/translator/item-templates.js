@@ -39,9 +39,9 @@
     mention:
 '<b>[entity]: </b>',
     input:
-'<dcc-[dcc] id="dcc[seq]"[author][extra][show]>[statement]</dcc-[dcc]>',
+'<dcc-[dcc] id=\'dcc[seq]\'[author][extra][show]>[statement]</dcc-[dcc]>',
     choice:
-'<dcc-input-option parent="dcc[seq]" [target][value][compute]>[option]</dcc-input-option><br>',
+'<dcc-input-option [target]value="[value]"[compute]>[option]</dcc-input-option><br>',
     output:
 '<dcc-expression id=\'dcc[seq]\'[author] expression=\'[variable][index]\'[variant] active></dcc-expression>',
     compute:
