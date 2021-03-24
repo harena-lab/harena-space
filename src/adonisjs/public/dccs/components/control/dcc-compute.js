@@ -211,8 +211,6 @@ class DCCCompute extends DCCBase {
       compiled.push([(op[1] == DCCCompute.precedence.function)
         ? DCCCompute.role.function : DCCCompute.role.operator, op[0]])
     }
-    console.log('=== compiled')
-    console.log(compiled)
     return compiled
   }
 
