@@ -67,6 +67,7 @@ class DraftManager {
                                       '&preview=1'
         }
       )
+      console.log('=== adding listener 1')
       deleteButton.addEventListener('click',
         function () {
           MessageBus.int.publish('control/case/delete', this.id.substring(1))
@@ -178,6 +179,7 @@ class DraftManager {
                                          previewButton.id.substring(1) +
                                          '&preview=1'
           })
+        console.log('=== adding listener 2')
         deleteButton.addEventListener('click',
           function () {
             MessageBus.int.publish('control/case/delete', editButton.id.substring(1))

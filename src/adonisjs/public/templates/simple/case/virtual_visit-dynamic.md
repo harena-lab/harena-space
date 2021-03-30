@@ -5,10 +5,7 @@
 Write here the **stem**.
 }}
 
-{{leadin
-Write here the **lead-in**.
-}}
-
+> Write here the **lead-in**.
 ? hypothesis
   * type: text
 
@@ -29,10 +26,7 @@ Write here the yesterday's Feedback.
 Write here the **stem**.
 }}
 
-{{leadin
-Write here the **lead-in**.
-}}
-
+> Write here the **lead-in**.
 ? hypothesis
   * type: text
 

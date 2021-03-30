@@ -320,7 +320,8 @@ class DCCInputChoice extends DCCInput {
     if (this._statement != null) {
       let stm = this._statement
       if (this.hasAttribute('statement')) stm = '<p>' + stm + '</p>'
-      await this._applyRender('<span id="presentation-dcc">' + stm + '</span>',
+      await this._applyRender('<span id="presentation-dcc" class="' +
+        this._renderStyle()+'-statement' + '">' + stm + '</span>',
         'innerHTML', 'text', 'presentation-dcc', false)
     }
 

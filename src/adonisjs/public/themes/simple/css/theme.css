@@ -162,6 +162,10 @@
    margin-bottom: .5rem;
 }
 
+.dcc-input-choice-theme-statement {
+   margin-left: 3px;
+}
+
 .dcc-input-typed-theme input textarea {
    font-size: 1rem;
    font-weight: 400;

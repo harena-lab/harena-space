@@ -72,7 +72,7 @@ Write here the **feedback**.
 
 # Answer (note, division)
 
-**You answered:** ^Previous.input1^.
+**You answered:** ^Previous.input1^
 
 ___ Template ___
 

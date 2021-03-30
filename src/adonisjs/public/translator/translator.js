@@ -550,44 +550,67 @@ class Translator {
     // sixth cycle - computes field hierarchy
     let lastRoot = null
     let lastField = null
+    let lastFieldName = 'value'
     let lastLevel = 0
-    const hierarchy = []
-    const levelHierarchy = []
+    let hierarchy = []
+    let hierarchyName = []
+    let levelHierarchy = []
     for (let c = 0; c < compiled.length; c++) {
       if (compiled[c].type == 'field') {
         if (lastRoot == null || !compiled[c].subordinate) {
           if (compiled[c].value == null) { compiled[c].value = {} }
           lastRoot = compiled[c]
-          lastField = compiled[c].value
+          lastField = compiled[c]
+          lastFieldName = 'value'
           lastLevel = compiled[c].level
+          hierarchy = []
+          hierarchyName = []
+          levelHierarchy = []
         } else {
           while (lastField != null &&
-                      compiled[c].level <= lastLevel) {
+                 compiled[c].level <= lastLevel) {
             lastField = hierarchy.pop()
+            lastFieldName = hierarchyName.pop()
             lastLevel = levelHierarchy.pop()
           }
           if (lastField == null) {
             if (compiled[c].value == null) { compiled[c].value = {} }
             lastRoot = compiled[c]
-            lastField = compiled[c].value
+            lastField = compiled[c]
+            lastFieldName = 'value'
             lastLevel = compiled[c].level
+            hierarchy = []
+            hierarchyName = []
+            levelHierarchy = []
           } else {
-            if (typeof lastField !== 'object') { lastField = { value: lastField } }
-            lastField[compiled[c].field] =
+            if (typeof lastField[lastFieldName] !== 'object') {
+               lastField[lastFieldName] = { value: lastField[lastFieldName] }
+            }
+            lastField[lastFieldName][compiled[c].field] =
                      (compiled[c].value == null) ? {} : compiled[c].value
             lastRoot._source += '\n' + compiled[c]._source
             hierarchy.push(lastField)
+            hierarchyName.push(lastFieldName)
             levelHierarchy.push(lastLevel)
-            lastField = lastField[compiled[c].field]
+            lastField = lastField[lastFieldName]
+            lastFieldName = compiled[c].field
             lastLevel = compiled[c].level
             compiled.splice(c, 1)
             c--
           }
         }
-      }
+     } else if (compiled[c].type != 'linefeed') {
+        lastRoot = null
+        lastField = null
+        lastFieldName = 'value'
+        lastLevel = 0
+        hierarchy = []
+        hierarchyName = []
+        levelHierarchy = []
+     }
     }
 
-    // ninth cycle - aggregates options
+    // seventh cycle - aggregates options
     let optionGroup = null
     let subtype = null
     for (let c = 1; c < compiled.length; c++) {
@@ -621,7 +644,7 @@ class Translator {
       compiled[c].seq = c + 1
     }
 
-    // seventh cycle - computes subordinate elements
+    // eighth cycle - computes subordinate elements
     for (let c = 0; c < compiled.length; c++) {
       const pr = (c > 1 && compiled[c - 1].type == 'linefeed') ? c - 2 : c - 1
       // later blockquotes and subordinates (excluding knot subordinates)
@@ -689,9 +712,21 @@ class Translator {
       }
       // previous blockquotes for inputs
       else if (compiled[c].type == 'input' && compiled[pr].blockquote) {
-        compiled[c][Translator.element[compiled[c].type].pretext] =
-                  compiled[pr].content
-        compiled[c]._source = compiled[pr]._source + '\n' + compiled[c]._source
+        console.log('=== adding previous')
+        console.log(compiled[pr])
+        let content = compiled[pr].content
+        let source = compiled[pr]._source
+
+        if (compiled[pr].type == 'text-block') {
+           content = ''
+           source = ''
+           for (let c of compiled[pr].content) {
+              content += c.content
+              source += c._source
+           }
+        }
+        compiled[c][Translator.element[compiled[c].type].pretext] = content
+        compiled[c]._source = source + '\n' + compiled[c]._source
         const shift = c - pr
         compiled.splice(pr, shift)
         c -= shift
@@ -710,7 +745,7 @@ class Translator {
       if (c >= 0) { compiled[c].seq = c + 1 }
     }
 
-    // eighth cycle - joins script sentences
+    // ninth cycle - joins script sentences
     // <TODO> quite similar to text-block (join?)
     let script
     let scriptSeq
@@ -748,7 +783,7 @@ class Translator {
       if (c >= 0) { compiled[c].seq = c + 1 }
     }
 
-    this._compileMergeLinefeeds(unity)
+    this._compileMergeLinefeeds(compiled)
 
     // tenth cycle - hide comments
     let inComment = false
@@ -790,8 +825,8 @@ class Translator {
 
   // merges texts separated by linefeeds and
   // removes extra linfefeeds when the element embeds it
-  _compileMergeLinefeeds (unity) {
-    const compiled = unity.content
+  _compileMergeLinefeeds (compiled) {
+    // const compiled = unity.content
     for (let c = 0; c < compiled.length; c++) {
       // <TODO> remove?
       /*
@@ -1986,11 +2021,9 @@ class Translator {
     let statement =
       (obj.text) ?
          this._markdownTranslator.makeHtml(obj.text)
-           .replace(/<\/?p>/igm, '')
+           .replace(/<\/p>/igm, '<br>')
+           .replace(/<p>/igm, '')
            : ''
-
-    console.log('=== obj options')
-    console.log(obj.options)
 
     if (subtype == 'input-choice' && obj.options) {
       statement += '<br>'
@@ -2015,8 +2048,6 @@ class Translator {
         }
         statement += choice
       }
-      console.log('=== statement options')
-      console.log(statement)
     }
 
     // <TODO> provisory - weak strategy (only one per case)
