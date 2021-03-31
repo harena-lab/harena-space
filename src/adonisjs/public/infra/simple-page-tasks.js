@@ -3,6 +3,8 @@ class PageController {
 
     PageController.scriptsComplete = false
     this.removeLoadingIcon = this.removeLoadingIcon.bind(this)
+    this.pageReady = this.pageReady.bind(this)
+
     window.addEventListener("load", function(event) {
       if (!PageController.scriptsComplete && document.querySelector('main')) {
         const template = document.createElement('template')
@@ -16,8 +18,12 @@ class PageController {
     MessageBus.int.subscribe('control/dhtml/ready', this.removeLoadingIcon)
     MessageBus.ext.subscribe('control/case/ready', this.removeLoadingIcon)
     MessageBus.ext.subscribe('control/validate/ready', this.removeLoadingIcon)
-  }
 
+    MessageBus.int.subscribe('control/html/ready', this.pageReady)
+  }
+  async pageReady(){
+    PageController.instance.pageButtons(parseInt(localStorage.getItem('page')))
+  }
   async removeLoadingIcon(){
     if(document.querySelector('#loading-page-container')){
       setTimeout(function(){
@@ -105,6 +111,62 @@ class PageController {
       }
     }
   }
+////////////////////////////////////////////////////////////////////////////////
+
+async pageButtons(p){
+  var state = {
+    'nPages': 18,
+    'page': p,
+    'window': 4,
+  }
+  var pages = 18
+  var wrapper = document.getElementById('pagination-wrapper')
+  wrapper.innerHTML = (``)
+  var maxLeft = (state.page - Math.floor(state.window / 2))
+  var maxRight = (state.page + Math.floor(state.window / 2))
+
+  if (maxLeft < 1) {
+    maxLeft = 1
+    maxRight = state.window
+  }
+
+  if (maxRight > pages) {
+    maxLeft = pages - (state.window - 1)
+
+    if (maxLeft < 1){
+      maxLeft = 1
+    }
+    maxRight = pages
+  }
+
+
+  for (var page = maxLeft; page <= maxRight; page++) {
+    if(page === state.page){
+      wrapper.innerHTML += `<button value=${page} class="page page-btn btn btn-sm btn-secondary disabled">${page}</button>`
+    }else{
+      wrapper.innerHTML += `<button value=${page} class="page page-btn btn btn-sm btn-secondary">${page}</button>`
+    }
+
+  }
+
+  if (state.page != 1) {
+    wrapper.innerHTML = `<button value=${1} class="page page-btn btn btn-sm btn-secondary">&#171; First</button>` + wrapper.innerHTML
+  }
+
+  if (state.page != pages) {
+    wrapper.innerHTML += `<button value=${pages} class="page page-btn btn btn-sm btn-secondary">Last &#187;</button>`
+  }
+
+  $('.page').on('click', function() {
+    localStorage.setItem('page', Number($(this).val()))
+    PageController.instance.pageButtons(Number($(this).val()))
+    document.querySelector('#page').value = Number($(this).val())
+    console.log('==================================================')
+    console.log(document.querySelector('#page').value)
+    MessageBus.ext.publish('cases/request/get')
+  })
+}
+////////////////////////////////////////////////////////////////////////////////
 }
 (function () {
   PageController.instance = new PageController()

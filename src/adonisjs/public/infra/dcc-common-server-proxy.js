@@ -120,7 +120,7 @@ class DCCCommonServer {
     let jsonResponse
     await axios(config)
       .then(function (endpointResponse) {
-        jsonResponse = endpointResponse.data
+        jsonResponse = endpointResponse.data.cases
       })
       .catch(function (error) {
         console.log(error)

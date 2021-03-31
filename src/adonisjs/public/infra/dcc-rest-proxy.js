@@ -232,7 +232,9 @@
                 {name: 'fProperty',
                   in: 'query'},
                 {name: 'fPropertyValue',
-                  in: 'query'}
+                  in: 'query'},
+                {name: 'page',
+                  in: 'query'},
               ]
             }
           }
