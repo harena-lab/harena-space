@@ -26,9 +26,9 @@ class DraftManager {
   }
 
   async _draftSelect (advanced) {
-    console.log('Drafting total cases')
+
     const cases = await MessageBus.ext.request('data/case/*/list')
-    // {user: userid});
+
 
     const cl = cases.message
     for (const c in cl) {
@@ -85,7 +85,7 @@ class DraftManager {
   }
 
   async _draftCategoryCasesSelect (advanced) {
-    // console.log('Drafting cases by category')
+
     // const cases = await MessageBus.ext.request('data/case/*/list')
     // {user: userid});
 
@@ -160,30 +160,40 @@ class DraftManager {
             }
           })
         }
-        editButton.addEventListener('click',
-          function () {
+        if(editButton){
+          const listenerFnEdit = function () {
             Basic.service.authorPropertyStore('caseId', editButton.id.substring(1))
             // window.location.href = "http://0.0.0.0:10010/author/author.html";
             if(new URL(document.location).pathname.includes('feedback')){
               window.location.href =
-                      '/author?id=' + this.id.substring(1)+'&fdbk=""'
+              '/author?id=' + this.id.substring(1)+'&fdbk=""'
             }else {
               window.location.href =
-                      '/author?id=' + this.id.substring(1)
+              '/author?id=' + this.id.substring(1)
             }
-          })
-        previewButton.addEventListener('click',
-          function () {
+          }
+          editButton.removeEventListener('click', listenerFnEdit)
+          editButton.addEventListener('click', listenerFnEdit)
+        }
+        if(previewButton){
+          const listenerFnPreview = function () {
             Basic.service.authorPropertyStore('caseId', editButton.id.substring(1))
             window.location.href = '/player/case?id=' +
-                                         previewButton.id.substring(1) +
-                                         '&preview=1'
-          })
-        console.log('=== adding listener 2')
-        deleteButton.addEventListener('click',
-          function () {
+            previewButton.id.substring(1) +
+            '&preview=1'
+          }
+          previewButton.removeEventListener('click', listenerFnPreview)
+          previewButton.addEventListener('click', listenerFnPreview)
+        }
+
+        if(deleteButton){
+          console.log('=== adding listener 2')
+          const listenerFnRemove = function () {
             MessageBus.int.publish('control/case/delete', editButton.id.substring(1))
-          })
+          }
+          deleteButton.removeEventListener('click', listenerFnRemove)
+          deleteButton.addEventListener('click', listenerFnRemove)
+        }
         // if (advanced) {
         //   downloadButton.addEventListener('click',
         //     function () {
