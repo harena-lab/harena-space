@@ -108,4 +108,27 @@
       }
     }
   )
+
+  DCC.component(
+    'submit-filter',
+    'dcc-submit',
+    {
+      pre: function (message, form, schema) {
+        console.log('============ pre submit')
+        console.log(message['value'])
+        console.log('============ form')
+        console.log(form)
+        var url = new URL(document.location)
+        for(_info in message['value']){
+            url.searchParams.set(_info,message['value'][_info])
+        }
+        document.location = url
+        return true
+
+      },
+      pos: function (response) {
+
+      }
+    }
+  )
 })()

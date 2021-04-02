@@ -166,7 +166,7 @@
               <div class="pr-3" style="width: 120px;">
                 <input type="text" class="form-control custom-select-sm" id="fSpecialty" placeholder="Specialty">
               </div>
-              <dcc-submit id="filter-submit" label="Filter" xstyle="btn btn-secondary" topic="cases/request/get"></dcc-submit>
+              <dcc-submit id="filter-submit" bind="submit-filter" label="Filter" xstyle="btn btn-secondary" topic="cases/request/get"></dcc-submit>
             </form>
             <dcc-rest id="harena-cases-filter" bind="harena-cases" subscribe="cases/request/get:retrieve"></dcc-rest>
             <!-- Containers to selectAll/share cases -->
@@ -177,11 +177,20 @@
             <button type="button" class="btn btn-success mr-4 m-1" data-toggle="modal" data-target="#share-modal">
               Share cases
             </button> -->
+            <div class="ml-auto pr-3">
+                <div id="pagination-wrapper"></div>
+            </div>
           </div>
+
           <div id="case-boxes" class="draft-scroll-container">
             <dcc-rest id="harena-cases" bind="harena-cases"></dcc-rest>
             <dcc-dhtml id="harena-dhtml-cases" connect="retrieve:harena-cases:service/request/get" subscribe="service/response/get/harena-cases-filter:update">
+<<<<<<< Updated upstream
               {{@foreach . cases}}
+=======
+              <input type="hidden" id="pages" value="{{pages}}">
+              {{@foreach cases c}}
+>>>>>>> Stashed changes
               <!-- checkbox for selecting cases -->
               <!-- <div class="col">
                 <div class="form-check" id="share-checkbox">
@@ -190,17 +199,17 @@
               </div> -->
               <div id="b{{cases.id}}" class="row draft-author-case-container">
                 <div class="col draft-case-title">
-                  <label class="ml-2">{{cases.title}}</label>
+                  <label class="ml-2">{{c.cases.title}}</label>
 
                   <div class="row">
-                    <h6>Created by {{cases.author_grade}}: {{cases.username}} ({{cases.institution_acronym}})</h6>
+                    <h6>Created by {{c.cases.author_grade}}: {{c.cases.username}} ({{c.cases.institution_acronym}})</h6>
                   </div>
                 </div>
 
                 <div class="d-flex justify-content-end justify-content-center buttons-container">
-                  <div id="e{{cases.id}}" class="col author-panel-button align-self-center pt-2 pb-2">EDIT</div>
-                  <div id="p{{cases.id}}" class="col author-panel-button align-self-center pt-2 pb-2">PREVIEW</div>
-                  <div id="d{{cases.id}}" class="col author-panel-button align-self-center pt-2 pb-2">DELETE</div>
+                  <div id="e{{c.cases.id}}" class="col author-panel-button align-self-center pt-2 pb-2">EDIT</div>
+                  <div id="p{{c.cases.id}}" class="col author-panel-button align-self-center pt-2 pb-2">PREVIEW</div>
+                  <div id="d{{c.cases.id}}" class="col author-panel-button align-self-center pt-2 pb-2">DELETE</div>
                 </div>
               </div>
               {{@endfor}}

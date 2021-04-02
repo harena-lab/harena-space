@@ -519,3 +519,7 @@ nav.navbar {
 .breadcrumb-item a {
   color: white;
 }
+
+.page-btn{
+  margin: 1px;
+}
