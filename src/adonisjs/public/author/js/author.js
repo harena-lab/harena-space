@@ -876,8 +876,13 @@ class AuthorManager {
         ? this._editableDCCs[presentationId] : dcc
       */
       const parentDCC = dcc
-      if (presentationId != null)
-        dcc = await this._editableDCCWait(presentationId)
+      // check for a DCC inside a DCC
+      if (presentationId != null) {
+        let inDCC = await this._editableDCCWait(presentationId)
+        // check if it is a Visual DCC
+        if (inDCC.currentPresentation)
+         dcc = inDCC
+      }
       parentDCC.edit(role)
 
       Properties.s.editElementProperties(

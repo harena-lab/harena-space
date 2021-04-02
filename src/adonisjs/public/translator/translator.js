@@ -712,8 +712,6 @@ class Translator {
       }
       // previous blockquotes for inputs
       else if (compiled[c].type == 'input' && compiled[pr].blockquote) {
-        console.log('=== adding previous')
-        console.log(compiled[pr])
         let content = compiled[pr].content
         let source = compiled[pr]._source
 
@@ -2091,9 +2089,6 @@ class Translator {
       }
     }
 
-    console.log('=== resulting HTML')
-    console.log(input)
-
     return input
   }
 
@@ -2107,9 +2102,15 @@ class Translator {
       '_source', '_modified', 'mergeLine']
 
     let md = ''
+    let stm = ''
+    if (obj.text) {
+      const lines = obj.text.split('\n')
+      stm = '> ' + lines.join('\n> ') + '\n'
+    }
 
     if (obj.subtype == 'choice' && obj.exclusive == true &&
         obj.shuffle == true) {
+      md = stm
       let first = true
       for (const op in obj.options) {
         if (!first) { md += '\n' }
@@ -2137,8 +2138,7 @@ class Translator {
       }
 
       md = Translator.markdownTemplates.input
-        .replace('{statement}', (obj.text) ? '> ' +
-                  obj.text + '\n' : '')
+        .replace('{statement}', stm)
         .replace('{variable}', obj.variable)
         .replace('{subtype}',
           (obj.subtype) ? this._mdSubField('type', obj.subtype) : '')
