@@ -371,6 +371,7 @@ class AuthorManager {
     clearTimeout(timeoutExceeded)
 
     if (Basic.service.currentCaseId != null && this._compiledCase != null) {
+
       this._checkKnotModification(this._renderState)
 
       const md = Translator.instance.assembleMarkdown(this._compiledCase, false)
@@ -380,23 +381,47 @@ class AuthorManager {
           source: md
         })
 
-      Basic.service.authorPropertyStore('caseId', Basic.service.currentCaseId)
+      if(status.message && !status.message.includes('Error')  ){
+        Basic.service.authorPropertyStore('caseId', Basic.service.currentCaseId)
 
-      this._messageSpace.firstElementChild.innerHTML = 'SAVED!'
-      setTimeout(this._clearMessage, 800)
-      // let timeoutExceeded
-      // new Promise((resolve, reject) => {
-      //   timeoutExceeded = setTimeout(() => {resolve()}, 5000)
-      //
-      // })
-      //   .then((res) => {this._messageSpace.firstElementChild.innerHTML = 'Error!'})
-      // clearTimeout(timeoutExceeded)
-      const promise = new Promise((resolve, reject) => {
-        setTimeout(() => resolve('done!'), 500)
-      })
-      const result = await promise
-      this._messageSpace.classList.add('invisible')
-      document.getElementById('btn-save-draft').innerHTML = 'SAVE'
+        this._messageSpace.firstElementChild.innerHTML = 'SAVED!'
+        setTimeout(this._clearMessage, 800)
+        // let timeoutExceeded
+        // new Promise((resolve, reject) => {
+        //   timeoutExceeded = setTimeout(() => {resolve()}, 5000)
+        //
+        // })
+        //   .then((res) => {this._messageSpace.firstElementChild.innerHTML = 'Error!'})
+        // clearTimeout(timeoutExceeded)
+        const promise = new Promise((resolve, reject) => {
+          setTimeout(() => resolve('done!'), 500)
+        })
+        let dummy = await promise
+        this._messageSpace.classList.add('invisible')
+        document.getElementById('btn-save-draft').innerHTML = 'SAVE'
+      }else {
+        this._messageSpace.firstElementChild.innerHTML = status.message
+        this._messageSpace.firstElementChild.style.backgroundColor = '#f21313b5'
+        this._messageSpace.firstElementChild.style.borderRadius = '50px'
+        this._messageSpace.firstElementChild.style.right = 0
+        setTimeout(this._clearMessage, 800)
+        // let timeoutExceeded
+        // new Promise((resolve, reject) => {
+        //   timeoutExceeded = setTimeout(() => {resolve()}, 5000)
+        //
+        // })
+        //   .then((res) => {this._messageSpace.firstElementChild.innerHTML = 'Error!'})
+        // clearTimeout(timeoutExceeded)
+        const promise = new Promise((resolve, reject) => {
+          setTimeout(() => resolve('done!'), 5000)
+        })
+        let dummy = await promise
+        this._messageSpace.classList.add('invisible')
+        this._messageSpace.firstElementChild.style.backgroundColor = null
+        this._messageSpace.firstElementChild.style.borderRadius = null
+        this._messageSpace.firstElementChild.style.right = null
+        document.getElementById('btn-save-draft').innerHTML = 'SAVE'
+      }
     } else{
       this._messageSpace.firstElementChild.innerHTML = 'Error...try again.'
       setTimeout(this._messageSpace.classList.add('invisible'), 1500)
