@@ -166,8 +166,7 @@
               <div class="pr-3" style="width: 120px;">
                 <input type="text" class="form-control custom-select-sm" id="fSpecialty" placeholder="Specialty">
               </div>
-              <input id="page" type="hidden" name="page" value="1">
-              <dcc-submit id="filter-submit" label="Filter" xstyle="btn btn-secondary" topic="cases/request/get"></dcc-submit>
+              <dcc-submit id="filter-submit" bind="submit-filter" label="Filter" xstyle="btn btn-secondary" topic="cases/request/get"></dcc-submit>
             </form>
             <dcc-rest id="harena-cases-filter" bind="harena-cases" subscribe="cases/request/get:retrieve"></dcc-rest>
             <!-- Containers to selectAll/share cases -->
@@ -186,7 +185,12 @@
           <div id="case-boxes" class="draft-scroll-container">
             <dcc-rest id="harena-cases" bind="harena-cases"></dcc-rest>
             <dcc-dhtml id="harena-dhtml-cases" connect="retrieve:harena-cases:service/request/get" subscribe="service/response/get/harena-cases-filter:update">
+<<<<<<< Updated upstream
+              {{@foreach . cases}}
+=======
+              <input type="hidden" id="pages" value="{{pages}}">
               {{@foreach cases c}}
+>>>>>>> Stashed changes
               <!-- checkbox for selecting cases -->
               <!-- <div class="col">
                 <div class="form-check" id="share-checkbox">

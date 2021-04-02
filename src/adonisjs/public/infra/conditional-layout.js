@@ -3,7 +3,7 @@ class LayoutController {
     this._case = null
     this._user = null
     this.busMessages()
-    this.startController()
+    // this.startController()
   }
 
   set case (newValue) {
@@ -23,8 +23,7 @@ class LayoutController {
   }
 
   async startController(){
-
-    await MessageBus.int.waitMessage('control/html/ready')
+    // await MessageBus.int.waitMessage('control/html/ready')
 
     if(new URL(document.location).pathname == '/author/'){
       this.dynamicAuthor()
@@ -42,6 +41,7 @@ class LayoutController {
     if(new URL(document.location).pathname == '/author/'){
       LayoutController.case = await MessageBus.ext.waitMessage('service/response/get/harena-case')
     }
+    this.startController()
   }
 
   async dynamicAuthor (){
@@ -135,7 +135,7 @@ class LayoutController {
   }
 
   async dynamicCaseListFeedback (){
-    console.log('============ starting dynamic list')
+    // console.log('============ starting dynamic list')
     if(LayoutController.user.message.grade === 'professor'
     || LayoutController.user.message.grade === 'coordinator'){
       document.querySelector('#txt-draft-presentation').innerHTML = 'Students cases with feedback request'

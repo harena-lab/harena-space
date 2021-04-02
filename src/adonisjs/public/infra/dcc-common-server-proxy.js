@@ -127,13 +127,14 @@ class DCCCommonServer {
         console.log(error.code)
       })
     const busResponse = []
-    for (const c in jsonResponse) {
+    for (const c in jsonResponse.cases) {
       busResponse.push({
-        id: jsonResponse[c].id,
-        title: jsonResponse[c].title
+        id: jsonResponse.cases[c].id,
+        title: jsonResponse.cases[c].title
         // icon: Basic.service.rootPath + 'resources/icons/mono-slide.svg'
       // svg : jsonResponse[c].svg
       })
+      busResponse.push({pages: jsonResponse.pages})
     }
     busResponse.sort(function (c1, c2) {
       return (c1.title < c2.title) ? -1 : 1

@@ -128,31 +128,35 @@
                   <option value="1">Complete</option>
                 </select>
               </div>
-              <dcc-submit id="filter-submit" label="Filter" xstyle="btn btn-secondary" topic="cases/request/get"></dcc-submit>
+              <dcc-submit id="filter-submit" bind="submit-filter" label="Filter" xstyle="btn btn-secondary" topic="cases/request/get"></dcc-submit>
             </form>
             <dcc-rest id="harena-cases-filter" bind="harena-cases" subscribe="cases/request/get:retrieve"></dcc-rest>
+            <div class="ml-auto pr-3">
+                <div id="pagination-wrapper"></div>
+            </div>
           </div>
           <div id="case-boxes" class="draft-scroll-container">
             <dcc-rest id="harena-cases" bind="harena-cases"></dcc-rest>
             <dcc-dhtml id="harena-dhtml-cases" connect="retrieve:harena-cases:service/request/get" subscribe="service/response/get/harena-cases-filter:update">
-              {{@foreach . cases}}
+              <input type="hidden" id="pages" value="{{pages}}">
+              {{@foreach cases c}}
               <!-- checkbox for selecting cases -->
               <!-- <div class="col">
                 <div class="form-check" id="share-checkbox">
-                  <input class="form-check-input" type="checkbox" id="c{{cases.id}}" value="{{cases.id}}">
+                  <input class="form-check-input" type="checkbox" id="c{{c.cases.id}}" value="{{c.cases.id}}">
                 </div>
               </div> -->
-              <div id="b{{cases.id}}" class="row draft-author-case-container">
+              <div id="b{{c.cases.id}}" class="row draft-author-case-container">
                 <div class="col draft-case-title">
-                  <label class="ml-2">{{cases.title}}</label>
+                  <label class="ml-2">{{c.cases.title}}</label>
 
                   <div class="row">
-                    <h6>Created by: {{cases.username}} ({{cases.institution_acronym}}) || {{cases.feedback}}</h6>
+                    <h6>Created by: {{c.cases.username}} ({{c.cases.institution_acronym}}) || {{c.cases.feedback}}</h6>
                   </div>
                 </div>
 
                 <div class="d-flex justify-content-end justify-content-center buttons-container">
-                  <div id="e{{cases.id}}" class="col author-panel-button align-self-center pt-2 pb-2">VIEW FEEDBACK</div>
+                  <div id="e{{c.cases.id}}" class="col author-panel-button align-self-center pt-2 pb-2">VIEW FEEDBACK</div>
                 </div>
               </div>
               {{@endfor}}

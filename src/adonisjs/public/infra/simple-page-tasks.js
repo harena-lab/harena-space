@@ -1,6 +1,7 @@
 class PageController {
   constructor () {
-
+    var isPageReady = false
+    var hasremovedLoading = false
     PageController.scriptsComplete = false
     this.removeLoadingIcon = this.removeLoadingIcon.bind(this)
     this.pageReady = this.pageReady.bind(this)
@@ -18,33 +19,54 @@ class PageController {
     MessageBus.int.subscribe('control/dhtml/ready', this.removeLoadingIcon)
     MessageBus.ext.subscribe('control/case/ready', this.removeLoadingIcon)
     MessageBus.ext.subscribe('control/validate/ready', this.removeLoadingIcon)
-
     MessageBus.int.subscribe('control/html/ready', this.pageReady)
   }
   async pageReady(){
-    PageController.instance.pageButtons(parseInt(localStorage.getItem('page')))
-  }
-  async removeLoadingIcon(){
-    if(document.querySelector('#loading-page-container')){
-      setTimeout(function(){
-        document.querySelector('main').classList.remove('invisible')
-        if(document.querySelector('#loading-page-container'))
-          document.querySelector('#loading-page-container').remove()
-        MessageBus.int.publish('control/html/ready')
-      }, 500)
-    }
-    try {
-      setTimeout(function(){
-        document.querySelector('main').classList.remove('invisible')
-      }, 3000)
 
-    } catch (e) {
-      console.log('Error while trying to remove class "invisible" of "main" element');
-      console.log(e)
+    if(!this.isPageReady){
+      PageController.instance.paginationButtons(parseInt(new URL(document.location).searchParams.get('page') || 1))
+      // Verifies if the page contains the correct element
+      if(document.querySelector('#filter-form')){
+        var filterElements = []
+        if(document.querySelector('#fInstitution'))
+          filterElements.push(document.querySelector('#fInstitution').id)
+        if(document.querySelector('#fUserType'))
+          filterElements.push(document.querySelector('#fUserType').id)
+        if(document.querySelector('#fSpecialty'))
+          filterElements.push(document.querySelector('#fSpecialty').id)
+        if(document.querySelector('#fPropertyValue'))
+          filterElements.push(document.querySelector('#fPropertyValue').id)
+        PageController.instance.updateValuesFromUrl(filterElements)
+      }
     }
-    PageController.instance.appropriateBreadcrumb()
-    PageController.scriptsComplete = true
-    // console.log(PageController.scriptsComplete)
+    this.isPageReady = true
+  }
+
+  async removeLoadingIcon(){
+
+    if(!this.hasremovedLoading){
+      if(document.querySelector('#loading-page-container')){
+        setTimeout(function(){
+          document.querySelector('main').classList.remove('invisible')
+          if(document.querySelector('#loading-page-container'))
+          document.querySelector('#loading-page-container').remove()
+          MessageBus.int.publish('control/html/ready')
+        }, 500)
+      }
+      try {
+        setTimeout(function(){
+          document.querySelector('main').classList.remove('invisible')
+        }, 3000)
+
+      } catch (e) {
+        console.log('Error while trying to remove class "invisible" of "main" element');
+        console.log(e)
+      }
+      PageController.instance.appropriateBreadcrumb()
+      PageController.scriptsComplete = true
+      // console.log(PageController.scriptsComplete)
+    }
+    this.hasremovedLoading = true
   }
 
   controlDropdownMenu(){
@@ -111,62 +133,80 @@ class PageController {
       }
     }
   }
+  /*
+    Function that controls the pagination layout
+    Needs a element with id 'pagination-wrapper' to wrap the buttons
+  */
+////////////////////////////////////////////////////////////////////////////////
+  async paginationButtons(p){
+
+    if(document.querySelector('#pages') && document.querySelector('#pagination-wrapper')){
+      var state = {
+        'nPages': document.querySelector('#pages').value,
+        'page': p,
+        'window': 4,
+      }
+      if(state.nPages > 1){
+        var wrapper = document.querySelector('#pagination-wrapper')
+        wrapper.innerHTML = (``)
+        var maxLeft = (state.page - Math.floor(state.window / 2))
+        var maxRight = (state.page + Math.floor(state.window / 2))
+
+        if (maxLeft < 1) {
+          maxLeft = 1
+          maxRight = state.window
+        }
+
+        if (maxRight > state.nPages) {
+          maxLeft = state.nPages - (state.window - 1)
+
+          if (maxLeft < 1){
+            maxLeft = 1
+          }
+          maxRight = state.nPages
+        }
+
+
+        for (var page = maxLeft; page <= maxRight; page++) {
+          if(page === state.page){
+            wrapper.innerHTML += `<button value=${page} class="page page-btn btn btn-sm btn-secondary disabled">${page}</button>`
+          }else{
+            wrapper.innerHTML += `<button value=${page} class="page page-btn btn btn-sm btn-secondary">${page}</button>`
+          }
+
+        }
+
+        if (state.page != 1) {
+          wrapper.innerHTML = `<button value=${1} class="page page-btn btn btn-sm btn-secondary">&#171; First</button>` + wrapper.innerHTML
+        }
+
+        if (state.page != state.nPages) {
+          wrapper.innerHTML += `<button value=${state.nPages} class="page page-btn btn btn-sm btn-secondary">Last &#187;</button>`
+        }
+
+        $('.page').on('click', function() {
+          if(!$(this).hasClass('disabled')){
+            var url = new URL(document.location)
+            url.searchParams.set('page', Number($(this).val()))
+            document.location = url
+          }
+        })
+      }
+    }
+  }
 ////////////////////////////////////////////////////////////////////////////////
 
-async pageButtons(p){
-  var state = {
-    'nPages': 18,
-    'page': p,
-    'window': 4,
-  }
-  var pages = 18
-  var wrapper = document.getElementById('pagination-wrapper')
-  wrapper.innerHTML = (``)
-  var maxLeft = (state.page - Math.floor(state.window / 2))
-  var maxRight = (state.page + Math.floor(state.window / 2))
-
-  if (maxLeft < 1) {
-    maxLeft = 1
-    maxRight = state.window
-  }
-
-  if (maxRight > pages) {
-    maxLeft = pages - (state.window - 1)
-
-    if (maxLeft < 1){
-      maxLeft = 1
+  async updateValuesFromUrl(parent){
+    var url = new URL(document.location)
+    for (var e in parent){
+      if (url.searchParams.get(parent[e])){
+        var element = document.querySelector('#'+ parent[e])
+        element.value = url.searchParams.get(parent[e])
+      }
     }
-    maxRight = pages
   }
-
-
-  for (var page = maxLeft; page <= maxRight; page++) {
-    if(page === state.page){
-      wrapper.innerHTML += `<button value=${page} class="page page-btn btn btn-sm btn-secondary disabled">${page}</button>`
-    }else{
-      wrapper.innerHTML += `<button value=${page} class="page page-btn btn btn-sm btn-secondary">${page}</button>`
-    }
-
-  }
-
-  if (state.page != 1) {
-    wrapper.innerHTML = `<button value=${1} class="page page-btn btn btn-sm btn-secondary">&#171; First</button>` + wrapper.innerHTML
-  }
-
-  if (state.page != pages) {
-    wrapper.innerHTML += `<button value=${pages} class="page page-btn btn btn-sm btn-secondary">Last &#187;</button>`
-  }
-
-  $('.page').on('click', function() {
-    localStorage.setItem('page', Number($(this).val()))
-    PageController.instance.pageButtons(Number($(this).val()))
-    document.querySelector('#page').value = Number($(this).val())
-    console.log('==================================================')
-    console.log(document.querySelector('#page').value)
-    MessageBus.ext.publish('cases/request/get')
-  })
 }
-////////////////////////////////////////////////////////////////////////////////
+
 }
 (function () {
   PageController.instance = new PageController()
