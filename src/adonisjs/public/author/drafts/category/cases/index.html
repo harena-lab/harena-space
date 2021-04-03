@@ -137,7 +137,7 @@
           <div class="home-text" style="height: auto !important;">
             <p>Continue editing your drafted cases.</p>
           </div>
-          <div class="home-author-padding rounded row sticky-top" style="z-index:3;">
+          <div class="home-author-padding align-items-center rounded row sticky-top" style="z-index:3;">
             <form class="pl-2 align-items-center row" id="filter-form">
               <div class="p-2 ml-4">Filter by: </div>
               <div class="pr-3">
@@ -178,6 +178,16 @@
             </button> -->
             <!-- End of containers to selectAll/share cases -->
             <div class="ml-auto pr-3">
+              <form id="form-pg-limit">
+                <select id="limit" name="limit" class="custom-select custom-select-sm" onchange="document.querySelector('#submit-filter-limit').computeSubmit()">
+                  <option value="10">10 items</option>
+                  <option selected value="20">20 items</option>
+                  <option value="30">30 items</option>
+                </select>
+                <dcc-submit id="submit-filter-limit" bind="submit-filter" label="Filter" topic="cases/request/get" hidden></dcc-submit>
+              </form>
+            </div>
+            <div class="pr-3">
                 <div id="pagination-wrapper"></div>
             </div>
           </div>

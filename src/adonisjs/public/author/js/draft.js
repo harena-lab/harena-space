@@ -96,9 +96,8 @@ class DraftManager {
     if(document.querySelector('#select-all-checkbox')){
       const selectAllCases = document.querySelector('#select-all-checkbox')
       var caseList = new Array()
-      selectAllCases.addEventListener('click',
-      function () {
 
+      const listenerFnSelectAll = function () {
         for (var c in cl){
           try {
             var editButton = cl[c].children[0]
@@ -121,7 +120,9 @@ class DraftManager {
             break
           }
         }
-      })
+      }
+      selectAllCases.removeEventListener('click', listenerFnSelectAll)
+      selectAllCases.addEventListener('click', listenerFnSelectAll)
     }
 
     for (const c in cl) {
@@ -134,32 +135,34 @@ class DraftManager {
         if(document.querySelector('#c'+editButton.id.substring(1))){
         const shareCheckbox = document.querySelector('#c'+editButton.id.substring(1))
 
-        caseContainer.firstElementChild.addEventListener('click',
-          function () {
-
-            shareCheckbox.click()
-          })
-
-        shareCheckbox.addEventListener('change',
-          function () {
-            // console.log('============ click checkbox')
-            if(shareCheckbox.checked){
-              // console.log('============ checkbox checked')
-              caseList.push(shareCheckbox.value)
-              document.querySelector('#table_id').value = caseList
-              // sessionStorage.setItem('caseList', caseList)
-              caseContainer.style.backgroundColor = '#769fdb'
-              caseContainer.firstElementChild.style.color = '#fff'
-            }else{
-              // console.log('============ checkbox unchecked')
-              caseList.splice(caseList.indexOf(shareCheckbox.value), 1)
-              document.querySelector('#table_id').value = caseList
-              // sessionStorage.setItem('caseList', caseList)
-              caseContainer.style.backgroundColor = ''
-              caseContainer.firstElementChild.style.color = '#808080'
-            }
-          })
+        const listenerFnCaseContainer = function () {
+          shareCheckbox.click()
         }
+        caseContainer.firstElementChild.removeEventListener('click', listenerFnCaseContainer)
+        caseContainer.firstElementChild.addEventListener('click', listenerFnCaseContainer)
+
+        const listenerFnShareCheckbox = function () {
+          // console.log('============ click checkbox')
+          if(shareCheckbox.checked){
+            // console.log('============ checkbox checked')
+            caseList.push(shareCheckbox.value)
+            document.querySelector('#table_id').value = caseList
+            // sessionStorage.setItem('caseList', caseList)
+            caseContainer.style.backgroundColor = '#769fdb'
+            caseContainer.firstElementChild.style.color = '#fff'
+          }else{
+            // console.log('============ checkbox unchecked')
+            caseList.splice(caseList.indexOf(shareCheckbox.value), 1)
+            document.querySelector('#table_id').value = caseList
+            // sessionStorage.setItem('caseList', caseList)
+            caseContainer.style.backgroundColor = ''
+            caseContainer.firstElementChild.style.color = '#808080'
+          }
+        }
+        shareCheckbox.removeEventListener('change', listenerFnShareCheckbox)
+        shareCheckbox.addEventListener('change', listenerFnShareCheckbox)
+        }
+
         if(editButton){
           const listenerFnEdit = function () {
             Basic.service.authorPropertyStore('caseId', editButton.id.substring(1))

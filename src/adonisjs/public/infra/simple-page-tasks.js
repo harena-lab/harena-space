@@ -36,6 +36,8 @@ class PageController {
           filterElements.push(document.querySelector('#fSpecialty').id)
         if(document.querySelector('#fPropertyValue'))
           filterElements.push(document.querySelector('#fPropertyValue').id)
+        if(document.querySelector('#limit'))
+          filterElements.push(document.querySelector('#limit').id)
         PageController.instance.updateValuesFromUrl(filterElements)
       }
     }
