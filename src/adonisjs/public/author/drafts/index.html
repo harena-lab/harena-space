@@ -185,12 +185,8 @@
           <div id="case-boxes" class="draft-scroll-container">
             <dcc-rest id="harena-cases" bind="harena-cases"></dcc-rest>
             <dcc-dhtml id="harena-dhtml-cases" connect="retrieve:harena-cases:service/request/get" subscribe="service/response/get/harena-cases-filter:update">
-<<<<<<< Updated upstream
-              {{@foreach . cases}}
-=======
               <input type="hidden" id="pages" value="{{pages}}">
               {{@foreach cases c}}
->>>>>>> Stashed changes
               <!-- checkbox for selecting cases -->
               <!-- <div class="col">
                 <div class="form-check" id="share-checkbox">
