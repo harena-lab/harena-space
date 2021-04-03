@@ -134,8 +134,8 @@ class PageController {
     }
   }
   /*
-    Function that controls the pagination layout
-    Needs a element with id 'pagination-wrapper' to wrap the buttons
+    paginationButtons controls the pagination layout
+    Needs a element with id 'pagination-wrapper' to build the buttons
   */
 ////////////////////////////////////////////////////////////////////////////////
   async paginationButtons(p){
@@ -205,8 +205,6 @@ class PageController {
       }
     }
   }
-}
-
 }
 (function () {
   PageController.instance = new PageController()
