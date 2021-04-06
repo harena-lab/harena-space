@@ -1119,7 +1119,7 @@ class Translator {
       html = html.replace(/<video><source src="(https:\/\/drive.google.com[\w/]*\/[^/]+\/)([^/]*)"><\/video>/igm,
                           '<figure class="media"><iframe src="$1preview" width="560" height="315"></iframe><oembed url="$1$2"></oembed></figure>')
                  .replace(/<video><source src="([^"]+)"><\/video>/igm,
-                          '<figure class="media"><oembed url="$1"></oembed></figure>')
+                          '<figure class="media"><video controls><source src="$1"><\/video><oembed url="$1"></oembed></figure>')
     }
     return html
   }
