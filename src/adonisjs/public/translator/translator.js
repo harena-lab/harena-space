@@ -1100,13 +1100,16 @@ class Translator {
         const end = html.indexOf('@@', next + 1)
         const seq = parseInt(html.substring(next + 2, end))
         while (current < content.length && content[current].seq < seq) { current++ }
-        if (current >= content.length || content[current].seq != seq) { console.log('Error in finding seq: ' + seq) } else {
-          html = html.substring(0, next) +
-                      this.objToHTML(content[current], ss) +
-                      html.substring(end + 2)
+        if (current >= content.length || content[current].seq != seq) {
+          console.log('Error in finding seq: ' + seq)
+          return ('**!Error while translating, broken knot, verify markdown.!**') 
+        } else {
+            html = html.substring(0, next) +
+            this.objToHTML(content[current], ss) +
+            html.substring(end + 2)
+          }
+          next = html.indexOf('@@')
         }
-        next = html.indexOf('@@')
-      }
 
       html = html.replace(Translator.contextHTML.open,
         this._contextSelectHTMLAdjust)
