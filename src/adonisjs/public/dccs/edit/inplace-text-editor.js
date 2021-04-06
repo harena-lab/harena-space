@@ -53,12 +53,19 @@ class EditDCCText extends EditDCC {
       {
         extraPlugins: [_harenaCustomUploadAdapterPlugin],
         mediaEmbed: {
-          extraProviders: [{
-             name: 'extraProvider',
-             url: /(^https:\/\/drive.google.com[\w/]*\/[^/]+\/)[^/]*/,
-             html: match => '<iframe src="' + match[1] + 'preview" width="560" height="315"></iframe>'
-           }]
-         },
+          extraProviders: [
+             {
+               name: 'googleProvider',
+               url: /(^https:\/\/drive.google.com[\w/]*\/[^/]+\/)[^/]*/,
+               html: match => '<iframe src="' + match[1] + 'preview" width="560" height="315"></iframe>'
+             },
+             {
+               name: 'harenaProvider',
+               url: /(^https?:\/\/(?:localhost|0\.0\.0\.0|(?:dev\.)?jacinto\.harena\.org):10020\/.*)/,
+               html: match => '<video controls><source src="' + match[1] + '"></video>'
+             }
+           ]
+        },
         harena: {
           confirm: 'control/editor/edit/confirm',
           cancel:  'control/editor/edit/cancel'
@@ -144,6 +151,9 @@ class EditDCCText extends EditDCC {
   _translateMarkdown (editContent) {
     let content = ''
 
+    console.log('=== edit content')
+    console.log(editContent)
+
     let htmlTranslate = editContent
       .replace(/<img([^>]*)title="([^"]*)"([^>]*)><figcaption>([^<]*)<\/figcaption>/igm,
                '<img$1title="$4"$3>')
@@ -189,6 +199,9 @@ class EditDCCText extends EditDCC {
       .replace(/^-[ \t]/igm, '* ')
 
     mdTranslate = mdTranslate.replace(/<br>/igm, '\n')
+
+    console.log('=== markdown translate')
+    console.log(htmlTranslate)
 
     return mdTranslate
   }

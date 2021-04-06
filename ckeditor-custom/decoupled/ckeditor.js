@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -42,6 +42,7 @@ import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefrom
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 
 // Harena customization - table dropdown
 import { addListToDropdown, createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
@@ -236,7 +237,7 @@ class HarenaPlugin extends Plugin {
 // Plugins to include in the build.
 DecoupledEditor.builtinPlugins = [
 	Essentials,
-	// Alignment,  -- Harena customization
+  // Alignment,  -- Harena customization
 	// FontSize,   -- Harena customization
 	// FontFamily, -- Harena customization
 	// FontColor,  -- Harena customization
@@ -245,10 +246,11 @@ DecoupledEditor.builtinPlugins = [
 	Autoformat,
 	Bold,
 	Italic,
-	// Strikethrough,  -- Harena customization
+  // Strikethrough,  -- Harena customization
 	// Underline,      -- Harena customization
   // BlockQuote,     -- Harena customization
 	CKFinder,
+	CloudServices,
 	EasyImage,
   // Heading,  -- Harena customization
 	Image,
@@ -257,11 +259,11 @@ DecoupledEditor.builtinPlugins = [
   ImageResize, // Harena customization
 	ImageToolbar,
 	ImageUpload,
-	// Indent,       -- Harena customization
+  // Indent,       -- Harena customization
 	// IndentBlock,  -- Harena customization
 	Link,
 	List,
-  ListStyle,
+	ListStyle,
 	MediaEmbed,
 	Paragraph,
 	PasteFromOffice,
@@ -276,8 +278,8 @@ DecoupledEditor.builtinPlugins = [
 DecoupledEditor.defaultConfig = {
 	toolbar: {
 		items: [
-      // 'heading',  -- Harena customization
-      // '|',
+			// 'heading',    -- Harena customization
+			// '|',
 			// 'fontfamily',
 			// 'fontsize',
 			// 'fontColor',
@@ -285,20 +287,20 @@ DecoupledEditor.defaultConfig = {
 			// '|',
 			'bold',
 			'italic',
-      'link',
+      'link',  // Harena customization (order - after italic)
 			// 'underline',  -- Harena customization
 			// 'strikethrough',
 			// '|',
 			// 'alignment',
 			// '|',
-      'bulletedList',
+      'bulletedList',  // Harena customization (order - before numberedList)
 			'numberedList',
 			'|',
-			// 'indent',  -- Harena customization
-			// 'outdent',
+			// 'outdent',  -- Harena customization
+			// 'indent',
 			// '|',
-      // 'blockQuote',
-			'imageUpload',
+			// 'blockquote',
+			'uploadImage',
 			'insertTable',
 			'mediaEmbed',
 			'|',
@@ -317,11 +319,10 @@ DecoupledEditor.defaultConfig = {
 		],
 		toolbar: [
 			// 'imageStyle:alignLeft',   -- Harena customization
-			// 'imageStyle:full',        -- Harena customization
-			// 'imageStyle:alignRight',  -- Harena customization
-			// '|',
-      'imageResize', // Harena customization
-      '|',
+			// 'imageStyle:full',
+			// 'imageStyle:alignRight',
+      'imageResize',  // Harena customization
+			'|',
 			'imageTextAlternative'
 		]
 	},
@@ -329,7 +330,7 @@ DecoupledEditor.defaultConfig = {
 		contentToolbar: [
       'tableColumnHarena',  // Harena customization
       'tableRowHarena'  // Harena customization
-      // 'mergeTableCells'  -- Harena customization
+			// 'mergeTableCells'  -- Harena customization
 		]
 	},
 	// This value must be kept in sync with the language defined in webpack.config.js.
