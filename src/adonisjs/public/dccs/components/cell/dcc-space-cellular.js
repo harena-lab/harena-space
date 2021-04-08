@@ -21,6 +21,9 @@ class DCCSpaceCellular extends DCCBase {
   connectedCallback () {
     super.connectedCallback()
 
+    if (!this.hasAttribute('policy'))
+      this.policy = 'sequence'
+
     this._stateStr = this.innerHTML.trim()
 
     this._stateTypes = []
@@ -115,8 +118,9 @@ class DCCSpaceCellular extends DCCBase {
 
   static get observedAttributes () {
     return DCCBase.observedAttributes.concat(
-      ['label', 'cols', 'rows', 'cell-width', 'cell-height', 'scale', 'background-color',
-        'background-image', 'cover-image', 'cover-opacity', 'grid', 'infinite'])
+      ['label', 'cols', 'rows', 'cell-width', 'cell-height', 'scale',
+       'background-color', 'background-image', 'cover-image', 'cover-opacity',
+       'grid', 'infinite', 'policy'])
   }
 
   get label () {
@@ -215,6 +219,19 @@ class DCCSpaceCellular extends DCCBase {
     if (hasGrid) { this.setAttribute('infinite', '') } else { this.removeAttribute('infinite') }
   }
 
+  /*
+   * Policy to evaluate the rules for the same type
+   * * sequence - in the insertion sequence
+   * * crescent - in crescent order of probability
+   */
+  get policy () {
+    return this.getAttribute('policy')
+  }
+
+  set policy (newValue) {
+    this.setAttribute('policy', newValue)
+  }
+
   /* non observed attributes */
 
   get cellGrid () {
@@ -281,15 +298,33 @@ class DCCSpaceCellular extends DCCBase {
 
   ruleRegister (topic, rule) {
     if (rule.transition[0] == '?' || rule.transition[0] == '!') {
-      this._wildcardRules.push(rule)
+      // this._wildcardRules.push(rule)
+      this._addNewRule(this._wildcardRules, rule)
       for (const r in this._cellTypes) {
         if (!this._rules[r]) { this._rules[r] = this._wildcardRules.slice() }
-        this._rules[r].push(rule)
+        // this._rules[r].push(rule)
+        this._addNewRule(this._rules[r], rule)
       }
     } else {
-      if (!this._rules[rule.transition[0]]) { this._rules[rule.transition[0]] = this._wildcardRules.slice() }
-      this._rules[rule.transition[0]].push(rule)
+      if (!this._rules[rule.transition[0]]) {
+        this._rules[rule.transition[0]] = this._wildcardRules.slice()
+      }
+      // this._rules[rule.transition[0]].push(rule)
+      this._addNewRule(this._rules[rule.transition[0]], rule)
     }
+  }
+
+  _addNewRule(ruleSet, rule) {
+    if (this.policy == 'crescent' && rule.probability) {
+      let r = 0;
+      while (r < ruleSet.length &&
+             (!ruleSet[r].probability || rule.probility >= ruleSet[r].probability))
+        r++;
+      ruleSet.splice(r, 0, rule)
+    } else
+      ruleSet.push(rule)
+    console.log('=== rule set state')
+    console.log(ruleSet)
   }
 
   toolRegister (topic, tool) {
