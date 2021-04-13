@@ -1,0 +1,109 @@
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <style media="screen">
+    .container {
+      border: 1px solid rgba(0, 0, 0, .11);
+      ;
+      padding: 10px;
+      width: 500px
+    }
+
+    .controls-item {
+      display: inline-block;
+    }
+
+    .btn {
+      margin: 1px;
+    }
+    </style>
+  </head>
+  <body>
+
+    <div class="container ">
+
+    </div>
+    <div class="container ">
+        <!-- Table structure here -->
+        <table class="table table-dark" id="our-table">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>First</th>
+                    <th>Last</th>
+                </tr>
+            </thead>
+            <tbody id="table-body">
+
+            </tbody>
+        </table>
+    </div>
+
+    <div class="container ">
+        <div id="pagination-wrapper"></div>
+    </div>
+  </body>
+  <script type="text/javascript">
+
+    var state = {
+      'nPages': 18,
+
+      'page': 5,
+      'window': 4,
+    }
+    pageButtons(state.nPages)
+
+    function pageButtons(pages) {
+      var wrapper = document.getElementById('pagination-wrapper')
+
+      wrapper.innerHTML = ``
+    console.log('Pages:', pages)
+
+      var maxLeft = (state.page - Math.floor(state.window / 2))
+      var maxRight = (state.page + Math.floor(state.window / 2))
+
+      if (maxLeft < 1) {
+          maxLeft = 1
+          maxRight = state.window
+      }
+
+      if (maxRight > pages) {
+          maxLeft = pages - (state.window - 1)
+
+          if (maxLeft < 1){
+            maxLeft = 1
+          }
+          maxRight = pages
+      }
+
+
+
+      for (var page = maxLeft; page <= maxRight; page++) {
+        wrapper.innerHTML += `<button value=${page} class="page btn btn-sm btn-info">${page}</button>`
+      }
+
+      if (state.page != 1) {
+          wrapper.innerHTML = `<button value=${1} class="page btn btn-sm btn-info">&#171; First</button>` + wrapper.innerHTML
+      }
+
+      if (state.page != pages) {
+          wrapper.innerHTML += `<button value=${pages} class="page btn btn-sm btn-info">Last &#187;</button>`
+      }
+
+      $('.page').on('click', function() {
+
+          state.page = Number($(this).val())
+
+          pageButtons(state.nPages)
+      })
+
+    }
+
+  </script>
+</html>

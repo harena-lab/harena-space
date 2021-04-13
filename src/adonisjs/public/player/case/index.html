@@ -8,7 +8,7 @@
 
   <link rel="stylesheet" href="/author/css/author.css">
 
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="/lib/axios-0.21.0/axios.min.js"></script>
 
   <script src="/lib/jquery-3-4-1/jquery-3.4.1.slim.min.js"></script>
   <script src="/lib/popper-1-15-0/popper.min.js"></script>
@@ -68,10 +68,13 @@
 
   <script src="/context/context.js"></script>
 
+  <script src="/dccs/components/control/dcc-timer.js"></script>
+  <script src="/dccs/components/control/dcc-compute.js"></script>
+  <script src="/dccs/components/control/dcc-message.js"></script>
 
   <script src="/dccs/components/visual/dcc-markdown.js"></script>
   <script src="/dccs/components/visual/dcc-annotation.js"></script>
-  <script src="/dccs/components/control/dcc-expression.js"></script>
+  <script src="/dccs/components/visual/dcc-expression.js"></script>
   <script src="/dccs/components/visual/dcc-character.js"></script>
   <script src="/dccs/components/visual/dcc-lively-dialog.js"></script>
   <script src="/dccs/components/visual/dcc-state-select.js"></script>
@@ -83,7 +86,6 @@
   <script src="/dccs/components/visual/dcc-input-choice.js"></script>
   <script src="/dccs/components/visual/dcc-input-table.js"></script>
   <script src="/dccs/components/visual/dcc-slider.js"></script>
-  <script src="/dccs/components/control/dcc-compute.js"></script>
   <script src="/dccs/components/visual/dcc-report.js"></script>
 
   <script src="/lib/showdown-2-0-0/showdown.min.js"></script>
@@ -100,27 +102,28 @@
 
 </head>
   <body onload="PlayerManager.player.startPlayer()">
-  <div class="d-flex flex-column vh-100 vw-100 hidden-overflow">
-    <dcc-rest id="harena-case" bind="harena-case" subscribe="service/request/get:retrieve"></dcc-rest>
-    <div class="mr-auto author-breadcrumb" id="preview-panel">
-    <!-- <div class="sty-preview-panel" id="preview-panel"> -->
-      <nav aria-label="breadcrumb">
-        <ol id="breadcrumb-group" class="breadcrumb">
-          <li class="breadcrumb-item"><a href="/">Welcome</a></li>
-          <li class="breadcrumb-item"><a href="/player/home/category">Categories</a></li>
-          <li id="case-list-breadcrumb" class="breadcrumb-item">
-            <a href="javascript:history.back()">Case List</a>
-          </li>
-          <li id="current-breadcrumb" class="breadcrumb-item active" aria-current="page">Current Case</li>
-        </ol>
-      </nav>
-    </div>
+  <!-- <div class="d-flex flex-column vh-100 vw-100 hidden-overflow"> -->
+
     <main role="main">
-      <div id="main-panel" class="d-flex flex-column pt-5 vh-100 vw-100 scroll-y index-boot-padding">
+      <div id="main-panel" class="d-flex flex-column vh-100 vw-100 scroll-y index-boot-padding">
+        <dcc-rest id="harena-case" bind="harena-case" subscribe="service/request/get:retrieve"></dcc-rest>
+        <div class="mr-auto author-breadcrumb" id="preview-panel">
+        <!-- <div class="sty-preview-panel" id="preview-panel"> -->
+          <nav aria-label="breadcrumb">
+            <ol id="breadcrumb-group" class="breadcrumb">
+              <li class="breadcrumb-item"><a href="/">Welcome</a></li>
+              <li class="breadcrumb-item"><a href="/player/home/category">Categories</a></li>
+              <li id="case-list-breadcrumb" class="breadcrumb-item">
+                <a href="javascript:history.back()">Case List</a>
+              </li>
+              <li id="current-breadcrumb" class="breadcrumb-item active" aria-current="page">Current Case</li>
+            </ol>
+          </nav>
+        </div>
         <div id="player-panel" style="border-color: #004270; border-radius: 9px;	border-style: solid;	border-width: 13px;	border-bottom-width: 30px">
         </div>
       </div>
     </main>
-  </div>
+  <!-- </div> -->
 </body>
 </html>

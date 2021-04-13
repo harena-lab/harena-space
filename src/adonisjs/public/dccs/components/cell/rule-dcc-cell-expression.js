@@ -9,7 +9,9 @@ class RuleDCCCellExpression extends RuleDCCTransition {
     if (!this.hasAttribute('time-rate')) { this.timeRate = 1 }
 
     this._compiled = null
-    if (this.hasAttribute('expression')) { this._compiled = DCCExpression.compileStatementSet(this.expression.toLowerCase()) }
+    if (this.hasAttribute('expression')) {
+      this._compiled = DCCCompute.compileStatementSet(this.expression.toLowerCase())
+    }
 
     MessageBus.page.publish('dcc/rule-cell/register', this)
   }
@@ -68,7 +70,7 @@ class RuleDCCCellExpression extends RuleDCCTransition {
     // console.log("=== cstate");
     // console.log(cstate);
 
-    const varRole = DCCExpression.role.variable
+    const varRole = DCCCompute.role.variable
     let triggered = false
     if (this._compiled != null) {
       // sets variable values
@@ -80,7 +82,9 @@ class RuleDCCCellExpression extends RuleDCCTransition {
         }
         // console.log("=== state");
         // console.log(JSON.stringify(l[1]));
-        if (RuleDCCCellExpression.internalVar.includes(l[0])) { cstate.properties[l[0]] = DCCExpression.computeExpression(l[1]) }
+        if (RuleDCCCellExpression.internalVar.includes(l[0])) {
+          cstate.properties[l[0]] = DCCCompute.computeCompiled(l[1])
+        }
         // console.log("=== computed ");
         // console.log(l[0]);
         // console.log(JSON.stringify(l[1]));

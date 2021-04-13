@@ -46,11 +46,15 @@ class HarenaUploadAdapter {
     _initListeners( resolve, reject, file ) {
         const xhr = this.xhr;
         const loader = this.loader;
+        const editor = this.editor;
         const genericErrorText = `Couldn't upload file: ${ file.name }.`;
 
         xhr.addEventListener( 'error', () => reject( genericErrorText ) );
         xhr.addEventListener( 'abort', () => reject() );
-        xhr.addEventListener( 'load', () => {
+        xhr.addEventListener( 'load', (evt) => {
+            console.log('=== event load')
+            console.log(evt)
+
             const response = xhr.response;
 
             // This example assumes the XHR server's "response" object will come with
@@ -67,6 +71,9 @@ class HarenaUploadAdapter {
             // at least the "default" URL, pointing to the image on the server.
             // This URL will be used to display the image in the content. Learn more in the
             // UploadAdapter#upload documentation.
+            console.log('=== uploaded name')
+            console.log(response.url)
+            // editor.model.fire('mediaLoaded')
             resolve( {
               default: response.url
             } );

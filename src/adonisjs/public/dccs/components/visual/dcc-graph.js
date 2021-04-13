@@ -13,7 +13,7 @@ class DCCGraph extends DCCVisual {
       .replace(/\[css\]/g,
         Basic.service.themeStyleResolver('dcc-graph.css'))
       .replace(/\[width-div\]/g, this.width + 'px')
-      .replace(/\[height-div\]/g, this.height + 'px')
+      // .replace(/\[height-div\]/g, this.height + 'px')
       .replace(/\[width\]/g, this.width)
       .replace(/\[height\]/g, this.height)
 
@@ -358,10 +358,12 @@ class Graph {
   cleanGraph () {
     if (this._nodes)
       for (let n of this._nodes)
-        this._presentation.removeChild(n.presentation)
+        if (n.presentation != null)
+          this._presentation.removeChild(n.presentation)
     if (this._edges)
       for (let e of this._edges)
-        this._presentation.removeChild(e.presentation)
+        if (e.presentation != null)
+          this._presentation.removeChild(e.presentation)
     this._nodes = []
     this._edges = []
   }
@@ -771,7 +773,7 @@ class GraphLayoutDG extends GraphLayout {
 
   DCCGraph.svgTemplate =
 `<style>@import "[css]"</style>
-<div id="grid-wrapper" style="overflow:scroll;width:[width-div];height:[height-div]">
+<div id="grid-wrapper">
 <svg id="presentation-dcc" width="[width]" height="[height]" xmlns="http://www.w3.org/2000/svg">
 </svg>
 </div>`

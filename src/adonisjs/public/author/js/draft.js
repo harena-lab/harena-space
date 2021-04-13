@@ -26,9 +26,9 @@ class DraftManager {
   }
 
   async _draftSelect (advanced) {
-    console.log('Drafting total cases')
+
     const cases = await MessageBus.ext.request('data/case/*/list')
-    // {user: userid});
+
 
     const cl = cases.message
     for (const c in cl) {
@@ -50,8 +50,13 @@ class DraftManager {
         function () {
           Basic.service.authorPropertyStore('caseId', this.id.substring(1))
           // window.location.href = "http://0.0.0.0:10010/author/author.html";
-          window.location.href =
-                  '/author?id=' + this.id.substring(1)
+          if(new URL(document.location).pathname.includes('feedback')){
+            window.location.href =
+                    '/author?id=' + this.id.substring(1)+'&fdbk'
+          }else {
+            window.location.href =
+                    '/author?id=' + this.id.substring(1)
+          }
         }
       )
       previewButton.addEventListener('click',
@@ -62,6 +67,7 @@ class DraftManager {
                                       '&preview=1'
         }
       )
+      console.log('=== adding listener 1')
       deleteButton.addEventListener('click',
         function () {
           MessageBus.int.publish('control/case/delete', this.id.substring(1))
@@ -75,11 +81,11 @@ class DraftManager {
         )
       }
     }
-    MessageBus.ext.publish('control/dhtml/ready')
+    MessageBus.int.publish('control/dhtml/ready')
   }
 
   async _draftCategoryCasesSelect (advanced) {
-    // console.log('Drafting cases by category')
+
     // const cases = await MessageBus.ext.request('data/case/*/list')
     // {user: userid});
 
@@ -90,9 +96,8 @@ class DraftManager {
     if(document.querySelector('#select-all-checkbox')){
       const selectAllCases = document.querySelector('#select-all-checkbox')
       var caseList = new Array()
-      selectAllCases.addEventListener('click',
-      function () {
 
+      const listenerFnSelectAll = function () {
         for (var c in cl){
           try {
             var editButton = cl[c].children[0]
@@ -115,7 +120,9 @@ class DraftManager {
             break
           }
         }
-      })
+      }
+      selectAllCases.removeEventListener('click', listenerFnSelectAll)
+      selectAllCases.addEventListener('click', listenerFnSelectAll)
     }
 
     for (const c in cl) {
@@ -128,50 +135,68 @@ class DraftManager {
         if(document.querySelector('#c'+editButton.id.substring(1))){
         const shareCheckbox = document.querySelector('#c'+editButton.id.substring(1))
 
-        caseContainer.firstElementChild.addEventListener('click',
-          function () {
-
-            shareCheckbox.click()
-          })
-
-        shareCheckbox.addEventListener('change',
-          function () {
-            // console.log('============ click checkbox')
-            if(shareCheckbox.checked){
-              // console.log('============ checkbox checked')
-              caseList.push(shareCheckbox.value)
-              document.querySelector('#table_id').value = caseList
-              // sessionStorage.setItem('caseList', caseList)
-              caseContainer.style.backgroundColor = '#769fdb'
-              caseContainer.firstElementChild.style.color = '#fff'
-            }else{
-              // console.log('============ checkbox unchecked')
-              caseList.splice(caseList.indexOf(shareCheckbox.value), 1)
-              document.querySelector('#table_id').value = caseList
-              // sessionStorage.setItem('caseList', caseList)
-              caseContainer.style.backgroundColor = ''
-              caseContainer.firstElementChild.style.color = '#808080'
-            }
-          })
+        const listenerFnCaseContainer = function () {
+          shareCheckbox.click()
         }
-        editButton.addEventListener('click',
-          function () {
+        caseContainer.firstElementChild.removeEventListener('click', listenerFnCaseContainer)
+        caseContainer.firstElementChild.addEventListener('click', listenerFnCaseContainer)
+
+        const listenerFnShareCheckbox = function () {
+          // console.log('============ click checkbox')
+          if(shareCheckbox.checked){
+            // console.log('============ checkbox checked')
+            caseList.push(shareCheckbox.value)
+            document.querySelector('#table_id').value = caseList
+            // sessionStorage.setItem('caseList', caseList)
+            caseContainer.style.backgroundColor = '#769fdb'
+            caseContainer.firstElementChild.style.color = '#fff'
+          }else{
+            // console.log('============ checkbox unchecked')
+            caseList.splice(caseList.indexOf(shareCheckbox.value), 1)
+            document.querySelector('#table_id').value = caseList
+            // sessionStorage.setItem('caseList', caseList)
+            caseContainer.style.backgroundColor = ''
+            caseContainer.firstElementChild.style.color = '#808080'
+          }
+        }
+        shareCheckbox.removeEventListener('change', listenerFnShareCheckbox)
+        shareCheckbox.addEventListener('change', listenerFnShareCheckbox)
+        }
+
+        if(editButton){
+          const listenerFnEdit = function () {
             Basic.service.authorPropertyStore('caseId', editButton.id.substring(1))
             // window.location.href = "http://0.0.0.0:10010/author/author.html";
-            window.location.href =
-                 '/author?id=' + editButton.id.substring(1)
-          })
-        previewButton.addEventListener('click',
-          function () {
+            if(new URL(document.location).pathname.includes('feedback')){
+              window.location.href =
+              '/author?id=' + this.id.substring(1)+'&fdbk=""'
+            }else {
+              window.location.href =
+              '/author?id=' + this.id.substring(1)
+            }
+          }
+          editButton.removeEventListener('click', listenerFnEdit)
+          editButton.addEventListener('click', listenerFnEdit)
+        }
+        if(previewButton){
+          const listenerFnPreview = function () {
             Basic.service.authorPropertyStore('caseId', editButton.id.substring(1))
             window.location.href = '/player/case?id=' +
-                                         previewButton.id.substring(1) +
-                                         '&preview=1'
-          })
-        deleteButton.addEventListener('click',
-          function () {
+            previewButton.id.substring(1) +
+            '&preview=1'
+          }
+          previewButton.removeEventListener('click', listenerFnPreview)
+          previewButton.addEventListener('click', listenerFnPreview)
+        }
+
+        if(deleteButton){
+          console.log('=== adding listener 2')
+          const listenerFnRemove = function () {
             MessageBus.int.publish('control/case/delete', editButton.id.substring(1))
-          })
+          }
+          deleteButton.removeEventListener('click', listenerFnRemove)
+          deleteButton.addEventListener('click', listenerFnRemove)
+        }
         // if (advanced) {
         //   downloadButton.addEventListener('click',
         //     function () {

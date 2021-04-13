@@ -1,0 +1,808 @@
+<label for="details"><h3>Comments</h3></label>
+<textarea class="form-control" id="details" name="details" placeholder="Enter the comments">
+{{details}}
+</textarea>
+
+<hr>
+<h3>Video - Sub-xifoide / subscostal</h3>
+<hr>
+
+<h4 class="mt-1">Gain</h4>
+<div class="bg-light border border-secondary rounded pl-2">
+  <div class="form-check">
+    <input type="radio" id="video_subx_subcostal_gain1"
+      name="video_subx_subcostal_gain" value="1" class="form-check-input" {{checked?video_subx_subcostal_gain1:1}}>
+    <label for="video_subx_subcostal_gain1" class="form-check-label">1. little</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_subx_subcostal_gain2"
+      name="video_subx_subcostal_gain" value="2" class="form-check-input" {{checked?video_subx_subcostal_gain2:2}}>
+    <label for="video_subx_subcostal_gain2" class="form-check-label">2. excessive</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_subx_subcostal_gain3"
+      name="video_subx_subcostal_gain" value="3" class="form-check-input" {{checked?video_subx_subcostal_gain3:3}}>
+    <label for="video_subx_subcostal_gain3" class="form-check-label">3. appropriate</label>
+  </div>
+</div>
+<h4 class="mt-1">Depth</h4>
+<div class="bg-light border border-secondary rounded pl-2">
+  <div class="form-check">
+    <input type="radio" id="video_subx_subcostal_depth1"
+      name="video_subx_subcostal_depth" value="1" class="form-check-input" {{checked?video_subx_subcostal_depth1:1}}>
+    <label for="video_subx_subcostal_depth1" class="form-check-label">1. little</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_subx_subcostal_depth2"
+      name="video_subx_subcostal_depth" value="2" class="form-check-input" {{checked?video_subx_subcostal_depth2:2}}>
+    <label for="video_subx_subcostal_depth2" class="form-check-label">2. excessive</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_subx_subcostal_depth3"
+      name="video_subx_subcostal_depth" value="3" class="form-check-input" {{checked?video_subx_subcostal_depth3:3}}>
+    <label for="video_subx_subcostal_depth3" class="form-check-label">3. appropriate</label>
+  </div>
+</div>
+<h4 class="mt-1">Anatomical References</h4>
+<div class="bg-light border border-secondary rounded pl-2">
+  <div class="form-check">
+    <input type="radio" id="video_subx_subcostal_anatomical1"
+      name="video_subx_subcostal_anatomical" value="1" class="form-check-input" {{checked?video_subx_subcostal_anatomical1:1}}>
+    <label for="video_subx_subcostal_anatomical1" class="form-check-label">1. absent</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_subx_subcostal_anatomical2"
+      name="video_subx_subcostal_anatomical" value="2" class="form-check-input" {{checked?video_subx_subcostal_anatomical2:2}}>
+    <label for="video_subx_subcostal_anatomical2" class="form-check-label">2. partially present</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_subx_subcostal_anatomical3"
+      name="video_subx_subcostal_anatomical" value="3" class="form-check-input" {{checked?video_subx_subcostal_anatomical3:3}}>
+    <label for="video_subx_subcostal_anatomical3" class="form-check-label">3. present</label>
+  </div>
+</div>
+
+<hr>
+<h4 class="mt-1"> Lista de achados - Sub-xifoide</h4>
+<!-- Button toggles dropdown list -->
+<div class="btn-group dropup w-100">
+  <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Abrir
+  </button>
+  <div class="dropdown-menu p-2 bg-dark">
+    <div class="bg-light border border-secondary rounded pl-2">
+
+      <h5 class="mt-1"> Achados</h5>
+      <hr>
+
+      <div class="d-flex row" style="margin-left:-7px;">
+        <div class="form-check form-check-inline">
+            <input class="form-check-input invisible" type="radio" name="video_subx_subcostal_achados_derr_pericard_sem_repercussao"
+            id="video_subx_subcostal_achados_derr_pericard_sem_repercussao0" value="0" style="position:absolute !important"
+             {{checked?video_subx_subcostal_achados_derr_pericard_sem_repercussao0:0}} checked>
+            <input class="form-check-input" type="radio" name="video_subx_subcostal_achados_derr_pericard_sem_repercussao"
+            id="video_subx_subcostal_achados_derr_pericard_sem_repercussao1" value="1"
+             {{checked?video_subx_subcostal_achados_derr_pericard_sem_repercussao1:1}}>
+          <label class="form-check-label" for="video_subx_subcostal_achados_derr_pericard_sem_repercussao1">
+            1. Derrame pericárdico s/repercussão
+          </label>
+        </div>
+      </div>
+
+
+      <div class="d-flex row" style="margin-left:-7px;">
+        <div class="form-check form-check-inline">
+            <input class="form-check-input invisible" type="radio" name="video_subx_subcostal_achados_derr_pericard_com_repercussao"
+            id="video_subx_subcostal_achados_derr_pericard_com_repercussao0" value="0" style="position:absolute !important"
+             {{checked?video_subx_subcostal_achados_derr_pericard_com_repercussao0:0}} checked>
+            <input class="form-check-input" type="radio" name="video_subx_subcostal_achados_derr_pericard_com_repercussao"
+            id="video_subx_subcostal_achados_derr_pericard_com_repercussao1" value="1"
+             {{checked?video_subx_subcostal_achados_derr_pericard_com_repercussao1:1}}>
+          <label class="form-check-label" for="video_subx_subcostal_achados_derr_pericard_com_repercussao1">
+            2. Derrame pericárdico c/repercussão
+          </label>
+        </div>
+      </div>
+
+      <div class="d-flex row" style="margin-left:-7px;">
+        <div class="form-check form-check-inline">
+
+            <input class="form-check-input invisible" type="radio" name="video_subx_subcostal_achados_disfunc_ventric_esq_moderada"
+            id="video_subx_subcostal_achados_disfunc_ventric_esq_moderada0" value="0" style="position:absolute !important"
+             {{checked?video_subx_subcostal_achados_disfunc_ventric_esq_moderada0:0}} checked>
+            <input class="form-check-input" type="radio" name="video_subx_subcostal_achados_disfunc_ventric_esq_moderada"
+            id="video_subx_subcostal_achados_disfunc_ventric_esq_moderada1" value="1"
+             {{checked?video_subx_subcostal_achados_disfunc_ventric_esq_moderada1:1}}>
+
+          <label class="form-check-label" for="video_subx_subcostal_achados_disfunc_ventric_esq_moderada1">
+            3. Disfunção Ventricular Esquerda Moderada
+          </label>
+        </div>
+      </div>
+
+      <div class="d-flex row" style="margin-left:-7px;">
+        <div class="form-check form-check-inline">
+
+            <input class="form-check-input invisible" type="radio" name="video_subx_subcostal_achados_disfunc_ventric_esq_acentuada"
+            id="video_subx_subcostal_achados_disfunc_ventric_esq_acentuada0" value="0" style="position:absolute !important"
+             {{checked?video_subx_subcostal_achados_disfunc_ventric_esq_acentuada0:0}} checked>
+
+            <input class="form-check-input" type="radio" name="video_subx_subcostal_achados_disfunc_ventric_esq_acentuada"
+            id="video_subx_subcostal_achados_disfunc_ventric_esq_acentuada1" value="1"
+             {{checked?video_subx_subcostal_achados_disfunc_ventric_esq_acentuada1:1}}>
+
+          <label class="form-check-label" for="video_subx_subcostal_achados_disfunc_ventric_esq_acentuada1">
+            4. Disfunção Ventricular Esquerda Acentuada
+          </label>
+        </div>
+      </div>
+
+      <div class="d-flex row" style="margin-left:-7px;">
+        <div class="form-check form-check-inline">
+
+            <input class="form-check-input invisible" type="radio" name="video_subx_subcostal_achados_dilataca_ventric_direito"
+            id="video_subx_subcostal_achados_dilataca_ventric_direito0" value="0" style="position:absolute !important"
+             {{checked?video_subx_subcostal_achados_dilataca_ventric_direito0:0}} checked>
+
+            <input class="form-check-input" type="radio" name="video_subx_subcostal_achados_dilataca_ventric_direito"
+            id="video_subx_subcostal_achados_dilataca_ventric_direito1" value="1"
+             {{checked?video_subx_subcostal_achados_dilataca_ventric_direito1:1}}>
+
+          <label class="form-check-label" for="video_subx_subcostal_achados_dilataca_ventric_direito1">
+            5. Dilatação de Ventrículo Direito
+          </label>
+        </div>
+      </div>
+
+      <div class="d-flex row" style="margin-left:-7px;">
+        <div class="form-check form-check-inline">
+
+            <input class="form-check-input invisible" type="radio" name="video_subx_subcostal_achados_normal"
+            id="video_subx_subcostal_achados_normal0" value="0" style="position:absolute !important"
+             {{checked?video_subx_subcostal_achados_normal0:0}} checked>
+
+            <input class="form-check-input" type="radio" name="video_subx_subcostal_achados_normal"
+            id="video_subx_subcostal_achados_normal1" value="1"
+             {{checked?video_subx_subcostal_achados_normal1:1}}>
+
+          <label class="form-check-label" for="video_subx_subcostal_achados_normal1">
+            6. Normal
+          </label>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+</div>
+
+
+<hr>
+<h3>Video - Para-esternal longa</h3>
+<hr>
+
+<h4 class="mt-1">Gain</h4>
+<div class="bg-light border border-secondary rounded pl-2">
+  <div class="form-check">
+    <input type="radio" id="video_para_estern_long_gain1"
+      name="video_para_estern_long_gain" value="1" class="form-check-input" {{checked?video_para_estern_long_gain1:1}}>
+    <label for="video_para_estern_long_gain1" class="form-check-label">1. little</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_para_estern_long_gain2"
+      name="video_para_estern_long_gain" value="2" class="form-check-input" {{checked?video_para_estern_long_gain2:2}}>
+    <label for="video_para_estern_long_gain2" class="form-check-label">2. excessive</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_para_estern_long_gain3"
+      name="video_para_estern_long_gain" value="3" class="form-check-input" {{checked?video_para_estern_long_gain3:3}}>
+    <label for="video_para_estern_long_gain3" class="form-check-label">3. appropriate</label>
+  </div>
+</div>
+<h4 class="mt-1">Depth</h4>
+<div class="bg-light border border-secondary rounded pl-2">
+  <div class="form-check">
+    <input type="radio" id="video_para_estern_long_depth1"
+      name="video_para_estern_long_depth" value="1" class="form-check-input" {{checked?video_para_estern_long_depth1:1}}>
+    <label for="video_para_estern_long_depth1" class="form-check-label">1. little</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_para_estern_long_depth2"
+      name="video_para_estern_long_depth" value="2" class="form-check-input" {{checked?video_para_estern_long_depth2:2}}>
+    <label for="video_para_estern_long_depth2" class="form-check-label">2. excessive</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_para_estern_long_depth3"
+      name="video_para_estern_long_depth" value="3" class="form-check-input" {{checked?video_para_estern_long_depth3:3}}>
+    <label for="video_para_estern_long_depth3" class="form-check-label">3. appropriate</label>
+  </div>
+</div>
+<h4 class="mt-1">Anatomical References</h4>
+<div class="bg-light border border-secondary rounded pl-2">
+  <div class="form-check">
+    <input type="radio" id="video_para_estern_long_anatomical1"
+      name="video_para_estern_long_anatomical" value="1" class="form-check-input" {{checked?video_para_estern_long_anatomical1:1}}>
+    <label for="video_para_estern_long_anatomical1" class="form-check-label">1. absent</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_para_estern_long_anatomical2"
+      name="video_para_estern_long_anatomical" value="2" class="form-check-input" {{checked?video_para_estern_long_anatomical2:2}}>
+    <label for="video_para_estern_long_anatomical2" class="form-check-label">2. partially present</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_para_estern_long_anatomical3"
+      name="video_para_estern_long_anatomical" value="3" class="form-check-input" {{checked?video_para_estern_long_anatomical3:3}}>
+    <label for="video_para_estern_long_anatomical3" class="form-check-label">3. present</label>
+  </div>
+</div>
+
+<hr>
+<h4 class="mt-1"> Lista de achados - Para-esternal longa</h4>
+<!-- Button toggles dropdown list -->
+<div class="btn-group dropup w-100">
+  <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Abrir
+  </button>
+  <div class="dropdown-menu p-2 bg-dark">
+    <div class="bg-light border border-secondary rounded pl-2">
+
+      <h5 class="mt-1"> Achados</h5>
+      <hr>
+
+      <div class="d-flex row" style="margin-left:-7px;">
+        <div class="form-check form-check-inline">
+            <input class="form-check-input invisible" type="radio" name="video_para_estern_long_achados_derr_pericard_sem_repercussao"
+            id="video_para_estern_long_achados_derr_pericard_sem_repercussao0" value="0" style="position:absolute !important"
+             {{checked?video_para_estern_long_achados_derr_pericard_sem_repercussao0:0}} checked>
+            <input class="form-check-input" type="radio" name="video_para_estern_long_achados_derr_pericard_sem_repercussao"
+            id="video_para_estern_long_achados_derr_pericard_sem_repercussao1" value="1"
+             {{checked?video_para_estern_long_achados_derr_pericard_sem_repercussao1:1}}>
+          <label class="form-check-label" for="video_para_estern_long_achados_derr_pericard_sem_repercussao1">
+            1. Derrame pericárdico s/repercussão
+          </label>
+        </div>
+      </div>
+
+
+      <div class="d-flex row" style="margin-left:-7px;">
+        <div class="form-check form-check-inline">
+            <input class="form-check-input invisible" type="radio" name="video_para_estern_long_achados_derr_pericard_com_repercussao"
+            id="video_para_estern_long_achados_derr_pericard_com_repercussao0" value="0" style="position:absolute !important"
+             {{checked?video_para_estern_long_achados_derr_pericard_com_repercussao0:0}} checked>
+            <input class="form-check-input" type="radio" name="video_para_estern_long_achados_derr_pericard_com_repercussao"
+            id="video_para_estern_long_achados_derr_pericard_com_repercussao1" value="1"
+             {{checked?video_para_estern_long_achados_derr_pericard_com_repercussao1:1}}>
+          <label class="form-check-label" for="video_para_estern_long_achados_derr_pericard_com_repercussao1">
+            2. Derrame pericárdico c/repercussão
+          </label>
+        </div>
+      </div>
+
+      <div class="d-flex row" style="margin-left:-7px;">
+        <div class="form-check form-check-inline">
+
+            <input class="form-check-input invisible" type="radio" name="video_para_estern_long_achados_disfunc_ventric_esq_moderada"
+            id="video_para_estern_long_achados_disfunc_ventric_esq_moderada0" value="0" style="position:absolute !important"
+             {{checked?video_para_estern_long_achados_disfunc_ventric_esq_moderada0:0}} checked>
+            <input class="form-check-input" type="radio" name="video_para_estern_long_achados_disfunc_ventric_esq_moderada"
+            id="video_para_estern_long_achados_disfunc_ventric_esq_moderada1" value="1"
+             {{checked?video_para_estern_long_achados_disfunc_ventric_esq_moderada1:1}}>
+
+          <label class="form-check-label" for="video_para_estern_long_achados_disfunc_ventric_esq_moderada1">
+            3. Disfunção Ventricular Esquerda Moderada
+          </label>
+        </div>
+      </div>
+
+      <div class="d-flex row" style="margin-left:-7px;">
+        <div class="form-check form-check-inline">
+
+            <input class="form-check-input invisible" type="radio" name="video_para_estern_long_achados_disfunc_ventric_esq_acentuada"
+            id="video_para_estern_long_achados_disfunc_ventric_esq_acentuada0" value="0" style="position:absolute !important"
+             {{checked?video_para_estern_long_achados_disfunc_ventric_esq_acentuada0:0}} checked>
+            <input class="form-check-input" type="radio" name="video_para_estern_long_achados_disfunc_ventric_esq_acentuada"
+            id="video_para_estern_long_achados_disfunc_ventric_esq_acentuada1" value="1"
+             {{checked?video_para_estern_long_achados_disfunc_ventric_esq_acentuada1:1}}>
+
+          <label class="form-check-label" for="video_para_estern_long_achados_disfunc_ventric_esq_acentuada1">
+            4. Disfunção Ventricular Esquerda Acentuada
+          </label>
+        </div>
+      </div>
+
+
+      <div class="d-flex row" style="margin-left:-7px;">
+        <div class="form-check form-check-inline">
+
+            <input class="form-check-input invisible" type="radio" name="video_para_estern_long_achados_normal"
+            id="video_para_estern_long_achados_normal0" value="0" style="position:absolute !important"
+             {{checked?video_para_estern_long_achados_normal0:0}} checked>
+
+            <input class="form-check-input" type="radio" name="video_para_estern_long_achados_normal"
+            id="video_para_estern_long_achados_normal1" value="1"
+             {{checked?video_para_estern_long_achados_normal1:1}}>
+
+          <label class="form-check-label" for="video_para_estern_long_achados_normal1">
+            5. Normal
+          </label>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+</div>
+
+
+<hr>
+<h3>Video - Para-esternal curta nível V. aortica</h3>
+<hr>
+
+<h4 class="mt-1">Gain</h4>
+<div class="bg-light border border-secondary rounded pl-2">
+  <div class="form-check">
+    <input type="radio" id="video_para_estern_curta_ao_gain1"
+      name="video_para_estern_curta_ao_gain" value="1" class="form-check-input" {{checked?video_para_estern_curta_ao_gain1:1}}>
+    <label for="video_para_estern_curta_ao_gain1" class="form-check-label">1. little</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_para_estern_curta_ao_gain2"
+      name="video_para_estern_curta_ao_gain" value="2" class="form-check-input" {{checked?video_para_estern_curta_ao_gain2:2}}>
+    <label for="video_para_estern_curta_ao_gain2" class="form-check-label">2. excessive</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_para_estern_curta_ao_gain3"
+      name="video_para_estern_curta_ao_gain" value="3" class="form-check-input" {{checked?video_para_estern_curta_ao_gain3:3}}>
+    <label for="video_para_estern_curta_ao_gain3" class="form-check-label">3. appropriate</label>
+  </div>
+</div>
+<h4 class="mt-1">Depth</h4>
+<div class="bg-light border border-secondary rounded pl-2">
+  <div class="form-check">
+    <input type="radio" id="video_para_estern_curta_ao_depth1"
+      name="video_para_estern_curta_ao_depth" value="1" class="form-check-input" {{checked?video_para_estern_curta_ao_depth1:1}}>
+    <label for="video_para_estern_curta_ao_depth1" class="form-check-label">1. little</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_para_estern_curta_ao_depth2"
+      name="video_para_estern_curta_ao_depth" value="2" class="form-check-input" {{checked?video_para_estern_curta_ao_depth2:2}}>
+    <label for="video_para_estern_curta_ao_depth2" class="form-check-label">2. excessive</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_para_estern_curta_ao_depth3"
+      name="video_para_estern_curta_ao_depth" value="3" class="form-check-input" {{checked?video_para_estern_curta_ao_depth3:3}}>
+    <label for="video_para_estern_curta_ao_depth3" class="form-check-label">3. appropriate</label>
+  </div>
+</div>
+<h4 class="mt-1">Anatomical References</h4>
+<div class="bg-light border border-secondary rounded pl-2">
+  <div class="form-check">
+    <input type="radio" id="video_para_estern_curta_ao_anatomical1"
+      name="video_para_estern_curta_ao_anatomical" value="1" class="form-check-input" {{checked?video_para_estern_curta_ao_anatomical1:1}}>
+    <label for="video_para_estern_curta_ao_anatomical1" class="form-check-label">1. absent</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_para_estern_curta_ao_anatomical2"
+      name="video_para_estern_curta_ao_anatomical" value="2" class="form-check-input" {{checked?video_para_estern_curta_ao_anatomical2:2}}>
+    <label for="video_para_estern_curta_ao_anatomical2" class="form-check-label">2. partially present</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_para_estern_curta_ao_anatomical3"
+      name="video_para_estern_curta_ao_anatomical" value="3" class="form-check-input" {{checked?video_para_estern_curta_ao_anatomical3:3}}>
+    <label for="video_para_estern_curta_ao_anatomical3" class="form-check-label">3. present</label>
+  </div>
+</div>
+
+
+
+<hr>
+<h3>Video - Para-esternal curta nível mitral</h3>
+<hr>
+
+<h4 class="mt-1">Gain</h4>
+<div class="bg-light border border-secondary rounded pl-2">
+  <div class="form-check">
+    <input type="radio" id="video_para_estern_curta_mitral_gain1"
+      name="video_para_estern_curta_mitral_gain" value="1" class="form-check-input" {{checked?video_para_estern_curta_mitral_gain1:1}}>
+    <label for="video_para_estern_curta_mitral_gain1" class="form-check-label">1. little</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_para_estern_curta_mitral_gain2"
+      name="video_para_estern_curta_mitral_gain" value="2" class="form-check-input" {{checked?video_para_estern_curta_mitral_gain2:2}}>
+    <label for="video_para_estern_curta_mitral_gain2" class="form-check-label">2. excessive</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_para_estern_curta_mitral_gain3"
+      name="video_para_estern_curta_mitral_gain" value="3" class="form-check-input" {{checked?video_para_estern_curta_mitral_gain3:3}}>
+    <label for="video_para_estern_curta_mitral_gain3" class="form-check-label">3. appropriate</label>
+  </div>
+</div>
+<h4 class="mt-1">Depth</h4>
+<div class="bg-light border border-secondary rounded pl-2">
+  <div class="form-check">
+    <input type="radio" id="video_para_estern_curta_mitral_depth1"
+      name="video_para_estern_curta_mitral_depth" value="1" class="form-check-input" {{checked?video_para_estern_curta_mitral_depth1:1}}>
+    <label for="video_para_estern_curta_mitral_depth1" class="form-check-label">1. little</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_para_estern_curta_mitral_depth2"
+      name="video_para_estern_curta_mitral_depth" value="2" class="form-check-input" {{checked?video_para_estern_curta_mitral_depth2:2}}>
+    <label for="video_para_estern_curta_mitral_depth2" class="form-check-label">2. excessive</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_para_estern_curta_mitral_depth3"
+      name="video_para_estern_curta_mitral_depth" value="3" class="form-check-input" {{checked?video_para_estern_curta_mitral_depth3:3}}>
+    <label for="video_para_estern_curta_mitral_depth3" class="form-check-label">3. appropriate</label>
+  </div>
+</div>
+<h4 class="mt-1">Anatomical References</h4>
+<div class="bg-light border border-secondary rounded pl-2">
+  <div class="form-check">
+    <input type="radio" id="video_para_estern_curta_mitral_anatomical1"
+      name="video_para_estern_curta_mitral_anatomical" value="1" class="form-check-input" {{checked?video_para_estern_curta_mitral_anatomical1:1}}>
+    <label for="video_para_estern_curta_mitral_anatomical1" class="form-check-label">1. absent</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_para_estern_curta_mitral_anatomical2"
+      name="video_para_estern_curta_mitral_anatomical" value="2" class="form-check-input" {{checked?video_para_estern_curta_mitral_anatomical2:2}}>
+    <label for="video_para_estern_curta_mitral_anatomical2" class="form-check-label">2. partially present</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_para_estern_curta_mitral_anatomical3"
+      name="video_para_estern_curta_mitral_anatomical" value="3" class="form-check-input" {{checked?video_para_estern_curta_mitral_anatomical3:3}}>
+    <label for="video_para_estern_curta_mitral_anatomical3" class="form-check-label">3. present</label>
+  </div>
+</div>
+
+<hr>
+<h3>Video - Para-esternal curta nível papilares</h3>
+<hr>
+
+<h4 class="mt-1">Gain</h4>
+<div class="bg-light border border-secondary rounded pl-2">
+  <div class="form-check">
+    <input type="radio" id="video_para_estern_curta_papilar_gain1"
+      name="video_para_estern_curta_papilar_gain" value="1" class="form-check-input" {{checked?video_para_estern_curta_papilar_gain1:1}}>
+    <label for="video_para_estern_curta_papilar_gain1" class="form-check-label">1. little</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_para_estern_curta_papilar_gain2"
+      name="video_para_estern_curta_papilar_gain" value="2" class="form-check-input" {{checked?video_para_estern_curta_papilar_gain2:2}}>
+    <label for="video_para_estern_curta_papilar_gain2" class="form-check-label">2. excessive</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_para_estern_curta_papilar_gain3"
+      name="video_para_estern_curta_papilar_gain" value="3" class="form-check-input" {{checked?video_para_estern_curta_papilar_gain3:3}}>
+    <label for="video_para_estern_curta_papilar_gain3" class="form-check-label">3. appropriate</label>
+  </div>
+</div>
+<h4 class="mt-1">Depth</h4>
+<div class="bg-light border border-secondary rounded pl-2">
+  <div class="form-check">
+    <input type="radio" id="video_para_estern_curta_papilar_depth1"
+      name="video_para_estern_curta_papilar_depth" value="1" class="form-check-input" {{checked?video_para_estern_curta_papilar_depth1:1}}>
+    <label for="video_para_estern_curta_papilar_depth1" class="form-check-label">1. little</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_para_estern_curta_papilar_depth2"
+      name="video_para_estern_curta_papilar_depth" value="2" class="form-check-input" {{checked?video_para_estern_curta_papilar_depth2:2}}>
+    <label for="video_para_estern_curta_papilar_depth2" class="form-check-label">2. excessive</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_para_estern_curta_papilar_depth3"
+      name="video_para_estern_curta_papilar_depth" value="3" class="form-check-input" {{checked?video_para_estern_curta_papilar_depth3:3}}>
+    <label for="video_para_estern_curta_papilar_depth3" class="form-check-label">3. appropriate</label>
+  </div>
+</div>
+<h4 class="mt-1">Anatomical References</h4>
+<div class="bg-light border border-secondary rounded pl-2">
+  <div class="form-check">
+    <input type="radio" id="video_para_estern_curta_papilar_anatomical1"
+      name="video_para_estern_curta_papilar_anatomical" value="1" class="form-check-input" {{checked?video_para_estern_curta_papilar_anatomical1:1}}>
+    <label for="video_para_estern_curta_papilar_anatomical1" class="form-check-label">1. absent</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_para_estern_curta_papilar_anatomical2"
+      name="video_para_estern_curta_papilar_anatomical" value="2" class="form-check-input" {{checked?video_para_estern_curta_papilar_anatomical2:2}}>
+    <label for="video_para_estern_curta_papilar_anatomical2" class="form-check-label">2. partially present</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_para_estern_curta_papilar_anatomical3"
+      name="video_para_estern_curta_papilar_anatomical" value="3" class="form-check-input" {{checked?video_para_estern_curta_papilar_anatomical3:3}}>
+    <label for="video_para_estern_curta_papilar_anatomical3" class="form-check-label">3. present</label>
+  </div>
+</div>
+
+<hr>
+<h4 class="mt-1"> Lista de achados - Para-esternal curta</h4>
+<!-- Button toggles dropdown list -->
+<div class="btn-group dropup w-100">
+  <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Abrir
+  </button>
+  <div class="dropdown-menu p-2 bg-dark">
+    <div class="bg-light border border-secondary rounded pl-2">
+
+      <h5 class="mt-1"> Achados</h5>
+      <hr>
+
+      <div class="d-flex row" style="margin-left:-7px;">
+        <div class="form-check form-check-inline">
+            <input class="form-check-input invisible" type="radio" name="video_para_estern_curta_achados_derr_pericard_sem_repercussao"
+            id="video_para_estern_curta_achados_derr_pericard_sem_repercussao0" value="0" style="position:absolute !important"
+             {{checked?video_para_estern_curta_achados_derr_pericard_sem_repercussao0:0}} checked>
+            <input class="form-check-input" type="radio" name="video_para_estern_curta_achados_derr_pericard_sem_repercussao"
+            id="video_para_estern_curta_achados_derr_pericard_sem_repercussao1" value="1"
+             {{checked?video_para_estern_curta_achados_derr_pericard_sem_repercussao1:1}}>
+          <label class="form-check-label" for="video_para_estern_curta_achados_derr_pericard_sem_repercussao1">
+            1. Derrame pericárdico s/repercussão
+          </label>
+        </div>
+      </div>
+
+
+      <div class="d-flex row" style="margin-left:-7px;">
+        <div class="form-check form-check-inline">
+            <input class="form-check-input invisible" type="radio" name="video_para_estern_curta_achados_derr_pericard_com_repercussao"
+            id="video_para_estern_curta_achados_derr_pericard_com_repercussao0" value="0" style="position:absolute !important"
+             {{checked?video_para_estern_curta_achados_derr_pericard_com_repercussao0:0}} checked>
+            <input class="form-check-input" type="radio" name="video_para_estern_curta_achados_derr_pericard_com_repercussao"
+            id="video_para_estern_curta_achados_derr_pericard_com_repercussao1" value="1"
+             {{checked?video_para_estern_curta_achados_derr_pericard_com_repercussao1:1}}>
+          <label class="form-check-label" for="video_para_estern_curta_achados_derr_pericard_com_repercussao1">
+            2. Derrame pericárdico c/repercussão
+          </label>
+        </div>
+      </div>
+
+      <div class="d-flex row" style="margin-left:-7px;">
+        <div class="form-check form-check-inline">
+
+            <input class="form-check-input invisible" type="radio" name="video_para_estern_curta_achados_disfunc_ventric_esq_moderada"
+            id="video_para_estern_curta_achados_disfunc_ventric_esq_moderada0" value="0" style="position:absolute !important"
+             {{checked?video_para_estern_curta_achados_disfunc_ventric_esq_moderada0:0}} checked>
+            <input class="form-check-input" type="radio" name="video_para_estern_curta_achados_disfunc_ventric_esq_moderada"
+            id="video_para_estern_curta_achados_disfunc_ventric_esq_moderada1" value="1"
+             {{checked?video_para_estern_curta_achados_disfunc_ventric_esq_moderada1:1}}>
+
+          <label class="form-check-label" for="video_para_estern_curta_achados_disfunc_ventric_esq_moderada1">
+            3. Disfunção Ventricular Esquerda Moderada
+          </label>
+        </div>
+      </div>
+
+      <div class="d-flex row" style="margin-left:-7px;">
+        <div class="form-check form-check-inline">
+
+            <input class="form-check-input invisible" type="radio" name="video_para_estern_curta_achados_disfunc_ventric_esq_acentuada"
+            id="video_para_estern_curta_achados_disfunc_ventric_esq_acentuada0" value="0" style="position:absolute !important"
+             {{checked?video_para_estern_curta_achados_disfunc_ventric_esq_acentuada0:0}} checked>
+            <input class="form-check-input" type="radio" name="video_para_estern_curta_achados_disfunc_ventric_esq_acentuada"
+            id="video_para_estern_curta_achados_disfunc_ventric_esq_acentuada1" value="1"
+             {{checked?video_para_estern_curta_achados_disfunc_ventric_esq_acentuada1:1}}>
+
+          <label class="form-check-label" for="video_para_estern_curta_achados_disfunc_ventric_esq_acentuada1">
+            4. Disfunção Ventricular Esquerda Acentuada
+          </label>
+        </div>
+      </div>
+
+      <div class="d-flex row" style="margin-left:-7px;">
+        <div class="form-check form-check-inline">
+
+            <input class="form-check-input invisible" type="radio" name="video_para_estern_curta_achados_dilataca_ventric_direito"
+            id="video_para_estern_curta_achados_dilataca_ventric_direito0" value="0" style="position:absolute !important"
+             {{checked?video_para_estern_curta_achados_dilataca_ventric_direito0:0}} checked>
+
+            <input class="form-check-input" type="radio" name="video_para_estern_curta_achados_dilataca_ventric_direito"
+            id="video_para_estern_curta_achados_dilataca_ventric_direito1" value="1"
+             {{checked?video_para_estern_curta_achados_dilataca_ventric_direito1:1}}>
+
+          <label class="form-check-label" for="video_para_estern_curta_achados_dilataca_ventric_direito1">
+            5. Dilatação de Ventrículo Direito
+          </label>
+        </div>
+      </div>
+
+      <div class="d-flex row" style="margin-left:-7px;">
+        <div class="form-check form-check-inline">
+
+            <input class="form-check-input invisible" type="radio" name="video_para_estern_curta_achados_normal"
+            id="video_para_estern_curta_achados_normal0" value="0" style="position:absolute !important"
+             {{checked?video_para_estern_curta_achados_normal0:0}} checked>
+
+            <input class="form-check-input" type="radio" name="video_para_estern_curta_achados_normal"
+            id="video_para_estern_curta_achados_normal1" value="1"
+             {{checked?video_para_estern_curta_achados_normal1:1}}>
+
+          <label class="form-check-label" for="video_para_estern_curta_achados_normal1">
+            6. Normal
+          </label>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+</div>
+
+
+<hr>
+<h3>Video - Apical de 4 câmaras</h3>
+<hr>
+
+<h4 class="mt-1">Gain</h4>
+<div class="bg-light border border-secondary rounded pl-2">
+  <div class="form-check">
+    <input type="radio" id="video_apical_4_camaras_gain1"
+      name="video_apical_4_camaras_gain" value="1" class="form-check-input" {{checked?video_apical_4_camaras_gain1:1}}>
+    <label for="video_apical_4_camaras_gain1" class="form-check-label">1. little</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_apical_4_camaras_gain2"
+      name="video_apical_4_camaras_gain" value="2" class="form-check-input" {{checked?video_apical_4_camaras_gain2:2}}>
+    <label for="video_apical_4_camaras_gain2" class="form-check-label">2. excessive</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_apical_4_camaras_gain3"
+      name="video_apical_4_camaras_gain" value="3" class="form-check-input" {{checked?video_apical_4_camaras_gain3:3}}>
+    <label for="video_apical_4_camaras_gain3" class="form-check-label">3. appropriate</label>
+  </div>
+</div>
+<h4 class="mt-1">Depth</h4>
+<div class="bg-light border border-secondary rounded pl-2">
+  <div class="form-check">
+    <input type="radio" id="video_apical_4_camaras_depth1"
+      name="video_apical_4_camaras_depth" value="1" class="form-check-input" {{checked?video_apical_4_camaras_depth1:1}}>
+    <label for="video_apical_4_camaras_depth1" class="form-check-label">1. little</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_apical_4_camaras_depth2"
+      name="video_apical_4_camaras_depth" value="2" class="form-check-input" {{checked?video_apical_4_camaras_depth2:2}}>
+    <label for="video_apical_4_camaras_depth2" class="form-check-label">2. excessive</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_apical_4_camaras_depth3"
+      name="video_apical_4_camaras_depth" value="3" class="form-check-input" {{checked?video_apical_4_camaras_depth3:3}}>
+    <label for="video_apical_4_camaras_depth3" class="form-check-label">3. appropriate</label>
+  </div>
+</div>
+<h4 class="mt-1">Anatomical References</h4>
+<div class="bg-light border border-secondary rounded pl-2">
+  <div class="form-check">
+    <input type="radio" id="video_apical_4_camaras_anatomical1"
+      name="video_apical_4_camaras_anatomical" value="1" class="form-check-input" {{checked?video_apical_4_camaras_anatomical1:1}}>
+    <label for="video_apical_4_camaras_anatomical1" class="form-check-label">1. absent</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_apical_4_camaras_anatomical2"
+      name="video_apical_4_camaras_anatomical" value="2" class="form-check-input" {{checked?video_apical_4_camaras_anatomical2:2}}>
+    <label for="video_apical_4_camaras_anatomical2" class="form-check-label">2. partially present</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="video_apical_4_camaras_anatomical3"
+      name="video_apical_4_camaras_anatomical" value="3" class="form-check-input" {{checked?video_apical_4_camaras_anatomical3:3}}>
+    <label for="video_apical_4_camaras_anatomical3" class="form-check-label">3. present</label>
+  </div>
+</div>
+
+<hr>
+
+<h4 class="mt-1"> Lista de achados - Apical de 4 câmaras</h4>
+<!-- Button toggles dropdown list -->
+<div class="btn-group dropup w-100">
+  <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Abrir
+  </button>
+  <div class="dropdown-menu p-2 bg-dark">
+    <div class="bg-light border border-secondary rounded pl-2">
+
+      <h5 class="mt-1"> Achados</h5>
+      <hr>
+
+      <div class="d-flex row" style="margin-left:-7px;">
+        <div class="form-check form-check-inline">
+            <input class="form-check-input invisible" type="radio" name="video_apical_4_camaras_achados_derr_pericard_sem_repercussao"
+            id="video_apical_4_camaras_achados_derr_pericard_sem_repercussao0" value="0" style="position:absolute !important"
+             {{checked?video_apical_4_camaras_achados_derr_pericard_sem_repercussao0:0}} checked>
+            <input class="form-check-input" type="radio" name="video_apical_4_camaras_achados_derr_pericard_sem_repercussao"
+            id="video_apical_4_camaras_achados_derr_pericard_sem_repercussao1" value="1"
+             {{checked?video_apical_4_camaras_achados_derr_pericard_sem_repercussao1:1}}>
+          <label class="form-check-label" for="video_apical_4_camaras_achados_derr_pericard_sem_repercussao1">
+            1. Derrame pericárdico s/repercussão
+          </label>
+        </div>
+      </div>
+
+
+      <div class="d-flex row" style="margin-left:-7px;">
+        <div class="form-check form-check-inline">
+            <input class="form-check-input invisible" type="radio" name="video_apical_4_camaras_achados_derr_pericard_com_repercussao"
+            id="video_apical_4_camaras_achados_derr_pericard_com_repercussao0" value="0" style="position:absolute !important"
+             {{checked?video_apical_4_camaras_achados_derr_pericard_com_repercussao0:0}} checked>
+            <input class="form-check-input" type="radio" name="video_apical_4_camaras_achados_derr_pericard_com_repercussao"
+            id="video_apical_4_camaras_achados_derr_pericard_com_repercussao1" value="1"
+             {{checked?video_apical_4_camaras_achados_derr_pericard_com_repercussao1:1}}>
+          <label class="form-check-label" for="video_apical_4_camaras_achados_derr_pericard_com_repercussao1">
+            2. Derrame pericárdico c/repercussão
+          </label>
+        </div>
+      </div>
+
+      <div class="d-flex row" style="margin-left:-7px;">
+        <div class="form-check form-check-inline">
+
+            <input class="form-check-input invisible" type="radio" name="video_apical_4_camaras_achados_disfunc_ventric_esq_moderada"
+            id="video_apical_4_camaras_achados_disfunc_ventric_esq_moderada0" value="0" style="position:absolute !important"
+             {{checked?video_apical_4_camaras_achados_disfunc_ventric_esq_moderada0:0}} checked>
+            <input class="form-check-input" type="radio" name="video_apical_4_camaras_achados_disfunc_ventric_esq_moderada"
+            id="video_apical_4_camaras_achados_disfunc_ventric_esq_moderada1" value="1"
+             {{checked?video_apical_4_camaras_achados_disfunc_ventric_esq_moderada1:1}}>
+
+          <label class="form-check-label" for="video_apical_4_camaras_achados_disfunc_ventric_esq_moderada1">
+            3. Disfunção Ventricular Esquerda Moderada
+          </label>
+        </div>
+      </div>
+
+      <div class="d-flex row" style="margin-left:-7px;">
+        <div class="form-check form-check-inline">
+
+            <input class="form-check-input invisible" type="radio" name="video_apical_4_camaras_achados_disfunc_ventric_esq_acentuada"
+            id="video_apical_4_camaras_achados_disfunc_ventric_esq_acentuada0" value="0" style="position:absolute !important"
+             {{checked?video_apical_4_camaras_achados_disfunc_ventric_esq_acentuada0:0}} checked>
+
+            <input class="form-check-input" type="radio" name="video_apical_4_camaras_achados_disfunc_ventric_esq_acentuada"
+            id="video_apical_4_camaras_achados_disfunc_ventric_esq_acentuada1" value="1"
+             {{checked?video_apical_4_camaras_achados_disfunc_ventric_esq_acentuada1:1}}>
+
+          <label class="form-check-label" for="video_apical_4_camaras_achados_disfunc_ventric_esq_acentuada1">
+            4. Disfunção Ventricular Esquerda Acentuada
+          </label>
+        </div>
+      </div>
+
+      <div class="d-flex row" style="margin-left:-7px;">
+        <div class="form-check form-check-inline">
+
+            <input class="form-check-input invisible" type="radio" name="video_apical_4_camaras_achados_dilatacao_ventric_direito"
+            id="video_apical_4_camaras_achados_dilatacao_ventric_direito0" value="0" style="position:absolute !important"
+             {{checked?video_apical_4_camaras_achados_dilatacao_ventric_direito0:0}} checked>
+
+            <input class="form-check-input" type="radio" name="video_apical_4_camaras_achados_dilatacao_ventric_direito"
+            id="video_apical_4_camaras_achados_dilatacao_ventric_direito1" value="1"
+             {{checked?video_apical_4_camaras_achados_dilatacao_ventric_direito1:1}}>
+
+          <label class="form-check-label" for="video_apical_4_camaras_achados_dilatacao_ventric_direito1">
+            5. Dilatação de Ventrículo Direito
+          </label>
+        </div>
+      </div>
+
+      <div class="d-flex row" style="margin-left:-7px;">
+        <div class="form-check form-check-inline">
+
+            <input class="form-check-input invisible" type="radio" name="video_apical_4_camaras_achados_normal"
+            id="video_apical_4_camaras_achados_normal0" value="0" style="position:absolute !important"
+             {{checked?video_apical_4_camaras_achados_normal0:0}} checked>
+
+            <input class="form-check-input" type="radio" name="video_apical_4_camaras_achados_normal"
+            id="video_apical_4_camaras_achados_normal1" value="1"
+             {{checked?video_apical_4_camaras_achados_normal1:1}}>
+
+          <label class="form-check-label" for="video_apical_4_camaras_achados_normal1">
+            6. Normal
+          </label>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+</div>
+<hr>
+<div class="text-center">
+  <button type="button" class="btn btn-secondary" id="btn-save-comments" >SAVE COMMENTS</button>
+  <dcc-button topic="control/case/save" label="SAVE COMMENTS" location="btn-save-comments" xstyle="out"></dcc-button>
+</div>
+<hr>

@@ -17,8 +17,8 @@ class TemplateToCase {
           document.querySelector('#category').value = _url.searchParams.get('category')
 
           const params = new FormData(document.querySelector('#create-case-form'))
-          console.log(params);
-          console.log(params.get('template'));
+          // console.log(params);
+          // console.log(params.get('template'));
           /*
           // params.set('template', _url.searchParams.get('template').replace(/__/ig, "/"))
           // params.set('quest', _url.searchParams.get('quest'))
@@ -29,6 +29,7 @@ class TemplateToCase {
 
           // load template
           */
+          /*
           const templateRequest = {
             method: 'GET',
             url: '/templates/' +
@@ -44,6 +45,13 @@ class TemplateToCase {
               console.log(error)
               console.log(error.code)
             })
+          */
+
+          const templateMd =
+            await MessageBus.ext.request(
+              'data/template/' + params.get('template').replace(/\//g, '.') +
+                '/get', {static: false})
+          let markdown = templateMd.message
 
           if (markdown != null) {
             const config = {

@@ -24,7 +24,7 @@
                 <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
               </div>
               <!-- <button class="btn btn-outline-primary" id="btn-login">Submit form</button> -->
-              <dcc-submit id="btn-submit-login" bind="submit-login" label="Login" xstyle="btn btn-outline-primary" connect="harena-login:service/request/post:submit"></dcc-submit>
+              <dcc-submit id="btn-submit-login" bind="submit-login" label="Login" xstyle="btn btn-outline-primary" connect="submit:harena-login:service/request/post"></dcc-submit>
               <div id="login-message-alert" class="alert mt-3" role="alert">
               </div>
             </form>
@@ -39,7 +39,7 @@
             <a class="dropdown-item" href="/user/settings">Change Password</a>
             <div class="dropdown-divider"></div>
 
-            <dcc-submit xstyle="dropdown-item" id="logout-button" bind="submit-logout" label="Logout" connect="harena-logout:service/request/post:submit">
+            <dcc-submit xstyle="dropdown-item" id="logout-button" bind="submit-logout" label="Logout" connect="submit:harena-logout:service/request/post">
 
             </div>
         </div>

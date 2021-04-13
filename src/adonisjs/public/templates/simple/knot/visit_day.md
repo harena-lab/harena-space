@@ -1,4 +1,4 @@
-# _Knot_Name_ (input)
+# Day _knot_number_ (input)
 
 <h2>Day X</h2>
 
@@ -14,10 +14,7 @@ Write here the yesterday's Feedback.
 Write here the **stem**.
 }}
 
-{{leadin
-Write here the **lead-in**.
-}}
-
+> Write here the **lead-in**.
 ? hypothesis
   * type: text
 

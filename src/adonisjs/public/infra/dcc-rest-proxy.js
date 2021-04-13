@@ -130,14 +130,14 @@
       },
       oas: {
         paths: {
-          '{url-manager}/case/{caseId}': {
+          '{url-manager}/case': {
             'get': {
-              operationId: 'quests',
+              operationId: 'case',
               parameters: [
                 {name: 'url-manager',
                  in: 'path'},
                 {name: 'caseId',
-                  in: 'path'}
+                  in: 'query'}
               ]
             }
           }
@@ -176,7 +176,14 @@
       environment: {
         'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api,
         'categoryId': new URL(document.location).searchParams.get('id'),
-        'clearance': new URL(document.location).searchParams.get('clearance')
+        'clearance': new URL(document.location).searchParams.get('clearance'),
+        'fProperty': new URL(document.location).searchParams.get('prop'),
+        'fInstitution': new URL(document.location).searchParams.get('fInstitution'),
+        'fUserType': new URL(document.location).searchParams.get('fUserType'),
+        'fSpecialty': new URL(document.location).searchParams.get('fSpecialty'),
+        'fPropertyValue': new URL(document.location).searchParams.get('fPropertyValue'),
+        'page': new URL(document.location).searchParams.get('page'),
+        'nItems': new URL(document.location).searchParams.get('limit'),
       },
       oas: {
         paths: {
@@ -195,7 +202,15 @@
                 {name: 'fUserType',
                   in: 'query'},
                 {name: 'fSpecialty',
-                  in: 'query'}
+                  in: 'query'},
+                {name: 'fProperty',
+                  in: 'query'},
+                {name: 'fPropertyValue',
+                  in: 'query'},
+                {name: 'page',
+                  in: 'query'},
+                {name: 'nItems',
+                  in: 'query'},
               ]
             }
           }
@@ -210,7 +225,14 @@
     {
       environment: {
         'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api,
-        'clearance': new URL(document.location).searchParams.get('clearance')
+        'clearance': new URL(document.location).searchParams.get('clearance'),
+        'fProperty': new URL(document.location).searchParams.get('prop'),
+        'fInstitution': new URL(document.location).searchParams.get('fInstitution'),
+        'fUserType': new URL(document.location).searchParams.get('fUserType'),
+        'fSpecialty': new URL(document.location).searchParams.get('fSpecialty'),
+        'fPropertyValue': new URL(document.location).searchParams.get('fPropertyValue'),
+        'page': new URL(document.location).searchParams.get('page'),
+        'nItems': new URL(document.location).searchParams.get('limit'),
       },
       oas: {
         paths: {
@@ -227,7 +249,15 @@
                 {name: 'fUserType',
                   in: 'query'},
                 {name: 'fSpecialty',
-                  in: 'query'}
+                  in: 'query'},
+                {name: 'fProperty',
+                  in: 'query'},
+                {name: 'fPropertyValue',
+                  in: 'query'},
+                {name: 'page',
+                  in: 'query'},
+                {name: 'nItems',
+                  in: 'query'},
               ]
             }
           }
@@ -257,6 +287,8 @@
                 {name: 'entity',
                   in: 'query'},
                 {name: 'subject',
+                  in: 'query'},
+                {name: 'subject_grade',
                   in: 'query'},
                 {name: 'clearance',
                   in: 'query'},
@@ -357,6 +389,119 @@
               parameters: [
                 {name: 'url-manager',
                  in: 'path'}
+              ]
+            }
+          }
+        }
+      }
+    }
+  )
+
+  DCC.component(
+    'harena-ask-feedback',
+    'dcc-rest',
+    {
+      environment: {
+        'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api,
+        'entity': 'institution',
+        'clearance': '4',
+        'subject_grade':'professor',
+        'subject': sessionStorage.getItem('harena-user-institution-id'),
+        'table_id': new URL(document.location).searchParams.get('id'),
+
+        'case_id': new URL(document.location).searchParams.get('id'),
+      },
+      oas: {
+        paths: {
+          '{url-manager}/case/share': {
+            'post': {
+              operationId: 'ask-feedback',
+              parameters: [
+                {name: 'url-manager',
+                  in: 'path'},
+                {name: 'clearance',
+                  in: 'query'},
+                {name: 'entity',
+                  in: 'query'},
+                {name: 'subject',
+                  in: 'query'},
+                {name: 'subject_grade',
+                  in: 'query'},
+                {name: 'table_id',
+                  in: 'query'}
+              ]
+            }
+          }
+        }
+      }
+    }
+  )
+
+  DCC.component(
+    'harena-case-property',
+    'dcc-rest',
+    {
+      environment: {
+        'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api,
+        'case_id': new URL(document.location).searchParams.get('id'),
+      },
+      oas: {
+        paths: {
+          '{url-manager}/case/property': {
+            'post': {
+              operationId: 'case-property',
+              parameters: [
+                {name: 'url-manager',
+                  in: 'path'},
+                {name: 'case_id',
+                  in: 'query'},
+                {name: 'property_title',
+                  in: 'query'},
+                {name: 'property_value',
+                  in: 'query'},
+              ]
+            },
+            'put': {
+              operationId: 'case-property-put',
+              parameters: [
+                {name: 'url-manager',
+                  in: 'path'},
+                {name: 'case_id',
+                  in: 'query'},
+                {name: 'property_title',
+                  in: 'query'},
+                {name: 'property_value',
+                  in: 'query'},
+              ]
+            }
+          }
+        }
+      }
+    }
+  )
+
+  DCC.component(
+    'harena-case-property-put',
+    'dcc-rest',
+    {
+      environment: {
+        'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api,
+        'case_id': new URL(document.location).searchParams.get('id'),
+      },
+      oas: {
+        paths: {
+          '{url-manager}/case/property': {
+            'put': {
+              operationId: 'case-property',
+              parameters: [
+                {name: 'url-manager',
+                  in: 'path'},
+                {name: 'case_id',
+                  in: 'query'},
+                {name: 'property_title',
+                  in: 'query'},
+                {name: 'property_value',
+                  in: 'query'},
               ]
             }
           }

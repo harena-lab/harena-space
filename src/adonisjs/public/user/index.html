@@ -64,7 +64,7 @@
                       <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
                     </div>
                     <!-- <button class="btn btn-outline-primary" id="btn-login">Submit form</button> -->
-                    <dcc-submit id="btn-submit-login" bind="submit-login" label="Login" xstyle="btn btn-outline-primary" connect="harena-login:service/request/post:submit"></dcc-submit>
+                    <dcc-submit id="btn-submit-login" bind="submit-login" label="Login" xstyle="btn btn-outline-primary" connect="submit:harena-login:service/request/post"></dcc-submit>
                     <div id="login-message-alert" class="alert mt-3" role="alert">
                     </div>
                   </form>

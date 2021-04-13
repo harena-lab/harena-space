@@ -6,7 +6,8 @@
       ['nematode', 'n', { src: 'images/cell/nematode.svg', width: 25, height: 25, alt: 'nematóide' }],
       ['tardigrade', 't', { src: 'images/cell/tardigrade.svg', width: 25, height: 25, alt: 'tardígrado' }]],
 `<block type="neighbor"></block>
-<block type="action"></block>`,
+<block type="action_probability"></block>
+<block type="action_step"></block>`,
 `<dcc-space-cellular-editor id="cellular-space" rows="28" cols="40"
   cell-width="16" cell-height="16" background-color="#d6f0ff" grid>
 </dcc-space-cellular-editor>
@@ -33,7 +34,8 @@
 <subscribe-dcc target="cellular-space" topic="type/#" role="type"></subscribe-dcc>
 <subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>
 <subscribe-dcc target="cellular-space" topic="state/save" role="save"></subscribe-dcc>
-<subscribe-dcc target="cellular-space" topic="state/reset" role="reset"></subscribe-dcc>`,
+<subscribe-dcc target="cellular-space" topic="state/reset" role="reset"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="var/space_scale/changed" role="scale"></subscribe-dcc>`,
 `Selecione um dos ícones abaixo para editar o ambiente:
 <div style="flex:48px; max-height:48px; display:flex; flex-direction:row; border:2px">
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">

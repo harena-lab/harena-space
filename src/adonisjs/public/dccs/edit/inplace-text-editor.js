@@ -4,16 +4,16 @@
 function _harenaCustomUploadAdapterPlugin( editor ) {
     editor.plugins.get( 'FileRepository' ).createUploadAdapter = ( loader ) => {
         // Configure the URL to the upload script in your back-end here!
-        return new HarenaUploadAdapter( loader, Basic.service.currentCaseId, DCCCommonServer.token );
+        return new HarenaUploadAdapter(loader, Basic.service.currentCaseId, DCCCommonServer.token);
     };
 }
 
 class EditDCCText extends EditDCC {
-  constructor (knotContent, el, dcc, svg, floating, properties) {
+  constructor (knotContent, el, dcc, svg, floating, properties, field) {
     super(dcc, (dcc != null) ? dcc.currentPresentation() : null, properties)
-    console.log('=== another editor')
     this._knotContent = knotContent
     this._element = el
+    this._objField = field
     // this._editDCC = dcc
     this._textChanged = false
     this.handleConfirm = this.handleConfirm.bind(this)
@@ -28,7 +28,6 @@ class EditDCCText extends EditDCC {
         .replace('[content]',
                  Translator.instance.generateKnotHTML([knotContent[el]], false))
       // this._shadow = this.attachShadow({ mode: 'open' })
-      console.log('=== new instance')
       // embeds all clone to enable deleting it
       this._editorInstance = document.createElement('div')
       this._editorInstance.appendChild(template.content.cloneNode(true))
@@ -54,12 +53,23 @@ class EditDCCText extends EditDCC {
       {
         extraPlugins: [_harenaCustomUploadAdapterPlugin],
         mediaEmbed: {
-          extraProviders: [{
-             name: 'extraProvider',
-             url: /(^https:\/\/drive.google.com[\w/]*\/[^/]+\/)[^/]*/,
-             html: match => '<iframe src="' + match[1] + 'preview" width="560" height="315"></iframe>'
-           }]
-         }
+          extraProviders: [
+             {
+               name: 'googleProvider',
+               url: /(^https:\/\/drive.google.com[\w/]*\/[^/]+\/)[^/]*/,
+               html: match => '<iframe src="' + match[1] + 'preview" width="560" height="315"></iframe>'
+             },
+             {
+               name: 'harenaProvider',
+               url: /(^https?:\/\/(?:localhost|0\.0\.0\.0|(?:dev\.)?jacinto\.harena\.org)(?::10020)?\/.*)/,
+               html: match => '<video controls><source src="' + match[1] + '"></video>'
+             }
+           ]
+        },
+        harena: {
+          confirm: 'control/editor/edit/confirm',
+          cancel:  'control/editor/edit/cancel'
+        }
       } )
       .then( editor => {
         // const toolbarContainer = document.querySelector('#toolbar-editor')
@@ -86,23 +96,31 @@ class EditDCCText extends EditDCC {
   }
 
   async _updateTranslated () {
-    const objSet = await this._translateContent(
-      this._editor.getData(), this._knotContent[this._element].blockquote)
+    const mdTranslate = this._translateMarkdown(this._editor.getData())
 
-    // removes extra linefeeds
-    if (objSet[objSet.length - 1].type == 'linefeed') { objSet.pop() }
+    if (this._objField != null) {
+      this._knotContent[this._element][this._objField] = mdTranslate
+        .replace(/[\n\r]+$/igm, '').trim()
+      await this._properties.applyProperties(false)
+    } else {
+      const objSet = this._translateObject(mdTranslate,
+        this._knotContent[this._element].blockquote)
 
-    // redefines the sequence according to the new elements
-    const seq = this._knotContent[this._element].seq
-    const shift = objSet.length - 1
-    for (let s = this._element + 1; s < this._knotContent.length; s++)
-      { this._knotContent[s].seq += shift }
+      // removes extra linefeeds
+      if (objSet[objSet.length - 1].type == 'linefeed') { objSet.pop() }
 
-    // removes the previous element and insert the new one
-    this._knotContent.splice(this._element, 1)
-    for (let o = 0; o < objSet.length; o++) {
-      objSet[o].seq = seq + o
-      this._knotContent.splice(this._element + o, 0, objSet[o])
+      // redefines the sequence according to the new elements
+      const seq = this._knotContent[this._element].seq
+      const shift = objSet.length - 1
+      for (let s = this._element + 1; s < this._knotContent.length; s++)
+        { this._knotContent[s].seq += shift }
+
+      // removes the previous element and insert the new one
+      this._knotContent.splice(this._element, 1)
+      for (let o = 0; o < objSet.length; o++) {
+        objSet[o].seq = seq + o
+        this._knotContent.splice(this._element + o, 0, objSet[o])
+      }
     }
   }
 
@@ -112,7 +130,8 @@ class EditDCCText extends EditDCC {
     if (this._editorInstance)
       this._editorWrapper.removeChild(this._editorInstance)
     this._removeToolbarPanel()
-    await this._properties.closeProperties()
+    if (this._objField == null)
+      await this._properties.closeProperties()
     // MessageBus.ext.publish('control/knot/update')
   }
 
@@ -129,9 +148,10 @@ class EditDCCText extends EditDCC {
     document.querySelector('#toolbar-editor').innerHTML = ''
   }
 
-  async _translateContent (editContent, blockquote) {
+  _translateMarkdown (editContent) {
     let content = ''
-    console.log('=== content')
+
+    console.log('=== edit content')
     console.log(editContent)
 
     let htmlTranslate = editContent
@@ -178,8 +198,15 @@ class EditDCCText extends EditDCC {
     mdTranslate = mdTranslate
       .replace(/^-[ \t]/igm, '* ')
 
-    console.log('=== html')
-    console.log(mdTranslate)
+    mdTranslate = mdTranslate.replace(/<br>/igm, '\n')
+
+    console.log('=== markdown translate')
+    console.log(htmlTranslate)
+
+    return mdTranslate
+  }
+
+  _translateObject (mdTranslate, blockquote) {
     const unity = { _source: mdTranslate }
     Translator.instance._compileUnityMarkdown(unity)
     Translator.instance._compileMerge(unity)
@@ -192,8 +219,6 @@ class EditDCCText extends EditDCC {
         Translator.instance.updateElementMarkdown(c)
       }
     }
-    console.log('=== unity')
-    console.log(unity)
     return unity.content
   }
 }

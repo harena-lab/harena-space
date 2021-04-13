@@ -75,6 +75,19 @@ class DCCButton extends DCCBlock {
     if (isInline) { this.setAttribute('inline', '') } else { this.removeAttribute('inline') }
   }
 
+  changeDisplay(topic, message) {
+    super.changeDisplay(topic, message)
+    if (this._presentation != null) {
+      if (topic == 'style/display/none') {
+        this.display = 'none'
+        this._active = false
+      } else {
+        this.display = 'initial'
+        this._active = true
+      }
+    }
+  }
+
   /* Rendering */
 
   async _renderInterface () {
@@ -133,9 +146,10 @@ class DCCButton extends DCCBlock {
     return 'action'
   }
 
-  _computeTrigger () {
+  async _computeTrigger () {
     if (this._active && this._checkPre()) {
       const message = { sourceType: DCCButton.elementTag }
+      await this.multiRequest('click', message)
       if (this.hasAttribute('variable')) {
         const v = (this.variable.includes(':'))
           ? this.variable.substring(0, this.variable.indexOf(':')) : this.variable
@@ -162,7 +176,6 @@ class DCCButton extends DCCBlock {
   navigationBlocked () {
     this._active = true
   }
-
 
   // <TODO> provisory - deactivate button edit
   _activateAuthorPresentation (presentation, listener) {}

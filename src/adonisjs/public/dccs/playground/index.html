@@ -24,15 +24,18 @@
 
    <script src="../../dccs/base/dcc.js"></script>
    <script src="../../dccs/base/subscribe-dcc.js"></script>
+   <script src="../../dccs/base/connect-dcc.js"></script>
    <script src="../../dccs/base/trigger-dcc.js"></script>
    <script src="../../dccs/base/property-dcc.js"></script>
    <script src="../../dccs/base/dcc-base.js"></script>
+   <script src="../../dccs/base/end-dcc.js"></script>
+
    <script src="../../dccs/components/control/dcc-timer.js"></script>
    <script src="../../dccs/base/dcc-visual.js"></script>
    <script src="../../dccs/components/visual/dcc-markdown.js"></script>
    <script src="../../dccs/components/visual/dcc-annotation.js"></script>
    <script src="../../dccs/components/visual/dcc-image.js"></script>
-   <script src="../../dccs/components/control/dcc-expression.js"></script>
+   <script src="../../dccs/components/visual/dcc-expression.js"></script>
    <script src="../../dccs/base/dcc-block.js"></script>
    <script src="../../dccs/components/visual/dcc-state.js"></script>
    <script src="../../dccs/components/visual/dcc-group.js"></script>
@@ -56,6 +59,7 @@
 
    <script src="../../dccs/components/web/dcc-rss.js"></script>
    <script src="../../dccs/components/web/dcc-aggregator.js"></script>
+   <script src="../../dccs/components/web/dcc-dhtml.js"></script>
 
    <script src="../../dccs/components/web/dcc-include.js"></script>
 
@@ -67,6 +71,8 @@
    <script src="../../dccs/components/cell/rule-dcc-cell-transition.js"></script>
    <script src="../../dccs/components/cell/rule-dcc-cell-neighbor.js"></script>
    <script src="../../dccs/components/cell/rule-dcc-cell-expression.js"></script>
+
+   <script src="../../player/js/state.js"></script>
 
    <script>
       function start() {
@@ -107,8 +113,9 @@
 
 <body onload="start()">
    <script>
-      MessageBus.page = new MessageBus(false);
-      Basic.service.rootPath = "../../";
+      MessageBus.page = new MessageBus(false)
+      Basic.service.rootPath = "../../"
+      new PlayState()
    </script>
 
   <main role="main">

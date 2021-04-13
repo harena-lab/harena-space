@@ -7,6 +7,34 @@ class DCCDHTML extends DCCBase {
     this.recordUpdate = this.recordUpdate.bind(this)
   }
 
+  async connectedCallback () {
+    super.connectedCallback()
+
+    if (this.hasAttribute('autoupdate')) {
+      let record = await MessageBus.ext.request('var/*/get')
+      record = (record == null || record.message == null) ? {} : record.message
+      this.recordUpdate('var/*/get', record)
+      this.fieldUpdate = this.fieldUpdate.bind(this)
+      MessageBus.ext.subscribe('var/+/set', this.fieldUpdate)
+    }
+  }
+
+  /*
+    * Property handling
+    */
+
+  static get observedAttributes () {
+    return DCCBase.observedAttributes.concat(['autoupdate'])
+  }
+
+  get autoupdate () {
+    return this.getAttribute('autoupdate')
+  }
+
+  set autoupdate (newValue) {
+    this.setAttribute('autoupdate', newValue)
+  }
+
   endReached() {
     this._originalHTML = this.innerHTML.replace(
       /<end-dcc[^>]*>[^<]*<\/end-dcc>/igm, '')
@@ -63,19 +91,31 @@ class DCCDHTML extends DCCBase {
       if (record[r] != null && typeof record[r] === 'object')
         html = this._replaceFields(html, pr, record[r])
       else {
-        if(typeof record[r] === 'number') record[r] = record[r].toString()
-        // console.log(typeof record[r]);
-        // console.log(record[r]);
+        if (typeof record[r] === 'number') record[r] = record[r].toString()
         const content = (record[r] == null) ? '' :
                           record[r].replace(/&/gm, '&amp;')
                                    .replace(/"/gm, '&quot;')
                                    .replace(/'/gm, '&#39;')
                                    .replace(/</gm, '&lt;')
                                    .replace(/>/gm, '&gt;')
-        html = html.replace(new RegExp('\{\{[ \t]*' + pr + '[ \t]*\}\}', 'igm'), content)
+        html = html.replace(
+          new RegExp('\{\{[ \\t]*' + pr + '[ \\t]*\}\}', 'igm'), content)
+
+        let condExp = '\{\{[ \\t]*([^?\}]+)[ \\t]*\\?[ \\t]*' + pr +
+                      '[ \\t]*:[ \\t]*([^\}]+)[ \\t]*\}\}(?:="")?'
+        let conditions = html.match(new RegExp(condExp, 'igm'))
+        if (conditions != null)
+          for (let c of conditions) {
+            let inside = c.match(new RegExp(condExp, 'im'))
+            html = html.replace(
+              new RegExp('\{\{[ \\t]*' + inside[1] + '[ \\t]*\\?[ \\t]*' + pr +
+                         '[ \\t]*:[ \\t]*' + inside[2] + '[ \\t]*\}\}(?:="")?',
+                         'igm'),
+              ((inside[2] == '' + content) ? inside[1] : '')
+            )
+          }
       }
     }
-    // console.log('replace fields');
     return html
   }
 
@@ -89,9 +129,27 @@ class DCCDHTML extends DCCBase {
   }
 
   recordUpdate (topic, message) {
-    this._record = ((message.body)
+    this._record = this._extractValue(message)
+    this._updateRender()
+  }
+
+  fieldUpdate (topic, message) {
+    const id = MessageBus.extractLevel(topic, 2)
+    const value = this._extractValue(message)
+    if (id == '*')
+      this._record = value
+    else
+      this._record[id] = value
+    this._updateRender()
+  }
+
+  _extractValue (message) {
+     return ((message.body)
       ? ((message.body.value) ? message.body.value : message.body)
       : ((message.value) ? message.value : message))
+  }
+
+  _updateRender () {
     this._renderHTML()
     MessageBus.int.publish('web/dhtml/record/updated', DCCDHTML.elementTag)
     MessageBus.int.publish('control/dhtml/updated')
@@ -103,8 +161,7 @@ class DCCDHTML extends DCCBase {
       const response = await this.request('retrieve', null, id)
       this.recordUpdate(topic, response)
     }
-    MessageBus.ext.publish('control/dhtml/ready')
-
+    MessageBus.int.publish('control/dhtml/ready')
   }
 }
 

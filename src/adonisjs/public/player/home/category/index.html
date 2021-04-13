@@ -8,7 +8,7 @@
 
     <link rel="stylesheet" href="/author/css/author.css">
 
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="/lib/axios-0.21.0/axios.min.js"></script>
 
     <script src="/lib/jquery-3-4-1/jquery-3.4.1.slim.min.js"></script>
     <script src="/lib/popper-1-15-0/popper.min.js"></script>
@@ -92,7 +92,7 @@
             <div class="d-flex scroll-x pb-4">
 
                 <dcc-rest id="harena-category-list" bind="harena-category-list"></dcc-rest>
-                <dcc-dhtml class="d-flex" connect="harena-category-list:service/request/get:retrieve">
+                <dcc-dhtml class="d-flex" connect="retrieve:harena-category-list:service/request/get">
                   {{@foreach . category}}
                   <div class="d-flex justify-content-center text-center draft-quest-container">
                     <a href="/player/home/category/cases?id={{category.id}}&clearance=1">

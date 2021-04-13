@@ -133,7 +133,7 @@ class DCCBlock extends DCCVisual {
     // location #in to indicate the location attribute is not absent
     // but is not outside
     if (this.xstyle.startsWith('out') &&
-          this.hasAttribute('location') && this.location != '#in') {
+        this.hasAttribute('location') && this.location != '#in') {
       /*
        * outer target interface
        */

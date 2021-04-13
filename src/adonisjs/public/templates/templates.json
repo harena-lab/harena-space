@@ -86,6 +86,66 @@
     "path": "simple/knot/exam_zoom",
     "icon": "simple/images/description.png",
     "scope": "knot"},
+ "Lungs POCUS":
+   {"description": "POCUS videos for lungs.",
+    "path": "simple/knot/pt_lungs",
+    "icon": "simple/images/description.png",
+    "scope": "knot"},
+ "Cava POCUS":
+   {"description": "POCUS videos for cava.",
+    "path": "simple/knot/pt_cava",
+    "icon": "simple/images/description.png",
+    "scope": "knot"},
+ "Heart POCUS":
+   {"description": "POCUS videos for heart.",
+    "path": "simple/knot/pt_heart",
+    "icon": "simple/images/description.png",
+    "scope": "knot"},
+ "Lower Limb Veins POCUS":
+   {"description": "POCUS videos for lower limb veins.",
+    "path": "simple/knot/pt_llv",
+    "icon": "simple/images/description.png",
+    "scope": "knot"},
+ "Abdomen POCUS":
+   {"description": "POCUS videos for abdomen.",
+    "path": "simple/knot/pt_abdomen",
+    "icon": "simple/images/description.png",
+    "scope": "knot"},
+ "Aorta POCUS":
+   {"description": "POCUS videos for aorta.",
+    "path": "simple/knot/pt_aorta",
+    "icon": "simple/images/description.png",
+    "scope": "knot"},
+ "Urinary POCUS":
+   {"description": "POCUS videos for urinary.",
+    "path": "simple/knot/pt_urinary",
+    "icon": "simple/images/description.png",
+    "scope": "knot"},
+ "Vesicle and Portal Triad POCUS":
+   {"description": "POCUS videos for vesicle and portal triad.",
+    "path": "simple/knot/pt_vesicle",
+    "icon": "simple/images/description.png",
+    "scope": "knot"},
+ "E-FAST POCUS":
+   {"description": "POCUS videos for E-FAST.",
+    "path": "simple/knot/pt_vesicle",
+    "icon": "simple/images/description.png",
+    "scope": "knot"},
+ "Soft Parts POCUS":
+   {"description": "POCUS videos for soft parts.",
+    "path": "simple/knot/pt_soft",
+    "icon": "simple/images/description.png",
+    "scope": "knot"},
+ "Articulate POCUS":
+   {"description": "POCUS videos for articulate.",
+    "path": "simple/knot/pt_articulate",
+    "icon": "simple/images/description.png",
+    "scope": "knot"},
+ "Ocular POCUS":
+   {"description": "POCUS videos for ocular.",
+    "path": "simple/knot/pt_ocular",
+    "icon": "simple/images/description.png",
+    "scope": "knot"},
  "Jacinto Supervisor":
    {"description": "Standard supervisor assistance.",
     "path": "jacinto/standard_supervisor",

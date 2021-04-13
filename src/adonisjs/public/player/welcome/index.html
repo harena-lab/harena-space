@@ -8,7 +8,7 @@
 
     <link rel="stylesheet" href="../../start/css/main.css">
 
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="/lib/axios-0.21.0/axios.min.js"></script>
 
     <script src="../../lib/jquery-3-4-1/jquery-3.4.1.slim.min.js"></script>
     <script src="../../lib/popper-1-15-0/popper.min.js"></script>
@@ -82,7 +82,7 @@
           <div class="container-fluid">
             <dcc-rest id="harena-player-quests" bind="harena-player-quests" subscribe="service/request/get:retrieve"></dcc-rest>
             <div class="row row-cols-sm-2 row-cols-md-3 row-cols-lg-5 justify-content-center">
-              <dcc-dhtml class="d-flex" connect="harena-player-quests:service/request/get:retrieve">
+              <dcc-dhtml class="d-flex" connect="retrieve:harena-player-quests:service/request/get">
                 {{@foreach . q}}
                 <div class="col text-center player-quest-container">
                   <a href="/player/quest?id={{q.id}}&color={{q.color}}">

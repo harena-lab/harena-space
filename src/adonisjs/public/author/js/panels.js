@@ -12,6 +12,7 @@ class Panels {
   constructor () {
     this._knotPanelSize = 75
     this._propertiesVisible = false
+    this._commentsVisible = false
 
     this._systemPanel = document.querySelector('#system-panel')
     this._toolbarPanel = document.querySelector('#toolbar-panel')
@@ -25,6 +26,7 @@ class Panels {
     this._buttonRetractNav = document.querySelector('#button-retract-nav')
     this._buttonExpandProp = document.querySelector('#button-expand-prop')
     this._buttonRetractProp = document.querySelector('#button-retract-prop')
+    this._buttonCommentsNav = document.querySelector('#button-comments-nav')
 
     this._elementsBlock = document.querySelector('#elements-block')
     this._elementsMain = document.querySelector('#elements-main')
@@ -37,6 +39,13 @@ class Panels {
     this.setupPropertiesRetract = this.setupPropertiesRetract.bind(this)
     MessageBus.ext.subscribe('control/properties/retract',
       this.setupPropertiesRetract)
+    this.setupCommentsExpand = this.setupCommentsExpand.bind(this)
+    MessageBus.ext.subscribe('control/comments/expand',
+      this.setupCommentsExpand)
+  }
+
+  get commentsVisible () {
+    return this._commentsVisible
   }
 
   _setupKnotHeight () {
@@ -45,24 +54,20 @@ class Panels {
   }
 
   setupHiddenNavigator () {
-    // this._navigationBlock.style.flex = "20%";
-    this._navigationBlock.classList.remove('w-25')
+    // this._navigationBlock.classList.remove('w-25')
     this._navigationBlock.style.display = 'none'
-    // this._knotPanel.style.flex = "80%";
-    this._knotMain.classList.remove('w-' + this._knotPanelSize)
-    this._knotPanelSize += 25
-    this._knotMain.classList.add('w-' + this._knotPanelSize)
+    // this._knotMain.classList.remove('w-' + this._knotPanelSize)
+    // this._knotPanelSize += 25
+    // this._knotMain.classList.add('w-' + this._knotPanelSize)
     this._buttonExpandNav.style.display = 'initial'
     this._buttonRetractNav.style.display = 'none'
   }
 
   setupVisibleNavigator () {
-    // this._navigationBlock.style.flex = "20%";
-    // this._knotPanel.style.flex = "80%";
-    this._knotMain.classList.remove('w-' + this._knotPanelSize)
-    this._knotPanelSize -= 25
-    this._knotMain.classList.add('w-' + this._knotPanelSize)
-    this._navigationBlock.classList.add('w-25')
+    // this._knotMain.classList.remove('w-' + this._knotPanelSize)
+    // this._knotPanelSize -= 25
+    // this._knotMain.classList.add('w-' + this._knotPanelSize)
+    // this._navigationBlock.classList.add('w-25')
     this._navigationBlock.style.display = 'initial'
     this._buttonExpandNav.style.display = 'initial'
     this._buttonRetractNav.style.display = 'initial'
@@ -71,9 +76,9 @@ class Panels {
   setupRegularNavigator () {
     this._buttonExpandProp.style.display = 'initial'
     if (this._propertiesVisible) { this.setupPropertiesExpand() }
-    this._knotMain.classList.add('w-' + this._knotPanelSize)
-    this._navigationBlock.classList.remove('w-100')
-    this._navigationBlock.classList.add('w-25')
+    // this._knotMain.classList.add('w-' + this._knotPanelSize)
+    // this._navigationBlock.classList.remove('w-100')
+    // this._navigationBlock.classList.add('w-25')
     this._navigationBlock.style.display = 'initial'
     this._buttonExpandNav.style.display = 'initial'
     this._buttonRetractNav.style.display = 'initial'
@@ -84,11 +89,9 @@ class Panels {
       this.setupPropertiesRetract()
       this._propertiesVisible = true
     }
-    this._knotMain.classList.remove('w-' + this._knotPanelSize)
-    // this._navigationBlock.style.flex = "80%";
-    // this._knotPanel.style.flex = "20%";
-    this._navigationBlock.classList.remove('w-25')
-    this._navigationBlock.classList.add('w-100')
+    // this._knotMain.classList.remove('w-' + this._knotPanelSize)
+    // this._navigationBlock.classList.remove('w-25')
+    // this._navigationBlock.classList.add('w-100')
     this._buttonExpandNav.style.display = 'none'
     this._buttonRetractNav.style.display = 'initial'
     this._buttonExpandProp.style.display = 'none'
@@ -98,29 +101,51 @@ class Panels {
     this._propertiesVisible = false
     this._buttonRetractProp.style.display = 'none'
     this._buttonExpandProp.style.display = 'initial'
+    this._buttonCommentsNav.style.display = 'initial'
     this._elementsBlock.style.display = 'none'
-    this._elementsMain.classList.remove('w-25')
-    this._knotMain.classList.remove('w-' + this._knotPanelSize)
-    this._knotPanelSize += 25
-    this._knotMain.classList.add('w-' + this._knotPanelSize)
+    this._elementsMain.style.minWidth = ''
+    this._knotMain.style.width = '100%'
+    // this._elementsMain.classList.remove('w-25')
+    // this._knotMain.classList.remove('w-' + this._knotPanelSize)
+    // this._knotPanelSize += 25
+    // this._knotMain.classList.add('w-' + this._knotPanelSize)
+    this._commentsVisible = false
   }
 
-  setupPropertiesExpand () {
+  setupPropertiesPanelExpand () {
     this._propertiesVisible = true
     this._buttonRetractProp.style.display = 'initial'
     this._buttonExpandProp.style.display = 'none'
+    this._buttonCommentsNav.style.display = 'none'
     this._elementsBlock.style.display = 'initial'
-    this._knotMain.classList.remove('w-' + this._knotPanelSize)
-    this._knotPanelSize -= 25
-    this._knotMain.classList.add('w-' + this._knotPanelSize)
-    this._elementsMain.classList.add('w-25')
+    this._elementsMain.style.minWidth = '25%'
+    this._knotMain.style.width = '75%'
+    // this._knotMain.classList.remove('w-' + this._knotPanelSize)
+    // this._knotPanelSize -= 25
+    // this._knotMain.classList.add('w-' + this._knotPanelSize)
+    // this._elementsMain.classList.add('w-25')
+    // this._elementsMain.style.maxWidth = '25% !important'
+  }
+
+  setupPropertiesExpand () {
+    this.setupPropertiesPanelExpand()
+    document.querySelector('#properties-block').style.display = 'initial'
+    document.querySelector('#comments-block').style.display = 'none'
+    this._commentsVisible = false
+  }
+
+  setupCommentsExpand () {
+    this.setupPropertiesPanelExpand()
+    document.querySelector('#properties-block').style.display = 'none'
+    this._commentsVisible = true
+    document.querySelector('#comments-block').style.display = 'block'
+    MessageBus.int.publish('control/comments/editor')
   }
 
   setupProperties () {
     this._navigationBlock.style.flex = '10%'
     this._knotPanel.style.flex = '60%'
     this._propertiesPanel.style.display = 'initial'
-    // this._propertiesPanel.style.flex = "30%";
   }
 
   lockNonEditPanels () {

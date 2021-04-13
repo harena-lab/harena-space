@@ -15,6 +15,7 @@ class PlayerManager {
     MessageBus.ext.subscribe('flow/+/navigate', this.navigateEvent)
     MessageBus.ext.subscribe('case/+/navigate', this.navigateEvent)
     MessageBus.ext.subscribe('variable/+/navigate', this.navigateEvent)
+    MessageBus.ext.subscribe('session/close', this.navigateEvent)
 
     this._notesStack = []
 
@@ -52,7 +53,8 @@ class PlayerManager {
     let mandatoryEmpty = null
     const mandatoryM = await MessageBus.int.request('var/*/input/mandatory/get')
     for (const m in mandatoryM.message) {
-      if (mandatoryM.message[m].filled == false && mandatoryEmpty == null) { mandatoryEmpty = mandatoryM.message[m].message }
+      if (mandatoryM.message[m].filled == false && mandatoryEmpty == null) {
+        mandatoryEmpty = mandatoryM.message[m].message }
     }
 
     if (mandatoryEmpty != null) {
@@ -126,6 +128,9 @@ class PlayerManager {
                      (this._previewCase ? '&preview' : ''), '_self')
           }
           break
+        case 'session/close':
+          this.sessionClose()
+          break
         default: if (MessageBus.matchFilter(topic, 'knot/+/navigate') ||
                          MessageBus.matchFilter(topic, 'variable/+/navigate')) {
           /*
@@ -133,8 +138,7 @@ class PlayerManager {
                         console.log(target);
                         */
           if (MessageBus.matchFilter(topic, 'variable/+/navigate')) {
-            const result =
-                              await MessageBus.ext.request('var/' + target + '/get')
+            const result = await MessageBus.ext.request('var/' + target + '/get')
             target = Translator.instance.findContext(
               this._compiledCase.knots, this._currentKnot,
               result.message)
@@ -160,7 +164,7 @@ class PlayerManager {
           window.open('index.html?case=' + target +
                            (this._previewCase ? '&preview' : ''), '_self')
         }
-          break
+        break
       }
     }
   }
@@ -277,9 +281,14 @@ class PlayerManager {
   }
 
   async _caseLoad (caseid) {
-    Basic.service.currentCaseId = new URL(document.location).searchParams.get('id')
+    Basic.service.currentCaseId =
+      new URL(document.location).searchParams.get('id')
+    /*
     const caseObj = await MessageBus.ext.request(
       'service/request/get', {caseId: Basic.service.currentCaseId})
+    */
+    const caseObj = await MessageBus.ext.request(
+      'data/case/' + Basic.service.currentCaseId + '/get')
 
     this._currentCaseTitle = caseObj.message.title
 
@@ -334,9 +343,6 @@ class PlayerManager {
   async knotLoad (knotName, parameter) {
     this._currentKnot = knotName
 
-    if (this._knots[knotName].categories &&
-          this._knots[knotName].categories.includes('end')) { MessageBus.ext.publish('case/completed', '') }
-
     // <TODO> Local Environment - Future
     /*
       this._knotScript = document.createElement("script");
@@ -363,6 +369,10 @@ class PlayerManager {
       }
     }
     MessageBus.ext.publish('knot/' + knotName + '/start')
+
+    if (this._knots[knotName].categories &&
+        this._knots[knotName].categories.includes('end'))
+    { MessageBus.ext.publish('case/completed', {knotid: knotName}) }
   }
 
   caseCompleted (topic, message) {
@@ -371,7 +381,7 @@ class PlayerManager {
 
   async sessionClose (topic, message) {
     this._state.sessionCompleted()
-    // await Basic.service.
+    window.open('../home/category/cases/?id=podcast&clearance=1', '_self')
   }
 
   presentKnot (knot) {
