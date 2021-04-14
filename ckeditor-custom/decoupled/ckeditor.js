@@ -58,7 +58,7 @@ import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 // Harena customization - media upload
-import mediaIcon from '@ckeditor/ckeditor5-media-embed/theme/icons/media.svg';
+import mediaIcon from './upload-media.svg';
 import FileDialogButtonView from '@ckeditor/ckeditor5-upload/src/ui/filedialogbuttonview';
 // import { createImageTypeRegExp } from '@ckeditor/ckeditor5-image/src/imageupload/utils';
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
@@ -514,9 +514,9 @@ DecoupledEditor.defaultConfig = {
 			// 'blockquote',
 			'uploadImage',
       'uploadMedia',  // Harena customization
+      'mediaEmbed',  // Harena customization
 			'insertTable',
-			// 'mediaEmbed',  // Harena customization
-      'annotate',    // Harena customization
+      // 'annotate',    -- Harena customization
 			'|',
 			'undo',
 			'redo',
