@@ -86,21 +86,19 @@ class DraftManager {
     MessageBus.int.publish('control/dhtml/ready')
   }
 
-  async _draftCategoryCasesSelect (advanced) {
+  async _draftCategoryCasesSelect (advanced, topic, message) {
 
     const cl = document.getElementsByClassName('buttons-container')
     const caseListInput = document.querySelector('#table_id')
 
-    const dhtmlCases = document.querySelector('#harena-dhtml-cases')
-    if(dhtmlCases._ready){
+    if(message != null && message.id != null && message.id == 'harena-dhtml-cases'){
       if(document.querySelector('#select-all-checkbox')){
         const selectAllCases = document.querySelector('#select-all-checkbox')
-        var caseList = new Array()
 
         const listenerFnSelectAll = function () {
-          for (var c in cl){
+          for (let c in cl){
             try {
-              var editButton = cl[c].children[0]
+              let editButton = cl[c].children[0]
               const caseContainer = document.querySelector('#b'+editButton.id.substring(1))
               const shareCheckbox = document.querySelector('#c'+editButton.id.substring(1))
               if(selectAllCases.checked){
@@ -125,8 +123,8 @@ class DraftManager {
         selectAllCases.addEventListener('click', listenerFnSelectAll)
       }
     }
-
-    for (var c in cl) {
+    let caseList = new Array()
+    for (let c in cl) {
       if (cl[c].children) {
         const editButton = cl[c].children[0]
         const previewButton = cl[c].children[1]
