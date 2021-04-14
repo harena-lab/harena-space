@@ -5,6 +5,7 @@ class DCCDHTML extends DCCBase {
   constructor() {
     super()
     this.recordUpdate = this.recordUpdate.bind(this)
+    this.checkStatus = this.checkStatus.bind(this)
   }
 
   async connectedCallback () {
@@ -17,6 +18,9 @@ class DCCDHTML extends DCCBase {
       this.fieldUpdate = this.fieldUpdate.bind(this)
       MessageBus.ext.subscribe('var/+/set', this.fieldUpdate)
     }
+
+    this._ready = false
+    MessageBus.int.subscribe('control/dhtml/status/request', this.checkStatus)
   }
 
   /*
@@ -51,6 +55,10 @@ class DCCDHTML extends DCCBase {
           html = this._originalHTML.replace(/\{\{[ \t]*value[ \t]*\}\}/igm, this._record)
       }
       this.innerHTML = html.replace(/\{\{[^}]*\}\}/igm, '')
+    }
+    if (!this.hasAttribute('connect')) {
+      this._ready = true
+      MessageBus.int.publish('control/dhtml/ready')
     }
   }
 
@@ -167,7 +175,16 @@ class DCCDHTML extends DCCBase {
       // console.log(id)
 
     }
+    this._ready = true
+    MessageBus.int.publish('control/dhtml/ready')
+  }
 
+  checkStatus (topic, message) {
+    if (message == null ||
+        message.id == null ||
+        (this.hasAttribute('id') && message.id == this.id))
+      MessageBus.int.publish('control/dhtml/' +
+        ((this._ready) ? "ready" : "not-ready"))
   }
 }
 
