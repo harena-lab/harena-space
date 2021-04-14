@@ -176,7 +176,8 @@ class DCCDHTML extends DCCBase {
 
     }
     this._ready = true
-    MessageBus.int.publish('control/dhtml/ready')
+    MessageBus.int.publish('control/dhtml/ready',
+      (this.hasAttribute('id')) ? {id: this.id} : null)
   }
 
   checkStatus (topic, message) {
@@ -184,7 +185,8 @@ class DCCDHTML extends DCCBase {
         message.id == null ||
         (this.hasAttribute('id') && message.id == this.id))
       MessageBus.int.publish('control/dhtml/' +
-        ((this._ready) ? "ready" : "not-ready"))
+        ((this._ready) ? "ready" : "not-ready"),
+        (this.hasAttribute('id')) ? {id: this.id} : null)
   }
 }
 
