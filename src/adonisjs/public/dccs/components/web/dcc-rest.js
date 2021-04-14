@@ -79,9 +79,12 @@ class DCCRest extends DCCBase {
             // console.log(endpointResponse.status)
             // MessageBus.ext.publish('data/service/' + opid, endpointResponse.data)
             result = endpointResponse.data
+            // console.log('============')
+            // console.log(endpointResponse.data)
           })
           .catch(function (error) {
-            console.log(error)
+            // console.log(error.response.data)
+            result = error.response.data
           })
 
       }
