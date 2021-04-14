@@ -37,11 +37,9 @@ class LayoutController {
       this.dynamicShareCaseElements = this.dynamicShareCaseElements.bind(this)
       this.dynamicShareCaseModal = this.dynamicShareCaseModal.bind(this)
       MessageBus.int.subscribe('control/dhtml/ready', this.dynamicShareCaseElements)
-      // MessageBus.int.subscribe('control/dhtml/ready/harena-cases', this.dynamicShareCaseElements)
       MessageBus.int.subscribe('control/dhtml/ready', this.dynamicShareCaseModal)
-      // MessageBus.int.subscribe('control/dhtml/ready/harena-cases', this.dynamicShareCaseModal)
-      this.dynamicShareCaseElements()
-      this.dynamicShareCaseModal()
+      MessageBus.int.publish('control/dhtml/status/request', {id: 'harena-dhtml-cases'})
+      MessageBus.int.publish('control/dhtml/status/request', {id: 'dhtml-case'})
 
     }
 
@@ -240,106 +238,107 @@ class LayoutController {
   }
 
   async dynamicShareCaseModal (){
-    const selEntity = document.querySelector('#entity')
-    const wrapperSelEntity = document.querySelector('#wrapper-entity')
-    const selSubject = document.querySelector('#dhtml-subject')
-    const inputSubject = document.querySelector('#wrapper-input-subject')
-    const wrapperSelSubject = document.querySelector('#wrapper-subject')
-    const selSubjectGrade = document.querySelector('#subject_grade')
-    const wrapperSelSubjectGrade = document.querySelector('#wrapper-subject_grade')
+
+    const dhtmlInstitutions = document.querySelector('#dhtml-subject')
+    if(dhtmlInstitutions._ready){
+      const selEntity = document.querySelector('#entity')
+      const wrapperSelEntity = document.querySelector('#wrapper-entity')
+      const selSubject = document.querySelector('#dhtml-subject')
+      const inputSubject = document.querySelector('#wrapper-input-subject')
+      const wrapperSelSubject = document.querySelector('#wrapper-subject')
+      const selSubjectGrade = document.querySelector('#subject_grade')
+      const wrapperSelSubjectGrade = document.querySelector('#wrapper-subject_grade')
+
+      const listenerFnEntity = function () {
+        switch (selEntity.value) {
+          case 'user':
+            wrapperSelSubject.hidden = false
+            wrapperSelSubjectGrade.disabled = true
+            wrapperSelSubjectGrade.hidden = true
+
+            selSubject.firstElementChild.disabled = true
+            selSubject.firstElementChild.hidden = true
+            selSubject.firstElementChild.id = 'select-subject'
+            selSubject.firstElementChild.name = 'select-subject'
+
+            inputSubject.firstElementChild.disabled = false
+            inputSubject.firstElementChild.hidden = false
+            inputSubject.firstElementChild.id = 'subject'
+            inputSubject.firstElementChild.name = 'subject'
+
+            selSubjectGrade.value = ""
+
+            document.querySelector('label[for="subject"]').innerHTML = 'User email:'
 
 
-    const listenerFnEntity = function () {
-      switch (this.value) {
-        case 'user':
-          wrapperSelSubject.hidden = false
-          wrapperSelSubjectGrade.disabled = true
-          wrapperSelSubjectGrade.hidden = true
+            break
+          case 'institution':
+            wrapperSelSubject.hidden = false
+            wrapperSelSubjectGrade.disabled = false
+            wrapperSelSubjectGrade.hidden = false
 
-          selSubject.firstElementChild.disabled = true
-          selSubject.firstElementChild.hidden = true
-          selSubject.firstElementChild.id = 'select-subject'
-          selSubject.firstElementChild.name = 'select-subject'
+            selSubject.firstElementChild.disabled = false
+            selSubject.firstElementChild.hidden = false
+            selSubject.firstElementChild.id = 'subject'
+            selSubject.firstElementChild.name = 'subject'
 
-          inputSubject.firstElementChild.disabled = false
-          inputSubject.firstElementChild.hidden = false
-          inputSubject.firstElementChild.id = 'subject'
-          inputSubject.firstElementChild.name = 'subject'
+            inputSubject.firstElementChild.disabled = true
+            inputSubject.firstElementChild.hidden = true
+            inputSubject.firstElementChild.id = 'input-subject'
+            inputSubject.firstElementChild.name = 'input-subject'
 
-          selSubjectGrade.value = ""
+            document.querySelector('label[for="subject"]').innerHTML = 'In:'
 
-          document.querySelector('label[for="subject"]').innerHTML = 'User email:'
+            break
+          case 'group':
+            wrapperSelSubject.hidden = false
+            wrapperSelSubjectGrade.disabled = true
+            wrapperSelSubjectGrade.hidden = true
 
+            selSubject.firstElementChild.disabled = true
+            selSubject.firstElementChild.hidden = true
+            selSubject.firstElementChild.id = 'select-subject'
+            selSubject.firstElementChild.name = 'select-subject'
 
-          break
-        case 'institution':
-          wrapperSelSubject.hidden = false
-          wrapperSelSubjectGrade.disabled = false
-          wrapperSelSubjectGrade.hidden = false
+            inputSubject.firstElementChild.disabled = false
+            inputSubject.firstElementChild.hidden = false
+            inputSubject.firstElementChild.id = 'subject'
+            inputSubject.firstElementChild.name = 'subject'
 
-          selSubject.firstElementChild.disabled = false
-          selSubject.firstElementChild.hidden = false
-          selSubject.firstElementChild.id = 'subject'
-          selSubject.firstElementChild.name = 'subject'
+            selSubjectGrade.value = ""
 
-          inputSubject.firstElementChild.disabled = true
-          inputSubject.firstElementChild.hidden = true
-          inputSubject.firstElementChild.id = 'input-subject'
-          inputSubject.firstElementChild.name = 'input-subject'
+            document.querySelector('label[for="subject"]').innerHTML = 'Group name:'
 
-          document.querySelector('label[for="subject"]').innerHTML = 'In:'
-
-          break
-        case 'group':
-          wrapperSelSubject.hidden = false
-          wrapperSelSubjectGrade.disabled = true
-          wrapperSelSubjectGrade.hidden = true
-
-          selSubject.firstElementChild.disabled = true
-          selSubject.firstElementChild.hidden = true
-          selSubject.firstElementChild.id = 'select-subject'
-          selSubject.firstElementChild.name = 'select-subject'
-
-          inputSubject.firstElementChild.disabled = false
-          inputSubject.firstElementChild.hidden = false
-          inputSubject.firstElementChild.id = 'subject'
-          inputSubject.firstElementChild.name = 'subject'
-
-          selSubjectGrade.value = ""
-
-          document.querySelector('label[for="subject"]').innerHTML = 'Group name:'
-
-          break
+            break
+        }
       }
-    }
-    selEntity.removeEventListener('change', listenerFnEntity)
-    selEntity.addEventListener('change', listenerFnEntity)
 
+      document.querySelector('.share-cases-element.btn').removeEventListener('click', listenerFnEntity)
+      document.querySelector('.share-cases-element.btn').addEventListener('click', listenerFnEntity)
+      selEntity.removeEventListener('change', listenerFnEntity)
+      selEntity.addEventListener('change', listenerFnEntity)
+    }
 
   }
 
   async dynamicShareCaseElements(){
     const userGrade = LayoutController.user.message.grade
-    console.log('============ before await inside')
-    let pageReady = await MessageBus.int.waitMessage('control/dhtml/ready')
-    console.log('============ after await inside')
+    var dhtmlReady = null
+    if(document.querySelector('#harena-dhtml-cases')){
+      dhtmlReady = document.querySelector('#harena-dhtml-cases')
+    }else if (document.querySelector('#dhtml-case')) {
+      dhtmlReady = document.querySelector('#dhtml-case'
+    }
 
+    if(dhtmlReady._ready){
+      console.log('============ im ready')
 
-    console.log(pageReady.message)
-    if(pageReady.message == 'harena-cases' || pageReady.message == 'harena-category-cases'){
       if(userGrade === 'professor' || userGrade === 'coordinator' || userGrade === 'admin'){
-        console.log('============ entered dynamicShareCaseElements')
         const shareCaseEssentials =  document.querySelectorAll('.share-cases-element')
         for (var e in shareCaseEssentials){
           if(shareCaseEssentials[e].nodeName)
           shareCaseEssentials[e].hidden = false
         }
-      }else{
-        console.log('============ else dynamic')
-        console.log('============ user grade')
-        console.log(userGrade)
-        console.log('============ page message')
-        console.log(pageReady)
       }
     }
   }

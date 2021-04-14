@@ -22,8 +22,9 @@ class DraftManager {
     // this._draftSelect(authorState.userid, advanced);
     // document.getElementsByClassName('buttons-container').length > 0
     //   ? MessageBus.ext.subscribe('control/dhtml/ready', this._draftCategoryCasesSelect) : this._draftSelect(advanced)
-    MessageBus.int.subscribe('control/dhtml/updated', this._draftCategoryCasesSelect)
+    // MessageBus.int.subscribe('control/dhtml/updated', this._draftCategoryCasesSelect)
     MessageBus.int.subscribe('control/dhtml/ready', this._draftCategoryCasesSelect)
+    MessageBus.int.publish('control/dhtml/status/request', {id: 'harena-dhtml-cases'})
   }
   //Not being used at the moment. #REVIEW
   async _draftSelect (advanced) {
@@ -90,8 +91,8 @@ class DraftManager {
     const cl = document.getElementsByClassName('buttons-container')
     const caseListInput = document.querySelector('#table_id')
 
-    let pageReady = await MessageBus.int.waitMessage('control/dhtml/ready')
-    if(pageReady.message == 'harena-cases' || pageReady.message == 'harena-category-cases'){
+    const dhtmlCases = document.querySelector('#harena-dhtml-cases')
+    if(dhtmlCases._ready){
       if(document.querySelector('#select-all-checkbox')){
         const selectAllCases = document.querySelector('#select-all-checkbox')
         var caseList = new Array()
