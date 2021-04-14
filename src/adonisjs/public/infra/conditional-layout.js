@@ -23,7 +23,7 @@ class LayoutController {
   }
 
   async startController(){
-    // await MessageBus.int.waitMessage('control/html/ready')
+    await MessageBus.int.waitMessage('control/html/ready')
 
     if(new URL(document.location).pathname == '/author/'){
       this.dynamicAuthor()
@@ -50,12 +50,12 @@ class LayoutController {
   }
 
   async busMessages(){
-    console.log('======= starting conditional-layout')
+    // console.log('======= starting conditional-layout')
     LayoutController.user = await MessageBus.int.waitMessage('data/user/info')
     if(new URL(document.location).pathname == '/author/'){
       LayoutController.case = await MessageBus.ext.waitMessage('service/response/get/harena-case')
     }
-    console.log('============ starting controller dynamic')
+    // console.log('============ starting controller dynamic')
     this.startController()
 
   }
@@ -356,15 +356,15 @@ class LayoutController {
   async dynamicShareCaseElements(topic, message){
     const userGrade = LayoutController.user.message.grade
 
-    console.log('============ dynamicShareCaseElements')
-    console.log('============ message from bus')
-    console.log(message)
+    // console.log('============ dynamicShareCaseElements')
+    // console.log('============ message from bus')
+    // console.log(message)
     if(message != null && message.id != null && (message.id == "harena-dhtml-cases" || message.id == "dhtml-case" || message.id == "harena-dhtml-cases")){
-      console.log('============ im ready')
-      console.log('============ user grade')
+      // console.log('============ im ready')
+      // console.log('============ user grade')
       console.log(userGrade)
       if(userGrade === 'professor' || userGrade === 'coordinator' || userGrade === 'admin'){
-        console.log('============ user grade is acceptable')
+        // console.log('============ user grade is acceptable')
         const shareCaseEssentials =  document.querySelectorAll('.share-cases-element')
         for (let e in shareCaseEssentials){
           if(shareCaseEssentials[e].nodeName)
