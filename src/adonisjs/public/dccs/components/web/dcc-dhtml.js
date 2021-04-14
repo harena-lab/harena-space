@@ -160,8 +160,14 @@ class DCCDHTML extends DCCBase {
     if (topic == 'data/record/retrieve' || topic == 'service/request/get') {
       const response = await this.request('retrieve', null, id)
       this.recordUpdate(topic, response)
+
+      MessageBus.int.publish('control/dhtml/ready', id)
+      // MessageBus.int.publish('control/dhtml/ready/'+ id)
+      // console.log('============ dhtml')
+      // console.log(id)
+
     }
-    MessageBus.int.publish('control/dhtml/ready')
+
   }
 }
 
