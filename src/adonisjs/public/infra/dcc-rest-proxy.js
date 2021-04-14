@@ -404,7 +404,7 @@
       environment: {
         'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api,
         'entity': 'institution',
-        'clearance': '4',
+        'clearance': '5',
         'subject_grade':'professor',
         'subject': sessionStorage.getItem('harena-user-institution-id'),
         'table_id': new URL(document.location).searchParams.get('id'),

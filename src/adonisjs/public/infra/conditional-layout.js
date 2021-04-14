@@ -36,23 +36,54 @@ class LayoutController {
     if(document.querySelector('#share-modal')){
       this.dynamicShareCaseElements = this.dynamicShareCaseElements.bind(this)
       this.dynamicShareCaseModal = this.dynamicShareCaseModal.bind(this)
+      this.authorizeCommentSection = this.authorizeCommentSection.bind(this)
       MessageBus.int.subscribe('control/dhtml/ready', this.dynamicShareCaseElements)
       MessageBus.int.subscribe('control/dhtml/ready', this.dynamicShareCaseModal)
+      // MessageBus.int.subscribe('control/dhtml/ready', this.authorizeCommentSection)
+      MessageBus.int.publish('control/dhtml/status/request', {id: 'dhtml-subject'})
       MessageBus.int.publish('control/dhtml/status/request', {id: 'harena-dhtml-cases'})
       MessageBus.int.publish('control/dhtml/status/request', {id: 'dhtml-case'})
+      // MessageBus.int.publish('control/dhtml/status/request', {id: 'dhtml-case-comments'})
 
     }
 
   }
 
   async busMessages(){
-    console.log('======= starting conditional-layout')
+    // console.log('======= starting conditional-layout')
     LayoutController.user = await MessageBus.int.waitMessage('data/user/info')
     if(new URL(document.location).pathname == '/author/'){
       LayoutController.case = await MessageBus.ext.waitMessage('service/response/get/harena-case')
     }
-    console.log('============ starting controller dynamic')
+    // console.log('============ starting controller dynamic')
     this.startController()
+
+  }
+  /////////  @@WORK IN PROGRESS //
+  async authorizeCommentSection() {
+    // var dhtmlReady = querySelector('#dhtml-case-comments')
+    console.log('============')
+    // console.log(dhtmlReady._ready)
+    // if(dhtmlReady._ready){
+    console.log('============ authorizeCommentSection')
+    var userGrade = LayoutController.user
+    if(userGrade !== 'professor'
+    && userGrade !== 'admin'
+    && userGrade !== 'coordinator'){
+      var disabledFieldSet = document.createElement('fieldset')
+      disabledFieldSet.setAttribute('disabled','true')
+      var commentsBlock = document.querySelector('#comments-block')
+      commentsBlock.setAttribute('data-toggle','tooltip')
+      commentsBlock.setAttribute('data-placement','top')
+      commentsBlock.setAttribute('title','Comments are "view-only" for students.')
+      document.querySelector('#elements-block').insertBefore(disabledFieldSet,commentsBlock)
+      disabledFieldSet.appendChild(commentsBlock)
+      document.querySelector('#btn-save-comments').remove()
+    }
+    if(LayoutController.case.message.feedback == 0 || !LayoutController.case.message.feedback){
+      document.querySelector("dcc-dhtml#dhtml-case-comments input[name='login']")
+    }
+    // }
 
   }
 
@@ -241,6 +272,7 @@ class LayoutController {
 
     const dhtmlInstitutions = document.querySelector('#dhtml-subject')
     if(dhtmlInstitutions._ready){
+      // console.log('============ entered dynamic modal')
       const selEntity = document.querySelector('#entity')
       const wrapperSelEntity = document.querySelector('#wrapper-entity')
       const selSubject = document.querySelector('#dhtml-subject')
@@ -321,18 +353,16 @@ class LayoutController {
 
   }
 
-  async dynamicShareCaseElements(){
+  async dynamicShareCaseElements(topic, message){
     const userGrade = LayoutController.user.message.grade
     var dhtmlReady = null
-    if(document.querySelector('#harena-dhtml-cases')){
-      dhtmlReady = document.querySelector('#harena-dhtml-cases')
-    }else if (document.querySelector('#dhtml-case')) {
-      dhtmlReady = document.querySelector('#dhtml-case'
-    }
 
-    if(dhtmlReady._ready){
-      console.log('============ im ready')
+    // console.log('============ dhtml status')
+    // console.log(dhtmlReady._ready)
+    if(message != null && message.id != null && (message.id == "harena-dhtml-cases" || message.id == "dhtml-case" || message.id == "harena-dhtml-cases")){
+      // console.log('============ im ready')
 
+      // console.log(userGrade)
       if(userGrade === 'professor' || userGrade === 'coordinator' || userGrade === 'admin'){
         const shareCaseEssentials =  document.querySelectorAll('.share-cases-element')
         for (var e in shareCaseEssentials){
