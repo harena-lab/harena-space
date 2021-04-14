@@ -36,7 +36,7 @@ class LayoutController {
     if(document.querySelector('#share-modal')){
       this.dynamicShareCaseElements = this.dynamicShareCaseElements.bind(this)
       this.dynamicShareCaseModal = this.dynamicShareCaseModal.bind(this)
-      this.authorizeCommentSection = this.authorizeCommentSection.bind(this)
+      // this.authorizeCommentSection = this.authorizeCommentSection.bind(this)
       MessageBus.int.subscribe('control/dhtml/ready', this.dynamicShareCaseElements)
       MessageBus.int.subscribe('control/dhtml/ready', this.dynamicShareCaseModal)
       // MessageBus.int.subscribe('control/dhtml/ready', this.authorizeCommentSection)
@@ -50,12 +50,12 @@ class LayoutController {
   }
 
   async busMessages(){
-    // console.log('======= starting conditional-layout')
+    console.log('======= starting conditional-layout')
     LayoutController.user = await MessageBus.int.waitMessage('data/user/info')
     if(new URL(document.location).pathname == '/author/'){
       LayoutController.case = await MessageBus.ext.waitMessage('service/response/get/harena-case')
     }
-    // console.log('============ starting controller dynamic')
+    console.log('============ starting controller dynamic')
     this.startController()
 
   }
@@ -355,17 +355,18 @@ class LayoutController {
 
   async dynamicShareCaseElements(topic, message){
     const userGrade = LayoutController.user.message.grade
-    var dhtmlReady = null
 
-    // console.log('============ dhtml status')
-    // console.log(dhtmlReady._ready)
+    console.log('============ dynamicShareCaseElements')
+    console.log('============ message from bus')
+    console.log(message)
     if(message != null && message.id != null && (message.id == "harena-dhtml-cases" || message.id == "dhtml-case" || message.id == "harena-dhtml-cases")){
-      // console.log('============ im ready')
-
-      // console.log(userGrade)
+      console.log('============ im ready')
+      console.log('============ user grade')
+      console.log(userGrade)
       if(userGrade === 'professor' || userGrade === 'coordinator' || userGrade === 'admin'){
+        console.log('============ user grade is acceptable')
         const shareCaseEssentials =  document.querySelectorAll('.share-cases-element')
-        for (var e in shareCaseEssentials){
+        for (let e in shareCaseEssentials){
           if(shareCaseEssentials[e].nodeName)
           shareCaseEssentials[e].hidden = false
         }
