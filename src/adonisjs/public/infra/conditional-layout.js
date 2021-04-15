@@ -23,7 +23,8 @@ class LayoutController {
   }
 
   async startController(){
-    await MessageBus.int.waitMessage('control/html/ready')
+    if(document.readyState == 'loading')
+      await MessageBus.int.waitMessage('control/html/ready')
 
     if(new URL(document.location).pathname == '/author/'){
       this.dynamicAuthor()
@@ -181,7 +182,7 @@ class LayoutController {
     // console.log('============ starting dynamic list')
     if(LayoutController.user.message.grade === 'professor'
     || LayoutController.user.message.grade === 'coordinator'){
-      document.querySelector('#txt-draft-presentation').innerHTML = 'Students cases with feedback request'
+      document.querySelector('#txt-draft-presentation').innerHTML = "Students's cases with feedback request"
       //Selects all divs that start the attribute 'id' with 'e'
       const caseButtons = document.querySelectorAll('div.author-panel-button[id^="e"]')
 
@@ -362,7 +363,7 @@ class LayoutController {
     if(message != null && message.id != null && (message.id == "harena-dhtml-cases" || message.id == "dhtml-case" || message.id == "harena-dhtml-cases")){
       // console.log('============ im ready')
       // console.log('============ user grade')
-      console.log(userGrade)
+      // console.log(userGrade)
       if(userGrade === 'professor' || userGrade === 'coordinator' || userGrade === 'admin'){
         // console.log('============ user grade is acceptable')
         const shareCaseEssentials =  document.querySelectorAll('.share-cases-element')

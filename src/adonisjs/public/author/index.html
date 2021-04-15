@@ -146,8 +146,8 @@
                   </div>
                   <!-- <div class="form-group">
                     <label for="institution">Institution</label>
-                    <select name="institution" id="institution" value="{{institution}}">
-                      <option value="{{institution}}" selected disabled hidden>{{institutionTitle}}</option>
+                    <select name="institution" id="institution" value="{{institution_acronym}}">
+                      <option value="{{institution_acronym}}" selected disabled hidden>{{institution}}</option>
                       <option value="unicamp">Universidade Estadual de Campinas</option>
                       <option value="minho">Universidade do Minho</option>
                     </select>
@@ -300,8 +300,11 @@
 
         <!-- Page title and description -->
         <div class="container-fluid">
-          <h1>Edit case</h1>
-          <p class="lead">Here's how your case will appear to students. You can also edit the elements. </p>
+          <dcc-dhtml subscribe="service/response/get/harena-case:update">
+            <h1>Edit case - {{title}}</h1>
+            <h6 style="color:#808080;">Created by {{author_grade}}: {{username}} ({{institution_acronym}}). </h6>
+            <end-dcc></end-dcc>
+          </dcc-dhtml>
         </div>
         <!-- End of page title and description -->
 
