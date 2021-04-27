@@ -113,7 +113,7 @@ class LayoutController {
       const inputPropertyValue = document.querySelector('#property_value')
 
 
-      if(userGrade === 'aluno'){
+      if(userGrade === 'student'){
 
         dccSubmitProp.setAttribute('id','dcc-submit-feedback')
         dccSubmitProp.setAttribute('bind','submit-case-property')
@@ -203,7 +203,7 @@ class LayoutController {
     if(propValue){
       LayoutController.case.message.property.feedback = propValue
     }
-    if(userGrade === 'aluno'){
+    if(userGrade === 'student'){
 
       //Verifies property 'feedback' to disable button and change layout
       if(LayoutController.case.message.property.feedback){
