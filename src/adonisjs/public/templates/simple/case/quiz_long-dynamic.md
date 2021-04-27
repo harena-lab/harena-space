@@ -30,7 +30,7 @@ Feedback for Distractor 3.
 
 # Answer (note, division)
 
-**You answered:** ^Previous.input1^.
+**You answered:** ^Previous.input1^
 
 ___ Template ___
 

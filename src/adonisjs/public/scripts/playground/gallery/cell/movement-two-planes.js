@@ -10,7 +10,8 @@
       ['cloud', 'c', { src: 'images/cell/cloud01.svg', width: 25, height: 25, alt: 'nuvem' }],
       ['tree', 't', { src: 'images/cell/tree01.svg', width: 25, height: 25, alt: 'árvore' }]],
 `<block type="neighbor"></block>
-<block type="action"></block>`,
+<block type="action_probability"></block>
+<block type="action_step"></block>`,
 `<dcc-space-cellular-editor id="cellular-space" cell-width="50" cell-height="50" background-color="#d6f0ffff" grid>
 ___________
 ___________

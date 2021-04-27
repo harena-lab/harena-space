@@ -197,9 +197,16 @@ class DCCAuthorServer {
         .then(function (response) {
           // return response.redirect('/')
           console.log('=== save response')
-          console.log(response)
-          MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
+          console.log(message)
+
+          if(!response.data.error){
+            MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
             response.data.source)
+          }else {
+            MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
+            response.data.error)
+          }
+
         })
         .catch(function (error) {
           console.log('=== save error')

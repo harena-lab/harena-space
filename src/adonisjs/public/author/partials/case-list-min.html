@@ -1,0 +1,83 @@
+<div class="home-author-padding align-items-center rounded row sticky-top" style="z-index:3;">
+  <form class="pl-2 align-items-center row" id="filter-form">
+    <div class="p-2 ml-4">Filter by: </div>
+    <div class="pr-3">
+      <dcc-rest id="harena-institutions" bind="harena-institutions"></dcc-rest>
+      <dcc-dhtml id="harena-dhtml-institutions" connect="retrieve:harena-institutions:service/request/get">
+
+        <select id="fInstitution" name="fInstitution" class="custom-select custom-select-sm">
+          <option selected value="">Institution</option>
+          {{@foreach . institution}}
+          <option value={{institution.id}}>{{institution.acronym}}</option>
+          {{@endfor}}
+        </select>
+
+        <end-dcc></end-dcc>
+      </dcc-dhtml>
+    </div>
+    <div class="pr-3">
+      <select id="fUserType" name="fUserType" class="custom-select custom-select-sm">
+        <option selected value="">User type</option>
+        <option value="professor">Professor</option>
+        <option value="student">Student</option>
+      </select>
+    </div>
+    <div class="pr-3" style="width: 120px;">
+      <input type="text" class="form-control custom-select-sm" id="fSpecialty" placeholder="Specialty">
+    </div>
+    <dcc-submit id="filter-submit" bind="submit-filter" label="Filter" xstyle="btn btn-secondary" topic="cases/request/get"></dcc-submit>
+  </form>
+  <dcc-rest id="harena-cases-filter" bind="harena-cases" subscribe="cases/request/get:retrieve"></dcc-rest>
+  <!-- Containers to selectAll/share cases -->
+  <!-- <div class="form-check mt-2 ml-auto" id="share-checkbox">
+    <input class="form-check-input" type="checkbox" id="select-all-checkbox">
+    <label for="select-all-checkbox">Select All</label>
+  </div>
+  <button type="button" class="btn btn-success mr-4 m-1" data-toggle="modal" data-target="#share-modal">
+    Share cases
+  </button> -->
+  <div class="ml-auto pr-3">
+    <form id="form-pg-limit">
+      <select id="limit" name="limit" class="custom-select custom-select-sm" onchange="document.querySelector('#submit-filter-limit').computeSubmit()">
+        <option value="10">10 items</option>
+        <option selected value="20">20 items</option>
+        <option value="30">30 items</option>
+      </select>
+      <dcc-submit id="submit-filter-limit" bind="submit-filter" label="Filter" topic="cases/request/get" hidden></dcc-submit>
+    </form>
+  </div>
+  <div class="pr-3">
+      <div id="pagination-wrapper"></div>
+  </div>
+</div>
+
+<div id="case-boxes" class="draft-scroll-container">
+  <dcc-rest id="harena-cases" bind="harena-cases"></dcc-rest>
+  <dcc-dhtml id="harena-dhtml-cases" connect="retrieve:harena-cases:service/request/get" subscribe="service/response/get/harena-cases-filter:update">
+    <input type="hidden" id="pages" value="{{pages}}">
+    {{@foreach cases c}}
+    <!-- checkbox for selecting cases -->
+    <!-- <div class="col">
+      <div class="form-check" id="share-checkbox">
+        <input class="form-check-input" type="checkbox" id="c{{c.cases.id}}" value="{{c.cases.id}}">
+      </div>
+    </div> -->
+    <div id="b{{c.cases.id}}" class="row draft-author-case-container">
+      <div class="col draft-case-title">
+        <label class="ml-2">{{c.cases.title}}</label>
+
+        <div class="row">
+          <h6>Created by {{c.cases.author_grade}}: {{c.cases.username}} ({{c.cases.institution_acronym}})</h6>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-end justify-content-center buttons-container">
+        <div id="e{{c.cases.id}}" class="col author-panel-button align-self-center pt-2 pb-2">EDIT</div>
+        <div id="p{{c.cases.id}}" class="col author-panel-button align-self-center pt-2 pb-2">PREVIEW</div>
+        <div id="d{{c.cases.id}}" class="col author-panel-button align-self-center pt-2 pb-2">DELETE</div>
+      </div>
+    </div>
+    {{@endfor}}
+    <end-dcc></end-dcc>
+  </dcc-dhtml>
+</div>

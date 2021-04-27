@@ -55,7 +55,12 @@ class Properties {
           this._editor = new EditDCCPlain(obj, dcc, editp.htmls, this)
           break
         case 'text':
-          this._editor = new EditDCCText(knotContent, el, dcc, svg, false, this)
+          this._editor = new EditDCCText(knotContent, el, dcc, svg, false, this,
+                           null)
+          break
+        case 'textField':
+          this._editor = new EditDCCText(knotContent, el, dcc, svg, false, this,
+                           editp.inlineProperty)
           break
         case 'shortStr':
           this._editor = new EditDCCPlain(obj, dcc, editp.htmls,
@@ -104,8 +109,6 @@ class Properties {
     let htmlS = ''
     let inlineProperty = null
     let inlineProfile = null
-    // console.log("=== profile");
-    // console.log(profile);
     for (const p in profile) {
       if ((profile[p].visual && profile[p].visual.includes('inline')) &&
              (role == null || role.startsWith(profile[p].role))) {
@@ -212,7 +215,7 @@ class Properties {
           .replace(/\[value\]/igm, value[op])
         sub++
       }
-    } 
+    }
     else if (property.type == 'option' && role.startsWith('item_') &&
                  this._item > -1) {
       // items inside an option type
@@ -225,10 +228,12 @@ class Properties {
       */
       fields = ''
     }
-    else {
+    else if (property.type != 'option') {
       fields = Properties.fieldTypes[property.type]
         .replace(/\[label\]/igm, property.label)
         .replace(/\[value\]/igm, value)
+    } else {
+      fields = ''
     }
 
     return {
@@ -251,8 +256,6 @@ class Properties {
     const sufix = (details) ? '_d' : '_s'
     const panel = (details)
       ? this._panelDetails : this._editor.editorExtended
-    console.log('=== obj properties')
-    console.log(this._objProperties)
     if (this._objProperties) {
       const profile = this._typeProfile(this._objProperties)[this._buttonType]
       let seq = 1
@@ -322,6 +325,7 @@ class Properties {
     switch (property.type) {
       case 'shortStr' :
       case 'text':
+      case 'textField':
         const value = field.value.trim()
         if (value.length > 0) { objProperty = value }
         break
@@ -336,9 +340,6 @@ class Properties {
       case 'option':
         objProperty = {}
         let i = 0
-        console.log('=== updating option')
-        console.log(previous)
-        console.log(this._itemEdit)
         for (const item in previous) {
           if (i == this._item) {
             if (this._itemEdit.edit.trim().length > 0) {
@@ -568,6 +569,12 @@ class Properties {
       }},
       choice: {
         default: {
+          text: {
+            type: 'textField',
+            label: 'Statement',
+            visual: 'inline',
+            role: 'text'
+          },
           options: {
             type: 'option',
             label: 'Message',
@@ -623,6 +630,11 @@ class Properties {
    <label class="styp-field-label">[label]</label>
    <textarea style="height:100%" id="pfield[n]" class="styp-field-text" size="30">[value]</textarea>
 </div>`,
+    textField:
+    `<div class="styp-field-row">
+       <label class="styp-field-label">[label]</label>
+       <textarea style="height:100%" id="pfield[n]" class="styp-field-text" size="30">[value]</textarea>
+    </div>`,
     shortStrArray:
 `<div class="styp-field-row">
    <label for="pfield[n]" class="styp-field-label">[label]</label>

@@ -1,5 +1,8 @@
 FROM node:10
 
+RUN apt update
+RUN apt install vim -y
+
 WORKDIR /app
 
 COPY ./src/adonisjs .

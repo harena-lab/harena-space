@@ -22,13 +22,15 @@ class DraftManager {
     // this._draftSelect(authorState.userid, advanced);
     // document.getElementsByClassName('buttons-container').length > 0
     //   ? MessageBus.ext.subscribe('control/dhtml/ready', this._draftCategoryCasesSelect) : this._draftSelect(advanced)
-    MessageBus.int.subscribe('control/dhtml/updated', this._draftCategoryCasesSelect)
+    // MessageBus.int.subscribe('control/dhtml/updated', this._draftCategoryCasesSelect)
+    MessageBus.int.subscribe('control/dhtml/ready', this._draftCategoryCasesSelect)
+    MessageBus.int.publish('control/dhtml/status/request', {id: 'harena-dhtml-cases'})
   }
-
+  //Not being used at the moment. #REVIEW
   async _draftSelect (advanced) {
-    console.log('Drafting total cases')
+
     const cases = await MessageBus.ext.request('data/case/*/list')
-    // {user: userid});
+
 
     const cl = cases.message
     for (const c in cl) {
@@ -67,6 +69,7 @@ class DraftManager {
                                       '&preview=1'
         }
       )
+      // console.log('=== adding listener 1')
       deleteButton.addEventListener('click',
         function () {
           MessageBus.int.publish('control/case/delete', this.id.substring(1))
@@ -83,47 +86,45 @@ class DraftManager {
     MessageBus.int.publish('control/dhtml/ready')
   }
 
-  async _draftCategoryCasesSelect (advanced) {
-    // console.log('Drafting cases by category')
-    // const cases = await MessageBus.ext.request('data/case/*/list')
-    // {user: userid});
+  async _draftCategoryCasesSelect (advanced, topic, message) {
 
     const cl = document.getElementsByClassName('buttons-container')
     const caseListInput = document.querySelector('#table_id')
 
+    if(message != null && message.id != null && message.id == 'harena-dhtml-cases'){
+      if(document.querySelector('#select-all-checkbox')){
+        const selectAllCases = document.querySelector('#select-all-checkbox')
 
-    if(document.querySelector('#select-all-checkbox')){
-      const selectAllCases = document.querySelector('#select-all-checkbox')
-      var caseList = new Array()
-      selectAllCases.addEventListener('click',
-      function () {
-
-        for (var c in cl){
-          try {
-            var editButton = cl[c].children[0]
-            const caseContainer = document.querySelector('#b'+editButton.id.substring(1))
-            const shareCheckbox = document.querySelector('#c'+editButton.id.substring(1))
-            if(selectAllCases.checked){
-              // console.log('============ all checked')
-              shareCheckbox.checked = true
-              selectAllCases.nextElementSibling.innerHTML = 'Unselect All'
-              caseContainer.style.backgroundColor = '#769fdb'
-              caseContainer.firstElementChild.style.color = '#fff'
-            } else{
-              // console.log('============all unchecked')
-              shareCheckbox.checked = false
-              selectAllCases.nextElementSibling.innerHTML = 'Select All'
-              caseContainer.style.backgroundColor = ''
-              caseContainer.firstElementChild.style.color = '#808080'
+        const listenerFnSelectAll = function () {
+          for (let c in cl){
+            try {
+              let editButton = cl[c].children[0]
+              const caseContainer = document.querySelector('#b'+editButton.id.substring(1))
+              const shareCheckbox = document.querySelector('#c'+editButton.id.substring(1))
+              if(selectAllCases.checked){
+                // console.log('============ all checked')
+                shareCheckbox.checked = true
+                selectAllCases.nextElementSibling.innerHTML = 'Unselect All'
+                caseContainer.style.backgroundColor = '#769fdb'
+                caseContainer.firstElementChild.style.color = '#fff'
+              } else{
+                // console.log('============all unchecked')
+                shareCheckbox.checked = false
+                selectAllCases.nextElementSibling.innerHTML = 'Select All'
+                caseContainer.style.backgroundColor = ''
+                caseContainer.firstElementChild.style.color = '#808080'
+              }
+            } catch (e) {
+              break
             }
-          } catch (e) {
-            break
           }
         }
-      })
+        selectAllCases.removeEventListener('click', listenerFnSelectAll)
+        selectAllCases.addEventListener('click', listenerFnSelectAll)
+      }
     }
-
-    for (const c in cl) {
+    let caseList = new Array()
+    for (let c in cl) {
       if (cl[c].children) {
         const editButton = cl[c].children[0]
         const previewButton = cl[c].children[1]
@@ -133,55 +134,74 @@ class DraftManager {
         if(document.querySelector('#c'+editButton.id.substring(1))){
         const shareCheckbox = document.querySelector('#c'+editButton.id.substring(1))
 
-        caseContainer.firstElementChild.addEventListener('click',
-          function () {
-
-            shareCheckbox.click()
-          })
-
-        shareCheckbox.addEventListener('change',
-          function () {
-            // console.log('============ click checkbox')
-            if(shareCheckbox.checked){
-              // console.log('============ checkbox checked')
-              caseList.push(shareCheckbox.value)
-              document.querySelector('#table_id').value = caseList
-              // sessionStorage.setItem('caseList', caseList)
-              caseContainer.style.backgroundColor = '#769fdb'
-              caseContainer.firstElementChild.style.color = '#fff'
-            }else{
-              // console.log('============ checkbox unchecked')
-              caseList.splice(caseList.indexOf(shareCheckbox.value), 1)
-              document.querySelector('#table_id').value = caseList
-              // sessionStorage.setItem('caseList', caseList)
-              caseContainer.style.backgroundColor = ''
-              caseContainer.firstElementChild.style.color = '#808080'
-            }
-          })
+        const listenerFnCaseContainer = function () {
+          // console.log('click some case container')
+          let pCheckbox = shareCheckbox.checked
+          shareCheckbox.click()
+          // console.log(pCheckbox)
+          // console.log(shareCheckbox.checked)
+          shareCheckbox.disabled = true
+          setTimeout(function () {
+            shareCheckbox.disabled = false
+          }, 300);
         }
-        editButton.addEventListener('click',
-          function () {
+        caseContainer.firstElementChild.removeEventListener('click', listenerFnCaseContainer)
+        caseContainer.firstElementChild.addEventListener('click', listenerFnCaseContainer)
+
+        const listenerFnShareCheckbox = function () {
+          // console.log('============ click checkbox')
+          if(shareCheckbox.checked){
+            // console.log('============ checkbox checked')
+            caseList.push(shareCheckbox.value)
+            document.querySelector('#table_id').value = caseList
+            caseContainer.style.backgroundColor = '#769fdb'
+            caseContainer.firstElementChild.style.color = '#fff'
+          }else{
+            // console.log('============ checkbox unchecked')
+            caseList.splice(caseList.indexOf(shareCheckbox.value), 1)
+            document.querySelector('#table_id').value = caseList
+            caseContainer.style.backgroundColor = ''
+            caseContainer.firstElementChild.style.color = '#808080'
+          }
+        }
+        shareCheckbox.removeEventListener('change', listenerFnShareCheckbox)
+        shareCheckbox.addEventListener('change', listenerFnShareCheckbox)
+        }
+
+        if(editButton){
+          const listenerFnEdit = function () {
             Basic.service.authorPropertyStore('caseId', editButton.id.substring(1))
             // window.location.href = "http://0.0.0.0:10010/author/author.html";
             if(new URL(document.location).pathname.includes('feedback')){
               window.location.href =
-                      '/author?id=' + this.id.substring(1)+'&fdbk=""'
+              '/author?id=' + this.id.substring(1)+'&fdbk=""'
             }else {
               window.location.href =
-                      '/author?id=' + this.id.substring(1)
+              '/author?id=' + this.id.substring(1)
             }
-          })
-        previewButton.addEventListener('click',
-          function () {
+          }
+          editButton.removeEventListener('click', listenerFnEdit)
+          editButton.addEventListener('click', listenerFnEdit)
+        }
+        if(previewButton){
+          const listenerFnPreview = function () {
             Basic.service.authorPropertyStore('caseId', editButton.id.substring(1))
             window.location.href = '/player/case?id=' +
-                                         previewButton.id.substring(1) +
-                                         '&preview=1'
-          })
-        deleteButton.addEventListener('click',
-          function () {
+            previewButton.id.substring(1) +
+            '&preview=1'
+          }
+          previewButton.removeEventListener('click', listenerFnPreview)
+          previewButton.addEventListener('click', listenerFnPreview)
+        }
+
+        if(deleteButton){
+          // console.log('=== adding listener 2')
+          const listenerFnRemove = function () {
             MessageBus.int.publish('control/case/delete', editButton.id.substring(1))
-          })
+          }
+          deleteButton.removeEventListener('click', listenerFnRemove)
+          deleteButton.addEventListener('click', listenerFnRemove)
+        }
         // if (advanced) {
         //   downloadButton.addEventListener('click',
         //     function () {

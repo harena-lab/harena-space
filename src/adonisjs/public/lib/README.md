@@ -3,6 +3,22 @@
 ## Plugins CDN - jsDelivr
 https://www.jsdelivr.com
 
+## Blockly
+
+### Library
+
+* blockly
+  https://developers.google.com/blockly/guides/get-started/web
+
+* field slider 2.1.15
+  github: https://github.com/google/blockly-samples/tree/master/plugins/field-slider
+  version 2.1.15: https://unpkg.com/@blockly/field-slider@2.1.15/dist/index.js
+  latest: https://unpkg.com/@blockly/field-slider
+
+* zoom to fit 1.0.4
+  * github: https://github.com/google/blockly-samples/tree/master/plugins/zoom-to-fit
+  * version 1.0.4: https://unpkg.com/@blockly/zoom-to-fit@1.0.4/dist/index.js
+  * latest: https://unpkg.com/@blockly/zoom-to-fit
 
 ## d3
 

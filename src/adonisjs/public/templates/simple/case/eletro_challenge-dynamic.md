@@ -4,9 +4,7 @@
 Write here the **stem**.
 }}
 
-{{leadin
-Write here the **lead-in**.
-}}
+> Write here the **lead-in**.
 ? hypothesis
   * type: text
 

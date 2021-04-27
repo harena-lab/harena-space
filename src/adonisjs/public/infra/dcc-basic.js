@@ -72,18 +72,18 @@
     'dcc-submit',
     {
       pos: async function (response) {
-        console.log(response['harena-change-password'])
+        // console.log(response['harena-change-password'])
         const responseContainer = document.querySelector('#updatePasswordResponse')
         responseContainer.innerHTML = response['harena-change-password']
         if(response['harena-change-password'] === 'Password changed successfully.'){
-          console.log('if')
+          // console.log('if')
           responseContainer.classList.remove('text-danger')
           responseContainer.classList.add('text-success')
           const promise = new Promise((resolve, reject) => {
             setTimeout(() => resolve(window.location.href = '/'), 1000)
           })
         }else {
-          console.log('else')
+          // console.log('else')
           responseContainer.classList.remove('text-success')
           responseContainer.classList.add('text-danger')
         }
@@ -105,6 +105,85 @@
           propValue = response['harena-case-property']['value']
         }
         LayoutController.instance.feedbackButtonCaseState(propValue)
+      }
+    }
+  )
+
+  DCC.component(
+    'submit-filter',
+    'dcc-submit',
+    {
+      pre: function (message, form, schema) {
+        // console.log('============ pre submit-filter')
+        // console.log(message['value'])
+        // console.log('============ form')
+        // console.log(form)
+        var url = new URL(document.location)
+        for(_info in message['value']){
+            url.searchParams.set(_info,message['value'][_info])
+        }
+        document.location = url
+        return true
+
+      },
+      pos: function (response) {
+
+      }
+    }
+  )
+
+  DCC.component(
+    'submit-share',
+    'dcc-submit',
+    {
+      pre: function (message, form, schema) {
+        $('#notice-modal').modal('show')
+        var txt = document.querySelector('#modal-notice-txt')
+        var modalBody = document.querySelector('#modal-notice-body')
+
+        txt.innerHTML = 'Sharing cases...'
+
+        modalBody.classList.remove('bg-danger')
+        modalBody.classList.remove('bg-success')
+        txt.classList.remove('text-white')
+        modalBody.classList.add('bg-white')
+        txt.classList.add('text-secondary')
+
+        return true
+      },
+      pos: async function (response) {
+
+        // console.log(response['harena-share-cases'].message)
+        var txt = document.querySelector('#modal-notice-txt')
+        var modalBody = document.querySelector('#modal-notice-body')
+
+        txt.innerHTML = response['harena-share-cases'].message
+        if(response['harena-share-cases'].message.includes('Error')){
+          modalBody.classList.remove('bg-success')
+          modalBody.classList.remove('bg-white')
+          txt.classList.remove('text-secondary')
+          modalBody.classList.add('bg-danger')
+          txt.classList.add('text-white')
+        }else if(response['harena-share-cases'].message.includes("Cannot read property 'split'")){
+          txt.innerHTML = 'Error. Please select at least one case to share.'
+
+          modalBody.classList.remove('bg-success')
+          modalBody.classList.remove('bg-white')
+          txt.classList.remove('text-secondary')
+          modalBody.classList.add('bg-danger')
+          txt.classList.add('text-white')
+        }else{
+          modalBody.classList.remove('bg-danger')
+          modalBody.classList.remove('bg-white')
+          txt.classList.remove('text-secondary')
+          modalBody.classList.add('bg-success')
+          txt.classList.add('text-white')
+        }
+
+        setTimeout(function(){
+          $('#notice-modal').modal('hide')
+        }, 7000)
+
       }
     }
   )

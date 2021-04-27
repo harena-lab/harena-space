@@ -105,7 +105,7 @@
   <body onload="AuthorManager.author.start()">
     <!-- message div -->
     <div id="message-space" class="sty-message-space vh-100 vw-100 text-center invisible" style="overflow:hidden; !important">
-      <span style="vertical-align: middle;top: 50%;position: absolute;"
+      <span style="top: 50%;position: absolute;"
       class="rounded"></span>
     </div>
     <!-- Login/logout header -->
@@ -146,8 +146,8 @@
                   </div>
                   <!-- <div class="form-group">
                     <label for="institution">Institution</label>
-                    <select name="institution" id="institution" value="{{institution}}">
-                      <option value="{{institution}}" selected disabled hidden>{{institutionTitle}}</option>
+                    <select name="institution" id="institution" value="{{institution_acronym}}">
+                      <option value="{{institution_acronym}}" selected disabled hidden>{{institution}}</option>
                       <option value="unicamp">Universidade Estadual de Campinas</option>
                       <option value="minho">Universidade do Minho</option>
                     </select>
@@ -188,7 +188,7 @@
 
                 <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
               </form>
-              
+
             </div>
           </div>
         </div>
@@ -196,6 +196,82 @@
       <end-dcc></end-dcc>
     </dcc-dhtml>
     <!-- End of settings modal -->
+
+    <!-- Share casel modal -->
+    <dcc-rest id="harena-share-cases" bind="harena-share-cases"></dcc-rest>
+    <div class="modal fade" id="share-modal" tabindex="-1" role="dialog" aria-labelledby="share-modal" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-body">
+            <form>
+              <div class="form-row">
+                <div class="form-group col-md-4" id="wrapper-entity">
+                  <label for="entity">Share with:</label>
+                  <select class="custom-select" id="entity" name="entity">
+                    <option value="user">User </option>
+                    <option selected value="institution">Institution</option>
+                    <option value="group" hidden disabled >Group</option>
+                  </select>
+                </div>
+                <div class="form-group col-md-4" id="wrapper-subject_grade">
+                  <label for="subject_grade">User type:</label>
+                  <select class="custom-select" id="subject_grade" name="subject_grade">
+                    <option value="">Everyone </option>
+                    <option value="professor">Professors</option>
+                    <option value="student">Students</option>
+                  </select>
+                </div>
+                <div class="form-group col-md-4" id="wrapper-subject">
+                  <label for="subject">In:</label>
+                  <div id="wrapper-input-subject">
+                    <input class="" type="text" id="input-subject" name="input-subject" value="" hidden disabled>
+                  </div>
+                  <dcc-rest id="harena-institutions" bind="harena-institutions"></dcc-rest>
+                  <dcc-dhtml connect="retrieve:harena-institutions:service/request/get" id="dhtml-subject">
+                    <select class="custom-select" id="subject" name="subject">
+                      <option selected></option>
+                      {{@foreach . institution}}
+                      <option value="{{institution.id}}">{{institution.title}}</option>
+                      {{@endfor}}
+                    </select>
+                    <end-dcc></end-dcc>
+                  </dcc-dhtml>
+                </div>
+              </div>
+
+              <div class="form-group col-md-6 px-1">
+                <label for="clearance">Permission to: </label>
+                <select class="custom-select" id="clearance" name="clearance">
+                  <option value="1">Play</option>
+                  <option value="3">Share</option>
+                  <option value="4">Edit</option>
+                  <option value="5">Administrate (can share this case with "edit" permission)</option>
+                </select>
+              </div>
+              <dcc-dhtml id="dhtml-case-id" connect="retrieve:harena-case:service/request/get">
+                <input type="hidden" id="table_id" name="table_id" value="{{id}}">
+                <end-dcc></end-dcc>
+              </dcc-dhtml>
+              <dcc-submit label="Share" xstyle="btn btn-success" bind="submit-share" data-dismiss="modal" connect="submit:harena-share-cases:service/request/post"></dcc-submit>
+              <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Share case modal -->
+
+    <!-- Notice modal (For share case feedback) -->
+    <div class="modal fade" id="notice-modal" tabindex="-1" role="dialog" aria-labelledby="notice-modal" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-body text-center" id="modal-notice-body">
+              <h5 class="" id="modal-notice-txt"></h5>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End notice modal (For share case feedback) -->
 
     <!-- Create a section to place page content -->
 
@@ -224,8 +300,11 @@
 
         <!-- Page title and description -->
         <div class="container-fluid">
-          <h1>Edit case</h1>
-          <p class="lead">Here's how your case will appear to students. You can also edit the elements. </p>
+          <dcc-dhtml subscribe="service/response/get/harena-case:update">
+            <h1>Edit case - {{title}}</h1>
+            <h6 style="color:#808080;">Created by {{author_grade}}: {{username}} ({{institution_acronym}}). </h6>
+            <end-dcc></end-dcc>
+          </dcc-dhtml>
         </div>
         <!-- End of page title and description -->
 
@@ -250,6 +329,9 @@
 
             </div>
             <div class="d-flex justify-content-center col-6 ">
+              <button type="button" class="share-cases-element btn btn-success mr-4 m-1" data-toggle="modal" data-target="#share-modal" hidden>
+                Share case
+              </button>
               <div id="div-toolbar-rightside" class="d-flex ">
 
               </div>

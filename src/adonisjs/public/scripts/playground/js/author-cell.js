@@ -77,9 +77,22 @@ class AuthorCellManager {
 
       this._playground = Blockly.inject('script-panel',
         {
-          media: '../../lib/blockly-07762ff/media/',
+          scrollbars: true,
+          trashcan: true,
+          zoom:
+            {controls: true,
+             wheel: true,
+             startScale: 1.0,
+             maxScale: 3,
+             minScale: 0.3,
+             scaleSpeed: 1.2,
+             pinch: true},
+          media: '../../lib/blockly-4be82c0/media/',
           toolbox: document.getElementById('toolbox')
         })
+
+       const zoomToFit = new ZoomToFitControl(this._playground);
+       zoomToFit.init();
     }
 
     document.querySelector('#source-name').innerHTML = name

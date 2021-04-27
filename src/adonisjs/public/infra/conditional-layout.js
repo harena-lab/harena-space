@@ -3,7 +3,7 @@ class LayoutController {
     this._case = null
     this._user = null
     this.busMessages()
-    this.startController()
+    // this.startController()
   }
 
   set case (newValue) {
@@ -23,8 +23,8 @@ class LayoutController {
   }
 
   async startController(){
-
-    await MessageBus.int.waitMessage('control/html/ready')
+    if(document.readyState == 'loading')
+      await MessageBus.int.waitMessage('control/html/ready')
 
     if(new URL(document.location).pathname == '/author/'){
       this.dynamicAuthor()
@@ -34,14 +34,58 @@ class LayoutController {
     }else if(new URL(document.location).pathname == '/author/drafts/feedback/'){
       this.dynamicCaseListFeedback()
     }
+    if(document.querySelector('#share-modal')){
+      this.dynamicShareCaseElements = this.dynamicShareCaseElements.bind(this)
+      this.dynamicShareCaseModal = this.dynamicShareCaseModal.bind(this)
+      // this.authorizeCommentSection = this.authorizeCommentSection.bind(this)
+      MessageBus.int.subscribe('control/dhtml/ready', this.dynamicShareCaseElements)
+      MessageBus.int.subscribe('control/dhtml/ready', this.dynamicShareCaseModal)
+      // MessageBus.int.subscribe('control/dhtml/ready', this.authorizeCommentSection)
+      MessageBus.int.publish('control/dhtml/status/request', {id: 'dhtml-subject'})
+      MessageBus.int.publish('control/dhtml/status/request', {id: 'harena-dhtml-cases'})
+      MessageBus.int.publish('control/dhtml/status/request', {id: 'dhtml-case'})
+      // MessageBus.int.publish('control/dhtml/status/request', {id: 'dhtml-case-comments'})
+
+    }
 
   }
 
   async busMessages(){
+    // console.log('======= starting conditional-layout')
     LayoutController.user = await MessageBus.int.waitMessage('data/user/info')
     if(new URL(document.location).pathname == '/author/'){
       LayoutController.case = await MessageBus.ext.waitMessage('service/response/get/harena-case')
     }
+    // console.log('============ starting controller dynamic')
+    this.startController()
+
+  }
+  /////////  @@WORK IN PROGRESS //
+  async authorizeCommentSection() {
+    // var dhtmlReady = querySelector('#dhtml-case-comments')
+    console.log('============')
+    // console.log(dhtmlReady._ready)
+    // if(dhtmlReady._ready){
+    console.log('============ authorizeCommentSection')
+    var userGrade = LayoutController.user
+    if(userGrade !== 'professor'
+    && userGrade !== 'admin'
+    && userGrade !== 'coordinator'){
+      var disabledFieldSet = document.createElement('fieldset')
+      disabledFieldSet.setAttribute('disabled','true')
+      var commentsBlock = document.querySelector('#comments-block')
+      commentsBlock.setAttribute('data-toggle','tooltip')
+      commentsBlock.setAttribute('data-placement','top')
+      commentsBlock.setAttribute('title','Comments are "view-only" for students.')
+      document.querySelector('#elements-block').insertBefore(disabledFieldSet,commentsBlock)
+      disabledFieldSet.appendChild(commentsBlock)
+      document.querySelector('#btn-save-comments').remove()
+    }
+    if(LayoutController.case.message.feedback == 0 || !LayoutController.case.message.feedback){
+      document.querySelector("dcc-dhtml#dhtml-case-comments input[name='login']")
+    }
+    // }
+
   }
 
   async dynamicAuthor (){
@@ -69,7 +113,7 @@ class LayoutController {
       const inputPropertyValue = document.querySelector('#property_value')
 
 
-      if(userGrade === 'aluno'){
+      if(userGrade === 'student'){
 
         dccSubmitProp.setAttribute('id','dcc-submit-feedback')
         dccSubmitProp.setAttribute('bind','submit-case-property')
@@ -135,10 +179,10 @@ class LayoutController {
   }
 
   async dynamicCaseListFeedback (){
-    console.log('============ starting dynamic list')
+    // console.log('============ starting dynamic list')
     if(LayoutController.user.message.grade === 'professor'
     || LayoutController.user.message.grade === 'coordinator'){
-      document.querySelector('#txt-draft-presentation').innerHTML = 'Students cases with feedback request'
+      document.querySelector('#txt-draft-presentation').innerHTML = "Students's cases with feedback request"
       //Selects all divs that start the attribute 'id' with 'e'
       const caseButtons = document.querySelectorAll('div.author-panel-button[id^="e"]')
 
@@ -159,7 +203,7 @@ class LayoutController {
     if(propValue){
       LayoutController.case.message.property.feedback = propValue
     }
-    if(userGrade === 'aluno'){
+    if(userGrade === 'student'){
 
       //Verifies property 'feedback' to disable button and change layout
       if(LayoutController.case.message.property.feedback){
@@ -221,6 +265,112 @@ class LayoutController {
         btnFeedback.addEventListener("click", function(event) {
             btnFeedback.firstElementChild.innerHTML = 'Notified as Complete'
           })
+      }
+    }
+  }
+
+  async dynamicShareCaseModal (){
+
+    const dhtmlInstitutions = document.querySelector('#dhtml-subject')
+    if(dhtmlInstitutions._ready){
+      // console.log('============ entered dynamic modal')
+      const selEntity = document.querySelector('#entity')
+      const wrapperSelEntity = document.querySelector('#wrapper-entity')
+      const selSubject = document.querySelector('#dhtml-subject')
+      const inputSubject = document.querySelector('#wrapper-input-subject')
+      const wrapperSelSubject = document.querySelector('#wrapper-subject')
+      const selSubjectGrade = document.querySelector('#subject_grade')
+      const wrapperSelSubjectGrade = document.querySelector('#wrapper-subject_grade')
+
+      const listenerFnEntity = function () {
+        switch (selEntity.value) {
+          case 'user':
+            wrapperSelSubject.hidden = false
+            wrapperSelSubjectGrade.disabled = true
+            wrapperSelSubjectGrade.hidden = true
+
+            selSubject.firstElementChild.disabled = true
+            selSubject.firstElementChild.hidden = true
+            selSubject.firstElementChild.id = 'select-subject'
+            selSubject.firstElementChild.name = 'select-subject'
+
+            inputSubject.firstElementChild.disabled = false
+            inputSubject.firstElementChild.hidden = false
+            inputSubject.firstElementChild.id = 'subject'
+            inputSubject.firstElementChild.name = 'subject'
+
+            selSubjectGrade.value = ""
+
+            document.querySelector('label[for="subject"]').innerHTML = 'User email:'
+
+
+            break
+          case 'institution':
+            wrapperSelSubject.hidden = false
+            wrapperSelSubjectGrade.disabled = false
+            wrapperSelSubjectGrade.hidden = false
+
+            selSubject.firstElementChild.disabled = false
+            selSubject.firstElementChild.hidden = false
+            selSubject.firstElementChild.id = 'subject'
+            selSubject.firstElementChild.name = 'subject'
+
+            inputSubject.firstElementChild.disabled = true
+            inputSubject.firstElementChild.hidden = true
+            inputSubject.firstElementChild.id = 'input-subject'
+            inputSubject.firstElementChild.name = 'input-subject'
+
+            document.querySelector('label[for="subject"]').innerHTML = 'In:'
+
+            break
+          case 'group':
+            wrapperSelSubject.hidden = false
+            wrapperSelSubjectGrade.disabled = true
+            wrapperSelSubjectGrade.hidden = true
+
+            selSubject.firstElementChild.disabled = true
+            selSubject.firstElementChild.hidden = true
+            selSubject.firstElementChild.id = 'select-subject'
+            selSubject.firstElementChild.name = 'select-subject'
+
+            inputSubject.firstElementChild.disabled = false
+            inputSubject.firstElementChild.hidden = false
+            inputSubject.firstElementChild.id = 'subject'
+            inputSubject.firstElementChild.name = 'subject'
+
+            selSubjectGrade.value = ""
+
+            document.querySelector('label[for="subject"]').innerHTML = 'Group name:'
+
+            break
+        }
+      }
+
+      document.querySelector('.share-cases-element.btn').removeEventListener('click', listenerFnEntity)
+      document.querySelector('.share-cases-element.btn').addEventListener('click', listenerFnEntity)
+      selEntity.removeEventListener('change', listenerFnEntity)
+      selEntity.addEventListener('change', listenerFnEntity)
+    }
+
+  }
+
+  async dynamicShareCaseElements(topic, message){
+    const userGrade = LayoutController.user.message.grade
+
+    // console.log('============ dynamicShareCaseElements')
+    // console.log('============ message from bus')
+    // console.log(message)
+    if(message != null && message.id != null && (message.id == "harena-dhtml-cases" || message.id == "dhtml-case" || message.id == "harena-dhtml-cases")){
+      // console.log('============ im ready')
+      // console.log('============ user grade')
+      // console.log(userGrade)
+      if(userGrade === 'professor' || userGrade === 'coordinator' || userGrade === 'admin'){
+        // console.log('============ user grade is acceptable')
+        const shareCaseEssentials =  document.querySelectorAll('.share-cases-element')
+        for (let e in shareCaseEssentials){
+          if(shareCaseEssentials[e].nodeName)
+          shareCaseEssentials[e].hidden = false
+        }
       }
     }
   }

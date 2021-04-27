@@ -176,7 +176,14 @@
       environment: {
         'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api,
         'categoryId': new URL(document.location).searchParams.get('id'),
-        'clearance': new URL(document.location).searchParams.get('clearance')
+        'clearance': new URL(document.location).searchParams.get('clearance'),
+        'fProperty': new URL(document.location).searchParams.get('prop'),
+        'fInstitution': new URL(document.location).searchParams.get('fInstitution'),
+        'fUserType': new URL(document.location).searchParams.get('fUserType'),
+        'fSpecialty': new URL(document.location).searchParams.get('fSpecialty'),
+        'fPropertyValue': new URL(document.location).searchParams.get('fPropertyValue'),
+        'page': new URL(document.location).searchParams.get('page'),
+        'nItems': new URL(document.location).searchParams.get('limit'),
       },
       oas: {
         paths: {
@@ -195,7 +202,15 @@
                 {name: 'fUserType',
                   in: 'query'},
                 {name: 'fSpecialty',
-                  in: 'query'}
+                  in: 'query'},
+                {name: 'fProperty',
+                  in: 'query'},
+                {name: 'fPropertyValue',
+                  in: 'query'},
+                {name: 'page',
+                  in: 'query'},
+                {name: 'nItems',
+                  in: 'query'},
               ]
             }
           }
@@ -212,6 +227,12 @@
         'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api,
         'clearance': new URL(document.location).searchParams.get('clearance'),
         'fProperty': new URL(document.location).searchParams.get('prop'),
+        'fInstitution': new URL(document.location).searchParams.get('fInstitution'),
+        'fUserType': new URL(document.location).searchParams.get('fUserType'),
+        'fSpecialty': new URL(document.location).searchParams.get('fSpecialty'),
+        'fPropertyValue': new URL(document.location).searchParams.get('fPropertyValue'),
+        'page': new URL(document.location).searchParams.get('page'),
+        'nItems': new URL(document.location).searchParams.get('limit'),
       },
       oas: {
         paths: {
@@ -232,7 +253,11 @@
                 {name: 'fProperty',
                   in: 'query'},
                 {name: 'fPropertyValue',
-                  in: 'query'}
+                  in: 'query'},
+                {name: 'page',
+                  in: 'query'},
+                {name: 'nItems',
+                  in: 'query'},
               ]
             }
           }
@@ -379,7 +404,7 @@
       environment: {
         'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api,
         'entity': 'institution',
-        'clearance': '4',
+        'clearance': '5',
         'subject_grade':'professor',
         'subject': sessionStorage.getItem('harena-user-institution-id'),
         'table_id': new URL(document.location).searchParams.get('id'),

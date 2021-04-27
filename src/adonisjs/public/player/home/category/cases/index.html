@@ -86,7 +86,7 @@
           <div class="home-text" style="height: auto !important;">
             <p>Choose a case to play.</p>
           </div>
-          <div class="home-author-padding rounded row sticky-top" style="z-index:3;">
+          <div class="home-author-padding align-items-center rounded row sticky-top" style="z-index:3;">
             <form class="pl-2 align-items-center row">
               <div class="p-2">Filter by: </div>
               <!-- <input type="hidden" id="" value=""> -->
@@ -108,7 +108,7 @@
                 <select id="fUserType" name="fUserType" class="custom-select custom-select-sm">
                   <option selected value="">User type</option>
                   <option value="professor">Professor</option>
-                  <option value="aluno">Aluno</option>
+                  <option value="student">Student</option>
                 </select>
               </div>
               <div class="pr-3" style="width: 120px;">
@@ -117,20 +117,34 @@
               <dcc-submit label="Filter" xstyle="btn btn-secondary" topic="cases/request/get"></dcc-submit>
             </form>
             <dcc-rest id="harena-cases-filter" bind="harena-category-cases" subscribe="cases/request/get:retrieve"></dcc-rest>
+            <div class="ml-auto pr-3">
+              <form id="form-pg-limit">
+                <select id="limit" name="limit" class="custom-select custom-select-sm" onchange="document.querySelector('#submit-filter-limit').computeSubmit()">
+                  <option value="10">10 items</option>
+                  <option selected value="20">20 items</option>
+                  <option value="30">30 items</option>
+                </select>
+                <dcc-submit id="submit-filter-limit" bind="submit-filter" label="Filter" topic="cases/request/get" hidden></dcc-submit>
+              </form>
+            </div>
+            <div class="pr-3">
+                <div id="pagination-wrapper"></div>
+            </div>
           </div>
           <div id="case-boxes" class="container-fluid draft-scroll-container">
             <dcc-rest id="harena-cases" bind="harena-category-cases" subscribe="service/request/get:retrieve"></dcc-rest>
             <dcc-dhtml id="harena-dhtml-cases" connect="retrieve:harena-cases:service/request/get" subscribe="service/response/get/harena-cases-filter:update">
-              {{@foreach . cases}}
-              <div id="b{{cases.id}}" class="row draft-author-case-container">
+              <input type="hidden" id="pages" value="{{pages}}">
+              {{@foreach cases c}}
+              <div id="b{{c.cases.id}}" class="row draft-author-case-container">
                 <div class="col draft-case-title">
-                  {{cases.title}}
+                  {{c.cases.title}}
                   <div class="row">
-                    <h6>Created by {{cases.author_grade}}: {{cases.username}} ({{cases.institution_acronym}})</h6>
+                    <h6>Created by {{c.cases.author_grade}}: {{c.cases.username}} ({{c.cases.institution_acronym}})</h6>
                   </div>
                 </div>
                 <div class="d-flex justify-content-end buttons-container">
-                  <div id="v{{cases.id}}" class="col author-panel-button align-self-center pt-2 pb-2">VIEW</div>
+                  <div id="v{{c.cases.id}}" class="col author-panel-button align-self-center pt-2 pb-2">VIEW</div>
                 </div>
               </div>
               {{@endfor}}
