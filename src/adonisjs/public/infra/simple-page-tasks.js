@@ -52,7 +52,7 @@ class PageController {
         this.dhtmlLoaded = false
       }
     }
-    if(!this.hasremovedLoading || this.dhtmlLoaded){
+    if(!this.hasremovedLoading && this.dhtmlLoaded){
       if(document.querySelector('#loading-page-container')){
         setTimeout(function(){
           document.querySelector('main').classList.remove('invisible')
@@ -73,8 +73,9 @@ class PageController {
       PageController.instance.appropriateBreadcrumb()
       PageController.scriptsComplete = true
       // console.log(PageController.scriptsComplete)
+      this.hasremovedLoading = true
+
     }
-    this.hasremovedLoading = true
   }
 
   controlDropdownMenu(){
