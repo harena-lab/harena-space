@@ -83,15 +83,16 @@ class DraftManager {
         )
       }
     }
-    MessageBus.int.publish('control/dhtml/ready')
   }
 
-  async _draftCategoryCasesSelect (advanced, topic, message) {
+  async _draftCategoryCasesSelect (topic, message) {
 
     const cl = document.getElementsByClassName('buttons-container')
     const caseListInput = document.querySelector('#table_id')
 
     if(message != null && message.id != null && message.id == 'harena-dhtml-cases'){
+
+
       if(document.querySelector('#select-all-checkbox')){
         const selectAllCases = document.querySelector('#select-all-checkbox')
 

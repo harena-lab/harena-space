@@ -1,6 +1,7 @@
 class PageController {
   constructor () {
     var isPageReady = false
+    var dhtmlLoaded = false
     var hasremovedLoading = false
     PageController.scriptsComplete = false
     this.removeLoadingIcon = this.removeLoadingIcon.bind(this)
@@ -22,9 +23,8 @@ class PageController {
     MessageBus.int.subscribe('control/html/ready', this.pageReady)
   }
   async pageReady(){
-
+    PageController.instance.paginationButtons(parseInt(new URL(document.location).searchParams.get('page') || 1))
     if(!this.isPageReady){
-      PageController.instance.paginationButtons(parseInt(new URL(document.location).searchParams.get('page') || 1))
       // Verifies if the page contains the correct element
       if(document.querySelector('#filter-form')){
         var filterElements = []
@@ -45,8 +45,14 @@ class PageController {
   }
 
   async removeLoadingIcon(){
-
-    if(!this.hasremovedLoading){
+    var dhtmlList = document.querySelectorAll('dcc-dhtml')
+    this.dhtmlLoaded = true
+    for(var i in dhtmlList){
+      if(dhtmlList[i]._ready == false){
+        this.dhtmlLoaded = false
+      }
+    }
+    if(!this.hasremovedLoading && this.dhtmlLoaded){
       if(document.querySelector('#loading-page-container')){
         setTimeout(function(){
           document.querySelector('main').classList.remove('invisible')
@@ -67,8 +73,9 @@ class PageController {
       PageController.instance.appropriateBreadcrumb()
       PageController.scriptsComplete = true
       // console.log(PageController.scriptsComplete)
+      this.hasremovedLoading = true
+
     }
-    this.hasremovedLoading = true
   }
 
   controlDropdownMenu(){

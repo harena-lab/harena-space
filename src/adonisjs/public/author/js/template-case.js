@@ -97,6 +97,7 @@ class TemplateToCase {
               })
               .catch(function (error) {
                 console.log(error)
+                window.location.href = '/author/?id=' + _caseId
               })
           }
         } catch (e) {
