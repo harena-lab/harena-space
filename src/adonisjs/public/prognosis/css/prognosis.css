@@ -140,6 +140,19 @@ nav.navbar {
 }
 
 .debug-border {
-  border-color: red;
+  border-color: ;
   border-style: dashed;
+}
+
+.hidden-overflow{
+  overflow: hidden;
+}
+
+.scroll-y{
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+.scroll-x{
+  overflow-x: scroll;
+  overflow-y: hidden;
 }
