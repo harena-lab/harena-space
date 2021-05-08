@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Prognosis - Learn</title>
+
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
+
+  <script src="/lib/axios-0.21.0/axios.min.js"></script>
+
+  <script src="/lib/jquery-3-4-1/jquery-3.4.1.slim.min.js"></script>
+  <script src="/lib/popper-1-15-0/popper.min.js"></script>
+  <script src="/lib/bootstrap-4.4.1/js/bootstrap.min.js"></script>
+  <script src="/lib/ckeditor5/ckeditor.js"></script>
+
+  <script src="/config/config.js"></script>
+  <script src="/infra/bus.js"></script>
+  <script src="/infra/basic.js"></script>
+  <script src="/infra/dcc-common-server-proxy.js"></script>
+  <script src="/infra/dcc-common-server-address.js"></script>
+  <script src="/infra/simple-page-tasks.js"></script>
+  <script src="/infra/token-validator.js"></script>
+  <script src="/infra/conditional-layout.js"></script>
+
+  <script>
+    Basic.service.rootPath = '../../'
+  </script>
+
+  <link rel="stylesheet" href="/lib/fontawesome-5-10-1/css/all.min.css">
+  <link rel="stylesheet" href="/lib/bootstrap-4.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/lib/quill-1-3-7/quill.snow.css">
+
+  <link rel="stylesheet" href="/dccs/css/dccs.css">
+  <link rel="stylesheet" href="/dccs/css/properties.css">
+  <!-- <link rel="stylesheet" href="/infra/css/common-player.css">
+  <link rel="stylesheet" href="/infra/css/common-author.css"> -->
+  <link rel="stylesheet" href="/prognosis/css/prognosis.css">
+
+
+  <script src="/context/context.js"></script>
+
+  <script src="/lib/quill-1-3-7/quill.min.js"></script>
+  <script src="/lib/d3.min.js"></script>
+
+  <script src="/dccs/base/dcc.js"></script>
+  <script src="/dccs/base/dcc-base.js"></script>
+  <script src="/dccs/base/dcc-visual.js"></script>
+  <script src="/dccs/components/visual/dcc-markdown.js"></script>
+  <script src="/dccs/components/visual/dcc-annotation.js"></script>
+  <script src="/dccs/components/visual/dcc-image.js"></script>
+  <script src="/dccs/components/visual/dcc-expression.js"></script>
+  <script src="/dccs/base/dcc-block.js"></script>
+  <script src="/dccs/components/visual/dcc-button.js"></script>
+  <script src="/dccs/components/visual/dcc-character.js"></script>
+  <script src="/dccs/components/visual/dcc-lively-dialog.js"></script>
+  <script src="/dccs/components/visual/dcc-notice-input.js"></script>
+  <script src="/dccs/components/visual/dcc-context-menu.js"></script>
+  <script src="/dccs/components/visual/dcc-state-select.js"></script>
+  <script src="/dccs/components/visual/dcc-image-marker.js"></script>
+  <script src="/dccs/base/dcc-styler.js"></script>
+  <script src="/dccs/components/visual/dcc-entity.js"></script>
+  <script src="/dccs/components/visual/dcc-input.js"></script>
+  <script src="/dccs/components/visual/dcc-input-typed.js"></script>
+  <script src="/dccs/components/visual/dcc-input-choice.js"></script>
+  <script src="/dccs/components/visual/dcc-input-table.js"></script>
+  <script src="/dccs/components/visual/dcc-slider.js"></script>
+  <script src="/dccs/components/visual/dcc-report.js"></script>
+  <script src="/dccs/components/visual/dcc-graph.js"></script>
+
+  <script src="/dccs/components/control/dcc-timer.js"></script>
+  <script src="/dccs/components/control/dcc-message.js"></script>
+  <script src="/dccs/components/control/dcc-compute.js"></script>
+
+  <script src="/dccs/base/subscribe-dcc.js"></script>
+  <script src="/dccs/base/trigger-dcc.js"></script>
+  <script src="/dccs/base/property-dcc.js"></script>
+  <script src="/dccs/base/connect-dcc.js"></script>
+  <script src="/dccs/base/end-dcc.js"></script>
+
+  <script src="/dccs/components/data/dcc-model.js"></script>
+  <script src="/dccs/components/data/dcc-submit.js"></script>
+  <script src="/dccs/components/data/dcc-record.js"></script>
+
+  <script src="/dccs/components/web/dcc-include.js"></script>
+  <script src="/dccs/components/web/dcc-dhtml.js"></script>
+  <script src="/dccs/components/web/dcc-rest.js"></script>
+
+  <script src="/infra/dcc-rest-proxy.js"></script>
+  <script src="/infra/dcc-basic.js"></script>
+
+  <script src="/lib/showdown-2-0-0/showdown.min.js"></script>
+  <script src="/translator/translator.js"></script>
+  <script src="/translator/item-templates.js"></script>
+
+  <script src="/dccs/edit/properties.js"></script>
+  <script src="/dccs/edit/upload-adapter.js"></script>
+  <script src="/dccs/edit/inplace-editor.js"></script>
+  <script src="/dccs/edit/inplace-plain-editor.js"></script>
+  <script src="/dccs/edit/inplace-text-editor.js"></script>
+  <script src="/dccs/edit/inplace-image-editor.js"></script>
+
+  <script src="/author/js/panels.js"></script>
+  <script src="/prognosis/js/prognosis.js"></script>
+</head>
+
+<body>
+  <!-- <main role=""> -->
+  <div id="main-panel" class="d-flex flex-column vh-100 vw-100 scroll-y index-boot-padding bg-secondary">
+    <div class="d-flex flex-column w-lg-75 h-100 w-100 px-2 pb-4 debug-border bg-dark mx-auto scroll-y">
+      <h1 class="debug-border txt-light my-5 text-center">Pacient Info</h1>
+      <form>
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="inputEmail4">First name</label>
+            <input type="email" class="form-control" id="inputEmail4">
+          </div>
+          <div class="form-group col-md-6">
+            <label for="inputPassword4">Last Name</label>
+            <input type="password" class="form-control" id="inputPassword4">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="exampleFormControlTextarea1">Description</label>
+          <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="....."></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="inputAddress2">Social Context</label>
+            <input type="text" class="form-control" id="inputAddress2">
+          </div>
+          <div class="form-group col-md-6">
+            <label for="inputAddress2">Origem</label>
+            <input type="text" class="form-control" id="inputAddress2">
+          </div>
+        </div>
+
+        <div class="bg-light border rounded m-1 p-2">
+          <h2 class="border-bottom txt-light text-center">Comorbidade</h2>
+          <div class="form-row">
+
+            <div class="input-group mb-2">
+              <div class="input-group-prepend">
+                <label class="input-group-text" for="comorbidade-1">Comorbidade</label>
+              </div>
+              <select class="custom-select" id="comorbidade-1">
+                <option selected>Escolha...</option>
+                <option value="1">One</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+              </select>
+            </div>
+            <div class="input-group mb-2">
+              <div class="input-group-prepend">
+                <label class="input-group-text" for="comorbidade-2">Comorbidade</label>
+              </div>
+              <select class="custom-select" id="comorbidade-2">
+                <option selected>Escolha...</option>
+                <option value="1">1</option>
+                <option value="2">Two2</option>
+                <option value="3">Thr2ee</option>
+              </select>
+            </div>
+
+          </div>
+        </div>
+        <div class="bg-light border rounded m-1 p-2">
+          <h2 class="border-bottom txt-light text-center">Motivo da admissão</h2>
+          <div class="form-row">
+
+            <div class="input-group mb-2">
+              <div class="input-group-prepend">
+                <label class="input-group-text" for="motivo-admissao-1">Motivo</label>
+              </div>
+              <select class="custom-select" id="motivo-admissao-1">
+                <option selected>Escolha...</option>
+                <option value="1">One</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+              </select>
+            </div>
+            <div class="input-group mb-2">
+              <div class="input-group-prepend">
+                <label class="input-group-text" for="motivo-admissao-2">Motivo</label>
+              </div>
+              <select class="custom-select" id="motivo-admissao-2">
+                <option selected>Escolha...</option>
+                <option value="1">1</option>
+                <option value="2">Two2</option>
+                <option value="3">Thr2ee</option>
+              </select>
+            </div>
+
+          </div>
+        </div>
+        <div class="bg-light border rounded m-1 p-2">
+          <h2 class="border-bottom txt-light text-center">Status clínico</h2>
+          <div class="form-row">
+
+            <div class="input-group mb-2">
+              <div class="input-group-prepend">
+                <label class="input-group-text" for="stat-clinico-1">Status</label>
+              </div>
+              <select class="custom-select" id="stat-clinico-1">
+                <option selected>Escolha...</option>
+                <option value="1">One</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+              </select>
+            </div>
+            <div class="input-group mb-2">
+              <div class="input-group-prepend">
+                <label class="input-group-text" for="stat-clinico-2">Status</label>
+              </div>
+              <select class="custom-select" id="stat-clinico-2">
+                <option selected>Escolha...</option>
+                <option value="1">1</option>
+                <option value="2">Two2</option>
+                <option value="3">Thr2ee</option>
+              </select>
+            </div>
+
+          </div>
+        </div>
+        <div class="bg-light border rounded m-1 p-2">
+          <h2 class="border-bottom txt-light text-center">Alterações laboratoriais</h2>
+          <div class="form-row">
+
+            <div class="input-group mb-2">
+              <div class="input-group-prepend">
+                <label class="input-group-text" for="alteracao-lab-1">Alteração</label>
+              </div>
+              <select class="custom-select" id="alteracao-lab-1">
+                <option selected>Escolha...</option>
+                <option value="1">One</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+              </select>
+            </div>
+            <div class="input-group mb-2">
+              <div class="input-group-prepend">
+                <label class="input-group-text" for="alteracao-lab-2">Alteração</label>
+              </div>
+              <select class="custom-select" id="alteracao-lab-2">
+                <option selected>Escolha...</option>
+                <option value="1">1</option>
+                <option value="2">Two2</option>
+                <option value="3">Thr2ee</option>
+              </select>
+            </div>
+
+          </div>
+        </div>
+      </form>
+      <div class="p-2">
+
+      </div>
+    </div>
+  </div>
+  <!-- </main> -->
+</body>
+</html>

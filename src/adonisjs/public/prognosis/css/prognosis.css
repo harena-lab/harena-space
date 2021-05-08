@@ -156,3 +156,7 @@ nav.navbar {
   overflow-x: scroll;
   overflow-y: hidden;
 }
+
+.bg-offwhite{
+  background-color: #C8C8C8;
+}

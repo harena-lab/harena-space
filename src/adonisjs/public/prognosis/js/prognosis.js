@@ -1,11 +1,24 @@
-class Prognosis {
+;class Prognosis {
   constructor() {
     window.addEventListener('load', this.start)
+
+    // this.addPacientVariableOption = this.addPacientVariableOption.bind(this)
+    // this.deletePacientVariableOption = this.deletePacientVariableOption.bind(this)
+    // MessageBus.ext.subscribe('button/add-option/clicked', this.addPacientVariableOption)
+    // MessageBus.ext.subscribe('button/delete-option/clicked', this.deletePacientVariableOption)
   }
 
 
   async start (){
     Prognosis.i.expandMultiChoice()
+    let btnAddOption = document.querySelectorAll('.btn-add-option')
+    for (var btn of btnAddOption) {
+      // console.log('============')
+      // console.log(btn)
+      btn.addEventListener('click', Prognosis.i.addPacientVariableOption)
+    }
+    document.querySelector('#btn-update-idade-option').addEventListener('click', Prognosis.i.updatePacientVariableOption)
+
   }
 
   async expandMultiChoice (){
@@ -103,6 +116,37 @@ class Prognosis {
 
       }
     }
+  }
+
+  async addPacientVariableOption (topic, message){
+    const optionWrapper = document.querySelector('#'+ this.id.substring(4) +'-wrapper')
+    const inputValue = this.offsetParent.querySelector('input')
+    this.message = this.getAttribute('message')
+    if(!optionWrapper.querySelector('#'+this.message+'-'+inputValue.value)){
+      var template = document.createElement('template')
+      const html = `
+      <div class="border rounded mb-2 bg-secondary d-inline-flex align-middle" id="[id]-[value]">
+      <h5 class="text-center ">[value]</h5>
+      <button id="btn-del-[id]-[value]" type="button" class="btn px-1 m-0"><i class="fas fa-minus-circle"></i></button>
+      </div>
+      `
+      template.innerHTML = html
+        .replace(/\[value\]/ig, inputValue.value)
+        .replace(/\[id\]/ig, this.message)
+      optionWrapper.appendChild(template.content.cloneNode(true))
+      const delOptionBtn = document.querySelector('#btn-del-'+ this.message+'-'+inputValue.value)
+      delOptionBtn.addEventListener('click', Prognosis.i.deletePacientVariableOption)
+    }
+
+  }
+
+  async deletePacientVariableOption (topic, message){
+    this.parentElement.remove()
+  }
+
+  async updatePacientVariableOption (topic, message){
+    console.log('============ aaa')
+    console.log(this.form.querySelector("div[id$='wrapper']"))
   }
 
 }
