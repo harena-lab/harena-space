@@ -197,16 +197,16 @@
       },
       "comorbidade":{
         "multiOption": "2",
-        "locked": [],
-        "open": [
+        "locked": [
           {
             "IC NYHA IV": {
               "values": [
-                "Não",
                 "Sim",
               ],
             },
           },
+        ],
+        "open": [
           {
             "Câncer metastático": {
               "values": [
@@ -425,6 +425,7 @@
         ],
       },
     }
+    ////////////////////////////////// IDADE ///////////////////////////////////////////////////
     if (pacientInfo.idade.open) {
       var idadeWrapper = document.querySelector('#idade-wrapper')
       var selectWrapper = idadeWrapper.querySelector('div.input-group')
@@ -433,17 +434,175 @@
       htmlSelect.classList.add('custom-select')
       htmlSelect.id = 'idade-1'
       selectWrapper.appendChild(htmlSelect)
+      var option = document.createElement('option')
+      option.textContent = 'Escolha...'
+      htmlSelect.appendChild(option)
       for (var i = 0; i < pacientInfo.idade.open.length; i++) {
-        var option = document.createElement('option')
+        option = document.createElement('option')
         option.value = pacientInfo.idade.open[i]
-        option.innerHTML = pacientInfo.idade.open[i]
+        option.innerHTML = pacientInfo.idade.open[i]+' anos'
         htmlSelect.appendChild(option)
       }
     }
+    ////////////////////////////////// ORIGEM ///////////////////////////////////////////////////
+    if (pacientInfo.origem.open) {
+      var idadeWrapper = document.querySelector('#origem-wrapper')
+      var selectWrapper = idadeWrapper.querySelector('div.input-group')
+      var htmlSelect = document.createElement('select')
+
+      htmlSelect.classList.add('custom-select')
+      htmlSelect.id = 'origem-1'
+      selectWrapper.appendChild(htmlSelect)
+      var option = document.createElement('option')
+      option.textContent = 'Escolha...'
+      htmlSelect.appendChild(option)
+      for (var i = 0; i < pacientInfo.origem.open.length; i++) {
+        option = document.createElement('option')
+        option.value = pacientInfo.origem.open[i]
+        option.innerHTML = pacientInfo.origem.open[i]
+        htmlSelect.appendChild(option)
+      }
+    }
+
     function objectfyPlayerOptions(fnVariable, fnWrapper, fnPrependTxt){
       const mainWrapper = document.querySelector('#'+fnWrapper)
       if(pacientInfo[fnVariable].locked){
+        for (var i = 0; i < pacientInfo[fnVariable].locked.length; i++) {
+          var keyText = Object.keys(pacientInfo[fnVariable].locked[i])[0]
+          var keyId = Prognosis.i.removeAccent(keyText).replace(new RegExp('[ ]','ig'), '-')
+          var template = document.createElement('template')
+          var html = Prognosis.playerOptionLocked
+          template.innerHTML = html
+          .replace(/\[prependText\]/ig, fnPrependTxt)
+          .replace(/\[id\]/ig, keyId)
+          mainWrapper.appendChild(template.content.cloneNode(true))
+          var textSelect = document.querySelector('#options-'+keyId+'-wrapper')
+          if(pacientInfo[fnVariable].locked[i][keyText]['values'].length == 2 &&
+          (pacientInfo[fnVariable].locked[i][keyText]['values'][0] == "Sim" ||
+          pacientInfo[fnVariable].locked[i][keyText]['values'][1] == "Sim"))
+          {
 
+            var template = document.createElement('template')
+            template.innerHTML = Prognosis.playerOptionInputDisabled
+            .replace(/\[value\]/ig, keyText)
+            .replace(/\[id\]/ig, keyId)
+            textSelect.appendChild(template.content.cloneNode(true))
+            for (var z = 0; z < pacientInfo[fnVariable].locked[i][keyText]['values'].length; z++) {
+              var value = pacientInfo[fnVariable].locked[i][keyText]['values'][z]
+              var template = document.createElement('template')
+              template.innerHTML = Prognosis.playerOptionRadio
+              .replace(/\[name\]/ig, keyId)
+              .replace(/\[id\]/ig, (keyId+'-'+value))
+              .replace(/\[valueText\]/ig, value)
+              textSelect.appendChild(template.content.cloneNode(true))
+            }
+
+          }else if (pacientInfo[fnVariable].locked[i][keyText]['cascade'] &&
+          pacientInfo[fnVariable].locked[i][keyText]['cascade'] == 'true'){
+            var template = document.createElement('template')
+            template.innerHTML = Prognosis.playerOptionCheckbox
+            .replace(/\[id\]/ig, keyId)
+            .replace(/\[valueText\]/ig, keyText)
+            textSelect.appendChild(template.content.cloneNode(true))
+            var cascadeDiv = document.createElement('div')
+            cascadeDiv.id = keyId + '-wrapper'
+            cascadeDiv.classList.add('progn-multi-wrapper','d-none', 'border', 'rounded')
+            cascadeDiv.style.backgroundColor = "#b5b5b5"
+            textSelect.appendChild(cascadeDiv)
+            for (var z = 0; z < pacientInfo[fnVariable].locked[i][keyText]['values'].length; z++) {
+              var valueText = pacientInfo[fnVariable].locked[i][keyText]['values'][z]
+              var valueId = Prognosis.i.removeAccent(valueText).replace(new RegExp('[ ]','ig'), '-')
+              if(pacientInfo[fnVariable].locked[i][keyText]['values'].length == 2){
+                template = document.createElement('template')
+                template.innerHTML = Prognosis.playerOptionRadio
+                .replace(/\[id\]/ig, valueId+'-'+z)
+                .replace(/\[name\]/ig, keyId+'-value')
+                .replace(/\[valueText\]/ig, valueText)
+                document.querySelector('#'+(keyId)+'-wrapper').appendChild(template.content.cloneNode(true))
+
+              }else{
+                template = document.createElement('template')
+                template.innerHTML = Prognosis.playerOptionCheckbox
+                .replace(/\[id\]/ig, valueId+'-'+z)
+                .replace(/\[valueText\]/ig, valueText)
+                document.querySelector('#'+(keyId)+'-wrapper').appendChild(template.content.cloneNode(true))
+              }
+            }
+          }
+          else if(pacientInfo[fnVariable].locked[i][keyText]['uniqueValues'] &&
+          pacientInfo[fnVariable].locked[i][keyText]['uniqueValues'] == 'true'){
+            var template = document.createElement('template')
+            template.innerHTML = Prognosis.playerOptionInputDisabled
+            .replace(/\[value\]/ig, keyText)
+            .replace(/\[id\]/ig, keyId)
+            textSelect.appendChild(template.content.cloneNode(true))
+            var obj = document.querySelector('#'+ keyId)
+            obj.prependTxt = obj.parentElement.parentElement.querySelector('.input-group-prepend')
+            obj.prependTxt.copy = obj.prependTxt.firstElementChild.cloneNode(true)
+            obj.prependTxt.copy.textContent = keyText
+            obj.prependTxt.appendChild(obj.prependTxt.copy)
+            //Hide input and add the value to prepend text
+            document.querySelector('#'+keyId).setAttribute('hidden','')
+            document.querySelector('#'+keyId).removeAttribute('disabled')
+            // obj.parentElement.querySelector('.input-group-prepend')
+
+            for (var z = 0; z < pacientInfo[fnVariable].locked[i][keyText]['values'].length; z++) {
+              var value = pacientInfo[fnVariable].locked[i][keyText]['values'][z]
+              var template = document.createElement('template')
+              template.innerHTML = Prognosis.playerOptionRadio
+              .replace(/\[name\]/ig, keyId)
+              .replace(/\[id\]/ig, (keyId+'-'+value))
+              .replace(/\[valueText\]/ig, value)
+              textSelect.appendChild(template.content.cloneNode(true))
+            }
+          }
+           else{
+            var template = document.createElement('template')
+            template.innerHTML = Prognosis.playerOptionInputDisabled
+            .replace(/\[value\]/ig, keyText)
+            .replace(/\[id\]/ig, keyId)
+            textSelect.appendChild(template.content.cloneNode(true))
+            // if((pacientInfo[fnVariable].locked[i][keyText]['child'] ||
+            // pacientInfo[fnVariable].locked[i][keyText]['values'].length != 2) &&
+            // (pacientInfo[fnVariable].locked[i][keyText]['values'][0] != "Sim" &&
+            // pacientInfo[fnVariable].locked[i][keyText]['values'][1] != "Não"))
+            // {
+
+            for (var k = 0; k < pacientInfo[fnVariable].locked[i][keyText]['values'].length; k++) {
+              // console.log(pacientInfo[fnVariable].locked[i][keyText]['values'][k])
+              var valueText = pacientInfo[fnVariable].locked[i][keyText]['values'][k]
+              var valueId = Prognosis.i.removeAccent(valueText).replace(new RegExp('[ ]','ig'), '-')
+
+              var template = document.createElement('template')
+              var html = Prognosis.playerOptionCheckbox
+
+              template.innerHTML = html
+              .replace(/\[valueText\]/ig, valueText)
+              .replace(/\[id\]/ig, valueId)
+              var optionsWrapper = mainWrapper.querySelector('#options-'+keyId+'-wrapper')
+              optionsWrapper.appendChild(template.content.cloneNode(true))
+              if(pacientInfo[fnVariable].locked[i][keyText]['values'].length == 1){
+                optionsWrapper.querySelector('#'+valueId).setAttribute('checked','')
+
+              }
+            }
+            if(pacientInfo[fnVariable].locked[i][keyText]['child']){
+              var template = document.createElement('template')
+              var html = Prognosis.playerOption
+
+              template.innerHTML = html
+              .replace(/\[prependText\]/ig, 'Motivo | Cirurgia eletiva')
+              .replace(/\[id\]/ig, valueId)
+              mainWrapper.appendChild(template.content.cloneNode(true))
+              for (var j = 0; j < pacientInfo[fnVariable].locked[i][keyText]['child'].length; j++) {
+
+              }
+            }
+
+          // }
+        }
+
+      }
       }
       if(pacientInfo[fnVariable].open){
         /////Verify if has multi option, then create enough selects +TODO+
@@ -608,6 +767,16 @@
   Prognosis.playerOption =
   `
   <div class="input-group mb-2 d-flex no-gutters">
+  <div class="input-group-prepend">
+  <label class="input-group-text" for="[id]">[prependText]</label>
+  </div>
+  <div class="d-flex flex-grow-1 border col" id="options-[id]-wrapper">
+  </div>
+  </div>
+  `
+  Prognosis.playerOptionLocked =
+  `
+  <div class="input-group mb-2 d-flex no-gutters disabled-lock">
   <div class="input-group-prepend">
   <label class="input-group-text" for="[id]">[prependText]</label>
   </div>

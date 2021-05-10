@@ -160,3 +160,13 @@ nav.navbar {
 .bg-offwhite{
   background-color: #C8C8C8;
 }
+.disabled-lock{
+  pointer-events: none;
+  background-color: #e9ecef;
+  opacity: 0.8
+}
+.disabled-locked::after{
+  font-family: "Font Awesome 5 Free";
+  content: "\f023";
+  font-weight: 800;
+}
