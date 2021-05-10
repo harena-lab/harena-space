@@ -1,0 +1,55 @@
+{
+  "idade":{
+    "locked": [
+
+    ],
+    "open": [
+
+    ]
+  },
+  "origem":[
+    {
+      "locked": [],
+      "open": [],
+    }
+  ],
+  "comorbidade":[
+    {
+      "locked": [
+        {
+          "IC NYHA IV": [
+            "Sim",
+            "Não"
+          ],
+        }
+      ],
+      "open": [
+
+      ],
+    }
+  ],
+  "motivoAdmissao": {
+    "locked": {
+
+    },
+    "open": {
+
+    }
+  },
+  "statusClinico": {
+    "locked": {
+
+    },
+    "open": {
+
+    }
+  },
+  "alteracoesLab": {
+    "locked": {
+
+    },
+    "open": {
+
+    }
+  }
+}

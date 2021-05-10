@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Prognosis - Learn</title>
+  <title>Prognosis - Player</title>
 
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
@@ -108,9 +108,9 @@
   <!-- <main role=""> -->
   <div id="main-panel" class="d-flex flex-column vh-100 vw-100 scroll-y index-boot-padding bg-secondary">
     <div class="d-flex flex-column w-lg-75 h-100 w-100 px-2 pb-4 debug-border bg-dark mx-auto scroll-y">
-      <h1 class="debug-border txt-light my-5 text-center">Pacient Info</h1>
+      <h1 class="debug-border txt-light my-5 text-center">João V1</h1>
       <form>
-        <div class="form-row">
+        <!-- <div class="form-row">
           <div class="form-group col-md-6">
             <label for="inputEmail4">First name</label>
             <input type="email" class="form-control" id="inputEmail4">
@@ -119,81 +119,78 @@
             <label for="inputPassword4">Last Name</label>
             <input type="password" class="form-control" id="inputPassword4">
           </div>
-        </div>
+        </div> -->
         <div class="form-group">
-          <label for="exampleFormControlTextarea1">Description</label>
+          <label for="exampleFormControlTextarea1" class="text-white">Descrição</label>
           <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="....."></textarea>
         </div>
-        <div class="form-row">
-          <div class="form-group col-md-6">
-            <label for="inputAddress2">Social Context</label>
-            <input type="text" class="form-control" id="inputAddress2">
-          </div>
-          <div class="form-group col-md-6">
-            <label for="inputAddress2">Origem</label>
-            <input type="text" class="form-control" id="inputAddress2">
+        <div class="form-group">
+          <label for="inputAddress2" class="text-white">Contexto social</label>
+          <input type="text" class="form-control" id="inputAddress2">
+        </div>
+        <div class="bg-light border rounded m-1 p-2" id="idade-wrapper">
+          <h2 class="border-bottom txt-light text-center">Idade</h2>
+          <div class="form-row">
+
+            <div class="input-group mb-2">
+              <div class="input-group-prepend">
+                <label class="input-group-text" for="idade-1">Idade</label>
+              </div>
+              <!-- <select class="custom-select" id="idade-1">
+                <option selected>Escolha...</option>
+                <option value="pronto-socorro">Pronto Socorro</option>
+                <option value="outra-uti">Outra UTI</option>
+                <option value="nda">Nenhuma das anteriores</option>
+              </select> -->
+            </div>
           </div>
         </div>
+        <div class="bg-light border rounded m-1 p-2" id="origem-wrapper">
+          <h2 class="border-bottom txt-light text-center">Origem</h2>
+          <div class="form-row">
 
-        <div class="bg-light border rounded m-1 p-2">
+            <div class="input-group mb-2">
+              <div class="input-group-prepend">
+                <label class="input-group-text" for="origem-1">Origem</label>
+              </div>
+              <select class="custom-select" id="origem-1">
+                <option selected>Escolha...</option>
+                <option value="pronto-socorro">Pronto Socorro</option>
+                <option value="outra-uti">Outra UTI</option>
+                <option value="nda">Nenhuma das anteriores</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="bg-light border rounded m-1 p-2" id="comorbidade-wrapper">
           <h2 class="border-bottom txt-light text-center">Comorbidade</h2>
-          <div class="form-row">
-
-            <div class="input-group mb-2">
-              <div class="input-group-prepend">
-                <label class="input-group-text" for="comorbidade-1">Comorbidade</label>
-              </div>
-              <select class="custom-select" id="comorbidade-1">
-                <option selected>Escolha...</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
-              </select>
-            </div>
-            <div class="input-group mb-2">
-              <div class="input-group-prepend">
-                <label class="input-group-text" for="comorbidade-2">Comorbidade</label>
-              </div>
-              <select class="custom-select" id="comorbidade-2">
-                <option selected>Escolha...</option>
-                <option value="1">1</option>
-                <option value="2">Two2</option>
-                <option value="3">Thr2ee</option>
-              </select>
-            </div>
-
-          </div>
+          
         </div>
-        <div class="bg-light border rounded m-1 p-2">
+        <div class="bg-light border rounded m-1 p-2" id="motivo-admissao-wrapper">
           <h2 class="border-bottom txt-light text-center">Motivo da admissão</h2>
-          <div class="form-row">
+            <div class="p-1 w-100" style="background-color: #20c997;" hidden>
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" for="motivo-admissao-1">Motivo</label>
+                </div>
+                <!-- <select class="custom-select" id="motivo-admissao-1">
+                  <option selected>Escolha...</option>
 
-            <div class="input-group mb-2">
-              <div class="input-group-prepend">
-                <label class="input-group-text" for="motivo-admissao-1">Motivo</label>
-              </div>
-              <select class="custom-select" id="motivo-admissao-1">
-                <option selected>Escolha...</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
-              </select>
-            </div>
-            <div class="input-group mb-2">
-              <div class="input-group-prepend">
-                <label class="input-group-text" for="motivo-admissao-2">Motivo</label>
-              </div>
-              <select class="custom-select" id="motivo-admissao-2">
-                <option selected>Escolha...</option>
-                <option value="1">1</option>
-                <option value="2">Two2</option>
-                <option value="3">Thr2ee</option>
-              </select>
-            </div>
+                </select> -->
+                <input type="text" class="form-control" value="Admissão planejada" disabled>
 
-          </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="admissao-planejada" id="admissao-planejada-0" value="admissao-planejada-0">
+                  <label class="form-check-label" for="admissao-planejada-0">Sim</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="admissao-planejada" id="admissao-planejada-1" value="admissao-planejada-1">
+                  <label class="form-check-label" for="admissao-planejada-1">Não</label>
+                </div>
+              </div>
+            </div>
         </div>
-        <div class="bg-light border rounded m-1 p-2">
+        <div class="bg-light border rounded m-1 p-2" id="status-clinico-wrapper">
           <h2 class="border-bottom txt-light text-center">Status clínico</h2>
           <div class="form-row">
 
@@ -222,7 +219,7 @@
 
           </div>
         </div>
-        <div class="bg-light border rounded m-1 p-2">
+        <div class="bg-light border rounded m-1 p-2" id="alt-lab-wrapper">
           <h2 class="border-bottom txt-light text-center">Alterações laboratoriais</h2>
           <div class="form-row">
 

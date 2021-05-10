@@ -113,9 +113,9 @@
           <form>
             <div class="form-row mb-0 pb-0">
               <div class="form-group mb-0" id="wrapper-entity">
-                <label for="entity">Idade:</label>
+                <label for="entity">Idade (18 a 100):</label>
                 <div class="input-group mb-3">
-                  <input type="number" min="18" max="100" class="form-control" placeholder="Adicione uma idade" aria-label="Adicione uma idade">
+                  <input type="number" min="18" max="100" class="form-control" placeholder="Adicione uma idade de 18 a 100" aria-label="Adicione uma idade">
                   <div class="input-group-append">
                     <!-- <dcc-button id="btn-add-idade-option" label="Adicionar" xstyle="btn btn-outline-secondary" topic="button/add-option/clicked" message="idade"> </dcc-button> -->
                     <button id="btn-add-idade-option" type="button" class="btn btn-outline-secondary btn-add-option" message="idade"> Adicionar</button>
@@ -128,7 +128,7 @@
             <div class="w-100">
 
               </div>
-            <button id="btn-update-idade-option" type="button" class="btn btn-success" data-dismiss="modal" >Salvar opções</button>
+            <button id="btn-update-idade-option" type="button" class="btn btn-success" data-dismiss="modal" value="idade">Salvar opções</button>
             <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
           </form>
         </div>
