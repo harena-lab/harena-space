@@ -270,6 +270,7 @@ class Prognosis {
           {
             "Internado antes da admissão": {
               "cascade": "true",
+              "radioYN": "true",
               "values": [
                 "14-27 dias",//6
                 ">=28 dias",//7
@@ -279,6 +280,7 @@ class Prognosis {
           {
             "Infectado antes da admissão": {
               "cascade": "true",
+              "radioYN": "true",
               "values": [
                 "Nosocomial",//4
                 "Respiratória",//5
@@ -299,7 +301,7 @@ class Prognosis {
             },
           },
           {
-            "Submetido à cirurgia": {//16
+            "Submetido à cirurgia": {// no surgery = 5 //surgery = 16
               "cascade": "true",
               "radioYN": "true",
               "values": [
@@ -462,17 +464,22 @@ class Prognosis {
       var selectWrapper = idadeWrapper.querySelector('div.input-group')
       var htmlSelect = document.createElement('select')
 
+      htmlSelect.setAttribute('required','')
       htmlSelect.classList.add('custom-select')
-      htmlSelect.id = 'idade-1'
+      htmlSelect.id = 'idade'
       selectWrapper.appendChild(htmlSelect)
       var option = document.createElement('option')
       option.textContent = 'Escolha...'
+      option.value = ''
       htmlSelect.appendChild(option)
+
       for (var i = 0; i < pacientInfo.idade.open.length; i++) {
         option = document.createElement('option')
         option.value = pacientInfo.idade.open[i]
         option.innerHTML = pacientInfo.idade.open[i]+' anos'
         htmlSelect.appendChild(option)
+
+
       }
     }
     ////////////////////////////////// ORIGEM ///////////////////////////////////////////////////
@@ -482,11 +489,14 @@ class Prognosis {
       var htmlSelect = document.createElement('select')
 
       htmlSelect.classList.add('custom-select')
-      htmlSelect.id = 'origem-1'
+      htmlSelect.setAttribute('required','')
+      htmlSelect.id = 'origem'
       selectWrapper.appendChild(htmlSelect)
       var option = document.createElement('option')
       option.textContent = 'Escolha...'
+      option.value = ''
       htmlSelect.appendChild(option)
+
       for (var i = 0; i < pacientInfo.origem.open.length; i++) {
         option = document.createElement('option')
         option.value = pacientInfo.origem.open[i]
@@ -547,6 +557,7 @@ class Prognosis {
             var cascadeDiv = document.createElement('div')
             cascadeDiv.id = keyId + '-wrapper'
             cascadeDiv.classList.add('progn-multi-wrapper','d-none', 'border', 'rounded')
+            // cascadeDiv.setAttribute('disabled','')
             cascadeDiv.style.backgroundColor = "#b5b5b5"
             textSelect.appendChild(cascadeDiv)
             for (var z = 0; z < pacientInfo[fnVariable].locked[i][keyText]['values'].length; z++) {
@@ -555,7 +566,7 @@ class Prognosis {
               if(pacientInfo[fnVariable].locked[i][keyText]['values'].length == 2){
                 template = document.createElement('template')
                 template.innerHTML = Prognosis.playerOptionRadio
-                .replace(/\[id\]/ig, valueId+'-'+z)
+                .replace(/\[id\]/ig, valueId)
                 .replace(/\[name\]/ig, keyId+'-value')
                 .replace(/\[value\]/ig, (valueText))
                 .replace(/\[valueText\]/ig, valueText)
@@ -564,7 +575,7 @@ class Prognosis {
               }else{
                 template = document.createElement('template')
                 template.innerHTML = Prognosis.playerOptionCheckbox
-                .replace(/\[id\]/ig, valueId+'-'+z)
+                .replace(/\[id\]/ig, valueId)
                 .replace(/\[value\]/ig, valueText)
                 .replace(/\[valueText\]/ig, valueText)
                 document.querySelector('#'+(keyId)+'-wrapper').appendChild(template.content.cloneNode(true))
@@ -577,7 +588,7 @@ class Prognosis {
                 if(pacientInfo[fnVariable].locked[i][keyText]['child'].length == 2){
                   template = document.createElement('template')
                   template.innerHTML = Prognosis.playerOptionRadio
-                  .replace(/\[id\]/ig, valueId+'-'+z)
+                  .replace(/\[id\]/ig, valueId)
                   .replace(/\[name\]/ig, keyId+'-value')
                   .replace(/\[value\]/ig, (valueText))
                   .replace(/\[valueText\]/ig, valueText)
@@ -586,7 +597,7 @@ class Prognosis {
                 }else{
                   template = document.createElement('template')
                   template.innerHTML = Prognosis.playerOptionCheckbox
-                  .replace(/\[id\]/ig, valueId+'-'+z)
+                  .replace(/\[id\]/ig, valueId)
                   .replace(/\[value\]/ig, valueText)
                   .replace(/\[valueText\]/ig, valueText)
                 }
@@ -758,6 +769,7 @@ class Prognosis {
 
             cascadeDiv.id = keyId + '-wrapper'
             cascadeDiv.classList.add('progn-multi-wrapper','d-none', 'border', 'rounded')
+            // cascadeDiv.setAttribute('disabled','')
             cascadeDiv.style.backgroundColor = "#b5b5b5"
             textSelect.appendChild(cascadeDiv)
             for (var z = 0; z < pacientInfo[fnVariable].open[i][keyText]['values'].length; z++) {
@@ -766,7 +778,7 @@ class Prognosis {
               if(pacientInfo[fnVariable].open[i][keyText]['values'].length == 2){
                 template = document.createElement('template')
                 template.innerHTML = Prognosis.playerOptionRadio
-                .replace(/\[id\]/ig, valueId+'-'+z)
+                .replace(/\[id\]/ig, valueId)
                 .replace(/\[name\]/ig, keyId+'-value')
                 .replace(/\[value\]/ig, (valueText))
                 .replace(/\[valueText\]/ig, valueText)
@@ -775,7 +787,7 @@ class Prognosis {
               }else{
                 template = document.createElement('template')
                 template.innerHTML = Prognosis.playerOptionCheckbox
-                .replace(/\[id\]/ig, valueId+'-'+z)
+                .replace(/\[id\]/ig, valueId)
                 .replace(/\[value\]/ig, valueText)
                 .replace(/\[valueText\]/ig, valueText)
                 document.querySelector('#'+(keyId)+'-wrapper').appendChild(template.content.cloneNode(true))
@@ -786,6 +798,7 @@ class Prognosis {
               var cascadeDivChild = document.createElement('div')
               cascadeDivChild.id = keyId+'-value'+ '-wrapper'
               cascadeDivChild.classList.add('progn-multi-wrapper','d-none', 'border', 'rounded')
+              // cascadeDiv.setAttribute('disabled','')
               cascadeDivChild.style.backgroundColor = "#cebfbf"
               cascadeDiv.appendChild(cascadeDivChild)
               for (var z = 0; z < pacientInfo[fnVariable].open[i][keyText]['child'].length; z++) {
@@ -794,7 +807,7 @@ class Prognosis {
                 if(pacientInfo[fnVariable].open[i][keyText]['child'].length == 2){
                   template = document.createElement('template')
                   template.innerHTML = Prognosis.playerOptionRadio
-                  .replace(/\[id\]/ig, childId+'-'+z)
+                  .replace(/\[id\]/ig, childId)
                   .replace(/\[name\]/ig, childId+'-value')
                   .replace(/\[valueText\]/ig, childText)
                   document.querySelector('#'+cascadeDivChild.id).appendChild(template.content.cloneNode(true))
@@ -802,7 +815,7 @@ class Prognosis {
                 }else{
                   template = document.createElement('template')
                   template.innerHTML = Prognosis.playerOptionCheckbox
-                  .replace(/\[id\]/ig, childId+'-'+z)
+                  .replace(/\[id\]/ig, childId)
                   .replace(/\[value\]/ig, childText)
                   .replace(/\[valueText\]/ig, childText)
                   document.querySelector('#'+cascadeDivChild.id).appendChild(template.content.cloneNode(true))

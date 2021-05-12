@@ -1,380 +1,488 @@
-class SAPS {
+class Saps {
   constructor(){
 
   }
 
-  async calcSaps3Score(){
+  async calcSaps3Score(pacientData){
     var idade
     var origem
-    var comorb{
-    comorb.icNyhaIv
-    comorb.cancerMetast
-    comorb.terapiaOncol
-    comorb.cancerHemat
-    comorb.cirrose
-    comorb.sida
-    comorb.intAntesAdm
-    comorb.infectAntesAdm}
-    var motvAdm{
-    motvAdm.admPlanejada
-    motvAdm.submCirurgia
-    motvAdm.submCirurgia.nrcAvc
-    motvAdm.submCirurgia.revascMiorc
-    motvAdm.submCirurgia.trauma
-    motvAdm.submCirurgia.transplante
-    motvAdm.submCirurgia.outro
-    motvAdm.admClinica
-    motvAdm.admClinica.arritmia
-    motvAdm.admClinica.choqueHipo
-    motvAdm.admClinica.outroChoque
-    motvAdm.admClinica.colvusao
-    motvAdm.admClinica.abdomeAgudo
-    motvAdm.admClinica.pancreatite
-    motvAdm.admClinica.deficitFocal
-    motvAdm.admClinica.massaIntracran
-    motvAdm.admClinica.altNvlConsc
-    motvAdm.admClinica.outro}
-    var statsClinico{
-    statsClinico.gcs
-    statsClinico.temp
-    statsClinico.freqCard
-    statsClinico.pressSist
-    statsClinico.drogaVaso}
-    var altLab{
-    altLab.bilirrubina
-    altLab.creatinina
-    altLab.ph
-    altLab.leucocitos
-    altLab.plaquetas
-    altLab.oxigenacao}
+    var comorb = {}
+    var motvAdm = {}
+    var statsClinico = {}
+    var altLab = {}
 
-    switch (idade) {
-      case '<40':
-
-      break;
-      case '40-59':
-
-      break;
-      case '60-69':
-
-      break;
-      case '70-74':
-
-      break;
-      case '75-79':
-
-      break;
-      case '>=80':
-
-      break;
-    }
-    switch (origem) {
-      case 'Pronto Socorro':
-
-      break;
-      case 'Outra UTI':
-
-      break;
-      case 'Nenhuma das anteriores':
-
-      break;
-    }
-    if (comorb){
-      switch (comorb.icNyhaIv) {
-        case 'ic-nyha-iv-sim':
-
+    for (var elem of pacientData.querySelectorAll('select')) {
+      if(elem.validity.valid){
+        switch (elem.id) {
+          case 'idade':
+          idade = elem.value
+          switch (idade) {
+            case '<40':
+            idade = 0
+            break;
+            case '40-59':
+            idade = 3
+            break;
+            case '60-69':
+            idade = 9
+            break;
+            case '70-74':
+            idade = 13
+            break;
+            case '75-79':
+            idade = 15
+            break;
+            case '>=80':
+            idade = 18
+            break;
+          }
           break;
-        default:
-      }
-      switch (comorb.cancerMetast) {
-        case 'cancer-metastatico-sim':
-
+          case 'origem':
+          origem = elem.value
+          switch (origem) {
+            case 'Pronto Socorro':
+            origem = 5
+            break;
+            case 'Outra UTI':
+            origem = 7
+            break;
+            case 'Nenhuma das anteriores':
+            origem = 8
+            break;
+          }
           break;
-        default:
-      }
-      switch (comorb.terapiaOncol) {
-        case 'terapia-oncologica-sim':
 
-          break;
-        default:
-
-      }
-      switch (comorb.cancerHemat) {
-        case 'cancer-hematologico-sim':
-
-          break;
-        default:
-
-      }
-      switch (comorb.cirrose) {
-        case 'cirrose-sim':
-
-          break;
-        default:
-
-      }
-      switch (comorb.sida) {
-        case 'sida-sim':
-
-          break;
-        default:
-
-      }
-      switch (comorb.intAntesAdm) {
-        case '14-27 dias':
-
-          break;
-        case '>=28 dias':
-
-          break;
-        default:
-
-      }
-      switch (comorb.infectAntesAdm) {
-        case 'Nosocomial':
-
-          break;
-        case 'Respiratória':
-
-          break;
-        default:
-
+        }
       }
 
     }
-    if(motvAdm){
-      switch (motvAdm.admPlanejada) {
-        case 'Sim':
-
+    for (var elem of pacientData.querySelectorAll('input[type=radio]')) {
+      if(elem.validity.valid){
+        // console.log(elem.name)
+        switch (elem.name) {
+          case 'ic-nyha-iv':
+          switch (elem.value) {
+            case 'Sim':
+            comorb.icNyhaIv = 6
+            break;
+            case 'Não':
+            comorb.icNyhaIv = 0
+            break;
+          }
           break;
-        case 'Não':
+          case 'cancer-metastatico':
 
+          switch (elem.value) {
+            case 'Sim':
+            comorb.cancerMetast = 11
+            break;
+            case 'Não':
+            comorb.cancerMetast = 0
+            break;
+          }
           break;
-        default:
+          case 'terapia-oncologica':
 
-      }
-      switch (motvAdm.submCirurgia) {
-        case 'Sim':
-
+          switch (elem.value) {
+            case 'Sim':
+            comorb.terapiaOncol = 3
+            break;
+            case 'Não':
+            comorb.terapiaOncol = 0
+            break;
+          }
           break;
-        case 'Não':
+          case 'cancer-hematologico':
 
+          switch (elem.value) {
+            case 'Sim':
+            comorb.cancerHemat = 6
+            break;
+            case 'Não':
+            comorb.cancerHemat = 0
+            break;
+          }
           break;
-        default:
-      }
-      switch (motvAdm.motvCirurgia) {
-        case 'Cirurgia eletiva':
+          case 'cirrose':
 
+          switch (elem.value) {
+            case 'Sim':
+            comorb.cirrose = 8
+            break;
+            case 'Não':
+            comorb.cirrose = 0
+            break;
+          }
           break;
-        case 'Cirurgia urgência':
+          case 'sida':
 
+          switch (elem.value) {
+            case 'Sim':
+            comorb.sida = 8
+            break;
+            case 'Não':
+            comorb.sida = 0
+            break;
+          }
           break;
-        default:
-
-      }
-      switch (motvAdm.motvCirurgia.nrcAvc) {
-        case 'Sim':
-
+          case 'internado-antes-da-admissao':
+          switch (elem.value) {
+            case 'Sim':
+              switch (true) {
+                case ((elem.name = 'internado-antes-da-admissao-value') && (elem.value == '14-27 dias')):
+                  comorb.intAntesAdm = 6
+                  break;
+                case ((elem.name = 'internado-antes-da-admissao-value') && (elem.value == '>=28 dias')):
+                  comorb.intAntesAdm = 7
+                  break;
+              }
+            break;
+            case 'Não':
+              comorb.intAntesAdm = 0
+            break;
+          }
           break;
-        case 'Não':
+          case 'infectado-antes-da-admissao':
+          switch (elem.value) {
+            case 'Sim':
+            switch (true) {
+              case ((elem.name = 'infectado-antes-da-admissao-value') && (elem.value == 'Nosocomial')):
+                comorb.infectAntesAdm = 4
+                break;
+              case ((elem.name = 'infectado-antes-da-admissao-value') && (elem.value == 'Respiratória')):
+                comorb.infectAntesAdm = 5
+                break;
+            }
 
+            break;
+            case 'Não':
+            comorb.infectAntesAdm = 0
+            break;
+          }
           break;
-        default:
-      }
-      switch (motvAdm.motvCirurgia.revascMiorc) {
-        case 'Sim':
+          case 'admissao-planejada':
 
+          switch (elem.value) {
+            case 'Sim':
+            motvAdm.admPlanejada = 3
+            break;
+            case 'Não':
+            motvAdm.admPlanejada = 0
+            break;
+          }
           break;
-        case 'Não':
+          case 'submetido-a-cirurgia':
 
+          switch (elem.value) {
+            case 'Sim':
+            motvAdm.submCirurgia = 16
+            break;
+            case 'Não':
+            motvAdm.submCirurgia = 5
+            break;
+          }
           break;
-        default:
-      }
-      switch (motvAdm.motvCirurgia.trauma) {
-        case 'Sim':
+          case 'submetido-a-cirurgia-value':
 
+          switch (elem.value) {
+            case 'Cirurgia eletiva':
+            motvAdm.motvCirurgia = 0
+            break;
+            case 'Cirurgia urgência':
+            motvAdm.motvCirurgia = 6
+            break;
+          }
           break;
-        case 'Não':
+          case 'escala-de-coma-de-glasgow':
 
+          switch (elem.value) {
+            case '3-4':
+            statsClinico.gcs = 15
+            break;
+            case '5':
+            statsClinico.gcs = 10
+            break;
+            case '6':
+            statsClinico.gcs = 6
+            break;
+            case '7-12':
+            statsClinico.gcs = 2
+            break;
+            case '>=13':
+            statsClinico.gcs = 0
+            break;
+          }
           break;
-        default:
-      }
-      switch (motvAdm.motvCirurgia.transplante) {
-        case 'Sim':
+          case 'temperatura':
 
+          switch (elem.value) {
+            case '<35 °C':
+            statsClinico.temp = 7
+            break;
+            case '>=35 °C':
+            statsClinico.temp = 8
+            break;
+          }
           break;
-        case 'Não':
+          case 'frequencia-cardiaca':
 
+          switch (elem.value) {
+            case '<120 bpm':
+            statsClinico.freqCard = 0
+            break;
+            case '120-159 bpm':
+            statsClinico.freqCard = 5
+            break;
+            case '>=160 bpm':
+            statsClinico.freqCard = 7
+            break;
+          }
           break;
-        default:
-      }
-      switch (motvAdm.motvCirurgia.outro) {
-        case 'Sim':
+          case 'pressao-sistolica':
 
+          switch (elem.value) {
+            case '<40 mmHg':
+            statsClinico.pressSist = 11
+            break;
+            case '40-69 mmHg':
+            statsClinico.pressSist = 8
+            break;
+            case '70-119 mmHg':
+            statsClinico.pressSist = 3
+            break;
+            case '>=120 mmHg':
+            statsClinico.pressSist = 0
+            break;
+          }
           break;
-        case 'Não':
+          case 'droga-vasoativa':
 
+          switch (elem.value) {
+            case 'Sim':
+            statsClinico.drogaVaso = 3
+            break;
+            case 'Não':
+            statsClinico.drogaVaso = 0
+            break;
+          }
           break;
-        default:
-      }
-      switch (motvAdm.admClinica) {
-        case 'Sim':
+          case 'bilirrubina':
 
+          switch (elem.value) {
+            case '<2 mg/dl':
+            altLab.bilirrubina = 0
+            break;
+            case '2-6 mg/dl':
+            altLab.bilirrubina = 4
+            break;
+            case '>=6 mg/dl':
+            altLab.bilirrubina = 5
+            break;
+          }
           break;
-        case 'Não':
-          //needs to verify if children values are negative as well
+          case 'creatinina':
+
+          switch (elem.value) {
+            case '<1,2 mg/dl':
+            altLab.creatinina = 0
+            break;
+            case '1,2-1,9 mg/dl':
+            altLab.creatinina = 0
+            break;
+            case '2-3,4 mg/dl':
+            altLab.creatinina = 7
+            break;
+            case '>=3,5 mg/dl':
+            altLab.creatinina = 8
+            break;
+          }
           break;
-        default:
+          case 'ph':
 
-      }
-      switch (motvAdm.admClinica.arritmia) {
-        case expression:
-
+          switch (elem.value) {
+            case '<=7,25':
+            altLab.ph = 3
+            break;
+            case '>7,25':
+            altLab.ph = 0
+            break;
+          }
           break;
-        default:
+          case 'leucocitos':
 
-      }
-      switch (motvAdm.admClinica.choqueHipo) {
-        case expression:
-
+          switch (elem.value) {
+            case '<15mil /mm³':
+            altLab.leucocitos = 0
+            break;
+            case '>=15mil /mm³':
+            altLab.leucocitos = 2
+            break;
+          }
           break;
-        default:
+          case 'plaquetas':
 
-      }
-      switch (motvAdm.admClinica.outroChoque) {
-        case expression:
-
+          switch (elem.value) {
+            case '<20mil /mm³':
+            altLab.plaquetas = 13
+            break;
+            case '20-49mil /mm³':
+            altLab.plaquetas = 8
+            break;
+            case '50-99mil /mm³':
+            altLab.plaquetas = 5
+            break;
+            case '>=100mil /mm³':
+            altLab.plaquetas = 0
+            break;
+          }
           break;
-        default:
+          case 'oxigenacao':
 
-      }
-      switch (motvAdm.admClinica.colvusao) {
-        case expression:
-
+          switch (elem.value) {
+            case 'paO2 >=60 sem VM':
+            altLab.oxigenacao = 0
+            break;
+            case 'pa02 <60 sem VM':
+            altLab.oxigenacao = 5
+            break;
+            case 'P/F<100 em VM':
+            altLab.oxigenacao = 11
+            break;
+            case 'P/F >=100 em VM':
+            altLab.oxigenacao = 7
+            break;
+          }
           break;
-        default:
-
-      }
-      switch (motvAdm.admClinica.abdomeAgudo) {
-        case expression:
-
-          break;
-        default:
-
-      }
-      switch (motvAdm.admClinica.pancreatite) {
-        case expression:
-
-          break;
-        default:
-
-      }
-      switch (motvAdm.admClinica.deficitFocal) {
-        case expression:
-
-          break;
-        default:
-
-      }
-      switch (motvAdm.admClinica.massaIntracran) {
-        case expression:
-
-          break;
-        default:
-
-      }
-      switch (motvAdm.admClinica.altNvlConsc) {
-        case expression:
-
-          break;
-        default:
-
-      }
-      switch (motvAdm.admClinica.outro) {
-        case expression:
-
-          break;
-        default:
-
+        }
       }
     }
-    if(statsClinico){
-      switch (statsClinico.gcs) {
-        case expression:
+    for (var elem of pacientData.querySelectorAll('input[type=checkbox]')) {
+      if(elem.validity.valid){
+        // console.log(elem.id)
+        switch (elem.checked) {
+          case true:
+          switch (elem.id) {
+            case 'nrc-por-avc':
+            motvAdm.submCirurgiaNrcAvc = 5
+            break;
+            case ' revascularizacao-miocardica':
+            motvAdm.submCirurgiaRevascMiorc = -6
+            break;
+            case 'trauma':
+            motvAdm.submCirurgiaTrauma = -8
+            break;
+            case 'transplante':
+            motvAdm.submCirurgiaTransplante = -11
+            break;
+            case 'outro':
+            motvAdm.submCirurgiaOutro = 0
+            break;
+            case 'arritmia':
+            motvAdm.admClinicaArritmia = -5
+            break;
+            case 'choque-hipovolemico':
+            motvAdm.admClinicaChoqueHipo = 3
+            break;
+            case 'outro-choque':
+            motvAdm.admClinicaOutroChoque = 3
+            break;
+            case 'convulsao':
+            motvAdm.admClinicaColvusao = -4
+            break;
+            case ' abdome-agudo':
+            motvAdm.admClinicaAbdomeAgudo = 3
+            break;
+            case 'pancreatite-grave':
+            motvAdm.admClinicaPancreatite = 9
+            break;
+            case 'deficit-focal':
+            motvAdm.admClinicaDeficitFocal = 7
+            break;
+            case ' efeito-de-massa-intracraniana':
+            motvAdm.admClinicaMassaIntracran = 10
+            break;
+            case 'alteracao-do-nivel-de-consciencia':
+            motvAdm.admClinicaAltNvlConsc = 4
+            break;
+            case 'nenhum-dos-anteriores':
+            motvAdm.admClinicaOutro = 0
+            break;
+            default:
 
+          }
           break;
-        default:
+          case false:
+          switch (elem.id) {
+            case 'nrc-por-avc':
+            motvAdm.submCirurgiaNrcAvc = 0
+            break;
+            case ' revascularizacao-miocardica':
+            motvAdm.submCirurgiaRevascMiorc = 0
+            break;
+            case 'trauma':
+            motvAdm.submCirurgiaTrauma = 0
+            break;
+            case 'transplante':
+            motvAdm.submCirurgiaTransplante = 0
+            break;
+            case 'outro':
+            motvAdm.submCirurgiaOutro = 0
+            break;
+            case 'arritmia':
+            motvAdm.admClinicaArritmia = 0
+            break;
+            case 'choque-hipovolemico':
+            motvAdm.admClinicaAhoqueHipo = 0
+            break;
+            case 'outro-choque':
+            motvAdm.admClinicaOutroChoque = 0
+            break;
+            case 'convulsao':
+            motvAdm.admClinicaColvusao = 0
+            break;
+            case ' abdome-agudo':
+            motvAdm.admClinicaAbdomeAgudo = 0
+            break;
+            case 'pancreatite-grave':
+            motvAdm.admClinicaPancreatite = 0
+            break;
+            case 'deficit-focal':
+            motvAdm.admClinicaDeficitFocal = 0
+            break;
+            case ' efeito-de-massa-intracraniana':
+            motvAdm.admClinicaMassaIntracran = 0
+            break;
+            case 'alteracao-do-nivel-de-consciencia':
+            motvAdm.admClinicaAltNvlConsc = 0
+            break;
+            case 'nenhum-dos-anteriores':
+            motvAdm.admClinicaOutro = 0
+            break;
+            default:
 
-      }
-      switch (statsClinico.temp) {
-        case expression:
-
+          }
           break;
-        default:
+          default:
 
-      }
-      switch (statsClinico.freqCard) {
-        case expression:
-
-          break;
-        default:
-
-      }
-      switch (statsClinico.pressSist) {
-        case expression:
-
-          break;
-        default:
-
-      }
-      switch (statsClinico.drogaVaso) {
-        case expression:
-
-          break;
-        default:
-
+        }
       }
     }
-    if(altLab){
-      switch (altLab.creatinina) {
-        case expression:
-
-          break;
-        default:
-
-      }
-      switch (altLab.ph) {
-        case expression:
-
-          break;
-        default:
-
-      }
-      switch (altLab.leucocitos) {
-        case expression:
-
-          break;
-        default:
-
-      }
-      switch (altLab.plaquetas) {
-        case expression:
-
-          break;
-        default:
-
-      }
-      switch (altLab.oxigenacao) {
-        case expression:
-
-          break;
-        default:
-
-      }
-    }
+    console.log('============ idade')
+    console.log(idade)
+    console.log('============ origem')
+    console.log(origem)
+    console.log('============ comorbidade')
+    console.log(comorb)
+    console.log('============ motivo adm')
+    console.log(motvAdm)
+    console.log('============ statsClinico')
+    console.log(statsClinico)
+    console.log('============ alt lab')
+    console.log(altLab)
   }
-
 }
-(function () {
 
+
+(function () {
+  Saps.i = new Saps()
 })()
