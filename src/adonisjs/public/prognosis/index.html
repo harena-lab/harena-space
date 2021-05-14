@@ -1,8 +1,8 @@
-<!-- Minimal template with scripts and styles to start any basic html in the project -->
-
+<!DOCTYPE html>
+<html>
 <head>
   <meta charset="utf-8">
-  <title>Authoring Environment</title>
+  <title>Prognosis Game</title>
 
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
@@ -27,11 +27,12 @@
   <link rel="stylesheet" href="/lib/bootstrap-4.4.1/css/bootstrap.min.css">
   <link rel="stylesheet" href="/lib/quill-1-3-7/quill.snow.css">
 
-  <link rel="stylesheet" href="/author/css/author.css">
   <link rel="stylesheet" href="/dccs/css/dccs.css">
   <link rel="stylesheet" href="/dccs/css/properties.css">
-  <link rel="stylesheet" href="/infra/css/common-player.css">
-  <link rel="stylesheet" href="/infra/css/common-author.css">
+  <!-- <link rel="stylesheet" href="/infra/css/common-player.css">
+  <link rel="stylesheet" href="/infra/css/common-author.css"> -->
+  <link rel="stylesheet" href="/prognosis/css/prognosis.css">
+
 
   <script src="/context/context.js"></script>
 
@@ -101,3 +102,20 @@
   <script src="/author/js/comments.js"></script>
   <script src="/author/js/author.js"></script>
 </head>
+
+<body>
+  <!-- <main role=""> -->
+    <div id="main-panel" class="d-flex flex-column vh-100 vw-100 scroll-y index-boot-padding">
+      <div class=" d-flex flex-column w-lg-75 h-100 w-100 bg-dark debug-border mx-auto align-items-center">
+        <h1 class="debug-border txt-light mt-5">Game Title</h1>
+        <div class="debug-border mt-5 d-flex flex-column w-50" id="btn-home-container" >
+          <button class="btn btn-light m-1 " type="button" name="btn-learn" id="btn-learn" onclick="location.href = '/prognosis/learn'"> Learn Prognosis</button>
+          <button class="btn btn-light m-1 disabled" type="button" name="btn-challenge-1" id="btn-challenge-1"> Challenge 1  <i class="fas fa-lock"></i></button>
+          <button class="btn btn-light m-1 disabled" type="button" name="btn-challenge-2" id="btn-challenge-2">  Challenge 2 <i class="fas fa-lock"></i></button>
+
+        </div>
+      </div>
+    </div>
+  <!-- </main> -->
+</body>
+</html>

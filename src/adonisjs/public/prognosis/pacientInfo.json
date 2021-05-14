@@ -1,0 +1,252 @@
+{
+  "idade":{
+    "locked": [
+
+    ],
+    "open": [
+      "<40",
+      "40-59",
+      "60-69",
+      "70-74",
+      "75-79",
+      ">=80",
+    ]
+  },
+  "origem":{
+    "locked": [],
+    "open": [
+      "Pronto Socorro",
+      "Outra UTI",
+      "Nenhuma das anteriores",
+    ],
+  },
+  "comorbidade":{
+    "multiOption": "2",
+    "locked": [
+      {
+        "IC NYHA IV": {
+          "values": [
+            "Sim",
+          ],
+        },
+      },
+    ],
+    "open": [
+      {
+        "Câncer metastático": {
+          "values": [
+            "Não",
+            "Sim",
+          ],
+        },
+      },
+      {
+        "Terapia oncológica": {
+          "values": [
+            "Não",
+            "Sim",
+          ],
+        },
+      },
+      {
+        "Câncer hematológico": {
+          "values": [
+            "Não",
+            "Sim",
+          ],
+        },
+      },
+      {
+        "Cirrose": {
+          "values": [
+            "Não",
+            "Sim",
+          ],
+        },
+      },
+      {
+        "SIDA": {
+          "values": [
+            "Não",
+            "Sim",
+          ],
+        },
+      },
+      {
+        "Internado antes da admissão": {
+          "cascade": "true",
+          "values": [
+            "14-27 dias",
+            ">=28 dias",
+          ],
+        },
+      },
+      {
+        "Infectado antes da admissão": {
+          "cascade": "true",
+          "values": [
+            "Nosocomial",
+            "Respiratória",
+          ],
+        },
+      },
+    ],
+  },
+  "motivoAdmissao": {
+    "locked": [],
+    "open": [
+      {
+        "Admissão Planejada": {
+          "values":[
+            "Não",
+            "Sim",
+          ]
+        }
+      },
+      {
+        "Admissão cirúrgica": {
+          "cascade": "true",
+          "values": [
+            "Cirurgia eletiva",
+            "Cirurgia urgência",
+          ],
+          "child": [
+            "NRC por AVC",
+            "Revascularização miocárdica",
+            "Trauma",
+            "Transplante",
+            "Outro",
+          ],
+        },
+      },
+      {
+        "Admissão clínica": {
+          "cascade": "true",
+          "values": [
+            "Arritmia",
+            "Choque hipovolêmico",
+            "Outro choque",
+            "Convulsão",
+            "Abdome agudo",
+            "Pancreatite grave",
+            "Déficit focal",
+            "Efeito de massa intracraniana",
+            "Alteração do nível de consciência",
+            "Outro",
+          ],
+        },
+      },
+    ]
+  },
+  "statusClinico": {
+    "locked": [],
+    "open": [
+      {
+        "GCS": {
+          "uniqueValues":"true",
+          "values": [
+            "3-4",
+            "5",
+            "6",
+            "7-12",
+            ">=13",
+          ],
+        },
+      },
+      {
+        "Temperatura": {
+          "uniqueValues":"true",
+          "values": [
+            "<35",
+            ">=35",
+          ],
+        },
+      },
+      {
+        "Frequência cardíaca": {
+          "uniqueValues":"true",
+          "values": [
+            "<120",
+            "120-159",
+            ">=160",
+          ],
+        },
+      },
+      {
+        "Pressão sistólica": {
+          "uniqueValues":"true",
+          "values": [
+            "<40",
+            "40-69",
+            "70-119",
+            ">=120",
+          ],
+        },
+      },
+      {
+        "Droga vasoativa": {
+          "uniqueValues":"true",
+          "values": [
+            "Não",
+            "Sim",
+          ]
+        },
+      },
+    ],
+  },
+  "alteracoesLab": {
+    "locked": [],
+    "open": [
+      {
+        "Bilirrubina": {
+          "uniqueValues":"true",
+          "values": [
+            "<2",
+            "2-6",
+            ">=6",
+          ],
+        },
+      },
+      {
+        "Creatinina": {
+          "uniqueValues":"true",
+          "values": [
+            "<1,2",
+            "1,2-1,9",
+            "2-3,4",
+            ">=3,5",
+          ],
+        },
+      },
+      {
+        "pH": {
+          "uniqueValues":"true",
+          "values": [
+            "<=7,25",
+            ">7,25"
+          ],
+        },
+      },
+      {
+        "Leucócitos": {
+          "uniqueValues":"true",
+          "values": [
+            "<15mil",
+            ">=15mil",
+          ],
+        },
+      },
+      {
+        "Plaquetas": {
+          "uniqueValues":"true",
+          "values": [
+            "<20mil",
+            "20-49mil",
+            "50-99mil",
+            ">=100mil",
+          ],
+        },
+      },
+    ],
+  },
+}
