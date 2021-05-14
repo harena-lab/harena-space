@@ -153,15 +153,15 @@ class DraftManager {
         caseContainer.firstElementChild.addEventListener('click', listenerFnCaseContainer)
 
         const listenerFnShareCheckbox = function () {
-          console.log('============ click checkbox')
+          // console.log('============ click checkbox')
           if(shareCheckbox.checked){
-            console.log('============ checkbox checked')
+            // console.log('============ checkbox checked')
             caseList.push(shareCheckbox.value)
             document.querySelector('#table_id').value = caseList
             caseContainer.style.backgroundColor = '#769fdb'
             caseContainer.firstElementChild.style.color = '#fff'
           }else{
-            console.log('============ checkbox unchecked')
+            // console.log('============ checkbox unchecked')
             caseList.splice(caseList.indexOf(shareCheckbox.value), 1)
             document.querySelector('#table_id').value = caseList
             caseContainer.style.backgroundColor = ''
