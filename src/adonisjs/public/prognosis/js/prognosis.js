@@ -11,7 +11,8 @@ class Prognosis {
 
   async start (){
     Prognosis.i.expandMultiChoice()
-    if (new URL(document.location).pathname.includes('/prognosis/partials/pacient-info.html')) {
+    if (new URL(document.location).pathname.includes('/prognosis/partials/pacient-info.html')
+    || new URL(document.location).pathname.includes('/prognosis/calculator')) {
       Prognosis.i.getPacientOptions()
     }
     if(new URL(document.location).pathname.includes('/prognosis/creation')){
@@ -199,7 +200,7 @@ class Prognosis {
         ],
         "open": [
           "<40",//0
-          "40-59",//3
+          "40-59",//5
           "60-69",//9
           "70-74",//13
           "75-79",//15
@@ -249,7 +250,7 @@ class Prognosis {
                 "Não",
                 "Sim",
               ],
-            },//6
+            },//6 IF HAS SIDA + CANCER  it gets double points
           },
           {
             "Cirrose": {
@@ -265,7 +266,7 @@ class Prognosis {
                 "Não",
                 "Sim",
               ],
-            },//8   IF cirrose + SIDA
+            },//8   IF HEMATOLOGICA + SIDA = 16+12
           },
           {
             "Internado antes da admissão": {
@@ -322,12 +323,13 @@ class Prognosis {
               "values": [
                 "Arritmia",//-5 Out of arritmia and convulsão, choose the worst value if both apply
                 "Choque hipovolêmico",//3
-                "Outro choque",//3
+                "Outro choque",//5
                 "Convulsão",//-4
                 "Abdome agudo",//3
                 "Pancreatite grave",//9
                 "Déficit focal",//7
                 "Efeito de massa intracraniana",//10
+                "Insuficiência hepática", //6
                 "Alteração do nível de consciência",//4
                 "Nenhum dos anteriores",//0
               ],
@@ -339,12 +341,12 @@ class Prognosis {
         "locked": [],
         "open": [
           {
-            "Escalade Coma de Glasgow": {
+            "Escala de Coma de Glasgow": {
               "uniqueValues":"true",
               "values": [
                 "3-4",//15
                 "5",//10
-                "6",//6
+                "6",//7
                 "7-12",//2
                 ">=13",//0
               ],
@@ -355,7 +357,7 @@ class Prognosis {
               "uniqueValues":"true",
               "values": [
                 "<35 °C",//7
-                ">=35 °C",//8
+                ">=35 °C",//0
               ],
             },
           },
@@ -408,10 +410,10 @@ class Prognosis {
             "Creatinina": {
               "uniqueValues":"true",
               "values": [
-                "<1,2 mg/dl",//0
-                "1,2-1,9 mg/dl",//0
-                "2-3,4 mg/dl",//7
-                ">=3,5 mg/dl",//8
+                "<1.2 mg/dl",//0
+                "1.2-1.9 mg/dl",//2
+                "2-3.4 mg/dl",//7
+                ">=3.5 mg/dl",//8
               ],
             },
           },
@@ -419,8 +421,8 @@ class Prognosis {
             "pH": {
               "uniqueValues":"true",
               "values": [
-                "<=7,25",//3
-                ">7,25"//0
+                "<=7.25",//3
+                ">7.25"//0
               ],
             },
           },

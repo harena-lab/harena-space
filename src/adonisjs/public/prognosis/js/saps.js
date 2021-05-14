@@ -15,31 +15,31 @@ class Saps {
       if(elem.validity.valid){
         switch (elem.id) {
           case 'idade':
-          idade = elem.value
-          switch (idade) {
-            case '<40':
-            idade = 0
-            break;
-            case '40-59':
-            idade = 3
-            break;
-            case '60-69':
-            idade = 9
-            break;
-            case '70-74':
-            idade = 13
-            break;
-            case '75-79':
-            idade = 15
-            break;
-            case '>=80':
-            idade = 18
-            break;
+            idade = elem.value
+            switch (idade) {
+              case '<40':
+              idade = 0
+              break;
+              case '40-59':
+              idade = 5
+              break;
+              case '60-69':
+              idade = 9
+              break;
+              case '70-74':
+              idade = 13
+              break;
+              case '75-79':
+              idade = 15
+              break;
+              case '>=80':
+              idade = 18
+              break;
           }
-          break;
+            break;
           case 'origem':
-          origem = elem.value
-          switch (origem) {
+            origem = elem.value
+            switch (origem) {
             case 'Pronto Socorro':
             origem = 5
             break;
@@ -50,14 +50,13 @@ class Saps {
             origem = 8
             break;
           }
-          break;
-
+            break;
         }
       }
 
     }
     for (var elem of pacientData.querySelectorAll('input[type=radio]')) {
-      if(elem.validity.valid){
+      if(elem.validity.valid && elem.checked){
         // console.log(elem.name)
         switch (elem.name) {
           case 'ic-nyha-iv':
@@ -71,7 +70,6 @@ class Saps {
           }
           break;
           case 'cancer-metastatico':
-
           switch (elem.value) {
             case 'Sim':
             comorb.cancerMetast = 11
@@ -126,73 +124,76 @@ class Saps {
           }
           break;
           case 'internado-antes-da-admissao':
-          switch (elem.value) {
-            case 'Sim':
-              switch (true) {
-                case ((elem.name = 'internado-antes-da-admissao-value') && (elem.value == '14-27 dias')):
-                  comorb.intAntesAdm = 6
-                  break;
-                case ((elem.name = 'internado-antes-da-admissao-value') && (elem.value == '>=28 dias')):
-                  comorb.intAntesAdm = 7
-                  break;
-              }
-            break;
-            case 'Não':
-              comorb.intAntesAdm = 0
-            break;
-          }
+            comorb.intAntesAdm = 0
           break;
-          case 'infectado-antes-da-admissao':
-          switch (elem.value) {
-            case 'Sim':
-            switch (true) {
-              case ((elem.name = 'infectado-antes-da-admissao-value') && (elem.value == 'Nosocomial')):
-                comorb.infectAntesAdm = 4
+          case 'internado-antes-da-admissao-value':
+            switch (elem.value) {
+              case '14-27 dias':
+                comorb.intAntesAdm = 6
                 break;
-              case ((elem.name = 'infectado-antes-da-admissao-value') && (elem.value == 'Respiratória')):
+              case '>=28 dias':
+                comorb.intAntesAdm = 7
+                break;
+              default:
+              comorb.intAntesAdm = 0
+            }
+            break;
+          // case 'infectado-antes-da-admissao':
+          // switch (elem.value) {
+          //   case 'Sim':
+          //   comorb.infectAntesAdm = true
+          //   break;
+          //   case 'Não':
+          //   comorb.infectAntesAdm = false
+          //   break;
+          // }
+          case 'infectado-antes-da-admissao-value':
+            switch (elem.value) {
+              case 'Nosocomial':
+                  comorb.infectAntesAdm = 4
+                break;
+              case 'Respiratória':
                 comorb.infectAntesAdm = 5
                 break;
+              default:
+              comorb.infectAntesAdm = 0
             }
-
             break;
-            case 'Não':
-            comorb.infectAntesAdm = 0
-            break;
-          }
           break;
           case 'admissao-planejada':
 
           switch (elem.value) {
             case 'Sim':
-            motvAdm.admPlanejada = 3
+            motvAdm.admPlanejada = 0
             break;
             case 'Não':
-            motvAdm.admPlanejada = 0
+            motvAdm.admPlanejada = 3
             break;
           }
           break;
           case 'submetido-a-cirurgia':
-
           switch (elem.value) {
             case 'Sim':
-            motvAdm.submCirurgia = 16
+            motvAdm.submCirurgia = 0
             break;
             case 'Não':
             motvAdm.submCirurgia = 5
+            motvAdm.motvCirurgia = 0
             break;
           }
           break;
           case 'submetido-a-cirurgia-value':
+            switch (elem.value) {
+              case 'Cirurgia eletiva':
+                motvAdm.motvCirurgia = 0
+                break;
+              case 'Cirurgia urgência':
+                motvAdm.motvCirurgia = 6
+                break;
+              default:
 
-          switch (elem.value) {
-            case 'Cirurgia eletiva':
-            motvAdm.motvCirurgia = 0
+            }
             break;
-            case 'Cirurgia urgência':
-            motvAdm.motvCirurgia = 6
-            break;
-          }
-          break;
           case 'escala-de-coma-de-glasgow':
 
           switch (elem.value) {
@@ -203,7 +204,7 @@ class Saps {
             statsClinico.gcs = 10
             break;
             case '6':
-            statsClinico.gcs = 6
+            statsClinico.gcs = 7
             break;
             case '7-12':
             statsClinico.gcs = 2
@@ -211,6 +212,8 @@ class Saps {
             case '>=13':
             statsClinico.gcs = 0
             break;
+            default:
+            statsClinico.gcs = 0
           }
           break;
           case 'temperatura':
@@ -220,8 +223,10 @@ class Saps {
             statsClinico.temp = 7
             break;
             case '>=35 °C':
-            statsClinico.temp = 8
+            statsClinico.temp = 0
             break;
+            default:
+            statsClinico.temp = 0
           }
           break;
           case 'frequencia-cardiaca':
@@ -283,16 +288,16 @@ class Saps {
           case 'creatinina':
 
           switch (elem.value) {
-            case '<1,2 mg/dl':
+            case '<1.2 mg/dl':
             altLab.creatinina = 0
             break;
-            case '1,2-1,9 mg/dl':
-            altLab.creatinina = 0
+            case '1.2-1.9 mg/dl':
+            altLab.creatinina = 2
             break;
-            case '2-3,4 mg/dl':
+            case '2-3.4 mg/dl':
             altLab.creatinina = 7
             break;
-            case '>=3,5 mg/dl':
+            case '>=3.5 mg/dl':
             altLab.creatinina = 8
             break;
           }
@@ -300,10 +305,10 @@ class Saps {
           case 'ph':
 
           switch (elem.value) {
-            case '<=7,25':
+            case '<=7.25':
             altLab.ph = 3
             break;
-            case '>7,25':
+            case '>7.25':
             altLab.ph = 0
             break;
           }
@@ -365,7 +370,7 @@ class Saps {
             case 'nrc-por-avc':
             motvAdm.submCirurgiaNrcAvc = 5
             break;
-            case ' revascularizacao-miocardica':
+            case 'revascularizacao-miocardica':
             motvAdm.submCirurgiaRevascMiorc = -6
             break;
             case 'trauma':
@@ -384,12 +389,12 @@ class Saps {
             motvAdm.admClinicaChoqueHipo = 3
             break;
             case 'outro-choque':
-            motvAdm.admClinicaOutroChoque = 3
+            motvAdm.admClinicaOutroChoque = 5
             break;
             case 'convulsao':
             motvAdm.admClinicaColvusao = -4
             break;
-            case ' abdome-agudo':
+            case 'abdome-agudo':
             motvAdm.admClinicaAbdomeAgudo = 3
             break;
             case 'pancreatite-grave':
@@ -398,8 +403,11 @@ class Saps {
             case 'deficit-focal':
             motvAdm.admClinicaDeficitFocal = 7
             break;
-            case ' efeito-de-massa-intracraniana':
+            case 'efeito-de-massa-intracraniana':
             motvAdm.admClinicaMassaIntracran = 10
+            break;
+            case 'insuficiencia-hepatica':
+            motvAdm.insuficienciaHepat = 6
             break;
             case 'alteracao-do-nivel-de-consciencia':
             motvAdm.admClinicaAltNvlConsc = 4
@@ -416,7 +424,7 @@ class Saps {
             case 'nrc-por-avc':
             motvAdm.submCirurgiaNrcAvc = 0
             break;
-            case ' revascularizacao-miocardica':
+            case 'revascularizacao-miocardica':
             motvAdm.submCirurgiaRevascMiorc = 0
             break;
             case 'trauma':
@@ -432,7 +440,7 @@ class Saps {
             motvAdm.admClinicaArritmia = 0
             break;
             case 'choque-hipovolemico':
-            motvAdm.admClinicaAhoqueHipo = 0
+            motvAdm.admClinicaChoqueHipo = 0
             break;
             case 'outro-choque':
             motvAdm.admClinicaOutroChoque = 0
@@ -440,7 +448,7 @@ class Saps {
             case 'convulsao':
             motvAdm.admClinicaColvusao = 0
             break;
-            case ' abdome-agudo':
+            case 'abdome-agudo':
             motvAdm.admClinicaAbdomeAgudo = 0
             break;
             case 'pancreatite-grave':
@@ -449,7 +457,7 @@ class Saps {
             case 'deficit-focal':
             motvAdm.admClinicaDeficitFocal = 0
             break;
-            case ' efeito-de-massa-intracraniana':
+            case 'efeito-de-massa-intracraniana':
             motvAdm.admClinicaMassaIntracran = 0
             break;
             case 'alteracao-do-nivel-de-consciencia':
@@ -467,18 +475,139 @@ class Saps {
         }
       }
     }
+    motvAdm.uti = 16
+    // if(motvAdm.admClinicaArritmia > 0 && motvAdm.admClinicaColvusao > 0)
+    //   motvAdm.admClinicaArritmia = 0
+    // if(comorb.cancerHemat > 0 && comorb.sida > 0){
+    //   comorb.cancerHemat = comorb.cancerHemat*2
+    //   comorb.sida = comorb.sida*2
+    // }
+    var resultWrapper = document.querySelector('#idade-result-wrapper')
+    for (var i = 0; i < resultWrapper.querySelectorAll('h6').length; i++) {
+      resultWrapper.querySelectorAll('h6')[i].remove()
+    }
+    var resultText = document.createElement('h6')
+    resultText.innerHTML = "idade: "+idade
+    resultWrapper.appendChild(resultText)
     console.log('============ idade')
     console.log(idade)
+    var resultWrapper = document.querySelector('#origem-result-wrapper')
+    for (var i = 0; i < resultWrapper.querySelectorAll('h6').length; i++) {
+      resultWrapper.querySelectorAll('h6')[i].remove()
+    }
+    var resultText = document.createElement('h6')
+    resultText.innerHTML = "origem: "+origem
+    resultWrapper.appendChild(resultText)
     console.log('============ origem')
     console.log(origem)
-    console.log('============ comorbidade')
-    console.log(comorb)
-    console.log('============ motivo adm')
-    console.log(motvAdm)
-    console.log('============ statsClinico')
-    console.log(statsClinico)
-    console.log('============ alt lab')
-    console.log(altLab)
+    /*
+    // console.log('============ comorbidade')
+    // console.log(comorb)
+    // console.log(comorb.icNyhaIv+' '+comorb.cancerMetast+' '+comorb.terapiaOncol+' '+comorb.cancerHemat
+    // +' '+comorb.cirrose+' '+comorb.sida+' '+comorb.intAntesAdm+' '+comorb.infectAntesAdm)
+    // console.log('============ motivo adm')
+    // console.log(motvAdm)
+    // console.log(motvAdm.admPlanejada+' '+motvAdm.submCirurgia+' '+motvAdm.motvCirurgia+' '+motvAdm.submCirurgiaNrcAvc+' '+motvAdm.submCirurgiaTrauma
+    // +' '+motvAdm.submCirurgiaTransplante+' '+motvAdm.submCirurgiaOutro+' '+motvAdm.admClinicaArritmia+' '+motvAdm.admClinicaColvusao+' '+motvAdm.admClinicaChoqueHipo
+    // +' '+motvAdm.admClinicaOutroChoque+' '+motvAdm.admClinicaPancreatite)
+    // console.log('============ statsClinico')
+    // console.log(statsClinico)
+    // console.log(statsClinico.temp+' '+statsClinico.pressSist+' '+statsClinico.drogaVaso)
+    // console.log('============ alt lab')
+    // console.log(altLab)
+    // console.log(altLab.bilirrubina+' '+altLab.creatinina+' '+altLab.ph+' '+altLab.leucocitos+' '+altLab.plaquetas+' '+altLab.oxigenacao)
+    // var saps3Score = (idade+origem+
+    //   comorb.icNyhaIv+comorb.cancerMetast+comorb.terapiaOncol+comorb.cancerHemat
+    //   +comorb.cirrose+comorb.sida+comorb.intAntesAdm+comorb.infectAntesAdm
+    //   +motvAdm.admPlanejada+motvAdm.submCirurgia+motvAdm.motvCirurgia+motvAdm.submCirurgiaNrcAvc+motvAdm.submCirurgiaTrauma
+    //   +motvAdm.submCirurgiaTransplante+motvAdm.submCirurgiaOutro+motvAdm.admClinicaArritmia+motvAdm.admClinicaColvusao+motvAdm.admClinicaChoqueHipo
+    //   +motvAdm.admClinicaOutroChoque+motvAdm.admClinicaPancreatite+statsClinico.temp+statsClinico.pressSist+statsClinico.drogaVaso
+    //   +altLab.bilirrubina+altLab.creatinina+altLab.ph+altLab.leucocitos+altLab.plaquetas+altLab.oxigenacao)
+    //
+    // console.log(saps3Score)
+    //
+    // console.log('============ logit')
+    // var logit = -32.6659+Math.log(saps3Score+20.5958)*7.3068
+    // console.log(logit)
+    //
+    // var mortalidade = Math.exp(logit)/ (1+ Math.exp(logit))
+    // console.log((Math.round(mortalidade*1000)/1000)*100)
+    */
+    var dynamicScore = (idade + origem)
+    var resultWrapper = document.querySelector('#comorbidade-result-wrapper')
+    for (var i = 0; i < resultWrapper.querySelectorAll('h6').length; i++) {
+      resultWrapper.querySelectorAll('h6')[i].remove()
+    }
+    for (var i = 0; i < Object.keys(comorb).length; i++) {
+
+      var resultText = document.createElement('h6')
+      resultText.innerHTML = Object.entries(comorb)[i][0]+': '+Object.entries(comorb)[i][1]
+      resultWrapper.appendChild(resultText)
+      console.log('============ comorb value')
+      console.log(Object.entries(comorb)[i])
+      dynamicScore += comorb[Object.keys(comorb)[i]]
+
+    }
+    var resultWrapper = document.querySelector('#motivo-admissao-result-wrapper')
+    for (var i = 0; i < resultWrapper.querySelectorAll('h6').length; i++) {
+      resultWrapper.querySelectorAll('h6')[i].remove()
+    }
+    for (var i = 0; i < Object.keys(motvAdm).length; i++) {
+      var resultText = document.createElement('h6')
+      resultText.innerHTML = Object.entries(motvAdm)[i][0]+': '+Object.entries(motvAdm)[i][1]
+      resultWrapper.appendChild(resultText)
+      console.log('============ motivo value')
+      console.log(Object.entries(motvAdm)[i])
+      dynamicScore += motvAdm[Object.keys(motvAdm)[i]]
+    }
+    var resultWrapper = document.querySelector('#status-clinico-result-wrapper')
+    for (var i = 0; i < resultWrapper.querySelectorAll('h6').length; i++) {
+      resultWrapper.querySelectorAll('h6')[i].remove()
+    }
+    for (var i = 0; i < Object.keys(statsClinico).length; i++) {
+      var resultText = document.createElement('h6')
+      resultText.innerHTML = Object.entries(motvAdm)[i][0]+': '+Object.entries(motvAdm)[i][1]
+      resultWrapper.appendChild(resultText)
+      console.log('============ stats value')
+      console.log(Object.entries(statsClinico)[i])
+      dynamicScore += statsClinico[Object.keys(statsClinico)[i]]
+    }
+    var resultWrapper = document.querySelector('#alt-lab-result-wrapper')
+    for (var i = 0; i < resultWrapper.querySelectorAll('h6').length; i++) {
+
+      resultWrapper.querySelectorAll('h6')[i].remove()
+    }
+    for (var i = 0; i < Object.keys(altLab).length; i++) {
+      var resultText = document.createElement('h6')
+      resultText.innerHTML = Object.entries(altLab)[i][0]+': '+Object.entries(altLab)[i][1]
+      resultWrapper.appendChild(resultText)
+      console.log('============ alt lab value')
+      console.log(Object.entries(altLab)[i])
+      dynamicScore += altLab[Object.keys(altLab)[i]]
+    }
+    var resultWrapper = document.querySelector('#saps-result-wrapper')
+    for (var i = 0; i < resultWrapper.querySelectorAll('h6').length; i++) {
+
+      resultWrapper.querySelectorAll('h6')[i].remove()
+    }
+    var resultText = document.createElement('h6')
+    resultText.innerHTML = 'SAPS-3 Score: '+ dynamicScore
+
+    console.log('============ saps score ')
+    console.log(dynamicScore)
+    console.log('============ Mortality')
+    var logitDynamic = -32.6659+Math.log(dynamicScore+20.5958)*7.3068
+    // console.log(logitDynamic)
+
+    var mortalidadeDynamic = Math.exp(logitDynamic)/ (1+ Math.exp(logitDynamic))
+    resultWrapper.appendChild(resultText)
+    resultText = document.createElement('h6')
+    resultText.innerHTML = 'Mortality: '+ (Math.round(mortalidadeDynamic*1000)/1000)*100+'%'
+    resultWrapper.appendChild(resultText)
+    console.log((Math.round(mortalidadeDynamic*1000)/1000)*100+'%')
+    // var modal = document.querySelector('#saps-result-modal')
+    $('#saps-result-modal').modal('show')
+
   }
 }
 
