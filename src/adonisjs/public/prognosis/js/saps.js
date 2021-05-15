@@ -128,6 +128,9 @@ class Saps {
           break;
           case 'internado-antes-da-admissao-value':
             switch (elem.value) {
+              case '<14 dias':
+                comorb.intAntesAdm = 0
+                break;
               case '14-27 dias':
                 comorb.intAntesAdm = 6
                 break;
@@ -155,8 +158,6 @@ class Saps {
               case 'Respiratória':
                 comorb.infectAntesAdm = 5
                 break;
-              default:
-              comorb.infectAntesAdm = 0
             }
             break;
           break;
@@ -415,7 +416,12 @@ class Saps {
             case 'nenhum-dos-anteriores':
             motvAdm.admClinicaOutro = 0
             break;
-            default:
+            case 'nosocomial':
+                comorb.infectAntesAdmNosocomial = 4
+              break;
+            case 'respiratoria':
+              comorb.infectAntesAdmRespiratoria = 5
+              break;
 
           }
           break;
@@ -483,19 +489,23 @@ class Saps {
     //   comorb.sida = comorb.sida*2
     // }
     var resultWrapper = document.querySelector('#idade-result-wrapper')
-    for (var i = 0; i < resultWrapper.querySelectorAll('h6').length; i++) {
-      resultWrapper.querySelectorAll('h6')[i].remove()
+    var oldResult = resultWrapper.querySelectorAll('h6')
+    for (var i = 0; i < oldResult.length; i++) {
+      oldResult[i].remove()
     }
     var resultText = document.createElement('h6')
+    resultText.classList.add('pl-2')
     resultText.innerHTML = "idade: "+idade
     resultWrapper.appendChild(resultText)
     console.log('============ idade')
     console.log(idade)
     var resultWrapper = document.querySelector('#origem-result-wrapper')
-    for (var i = 0; i < resultWrapper.querySelectorAll('h6').length; i++) {
-      resultWrapper.querySelectorAll('h6')[i].remove()
+    var oldResult = resultWrapper.querySelectorAll('h6')
+    for (var i = 0; i < oldResult.length; i++) {
+      oldResult[i].remove()
     }
     var resultText = document.createElement('h6')
+    resultText.classList.add('pl-2')
     resultText.innerHTML = "origem: "+origem
     resultWrapper.appendChild(resultText)
     console.log('============ origem')
@@ -535,76 +545,93 @@ class Saps {
     */
     var dynamicScore = (idade + origem)
     var resultWrapper = document.querySelector('#comorbidade-result-wrapper')
-    for (var i = 0; i < resultWrapper.querySelectorAll('h6').length; i++) {
-      resultWrapper.querySelectorAll('h6')[i].remove()
+    var oldResult = resultWrapper.querySelectorAll('h6')
+    for (var i = 0; i < oldResult.length; i++) {
+      oldResult[i].remove()
     }
     for (var i = 0; i < Object.keys(comorb).length; i++) {
 
       var resultText = document.createElement('h6')
+      resultText.classList.add('pl-2')
       resultText.innerHTML = Object.entries(comorb)[i][0]+': '+Object.entries(comorb)[i][1]
       resultWrapper.appendChild(resultText)
-      console.log('============ comorb value')
-      console.log(Object.entries(comorb)[i])
+      // console.log('============ comorb value')
+      // console.log(Object.entries(comorb)[i])
       dynamicScore += comorb[Object.keys(comorb)[i]]
 
     }
     var resultWrapper = document.querySelector('#motivo-admissao-result-wrapper')
-    for (var i = 0; i < resultWrapper.querySelectorAll('h6').length; i++) {
-      resultWrapper.querySelectorAll('h6')[i].remove()
+    var oldResult = resultWrapper.querySelectorAll('h6')
+    for (var i = 0; i < oldResult.length; i++) {
+      oldResult[i].remove()
     }
     for (var i = 0; i < Object.keys(motvAdm).length; i++) {
       var resultText = document.createElement('h6')
+      resultText.classList.add('pl-2')
       resultText.innerHTML = Object.entries(motvAdm)[i][0]+': '+Object.entries(motvAdm)[i][1]
       resultWrapper.appendChild(resultText)
-      console.log('============ motivo value')
-      console.log(Object.entries(motvAdm)[i])
+      // console.log('============ motivo value')
+      // console.log(Object.entries(motvAdm)[i])
       dynamicScore += motvAdm[Object.keys(motvAdm)[i]]
     }
     var resultWrapper = document.querySelector('#status-clinico-result-wrapper')
-    for (var i = 0; i < resultWrapper.querySelectorAll('h6').length; i++) {
-      resultWrapper.querySelectorAll('h6')[i].remove()
+    var oldResult = resultWrapper.querySelectorAll('h6')
+    for (var i = 0; i < oldResult.length; i++) {
+      oldResult[i].remove()
     }
     for (var i = 0; i < Object.keys(statsClinico).length; i++) {
       var resultText = document.createElement('h6')
+      resultText.classList.add('pl-2')
       resultText.innerHTML = Object.entries(motvAdm)[i][0]+': '+Object.entries(motvAdm)[i][1]
       resultWrapper.appendChild(resultText)
-      console.log('============ stats value')
-      console.log(Object.entries(statsClinico)[i])
+      // console.log('============ stats value')
+      // console.log(Object.entries(statsClinico)[i])
       dynamicScore += statsClinico[Object.keys(statsClinico)[i]]
     }
     var resultWrapper = document.querySelector('#alt-lab-result-wrapper')
-    for (var i = 0; i < resultWrapper.querySelectorAll('h6').length; i++) {
-
-      resultWrapper.querySelectorAll('h6')[i].remove()
+    var oldResult = resultWrapper.querySelectorAll('h6')
+    for (var i = 0; i < oldResult.length; i++) {
+      oldResult[i].remove()
     }
     for (var i = 0; i < Object.keys(altLab).length; i++) {
       var resultText = document.createElement('h6')
+      resultText.classList.add('pl-2')
       resultText.innerHTML = Object.entries(altLab)[i][0]+': '+Object.entries(altLab)[i][1]
       resultWrapper.appendChild(resultText)
-      console.log('============ alt lab value')
-      console.log(Object.entries(altLab)[i])
+      // console.log('============ alt lab value')
+      // console.log(Object.entries(altLab)[i])
       dynamicScore += altLab[Object.keys(altLab)[i]]
     }
     var resultWrapper = document.querySelector('#saps-result-wrapper')
-    for (var i = 0; i < resultWrapper.querySelectorAll('h6').length; i++) {
+    var oldResult = resultWrapper.querySelectorAll('h6')
+    for (var i = 0; i < oldResult.length; i++) {
 
-      resultWrapper.querySelectorAll('h6')[i].remove()
+      oldResult[i].remove()
     }
     var resultText = document.createElement('h6')
+    resultText.classList.add('pl-2')
     resultText.innerHTML = 'SAPS-3 Score: '+ dynamicScore
 
     console.log('============ saps score ')
     console.log(dynamicScore)
     console.log('============ Mortality')
+    //-32.6659+Math.log(dynamicScore+20.5958)*7.3068 other calc
+    // 64.5990 +Math.log(dynamicScore+20.5958)*13.2322 south america calc
     var logitDynamic = -32.6659+Math.log(dynamicScore+20.5958)*7.3068
     // console.log(logitDynamic)
+    function round(value, precision) {
+      var multiplier = Math.pow(10, precision || 0);
+      return Math.round(value * multiplier) / multiplier;
+    }
 
-    var mortalidadeDynamic = Math.exp(logitDynamic)/ (1+ Math.exp(logitDynamic))
+    var mortalityDynamic = Math.exp(logitDynamic)/ (1+ Math.exp(logitDynamic))
+    var mortalityPercentage = (Math.round(mortalityDynamic*1000)/1000)*100
     resultWrapper.appendChild(resultText)
     resultText = document.createElement('h6')
-    resultText.innerHTML = 'Mortality: '+ (Math.round(mortalidadeDynamic*1000)/1000)*100+'%'
+    resultText.classList.add('pl-2')
+    resultText.innerHTML = 'Mortality: '+ (round(mortalityPercentage, 1))+'%'
     resultWrapper.appendChild(resultText)
-    console.log((Math.round(mortalidadeDynamic*1000)/1000)*100+'%')
+    console.log((Math.round(round(mortalityPercentage, 1)+'%')))
     // var modal = document.querySelector('#saps-result-modal')
     $('#saps-result-modal').modal('show')
 
