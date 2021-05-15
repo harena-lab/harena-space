@@ -272,7 +272,9 @@ class Prognosis {
             "Internado antes da admissão": {
               "cascade": "true",
               "radioYN": "true",
+              "uniqueValues":"true",
               "values": [
+                "<14 dias",//0
                 "14-27 dias",//6
                 ">=28 dias",//7
               ],
@@ -282,6 +284,7 @@ class Prognosis {
             "Infectado antes da admissão": {
               "cascade": "true",
               "radioYN": "true",
+              "multipleValues": "true",
               "values": [
                 "Nosocomial",//4
                 "Respiratória",//5
@@ -777,7 +780,11 @@ class Prognosis {
             for (var z = 0; z < pacientInfo[fnVariable].open[i][keyText]['values'].length; z++) {
               var valueText = pacientInfo[fnVariable].open[i][keyText]['values'][z]
               var valueId = Prognosis.i.removeAccent(valueText).replace(new RegExp('[ ]','ig'), '-')
-              if(pacientInfo[fnVariable].open[i][keyText]['values'].length == 2){
+              if((pacientInfo[fnVariable].open[i][keyText]['values'].length == 2
+              || pacientInfo[fnVariable].open[i][keyText]['uniqueValues'] &&
+              pacientInfo[fnVariable].open[i][keyText]['uniqueValues'] == 'true')
+              && (!pacientInfo[fnVariable].open[i][keyText]['multipleValues'] ||
+              pacientInfo[fnVariable].open[i][keyText]['multipleValues'] != 'true')){
                 template = document.createElement('template')
                 template.innerHTML = Prognosis.playerOptionRadio
                 .replace(/\[id\]/ig, valueId)
@@ -786,6 +793,14 @@ class Prognosis {
                 .replace(/\[valueText\]/ig, valueText)
                 document.querySelector('#'+cascadeDiv.id).appendChild(template.content.cloneNode(true))
 
+              }else if (pacientInfo[fnVariable].open[i][keyText]['multipleValues'] ||
+              pacientInfo[fnVariable].open[i][keyText]['multipleValues'] == 'true'){
+                template = document.createElement('template')
+                template.innerHTML = Prognosis.playerOptionCheckbox
+                .replace(/\[id\]/ig, valueId)
+                .replace(/\[value\]/ig, valueText)
+                .replace(/\[valueText\]/ig, valueText)
+                document.querySelector('#'+(keyId)+'-wrapper').appendChild(template.content.cloneNode(true))
               }else{
                 template = document.createElement('template')
                 template.innerHTML = Prognosis.playerOptionCheckbox
