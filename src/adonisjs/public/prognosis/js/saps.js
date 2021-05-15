@@ -615,6 +615,8 @@ class Saps {
     console.log('============ saps score ')
     console.log(dynamicScore)
     console.log('============ Mortality')
+    //-32.6659+Math.log(dynamicScore+20.5958)*7.3068 other calc
+    // 64.5990 +Math.log(dynamicScore+20.5958)*13.2322 south america calc
     var logitDynamic = -32.6659+Math.log(dynamicScore+20.5958)*7.3068
     // console.log(logitDynamic)
     function round(value, precision) {

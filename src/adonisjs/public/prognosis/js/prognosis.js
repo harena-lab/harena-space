@@ -11,9 +11,11 @@ class Prognosis {
 
   async start (){
     Prognosis.i.expandMultiChoice()
-    if (new URL(document.location).pathname.includes('/prognosis/partials/pacient-info.html')
-    || new URL(document.location).pathname.includes('/prognosis/calculator')) {
+    if (new URL(document.location).pathname.includes('/prognosis/partials/pacient-info.html')) {
       Prognosis.i.getPacientOptions()
+    }
+    if (new URL(document.location).pathname.includes('/prognosis/calculator')){
+      Prognosis.i.getPacientOptions(true)
     }
     if(new URL(document.location).pathname.includes('/prognosis/creation')){
       var btnAddOption = document.querySelectorAll('.btn-add-option')
@@ -189,282 +191,535 @@ class Prognosis {
     src = src.replace(new RegExp('[<]','ig'), 'menor')
     src = src.replace(new RegExp('[=]','ig'), 'igual')
     src = src.replace(new RegExp('[/\|+_?;:.,*!@#$%&()¹²³°ªº]','ig'), '')
+    src = src.replace(new RegExp(' ','ig'), '-')
     return src
   }
 
-  async getPacientOptions (){
-    const pacientInfo = {
-      "idade":{
-        "locked": [
+  async getPacientOptions (calculator){
+    if(calculator){
+      var pacientInfo = {
+        "idade":{
+          "locked": [
 
-        ],
-        "open": [
-          "<40",//0
-          "40-59",//5
-          "60-69",//9
-          "70-74",//13
-          "75-79",//15
-          ">=80",//18
-        ]
-      },
-      "origem":{
-        "locked": [],
-        "open": [
-          "Pronto Socorro",//5
-          "Outra UTI",//7
-          "Nenhuma das anteriores",//8
-        ],
-      },
-      "comorbidade":{
-        "locked": [
+          ],
+          "open": [
+            "<40",//0
+            "40-59",//5
+            "60-69",//9
+            "70-74",//13
+            "75-79",//15
+            ">=80",//18
+          ]
+        },
+        "origem":{
+          "locked": [],
+          "open": [
+            "Pronto Socorro",//5
+            "Outra UTI",//7
+            "Nenhuma das anteriores",//8
+          ],
+        },
+        "comorbidade":{
+          "locked": [
 
-        ],
-        "open": [
-          {
-            "IC NYHA IV": {
-              "values": [
-                "Não",
-                "Sim",
-              ],
-            },//6
-          },
-          {
-            "Câncer metastático": {
-              "values": [
-                "Não",
-                "Sim",
-              ],
-            },//11
-          },
-          {
-            "Terapia oncológica": {
-              "values": [
-                "Não",
-                "Sim",
-              ],
-            },//3
-          },
-          {
-            "Câncer hematológico": {
-              "values": [
-                "Não",
-                "Sim",
-              ],
-            },//6 IF HAS SIDA + CANCER  it gets double points
-          },
-          {
-            "Cirrose": {
-              "values": [
-                "Não",
-                "Sim",
-              ],
-            },//8
-          },
-          {
-            "SIDA": {
-              "values": [
-                "Não",
-                "Sim",
-              ],
-            },//8   IF HEMATOLOGICA + SIDA = 16+12
-          },
-          {
-            "Internado antes da admissão": {
-              "cascade": "true",
-              "radioYN": "true",
-              "uniqueValues":"true",
-              "values": [
-                "<14 dias",//0
-                "14-27 dias",//6
-                ">=28 dias",//7
-              ],
+          ],
+          "open": [
+            {
+              "IC NYHA IV": {
+                "values": [
+                  "Não",
+                  "Sim",
+                ],
+              },//6
             },
-          },
-          {
-            "Infectado antes da admissão": {
-              "cascade": "true",
-              "radioYN": "true",
-              "multipleValues": "true",
-              "values": [
-                "Nosocomial",//4
-                "Respiratória",//5
-              ],
+            {
+              "Câncer metastático": {
+                "values": [
+                  "Não",
+                  "Sim",
+                ],
+              },//11
             },
-          },
-        ],
-      },
-      "motivoAdmissao": {
-        "locked": [],
-        "open": [
-          {
-            "Admissão Planejada": {
-              "values":[
-                "Não",//3
-                "Sim",//0
-              ]
+            {
+              "Terapia oncológica": {
+                "values": [
+                  "Não",
+                  "Sim",
+                ],
+              },//3
             },
-          },
-          {
-            "Submetido à cirurgia": {// no surgery = 5 //surgery = 16
-              "cascade": "true",
-              "radioYN": "true",
-              "values": [
-                "Cirurgia eletiva",//0
-                "Cirurgia urgência",//6
-              ],
-              "child": [
-                "NRC por AVC",//5
-                "Revascularização miocárdica",//-6
-                "Trauma",//-8
-                "Transplante",//-11
-                "Outro",//0
-              ],
+            {
+              "Câncer hematológico": {
+                "values": [
+                  "Não",
+                  "Sim",
+                ],
+              },//6 IF HAS SIDA + CANCER  it gets double points
             },
-          },
-          {
-            "Motivo de admissão na UTI": {//16
-              "values": [
-                "Arritmia",//-5 Out of arritmia and convulsão, choose the worst value if both apply
-                "Choque hipovolêmico",//3
-                "Outro choque",//5
-                "Convulsão",//-4
-                "Abdome agudo",//3
-                "Pancreatite grave",//9
-                "Déficit focal",//7
-                "Efeito de massa intracraniana",//10
-                "Insuficiência hepática", //6
-                "Alteração do nível de consciência",//4
-                "Nenhum dos anteriores",//0
-              ],
+            {
+              "Cirrose": {
+                "values": [
+                  "Não",
+                  "Sim",
+                ],
+              },//8
             },
-          },
-        ]
-      },
-      "statusClinico": {
-        "locked": [],
-        "open": [
-          {
-            "Escala de Coma de Glasgow": {
-              "uniqueValues":"true",
-              "values": [
-                "3-4",//15
-                "5",//10
-                "6",//7
-                "7-12",//2
-                ">=13",//0
-              ],
+            {
+              "SIDA": {
+                "values": [
+                  "Não",
+                  "Sim",
+                ],
+              },//8   IF HEMATOLOGICA + SIDA = 16+12
             },
-          },
-          {
-            "Temperatura": {
-              "uniqueValues":"true",
-              "values": [
-                "<35 °C",//7
-                ">=35 °C",//0
-              ],
+            {
+              "Internado antes da admissão": {
+                "cascade": "true",
+                "radioYN": "true",
+                "uniqueValues":"true",
+                "values": [
+                  "<14 dias",//0
+                  "14-27 dias",//6
+                  ">=28 dias",//7
+                ],
+              },
             },
-          },
-          {
-            "Frequência cardíaca": {
-              "uniqueValues":"true",
-              "values": [
-                "<120 bpm",//0
-                "120-159 bpm",//5
-                ">=160 bpm",//7
-              ],
+            {
+              "Infectado antes da admissão": {
+                "cascade": "true",
+                "radioYN": "true",
+                "multipleValues": "true",
+                "values": [
+                  "Nosocomial",//4
+                  "Respiratória",//5
+                ],
+              },
             },
-          },
-          {
-            "Pressão sistólica": {
-              "uniqueValues":"true",
-              "values": [
-                "<40 mmHg",//11
-                "40-69 mmHg",//8
-                "70-119 mmHg",//3
-                ">=120 mmHg",//0
-              ],
+          ],
+        },
+        "motivoAdmissao": {
+          "locked": [],
+          "open": [
+            {
+              "Admissão Planejada": {
+                "values":[
+                  "Não",//3
+                  "Sim",//0
+                ]
+              },
             },
-          },
-          {
-            "Droga vasoativa": {
-              "uniqueValues":"true",
-              "values": [
-                "Não",
-                "Sim",//3
-              ]
+            {
+              "Submetido à cirurgia": {// no surgery = 5 //surgery = 16
+                "cascade": "true",
+                "radioYN": "true",
+                "values": [
+                  "Cirurgia eletiva",//0
+                  "Cirurgia urgência",//6
+                ],
+                "child": [
+                  "NRC por AVC",//5
+                  "Revascularização miocárdica",//-6
+                  "Trauma",//-8
+                  "Transplante",//-11
+                  "Outro",//0
+                ],
+              },
             },
-          },
-        ],
-      },
-      "alteracoesLab": {
-        "locked": [],
-        "open": [
-          {
-            "Bilirrubina": {
-              "uniqueValues":"true",
-              "values": [
-                "<2 mg/dl",//0
-                "2-6 mg/dl",//4
-                ">=6 mg/dl",//5
-              ],
+            {
+              "Motivo de admissão na UTI": {//16
+                "values": [
+                  "Arritmia",//-5 Out of arritmia and convulsão, choose the worst value if both apply
+                  "Choque hipovolêmico",//3
+                  "Outro choque",//5
+                  "Convulsão",//-4
+                  "Abdome agudo",//3
+                  "Pancreatite grave",//9
+                  "Déficit focal",//7
+                  "Efeito de massa intracraniana",//10
+                  "Insuficiência hepática", //6
+                  "Alteração do nível de consciência",//4
+                  "Nenhum dos anteriores",//0
+                ],
+              },
             },
-          },
-          {
-            "Creatinina": {
-              "uniqueValues":"true",
-              "values": [
-                "<1.2 mg/dl",//0
-                "1.2-1.9 mg/dl",//2
-                "2-3.4 mg/dl",//7
-                ">=3.5 mg/dl",//8
-              ],
+          ]
+        },
+        "statusClinico": {
+          "locked": [],
+          "open": [
+            {
+              "Escala de Coma de Glasgow": {
+                "uniqueValues":"true",
+                "values": [
+                  "3-4",//15
+                  "5",//10
+                  "6",//7
+                  "7-12",//2
+                  ">=13",//0
+                ],
+              },
             },
-          },
-          {
-            "pH": {
-              "uniqueValues":"true",
-              "values": [
-                "<=7.25",//3
-                ">7.25"//0
-              ],
+            {
+              "Temperatura": {
+                "uniqueValues":"true",
+                "values": [
+                  "<35 °C",//7
+                  ">=35 °C",//0
+                ],
+              },
             },
-          },
-          {
-            "Leucócitos": {
-              "uniqueValues":"true",
-              "values": [
-                "<15mil /mm³",//0
-                ">=15mil /mm³",//2
-              ],
+            {
+              "Frequência cardíaca": {
+                "uniqueValues":"true",
+                "values": [
+                  "<120 bpm",//0
+                  "120-159 bpm",//5
+                  ">=160 bpm",//7
+                ],
+              },
             },
-          },
-          {
-            "Plaquetas": {
-              "uniqueValues":"true",
-              "values": [
-                "<20mil /mm³",//13
-                "20-49mil /mm³",//8
-                "50-99mil /mm³",//5
-                ">=100mil /mm³",//0
-              ],
+            {
+              "Pressão sistólica": {
+                "uniqueValues":"true",
+                "values": [
+                  "<40 mmHg",//11
+                  "40-69 mmHg",//8
+                  "70-119 mmHg",//3
+                  ">=120 mmHg",//0
+                ],
+              },
             },
-          },
-          {
-            "Oxigenação": {
-              "uniqueValues":"true",
-              "values": [
-                "paO2 >=60 sem VM",//0
-                "pa02 <60 sem VM",//5
-                "P/F<100 em VM",//11
-                "P/F >=100 em VM",//7
-              ],
+            {
+              "Droga vasoativa": {
+                "uniqueValues":"true",
+                "values": [
+                  "Não",
+                  "Sim",//3
+                ]
+              },
             },
-          },
-        ],
-      },
+          ],
+        },
+        "alteracoesLab": {
+          "locked": [],
+          "open": [
+            {
+              "Bilirrubina": {
+                "uniqueValues":"true",
+                "values": [
+                  "<2 mg/dl",//0
+                  "2-6 mg/dl",//4
+                  ">=6 mg/dl",//5
+                ],
+              },
+            },
+            {
+              "Creatinina": {
+                "uniqueValues":"true",
+                "values": [
+                  "<1.2 mg/dl",//0
+                  "1.2-1.9 mg/dl",//2
+                  "2-3.4 mg/dl",//7
+                  ">=3.5 mg/dl",//8
+                ],
+              },
+            },
+            {
+              "pH": {
+                "uniqueValues":"true",
+                "values": [
+                  "<=7.25",//3
+                  ">7.25"//0
+                ],
+              },
+            },
+            {
+              "Leucócitos": {
+                "uniqueValues":"true",
+                "values": [
+                  "<15mil /mm³",//0
+                  ">=15mil /mm³",//2
+                ],
+              },
+            },
+            {
+              "Plaquetas": {
+                "uniqueValues":"true",
+                "values": [
+                  "<20mil /mm³",//13
+                  "20-49mil /mm³",//8
+                  "50-99mil /mm³",//5
+                  ">=100mil /mm³",//0
+                ],
+              },
+            },
+            {
+              "Oxigenação": {
+                "uniqueValues":"true",
+                "values": [
+                  "paO2 >=60 sem VM",//0
+                  "pa02 <60 sem VM",//5
+                  "P/F<100 em VM",//11
+                  "P/F >=100 em VM",//7
+                ],
+              },
+            },
+          ],
+        },
+      }
+    } else {
+      var pacientInfo = {
+        "dificuldade": "5",
+        "idade":{
+          "locked": [
+            "<40"
+          ],
+          "open": []
+        },
+        "origem":{
+          "locked": [],
+          "open": [
+            "Pronto Socorro",
+            "Outra UTI",
+            "Nenhuma das anteriores",
+          ],
+        },
+        "comorbidade":{
+          "locked": [
+
+          ],
+          "open": [
+            {
+              "IC NYHA IV": {
+                "values": [
+                  "Não",
+                  "Sim",
+                ],
+              },
+            },
+            {
+              "Câncer metastático": {
+                "values": [
+                  "Não",
+                  "Sim",
+                ],
+              },
+            },
+            {
+              "Terapia oncológica": {
+                "values": [
+                  "Não",
+                  "Sim",
+                ],
+              },
+            },
+            {
+              "Câncer hematológico": {
+                "values": [
+                  "Não",
+                  "Sim",
+                ],
+              },
+            },
+            {
+              "Cirrose": {
+                "values": [
+                  "Não",
+                  "Sim",
+                ],
+              },
+            },
+            {
+              "SIDA": {
+                "values": [
+                  "Não",
+                  "Sim",
+                ],
+              },
+            },
+            {
+              "Internado antes da admissão": {
+                "cascade": "true",
+                "radioYN": "true",
+                "uniqueValues":"true",
+                "values": [
+                  "<14 dias",
+                  "14-27 dias",
+                  ">=28 dias",
+                ],
+              },
+            },
+            {
+              "Infectado antes da admissão": {
+                "cascade": "true",
+                "radioYN": "true",
+                "multipleValues": "true",
+                "values": [
+                  "Nosocomial",
+                  "Respiratória",
+                ],
+              },
+            },
+          ],
+        },
+        "motivoAdmissao": {
+          "locked": [
+            {
+              "Admissão Planejada": {
+                "values":[
+                  "Sim",
+                ]
+              },
+            },
+            {
+              "Submetido à cirurgia": {
+                "cascade": "true",
+                "radioYN": "true",
+                "values": [
+                  "Cirurgia eletiva"
+                ],
+                "child": [
+                  "Transplante"
+                ],
+              },
+            },
+            {
+              "Motivo de admissão na UTI": {
+                "values": [
+                  "Nenhum dos anteriores"
+                ],
+              },
+            },
+          ],
+          "open": [
+
+          ]
+        },
+        "statusClinico": {
+          "locked": [
+            {
+              "Escala de Coma de Glasgow": {
+                "uniqueValues":"true",
+                "values": [
+                  ">=13",
+                ],
+              },
+            },
+            {
+              "Pressão sistólica": {
+                "uniqueValues":"true",
+                "values": [
+                  ">=120 mmHg",
+                ],
+              },
+            },
+            {
+              "Droga vasoativa": {
+                "uniqueValues":"true",
+                "values": [
+                  "Não",
+                ]
+              },
+            },
+          ],
+          "open": [
+
+            {
+              "Temperatura": {
+                "uniqueValues":"true",
+                "values": [
+                  "<35 °C",
+                  ">=35 °C",
+                ],
+              },
+            },
+            {
+              "Frequência cardíaca": {
+                "uniqueValues":"true",
+                "values": [
+                  "<120 bpm",
+                  "120-159 bpm",
+                  ">=160 bpm",
+                ],
+              },
+            },
+
+          ],
+        },
+        "alteracoesLab": {
+          "locked": [],
+          "open": [
+            {
+              "Bilirrubina": {
+                "uniqueValues":"true",
+                "values": [
+                  "<2 mg/dl",
+                  "2-6 mg/dl",
+                  ">=6 mg/dl",
+                ],
+              },
+            },
+            {
+              "Creatinina": {
+                "uniqueValues":"true",
+                "values": [
+                  "<1.2 mg/dl",
+                  "1.2-1.9 mg/dl",
+                  "2-3.4 mg/dl",
+                  ">=3.5 mg/dl",
+                ],
+              },
+            },
+            {
+              "pH": {
+                "uniqueValues":"true",
+                "values": [
+                  "<=7.25",
+                  ">7.25"
+                ],
+              },
+            },
+            {
+              "Leucócitos": {
+                "uniqueValues":"true",
+                "values": [
+                  "<15mil /mm³",
+                  ">=15mil /mm³",
+                ],
+              },
+            },
+            {
+              "Plaquetas": {
+                "uniqueValues":"true",
+                "values": [
+                  "<20mil /mm³",
+                  "20-49mil /mm³",
+                  "50-99mil /mm³",
+                  ">=100mil /mm³",
+                ],
+              },
+            },
+            {
+              "Oxigenação": {
+                "uniqueValues":"true",
+                "values": [
+                  "paO2 >=60 sem VM",
+                  "pa02 <60 sem VM",
+                  "P/F<100 em VM",
+                  "P/F >=100 em VM",
+                ],
+              },
+            },
+          ],
+        },
+      }
+    }
+    if(document.querySelector('h1.pacient-title')){
+      var title = document.querySelector('h1.pacient-title')
+      title.innerHTML = 'João V'+pacientInfo.dificuldade
     }
     ////////////////////////////////// IDADE ///////////////////////////////////////////////////
-    if (pacientInfo.idade.open) {
+    if (pacientInfo.idade.open && pacientInfo.idade.open.length > 0) {
       var idadeWrapper = document.querySelector('#idade-wrapper')
       var selectWrapper = idadeWrapper.querySelector('div.input-group')
       var htmlSelect = document.createElement('select')
@@ -487,8 +742,28 @@ class Prognosis {
 
       }
     }
+    if(pacientInfo.idade.locked && pacientInfo.idade.locked.length > 0){
+      var idadeWrapper = document.querySelector('#idade-wrapper')
+      var selectWrapper = idadeWrapper.querySelector('div.input-group')
+      var htmlSelect = document.createElement('select')
+
+      selectWrapper.classList.add('disabled-lock')
+      htmlSelect.setAttribute('required','')
+      htmlSelect.classList.add('custom-select', 'disabled-lock')
+      htmlSelect.id = 'idade'
+      selectWrapper.appendChild(htmlSelect)
+
+      for (var i = 0; i < pacientInfo.idade.locked.length; i++) {
+        option = document.createElement('option')
+        option.value = pacientInfo.idade.locked[i]
+        option.innerHTML = pacientInfo.idade.locked[i]+' anos'
+        htmlSelect.appendChild(option)
+
+
+      }
+    }
     ////////////////////////////////// ORIGEM ///////////////////////////////////////////////////
-    if (pacientInfo.origem.open) {
+    if (pacientInfo.origem.open && pacientInfo.origem.open.length > 0) {
       var idadeWrapper = document.querySelector('#origem-wrapper')
       var selectWrapper = idadeWrapper.querySelector('div.input-group')
       var htmlSelect = document.createElement('select')
@@ -509,11 +784,29 @@ class Prognosis {
         htmlSelect.appendChild(option)
       }
     }
+    if (pacientInfo.origem.locked && pacientInfo.origem.locked.length > 0) {
+      var idadeWrapper = document.querySelector('#origem-wrapper')
+      var selectWrapper = idadeWrapper.querySelector('div.input-group')
+      var htmlSelect = document.createElement('select')
+
+      selectWrapper.classList.add('disabled-lock')
+      htmlSelect.classList.add('custom-select', 'disabled-lock')
+      htmlSelect.setAttribute('required','')
+      htmlSelect.id = 'origem'
+      selectWrapper.appendChild(htmlSelect)
+
+      for (var i = 0; i < pacientInfo.origem.locked.length; i++) {
+        option = document.createElement('option')
+        option.value = pacientInfo.origem.locked[i]
+        option.innerHTML = pacientInfo.origem.locked[i]
+        htmlSelect.appendChild(option)
+      }
+    }
 
     ////////////////////////////////////////////////////////////////////////////////////////////
     function objectfyPlayerOptions(fnVariable, fnWrapper, fnPrependTxt){
       const mainWrapper = document.querySelector('#'+fnWrapper)
-      if(pacientInfo[fnVariable].locked){
+      if(pacientInfo[fnVariable].locked) {
         for (var i = 0; i < pacientInfo[fnVariable].locked.length; i++) {
           var keyText = Object.keys(pacientInfo[fnVariable].locked[i])[0]
           var keyId = Prognosis.i.removeAccent(keyText).replace(new RegExp('[ ]','ig'), '-')
@@ -524,11 +817,10 @@ class Prognosis {
           .replace(/\[id\]/ig, keyId)
           mainWrapper.appendChild(template.content.cloneNode(true))
           var textSelect = document.querySelector('#options-'+keyId+'-wrapper')
-          if(pacientInfo[fnVariable].locked[i][keyText]['values'].length == 2 &&
+          if(pacientInfo[fnVariable].locked[i][keyText]['values'].length == 1 &&
           (pacientInfo[fnVariable].locked[i][keyText]['values'][0] == "Sim" ||
-          pacientInfo[fnVariable].locked[i][keyText]['values'][1] == "Sim"))
+          pacientInfo[fnVariable].locked[i][keyText]['values'][0] == "Não"))
           {
-
             var template = document.createElement('template')
             // template.innerHTML = Prognosis.playerOptionInputDisabled
             // .replace(/\[value\]/ig, keyText)
@@ -549,62 +841,125 @@ class Prognosis {
               .replace(/\[value\]/ig, (value))
               .replace(/\[valueText\]/ig, value)
               textSelect.appendChild(template.content.cloneNode(true))
+              textSelect.querySelector('#'+(keyId+'-'+Prognosis.i.removeAccent(value))).checked = true
             }
 
-          }else if (pacientInfo[fnVariable].locked[i][keyText]['cascade'] &&
-          pacientInfo[fnVariable].locked[i][keyText]['cascade'] == 'true'){
+          }else if (pacientInfo[fnVariable].locked[i][keyText]['cascade']
+          && pacientInfo[fnVariable].locked[i][keyText]['cascade'] == 'true'){
             var template = document.createElement('template')
-            template.innerHTML = Prognosis.playerOptionCheckbox
-            .replace(/\[id\]/ig, keyId)
-            .replace(/\[value\]/ig, keyText)
-            .replace(/\[valueText\]/ig, keyText)
-            textSelect.appendChild(template.content.cloneNode(true))
             var cascadeDiv = document.createElement('div')
+
+            if(pacientInfo[fnVariable].locked[i][keyText]['radioYN']){
+              template = document.createElement('template')
+              // template.innerHTML = Prognosis.playerOptionInputDisabled
+              // .replace(/\[value\]/ig, keyText)
+              // .replace(/\[id\]/ig, '')
+              // textSelect.appendChild(template.content.cloneNode(true))
+              var obj = document.querySelector('#options-'+ keyId+'-wrapper')
+              obj.prependTxt = obj.parentElement.querySelector('.input-group-prepend')
+              obj.prependTxt.copy = document.createElement('label')
+              obj.prependTxt.copy.classList.add('input-group-text')
+              obj.prependTxt.copy.textContent = keyText
+              obj.prependTxt.appendChild(obj.prependTxt.copy)
+              template = document.createElement('template')
+              if(pacientInfo[fnVariable].locked[i][keyText]['values']
+              && pacientInfo[fnVariable].locked[i][keyText]['values'].length > 0){
+                template = document.createElement('template')
+                template.innerHTML = Prognosis.playerOptionRadio
+                .replace(/\[id\]/ig, keyId+'-sim')
+                .replace(/\[name\]/ig, keyId)
+                .replace(/\[value\]/ig, 'Sim')
+                .replace(/\[valueText\]/ig, 'Sim')
+                textSelect.appendChild(template.content.cloneNode(true))
+                textSelect.querySelector('#'+(keyId+'-sim')).checked = true
+              }else{
+                template.innerHTML = Prognosis.playerOptionRadio
+                .replace(/\[id\]/ig, keyId+'-nao')
+                .replace(/\[name\]/ig, keyId)
+                .replace(/\[value\]/ig, 'Não')
+                .replace(/\[valueText\]/ig, 'Não')
+                textSelect.appendChild(template.content.cloneNode(true))
+                textSelect.querySelector('#'+(keyId+'-nao')).checked = true
+              }
+            }else{
+              template = document.createElement('template')
+              template.innerHTML = Prognosis.playerOptionCheckbox
+              .replace(/\[id\]/ig, keyId)
+              .replace(/\[value\]/ig, keyText)
+              .replace(/\[valueText\]/ig, keyText)
+              textSelect.appendChild(template.content.cloneNode(true))
+              textSelect.querySelector('#'+ keyId).checked = true
+            }
+
             cascadeDiv.id = keyId + '-wrapper'
-            cascadeDiv.classList.add('progn-multi-wrapper','d-none', 'border', 'rounded')
-            // cascadeDiv.setAttribute('disabled','')
-            cascadeDiv.style.backgroundColor = "#b5b5b5"
+            if(pacientInfo[fnVariable].locked[i][keyText]['values'].length > 0){
+              cascadeDiv.classList.add('border', 'rounded')
+              // cascadeDiv.setAttribute('disabled','')
+              cascadeDiv.style.backgroundColor = "#b5b5b5"
+            }
             textSelect.appendChild(cascadeDiv)
             for (var z = 0; z < pacientInfo[fnVariable].locked[i][keyText]['values'].length; z++) {
               var valueText = pacientInfo[fnVariable].locked[i][keyText]['values'][z]
               var valueId = Prognosis.i.removeAccent(valueText).replace(new RegExp('[ ]','ig'), '-')
-              if(pacientInfo[fnVariable].locked[i][keyText]['values'].length == 2){
+              if((pacientInfo[fnVariable].locked[i][keyText]['values'].length == 2
+              || pacientInfo[fnVariable].locked[i][keyText]['uniqueValues'] &&
+              pacientInfo[fnVariable].locked[i][keyText]['uniqueValues'] == 'true')
+              && (!pacientInfo[fnVariable].locked[i][keyText]['multipleValues'] ||
+              pacientInfo[fnVariable].locked[i][keyText]['multipleValues'] != 'true')){
                 template = document.createElement('template')
                 template.innerHTML = Prognosis.playerOptionRadio
                 .replace(/\[id\]/ig, valueId)
                 .replace(/\[name\]/ig, keyId+'-value')
                 .replace(/\[value\]/ig, (valueText))
                 .replace(/\[valueText\]/ig, valueText)
-                document.querySelector('#'+(keyId)+'-wrapper').appendChild(template.content.cloneNode(true))
-
+                textSelect.querySelector('#'+cascadeDiv.id).appendChild(template.content.cloneNode(true))
+                textSelect.querySelector('#'+valueId).checked = true
+              }else if (pacientInfo[fnVariable].locked[i][keyText]['multipleValues'] ||
+              pacientInfo[fnVariable].locked[i][keyText]['multipleValues'] == 'true'){
+                template = document.createElement('template')
+                template.innerHTML = Prognosis.playerOptionCheckbox
+                .replace(/\[id\]/ig, valueId)
+                .replace(/\[value\]/ig, valueText)
+                .replace(/\[valueText\]/ig, valueText)
+                textSelect.querySelector('#'+(keyId)+'-wrapper').appendChild(template.content.cloneNode(true))
+                textSelect.querySelector('#'+valueId).checked = true
               }else{
                 template = document.createElement('template')
                 template.innerHTML = Prognosis.playerOptionCheckbox
                 .replace(/\[id\]/ig, valueId)
                 .replace(/\[value\]/ig, valueText)
                 .replace(/\[valueText\]/ig, valueText)
-                document.querySelector('#'+(keyId)+'-wrapper').appendChild(template.content.cloneNode(true))
+                textSelect.querySelector('#'+(keyId)+'-wrapper').appendChild(template.content.cloneNode(true))
+                textSelect.querySelector('#'+valueId).checked = true
               }
+
             }
             if(pacientInfo[fnVariable].locked[i][keyText]['child']){
+              var cascadeDivChild = document.createElement('div')
+              cascadeDivChild.id = keyId+'-value'+ '-wrapper'
+              cascadeDivChild.classList.add('border', 'rounded')
+              // cascadeDiv.setAttribute('disabled','')
+              cascadeDivChild.style.backgroundColor = "#cebfbf"
+              cascadeDiv.appendChild(cascadeDivChild)
               for (var z = 0; z < pacientInfo[fnVariable].locked[i][keyText]['child'].length; z++) {
-                var valueText = pacientInfo[fnVariable].locked[i][keyText]['child'][z]
-                var valueId = Prognosis.i.removeAccent(valueText).replace(new RegExp('[ ]','ig'), '-')
+                var childText = pacientInfo[fnVariable].locked[i][keyText]['child'][z]
+                var childId = Prognosis.i.removeAccent(childText).replace(new RegExp('[ ]','ig'), '-')
                 if(pacientInfo[fnVariable].locked[i][keyText]['child'].length == 2){
                   template = document.createElement('template')
                   template.innerHTML = Prognosis.playerOptionRadio
-                  .replace(/\[id\]/ig, valueId)
-                  .replace(/\[name\]/ig, keyId+'-value')
-                  .replace(/\[value\]/ig, (valueText))
-                  .replace(/\[valueText\]/ig, valueText)
-                  document.querySelector('#'+(keyId)+'-wrapper').appendChild(template.content.cloneNode(true))
-
+                  .replace(/\[id\]/ig, childId)
+                  .replace(/\[name\]/ig, childId+'-value')
+                  .replace(/\[valueText\]/ig, childText)
+                  textSelect.querySelector('#'+cascadeDivChild.id).appendChild(template.content.cloneNode(true))
+                  textSelect.querySelector('#'+childId).checked = true
                 }else{
                   template = document.createElement('template')
                   template.innerHTML = Prognosis.playerOptionCheckbox
-                  .replace(/\[id\]/ig, valueId)
-                  .replace(/\[value\]/ig, valueText)
-                  .replace(/\[valueText\]/ig, valueText)
+                  .replace(/\[id\]/ig, childId)
+                  .replace(/\[value\]/ig, childText)
+                  .replace(/\[valueText\]/ig, childText)
+                  textSelect.querySelector('#'+cascadeDivChild.id).appendChild(template.content.cloneNode(true))
+                  textSelect.querySelector('#'+childId).checked = true
                 }
               }
             }
@@ -632,35 +987,24 @@ class Prognosis {
               var template = document.createElement('template')
               template.innerHTML = Prognosis.playerOptionRadio
               .replace(/\[name\]/ig, keyId)
-              .replace(/\[id\]/ig, (keyId+'-'+Prognosis.i.removeAccent(value)))
+              .replace(/\[id\]/ig, (keyId+'-'+Prognosis.i.removeAccent(value).replace(new RegExp('[ ]','ig'), '-')))
               .replace(/\[value\]/ig, (value))
               .replace(/\[valueText\]/ig, value)
               textSelect.appendChild(template.content.cloneNode(true))
+              textSelect.querySelector('#'+(keyId+'-'+Prognosis.i.removeAccent(value).replace(new RegExp('[ ]','ig'), '-'))).checked = true
             }
           }
           else{
-            var template = document.createElement('template')
-            // template.innerHTML = Prognosis.playerOptionInputDisabled
-            // .replace(/\[value\]/ig, keyText)
-            // .replace(/\[id\]/ig, keyId)
-            // textSelect.appendChild(template.content.cloneNode(true))
+            // document.querySelector('#options-'+keyId+'-wrapper').appendChild(template.content.cloneNode(true))
             var obj = document.querySelector('#options-'+ keyId+'-wrapper')
             obj.prependTxt = obj.parentElement.querySelector('.input-group-prepend')
             obj.prependTxt.copy = document.createElement('label')
             obj.prependTxt.copy.classList.add('input-group-text')
             obj.prependTxt.copy.textContent = keyText
             obj.prependTxt.appendChild(obj.prependTxt.copy)
-            // if((pacientInfo[fnVariable].locked[i][keyText]['child'] ||
-            // pacientInfo[fnVariable].locked[i][keyText]['values'].length != 2) &&
-            // (pacientInfo[fnVariable].locked[i][keyText]['values'][0] != "Sim" &&
-            // pacientInfo[fnVariable].locked[i][keyText]['values'][1] != "Não"))
-            // {
-
             for (var k = 0; k < pacientInfo[fnVariable].locked[i][keyText]['values'].length; k++) {
-              // console.log(pacientInfo[fnVariable].locked[i][keyText]['values'][k])
               var valueText = pacientInfo[fnVariable].locked[i][keyText]['values'][k]
               var valueId = Prognosis.i.removeAccent(valueText).replace(new RegExp('[ ]','ig'), '-')
-
               var template = document.createElement('template')
               var html = Prognosis.playerOptionCheckbox
 
@@ -670,32 +1014,69 @@ class Prognosis {
               .replace(/\[id\]/ig, valueId)
               var optionsWrapper = mainWrapper.querySelector('#options-'+keyId+'-wrapper')
               optionsWrapper.appendChild(template.content.cloneNode(true))
-              if(pacientInfo[fnVariable].locked[i][keyText]['values'].length == 1){
-                optionsWrapper.querySelector('#'+valueId).setAttribute('checked','')
-
-              }
+              optionsWrapper.querySelector('#'+valueId).checked = true
             }
             if(pacientInfo[fnVariable].locked[i][keyText]['child']){
               var template = document.createElement('template')
               var html = Prognosis.playerOption
 
-              template.innerHTML = html
-              .replace(/\[prependText\]/ig, 'Motivo | Cirurgia eletiva')
-              .replace(/\[id\]/ig, valueId)
-              mainWrapper.appendChild(template.content.cloneNode(true))
-              for (var j = 0; j < pacientInfo[fnVariable].locked[i][keyText]['child'].length; j++) {
+              // template.innerHTML = html
+              // .replace(/\[prependText\]/ig, 'Motivo')
+              // .replace(/\[id\]/ig, valueId)
+              // mainWrapper.appendChild(template.content.cloneNode(true))
+              // for (var j = 0; j < pacientInfo[fnVariable].locked[i][keyText]['child'].length; j++) {
+              //   console.log('============ child values')
+              //   console.log(pacientInfo[fnVariable].locked[i][keyText]['child'][j])
 
-              }
+              // }
             }
 
-            // }
+
           }
 
         }
       }
       if(pacientInfo[fnVariable].open){
-        /////Verify if has multi option, then create enough selects +TODO+
         for (var i = 0; i < pacientInfo[fnVariable].open.length; i++) {
+          // if (pacientInfo[fnVariable].open[i]['groupedOption']) {
+          //   console.log('============')
+          //   var keyText = Object.keys(pacientInfo[fnVariable].open[i])[0]
+          //   var keyId = Prognosis.i.removeAccent(keyText).replace(new RegExp('[ ]','ig'), '-')
+          //   var template = document.createElement('template')
+          //   var html = Prognosis.playerGroupedOption
+          //   template.innerHTML = html
+          //   .replace(/\[prependText\]/ig, keyText+i)
+          //   .replace(/\[id\]/ig, keyId)
+          //   mainWrapper.appendChild(template.content.cloneNode(true))
+          //   for (var z = 0; z < pacientInfo[fnVariable].open[i]['groupedOption'].length; z++) {
+          //     for (var k = 0; k < Object.keys(pacientInfo[fnVariable].open[i]['groupedOption'][z]).length; k++) {
+          //       console.log('============a')
+          //       console.log(Object.entries(pacientInfo[fnVariable].open[i]['groupedOption'][z]))
+          //       var optionText = Object.keys(pacientInfo[fnVariable].open[i]['groupedOption'][z])[k]
+          //       var optionId = Prognosis.i.removeAccent(optionText).replace(new RegExp('[ ]','ig'), '-')
+          //       var value = pacientInfo[fnVariable].open[i]['groupedOption'][z]
+          //         [Object.keys(pacientInfo[fnVariable].open[i]['groupedOption'][z])[k]]['values'][0]
+          //       var textSelect = document.querySelector('#options-'+keyId+'-wrapper')
+          //
+          //       var template = document.createElement('template')
+          //       template.innerHTML = Prognosis.playerOptionRadio
+          //       .replace(/\[name\]/ig, optionId)
+          //       .replace(/\[id\]/ig, (optionId+'-'+Prognosis.i.removeAccent(value)))
+          //       .replace(/\[value\]/ig, (value))
+          //       .replace(/\[valueText\]/ig, value)
+          //       textSelect.appendChild(template.content.cloneNode(true))
+          //       var prependOption = document.createElement('label')
+          //       prependOption.classList.add('input-group-text')
+          //       prependOption.innerHTML = optionText
+          //       var optionContainer = textSelect.querySelector('#'+(optionId+'-'+Prognosis.i.removeAccent(value)))
+          //       console.log('============')
+          //       console.log(optionContainer)
+          //       optionContainer.parentElement.insertBefore(template.content.cloneNode(true), optionContainer)
+          //       /*<label class="input-group-text">Temperatura</label>*/
+          //     }
+          //
+          //   }
+          // }
           var keyText = Object.keys(pacientInfo[fnVariable].open[i])[0]
           var keyId = Prognosis.i.removeAccent(keyText).replace(new RegExp('[ ]','ig'), '-')
           var template = document.createElement('template')
@@ -949,6 +1330,22 @@ class Prognosis {
   </div>
   <div class="d-flex flex-grow-1 border col" id="options-[id]-wrapper">
   </div>
+  </div>
+  `
+  Prognosis.playerGroupedOption =
+  `
+  <div class="input-group mb-2 d-flex no-gutters">
+    <div class="input-group-prepend ">
+      <label class="input-group-text">[prependText]</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="checkbox" name="" id="[id]" value="">
+      <label class="form-check-label" for="[id]">Activate</label>
+    </div>
+    <div class="w-100">
+    </div>
+    <div class="d-flex flex-grow-1 border col flex-wrap" id="options-[id]-wrapper">
+    </div>
   </div>
   `
   Prognosis.playerOptionCheckbox = `

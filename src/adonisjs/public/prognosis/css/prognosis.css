@@ -165,7 +165,7 @@ nav.navbar {
   background-color: #e9ecef;
   opacity: 0.8
 }
-.disabled-locked::after{
+.disabled-lock::after{
   font-family: "Font Awesome 5 Free";
   content: "\f023";
   font-weight: 800;
