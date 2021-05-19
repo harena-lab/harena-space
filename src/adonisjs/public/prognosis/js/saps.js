@@ -141,15 +141,6 @@ class Saps {
               comorb.intAntesAdm = 0
             }
             break;
-          // case 'infectado-antes-da-admissao':
-          // switch (elem.value) {
-          //   case 'Sim':
-          //   comorb.infectAntesAdm = true
-          //   break;
-          //   case 'Não':
-          //   comorb.infectAntesAdm = false
-          //   break;
-          // }
           case 'infectado-antes-da-admissao-value':
             switch (elem.value) {
               case 'Nosocomial':
@@ -482,135 +473,56 @@ class Saps {
       }
     }
     motvAdm.uti = 16
-    // if(motvAdm.admClinicaArritmia > 0 && motvAdm.admClinicaColvusao > 0)
-    //   motvAdm.admClinicaArritmia = 0
-    // if(comorb.cancerHemat > 0 && comorb.sida > 0){
-    //   comorb.cancerHemat = comorb.cancerHemat*2
-    //   comorb.sida = comorb.sida*2
-    // }
-    var resultWrapper = document.querySelector('#idade-result-wrapper')
-    var oldResult = resultWrapper.querySelectorAll('h6')
-    for (var i = 0; i < oldResult.length; i++) {
-      oldResult[i].remove()
-    }
-    var resultText = document.createElement('h6')
-    resultText.classList.add('pl-2')
-    resultText.innerHTML = "idade: "+idade
-    resultWrapper.appendChild(resultText)
+
     console.log('============ idade')
     console.log(idade)
-    var resultWrapper = document.querySelector('#origem-result-wrapper')
-    var oldResult = resultWrapper.querySelectorAll('h6')
-    for (var i = 0; i < oldResult.length; i++) {
-      oldResult[i].remove()
-    }
-    var resultText = document.createElement('h6')
-    resultText.classList.add('pl-2')
-    resultText.innerHTML = "origem: "+origem
-    resultWrapper.appendChild(resultText)
+
     console.log('============ origem')
     console.log(origem)
-    /*
-    // console.log('============ comorbidade')
-    // console.log(comorb)
-    // console.log(comorb.icNyhaIv+' '+comorb.cancerMetast+' '+comorb.terapiaOncol+' '+comorb.cancerHemat
-    // +' '+comorb.cirrose+' '+comorb.sida+' '+comorb.intAntesAdm+' '+comorb.infectAntesAdm)
-    // console.log('============ motivo adm')
-    // console.log(motvAdm)
-    // console.log(motvAdm.admPlanejada+' '+motvAdm.submCirurgia+' '+motvAdm.motvCirurgia+' '+motvAdm.submCirurgiaNrcAvc+' '+motvAdm.submCirurgiaTrauma
-    // +' '+motvAdm.submCirurgiaTransplante+' '+motvAdm.submCirurgiaOutro+' '+motvAdm.admClinicaArritmia+' '+motvAdm.admClinicaColvusao+' '+motvAdm.admClinicaChoqueHipo
-    // +' '+motvAdm.admClinicaOutroChoque+' '+motvAdm.admClinicaPancreatite)
-    // console.log('============ statsClinico')
-    // console.log(statsClinico)
-    // console.log(statsClinico.temp+' '+statsClinico.pressSist+' '+statsClinico.drogaVaso)
-    // console.log('============ alt lab')
-    // console.log(altLab)
-    // console.log(altLab.bilirrubina+' '+altLab.creatinina+' '+altLab.ph+' '+altLab.leucocitos+' '+altLab.plaquetas+' '+altLab.oxigenacao)
-    // var saps3Score = (idade+origem+
-    //   comorb.icNyhaIv+comorb.cancerMetast+comorb.terapiaOncol+comorb.cancerHemat
-    //   +comorb.cirrose+comorb.sida+comorb.intAntesAdm+comorb.infectAntesAdm
-    //   +motvAdm.admPlanejada+motvAdm.submCirurgia+motvAdm.motvCirurgia+motvAdm.submCirurgiaNrcAvc+motvAdm.submCirurgiaTrauma
-    //   +motvAdm.submCirurgiaTransplante+motvAdm.submCirurgiaOutro+motvAdm.admClinicaArritmia+motvAdm.admClinicaColvusao+motvAdm.admClinicaChoqueHipo
-    //   +motvAdm.admClinicaOutroChoque+motvAdm.admClinicaPancreatite+statsClinico.temp+statsClinico.pressSist+statsClinico.drogaVaso
-    //   +altLab.bilirrubina+altLab.creatinina+altLab.ph+altLab.leucocitos+altLab.plaquetas+altLab.oxigenacao)
-    //
-    // console.log(saps3Score)
-    //
-    // console.log('============ logit')
-    // var logit = -32.6659+Math.log(saps3Score+20.5958)*7.3068
-    // console.log(logit)
-    //
-    // var mortalidade = Math.exp(logit)/ (1+ Math.exp(logit))
-    // console.log((Math.round(mortalidade*1000)/1000)*100)
-    */
+
     var dynamicScore = (idade + origem)
-    var resultWrapper = document.querySelector('#comorbidade-result-wrapper')
-    var oldResult = resultWrapper.querySelectorAll('h6')
-    for (var i = 0; i < oldResult.length; i++) {
-      oldResult[i].remove()
-    }
+
     for (var i = 0; i < Object.keys(comorb).length; i++) {
 
-      var resultText = document.createElement('h6')
-      resultText.classList.add('pl-2')
-      resultText.innerHTML = Object.entries(comorb)[i][0]+': '+Object.entries(comorb)[i][1]
-      resultWrapper.appendChild(resultText)
-      // console.log('============ comorb value')
-      // console.log(Object.entries(comorb)[i])
+      // var resultText = document.createElement('h6')
+      // resultText.classList.add('pl-2')
+      // resultText.innerHTML = Object.entries(comorb)[i][0]+': '+Object.entries(comorb)[i][1]
+      // resultWrapper.appendChild(resultText)
+      console.log('============ comorb value')
+      console.log(Object.entries(comorb)[i])
       dynamicScore += comorb[Object.keys(comorb)[i]]
 
     }
-    var resultWrapper = document.querySelector('#motivo-admissao-result-wrapper')
-    var oldResult = resultWrapper.querySelectorAll('h6')
-    for (var i = 0; i < oldResult.length; i++) {
-      oldResult[i].remove()
-    }
+
     for (var i = 0; i < Object.keys(motvAdm).length; i++) {
-      var resultText = document.createElement('h6')
-      resultText.classList.add('pl-2')
-      resultText.innerHTML = Object.entries(motvAdm)[i][0]+': '+Object.entries(motvAdm)[i][1]
-      resultWrapper.appendChild(resultText)
-      // console.log('============ motivo value')
-      // console.log(Object.entries(motvAdm)[i])
+      // var resultText = document.createElement('h6')
+      // resultText.classList.add('pl-2')
+      // resultText.innerHTML = Object.entries(motvAdm)[i][0]+': '+Object.entries(motvAdm)[i][1]
+      // resultWrapper.appendChild(resultText)
+      console.log('============ motivo value')
+      console.log(Object.entries(motvAdm)[i])
       dynamicScore += motvAdm[Object.keys(motvAdm)[i]]
     }
-    var resultWrapper = document.querySelector('#status-clinico-result-wrapper')
-    var oldResult = resultWrapper.querySelectorAll('h6')
-    for (var i = 0; i < oldResult.length; i++) {
-      oldResult[i].remove()
-    }
+
     for (var i = 0; i < Object.keys(statsClinico).length; i++) {
-      var resultText = document.createElement('h6')
-      resultText.classList.add('pl-2')
-      resultText.innerHTML = Object.entries(motvAdm)[i][0]+': '+Object.entries(motvAdm)[i][1]
-      resultWrapper.appendChild(resultText)
-      // console.log('============ stats value')
-      // console.log(Object.entries(statsClinico)[i])
+      // var resultText = document.createElement('h6')
+      // resultText.classList.add('pl-2')
+      // resultText.innerHTML = Object.entries(motvAdm)[i][0]+': '+Object.entries(motvAdm)[i][1]
+      // resultWrapper.appendChild(resultText)
+      console.log('============ stats value')
+      console.log(Object.entries(statsClinico)[i])
       dynamicScore += statsClinico[Object.keys(statsClinico)[i]]
     }
-    var resultWrapper = document.querySelector('#alt-lab-result-wrapper')
-    var oldResult = resultWrapper.querySelectorAll('h6')
-    for (var i = 0; i < oldResult.length; i++) {
-      oldResult[i].remove()
-    }
+
     for (var i = 0; i < Object.keys(altLab).length; i++) {
-      var resultText = document.createElement('h6')
-      resultText.classList.add('pl-2')
-      resultText.innerHTML = Object.entries(altLab)[i][0]+': '+Object.entries(altLab)[i][1]
-      resultWrapper.appendChild(resultText)
-      // console.log('============ alt lab value')
-      // console.log(Object.entries(altLab)[i])
+      // var resultText = document.createElement('h6')
+      // resultText.classList.add('pl-2')
+      // resultText.innerHTML = Object.entries(altLab)[i][0]+': '+Object.entries(altLab)[i][1]
+      // resultWrapper.appendChild(resultText)
+      console.log('============ alt lab value')
+      console.log(Object.entries(altLab)[i])
       dynamicScore += altLab[Object.keys(altLab)[i]]
     }
-    var resultWrapper = document.querySelector('#saps-result-wrapper')
-    var oldResult = resultWrapper.querySelectorAll('h6')
-    for (var i = 0; i < oldResult.length; i++) {
-
-      oldResult[i].remove()
-    }
-    var resultText = document.createElement('h6')
-    resultText.classList.add('pl-2')
-    resultText.innerHTML = 'SAPS-3 Score: '+ dynamicScore
 
     console.log('============ saps score ')
     console.log(dynamicScore)
@@ -626,14 +538,592 @@ class Saps {
 
     var mortalityDynamic = Math.exp(logitDynamic)/ (1+ Math.exp(logitDynamic))
     var mortalityPercentage = (Math.round(mortalityDynamic*1000)/1000)*100
-    resultWrapper.appendChild(resultText)
-    resultText = document.createElement('h6')
-    resultText.classList.add('pl-2')
-    resultText.innerHTML = 'Mortality: '+ (round(mortalityPercentage, 1))+'%'
-    resultWrapper.appendChild(resultText)
-    console.log((Math.round(round(mortalityPercentage, 1)+'%')))
+
+    console.log(round(mortalityPercentage, 1)+'%')
     // var modal = document.querySelector('#saps-result-modal')
+    if(document.querySelector('#idade-result-wrapper')){
+      var resultWrapper = document.querySelector('#idade-result-wrapper')
+      var oldResult = resultWrapper.querySelectorAll('h6')
+      for (var i = 0; i < oldResult.length; i++) {
+        oldResult[i].remove()
+      }
+      var resultText = document.createElement('h6')
+      resultText.classList.add('pl-2')
+      resultText.innerHTML = "idade: "+idade
+      resultWrapper.appendChild(resultText)
+
+      resultWrapper = document.querySelector('#origem-result-wrapper')
+      oldResult = resultWrapper.querySelectorAll('h6')
+      for (var i = 0; i < oldResult.length; i++) {
+        oldResult[i].remove()
+      }
+      resultText = document.createElement('h6')
+      resultText.classList.add('pl-2')
+      resultText.innerHTML = "origem: "+origem
+      resultWrapper.appendChild(resultText)
+
+
+      resultWrapper = document.querySelector('#comorbidade-result-wrapper')
+      oldResult = resultWrapper.querySelectorAll('h6')
+      for (var i = 0; i < oldResult.length; i++) {
+        oldResult[i].remove()
+      }
+      for (var i = 0; i < Object.keys(comorb).length; i++) {
+        resultText = document.createElement('h6')
+        resultText.classList.add('pl-2')
+        resultText.innerHTML = Object.entries(comorb)[i][0]+': '+Object.entries(comorb)[i][1]
+        resultWrapper.appendChild(resultText)
+      }
+
+      resultWrapper = document.querySelector('#motivo-admissao-result-wrapper')
+      oldResult = resultWrapper.querySelectorAll('h6')
+      for (var i = 0; i < oldResult.length; i++) {
+        oldResult[i].remove()
+      }
+      for (var i = 0; i < Object.keys(motvAdm).length; i++) {
+        resultText = document.createElement('h6')
+        resultText.classList.add('pl-2')
+        resultText.innerHTML = Object.entries(motvAdm)[i][0]+': '+Object.entries(motvAdm)[i][1]
+        resultWrapper.appendChild(resultText)
+      }
+
+      resultWrapper = document.querySelector('#status-clinico-result-wrapper')
+      oldResult = resultWrapper.querySelectorAll('h6')
+      for (var i = 0; i < oldResult.length; i++) {
+        oldResult[i].remove()
+      }
+      for (var i = 0; i < Object.keys(statsClinico).length; i++) {
+        resultText = document.createElement('h6')
+        resultText.classList.add('pl-2')
+        resultText.innerHTML = Object.entries(motvAdm)[i][0]+': '+Object.entries(motvAdm)[i][1]
+        resultWrapper.appendChild(resultText)
+      }
+
+      resultWrapper = document.querySelector('#alt-lab-result-wrapper')
+      oldResult = resultWrapper.querySelectorAll('h6')
+      for (var i = 0; i < oldResult.length; i++) {
+        oldResult[i].remove()
+      }
+      for (var i = 0; i < Object.keys(altLab).length; i++) {
+        resultText = document.createElement('h6')
+        resultText.classList.add('pl-2')
+        resultText.innerHTML = Object.entries(altLab)[i][0]+': '+Object.entries(altLab)[i][1]
+        resultWrapper.appendChild(resultText)
+      }
+
+      resultWrapper = document.querySelector('#saps-result-wrapper')
+      oldResult = resultWrapper.querySelectorAll('h6')
+      for (var i = 0; i < oldResult.length; i++) {
+
+        oldResult[i].remove()
+      }
+      resultText = document.createElement('h6')
+      resultText.classList.add('pl-2')
+      resultText.innerHTML = 'SAPS-3 Score: '+ dynamicScore
+      resultWrapper.appendChild(resultText)
+
+      resultText = document.createElement('h6')
+      resultText.classList.add('pl-2')
+      resultText.innerHTML = 'Mortality: '+ (round(mortalityPercentage, 1))+'%'
+      resultWrapper.appendChild(resultText)
+    }
+    if(document.querySelector('#saps-survival')){
+      document.querySelector('#saps-survival').value = 100 - (round(mortalityPercentage, 1))
+    }
+
     $('#saps-result-modal').modal('show')
+    if (new URL(document.location).pathname == '/prognosis/learn/player/'){
+      Saps.i.pacientOverview(pacientData)
+    }
+
+
+  }
+
+  async pacientOverview(pacientData){
+    var idade = ''
+    var origem = ''
+    var comorb = ''
+    var internadoAntes = ''
+    var infectadoAntes = ''
+    var admissao = ''
+    var submetidoCirurgia = ''
+    var submetidoUti = ''
+    var gcs = ''
+    var temperatura = ''
+    var freqCard = ''
+    var pressSist = ''
+    var drogaVaso = ''
+    var bilirrubina = ''
+    var creatinina = ''
+    var ph = ''
+    var leucocitos = ''
+    var plaquetas = ''
+    var oxigenacao = ''
+
+    for (var elem of pacientData.querySelectorAll('select')) {
+      if(elem.validity.valid){
+        switch (elem.id) {
+          case 'idade':
+            idade = elem.value
+            switch (idade) {
+              case '<40':
+              idade = 'menos que 40 anos'
+              break;
+              case '40-59':
+              idade = 'entre 40 e 59 anos'
+              break;
+              case '60-69':
+              idade = 'entre 60 e 69 anos'
+              break;
+              case '70-74':
+              idade = 'entre 70 e 74 anos'
+              break;
+              case '75-79':
+              idade = 'entre 75 e 79 anos'
+              break;
+              case '>=80':
+              idade = 'mais que 80 anos'
+              break;
+          }
+            break;
+          case 'origem':
+            origem = elem.value
+            switch (origem) {
+            case 'Pronto Socorro':
+            origem = 'do PRONTO SOCORRO'
+            break;
+            case 'Outra UTI':
+            origem = 'de OUTRA UTI'
+            break;
+            case 'Nenhuma das anteriores':
+            origem = 'de OUTRA UNIDADE'
+            break;
+          }
+            break;
+        }
+      }
+
+    }
+    for (var elem of pacientData.querySelectorAll('input[type=radio]')) {
+      if(elem.validity.valid && elem.checked){
+        // console.log(elem.name)
+        switch (elem.name) {
+          case 'ic-nyha-iv':
+          switch (elem.value) {
+            case 'Sim':
+            if(comorb.length>0)
+              comorb += 'e IC NYHA IV '
+            else
+              comorb += 'IC NYHA IV '
+            break;
+          }
+          break;
+          case 'cancer-metastatico':
+          switch (elem.value) {
+            case 'Sim':
+            if(comorb.length>0)
+              comorb += 'e CÂNCER METASTÁTICO '
+            else
+              comorb += 'CÂNCER METASTÁTICO '
+            break;
+          }
+          break;
+          case 'terapia-oncologica':
+
+          switch (elem.value) {
+            case 'Sim':
+            if(comorb.length>0)
+              comorb += 'e TRATAMENTO ONCOLÓGICO '
+            else
+              comorb += 'TRATAMENTO ONCOLÓGICO '
+            break;
+          }
+          break;
+          case 'cancer-hematologico':
+
+          switch (elem.value) {
+            case 'Sim':
+            if(comorb.length>0)
+              comorb += 'e CÂNCER HEMATOLÓGICO '
+            else
+              comorb += 'CÂNCER HEMATOLÓGICO '
+            break;
+          }
+          break;
+          case 'cirrose':
+
+          switch (elem.value) {
+            case 'Sim':
+            if(comorb.length>0)
+              comorb += 'e CIRROSE '
+            else
+              comorb += 'CIRROSE '
+            break;
+          }
+          break;
+          case 'sida':
+
+          switch (elem.value) {
+            case 'Sim':
+            if(comorb.length>0)
+              comorb += 'e SIDA '
+            else
+              comorb += 'SIDA '
+            break;
+          }
+          break;
+          case 'internado-antes-da-admissao-value':
+
+            switch (elem.value) {
+              case '<14 dias':
+                internadoAntes = 'menos de 14 DIAS'
+                break;
+              case '14-27 dias':
+                internadoAntes = 'entre 14 E 27 DIAS'
+                break;
+              case '>=28 dias':
+                internadoAntes = 'mais de 28 DIAS'
+                break;
+            }
+            break;
+          case 'infectado-antes-da-admissao-value':
+
+            switch (elem.value) {
+              case 'Nosocomial':
+                  infectadoAntes = 'NOSOCOMIAL'
+                break;
+              case 'Respiratória':
+                infectadoAntes = 'RESPIRATÓRIA'
+                break;
+            }
+            break;
+          break;
+          case 'admissao-planejada':
+
+          switch (elem.value) {
+            case 'Sim':
+            admissao = 'ELETIVAMENTE'
+            break;
+            case 'Não':
+            admissao = 'NÃO ELETIVAMENTE'
+            break;
+          }
+          break;
+          case 'submetido-a-cirurgia':
+
+          switch (elem.value) {
+            case 'Sim':
+            submetidoCirurgia = 'submetido à cirurgia de '
+            break;
+          }
+          break;
+          case 'submetido-a-cirurgia-value':
+            switch (elem.value) {
+              case 'Cirurgia eletiva':
+                submetidoCirurgia += 'ELETIVA '
+                break;
+              case 'Cirurgia urgência':
+              submetidoCirurgia += 'URGÊNCIA '
+                break;
+              default:
+
+            }
+            break;
+          case 'escala-de-coma-de-glasgow':
+
+          switch (elem.value) {
+            case '3-4':
+            gcs = '3 a 4'
+            break;
+            case '5':
+              gcs = '5'
+            break;
+            case '6':
+              gcs = '6'
+            break;
+            case '7-12':
+              gcs = 'entre 7 a 12'
+            break;
+            case '>=13':
+              gcs = '&#8805;13' //"&#8805;" is code for ">="
+            break;
+
+          }
+          break;
+          case 'temperatura':
+
+          switch (elem.value) {
+            case '<35 °C':
+            temperatura = '<35 °C'
+            break;
+            case '>=35 °C':
+            temperatura = '&#8805;35 °C' //"&#8805;" is code for ">="
+            break;
+          }
+          break;
+          case 'frequencia-cardiaca':
+
+          switch (elem.value) {
+            case '<120 bpm':
+            freqCard = '<120 bpm'
+            break;
+            case '120-159 bpm':
+            freqCard = '120-159 bpm'
+            break;
+            case '>=160 bpm':
+            freqCard = '>=160 bpm'
+            break;
+          }
+          break;
+          case 'pressao-sistolica':
+
+          switch (elem.value) {
+            case '<40 mmHg':
+            pressSist = '<40 mmHg'
+            break;
+            case '40-69 mmHg':
+            pressSist = '40-69 mmHg'
+            break;
+            case '70-119 mmHg':
+            pressSist = '70-119 mmHg'
+            break;
+            case '>=120 mmHg':
+            pressSist = '&#8805;120 mmHg' //"&#8805;" is code for ">="
+            break;
+          }
+          break;
+          case 'droga-vasoativa':
+
+          switch (elem.value) {
+            case 'Sim':
+            drogaVaso = 'em'
+            break;
+            case 'Não':
+            drogaVaso = 'sem'
+            break;
+          }
+          break;
+          case 'bilirrubina':
+
+          switch (elem.value) {
+            case '<2 mg/dl':
+            bilirrubina = '<2 mg/dl'
+            break;
+            case '2-6 mg/dl':
+            bilirrubina = '2-6 mg/dl'
+            break;
+            case '>=6 mg/dl':
+            bilirrubina = '&#8805;6 mg/dl' //"&#8805;" is code for ">="d
+            break;
+          }
+          break;
+          case 'creatinina':
+
+          switch (elem.value) {
+            case '<1.2 mg/dl':
+            creatinina = '<1.2 mg/dl'
+            break;
+            case '1.2-1.9 mg/dl':
+            creatinina = '1.2-1.9 mg/dl'
+            break;
+            case '2-3.4 mg/dl':
+            creatinina = '2-3.4 mg/dl'
+            break;
+            case '>=3.5 mg/dl':
+            creatinina = '&#8805;3.5 mg/dl' //"&#8805;" is code for ">="
+            break;
+          }
+          break;
+          case 'ph':
+          switch (elem.value) {
+            case '<=7.25':
+            ph = '&#8804;7.25'
+            break;
+            case '>7.25':
+            ph = '&#62;7.25'
+            break;
+          }
+          break;
+          case 'leucocitos':
+
+          switch (elem.value) {
+            case '<15mil /mm³':
+            leucocitos = '<15mil /mm³'
+            break;
+            case '>=15mil /mm³':
+            leucocitos = '&#8805;15mil /mm³' //"&#8805;" is code for ">="
+            break;
+          }
+          break;
+          case 'plaquetas':
+
+          switch (elem.value) {
+            case '<20mil /mm³':
+            plaquetas = '<20mil /mm³'
+            break;
+            case '20-49mil /mm³':
+            plaquetas = '20-49mil /mm³'
+            break;
+            case '50-99mil /mm³':
+            plaquetas = '50-99mil /mm³'
+            break;
+            case '>=100mil /mm³':
+            plaquetas = '&#8805;100mil /mm³'//"&#8805;" is code for ">="
+            break;
+          }
+          break;
+          case 'oxigenacao':
+
+          switch (elem.value) {
+            case 'paO2 >=60 sem VM':
+            oxigenacao = 'sem VM com paO2 &#8805;60'//"&#8805;" is code for ">="
+            break;
+            case 'pa02 <60 sem VM':
+            oxigenacao = 'sem VM com paO2 <60'
+            break;
+            case 'P/F<100 em VM':
+            oxigenacao = 'em VM com P/F <100'
+            break;
+            case 'P/F >=100 em VM':
+            oxigenacao = 'em VM com P/F &#8805;100'
+            break;
+          }
+          break;
+        }
+      }
+    }
+    for (var elem of pacientData.querySelectorAll('input[type=checkbox]')) {
+      if(elem.validity.valid){
+        // console.log(elem.id)
+        switch (elem.checked) {
+          case true:
+          switch (elem.id) {
+            case 'nrc-por-avc':
+            if(submetidoCirurgia.length>0)
+              submetidoCirurgia += 'e NCR sec. a AVC '
+            else
+              submetidoCirurgia += 'NCR sec. a AVC '
+            break;
+            case 'revascularizacao-miocardica':
+            submetidoCirurgia += 'REVASCULARIZAÇÃO MIOCÁRDICA '
+            break;
+            case 'trauma':
+            if(submetidoCirurgia.length>0)
+              submetidoCirurgia += 'e TRAUMA '
+            else
+              submetidoCirurgia += 'TRAUMA '
+            break;
+            case 'transplante':
+            if(submetidoCirurgia.length>0)
+              submetidoCirurgia += 'e TRANSPLANTE '
+            else
+              submetidoCirurgia += 'TRANSPLANTE '
+            break;
+            case 'arritmia':
+            if (submetidoUti.length>0)
+              submetidoUti += 'e ARRITMIA '
+            else
+              submetidoUti += 'ARRITMIA '
+            break;
+            case 'choque-hipovolemico':
+            if (submetidoUti.length>0)
+              submetidoUti += 'e CHOQUE HIPOVOLÊMICO '
+            else
+              submetidoUti += 'CHOQUE HIPOVOLÊMICO '
+            break;
+            case 'outro-choque':
+            if (submetidoUti.length>0)
+              submetidoUti += 'e OUTRO CHOQUE '
+            else
+              submetidoUti += 'OUTRO CHOQUE '
+            break;
+            case 'convulsao':
+            if (submetidoUti.length>0)
+              submetidoUti += 'e CONVULSÃO '
+            else
+              submetidoUti += 'CONVULSÃO '
+            break;
+            case 'abdome-agudo':
+            if (submetidoUti.length>0)
+              submetidoUti += 'e ABDOME AGUDO '
+            else
+              submetidoUti += 'ABDOME AGUDO '
+            break;
+            case 'pancreatite-grave':
+            if (submetidoUti.length>0)
+              submetidoUti += 'e PANCREATITE GRAVE '
+            else
+              submetidoUti += 'PANCREATITE GRAVE '
+            break;
+            case 'deficit-focal':
+            if (submetidoUti.length>0)
+              submetidoUti += 'e DÉFICIT FOCAL '
+            else
+              submetidoUti += 'DÉFICIT FOCAL '
+            break;
+            case 'efeito-de-massa-intracraniana':
+            if (submetidoUti.length>0)
+              submetidoUti += 'e EFEITO DE MASSA INTRACRANIANA '
+            else
+              submetidoUti += 'EFEITO DE MASSA INTRACRANIANA '
+            break;
+            case 'insuficiencia-hepatica':
+            if (submetidoUti.length>0)
+              submetidoUti += 'e INSUFICIÊNCIA HEPÁTICA '
+            else
+              submetidoUti += 'INSUFICIÊNCIA HEPÁTICA '
+            break;
+            case 'alteracao-do-nivel-de-consciencia':
+            if (submetidoUti.length>0)
+              submetidoUti += 'e ALTERAÇÃO DO NÍVEL DE CONSCIÊNCIA '
+            else
+              submetidoUti += 'ALTERAÇÃO DO NÍVEL DE CONSCIÊNCIA '
+            break;
+
+            case 'nosocomial':
+                infectadoAntes = 'NOSOCOMIAL'
+              break;
+            case 'respiratoria':
+              infectadoAntes = 'RESPIRATÓRIA'
+              break;
+
+          }
+          break;
+        }
+      }
+    }
+
+    var overviewText = Saps.overviewText
+    .replace(/\[_idade\]/ig, idade)
+    .replace(/\[_origem\]/ig, origem)
+    .replace(/\[_comorbidade\]/ig, comorb)
+    .replace(/\[_internadoDias\]/ig, internadoAntes)
+    .replace(/\[_ifeccao\]/ig, infectadoAntes)
+    .replace(/\[_admissao\]/ig, admissao)
+    .replace(/\[_submetidoCirurgia\]/ig, submetidoCirurgia)
+    .replace(/\[_submetidoUti\]/ig, submetidoUti)
+    .replace(/\[_gcs\]/ig, gcs)
+    .replace(/\[_temperatura\]/ig, temperatura)
+    .replace(/\[_freqCardiaca\]/ig, freqCard)
+    .replace(/\[_pressaoSistolica\]/ig, pressSist)
+    .replace(/\[_drogaVasoativa\]/ig, drogaVaso)
+    .replace(/\[_bilirrubina\]/ig, bilirrubina)
+    .replace(/\[_creatinina\]/ig, creatinina)
+    .replace(/\[_ph\]/ig, ph)
+    .replace(/\[_leucocitos\]/ig, leucocitos)
+    .replace(/\[_plaquetas\]/ig, plaquetas)
+    .replace(/\[_oxigenacao\]/ig, oxigenacao)
+
+    if(!document.querySelector('#pacient-overview-wrapper > h5')){
+      var txt = document.createElement('h5')
+      txt.innerHTML = overviewText
+      document.querySelector('#pacient-overview-wrapper').appendChild(txt)
+    }else {
+      var txt = document.querySelector('#pacient-overview-wrapper > h5')
+      txt.innerHTML = overviewText
+    }
+    console.log(overviewText)
+    $('#pacient-overview-modal').modal('show')
 
   }
 }
@@ -641,4 +1131,14 @@ class Saps {
 
 (function () {
   Saps.i = new Saps()
+
+  Saps.overviewText =
+  `
+  Paciente de [_idade], encaminhado [_origem], portador de [_comorbidade],
+  internado há [_internadoDias] antes da admissão, com infecção [_ifeccao]. Admitido [_admissao], [_submetidoCirurgia],
+  sendo encaminhado à UTI por [_submetidoUti]. À admissão, apresentava GCS de [_gcs], Temp [_temperatura],
+  FC [_freqCardiaca], PAS [_pressaoSistolica], [_drogaVasoativa] uso de DVA. A seguir, os exames da admissão:
+  Bilirrubina total [_bilirrubina]; Creatinina [_creatinina]; pH [_ph]; Leucócitos [_leucocitos]; Plaquetas [_plaquetas];
+  [_oxigenacao].
+  `
 })()

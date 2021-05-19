@@ -11,8 +11,16 @@ class Prognosis {
 
   async start (){
     Prognosis.i.expandMultiChoice()
-    if (new URL(document.location).pathname.includes('/prognosis/partials/pacient-info.html')) {
+    if (new URL(document.location).pathname == '/prognosis/learn/player/') {
       Prognosis.i.getPacientOptions()
+
+      const nextStep =  document.querySelector('#btn-next-step')
+      const fnGetAnswer = function (){
+        window.location.href = `/prognosis/learn/player/result?sapsCalc=${this.form.querySelector('#saps-survival').value}&playerCalc=${this.form.querySelector('#player-survival-rate').value}`
+        console.log(this.form.querySelector('#saps-survival').value)
+        console.log(this.form.querySelector('#player-survival-rate').value)
+      }
+      nextStep.addEventListener('click', fnGetAnswer)
     }
     if (new URL(document.location).pathname.includes('/prognosis/calculator')){
       Prognosis.i.getPacientOptions(true)
@@ -26,6 +34,7 @@ class Prognosis {
       }
       document.querySelector('#btn-update-idade-option').addEventListener('click', Prognosis.i.updatePacientVariableOption)
     }
+    Prognosis.i.playerResult()
   }
 
   async expandMultiChoice (){
@@ -469,12 +478,19 @@ class Prognosis {
       }
     } else {
       var pacientInfo = {
-        "dificuldade": "5",
+        "dificuldade": "1",
         "idade":{
           "locked": [
-            "<40"
+
           ],
-          "open": []
+          "open": [
+            "<40",
+            "40-59",
+            "60-69",
+            "70-74",
+            "75-79",
+            ">=80",
+          ]
         },
         "origem":{
           "locked": [],
@@ -563,10 +579,12 @@ class Prognosis {
           ],
         },
         "motivoAdmissao": {
-          "locked": [
+          "locked": [],
+          "open": [
             {
               "Admissão Planejada": {
                 "values":[
+                  "Não",
                   "Sim",
                 ]
               },
@@ -576,54 +594,52 @@ class Prognosis {
                 "cascade": "true",
                 "radioYN": "true",
                 "values": [
-                  "Cirurgia eletiva"
+                  "Cirurgia eletiva",
+                  "Cirurgia urgência",
                 ],
                 "child": [
-                  "Transplante"
+                  "NRC por AVC",
+                  "Revascularização miocárdica",
+                  "Trauma",
+                  "Transplante",
+                  "Outro",
                 ],
               },
             },
             {
               "Motivo de admissão na UTI": {
                 "values": [
-                  "Nenhum dos anteriores"
+                  "Arritmia",
+                  "Choque hipovolêmico",
+                  "Outro choque",
+                  "Convulsão",
+                  "Abdome agudo",
+                  "Pancreatite grave",
+                  "Déficit focal",
+                  "Efeito de massa intracraniana",
+                  "Insuficiência hepática",
+                  "Alteração do nível de consciência",
+                  "Nenhum dos anteriores",
                 ],
               },
             },
-          ],
-          "open": [
-
           ]
         },
         "statusClinico": {
-          "locked": [
+          "locked": [],
+          "open": [
             {
               "Escala de Coma de Glasgow": {
                 "uniqueValues":"true",
                 "values": [
+                  "3-4",
+                  "5",
+                  "6",
+                  "7-12",
                   ">=13",
                 ],
               },
             },
-            {
-              "Pressão sistólica": {
-                "uniqueValues":"true",
-                "values": [
-                  ">=120 mmHg",
-                ],
-              },
-            },
-            {
-              "Droga vasoativa": {
-                "uniqueValues":"true",
-                "values": [
-                  "Não",
-                ]
-              },
-            },
-          ],
-          "open": [
-
             {
               "Temperatura": {
                 "uniqueValues":"true",
@@ -643,7 +659,26 @@ class Prognosis {
                 ],
               },
             },
-
+            {
+              "Pressão sistólica": {
+                "uniqueValues":"true",
+                "values": [
+                  "<40 mmHg",
+                  "40-69 mmHg",
+                  "70-119 mmHg",
+                  ">=120 mmHg",
+                ],
+              },
+            },
+            {
+              "Droga vasoativa": {
+                "uniqueValues":"true",
+                "values": [
+                  "Não",
+                  "Sim",
+                ]
+              },
+            },
           ],
         },
         "alteracoesLab": {
@@ -1038,45 +1073,6 @@ class Prognosis {
       }
       if(pacientInfo[fnVariable].open){
         for (var i = 0; i < pacientInfo[fnVariable].open.length; i++) {
-          // if (pacientInfo[fnVariable].open[i]['groupedOption']) {
-          //   console.log('============')
-          //   var keyText = Object.keys(pacientInfo[fnVariable].open[i])[0]
-          //   var keyId = Prognosis.i.removeAccent(keyText).replace(new RegExp('[ ]','ig'), '-')
-          //   var template = document.createElement('template')
-          //   var html = Prognosis.playerGroupedOption
-          //   template.innerHTML = html
-          //   .replace(/\[prependText\]/ig, keyText+i)
-          //   .replace(/\[id\]/ig, keyId)
-          //   mainWrapper.appendChild(template.content.cloneNode(true))
-          //   for (var z = 0; z < pacientInfo[fnVariable].open[i]['groupedOption'].length; z++) {
-          //     for (var k = 0; k < Object.keys(pacientInfo[fnVariable].open[i]['groupedOption'][z]).length; k++) {
-          //       console.log('============a')
-          //       console.log(Object.entries(pacientInfo[fnVariable].open[i]['groupedOption'][z]))
-          //       var optionText = Object.keys(pacientInfo[fnVariable].open[i]['groupedOption'][z])[k]
-          //       var optionId = Prognosis.i.removeAccent(optionText).replace(new RegExp('[ ]','ig'), '-')
-          //       var value = pacientInfo[fnVariable].open[i]['groupedOption'][z]
-          //         [Object.keys(pacientInfo[fnVariable].open[i]['groupedOption'][z])[k]]['values'][0]
-          //       var textSelect = document.querySelector('#options-'+keyId+'-wrapper')
-          //
-          //       var template = document.createElement('template')
-          //       template.innerHTML = Prognosis.playerOptionRadio
-          //       .replace(/\[name\]/ig, optionId)
-          //       .replace(/\[id\]/ig, (optionId+'-'+Prognosis.i.removeAccent(value)))
-          //       .replace(/\[value\]/ig, (value))
-          //       .replace(/\[valueText\]/ig, value)
-          //       textSelect.appendChild(template.content.cloneNode(true))
-          //       var prependOption = document.createElement('label')
-          //       prependOption.classList.add('input-group-text')
-          //       prependOption.innerHTML = optionText
-          //       var optionContainer = textSelect.querySelector('#'+(optionId+'-'+Prognosis.i.removeAccent(value)))
-          //       console.log('============')
-          //       console.log(optionContainer)
-          //       optionContainer.parentElement.insertBefore(template.content.cloneNode(true), optionContainer)
-          //       /*<label class="input-group-text">Temperatura</label>*/
-          //     }
-          //
-          //   }
-          // }
           var keyText = Object.keys(pacientInfo[fnVariable].open[i])[0]
           var keyId = Prognosis.i.removeAccent(keyText).replace(new RegExp('[ ]','ig'), '-')
           var template = document.createElement('template')
@@ -1310,6 +1306,79 @@ class Prognosis {
     Prognosis.i.expandMultiChoice()
   }
 
+  async playerResult(){
+
+    var numbers = document.querySelectorAll('.roulette-number')
+    if (numbers) {
+      var fnSelectNum = function (){
+        var checkboxChild = this.querySelector('input')
+        if(!checkboxChild.checked){
+          checkboxChild.checked = true
+          this.style.backgroundColor = '#56c162'
+        }
+        else{
+          checkboxChild.checked = false
+          this.style.backgroundColor = '#f2f2f2'
+        }
+      }
+      for (var elem of numbers) {
+        elem.addEventListener('click', fnSelectNum)
+      }
+    }
+    if(new URL(document.location).searchParams.get('sapsCalc')
+    && new URL(document.location).searchParams.get('playerCalc')){
+      var playerGuess = new URL(document.location).searchParams.get('playerCalc')
+      var sapsCalc = new URL(document.location).searchParams.get('sapsCalc')
+      var playerTxt = document.querySelector('#player-guess')
+      var sapsText = document.querySelector('#saps-calc')
+      playerTxt.innerHTML = Prognosis.playerGuessTxt
+      .replace(/\[playerGuess\]/ig, playerGuess+'%')
+      sapsText.innerHTML = Prognosis.sapsCalcTxt
+      .replace(/\[sapsSurvival\]/ig, sapsCalc+'%')
+      .replace(/\[rouletteN\]/ig, Math.round(sapsCalc/10))
+    }
+
+  }
+
+  async spinRoulette(){
+    var n = []
+    var selectedNum = document.querySelectorAll('input[type="checkbox"]:checked')
+    for (var num of selectedNum) {
+      n.push(parseInt(num.value))
+
+    }
+
+
+    var rand = Math.floor(Math.random() * 10) + 1
+    var inputResult = document.querySelector('input[value="'+rand+'"]')
+    inputResult.parentElement.style.backgroundColor = 'red'
+    console.log('============ result')
+    console.log(rand)
+    console.log((n.includes(rand)?'survived':'dead'))
+    if(!document.querySelector('#roulette-result')){
+      var resultTxt = document.createElement('h5')
+      resultTxt.classList.add('text-light')
+      resultTxt.id = 'roulette-result'
+    }else {
+      var resultTxt = document.querySelector('#roulette-result')
+    }
+    var wrapper = document.querySelector('#form-pacient-info')
+    if(n.includes(rand)){
+      resultTxt.innerHTML = 'survived'
+      if(!document.querySelector('#roulette-result'))
+        wrapper.insertBefore(resultTxt, document.querySelector('.btn-info'))
+    }
+    else{
+      resultTxt.innerHTML = 'dead'
+      if(!document.querySelector('#roulette-result'))
+        wrapper.insertBefore(resultTxt, document.querySelector('.btn-info'))
+
+    }
+
+  }
+
+
+
 }
 (function () {
   Prognosis.i = new Prognosis()
@@ -1361,7 +1430,13 @@ class Prognosis {
   </div>`
 
   Prognosis.playerOptionInputDisabled = `
-
   <input class="form-control h-100" type="text" id="[id]" value="[value]" disabled>
+  `
+
+  Prognosis.playerGuessTxt = `
+  Você respondeu que a chance do paciente sobreviver era: [playerGuess]
+  `
+  Prognosis.sapsCalcTxt = `
+  A chance calculada é de: [sapsSurvival].<br>Essa porcentagem te dá direito à escolha de [rouletteN] números.
   `
 })()
