@@ -170,3 +170,9 @@ nav.navbar {
   content: "\f023";
   font-weight: 800;
 }
+
+.roulette-number{
+  background-color: #f2f2f2;
+  cursor: pointer;
+  #56c162
+}

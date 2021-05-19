@@ -24,7 +24,7 @@
   <script src="/infra/conditional-layout.js"></script>
 
   <script>
-    Basic.service.rootPath = '../../'
+    Basic.service.rootPath = '../../../'
   </script>
 
   <link rel="stylesheet" href="/lib/fontawesome-5-10-1/css/all.min.css">
@@ -117,39 +117,15 @@
         </div>
         <div class="modal-body">
           <form action="javascript:void(0);">
-            <!-- <div class="" id="pacient-overview-container">
-
-              <div class="border rounded" id="idade-overview-wrapper">
-                <h5 class="">Idade</h5>
-              </div>
-              <div class="border rounded" id="origem-overview-wrapper">
-                <h5 class="">Origem</h5>
-              </div>
-              <div class="border rounded" id="comorbidade-overview-wrapper">
-                <h5 class="">Comorbidade</h5>
-              </div>
-              <div class="border rounded" id="motivo-admissao-overview-wrapper">
-                <h5 class="">Contexto da admissão</h5>
-              </div>
-              <div class="border rounded" id="status-clinico-overview-wrapper">
-                <h5 class="">Status clínico</h5>
-              </div>
-              <div class="border rounded" id="alt-lab-overview-wrapper">
-                <h5 class="">Alterações laboratoriais</h5>
-              </div>
-              <div class="border rounded" id="saps-overview-wrapper">
-                <h5 class="">Saps-3 Score</h5>
-
-              </div>
-            </div> -->
             <div class="border rounded pl-2 py-1" id="pacient-overview-wrapper">
 
             </div>
             <div class="form-group mt-5">
               <label for="exampleInputEmail1">Na sua opinião, qual a chance desse paciente sobreviver a essa internação?</label>
-              <input type="text" class="form-control" id="player-survival-rate" aria-describedby="player-answer" placeholder="Digite sua resposta aqui..." required>
+              <input type="number" class="form-control" id="player-survival-rate" aria-describedby="player-answer" placeholder="Digite sua resposta aqui..." required>
             </div>
-            <button type="submit" class="btn btn-success">Próximo passo</button>
+            <input type="hidden" name="sapsSurvival" id="saps-survival" value="">
+            <button type="submit" class="btn btn-success" id="btn-next-step">Próximo passo</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
           </form>
         </div>
