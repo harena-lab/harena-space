@@ -116,7 +116,8 @@ class TokenController {
 
           TokenController.instance.changeHeaderButtons(endpointResponse.data)
         } else{
-          window.location.href = '/user'
+          sessionStorage.setItem('redirectBack', window.location.pathname)
+          window.location.href = '/user?redirected=""'
         }
       })
       .catch(function (error) {

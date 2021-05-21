@@ -2510,12 +2510,14 @@ class Prognosis {
 
     }
     var selectedPacient
-    if(localStorage.getItem('prognosis-current-lvl') || new URL(document.location).searchParams.get('diffic')){
+    if((localStorage.getItem('prognosis-current-lvl') && localStorage.getItem('prognosis-current-lvl') != 'null') || new URL(document.location).searchParams.get('diffic')){
       if(localStorage.getItem('prognosis-current-lvl') != new URL(document.location).searchParams.get('diffic')){
         localStorage.setItem('prognosis-current-lvl', new URL(document.location).searchParams.get('diffic'))
       }
       selectedPacient = pacientInfo.pacients[localStorage.getItem('prognosis-current-lvl')-1]
+      console.log(localStorage.getItem('prognosis-current-lvl'))
     }else{
+
       selectedPacient = pacientInfo.pacients[0]
       localStorage.setItem('prognosis-current-lvl', pacientInfo.pacients[0].dificuldade)
     }
