@@ -117,39 +117,15 @@
         </div>
         <div class="modal-body">
           <form action="javascript:void(0);">
-            <!-- <div class="" id="pacient-overview-container">
-
-              <div class="border rounded" id="idade-overview-wrapper">
-                <h5 class="">Idade</h5>
-              </div>
-              <div class="border rounded" id="origem-overview-wrapper">
-                <h5 class="">Origem</h5>
-              </div>
-              <div class="border rounded" id="comorbidade-overview-wrapper">
-                <h5 class="">Comorbidade</h5>
-              </div>
-              <div class="border rounded" id="motivo-admissao-overview-wrapper">
-                <h5 class="">Contexto da admissão</h5>
-              </div>
-              <div class="border rounded" id="status-clinico-overview-wrapper">
-                <h5 class="">Status clínico</h5>
-              </div>
-              <div class="border rounded" id="alt-lab-overview-wrapper">
-                <h5 class="">Alterações laboratoriais</h5>
-              </div>
-              <div class="border rounded" id="saps-overview-wrapper">
-                <h5 class="">Saps-3 Score</h5>
-
-              </div>
-            </div> -->
             <div class="border rounded pl-2 py-1" id="pacient-overview-wrapper">
 
             </div>
             <div class="form-group mt-5">
-              <label for="exampleInputEmail1">Na sua opinião, qual a chance desse paciente sobreviver a essa internação?</label>
-              <input type="text" class="form-control" id="player-survival-rate" aria-describedby="player-answer" placeholder="Digite sua resposta aqui..." required>
+              <label for="exampleInputEmail1">Na sua opinião, qual a chance (0 a 100) desse paciente sobreviver a essa internação?</label>
+              <input type="number" class="form-control" id="player-survival-rate" aria-describedby="player-answer" placeholder="Digite sua resposta aqui..." required>
             </div>
-            <button type="submit" class="btn btn-success">Próximo passo</button>
+            <input type="hidden" name="sapsSurvival" id="saps-survival" value="">
+            <button type="submit" class="btn btn-success" id="btn-next-step">Próximo passo</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
           </form>
         </div>
@@ -157,7 +133,7 @@
     </div>
   </div>
   <!-- <main role=""> -->
-  <div id="main-panel" class="d-flex flex-column vh-100 vw-100 scroll-y index-boot-padding bg-secondary">
+  <div id="main-panel" class="d-flex flex-column vh-100 vw-100 hidden-overflow index-boot-padding bg-secondary">
     <div class="d-flex flex-column w-lg-75 h-100 w-100 px-2 pb-4 debug-border bg-dark mx-auto scroll-y">
       <h1 class="debug-border txt-light my-5 text-center pacient-title">João V1</h1>
       <form id="form-pacient-info" action="javascript:void(0);">
@@ -197,7 +173,7 @@
         <div class="bg-light border rounded m-1 p-2" id="alt-lab-wrapper">
           <h2 class="border-bottom txt-light text-center">Alterações laboratoriais</h2>
         </div>
-        <button type="submit" name="btn-create-pacient" class="btn btn-success w-100" onclick="Saps.i.calcSaps3Score(this.form)"> Create pacient</button>
+        <button type="submit" id="btn-create-pacient" class="btn btn-success w-100"> Revisar as escolhas</button>
       </form>
       <div class="p-2">
 

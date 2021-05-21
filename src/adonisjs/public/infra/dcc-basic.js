@@ -39,7 +39,16 @@
           }
 
            setTimeout(function(){
-             window.location.href = '/'
+             if(new URL(document.location).searchParams.get('redirected')
+             && new URL(document.location).searchParams.get('redirected') != 'null'){
+               var redirectTo = sessionStorage.getItem('redirectBack')
+               sessionStorage.removeItem('redirectBack')
+               window.location.href = redirectTo
+             }else{
+               sessionStorage.removeItem('redirectBack')
+               window.location.href = '/'
+             }
+
            }, 2000)
         }else if (response['harena-login']['response'] === 'Email or password incorrect'){
           // console.log('login failed, password or email incorrect');
