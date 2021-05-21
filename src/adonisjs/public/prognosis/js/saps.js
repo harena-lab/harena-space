@@ -51,6 +51,30 @@ class Saps {
             break;
           }
             break;
+          default:
+            var optionSelected = elem.value
+            switch (optionSelected) {
+            case 'ic-nyha-iv':
+              comorb.icNyhaIv = 6
+              break;
+            case 'cancer-metastatico':
+              comorb.cancerMetast = 11
+              break;
+            case 'terapia-oncologica':
+              comorb.terapiaOncol = 3
+              break;
+            case 'cancer-hematologico':
+              comorb.cancerHemat = 6
+              break;
+            case 'cirrose':
+              comorb.cirrose = 8
+              break;
+            case 'sida':
+              comorb.sida = 8
+              break;
+            default:
+
+          }
         }
       }
 
