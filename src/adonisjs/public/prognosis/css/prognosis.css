@@ -160,7 +160,7 @@ nav.navbar {
 .bg-offwhite{
   background-color: #C8C8C8;
 }
-.disabled-lock{
+.disabled-lock, .disabled-look{
   pointer-events: none;
   background-color: #e9ecef;
   opacity: 0.8
