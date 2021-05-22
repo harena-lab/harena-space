@@ -885,6 +885,243 @@ class Saps {
           }
             break;
         }
+        switch (elem.value) {
+          case 'ic-nyha-iv':
+          if(comorb.length>0)
+            comorb += 'e IC NYHA IV '
+          else
+            comorb += 'IC NYHA IV '
+          break;
+            break;
+          case 'cancer-metastatico':
+            if(comorb.length>0)
+              comorb += 'e CÂNCER METASTÁTICO '
+            else
+              comorb += 'CÂNCER METASTÁTICO '
+            break;
+          case 'terapia-oncologica':
+            if(comorb.length>0)
+              comorb += 'e TRATAMENTO ONCOLÓGICO '
+            else
+              comorb += 'TRATAMENTO ONCOLÓGICO '
+            break;
+          case 'cancer-hematologico':
+            if(comorb.length>0)
+              comorb += 'e CÂNCER HEMATOLÓGICO '
+            else
+              comorb += 'CÂNCER HEMATOLÓGICO '
+            break;
+          case 'cirrose':
+            if(comorb.length>0)
+              comorb += 'e CIRROSE '
+            else
+              comorb += 'CIRROSE '
+            break;
+          case 'sida':
+            if(comorb.length>0)
+              comorb += 'e SIDA '
+            else
+              comorb += 'SIDA '
+            break;
+          case 'nrc-por-avc':
+            if(submetidoCirurgia.length>0)
+              submetidoCirurgia += 'e NCR sec. a AVC '
+            else
+              submetidoCirurgia += 'NCR sec. a AVC '
+            break;
+          case 'revascularizacao-miocardica':
+            if(submetidoCirurgia.length>0)
+                submetidoCirurgia += 'e REVASCULARIZAÇÃO MIOCÁRDICA '
+              else
+                submetidoCirurgia += 'REVASCULARIZAÇÃO MIOCÁRDICA '
+            break;
+          case 'trauma':
+            if(submetidoCirurgia.length>0)
+              submetidoCirurgia += 'e TRAUMA '
+            else
+              submetidoCirurgia += 'TRAUMA '
+            break;
+          case 'transplante':
+            if(submetidoCirurgia.length>0)
+              submetidoCirurgia += 'e TRANSPLANTE '
+            else
+              submetidoCirurgia += 'TRANSPLANTE '
+            break;
+          case 'arritmia':
+            if (submetidoUti.length>0)
+              submetidoUti += 'e ARRITMIA '
+            else
+              submetidoUti += 'ARRITMIA '
+            break;
+          case 'choque-hipovolemico':
+            if (submetidoUti.length>0)
+              submetidoUti += 'e CHOQUE HIPOVOLÊMICO '
+            else
+              submetidoUti += 'CHOQUE HIPOVOLÊMICO '
+            break;
+          case 'outro-choque':
+            if (submetidoUti.length>0)
+              submetidoUti += 'e OUTRO CHOQUE '
+            else
+              submetidoUti += 'OUTRO CHOQUE '
+            break;
+          case 'convulsao':
+            if (submetidoUti.length>0)
+              submetidoUti += 'e CONVULSÃO '
+            else
+              submetidoUti += 'CONVULSÃO '
+            break;
+          case 'abdome-agudo':
+            if (submetidoUti.length>0)
+              submetidoUti += 'e ABDOME AGUDO '
+            else
+              submetidoUti += 'ABDOME AGUDO '
+            break;
+          case 'pancreatite-grave':
+            if (submetidoUti.length>0)
+              submetidoUti += 'e PANCREATITE GRAVE '
+            else
+              submetidoUti += 'PANCREATITE GRAVE '
+            break;
+          case 'deficit-focal':
+            if (submetidoUti.length>0)
+              submetidoUti += 'e DÉFICIT FOCAL '
+            else
+              submetidoUti += 'DÉFICIT FOCAL '
+            break;
+          case 'efeito-de-massa-intracraniana':
+            if (submetidoUti.length>0)
+              submetidoUti += 'e EFEITO DE MASSA INTRACRANIANA '
+            else
+              submetidoUti += 'EFEITO DE MASSA INTRACRANIANA '
+            break;
+          case 'insuficiencia-hepatica':
+          if (submetidoUti.length>0)
+            submetidoUti += 'e INSUFICIÊNCIA HEPÁTICA '
+          else
+            submetidoUti += 'INSUFICIÊNCIA HEPÁTICA '
+            break;
+          case 'alteracao-do-nivel-de-consciencia':
+            if (submetidoUti.length>0)
+              submetidoUti += 'e ALTERAÇÃO DO NÍVEL DE CONSCIÊNCIA '
+            else
+              submetidoUti += 'ALTERAÇÃO DO NÍVEL DE CONSCIÊNCIA '
+            break;
+          case 'Nosocomial':
+              infectadoAntes = 'NOSOCOMIAL'
+            break;
+          case 'Respiratória':
+            infectadoAntes = 'RESPIRATÓRIA'
+            break;
+          case '<14 dias':
+              internadoAntes = 'menos de 14 DIAS'
+              break;
+          case '14-27 dias':
+            internadoAntes = 'entre 14 E 27 DIAS'
+            break;
+          case '>=28 dias':
+            internadoAntes = 'mais de 28 DIAS'
+            break;
+          case '3-4':
+            gcs = '3 a 4'
+            break;
+          case '5':
+            gcs = '5'
+            break;
+          case '6':
+            gcs = '6'
+            break;
+          case '7-12':
+            gcs = 'entre 7 a 12'
+            break;
+          case '>=13':
+            gcs = '&#8805;13' //"&#8805;" is code for ">="
+            break;
+          case '<35 °C':
+            temperatura = '<35 °C'
+            break;
+          case '>=35 °C':
+            temperatura = '&#8805;35 °C' //"&#8805;" is code for ">="
+            break;
+          case '<120 bpm':
+            freqCard = '<120 bpm'
+            break;
+          case '120-159 bpm':
+            freqCard = '120-159 bpm'
+            break;
+          case '>=160 bpm':
+            freqCard = '>=160 bpm'
+            break;
+          case '<40 mmHg':
+            pressSist = '<40 mmHg'
+            break;
+          case '40-69 mmHg':
+            pressSist = '40-69 mmHg'
+            break;
+          case '70-119 mmHg':
+            pressSist = '70-119 mmHg'
+            break;
+          case '>=120 mmHg':
+            pressSist = '&#8805;120 mmHg' //"&#8805;" is code for ">="
+            break;
+          case '<2 mg/dl':
+            bilirrubina = '<2 mg/dl'
+            break;
+          case '2-6 mg/dl':
+            bilirrubina = '2-6 mg/dl'
+            break;
+          case '>=6 mg/dl':
+            bilirrubina = '&#8805;6 mg/dl' //"&#8805;" is code for ">="d
+            break;
+            case '<1.2 mg/dl':
+              creatinina = '<1.2 mg/dl'
+              break;
+            case '1.2-1.9 mg/dl':
+              creatinina = '1.2-1.9 mg/dl'
+              break;
+            case '2-3.4 mg/dl':
+              creatinina = '2-3.4 mg/dl'
+              break;
+            case '>=3.5 mg/dl':
+              creatinina = '&#8805;3.5 mg/dl' //"&#8805;" is code for ">="
+              break;
+            case '<=7.25':
+              ph = '&#8804;7.25'
+              break;
+            case '>7.25':
+              ph = '&#62;7.25'
+              break;
+            case '<15mil /mm³':
+              leucocitos = '<15mil /mm³'
+              break;
+            case '>=15mil /mm³':
+              leucocitos = '&#8805;15mil /mm³' //"&#8805;" is code for ">="
+              break;
+            case '<20mil /mm³':
+              plaquetas = '<20mil /mm³'
+              break;
+            case '20-49mil /mm³':
+              plaquetas = '20-49mil /mm³'
+              break;
+            case '50-99mil /mm³':
+              plaquetas = '50-99mil /mm³'
+              break;
+            case '>=100mil /mm³':
+              plaquetas = '&#8805;100mil /mm³'//"&#8805;" is code for ">="
+              break;
+            case 'paO2 >=60 sem VM':
+              oxigenacao = 'sem VM com paO2 &#8805;60'//"&#8805;" is code for ">="
+              break;
+            case 'pa02 <60 sem VM':
+              oxigenacao = 'sem VM com paO2 <60'
+              break;
+            case 'P/F<100 em VM':
+              oxigenacao = 'em VM com P/F <100'
+              break;
+            case 'P/F >=100 em VM':
+              oxigenacao = 'em VM com P/F &#8805;100'
+              break;
+        }
       }
 
     }
@@ -1189,7 +1426,10 @@ class Saps {
               submetidoCirurgia += 'NCR sec. a AVC '
             break;
             case 'revascularizacao-miocardica':
-            submetidoCirurgia += 'REVASCULARIZAÇÃO MIOCÁRDICA '
+              if(submetidoCirurgia.length>0)
+                submetidoCirurgia += 'e REVASCULARIZAÇÃO MIOCÁRDICA '
+              else
+                submetidoCirurgia += 'REVASCULARIZAÇÃO MIOCÁRDICA '
             break;
             case 'trauma':
             if(submetidoCirurgia.length>0)
@@ -1277,6 +1517,43 @@ class Saps {
       }
     }
 
+    if(comorb.length > 0)
+      comorb = 'portador de '+comorb+','
+    if(internadoAntes.length > 0)
+      internadoAntes = ' internado há '+internadoAntes+' antes da admissão,'
+    else
+      internadoAntes = ' sem internação antes da admissão,'
+    if(infectadoAntes.length > 0)
+      infectadoAntes = ' com infecção '+infectadoAntes+'.'
+    else
+      infectadoAntes = ' sem infecção.'
+    if(admissao.length > 0)
+      admissao = ' Admitido '+admissao+','
+    if(submetidoCirurgia.length <= 0)
+      submetidoCirurgia = ' não submetido à cirurgia'
+    if(gcs.length > 0)
+      gcs = ' GCS de '+gcs+','
+    if(temperatura.length > 0)
+      temperatura = ' Temp '+temperatura+','
+    if(freqCard.length > 0)
+      freqCard = ' FC '+freqCard+','
+    if(pressSist.length > 0)
+      pressSist = ' PAS '+pressSist+','
+    if(pressSist.length > 0)
+      pressSist = ' PAS '+pressSist+','
+    if(bilirrubina.length > 0)
+      bilirrubina = ' Bilirrubina total '+bilirrubina+';'
+    if(creatinina.length > 0)
+      creatinina = ' Creatinina '+creatinina+';'
+    if(ph.length > 0)
+      ph = ' pH '+ph+';'
+    if(leucocitos.length > 0)
+      leucocitos = ' Leucócitos '+leucocitos+';'
+    if(plaquetas.length > 0)
+      plaquetas = ' Plaquetas '+plaquetas+';'
+    if(plaquetas.length > 0)
+      plaquetas = ' Plaquetas '+plaquetas+';'
+
     var overviewText = Saps.overviewText
     .replace(/\[_idade\]/ig, idade)
     .replace(/\[_origem\]/ig, origem)
@@ -1318,11 +1595,10 @@ class Saps {
 
   Saps.overviewText =
   `
-  Paciente de [_idade], encaminhado [_origem], portador de [_comorbidade],
-  internado há [_internadoDias] antes da admissão, com infecção [_ifeccao]. Admitido [_admissao], [_submetidoCirurgia],
-  sendo encaminhado à UTI por [_submetidoUti]. À admissão, apresentava GCS de [_gcs], Temp [_temperatura],
-  FC [_freqCardiaca], PAS [_pressaoSistolica], [_drogaVasoativa] uso de DVA. A seguir, os exames da admissão:
-  Bilirrubina total [_bilirrubina]; Creatinina [_creatinina]; pH [_ph]; Leucócitos [_leucocitos]; Plaquetas [_plaquetas];
-  [_oxigenacao].
+  Paciente de [_idade], encaminhado [_origem], portador de [_comorbidade]
+  [_internadoDias][_ifeccao] Admitido [_admissao][_submetidoCirurgia],
+  sendo encaminhado à UTI por [_submetidoUti]. À admissão, apresentava[_gcs][_temperatura]
+  [_freqCardiaca][_pressaoSistolica][_drogaVasoativa] uso de DVA. A seguir, os exames da admissão:
+  [_bilirrubina][_creatinina][_ph][_leucocitos][_plaquetas][_oxigenacao]
   `
 })()

@@ -3689,7 +3689,7 @@ class Prognosis {
   </div>`
 
   Prognosis.playerSelectList = `
-  <select class="custom-select" id="[id]">
+  <select class="custom-select" id="[id]" required>
     <option value="" selected>Escolha uma opção...</option>
   </select>
   `
