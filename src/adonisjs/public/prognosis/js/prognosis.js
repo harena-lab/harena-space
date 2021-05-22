@@ -2442,65 +2442,449 @@ class Prognosis {
               "locked": [],
               "open": [
                 {
-                  "Bilirrubina": {
-                    "uniqueValues":"true",
-                    "values": [
-                      "<2 mg/dl",
-                      "2-6 mg/dl",
-                      ">=6 mg/dl",
+                  "Alterações laboratoriais 1":{
+                    "groupedChoices": "true",
+                    "values":[
+                      {
+                        "Bilirrubina": {
+                          "values": [
+                            ">=6 mg/dl",
+                          ],
+                        },
+                      },
+                      {
+                        "Creatinina": {
+                          "values": [
+                            ">=3.5 mg/dl",
+                          ],
+                        },
+                      },
+                      {
+                        "Oxigenação": {
+                          "values": [
+                            "P/F >=100 em VM",
+                          ],
+                        },
+                      },
                     ],
                   },
                 },
                 {
-                  "Creatinina": {
+                  "Alterações laboratoriais 2":{
+                    "groupedChoices": "true",
+                    "values":[
+                      {
+                        "pH": {
+                          "values": [
+                            "<=7.25"
+                          ],
+                        },
+                      },
+                      {
+                        "Leucócitos": {
+                          "values": [
+                            ">=15mil /mm³",
+                          ],
+                        },
+                      },
+                      {
+                        "Plaquetas": {
+                          "values": [
+                            "<20mil /mm³",
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+          {
+            "dificuldade": "9",
+            "idade":{
+              "locked": [
+                "<40"
+              ],
+              "open": []
+            },
+            "origem":{
+              "locked": [],
+              "open": [
+                "Pronto Socorro",
+                "Outra UTI",
+                "Nenhuma das anteriores",
+              ],
+            },
+            "comorbidade":{
+              "locked": [
+                {
+                  "Internado antes da admissão": {
+                    "cascade": "true",
+                    "radioYN": "true",
                     "uniqueValues":"true",
                     "values": [
-                      "<1.2 mg/dl",
-                      "1.2-1.9 mg/dl",
-                      "2-3.4 mg/dl",
-                      ">=3.5 mg/dl",
+                      ">=28 dias",
+                    ],
+                  },
+                },
+              ],
+              "open": [
+                {
+                  "Portador de":{
+                    "selectList": "true",
+                    "values":[
+                      "IC NYHA IV",
+                      "Câncer metastático",
+                      "Terapia oncológica",
+                      "Câncer hematológico",
+                      "Cirrose",
+                      "SIDA",
+                    ],
+                  },
+                },
+              ],
+            },
+            "motivoAdmissao": {
+              "locked": [
+                {
+                  "Admissão Planejada": {
+                    "values":[
+                      "Não",
+                    ]
+                  },
+                },
+                {
+                  "Submetido à cirurgia": {
+                    "cascade": "true",
+                    "radioYN": "true",
+                    "values": [
+                    ],
+                    "child": [
                     ],
                   },
                 },
                 {
-                  "pH": {
-                    "uniqueValues":"true",
+                  "Motivo de admissão na UTI": {
                     "values": [
-                      "<=7.25",
-                      ">7.25"
+                      "Outro choque",
+                      "Pancreatite grave",
                     ],
                   },
                 },
                 {
-                  "Leucócitos": {
+                  "Infectado antes da admissão": {
+                    "cascade": "true",
+                    "radioYN": "true",
+                    "multipleValues": "true",
+                    "values": [
+                    ],
+                  },
+                },
+              ],
+              "open": [
+
+              ]
+            },
+            "statusClinico": {
+              "locked": [
+                {
+                  "Droga vasoativa": {
                     "uniqueValues":"true",
                     "values": [
-                      "<15mil /mm³",
-                      ">=15mil /mm³",
+                      "Sim",
+                    ]
+                  },
+                },
+              ],
+              "open": [
+                {
+                  "Status clínico 1": {
+                    "groupedChoices": "true",
+                    "values": [
+                      {
+                          "Temperatura": {
+                            "values": [
+                              "<35 °C",
+                            ],
+                          },
+                        },
+                      {
+                          "Frequência cardíaca": {
+                            "values": [
+                              ">=160 bpm",
+                            ],
+                          },
+                        },
+                    ]
+                  }
+                },
+                {
+                  "Status clínico 2": {
+                    "groupedChoices": "true",
+                    "values": [
+                      {
+                        "Escala de Coma de Glasgow": {
+                          "uniqueValues":"true",
+                          "values": [
+                            "3-4",
+                          ],
+                        },
+                      },
+                      {
+                          "Pressão sistólica": {
+                            "values": [
+                              "<40 mmHg",
+                            ],
+                          },
+                        },
+                    ]
+                  }
+                },
+
+              ],
+            },
+            "alteracoesLab": {
+              "locked": [],
+              "open": [
+                {
+                  "Alterações laboratoriais 1":{
+                    "groupedChoices": "true",
+                    "values":[
+                      {
+                        "Bilirrubina": {
+                          "values": [
+                            ">=6 mg/dl",
+                          ],
+                        },
+                      },
+                      {
+                        "Creatinina": {
+                          "values": [
+                            ">=3.5 mg/dl",
+                          ],
+                        },
+                      },
+                      {
+                        "Oxigenação": {
+                          "values": [
+                            "P/F >=100 em VM",
+                          ],
+                        },
+                      },
                     ],
                   },
                 },
                 {
-                  "Plaquetas": {
+                  "Alterações laboratoriais 2":{
+                    "groupedChoices": "true",
+                    "values":[
+                      {
+                        "pH": {
+                          "values": [
+                            "<=7.25"
+                          ],
+                        },
+                      },
+                      {
+                        "Leucócitos": {
+                          "values": [
+                            ">=15mil /mm³",
+                          ],
+                        },
+                      },
+                      {
+                        "Plaquetas": {
+                          "values": [
+                            "<20mil /mm³",
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+          {
+            "dificuldade": "10",
+            "idade":{
+              "locked": [
+                "<40"
+              ],
+              "open": []
+            },
+            "origem":{
+              "locked": [
+                "Nenhuma das anteriores"
+              ],
+              "open": [
+              ],
+            },
+            "comorbidade":{
+              "locked": [
+                {
+                  "Internado antes da admissão": {
+                    "cascade": "true",
+                    "radioYN": "true",
                     "uniqueValues":"true",
                     "values": [
-                      "<20mil /mm³",
-                      "20-49mil /mm³",
-                      "50-99mil /mm³",
-                      ">=100mil /mm³",
+                      ">=28 dias",
+                    ],
+                  },
+                },
+              ],
+              "open": [
+                {
+                  "Portador de":{
+                    "selectList": "true",
+                    "values":[
+                      "IC NYHA IV",
+                      "Câncer metastático",
+                      "Terapia oncológica",
+                      "Câncer hematológico",
+                      "Cirrose",
+                      "SIDA",
+                    ],
+                  },
+                },
+              ],
+            },
+            "motivoAdmissao": {
+              "locked": [
+                {
+                  "Admissão Planejada": {
+                    "values":[
+                      "Não",
+                    ]
+                  },
+                },
+                {
+                  "Submetido à cirurgia": {
+                    "cascade": "true",
+                    "radioYN": "true",
+                    "values": [
+                    ],
+                    "child": [
                     ],
                   },
                 },
                 {
-                  "Oxigenação": {
-                    "uniqueValues":"true",
+                  "Motivo de admissão na UTI": {
                     "values": [
-                      "paO2 >=60 sem VM",
-                      "pa02 <60 sem VM",
-                      "P/F<100 em VM",
-                      "P/F >=100 em VM",
+                      "Outro choque",
+                      "Pancreatite grave",
                     ],
                   },
+                },
+                {
+                  "Infectado antes da admissão": {
+                    "cascade": "true",
+                    "radioYN": "true",
+                    "multipleValues": "true",
+                    "values": [
+                    ],
+                  },
+                },
+              ],
+              "open": [
+
+              ]
+            },
+            "statusClinico": {
+              "locked": [
+                {
+                  "Droga vasoativa": {
+                    "uniqueValues":"true",
+                    "values": [
+                      "Sim",
+                    ]
+                  },
+                },
+                {
+                  "Escala de Coma de Glasgow": {
+                    "uniqueValues":"true",
+                    "values": [
+                      "3-4",
+                    ],
+                  },
+                },
+              ],
+              "open": [
+                {
+                  "Status": {
+                    "selectList": "true",
+                    "values": [
+                      {
+                        "Temperatura": {
+                          "values": [
+                            "<35 °C",
+                          ],
+                        },
+                      },
+                      {
+                        "Frequência cardíaca": {
+                          "values": [
+                            ">=160 bpm",
+                          ],
+                        },
+                      },
+                      {
+                        "Pressão sistólica": {
+                          "values": [
+                            "<40 mmHg",
+                          ],
+                        },
+                      },
+                    ]
+                  }
+                },
+              ],
+            },
+            "alteracoesLab": {
+              "locked": [],
+              "open": [
+                {
+                  "Alteração":{
+                    "selectList": "true",
+                    "values":[
+                      {
+                        "Plaquetas": {
+                          "values": [
+                            "<20mil /mm³",
+                          ],
+                        },
+                      },
+                      {
+                        "Oxigenação": {
+                          "values": [
+                            "P/F >=100 em VM",
+                          ],
+                        },
+                      },
+                      {
+                        "Bilirrubina": {
+                          "values": [
+                            ">=6 mg/dl",
+                          ],
+                        },
+                      },
+                      {
+                        "Leucócitos": {
+                          "values": [
+                            ">=15mil /mm³",
+                          ],
+                        },
+                      },
+                      {
+                        "pH": {
+                          "values": [
+                            "<=7.25",
+                          ],
+                        },
+                      },
+                    ]
+                  }
                 },
               ],
             },
@@ -2515,7 +2899,6 @@ class Prognosis {
         localStorage.setItem('prognosis-current-lvl', new URL(document.location).searchParams.get('diffic'))
       }
       selectedPacient = pacientInfo.pacients[localStorage.getItem('prognosis-current-lvl')-1]
-      console.log(localStorage.getItem('prognosis-current-lvl'))
     }else{
 
       selectedPacient = pacientInfo.pacients[0]
@@ -3036,13 +3419,66 @@ class Prognosis {
             obj.prependTxt.appendChild(obj.prependTxt.copy)
 
             for (var z = 0; z < selectedPacient[fnVariable].open[i][keyText]['values'].length; z++) {
-              var value = selectedPacient[fnVariable].open[i][keyText]['values'][z]
-              const selectList = document.querySelector("#" + keyId)
-              var option = document.createElement('option')
-              option.textContent = value
-              option.value = (Prognosis.i.removeAccent(value).replace(new RegExp('[ ]','ig'), '-'))
-              selectList.appendChild(option)
+
+              //Check if select list must include id (because of complex values. e.g.(id'bilirrubina' value'3-4'), instead of just 'bilirrubina')
+              if(selectedPacient[fnVariable].open[i][keyText]['values'][z]
+              [Object.keys(selectedPacient[fnVariable].open[i][keyText]['values'][z])]){
+                var baseKey = selectedPacient[fnVariable].open[i][keyText]['values'][z]
+                var valueText = Object.keys(baseKey)[0]
+                var value = baseKey[Object.keys(baseKey)]['values'][0]
+
+                const selectList = document.querySelector("#" + keyId)
+                var option = document.createElement('option')
+                option.textContent = valueText+': '+value
+                option.value = value
+                selectList.appendChild(option)
+              }else{
+                var value = selectedPacient[fnVariable].open[i][keyText]['values'][z]
+                const selectList = document.querySelector("#" + keyId)
+                var option = document.createElement('option')
+                option.textContent = value
+                option.value = (Prognosis.i.removeAccent(value).replace(new RegExp('[ ]','ig'), '-'))
+                selectList.appendChild(option)
+              }
             }
+          }
+          else if (selectedPacient[fnVariable].open[i][keyText]['groupedChoices'] &&
+          selectedPacient[fnVariable].open[i][keyText]['groupedChoices'] == 'true') {
+            var template = document.createElement('template')
+            template.innerHTML = Prognosis.playerGroupedOption
+            .replace(/\[id\]/ig, (keyId))
+            .replace(/\[prependText\]/ig, (keyText))
+            .replace(/\[name\]/ig, (keyId.substring(0,8)+'-activator'))
+            textSelect.appendChild(template.content.cloneNode(true))
+
+            var fnGroupActivator = function (){
+              var groupValues = document.querySelectorAll(`[id^="options-"] > .input-group >
+              [id^="grouped-"] > div > input`)
+              for (var elem of groupValues) {
+                var parentActivator = elem.parentElement.parentElement.id
+                elem.checked = document.querySelector(`#${parentActivator.substring(8,(parentActivator.length - 8))}`).checked
+              }
+            }
+            document.querySelector('#'+keyId).addEventListener('change', fnGroupActivator)
+
+            for (var k = 0; k < selectedPacient[fnVariable].open[i][keyText]['values'].length; k++) {
+              var baseKey = selectedPacient[fnVariable].open[i][keyText]['values'][k]
+              var valueText = Object.keys(baseKey)[0]
+              var valueId = Prognosis.i.removeAccent(valueText).replace(new RegExp('[ ]','ig'), '-')
+              var value = baseKey[valueText]['values'][0]
+
+              var template = document.createElement('template')
+              template.innerHTML = Prognosis.playerOptionRadio
+              .replace(/\[valueText\]/ig, valueText+`: ${value}`)
+              .replace(/\[value\]/ig, value)
+              .replace(/\[id\]/ig, valueId)
+              .replace(/\[name\]/ig, valueId)
+
+              var optionsWrapper = mainWrapper.querySelector('#grouped-'+keyId+'-wrapper')
+              optionsWrapper.appendChild(template.content.cloneNode(true))
+              document.querySelector('#'+valueId).removeAttribute('required')
+            }
+
           }
           else{
               // document.querySelector('#options-'+keyId+'-wrapper').appendChild(template.content.cloneNode(true))
@@ -3231,12 +3667,12 @@ class Prognosis {
       <label class="input-group-text">[prependText]</label>
     </div>
     <div class="form-check form-check-inline">
-      <input class="form-check-input" type="checkbox" name="" id="[id]" value="">
-      <label class="form-check-label" for="[id]">Activate</label>
+      <input class="form-check-input" type="radio" name="[name]" id="[id]" value="">
+      <label class="form-check-label" for="[id]">Escolher esse grupo</label>
     </div>
     <div class="w-100">
     </div>
-    <div class="d-flex flex-grow-1 border col flex-wrap" id="options-[id]-wrapper">
+    <div class="d-flex flex-grow-1 border col flex-wrap disabled-look" id="grouped-[id]-wrapper">
     </div>
   </div>
   `
@@ -3253,7 +3689,7 @@ class Prognosis {
   </div>`
 
   Prognosis.playerSelectList = `
-  <select class="custom-select" id="[id]">
+  <select class="custom-select" id="[id]" required>
     <option value="" selected>Escolha uma opção...</option>
   </select>
   `
