@@ -3546,20 +3546,64 @@ class Prognosis {
     const sapsCalc = new URL(document.location).searchParams.get('sapsCalc')
     var numbers = document.querySelectorAll('.roulette-number')
 
+    const createRoulette = function (sectN){
+      const diameter = 100
+      const svgSize = diameter + 10
+      const stroke = "black"
+      const strokeWidth = "2"
+      const svgRoot = document.querySelector('#svg-wrapper')
+      const svgEl = document.createElement('svg')
+      svgEl.setAttribute('viewBox', '0 0 110 110')
+      svgEl.setAttribute('width',svgSize)
+      svgEl.setAttribute('height',svgSize)
+      svgRoot.appendChild(svgEl)
+      svgEl.appendChild(document.createElement('g'))
+      const getSectorPath = (x, y, outerDiameter, sectN) => {
+        for (var i = 0; i < sectN; i++) {
+          var a1 = (360/sectN)*i
+          var a2 = 360/sectN + a1
+
+          var degtorad = Math.PI / 180
+          var cr = outerDiameter / 2
+          var cx1 = Math.cos(degtorad * a2) * cr + x
+          var cy1 = -Math.sin(degtorad * a2) * cr + y
+          var cx2 = Math.cos(degtorad * a1) * cr + x
+          var cy2 = -Math.sin(degtorad * a1) * cr + y
+          var d = `M${x} ${y} ${cx1} ${cy1} A${cr} ${cr} 0 0 1 ${cx2} ${cy2}Z`
+          var pathEl = document.createElement('path')
+          pathEl.setAttribute('d',d)
+          pathEl.setAttribute('stroke', stroke)
+          pathEl.setAttribute('strokeWidth',strokeWidth)
+          pathEl.setAttribute('fill','transparent')
+          svgRoot.querySelector('svg > g').appendChild(pathEl)
+          var txtX = (Math.cos(degtorad * (a1 + (360/sectN)/2)) * cr/2) + x
+          var txtY = (-Math.sin(degtorad * (a1 + (360/sectN)/2)) * cr/2) + y
+          var txtRoulette = document.createElement('text')
+          txtRoulette.setAttribute('x', txtX)
+          txtRoulette.setAttribute('y', txtY)
+          txtRoulette.innerHTML = i+1
+          svgRoot.querySelector('svg > g').appendChild(txtRoulette)
+        }
+      }
+      getSectorPath((svgSize/2), (svgSize/2), diameter, sectN)
+    }
+    createRoulette(10)
+
     const availableN = Math.round(sapsCalc/10)
     var selectedN = []
     if (numbers) {
       var fnSelectNum = function (){
-        var checkboxChild = this.querySelector('input')
-        if((!checkboxChild.checked) && (availableN > selectedN.length)){
-          selectedN.push(checkboxChild.value)
-          checkboxChild.checked = true
-          this.style.backgroundColor = '#56c162'
+        var pathChild = this.querySelector('path')
+        if((pathChild.getAttribute('fill') == 'white') && (availableN > selectedN.length)){
+          selectedN.push(pathChild.previousSibling.innerHTML)
+          pathChild.setAttribute('fill','#56c162')
+          // this.style.backgroundColor = '#56c162'
         }
-        else if(checkboxChild.checked){
-          selectedN.pop(checkboxChild.value)
-          checkboxChild.checked = false
-          this.style.backgroundColor = '#f2f2f2'
+        else if(pathChild.getAttribute('fill') == '#56c162'){
+          selectedN.pop(pathChild.previousSibling.innerHTML)
+          // pathChild.checked = false
+          pathChild.setAttribute('fill','white')
+          // this.style.backgroundColor = 'white'
         }
         if(availableN == selectedN.length){
           document.querySelector('#roulette-invalid').classList.add('d-none')
@@ -3603,38 +3647,40 @@ class Prognosis {
 
   async spinRoulette(){
     var selectedN = []
-    var selectedNum = document.querySelectorAll('input[type="checkbox"]:checked')
-    for (var num of selectedNum) {
-      selectedN.push(parseInt(num.value))
-
-    }
-
-
-    var rand = Math.floor(Math.random() * 10) + 1
-    var inputResult = document.querySelector('input[value="'+rand+'"]')
-    inputResult.parentElement.style.backgroundColor = 'red'
-    // console.log('============ result')
-    // console.log(rand)
-    // console.log((selectedN.includes(rand)?'Paciente sobreviveu':'Paciente não sobreviveu'))
-    if(!document.querySelector('#roulette-result')){
-      var resultTxt = document.createElement('h5')
-      resultTxt.classList.add('text-light')
-      resultTxt.id = 'roulette-result'
-    }else {
-      var resultTxt = document.querySelector('#roulette-result')
-    }
-    var wrapper = document.querySelector('#form-pacient-info')
-    if(selectedN.includes(rand)){
-      resultTxt.innerHTML = 'Paciente sobreviveu'
-      if(!document.querySelector('#roulette-result'))
-        wrapper.insertBefore(resultTxt, document.querySelector('.btn-info'))
-    }
-    else{
-      resultTxt.innerHTML = 'Paciente não sobreviveu'
-      if(!document.querySelector('#roulette-result'))
-        wrapper.insertBefore(resultTxt, document.querySelector('.btn-info'))
-
-    }
+    var rouletteSvg = document.querySelector('svg.spin')
+    var rouletteStyle = window.getComputedStyle(rouletteSvg,null)
+    // var selectedNum = document.querySelectorAll('input[type="checkbox"]:checked')
+    // for (var num of selectedNum) {
+    //   selectedN.push(parseInt(num.value))
+    //
+    // }
+    //
+    //
+    // var rand = Math.floor(Math.random() * 10) + 1
+    // var inputResult = document.querySelector('input[value="'+rand+'"]')
+    // inputResult.parentElement.style.backgroundColor = 'red'
+    // // console.log('============ result')
+    // // console.log(rand)
+    // // console.log((selectedN.includes(rand)?'Paciente sobreviveu':'Paciente não sobreviveu'))
+    // if(!document.querySelector('#roulette-result')){
+    //   var resultTxt = document.createElement('h5')
+    //   resultTxt.classList.add('text-light')
+    //   resultTxt.id = 'roulette-result'
+    // }else {
+    //   var resultTxt = document.querySelector('#roulette-result')
+    // }
+    // var wrapper = document.querySelector('#form-pacient-info')
+    // if(selectedN.includes(rand)){
+    //   resultTxt.innerHTML = 'Paciente sobreviveu'
+    //   if(!document.querySelector('#roulette-result'))
+    //     wrapper.insertBefore(resultTxt, document.querySelector('.btn-info'))
+    // }
+    // else{
+    //   resultTxt.innerHTML = 'Paciente não sobreviveu'
+    //   if(!document.querySelector('#roulette-result'))
+    //     wrapper.insertBefore(resultTxt, document.querySelector('.btn-info'))
+    //
+    // }
 
   }
 
