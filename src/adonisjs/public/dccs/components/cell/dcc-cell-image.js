@@ -32,25 +32,38 @@ class DCCCellImage extends DCCCell {
   createIndividualInitial (row, col, props) {
     const light = super.createIndividualInitial(row, col, props)
     /*
-      console.log("=== properties");
-      console.log(props);
-      console.log(light.properties);
-      */
-    if (light.properties != null && light.properties.rotate != null) {
+    console.log("=== properties");
+    console.log(props);
+    console.log(light.properties);
+    */
+    if (light.properties != null) {
       const center = this.space.computeCellCenter(row, col)
-      light.element.setAttribute('transform',
-        'rotate(' + light.properties.rotate + ',' + center.x + ',' + center.y + ')')
+      if (light.properties.flip != null && light.properties.flip != '') {
+        light.element.setAttribute('transform-origin', center.x + ' ' + center.y)
+        light.element.setAttribute('transform',
+          'scale(' + ((light.properties.flip == 'h') ? '-1,1' : '1,-1') + ')')
+      }
+      if (light.properties.rotate != null) {
+        light.element.setAttribute('transform',
+          'rotate(' + light.properties.rotate + ',' + center.x + ',' + center.y + ')')
+      }
     }
     return light
   }
 
   updateElementState (element, properties, row, col) {
-    const center = this.space.computeCellCenter(row, col)
     // console.log("=== center");
     // console.log(row + "," + col + "," + center.x + "," + center.y);
-    if (properties && properties.rotate) {
-      element.setAttribute('transform',
-        'rotate(' + properties.rotate + ',' + center.x + ',' + center.y + ')')
+    if (properties != null) {
+      const center = this.space.computeCellCenter(row, col)
+      if (properties.flip != null && properties.flip != '') {
+        light.element.setAttribute('transform-origin', center.x + ' ' + center.y)
+        light.element.setAttribute('transform',
+          'scale(' + ((properties.flip == 'h') ? '-1,1' : '1,-1') + ')')
+      }
+      if (properties.rotate != null)
+        element.setAttribute('transform',
+          'rotate(' + properties.rotate + ',' + center.x + ',' + center.y + ')')
     }
   }
 }
