@@ -3549,7 +3549,7 @@
       const diameter = 100
       const svgSize = diameter + 10
       const stroke = "black"
-      const strokeWidth = "1.5"
+      const strokeWidth = "1"
       const svgRoot = document.querySelector('#svg-wrapper')
       const svgEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
       svgEl.classList.add('spin')
@@ -3583,7 +3583,9 @@
       <polygon points="53 -2, 48 0, 53 2" fill="transparent" stroke="grey" strokeWidth="1" />`
       svgEl.insertAdjacentHTML('afterbegin',svgAnimate)
       svgEl.insertAdjacentHTML('beforeend',svgTriangle)
-
+      var outerCircle = `
+      <circle cx="0" cy="0" r="${diameter/2}" stroke="black" stroke-width="6" fill="transparent"></circle>`
+      svgEl.insertAdjacentHTML('afterbegin',outerCircle)
       const getSectorPath = (x, y, outerDiameter, sectN) => {
         for (var i = 0; i < sectN; i++) {
           var anchorN = document.createElementNS('http://www.w3.org/2000/svg','a')
@@ -3665,6 +3667,7 @@
 
       const btnSpin = document.querySelector('#btn-spin-roulette')
       const fnBtnSpin = function (){
+        this.disabled = true
         const sapsCalc = new URL(document.location).searchParams.get('sapsCalc')
         if(availableN == selectedN.length){
 
@@ -3691,6 +3694,7 @@
   async spinRoulette(selectedN){
     const rouletteSVG = document.querySelector('#roulette-group')
     const rouletteAnim = document.querySelector('#roulette-anim')
+    const btnSpin = document.querySelector('#btn-spin-roulette')
     var angleToNum
     var rouletteAngle
     rouletteSVG.parentElement.classList.add('no-pointer')
@@ -3701,6 +3705,9 @@
       return Math.floor(Math.random() * (max - min)) + min;
     }
     const fnEndSpin = function(){
+
+      btnSpin.disabled = false
+
       rouletteAngle = rouletteSVG.transform.animVal[0].angle
       var newFrom = rouletteAnim.getAttribute('to').split(' ')[0]
       var newTo = (parseInt(rouletteAnim.getAttribute('to').split(' ')[0])+90)
@@ -3718,9 +3725,9 @@
         }
       }
 
-      console.log((selectedN.includes(angleToNum)?'Paciente sobreviveu':'Paciente não sobreviveu'))
-      console.log(angleToNum)
-      console.log(selectedN)
+      // console.log((selectedN.includes(angleToNum)?'Paciente sobreviveu':'Paciente não sobreviveu'))
+      // console.log(angleToNum)
+      // console.log(selectedN)
       if(!document.querySelector('#roulette-result')){
         var resultTxt = document.createElement('h5')
         resultTxt.classList.add('text-light')
@@ -3748,9 +3755,9 @@
 
       }
     }
-    if(!document.querySelector('#btn-spin-roulette').dataset.roulette == false){
+    if(!btnSpin.dataset.roulette == false){
       rouletteAnim.addEventListener('endEvent', fnEndSpin)
-      document.querySelector('#btn-spin-roulette').dataset.roulette = true
+      btnSpin.dataset.roulette = true
     }
     rouletteAnim.setAttribute('to', parseInt(rouletteAnim.getAttribute('from'))+getRandomInt(2000, 2700))
     rouletteAnim.beginElement()
