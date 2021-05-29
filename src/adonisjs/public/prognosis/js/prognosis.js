@@ -281,275 +281,281 @@
   async getPacientOptions (calculator){
     if(calculator){
       var pacientInfo = {
-        "idade":{
-          "locked": [
+        "pacients":[
+          {
 
-          ],
-          "open": [
-            "<40",//0
-            "40-59",//5
-            "60-69",//9
-            "70-74",//13
-            "75-79",//15
-            ">=80",//18
-          ]
-        },
-        "origem":{
-          "locked": [],
-          "open": [
-            "Pronto Socorro",//5
-            "Outra UTI",//7
-            "Nenhuma das anteriores",//8
-          ],
-        },
-        "comorbidade":{
-          "locked": [
+            "idade":{
+              "locked": [
 
-          ],
-          "open": [
-            {
-              "IC NYHA IV": {
-                "values": [
-                  "Não",
-                  "Sim",
-                ],
-              },//6
+              ],
+              "open": [
+                "<40",//0
+                "40-59",//5
+                "60-69",//9
+                "70-74",//13
+                "75-79",//15
+                ">=80",//18
+              ]
             },
-            {
-              "Câncer metastático": {
-                "values": [
-                  "Não",
-                  "Sim",
-                ],
-              },//11
+            "origem":{
+              "locked": [],
+              "open": [
+                "Pronto Socorro",//5
+                "Outra UTI",//7
+                "Nenhuma das anteriores",//8
+              ],
             },
-            {
-              "Terapia oncológica": {
-                "values": [
-                  "Não",
-                  "Sim",
-                ],
-              },//3
+            "comorbidade":{
+              "locked": [
+
+              ],
+              "open": [
+                {
+                  "IC NYHA IV": {
+                    "values": [
+                      "Não",
+                      "Sim",
+                    ],
+                  },//6
+                },
+                {
+                  "Câncer metastático": {
+                    "values": [
+                      "Não",
+                      "Sim",
+                    ],
+                  },//11
+                },
+                {
+                  "Terapia oncológica": {
+                    "values": [
+                      "Não",
+                      "Sim",
+                    ],
+                  },//3
+                },
+                {
+                  "Câncer hematológico": {
+                    "values": [
+                      "Não",
+                      "Sim",
+                    ],
+                  },//6 IF HAS SIDA + CANCER  it gets double points
+                },
+                {
+                  "Cirrose": {
+                    "values": [
+                      "Não",
+                      "Sim",
+                    ],
+                  },//8
+                },
+                {
+                  "SIDA": {
+                    "values": [
+                      "Não",
+                      "Sim",
+                    ],
+                  },//8   IF HEMATOLOGICA + SIDA = 16+12
+                },
+                {
+                  "Internado antes da admissão": {
+                    "cascade": "true",
+                    "radioYN": "true",
+                    "uniqueValues":"true",
+                    "values": [
+                      "<14 dias",//0
+                      "14-27 dias",//6
+                      ">=28 dias",//7
+                    ],
+                  },
+                },
+                {
+                  "Infectado antes da admissão": {
+                    "cascade": "true",
+                    "radioYN": "true",
+                    "multipleValues": "true",
+                    "values": [
+                      "Nosocomial",//4
+                      "Respiratória",//5
+                    ],
+                  },
+                },
+              ],
             },
-            {
-              "Câncer hematológico": {
-                "values": [
-                  "Não",
-                  "Sim",
-                ],
-              },//6 IF HAS SIDA + CANCER  it gets double points
+            "motivoAdmissao": {
+              "locked": [],
+              "open": [
+                {
+                  "Admissão Planejada": {
+                    "values":[
+                      "Não",//3
+                      "Sim",//0
+                    ]
+                  },
+                },
+                {
+                  "Submetido à cirurgia": {// no surgery = 5 //surgery = 16
+                    "cascade": "true",
+                    "radioYN": "true",
+                    "values": [
+                      "Cirurgia eletiva",//0
+                      "Cirurgia urgência",//6
+                    ],
+                    "child": [
+                      "NRC por AVC",//5
+                      "Revascularização miocárdica",//-6
+                      "Trauma",//-8
+                      "Transplante",//-11
+                      "Outro",//0
+                    ],
+                  },
+                },
+                {
+                  "Motivo de admissão na UTI": {//16
+                    "values": [
+                      "Arritmia",//-5 Out of arritmia and convulsão, choose the worst value if both apply
+                      "Choque hipovolêmico",//3
+                      "Outro choque",//5
+                      "Convulsão",//-4
+                      "Abdome agudo",//3
+                      "Pancreatite grave",//9
+                      "Déficit focal",//7
+                      "Efeito de massa intracraniana",//10
+                      "Insuficiência hepática", //6
+                      "Alteração do nível de consciência",//4
+                      "Nenhum dos anteriores",//0
+                    ],
+                  },
+                },
+              ]
             },
-            {
-              "Cirrose": {
-                "values": [
-                  "Não",
-                  "Sim",
-                ],
-              },//8
+            "statusClinico": {
+              "locked": [],
+              "open": [
+                {
+                  "Escala de Coma de Glasgow": {
+                    "uniqueValues":"true",
+                    "values": [
+                      "3-4",//15
+                      "5",//10
+                      "6",//7
+                      "7-12",//2
+                      ">=13",//0
+                    ],
+                  },
+                },
+                {
+                  "Temperatura": {
+                    "uniqueValues":"true",
+                    "values": [
+                      "<35 °C",//7
+                      ">=35 °C",//0
+                    ],
+                  },
+                },
+                {
+                  "Frequência cardíaca": {
+                    "uniqueValues":"true",
+                    "values": [
+                      "<120 bpm",//0
+                      "120-159 bpm",//5
+                      ">=160 bpm",//7
+                    ],
+                  },
+                },
+                {
+                  "Pressão sistólica": {
+                    "uniqueValues":"true",
+                    "values": [
+                      "<40 mmHg",//11
+                      "40-69 mmHg",//8
+                      "70-119 mmHg",//3
+                      ">=120 mmHg",//0
+                    ],
+                  },
+                },
+                {
+                  "Droga vasoativa": {
+                    "uniqueValues":"true",
+                    "values": [
+                      "Não",
+                      "Sim",//3
+                    ]
+                  },
+                },
+              ],
             },
-            {
-              "SIDA": {
-                "values": [
-                  "Não",
-                  "Sim",
-                ],
-              },//8   IF HEMATOLOGICA + SIDA = 16+12
+            "alteracoesLab": {
+              "locked": [],
+              "open": [
+                {
+                  "Bilirrubina": {
+                    "uniqueValues":"true",
+                    "values": [
+                      "<2 mg/dl",//0
+                      "2-6 mg/dl",//4
+                      ">=6 mg/dl",//5
+                    ],
+                  },
+                },
+                {
+                  "Creatinina": {
+                    "uniqueValues":"true",
+                    "values": [
+                      "<1.2 mg/dl",//0
+                      "1.2-1.9 mg/dl",//2
+                      "2-3.4 mg/dl",//7
+                      ">=3.5 mg/dl",//8
+                    ],
+                  },
+                },
+                {
+                  "pH": {
+                    "uniqueValues":"true",
+                    "values": [
+                      "<=7.25",//3
+                      ">7.25"//0
+                    ],
+                  },
+                },
+                {
+                  "Leucócitos": {
+                    "uniqueValues":"true",
+                    "values": [
+                      "<15mil /mm³",//0
+                      ">=15mil /mm³",//2
+                    ],
+                  },
+                },
+                {
+                  "Plaquetas": {
+                    "uniqueValues":"true",
+                    "values": [
+                      "<20mil /mm³",//13
+                      "20-49mil /mm³",//8
+                      "50-99mil /mm³",//5
+                      ">=100mil /mm³",//0
+                    ],
+                  },
+                },
+                {
+                  "Oxigenação": {
+                    "uniqueValues":"true",
+                    "values": [
+                      "paO2 >=60 sem VM",//0
+                      "pa02 <60 sem VM",//5
+                      "P/F<100 em VM",//11
+                      "P/F >=100 em VM",//7
+                    ],
+                  },
+                },
+              ],
             },
-            {
-              "Internado antes da admissão": {
-                "cascade": "true",
-                "radioYN": "true",
-                "uniqueValues":"true",
-                "values": [
-                  "<14 dias",//0
-                  "14-27 dias",//6
-                  ">=28 dias",//7
-                ],
-              },
-            },
-            {
-              "Infectado antes da admissão": {
-                "cascade": "true",
-                "radioYN": "true",
-                "multipleValues": "true",
-                "values": [
-                  "Nosocomial",//4
-                  "Respiratória",//5
-                ],
-              },
-            },
-          ],
-        },
-        "motivoAdmissao": {
-          "locked": [],
-          "open": [
-            {
-              "Admissão Planejada": {
-                "values":[
-                  "Não",//3
-                  "Sim",//0
-                ]
-              },
-            },
-            {
-              "Submetido à cirurgia": {// no surgery = 5 //surgery = 16
-                "cascade": "true",
-                "radioYN": "true",
-                "values": [
-                  "Cirurgia eletiva",//0
-                  "Cirurgia urgência",//6
-                ],
-                "child": [
-                  "NRC por AVC",//5
-                  "Revascularização miocárdica",//-6
-                  "Trauma",//-8
-                  "Transplante",//-11
-                  "Outro",//0
-                ],
-              },
-            },
-            {
-              "Motivo de admissão na UTI": {//16
-                "values": [
-                  "Arritmia",//-5 Out of arritmia and convulsão, choose the worst value if both apply
-                  "Choque hipovolêmico",//3
-                  "Outro choque",//5
-                  "Convulsão",//-4
-                  "Abdome agudo",//3
-                  "Pancreatite grave",//9
-                  "Déficit focal",//7
-                  "Efeito de massa intracraniana",//10
-                  "Insuficiência hepática", //6
-                  "Alteração do nível de consciência",//4
-                  "Nenhum dos anteriores",//0
-                ],
-              },
-            },
-          ]
-        },
-        "statusClinico": {
-          "locked": [],
-          "open": [
-            {
-              "Escala de Coma de Glasgow": {
-                "uniqueValues":"true",
-                "values": [
-                  "3-4",//15
-                  "5",//10
-                  "6",//7
-                  "7-12",//2
-                  ">=13",//0
-                ],
-              },
-            },
-            {
-              "Temperatura": {
-                "uniqueValues":"true",
-                "values": [
-                  "<35 °C",//7
-                  ">=35 °C",//0
-                ],
-              },
-            },
-            {
-              "Frequência cardíaca": {
-                "uniqueValues":"true",
-                "values": [
-                  "<120 bpm",//0
-                  "120-159 bpm",//5
-                  ">=160 bpm",//7
-                ],
-              },
-            },
-            {
-              "Pressão sistólica": {
-                "uniqueValues":"true",
-                "values": [
-                  "<40 mmHg",//11
-                  "40-69 mmHg",//8
-                  "70-119 mmHg",//3
-                  ">=120 mmHg",//0
-                ],
-              },
-            },
-            {
-              "Droga vasoativa": {
-                "uniqueValues":"true",
-                "values": [
-                  "Não",
-                  "Sim",//3
-                ]
-              },
-            },
-          ],
-        },
-        "alteracoesLab": {
-          "locked": [],
-          "open": [
-            {
-              "Bilirrubina": {
-                "uniqueValues":"true",
-                "values": [
-                  "<2 mg/dl",//0
-                  "2-6 mg/dl",//4
-                  ">=6 mg/dl",//5
-                ],
-              },
-            },
-            {
-              "Creatinina": {
-                "uniqueValues":"true",
-                "values": [
-                  "<1.2 mg/dl",//0
-                  "1.2-1.9 mg/dl",//2
-                  "2-3.4 mg/dl",//7
-                  ">=3.5 mg/dl",//8
-                ],
-              },
-            },
-            {
-              "pH": {
-                "uniqueValues":"true",
-                "values": [
-                  "<=7.25",//3
-                  ">7.25"//0
-                ],
-              },
-            },
-            {
-              "Leucócitos": {
-                "uniqueValues":"true",
-                "values": [
-                  "<15mil /mm³",//0
-                  ">=15mil /mm³",//2
-                ],
-              },
-            },
-            {
-              "Plaquetas": {
-                "uniqueValues":"true",
-                "values": [
-                  "<20mil /mm³",//13
-                  "20-49mil /mm³",//8
-                  "50-99mil /mm³",//5
-                  ">=100mil /mm³",//0
-                ],
-              },
-            },
-            {
-              "Oxigenação": {
-                "uniqueValues":"true",
-                "values": [
-                  "paO2 >=60 sem VM",//0
-                  "pa02 <60 sem VM",//5
-                  "P/F<100 em VM",//11
-                  "P/F >=100 em VM",//7
-                ],
-              },
-            },
-          ],
-        },
-      }
+          }
+        ]
+    }
+
     } else {
       var pacientInfo = {
         "pacients":[
@@ -2900,9 +2906,9 @@
       }
       selectedPacient = pacientInfo.pacients[localStorage.getItem('prognosis-current-lvl')-1]
     }else{
-
-      selectedPacient = pacientInfo.pacients[0]
-      localStorage.setItem('prognosis-current-lvl', pacientInfo.pacients[0].dificuldade)
+        selectedPacient = pacientInfo.pacients[0]
+        if(!new URL(document.location).pathname.includes('calculator'))
+          localStorage.setItem('prognosis-current-lvl', pacientInfo.pacients[0].dificuldade)
     }
 
 
