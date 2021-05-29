@@ -812,7 +812,7 @@ class Saps {
       resultWrapper.appendChild(resultText)
     }
     if(document.querySelector('#saps-survival')){
-      document.querySelector('#saps-survival').value = 100 - (round(mortalityPercentage, 1))
+      document.querySelector('#saps-survival').value = round((100 - mortalityPercentage),1)
     }
 
     $('#saps-result-modal').modal('show')
