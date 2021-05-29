@@ -108,131 +108,18 @@
 <body>
   <!-- <main role=""> -->
   <div id="main-panel" class="d-flex flex-column vh-100 vw-100 scroll-y index-boot-padding bg-secondary">
-    <div class="d-flex flex-column w-lg-75 h-100 w-100 px-2 pb-4 debug-border bg-dark mx-auto scroll-y">
-      <h1 class="debug-border txt-light my-5 text-center pacient-title">Resultado - Roleta da Vida</h1>
+    <div class="d-flex flex-column w-lg-75 h-100 w-100 px-2 pb-4 bg-dark mx-auto scroll-y">
+      <h1 class="txt-light my-5 text-center pacient-title">Resultado - Roleta da Vida</h1>
       <h4 class="mb-5" id="player-guess"></h4>
 
       <h4 id="saps-calc"></h4>
-      <!-- <form id="form-pacient-info" action="javascript:void(0);">
-        <div class="d-flex flex-wrap" id="roulette-numbers-wrapper">
-          <div class="mx-1 mb-2 p-3 roulette-number">
-            <input class="form-check-input" type="checkbox" hidden value="1" id="num-1">
-              1
-          </div>
-          <div class="mx-1 mb-2 p-3 roulette-number">
-            <input class="form-check-input" type="checkbox" hidden value="2" id="num-2">
-              2
-          </div>
-          <div class="mx-1 mb-2 p-3 roulette-number">
-            <input class="form-check-input" type="checkbox" hidden value="3" id="num-3">
-              3
-          </div>
-          <div class="mx-1 mb-2 p-3 roulette-number">
-            <input class="form-check-input" type="checkbox" hidden value="4" id="num-4">
-              4
-          </div>
-          <div class="mx-1 mb-2 p-3 roulette-number">
-            <input class="form-check-input" type="checkbox" hidden value="5" id="num-5">
-              5
-          </div>
-          <div class="mx-1 mb-2 p-3 roulette-number">
-            <input class="form-check-input" type="checkbox" hidden value="6" id="num-6">
-              6
-          </div>
-          <div class="mx-1 mb-2 p-3 roulette-number">
-            <input class="form-check-input" type="checkbox" hidden value="7" id="num-7">
-              7
-          </div>
-          <div class="mx-1 mb-2 p-3 roulette-number">
-            <input class="form-check-input" type="checkbox" hidden value="8" id="num-8">
-              8
-          </div>
-          <div class="mx-1 mb-2 p-3 roulette-number">
-            <input class="form-check-input" type="checkbox" hidden value="9" id="num-9">
-              9
-          </div>
-          <div class="mx-1 mb-2 p-3 roulette-number">
-            <input class="form-check-input" type="checkbox" hidden value="10" id="num-10">
-              10
-          </div>
-        </div>
 
-
-      </form> -->
-      <!-- <svg width="400" height="400">
-        <g>
-          <animateTransform
-            attributeName="transform"
-            begin="0s"
-            dur="2s"
-            type="rotate"
-            from="0 150 150"
-            to="360 150 150"
-            repeatCount="indefinite"
-          />
-          <rect x="100" y="100" height="100" width="100" style="stroke:#ff0000; fill: #0000ff">
-
-      </rect>
-      <path
-      d="
-        M 150 150
-        l 50 50"
-      style="stroke:#ffffff";
-      />
-      </g>
-      </svg> -->
       <div id="svg-wrapper">
-
       </div>
-      <svg class="spin" viewBox="0 0 110 110" width="400" height="400">
-        <g>
-          <a href="#" id="n-1" class="roulette-number">
-            <path d="M55 55 95.45084971874738 25.610737385376343 A50 50 0 0 1 105 55Z" stroke="black" strokewidth="2" fill="white"></path>
-            <text x="78.77641290737884" y="47.27457514062632">1</text>
-          </a>
-          <a href="#" id="n-2" class="roulette-number">
-            <path d="M55 55 70.45084971874738 7.447174185242325 A50 50 0 0 1 95.45084971874738 25.610737385376343Z" stroke="black" strokewidth="2" fill="white"></path>
-            <text x="69.69463130731182" y="34.77457514062631">2</text>
-          </a>
-          <a href="#" id="n-3" class="roulette-number">
-            <path d="M55 55 39.549150281252636 7.447174185242318 A50 50 0 0 1 70.45084971874738 7.447174185242325Z" stroke="black" strokewidth="2" fill="white"></path>
-            <text x="55" y="30">3</text>
-          </a>
-          <a href="#" id="n-4" class="roulette-number">
-            <path d="M55 55 14.549150281252636 25.61073738537634 A50 50 0 0 1 39.549150281252636 7.447174185242318Z" stroke="black" strokewidth="2" fill="white"></path>
-            <text x="40.30536869268818" y="34.77457514062631">4</text>
-          </a>
-          <a href="#" id="n-5" class="roulette-number">
-            <path d="M55 55 5 54.99999999999999 A50 50 0 0 1 14.549150281252636 25.61073738537634Z" stroke="black" strokewidth="2" fill="white"></path>
-            <text x="31.223587092621162" y="47.27457514062631">5</text>
-          </a>
-          <a href="#" id="n-6" class="roulette-number">
-            <path d="M55 55 14.549150281252622 84.38926261462365 A50 50 0 0 1 5 54.99999999999999Z" stroke="black" strokewidth="2" fill="white"></path>
-            <text x="31.22358709262116" y="62.72542485937368">6</text>
-          </a>
-          <a href="#" id="n-7" class="roulette-number">
-            <path d="M55 55 39.54915028125262 102.55282581475768 A50 50 0 0 1 14.549150281252622 84.38926261462365Z" stroke="black" strokewidth="2" fill="white"></path>
-            <text x="40.30536869268817" y="75.22542485937367">7</text>
-          </a>
-          <a href="#" id="n-8" class="roulette-number">
-            <path d="M55 55 70.45084971874736 102.55282581475768 A50 50 0 0 1 39.54915028125262 102.55282581475768Z" stroke="black" strokewidth="2" fill="white"></path>
-            <text x="54.99999999999999" y="80">8</text>
-          </a>
-          <a href="#" id="n-9" class="roulette-number">
-            <path d="M55 55 95.45084971874736 84.38926261462368 A50 50 0 0 1 70.45084971874736 102.55282581475768Z" stroke="black" strokewidth="2" fill="white"></path>
-            <text x="69.69463130731182" y="75.22542485937369">9</text>
-          </a>
-          <a href="#" id="n-10" class="roulette-number">
-            <path d="M55 55 105 55.000000000000014 A50 50 0 0 1 95.45084971874736 84.38926261462368Z" stroke="black" strokewidth="2" fill="white"></path>
-            <text x="78.77641290737884" y="62.72542485937369">10</text>
-          </a>
-        </g>
-      </svg>
-      <div class="text-danger d-none" id="roulette-invalid">Você ainda não selecionou todos os números disponíveis</div>
-      <button type="button" class="mt-3 btn btn-info" id='btn-spin-roulette'>Rodar a roleta</button>
-      <button type="button" class="mt-2 btn btn-info d-none" id='btn-next-lvl'>Prómixo caso</button>
-      <!-- <div class="spin animated"></div> -->
 
+      <div class="text-danger d-none" id="roulette-invalid">Você ainda não selecionou todos os números disponíveis</div>
+      <button type="button" class="mt-3 btn btn-info" data-roulette="false" id="btn-spin-roulette">Rodar a roleta</button>
+      <button type="button" class="mt-2 btn btn-info d-none" id='btn-next-lvl'>Prómixo caso</button>
 
       <div class="p-3"></div>
     </div>

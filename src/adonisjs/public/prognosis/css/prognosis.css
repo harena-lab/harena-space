@@ -165,6 +165,9 @@ nav.navbar {
   background-color: #e9ecef;
   opacity: 0.8
 }
+.no-pointers, .no-pointer{
+  pointer-events: none;
+}
 .disabled-lock::after{
   font-family: "Font Awesome 5 Free";
   content: "\f023";
@@ -177,34 +180,6 @@ nav.navbar {
   #56c162
 }
 
-
-:root{
-  --roulette-current: 0deg;
-  --roulette-rotation: 300deg;
-  --roulette-time: 4s;
-}
-
-/* .spin:hover {
-    transform:rotate(calc(360deg +var(--roulette-rotation)));
-    transition: transform 4s ease-out;
-} */
-
-
-@keyframes spin {
-from {
-  transform:rotate(0deg);
-}
-to {
-  transform:rotate(var(--roulette-rotation));
-}
-}
-.spin.animated {
-  animation-name: spin;
-  animation-duration: 2800ms;
-  animation-iteration-count: indefinite;
-  animation-timing-function: ease;
-  animation-fill-mode: forwards;
-}
 text {
   text-anchor: middle;
   dominant-baseline: middle;
