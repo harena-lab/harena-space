@@ -41,6 +41,20 @@ class PageController {
         PageController.instance.updateValuesFromUrl(filterElements)
       }
     }
+    //Set listener to hide elements on scroll down
+    if(document.querySelector('.main-scroll')){
+    var prevScrollpos = document.querySelector('.main-scroll').scrollTop
+    document.querySelector('.main-scroll').addEventListener('scroll', function() {
+      var currentScrollPos = document.querySelector('.main-scroll').scrollTop
+      if (prevScrollpos > currentScrollPos) {
+        document.querySelector('.up-scroll').style.top = "0"
+      } else {
+        document.querySelector('.up-scroll').style.top = "-50px"
+      }
+      prevScrollpos = currentScrollPos;
+    })
+    }
+
     this.isPageReady = true
   }
 
@@ -71,6 +85,7 @@ class PageController {
         console.log(e)
       }
       PageController.instance.appropriateBreadcrumb()
+
       PageController.scriptsComplete = true
       // console.log(PageController.scriptsComplete)
       this.hasremovedLoading = true
