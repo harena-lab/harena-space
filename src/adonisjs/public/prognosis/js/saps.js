@@ -658,11 +658,11 @@ class Saps {
     }
     motvAdm.uti = 16
 
-    console.log('============ idade')
-    console.log(idade)
-
-    console.log('============ origem')
-    console.log(origem)
+    // console.log('============ idade')
+    // console.log(idade)
+    //
+    // console.log('============ origem')
+    // console.log(origem)
 
     var dynamicScore = (idade + origem)
 
@@ -672,8 +672,8 @@ class Saps {
       // resultText.classList.add('pl-2')
       // resultText.innerHTML = Object.entries(comorb)[i][0]+': '+Object.entries(comorb)[i][1]
       // resultWrapper.appendChild(resultText)
-      console.log('============ comorb value')
-      console.log(Object.entries(comorb)[i])
+      // console.log('============ comorb value')
+      // console.log(Object.entries(comorb)[i])
       dynamicScore += comorb[Object.keys(comorb)[i]]
 
     }
@@ -683,8 +683,8 @@ class Saps {
       // resultText.classList.add('pl-2')
       // resultText.innerHTML = Object.entries(motvAdm)[i][0]+': '+Object.entries(motvAdm)[i][1]
       // resultWrapper.appendChild(resultText)
-      console.log('============ motivo value')
-      console.log(Object.entries(motvAdm)[i])
+      // console.log('============ motivo value')
+      // console.log(Object.entries(motvAdm)[i])
       dynamicScore += motvAdm[Object.keys(motvAdm)[i]]
     }
 
@@ -693,8 +693,8 @@ class Saps {
       // resultText.classList.add('pl-2')
       // resultText.innerHTML = Object.entries(motvAdm)[i][0]+': '+Object.entries(motvAdm)[i][1]
       // resultWrapper.appendChild(resultText)
-      console.log('============ stats value')
-      console.log(Object.entries(statsClinico)[i])
+      // console.log('============ stats value')
+      // console.log(Object.entries(statsClinico)[i])
       dynamicScore += statsClinico[Object.keys(statsClinico)[i]]
     }
 
@@ -703,14 +703,14 @@ class Saps {
       // resultText.classList.add('pl-2')
       // resultText.innerHTML = Object.entries(altLab)[i][0]+': '+Object.entries(altLab)[i][1]
       // resultWrapper.appendChild(resultText)
-      console.log('============ alt lab value')
-      console.log(Object.entries(altLab)[i])
+      // console.log('============ alt lab value')
+      // console.log(Object.entries(altLab)[i])
       dynamicScore += altLab[Object.keys(altLab)[i]]
     }
 
-    console.log('============ saps score ')
-    console.log(dynamicScore)
-    console.log('============ Mortality')
+    // console.log('============ saps score ')
+    // console.log(dynamicScore)
+    // console.log('============ Mortality')
     //-32.6659+Math.log(dynamicScore+20.5958)*7.3068 other calc
     // 64.5990 +Math.log(dynamicScore+20.5958)*13.2322 south america calc
     var logitDynamic = -32.6659+Math.log(dynamicScore+20.5958)*7.3068
@@ -723,7 +723,7 @@ class Saps {
     var mortalityDynamic = Math.exp(logitDynamic)/ (1+ Math.exp(logitDynamic))
     var mortalityPercentage = (Math.round(mortalityDynamic*1000)/1000)*100
 
-    console.log(round(mortalityPercentage, 1)+'%')
+    // console.log(round(mortalityPercentage, 1)+'%')
     // var modal = document.querySelector('#saps-result-modal')
     if(document.querySelector('#idade-result-wrapper')){
       var resultWrapper = document.querySelector('#idade-result-wrapper')
@@ -831,6 +831,7 @@ class Saps {
     var infectadoAntes = ''
     var admissao = ''
     var submetidoCirurgia = ''
+    var primeiroItemCirur = true
     var submetidoUti = ''
     var gcs = ''
     var temperatura = ''
@@ -925,87 +926,87 @@ class Saps {
             break;
           case 'nrc-por-avc':
             if(submetidoCirurgia.length>0)
-              submetidoCirurgia += 'e NCR sec. a AVC '
+              submetidoCirurgia += ' e NCR sec. a AVC'
             else
-              submetidoCirurgia += 'NCR sec. a AVC '
+              submetidoCirurgia += ' NCR sec. a AVC'
             break;
           case 'revascularizacao-miocardica':
             if(submetidoCirurgia.length>0)
-                submetidoCirurgia += 'e REVASCULARIZAÇÃO MIOCÁRDICA '
+                submetidoCirurgia += ' e REVASCULARIZAÇÃO MIOCÁRDICA'
               else
-                submetidoCirurgia += 'REVASCULARIZAÇÃO MIOCÁRDICA '
+                submetidoCirurgia += ' REVASCULARIZAÇÃO MIOCÁRDICA'
             break;
           case 'trauma':
             if(submetidoCirurgia.length>0)
-              submetidoCirurgia += 'e TRAUMA '
+              submetidoCirurgia += ' e TRAUMA '
             else
-              submetidoCirurgia += 'TRAUMA '
+              submetidoCirurgia += ' TRAUMA '
             break;
           case 'transplante':
             if(submetidoCirurgia.length>0)
-              submetidoCirurgia += 'e TRANSPLANTE '
+              submetidoCirurgia += ' e TRANSPLANTE'
             else
-              submetidoCirurgia += 'TRANSPLANTE '
+              submetidoCirurgia += ' TRANSPLANTE'
             break;
           case 'arritmia':
             if (submetidoUti.length>0)
-              submetidoUti += 'e ARRITMIA '
+              submetidoUti += ' e ARRITMIA'
             else
-              submetidoUti += 'ARRITMIA '
+              submetidoUti += ' sendo encaminhado à UTI por ARRITMIA'
             break;
           case 'choque-hipovolemico':
             if (submetidoUti.length>0)
-              submetidoUti += 'e CHOQUE HIPOVOLÊMICO '
+              submetidoUti += ' e CHOQUE HIPOVOLÊMICO'
             else
-              submetidoUti += 'CHOQUE HIPOVOLÊMICO '
+              submetidoUti += ' sendo encaminhado à UTI por CHOQUE HIPOVOLÊMICO'
             break;
           case 'outro-choque':
             if (submetidoUti.length>0)
-              submetidoUti += 'e OUTRO CHOQUE '
+              submetidoUti += ' e OUTRO CHOQUE'
             else
-              submetidoUti += 'OUTRO CHOQUE '
+              submetidoUti += ' sendo encaminhado à UTI por OUTRO CHOQUE'
             break;
           case 'convulsao':
             if (submetidoUti.length>0)
-              submetidoUti += 'e CONVULSÃO '
+              submetidoUti += ' e CONVULSÃO'
             else
-              submetidoUti += 'CONVULSÃO '
+              submetidoUti += ' sendo encaminhado à UTI por CONVULSÃO'
             break;
           case 'abdome-agudo':
             if (submetidoUti.length>0)
-              submetidoUti += 'e ABDOME AGUDO '
+              submetidoUti += ' e ABDOME AGUDO'
             else
-              submetidoUti += 'ABDOME AGUDO '
+              submetidoUti += ' sendo encaminhado à UTI por ABDOME AGUDO'
             break;
           case 'pancreatite-grave':
             if (submetidoUti.length>0)
-              submetidoUti += 'e PANCREATITE GRAVE '
+              submetidoUti += ' e PANCREATITE GRAVE'
             else
-              submetidoUti += 'PANCREATITE GRAVE '
+              submetidoUti += ' sendo encaminhado à UTI por PANCREATITE GRAVE'
             break;
           case 'deficit-focal':
             if (submetidoUti.length>0)
-              submetidoUti += 'e DÉFICIT FOCAL '
+              submetidoUti += ' e DÉFICIT FOCAL'
             else
-              submetidoUti += 'DÉFICIT FOCAL '
+              submetidoUti += ' sendo encaminhado à UTI por DÉFICIT FOCAL'
             break;
           case 'efeito-de-massa-intracraniana':
             if (submetidoUti.length>0)
-              submetidoUti += 'e EFEITO DE MASSA INTRACRANIANA '
+              submetidoUti += ' e EFEITO DE MASSA INTRACRANIANA'
             else
-              submetidoUti += 'EFEITO DE MASSA INTRACRANIANA '
+              submetidoUti += ' sendo encaminhado à UTI por EFEITO DE MASSA INTRACRANIANA'
             break;
           case 'insuficiencia-hepatica':
           if (submetidoUti.length>0)
-            submetidoUti += 'e INSUFICIÊNCIA HEPÁTICA '
+            submetidoUti += ' e INSUFICIÊNCIA HEPÁTICA'
           else
-            submetidoUti += 'INSUFICIÊNCIA HEPÁTICA '
+            submetidoUti += ' sendo encaminhado à UTI por INSUFICIÊNCIA HEPÁTICA'
             break;
           case 'alteracao-do-nivel-de-consciencia':
             if (submetidoUti.length>0)
-              submetidoUti += 'e ALTERAÇÃO DO NÍVEL DE CONSCIÊNCIA '
+              submetidoUti += ' e ALTERAÇÃO DO NÍVEL DE CONSCIÊNCIA'
             else
-              submetidoUti += 'ALTERAÇÃO DO NÍVEL DE CONSCIÊNCIA '
+              submetidoUti += ' sendo encaminhado à UTI por ALTERAÇÃO DO NÍVEL DE CONSCIÊNCIA'
             break;
           case 'Nosocomial':
               infectadoAntes = 'NOSOCOMIAL'
@@ -1110,16 +1111,16 @@ class Saps {
               plaquetas = '&#8805;100mil /mm³'//"&#8805;" is code for ">="
               break;
             case 'paO2 >=60 sem VM':
-              oxigenacao = 'sem VM com paO2 &#8805;60'//"&#8805;" is code for ">="
+              oxigenacao = ' sem VM com paO2 &#8805;60'//"&#8805;" is code for ">="
               break;
             case 'pa02 <60 sem VM':
-              oxigenacao = 'sem VM com paO2 <60'
+              oxigenacao = ' sem VM com paO2 <60'
               break;
             case 'P/F<100 em VM':
-              oxigenacao = 'em VM com P/F <100'
+              oxigenacao = ' em VM com P/F <100'
               break;
             case 'P/F >=100 em VM':
-              oxigenacao = 'em VM com P/F &#8805;100'
+              oxigenacao = ' em VM com P/F &#8805;100'
               break;
         }
       }
@@ -1234,7 +1235,7 @@ class Saps {
 
           switch (elem.value) {
             case 'Sim':
-            submetidoCirurgia = 'submetido à cirurgia de '
+            submetidoCirurgia = ' submetido à cirurgia de'
             break;
           }
           break;
@@ -1317,10 +1318,10 @@ class Saps {
 
           switch (elem.value) {
             case 'Sim':
-            drogaVaso = 'em'
+            drogaVaso = ' em'
             break;
             case 'Não':
-            drogaVaso = 'sem'
+            drogaVaso = ' sem'
             break;
           }
           break;
@@ -1342,26 +1343,26 @@ class Saps {
 
           switch (elem.value) {
             case '<1.2 mg/dl':
-            creatinina = '<1.2 mg/dl'
+            creatinina = '<1,2 mg/dl'
             break;
             case '1.2-1.9 mg/dl':
-            creatinina = '1.2-1.9 mg/dl'
+            creatinina = '1,2-1,9 mg/dl'
             break;
             case '2-3.4 mg/dl':
-            creatinina = '2-3.4 mg/dl'
+            creatinina = '2-3,4 mg/dl'
             break;
             case '>=3.5 mg/dl':
-            creatinina = '&#8805;3.5 mg/dl' //"&#8805;" is code for ">="
+            creatinina = '&#8805;3,5 mg/dl' //"&#8805;" is code for ">="
             break;
           }
           break;
           case 'ph':
           switch (elem.value) {
             case '<=7.25':
-            ph = '&#8804;7.25'
+            ph = '&#8804;7,25'
             break;
             case '>7.25':
-            ph = '&#62;7.25'
+            ph = '&#62;7,25'
             break;
           }
           break;
@@ -1397,16 +1398,16 @@ class Saps {
 
           switch (elem.value) {
             case 'paO2 >=60 sem VM':
-            oxigenacao = 'sem VM com paO2 &#8805;60'//"&#8805;" is code for ">="
+            oxigenacao = ' sem VM com paO2 &#8805;60;'//"&#8805;" is code for ">="
             break;
             case 'pa02 <60 sem VM':
-            oxigenacao = 'sem VM com paO2 <60'
+            oxigenacao = ' sem VM com paO2 <60;'
             break;
             case 'P/F<100 em VM':
-            oxigenacao = 'em VM com P/F <100'
+            oxigenacao = ' em VM com P/F <100;'
             break;
             case 'P/F >=100 em VM':
-            oxigenacao = 'em VM com P/F &#8805;100'
+            oxigenacao = ' em VM com P/F &#8805;100;'
             break;
           }
           break;
@@ -1420,88 +1421,96 @@ class Saps {
           case true:
           switch (elem.id) {
             case 'nrc-por-avc':
-            if(submetidoCirurgia.length>0)
-              submetidoCirurgia += 'e NCR sec. a AVC '
-            else
-              submetidoCirurgia += 'NCR sec. a AVC '
+            if(submetidoCirurgia.length>0 && !primeiroItemCirur)
+              submetidoCirurgia += ' e NCR sec. a AVC'
+            else{
+              submetidoCirurgia += ' NCR sec. a AVC'
+              primeiroItemCirur = false
+            }
             break;
             case 'revascularizacao-miocardica':
-              if(submetidoCirurgia.length>0)
-                submetidoCirurgia += 'e REVASCULARIZAÇÃO MIOCÁRDICA '
-              else
-                submetidoCirurgia += 'REVASCULARIZAÇÃO MIOCÁRDICA '
+              if(submetidoCirurgia.length>0 && !primeiroItemCirur)
+                submetidoCirurgia += ' e REVASCULARIZAÇÃO MIOCÁRDICA'
+              else{
+                submetidoCirurgia += ' REVASCULARIZAÇÃO MIOCÁRDICA'
+                primeiroItemCirur = false
+              }
             break;
             case 'trauma':
-            if(submetidoCirurgia.length>0)
-              submetidoCirurgia += 'e TRAUMA '
-            else
-              submetidoCirurgia += 'TRAUMA '
+            if(submetidoCirurgia.length>0 && !primeiroItemCirur)
+              submetidoCirurgia += ' e TRAUMA'
+            else{
+              submetidoCirurgia += ' TRAUMA'
+              primeiroItemCirur = false
+            }
             break;
             case 'transplante':
-            if(submetidoCirurgia.length>0)
-              submetidoCirurgia += 'e TRANSPLANTE '
-            else
-              submetidoCirurgia += 'TRANSPLANTE '
+            if(submetidoCirurgia.length>0 && !primeiroItemCirur)
+              submetidoCirurgia += ' e TRANSPLANTE'
+            else{
+              submetidoCirurgia += ' TRANSPLANTE'
+              primeiroItemCirur = false
+            }
             break;
             case 'arritmia':
             if (submetidoUti.length>0)
-              submetidoUti += 'e ARRITMIA '
+              submetidoUti += ' e ARRITMIA'
             else
-              submetidoUti += 'ARRITMIA '
+              submetidoUti += ' sendo encaminhado à UTI por ARRITMIA'
             break;
             case 'choque-hipovolemico':
             if (submetidoUti.length>0)
-              submetidoUti += 'e CHOQUE HIPOVOLÊMICO '
+              submetidoUti += ' e CHOQUE HIPOVOLÊMICO'
             else
-              submetidoUti += 'CHOQUE HIPOVOLÊMICO '
+              submetidoUti += ' sendo encaminhado à UTI por CHOQUE HIPOVOLÊMICO'
             break;
             case 'outro-choque':
             if (submetidoUti.length>0)
-              submetidoUti += 'e OUTRO CHOQUE '
+              submetidoUti += ' e OUTRO CHOQUE'
             else
-              submetidoUti += 'OUTRO CHOQUE '
+              submetidoUti += ' sendo encaminhado à UTI por OUTRO CHOQUE'
             break;
             case 'convulsao':
             if (submetidoUti.length>0)
-              submetidoUti += 'e CONVULSÃO '
+              submetidoUti += ' e CONVULSÃO'
             else
-              submetidoUti += 'CONVULSÃO '
+              submetidoUti += ' sendo encaminhado à UTI por CONVULSÃO'
             break;
             case 'abdome-agudo':
             if (submetidoUti.length>0)
-              submetidoUti += 'e ABDOME AGUDO '
+              submetidoUti += ' e ABDOME AGUDO'
             else
-              submetidoUti += 'ABDOME AGUDO '
+              submetidoUti += ' sendo encaminhado à UTI por ABDOME AGUDO'
             break;
             case 'pancreatite-grave':
             if (submetidoUti.length>0)
-              submetidoUti += 'e PANCREATITE GRAVE '
+              submetidoUti += ' e PANCREATITE GRAVE'
             else
-              submetidoUti += 'PANCREATITE GRAVE '
+              submetidoUti += ' sendo encaminhado à UTI por PANCREATITE GRAVE'
             break;
             case 'deficit-focal':
             if (submetidoUti.length>0)
-              submetidoUti += 'e DÉFICIT FOCAL '
+              submetidoUti += ' e DÉFICIT FOCAL'
             else
-              submetidoUti += 'DÉFICIT FOCAL '
+              submetidoUti += ' sendo encaminhado à UTI por DÉFICIT FOCAL'
             break;
             case 'efeito-de-massa-intracraniana':
             if (submetidoUti.length>0)
-              submetidoUti += 'e EFEITO DE MASSA INTRACRANIANA '
+              submetidoUti += ' e EFEITO DE MASSA INTRACRANIANA'
             else
-              submetidoUti += 'EFEITO DE MASSA INTRACRANIANA '
+              submetidoUti += ' sendo encaminhado à UTI por EFEITO DE MASSA INTRACRANIANA'
             break;
             case 'insuficiencia-hepatica':
             if (submetidoUti.length>0)
-              submetidoUti += 'e INSUFICIÊNCIA HEPÁTICA '
+              submetidoUti += ' e INSUFICIÊNCIA HEPÁTICA'
             else
-              submetidoUti += 'INSUFICIÊNCIA HEPÁTICA '
+              submetidoUti += ' sendo encaminhado à UTI por INSUFICIÊNCIA HEPÁTICA'
             break;
             case 'alteracao-do-nivel-de-consciencia':
             if (submetidoUti.length>0)
-              submetidoUti += 'e ALTERAÇÃO DO NÍVEL DE CONSCIÊNCIA '
+              submetidoUti += ' e ALTERAÇÃO DO NÍVEL DE CONSCIÊNCIA'
             else
-              submetidoUti += 'ALTERAÇÃO DO NÍVEL DE CONSCIÊNCIA '
+              submetidoUti += ' sendo encaminhado à UTI por ALTERAÇÃO DO NÍVEL DE CONSCIÊNCIA'
             break;
 
             case 'nosocomial':
@@ -1518,9 +1527,11 @@ class Saps {
     }
 
     if(comorb.length > 0)
-      comorb = 'portador de '+comorb+','
+      comorb = comorb+','
+    else
+      comorb = ' nenhuma comorbidade, '
     if(internadoAntes.length > 0)
-      internadoAntes = ' internado há '+internadoAntes+' antes da admissão,'
+      internadoAntes = ' internado há '+internadoAntes+' antes da admissão, '
     else
       internadoAntes = ' sem internação antes da admissão,'
     if(infectadoAntes.length > 0)
@@ -1539,8 +1550,6 @@ class Saps {
       freqCard = ' FC '+freqCard+','
     if(pressSist.length > 0)
       pressSist = ' PAS '+pressSist+','
-    if(pressSist.length > 0)
-      pressSist = ' PAS '+pressSist+','
     if(bilirrubina.length > 0)
       bilirrubina = ' Bilirrubina total '+bilirrubina+';'
     if(creatinina.length > 0)
@@ -1549,8 +1558,6 @@ class Saps {
       ph = ' pH '+ph+';'
     if(leucocitos.length > 0)
       leucocitos = ' Leucócitos '+leucocitos+';'
-    if(plaquetas.length > 0)
-      plaquetas = ' Plaquetas '+plaquetas+';'
     if(plaquetas.length > 0)
       plaquetas = ' Plaquetas '+plaquetas+';'
 
@@ -1583,7 +1590,7 @@ class Saps {
       var txt = document.querySelector('#pacient-overview-wrapper > h5')
       txt.innerHTML = overviewText
     }
-    console.log(overviewText)
+    // console.log(overviewText)
     $('#pacient-overview-modal').modal('show')
 
   }
@@ -1596,8 +1603,7 @@ class Saps {
   Saps.overviewText =
   `
   Paciente de [_idade], encaminhado [_origem], portador de [_comorbidade]
-  [_internadoDias][_ifeccao] Admitido [_admissao][_submetidoCirurgia],
-  sendo encaminhado à UTI por [_submetidoUti]. À admissão, apresentava[_gcs][_temperatura]
+  [_internadoDias][_ifeccao][_admissao][_submetidoCirurgia][_submetidoUti]. À admissão, apresentava[_gcs][_temperatura]
   [_freqCardiaca][_pressaoSistolica][_drogaVasoativa] uso de DVA. A seguir, os exames da admissão:
   [_bilirrubina][_creatinina][_ph][_leucocitos][_plaquetas][_oxigenacao]
   `

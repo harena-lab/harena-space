@@ -1,7 +1,8 @@
  class Prognosis {
   constructor() {
-    window.addEventListener('load', this.start)
-
+    // window.addEventListener('load', this.start)
+    this.start = this.start.bind(this)
+    MessageBus.int.subscribe('control/html/ready', this.start)
     // this.addPacientVariableOption = this.addPacientVariableOption.bind(this)
     // this.deletePacientVariableOption = this.deletePacientVariableOption.bind(this)
     // MessageBus.ext.subscribe('button/add-option/clicked', this.addPacientVariableOption)
@@ -2901,8 +2902,11 @@
     }
     var selectedPacient
     if((localStorage.getItem('prognosis-current-lvl') && localStorage.getItem('prognosis-current-lvl') != 'null') || new URL(document.location).searchParams.get('diffic')){
-      if(localStorage.getItem('prognosis-current-lvl') != new URL(document.location).searchParams.get('diffic')){
+      if(new URL(document.location).searchParams.get('diffic')!= null
+      && (localStorage.getItem('prognosis-current-lvl') != new URL(document.location).searchParams.get('diffic'))){
         localStorage.setItem('prognosis-current-lvl', new URL(document.location).searchParams.get('diffic'))
+      }else if(localStorage.getItem('prognosis-current-lvl') == null){
+        localStorage.setItem('prognosis-current-lvl', 1)
       }
       selectedPacient = pacientInfo.pacients[localStorage.getItem('prognosis-current-lvl')-1]
     }else{
@@ -2910,11 +2914,14 @@
         if(!new URL(document.location).pathname.includes('calculator'))
           localStorage.setItem('prognosis-current-lvl', pacientInfo.pacients[0].dificuldade)
     }
-
+    if(new URL(document.location).pathname.includes('calculator'))
+      selectedPacient = pacientInfo.pacients[0]
 
     if(document.querySelector('h1.pacient-title')){
       var title = document.querySelector('h1.pacient-title')
-      title.innerHTML = 'João V'+selectedPacient.dificuldade
+
+      title.innerHTML = title.innerHTML
+      .replace('dificuldade 1',`dificuldade ${selectedPacient.dificuldade}`)
     }
 
     ////////////////////////////////// IDADE ///////////////////////////////////////////////////
@@ -3558,10 +3565,10 @@
       const strokeWidth = "1"
       const svgRoot = document.querySelector('#svg-wrapper')
       const svgEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
-      svgEl.classList.add('spin')
+      svgEl.classList.add('spin','w-100','w-md-50','w-xl-40')
       svgEl.setAttribute('viewBox', '-55 -55 110 110')
-      svgEl.setAttribute('width',400)
-      svgEl.setAttribute('height',400)
+      // svgEl.setAttribute('width','100%')
+      // svgEl.setAttribute('height','100%')
       svgRoot.appendChild(svgEl)
       var gEl = document.createElementNS('http://www.w3.org/2000/svg', 'g')
       gEl.id = 'roulette-group'
@@ -3577,7 +3584,7 @@
            from="0"
            to="200"
            begin=""
-           dur="7s"
+           dur="8s"
            fill="freeze"
            calcMode="spline"
            repeatCount="1"
@@ -3673,10 +3680,9 @@
 
       const btnSpin = document.querySelector('#btn-spin-roulette')
       const fnBtnSpin = function (){
-        this.disabled = true
         const sapsCalc = new URL(document.location).searchParams.get('sapsCalc')
         if(availableN == selectedN.length){
-
+          this.disabled = true
           Prognosis.i.spinRoulette(selectedN)
           document.querySelector('#roulette-invalid').classList.add('d-none')
           if(!document.querySelector('#btn-spin-roulette').innerHTML.includes('novamente'))
@@ -3743,7 +3749,7 @@
       }
       var wrapper = document.querySelector('#main-panel').firstElementChild
       if(selectedN.includes(angleToNum)){
-        resultTxt.innerHTML = 'Paciente sobreviveu'
+        resultTxt.innerHTML = 'Paciente sobreviveu :)'
         //#015b13
         var selectedEl = document.querySelector('#n-'+angleToNum)
         selectedEl.querySelector('path').setAttribute('fill','#015b13')
@@ -3751,7 +3757,7 @@
           wrapper.insertBefore(resultTxt, document.querySelector('.btn-info'))
       }
       else{
-        resultTxt.innerHTML = 'Paciente não sobreviveu'
+        resultTxt.innerHTML = 'Paciente não sobreviveu :('
         //#f05858
         //#9f0202
         var selectedEl = document.querySelector('#n-'+angleToNum)
@@ -3765,7 +3771,9 @@
       rouletteAnim.addEventListener('endEvent', fnEndSpin)
       btnSpin.dataset.roulette = true
     }
-    rouletteAnim.setAttribute('to', parseInt(rouletteAnim.getAttribute('from'))+getRandomInt(2000, 2700))
+    var randomRotate = getRandomInt(2000, 2880)
+    console.log(randomRotate)
+    rouletteAnim.setAttribute('to', parseInt(rouletteAnim.getAttribute('from'))+randomRotate)
     rouletteAnim.beginElement()
 
   }

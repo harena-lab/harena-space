@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Prognosis Game</title>
+  <title>Roda da Fortuna</title>
 
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
@@ -104,10 +104,11 @@
 </head>
 
 <body>
-  <!-- <main role=""> -->
+  <dcc-include src="/author/partials/header.html"></dcc-include>
+  <main role="">
     <div id="main-panel" class="d-flex flex-column vh-100 vw-100 scroll-y index-boot-padding">
       <div class=" d-flex flex-column w-lg-75 h-100 w-100 bg-dark debug-border mx-auto align-items-center">
-        <h1 class="debug-border txt-light mt-5">Game Title</h1>
+        <h1 class="debug-border txt-light mt-5">Roda da Fortuna</h1>
         <div class="debug-border mt-5 d-flex flex-column w-50" id="btn-home-container" >
           <button class="btn btn-light m-1 " type="button" name="btn-learn" id="btn-learn" onclick="location.href = '/prognosis/learn'"> Learn Prognosis</button>
           <button class="btn btn-light m-1 disabled" type="button" name="btn-challenge-1" id="btn-challenge-1"> Challenge 1  <i class="fas fa-lock"></i></button>
@@ -116,6 +117,6 @@
         </div>
       </div>
     </div>
-  <!-- </main> -->
+  </main>
 </body>
 </html>
