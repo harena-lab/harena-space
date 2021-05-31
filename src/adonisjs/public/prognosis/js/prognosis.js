@@ -14,7 +14,15 @@
     Prognosis.i.expandMultiChoice()
     if (new URL(document.location).pathname == '/prognosis/learn/player/') {
       Prognosis.i.getPacientOptions()
+      if(document.querySelector('#welcome-lvl-modal') && new URL(document.location).searchParams.get('diffic') == '1'){
+        var welcomeModal = document.querySelector('#welcome-lvl-modal')
+        welcomeModal.querySelector('.modal-title').textContent = 'Seu primeiro paciente'
+        welcomeModal.querySelector('.modal-body > p').textContent = `Esse primeiro paciente...bem, ele não é "mortal". As irmãs querem ter certeza que você
+           entende o básico antes de começar com os humanos reais. Com este aqui você
+           poderá fazer todas as mudanças possíveis. Tente fazer com que ele tenha as melhores chances de sobreviver!`
 
+        $('#welcome-lvl-modal').modal('show')
+      }
       const nextStep =  document.querySelector('#btn-next-step')
       const fnnextStep = function (){
         if(this.form.checkValidity()){
@@ -3772,7 +3780,7 @@
       btnSpin.dataset.roulette = true
     }
     var randomRotate = getRandomInt(2000, 2880)
-    console.log(randomRotate)
+    // console.log(randomRotate)
     rouletteAnim.setAttribute('to', parseInt(rouletteAnim.getAttribute('from'))+randomRotate)
     rouletteAnim.beginElement()
 
