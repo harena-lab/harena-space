@@ -509,4 +509,78 @@
       }
     }
   )
+
+  DCC.component(
+    'harena-user-property',
+    'dcc-rest',
+    {
+      environment: {
+        'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api,
+      },
+      oas: {
+        paths: {
+          '{url-manager}/user/property': {
+            'get': {
+              operationId: 'user-property',
+              parameters: [
+                {name: 'url-manager',
+                  in: 'path'},
+                {name: 'propertyTitle',
+                  in: 'query'}
+              ]
+            },
+            'post': {
+              operationId: 'user-property',
+              parameters: [
+                {name: 'url-manager',
+                  in: 'path'},
+                {name: 'propertyTitle',
+                  in: 'query'},
+                {name: 'propertyValue',
+                  in: 'query'},
+              ]
+            },
+            'put': {
+              operationId: 'user-property',
+              parameters: [
+                {name: 'url-manager',
+                  in: 'path'},
+                {name: 'propertyTitle',
+                  in: 'query'},
+                {name: 'propertyValue',
+                  in: 'query'},
+              ]
+            },
+          }
+        }
+      }
+    }
+  )
+
+  DCC.component(
+    'harena-prognosis-lvl',
+    'dcc-rest',
+    {
+      environment: {
+        'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api,
+        'propertyTitle':'prognosis-current-lvl',
+      },
+      oas: {
+        paths: {
+          '{url-manager}/user/property': {
+            'get': {
+              operationId: 'user-property',
+              parameters: [
+                {name: 'url-manager',
+                  in: 'path'},
+                {name: 'propertyTitle',
+                  in: 'query'},
+              ]
+            }
+          }
+        }
+      }
+    }
+  )
+
 })()

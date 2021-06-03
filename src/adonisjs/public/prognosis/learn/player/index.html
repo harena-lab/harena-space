@@ -105,6 +105,8 @@
   <script src="/prognosis/js/saps.js"></script>
 </head>
 <body>
+  <dcc-rest id="harena-user-property" bind="harena-user-property"></dcc-rest>
+  <dcc-rest id="harena-prognosis-lvl" bind="harena-prognosis-lvl"></dcc-rest>
   <!-- Welcome modal start -->
   <div class="modal fade" id="welcome-lvl-modal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
@@ -143,9 +145,10 @@
               <label for="exampleInputEmail1">Na sua opinião, qual a chance (0 a 100) desse paciente sobreviver a essa internação?</label>
               <input type="number" min="0" max="100" class="form-control" id="player-survival-rate" aria-describedby="player-answer" placeholder="Digite sua resposta aqui..." required>
             </div>
-            <input type="hidden" name="sapsSurvival" id="saps-survival" value="">
+            <input type="hidden" name="saps-survival" id="saps-survival" value="">
             <button type="submit" class="btn btn-success" id="btn-next-step">Próximo passo</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+
           </form>
         </div>
       </div>
@@ -195,6 +198,8 @@
         </div>
 
         <button type="submit" id="btn-create-pacient" class="btn btn-success w-100"> Revisar as escolhas</button>
+        <dcc-submit label="Revisar as escolhas" xstyle="out" location="btn-create-pacient" bind="submit-prognosis-lvl"
+         connect="submit:harena-user-property:service/request/post"></dcc-submit>
       </form>
       <div class="p-2">
 
@@ -203,5 +208,11 @@
     </div>
   </div>
   </main>
+
+  <dcc-dhtml id="harena-dhtml-prognosis" connect="retrieve:harena-prognosis-lvl:service/request/get">
+    <input type="hidden" name="{{userProperty.0.title}}" id="current-lvl" value="{{userProperty.0.value}}">
+    <end-dcc></end-dcc>
+  </dcc-dhtml>
+
 </body>
 </html>

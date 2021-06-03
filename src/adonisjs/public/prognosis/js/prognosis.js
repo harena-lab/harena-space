@@ -1,8 +1,9 @@
  class Prognosis {
   constructor() {
-    // window.addEventListener('load', this.start)
+    let started = false
     this.start = this.start.bind(this)
-    MessageBus.int.subscribe('control/html/ready', this.start)
+    MessageBus.int.subscribe('control/dhtml/ready', this.start)
+    // MessageBus.int.subscribe('control/html/ready', this.start)
     // this.addPacientVariableOption = this.addPacientVariableOption.bind(this)
     // this.deletePacientVariableOption = this.deletePacientVariableOption.bind(this)
     // MessageBus.ext.subscribe('button/add-option/clicked', this.addPacientVariableOption)
@@ -11,53 +12,53 @@
 
 
   async start (){
-    Prognosis.i.expandMultiChoice()
-    if (new URL(document.location).pathname == '/prognosis/learn/player/') {
-      Prognosis.i.getPacientOptions()
+      Prognosis.i.expandMultiChoice()
+      if (new URL(document.location).pathname == '/prognosis/learn/player/') {
+        Prognosis.i.getPacientOptions()
 
-      const nextStep =  document.querySelector('#btn-next-step')
-      const fnnextStep = function (){
-        if(this.form.checkValidity()){
+        const nextStep =  document.querySelector('#btn-next-step')
+        const fnnextStep = function (){
+          if(this.form.checkValidity()){
             window.location.href = `/prognosis/learn/player/result?sapsCalc=${this.form.querySelector('#saps-survival').value}&playerCalc=${this.form.querySelector('#player-survival-rate').value}`
+          }
+          // console.log(this.form.querySelector('#saps-survival').value)
+          // console.log(this.form.querySelector('#player-survival-rate').value)
         }
-        // console.log(this.form.querySelector('#saps-survival').value)
-        // console.log(this.form.querySelector('#player-survival-rate').value)
-      }
-      nextStep.addEventListener('click', fnnextStep)
+        nextStep.addEventListener('click', fnnextStep)
 
-      const createPacientBtn =  document.querySelector('#btn-create-pacient')
-      const fnCreatePacientBtn = function (){
-        if(this.form.checkValidity())
+        const createPacientBtn =  document.querySelector('#btn-create-pacient')
+        const fnCreatePacientBtn = function (){
+          if(this.form.checkValidity())
           Saps.i.calcSaps3Score(this.form)
-      }
-      createPacientBtn.addEventListener('click', fnCreatePacientBtn)
-
-      const playerSurvivalRate = document.querySelector('#player-survival-rate')
-      playerSurvivalRate.addEventListener('keyup', function(){
-        if(!this.checkValidity()){
-          this.reportValidity()
         }
-      })
+        createPacientBtn.addEventListener('click', fnCreatePacientBtn)
 
-    }
-    if (new URL(document.location).pathname.includes('/prognosis/calculator')){
-      Prognosis.i.getPacientOptions(true)
-    }
-    if (new URL(document.location).pathname.includes('/prognosis/creation')){
-      var btnAddOption = document.querySelectorAll('.btn-add-option')
-      for (var btn of btnAddOption) {
-        // console.log('============')
-        // console.log(btn)
-        btn.addEventListener('click', Prognosis.i.addPacientVariableOption)
+        const playerSurvivalRate = document.querySelector('#player-survival-rate')
+        playerSurvivalRate.addEventListener('keyup', function(){
+          if(!this.checkValidity()){
+            this.reportValidity()
+          }
+        })
+
       }
-      document.querySelector('#btn-update-idade-option').addEventListener('click', Prognosis.i.updatePacientVariableOption)
-    }
-    if (new URL(document.location).pathname.includes('/learn/player/result')){
-      for (var elem of document.querySelectorAll('input')) {
-        elem.checked = false
+      if (new URL(document.location).pathname.includes('/prognosis/calculator')){
+        Prognosis.i.getPacientOptions(true)
       }
-      Prognosis.i.playerResult()
-    }
+      if (new URL(document.location).pathname.includes('/prognosis/creation')){
+        var btnAddOption = document.querySelectorAll('.btn-add-option')
+        for (var btn of btnAddOption) {
+          // console.log('============')
+          // console.log(btn)
+          btn.addEventListener('click', Prognosis.i.addPacientVariableOption)
+        }
+        document.querySelector('#btn-update-idade-option').addEventListener('click', Prognosis.i.updatePacientVariableOption)
+      }
+      if (new URL(document.location).pathname.includes('/learn/player/result')){
+        for (var elem of document.querySelectorAll('input')) {
+          elem.checked = false
+        }
+        Prognosis.i.playerResult()
+      }
   }
 
   async expandMultiChoice (){
@@ -2901,11 +2902,11 @@
 
     }
     var selectedPacient
-    if((localStorage.getItem('prognosis-current-lvl') && localStorage.getItem('prognosis-current-lvl') != 'null')
-    || new URL(document.location).searchParams.get('diffic')){
-      if(new URL(document.location).searchParams.get('diffic')!= null
-      && (localStorage.getItem('prognosis-current-lvl') != new URL(document.location).searchParams.get('diffic'))){
-        localStorage.setItem('prognosis-current-lvl', new URL(document.location).searchParams.get('diffic'))
+    if((localStorage.getItem('prognosis-current-lvl') && localStorage.getItem('prognosis-current-lvl') != null)
+    || document.querySelector('#current-lvl').value){
+      if(document.querySelector('#current-lvl').value!= ''
+      && (localStorage.getItem('prognosis-current-lvl') != document.querySelector('#current-lvl').value)){
+        localStorage.setItem('prognosis-current-lvl', document.querySelector('#current-lvl').value)
       }else if(localStorage.getItem('prognosis-current-lvl') == null){
         localStorage.setItem('prognosis-current-lvl', 1)
       }
@@ -3570,7 +3571,6 @@
   async playerResult(){
     const playerGuess = new URL(document.location).searchParams.get('playerCalc')
     const sapsCalc = new URL(document.location).searchParams.get('sapsCalc')
-
     const createRoulette = function (sectN){
       const diameter = 100
       const svgSize = diameter + 10
@@ -3704,10 +3704,11 @@
           const btnNextLvl = document.querySelector('#btn-next-lvl')
           btnNextLvl.classList.remove('d-none')
           btnNextLvl.addEventListener('click', function (){
-            var nextLvl = parseInt(localStorage.getItem('prognosis-current-lvl'))+1
-            if(nextLvl>10)
-              nextLvl = 10
-            document.location.href = '/prognosis/learn/player/?diffic=' + (nextLvl)
+            // let nextLvl = parseInt(localStorage.getItem('prognosis-current-lvl'))+1
+            // if(nextLvl>10)
+            //   nextLvl = 10
+            // localStorage.setItem('prognosis-current-lvl', nextLvl)
+            document.location.href = '/prognosis/learn/player/'
           })
         }else{
           document.querySelector('#roulette-invalid').classList.remove('d-none')

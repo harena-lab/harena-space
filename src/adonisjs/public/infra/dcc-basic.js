@@ -149,7 +149,6 @@
         $('#notice-modal').modal('show')
         var txt = document.querySelector('#modal-notice-txt')
         var modalBody = document.querySelector('#modal-notice-body')
-
         txt.innerHTML = 'Sharing cases...'
 
         modalBody.classList.remove('bg-danger')
@@ -192,6 +191,61 @@
         setTimeout(function(){
           $('#notice-modal').modal('hide')
         }, 7000)
+
+      }
+    }
+  )
+
+  DCC.component(
+    'submit-prognosis-lvl',
+    'dcc-submit',
+    {
+      pre: function (message, form, schema) {
+        if(document.querySelector('#current-lvl') && localStorage.getItem('prognosis-current-lvl')!= null){
+          let currentLvl = localStorage.getItem('prognosis-current-lvl')
+          message.value.propertyTitle = 'prognosis-current-lvl'
+          message.value.propertyValue = currentLvl
+          return true
+        }else if(document.querySelector('#next-lvl') && localStorage.getItem('prognosis-current-lvl')!= null){
+          if(localStorage.getItem('prognosis-current-lvl') == parseInt(document.querySelector('#next-lvl').value)){
+            let nextLvl = parseInt(document.querySelector('#next-lvl').value) + 1
+            if(nextLvl>10)
+              nextLvl = 10
+            message.value.propertyTitle = 'prognosis-current-lvl'
+            message.value.propertyValue = nextLvl
+            return true
+          }
+          return false
+
+
+        }else{
+          console.log('============ error in prognosis lvl update in manager')
+          return false
+        }
+
+      },
+      pos: async function (response) {
+        document.querySelector('dcc-submit[bind="submit-prognosis-lvl"]').remove()
+      }
+    }
+  )
+
+  DCC.component(
+    'submit-prognosis-lvl-result',
+    'dcc-submit',
+    {
+      pre: function (message, form, schema) {
+        if(form.checkValidity()){
+          currentLvl = localStorage.getItem('prognosis-current-lvl')
+          console.log(document.querySelector('#saps-survival'))
+          message.value.propertyTitle = `prognosis-lvl-${currentLvl}-result`
+          message.value.propertyValue = document.querySelector('#saps-survival').value
+          return true
+        }else{
+          return false
+        }
+      },
+      pos: async function (response) {
 
       }
     }
