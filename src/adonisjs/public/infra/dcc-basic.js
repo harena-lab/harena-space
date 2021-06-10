@@ -225,7 +225,8 @@
 
       },
       pos: async function (response) {
-        document.querySelector('dcc-submit[bind="submit-prognosis-lvl"]').remove()
+        if(document.querySelector('dcc-submit[bind="submit-prognosis-lvl"]'))
+          document.querySelector('dcc-submit[bind="submit-prognosis-lvl"]').remove()
       }
     }
   )
@@ -250,4 +251,139 @@
       }
     }
   )
+
+  DCC.component(
+    'submit-prognosis-lvl-txt',
+    'dcc-submit',
+    {
+      pre: function (message, form, schema) {
+        if(document.querySelector('#current-lvl') && localStorage.getItem('prognosis-current-lvl')!= null
+        && document.querySelector('#pacient-overview-wrapper > h5')){
+
+          const currentLvl = localStorage.getItem('prognosis-current-lvl')
+          const pacientOverview = document.querySelector('#pacient-abstract').value
+          message.value.propertyTitle = `prognosis-lvl-${currentLvl}-pacient`
+          message.value.propertyValue = pacientOverview
+          return true
+        }else{
+          return false
+        }
+      },
+      pos: async function (response) {
+        if(document.querySelector(`dcc-submit[bind="submit-prognosis-lvl-txt"][connect$="/post"]`)){
+          document.querySelector(`dcc-submit[bind="submit-prognosis-lvl-txt"][connect$="/post"]`).remove()
+          const submitDcc = document.querySelector(`dcc-submit[bind="submit-prognosis-lvl-txt"][connect$="/put"]`)
+          submitDcc._computeTrigger()
+        }
+      }
+    }
+  )
+
+  DCC.component(
+    'submit-prognosis-lvl-guess',
+    'dcc-submit',
+    {
+      pre: function (message, form, schema) {
+        if(new URL(document.location).searchParams.get('playerCalc')
+        && new URL(document.location).searchParams.get('calc')){
+
+          const currentLvl = localStorage.getItem('prognosis-current-lvl')
+          const playerCalc = new URL(document.location).searchParams.get('playerCalc')
+          const sapsCalc = new URL(document.location).searchParams.get('calc')
+          const prognDiff = (parseFloat(playerCalc) - parseFloat(sapsCalc))
+
+          message.value.propertyTitle = `prognosis-lvl-${currentLvl}-best-guess`
+          message.value.propertyValue = prognDiff
+          return true
+        }else{
+          return false
+        }
+      },
+      pos: async function (response) {
+        const playerCalc = new URL(document.location).searchParams.get('playerCalc')
+        const sapsCalc = new URL(document.location).searchParams.get('calc')
+        const prognDiff = (parseFloat(playerCalc) - parseFloat(sapsCalc))
+        if(document.querySelector(`dcc-submit[bind="submit-prognosis-lvl-guess"][connect$="/post"]`)){
+          document.querySelector(`dcc-submit[bind="submit-prognosis-lvl-guess"][connect$="/post"]`).remove()
+          if(Math.abs(response['harena-user-property'].userProperty.value) > Math.abs(prognDiff)){
+            const submitDcc = document.querySelector(`dcc-submit[bind="submit-prognosis-lvl-guess"][connect$="/put"]`)
+            submitDcc._computeTrigger()
+          }
+        }
+      }
+    }
+  )
+
+  DCC.component(
+    'submit-prognosis-lvl-progn',
+    'dcc-submit',
+    {
+      pre: function (message, form, schema) {
+        if(new URL(document.location).searchParams.get('calc')){
+
+          const currentLvl = localStorage.getItem('prognosis-current-lvl')
+          const sapsCalc = new URL(document.location).searchParams.get('calc')
+
+          message.value.propertyTitle = `prognosis-lvl-${currentLvl}-best-progn`
+          message.value.propertyValue = parseFloat(sapsCalc)
+          return true
+        }else{
+          return false
+        }
+      },
+      pos: async function (response) {
+        const sapsCalc = new URL(document.location).searchParams.get('calc')
+        if(document.querySelector(`dcc-submit[bind="submit-prognosis-lvl-progn"][connect$="/post"]`)){
+          document.querySelector(`dcc-submit[bind="submit-prognosis-lvl-progn"][connect$="/post"]`).remove()
+          if(response['harena-user-property'].userProperty.value < parseFloat(sapsCalc)){
+            const submitDcc = document.querySelector(`dcc-submit[bind="submit-prognosis-lvl-progn"][connect$="/put"]`)
+            submitDcc._computeTrigger()
+          }
+        }
+      }
+    }
+  )
+
+  DCC.component(
+    'submit-prognosis-highest-lvl',
+    'dcc-submit',
+    {
+      pre: function (message, form, schema) {
+        let currentLvl
+        let highestLvl
+        if(localStorage.getItem('prognosis-current-lvl') && localStorage.getItem('prognosis-highest-lvl')){
+          if(document.querySelector('#next-lvl')){
+            if(document.querySelector('#next-lvl').value == localStorage.getItem('prognosis-highest-lvl')){
+              highestLvl = parseInt(document.querySelector('#next-lvl').value) + 1
+            }else{
+              highestLvl = parseInt(document.querySelector('#next-lvl').value)
+            }
+          }else{
+            if(parseInt(localStorage.getItem('prognosis-current-lvl'))
+            >= parseInt(localStorage.getItem('prognosis-highest-lvl'))){
+              currentLvl = parseInt(localStorage.getItem('prognosis-current-lvl'))
+              highestLvl = currentLvl
+            }
+          }
+
+          message.value.propertyTitle = `prognosis-highest-lvl`
+          message.value.propertyValue = highestLvl
+          return true
+        }else{
+          return false
+        }
+      },
+      pos: async function (response) {
+        const currentLvl = parseInt(localStorage.getItem('prognosis-current-lvl'))
+        if(document.querySelector(`dcc-submit[bind="submit-prognosis-highest-lvl"][connect$="/post"]`)){
+          document.querySelector(`dcc-submit[bind="submit-prognosis-highest-lvl"][connect$="/post"]`).remove()
+          if(parseInt(response[Object.keys(response)[0]].userProperty.value) < currentLvl){
+            const submitDcc = document.querySelector(`dcc-submit[bind="submit-prognosis-highest-lvl"][connect$="/put"]`)
+            submitDcc._computeTrigger()
+          }
+        }
+      }
+    }
+  )
+
 })()

@@ -261,7 +261,7 @@
               "uniqueValues":"true",
               "values": [
                 "paO2 >=60 sem VM",
-                "pa02 <60 sem VM",
+                "paO2 <60 sem VM",
                 "P/F<100 em VM",
                 "P/F >=100 em VM",
               ],
@@ -511,7 +511,7 @@
               "uniqueValues":"true",
               "values": [
                 "paO2 >=60 sem VM",
-                "pa02 <60 sem VM",
+                "paO2 <60 sem VM",
                 "P/F<100 em VM",
                 "P/F >=100 em VM",
               ],
@@ -760,7 +760,7 @@
               "uniqueValues":"true",
               "values": [
                 "paO2 >=60 sem VM",
-                "pa02 <60 sem VM",
+                "paO2 <60 sem VM",
                 "P/F<100 em VM",
                 "P/F >=100 em VM",
               ],
@@ -1010,7 +1010,7 @@
               "uniqueValues":"true",
               "values": [
                 "paO2 >=60 sem VM",
-                "pa02 <60 sem VM",
+                "paO2 <60 sem VM",
                 "P/F<100 em VM",
                 "P/F >=100 em VM",
               ],
@@ -1255,7 +1255,7 @@
               "uniqueValues":"true",
               "values": [
                 "paO2 >=60 sem VM",
-                "pa02 <60 sem VM",
+                "paO2 <60 sem VM",
                 "P/F<100 em VM",
                 "P/F >=100 em VM",
               ],
@@ -1499,7 +1499,7 @@
               "uniqueValues":"true",
               "values": [
                 "paO2 >=60 sem VM",
-                "pa02 <60 sem VM",
+                "paO2 <60 sem VM",
                 "P/F<100 em VM",
                 "P/F >=100 em VM",
               ],
@@ -1738,7 +1738,7 @@
               "uniqueValues":"true",
               "values": [
                 "paO2 >=60 sem VM",
-                "pa02 <60 sem VM",
+                "paO2 <60 sem VM",
                 "P/F<100 em VM",
                 "P/F >=100 em VM",
               ],

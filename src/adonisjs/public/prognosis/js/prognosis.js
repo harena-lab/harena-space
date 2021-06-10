@@ -1,8 +1,11 @@
  class Prognosis {
   constructor() {
-    let started = false
+    this._ready = false
     this.start = this.start.bind(this)
     MessageBus.int.subscribe('control/dhtml/ready', this.start)
+    MessageBus.int.publish('control/dhtml/status/request', {id: 'harena-dhtml-prognosis-current-lvl'})
+    MessageBus.int.publish('control/dhtml/status/request', {id: 'harena-dhtml-prognosis-heighest-level'})
+
     // MessageBus.int.subscribe('control/html/ready', this.start)
     // this.addPacientVariableOption = this.addPacientVariableOption.bind(this)
     // this.deletePacientVariableOption = this.deletePacientVariableOption.bind(this)
@@ -10,8 +13,16 @@
     // MessageBus.ext.subscribe('button/delete-option/clicked', this.deletePacientVariableOption)
   }
 
-
   async start (){
+    for (let i = 0; i < document.querySelectorAll('dcc-dhtml').length; i++) {
+      let dhtmlList = document.querySelectorAll('dcc-dhtml')
+      if(dhtmlList[i]._ready == true){
+        this._ready = true
+      }else{
+        this._ready = false
+      }
+    }
+    if(this._ready){
       Prognosis.i.expandMultiChoice()
       if (new URL(document.location).pathname == '/prognosis/learn/player/') {
         Prognosis.i.getPacientOptions()
@@ -19,7 +30,7 @@
         const nextStep =  document.querySelector('#btn-next-step')
         const fnnextStep = function (){
           if(this.form.checkValidity()){
-            window.location.href = `/prognosis/learn/player/result?sapsCalc=${this.form.querySelector('#saps-survival').value}&playerCalc=${this.form.querySelector('#player-survival-rate').value}`
+            window.location.href = `/prognosis/learn/player/result?calc=${this.form.querySelector('#saps-survival').value}&playerCalc=${this.form.querySelector('#player-survival-rate').value}`
           }
           // console.log(this.form.querySelector('#saps-survival').value)
           // console.log(this.form.querySelector('#player-survival-rate').value)
@@ -34,10 +45,11 @@
         createPacientBtn.addEventListener('click', fnCreatePacientBtn)
 
         const playerSurvivalRate = document.querySelector('#player-survival-rate')
-        playerSurvivalRate.addEventListener('keyup', function(){
-          if(!this.checkValidity()){
-            this.reportValidity()
-          }
+        const survivalRateOutputTxt = document.querySelector('#player-survival-rate-txt')
+        playerSurvivalRate.value = 0
+        survivalRateOutputTxt.innerHTML = playerSurvivalRate.value+'%'
+        playerSurvivalRate.addEventListener('input', function(){
+          survivalRateOutputTxt.innerHTML = playerSurvivalRate.value+'%'
         })
 
       }
@@ -52,6 +64,7 @@
           btn.addEventListener('click', Prognosis.i.addPacientVariableOption)
         }
         document.querySelector('#btn-update-idade-option').addEventListener('click', Prognosis.i.updatePacientVariableOption)
+        Prognosis.i.getPacientOptions(true)
       }
       if (new URL(document.location).pathname.includes('/learn/player/result')){
         for (var elem of document.querySelectorAll('input')) {
@@ -59,6 +72,7 @@
         }
         Prognosis.i.playerResult()
       }
+    }
   }
 
   async expandMultiChoice (){
@@ -93,6 +107,7 @@
 
               for (var i = 0; i < inputList.length; i++) {
                 inputList[i].checked = false
+                inputList[i].required = false
                 // var testWrapper = document.querySelector('#' + inputList[i].name + '-wrapper')
                 // var test = testWrapper.querySelectorAll('div > input')
                 // testWrapper.classList.add('d-none')
@@ -175,6 +190,8 @@
   }
 
   async addPacientVariableOption (topic, message){
+    console.log(topic)
+    console.log(message)
     const optionWrapper = document.querySelector('#'+ this.id.substring(4) +'-wrapper')
     const inputValue = this.offsetParent.querySelector('input')
     this.message = this.getAttribute('message')
@@ -215,13 +232,33 @@
   async pacientFormValidation(form){
 
     //Check if input has attribute 'required', also removes 'required' if input is hidden
+    let dependantInput = document.querySelectorAll(`div.d-none.progn-multi-wrapper[id*="wrapper"] > div.form-check > input`)
+    for (var elem of dependantInput) {
+      // console.log('============ i do not like it')
+      // console.log(elem)
+      elem.required = false
+    }
+    dependantInput = document.querySelectorAll(`div.progn-multi-wrapper:not(.d-none)[id*="wrapper"] > div.form-check > input`)
+    for (var elem of dependantInput) {
+      // console.log('============ i do not like itaaaa')
+      // console.log(elem)
+      if(!elem.required)
+        elem.required = true
+    }
+
+    /*
     const fnChildInputs = function (){
       var dependantInput = document.querySelectorAll(`div.d-none.progn-multi-wrapper[id*="wrapper"] > div.form-check > input`)
+
       for (var elem of dependantInput) {
+        // console.log('============ i do not like it')
+        // console.log(elem)
         elem.required = false
       }
       dependantInput = document.querySelectorAll(`div.progn-multi-wrapper:not(.d-none)[id*="wrapper"] > div.form-check > input`)
       for (var elem of dependantInput) {
+        // console.log('============ i do not like itaaaa')
+        // console.log(elem)
         if(!elem.required)
           elem.required = true
       }
@@ -230,6 +267,7 @@
       elem.removeEventListener('change', fnChildInputs)
       elem.addEventListener('change', fnChildInputs)
     }
+    */
     const fnCheckboxRequired = function (){
 
       var checkboxGroup = this.parentElement.parentElement.querySelectorAll('div.form-check > input[type=checkbox]')
@@ -261,7 +299,6 @@
       elem.addEventListener('change', fnCheckboxRequired)
     }
 
-    fnChildInputs()
   }
 
   removeAccent (src){
@@ -405,7 +442,7 @@
                       "Cirurgia urgência",//6
                     ],
                     "child": [
-                      "NRC por AVC",//5
+                      "Neurocirurgia por acidente vascular cerebral",//5
                       "Revascularização miocárdica",//-6
                       "Trauma",//-8
                       "Transplante",//-11
@@ -546,9 +583,9 @@
                     "uniqueValues":"true",
                     "values": [
                       "paO2 >=60 sem VM",//0
-                      "pa02 <60 sem VM",//5
-                      "P/F<100 em VM",//11
-                      "P/F >=100 em VM",//7
+                      "paO2 <60 sem VM",//5
+                      "paO2/FiO2<100 em VM",//11
+                      "paO2/FiO2 >=100 em VM",//7
                     ],
                   },
                 },
@@ -682,7 +719,7 @@
                       "Cirurgia urgência",
                     ],
                     "child": [
-                      "NRC por AVC",
+                      "Neurocirurgia por acidente vascular cerebral",
                       "Revascularização miocárdica",
                       "Trauma",
                       "Transplante",
@@ -823,9 +860,9 @@
                     "uniqueValues":"true",
                     "values": [
                       "paO2 >=60 sem VM",
-                      "pa02 <60 sem VM",
-                      "P/F<100 em VM",
-                      "P/F >=100 em VM",
+                      "paO2 <60 sem VM",
+                      "paO2/FiO2<100 em VM",
+                      "paO2/FiO2 >=100 em VM",
                     ],
                   },
                 },
@@ -1073,9 +1110,9 @@
                     "uniqueValues":"true",
                     "values": [
                       "paO2 >=60 sem VM",
-                      "pa02 <60 sem VM",
-                      "P/F<100 em VM",
-                      "P/F >=100 em VM",
+                      "paO2 <60 sem VM",
+                      "paO2/FiO2<100 em VM",
+                      "paO2/FiO2 >=100 em VM",
                     ],
                   },
                 },
@@ -1322,9 +1359,9 @@
                     "uniqueValues":"true",
                     "values": [
                       "paO2 >=60 sem VM",
-                      "pa02 <60 sem VM",
-                      "P/F<100 em VM",
-                      "P/F >=100 em VM",
+                      "paO2 <60 sem VM",
+                      "paO2/FiO2<100 em VM",
+                      "paO2/FiO2 >=100 em VM",
                     ],
                   },
                 },
@@ -1442,7 +1479,7 @@
                       "Cirurgia urgência"
                     ],
                     "child": [
-                      "NRC por AVC"
+                      "Neurocirurgia por acidente vascular cerebral"
                     ],
                   },
                 },
@@ -1572,9 +1609,9 @@
                     "uniqueValues":"true",
                     "values": [
                       "paO2 >=60 sem VM",
-                      "pa02 <60 sem VM",
-                      "P/F<100 em VM",
-                      "P/F >=100 em VM",
+                      "paO2 <60 sem VM",
+                      "paO2/FiO2<100 em VM",
+                      "paO2/FiO2 >=100 em VM",
                     ],
                   },
                 },
@@ -1817,9 +1854,9 @@
                     "uniqueValues":"true",
                     "values": [
                       "paO2 >=60 sem VM",
-                      "pa02 <60 sem VM",
-                      "P/F<100 em VM",
-                      "P/F >=100 em VM",
+                      "paO2 <60 sem VM",
+                      "paO2/FiO2<100 em VM",
+                      "paO2/FiO2 >=100 em VM",
                     ],
                   },
                 },
@@ -2061,9 +2098,9 @@
                     "uniqueValues":"true",
                     "values": [
                       "paO2 >=60 sem VM",
-                      "pa02 <60 sem VM",
-                      "P/F<100 em VM",
-                      "P/F >=100 em VM",
+                      "paO2 <60 sem VM",
+                      "paO2/FiO2<100 em VM",
+                      "paO2/FiO2 >=100 em VM",
                     ],
                   },
                 },
@@ -2300,9 +2337,9 @@
                     "uniqueValues":"true",
                     "values": [
                       "paO2 >=60 sem VM",
-                      "pa02 <60 sem VM",
-                      "P/F<100 em VM",
-                      "P/F >=100 em VM",
+                      "paO2 <60 sem VM",
+                      "paO2/FiO2<100 em VM",
+                      "paO2/FiO2 >=100 em VM",
                     ],
                   },
                 },
@@ -2470,7 +2507,7 @@
                       {
                         "Oxigenação": {
                           "values": [
-                            "P/F >=100 em VM",
+                            "paO2/FiO2 >=100 em VM",
                           ],
                         },
                       },
@@ -2676,7 +2713,7 @@
                       {
                         "Oxigenação": {
                           "values": [
-                            "P/F >=100 em VM",
+                            "paO2/FiO2 >=100 em VM",
                           ],
                         },
                       },
@@ -2866,7 +2903,7 @@
                       {
                         "Oxigenação": {
                           "values": [
-                            "P/F >=100 em VM",
+                            "paO2/FiO2 >=100 em VM",
                           ],
                         },
                       },
@@ -2902,15 +2939,28 @@
 
     }
     var selectedPacient
-    if((localStorage.getItem('prognosis-current-lvl') && localStorage.getItem('prognosis-current-lvl') != null)
-    || document.querySelector('#current-lvl').value){
-      if(document.querySelector('#current-lvl').value!= ''
-      && (localStorage.getItem('prognosis-current-lvl') != document.querySelector('#current-lvl').value)){
-        localStorage.setItem('prognosis-current-lvl', document.querySelector('#current-lvl').value)
-      }else if(localStorage.getItem('prognosis-current-lvl') == null){
+    const urlDiffic = new URL(document.location).searchParams.get('diffic')
+    const currentLvl = document.querySelector('#current-lvl')
+    const highestLvl = document.querySelector('#highest-lvl')
+    const localCurrentLvl = localStorage.getItem('prognosis-current-lvl')
+
+    if((localCurrentLvl && localCurrentLvl != null) || currentLvl.value){
+      if((currentLvl && currentLvl.value != '') && (urlDiffic) && (localCurrentLvl != urlDiffic)){
+        if(highestLvl.value != '' && parseInt(highestLvl.value) >= urlDiffic){
+          localStorage.setItem('prognosis-current-lvl', urlDiffic)
+        }else if (currentLvl.value == ''){
+          localStorage.setItem('prognosis-current-lvl', 1)
+        }else{
+          localStorage.setItem('prognosis-highest-lvl', highestLvl.value)
+          localStorage.setItem('prognosis-current-lvl', highestLvl.value)
+        }
+      }
+      if(highestLvl.value == '' && localStorage.getItem('prognosis-current-lvl') != null)
+        localStorage.setItem('prognosis-highest-lvl', localStorage.getItem('prognosis-current-lvl'))
+      else if (highestLvl.value == '' && localStorage.getItem('prognosis-current-lvl') == null){
+        localStorage.setItem('prognosis-highest-lvl', 1)
         localStorage.setItem('prognosis-current-lvl', 1)
       }
-
       selectedPacient = pacientInfo.pacients[localStorage.getItem('prognosis-current-lvl')-1]
     }else{
         selectedPacient = pacientInfo.pacients[0]
@@ -2928,7 +2978,7 @@
       $('#welcome-lvl-modal').modal('show')
     }
 
-    if(new URL(document.location).pathname.includes('calculator'))
+    if(new URL(document.location).pathname.includes('calculator') || new URL(document.location).pathname.includes('creation'))
       selectedPacient = pacientInfo.pacients[0]
 
     if(document.querySelector('h1.pacient-title')){
@@ -3570,7 +3620,7 @@
 
   async playerResult(){
     const playerGuess = new URL(document.location).searchParams.get('playerCalc')
-    const sapsCalc = new URL(document.location).searchParams.get('sapsCalc')
+    const sapsCalc = new URL(document.location).searchParams.get('calc')
     const createRoulette = function (sectN){
       const diameter = 100
       const svgSize = diameter + 10
@@ -3690,10 +3740,10 @@
       sapsText.innerHTML = Prognosis.sapsCalcTxt
       .replace(/\[sapsSurvival\]/ig, sapsCalc+'%')
       .replace(/\[rouletteN\]/ig, Math.round(sapsCalc/10))
-
+      .replace(/\[plural\]/ig, ((Math.round(sapsCalc/10) > 1)?'s':''))
       const btnSpin = document.querySelector('#btn-spin-roulette')
       const fnBtnSpin = function (){
-        const sapsCalc = new URL(document.location).searchParams.get('sapsCalc')
+        const sapsCalc = new URL(document.location).searchParams.get('calc')
         if(availableN == selectedN.length){
           this.disabled = true
           Prognosis.i.spinRoulette(selectedN)
@@ -3704,17 +3754,35 @@
           const btnNextLvl = document.querySelector('#btn-next-lvl')
           btnNextLvl.classList.remove('d-none')
           btnNextLvl.addEventListener('click', function (){
-            // let nextLvl = parseInt(localStorage.getItem('prognosis-current-lvl'))+1
-            // if(nextLvl>10)
-            //   nextLvl = 10
+            let nextLvl = parseInt(localStorage.getItem('prognosis-current-lvl'))+1
+            if(nextLvl>10)
+              nextLvl = 10
             // localStorage.setItem('prognosis-current-lvl', nextLvl)
-            document.location.href = '/prognosis/learn/player/'
+            document.location.href = '/prognosis/learn/player/?diffic=' + nextLvl
           })
         }else{
           document.querySelector('#roulette-invalid').classList.remove('d-none')
         }
       }
+      const rouletteAnim = document.querySelector('#roulette-anim')
+
+      const fnModalEnd = function (){
+        rouletteAnim.removeEventListener('endEvent', fnModalEnd)
+        setTimeout(function(){
+          $('#lvl-result-modal').modal('show')
+        }, 750)
+      }
       btnSpin.addEventListener('click', fnBtnSpin)
+      rouletteAnim.addEventListener('endEvent', fnModalEnd)
+
+      const prognResultAcc = document.querySelector('#prognosis-result-accuracy')
+      const prognResultCalc = document.querySelector('#prognosis-result-calc')
+      if (prognResultAcc && prognResultCalc){
+        const playerGuess = new URL(document.location).searchParams.get('playerCalc')
+        const sapsCalc = new URL(document.location).searchParams.get('calc')
+        const diffCalc = parseFloat(playerGuess)-parseFloat(sapsCalc)
+        /////ON PROGRESS
+      }
   }
 
   async spinRoulette(selectedN){
@@ -3777,7 +3845,7 @@
         var selectedEl = document.querySelector('#n-'+angleToNum)
         selectedEl.querySelector('path').setAttribute('fill','#9f0202')
         if(!document.querySelector('#roulette-result'))
-          wrapper.insertBefore(resultTxt, document.querySelector('.btn-info'))
+          wrapper.insertBefore(resultTxt, document.querySelector('#svg-wrapper').nextSibling)
 
       }
     }
@@ -3855,6 +3923,6 @@
   Você respondeu que a chance do paciente sobreviver era: [playerGuess]
   `
   Prognosis.sapsCalcTxt = `
-  A chance calculada é de: [sapsSurvival].<br>Essa porcentagem te dá direito à escolha de [rouletteN] números.
+  A chance calculada é de: [sapsSurvival].<br>Essa porcentagem te dá direito à escolha de [rouletteN] número[plural].
   `
 })()

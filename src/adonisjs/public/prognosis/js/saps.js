@@ -72,7 +72,7 @@ class Saps {
             case 'sida':
               comorb.sida = 8
               break;
-            case 'nrc-por-avc':
+            case 'neurocirurgia-por-acidente-vascular-cerebral':
               motvAdm.submCirurgiaNrcAvc = 5
               break;
             case 'revascularizacao-miocardica':
@@ -225,13 +225,13 @@ class Saps {
             case 'paO2 >=60 sem VM':
               altLab.oxigenacao = 0
               break;
-            case 'pa02 <60 sem VM':
+            case 'paO2 <60 sem VM':
               altLab.oxigenacao = 5
               break;
-            case 'P/F<100 em VM':
+            case 'paO2/FiO2<100 em VM':
               altLab.oxigenacao = 11
               break;
-            case 'P/F >=100 em VM':
+            case 'paO2/FiO2 >=100 em VM':
               altLab.oxigenacao = 7
               break;
             }
@@ -523,13 +523,13 @@ class Saps {
             case 'paO2 >=60 sem VM':
             altLab.oxigenacao = 0
             break;
-            case 'pa02 <60 sem VM':
+            case 'paO2 <60 sem VM':
             altLab.oxigenacao = 5
             break;
-            case 'P/F<100 em VM':
+            case 'paO2/FiO2<100 em VM':
             altLab.oxigenacao = 11
             break;
-            case 'P/F >=100 em VM':
+            case 'paO2/FiO2 >=100 em VM':
             altLab.oxigenacao = 7
             break;
           }
@@ -543,7 +543,7 @@ class Saps {
         switch (elem.checked) {
           case true:
           switch (elem.id) {
-            case 'nrc-por-avc':
+            case 'neurocirurgia-por-acidente-vascular-cerebral':
             motvAdm.submCirurgiaNrcAvc = 5
             break;
             case 'revascularizacao-miocardica':
@@ -602,7 +602,7 @@ class Saps {
           break;
           case false:
           switch (elem.id) {
-            case 'nrc-por-avc':
+            case 'neurocirurgia-por-acidente-vascular-cerebral':
             motvAdm.submCirurgiaNrcAvc = 0
             break;
             case 'revascularizacao-miocardica':
@@ -845,11 +845,32 @@ class Saps {
     var plaquetas = ''
     var oxigenacao = ''
 
+    let idadeValue = ''
+    let origemValue = ''
+    let comorbValue = ''
+    let internadoAntesValue = ''
+    let infectadoAntesValue = ''
+    let admissaoValue = ''
+    let submetidoCirurgiaValue = ''
+    let submetidoUtiValue = ''
+    let gcsValue = ''
+    let temperaturaValue = ''
+    let freqCardValue = ''
+    let pressSistValue = ''
+    let drogaVasoValue = ''
+    let bilirrubinaValue = ''
+    let creatininaValue = ''
+    let phValue = ''
+    let leucocitosValue = ''
+    let plaquetasValue = ''
+    let oxigenacaoValue = ''
+
     for (var elem of pacientData.querySelectorAll('select')) {
       if(elem.validity.valid){
         switch (elem.id) {
           case 'idade':
             idade = elem.value
+            idadeValue = elem.value
             switch (idade) {
               case '<40':
               idade = 'menos que 40 anos'
@@ -872,6 +893,7 @@ class Saps {
           }
             break;
           case 'origem':
+            origemValue = elem.value
             origem = elem.value
             switch (origem) {
             case 'Pronto Socorro':
@@ -888,6 +910,7 @@ class Saps {
         }
         switch (elem.value) {
           case 'ic-nyha-iv':
+          comorbValue += 'IC NYHA IV '
           if(comorb.length>0)
             comorb += 'e IC NYHA IV '
           else
@@ -895,232 +918,289 @@ class Saps {
           break;
             break;
           case 'cancer-metastatico':
+            comorbValue += 'CÂNCER METASTÁTICO '
             if(comorb.length>0)
               comorb += 'e CÂNCER METASTÁTICO '
             else
               comorb += 'CÂNCER METASTÁTICO '
             break;
           case 'terapia-oncologica':
+            comorbValue += 'TRATAMENTO ONCOLÓGICO '
             if(comorb.length>0)
               comorb += 'e TRATAMENTO ONCOLÓGICO '
             else
               comorb += 'TRATAMENTO ONCOLÓGICO '
             break;
           case 'cancer-hematologico':
+            comorbValue += 'CÂNCER HEMATOLÓGICO '
             if(comorb.length>0)
               comorb += 'e CÂNCER HEMATOLÓGICO '
             else
               comorb += 'CÂNCER HEMATOLÓGICO '
             break;
           case 'cirrose':
+            comorbValue += 'CIRROSE '
             if(comorb.length>0)
               comorb += 'e CIRROSE '
             else
               comorb += 'CIRROSE '
             break;
           case 'sida':
+            comorbValue += 'SIDA '
             if(comorb.length>0)
               comorb += 'e SIDA '
             else
               comorb += 'SIDA '
             break;
-          case 'nrc-por-avc':
+          case 'neurocirurgia-por-acidente-vascular-cerebral':
+            submetidoCirurgiaValue += 'neurocirurgia por acidente vascular cerebral '
             if(submetidoCirurgia.length>0)
-              submetidoCirurgia += ' e NCR sec. a AVC'
+              submetidoCirurgia += ' e neurocirurgia por acidente vascular cerebral'
             else
-              submetidoCirurgia += ' NCR sec. a AVC'
+              submetidoCirurgia += ' neurocirurgia por acidente vascular cerebral'
             break;
           case 'revascularizacao-miocardica':
+          submetidoCirurgiaValue += 'REVASCULARIZAÇÃO MIOCÁRDICA '
             if(submetidoCirurgia.length>0)
                 submetidoCirurgia += ' e REVASCULARIZAÇÃO MIOCÁRDICA'
               else
                 submetidoCirurgia += ' REVASCULARIZAÇÃO MIOCÁRDICA'
             break;
           case 'trauma':
+            submetidoCirurgiaValue += 'TRAUMA '
             if(submetidoCirurgia.length>0)
               submetidoCirurgia += ' e TRAUMA '
             else
               submetidoCirurgia += ' TRAUMA '
             break;
           case 'transplante':
+            submetidoCirurgiaValue += 'TRANSPLANTE '
             if(submetidoCirurgia.length>0)
               submetidoCirurgia += ' e TRANSPLANTE'
             else
               submetidoCirurgia += ' TRANSPLANTE'
             break;
           case 'arritmia':
+            submetidoUtiValue += 'ARRITMIA '
             if (submetidoUti.length>0)
               submetidoUti += ' e ARRITMIA'
             else
               submetidoUti += ' sendo encaminhado à UTI por ARRITMIA'
             break;
           case 'choque-hipovolemico':
+            submetidoUtiValue += 'CHOQUE HIPOVOLÊMICO '
             if (submetidoUti.length>0)
               submetidoUti += ' e CHOQUE HIPOVOLÊMICO'
             else
               submetidoUti += ' sendo encaminhado à UTI por CHOQUE HIPOVOLÊMICO'
             break;
           case 'outro-choque':
+            submetidoUtiValue += 'OUTRO CHOQUE '
             if (submetidoUti.length>0)
               submetidoUti += ' e OUTRO CHOQUE'
             else
               submetidoUti += ' sendo encaminhado à UTI por OUTRO CHOQUE'
             break;
           case 'convulsao':
+            submetidoUtiValue += 'CONVULSÃO '
             if (submetidoUti.length>0)
               submetidoUti += ' e CONVULSÃO'
             else
               submetidoUti += ' sendo encaminhado à UTI por CONVULSÃO'
             break;
           case 'abdome-agudo':
+            submetidoUtiValue += 'ABDOME AGUDO '
             if (submetidoUti.length>0)
               submetidoUti += ' e ABDOME AGUDO'
             else
               submetidoUti += ' sendo encaminhado à UTI por ABDOME AGUDO'
             break;
           case 'pancreatite-grave':
+            submetidoUtiValue += 'PANCREATITE GRAVE '
             if (submetidoUti.length>0)
               submetidoUti += ' e PANCREATITE GRAVE'
             else
               submetidoUti += ' sendo encaminhado à UTI por PANCREATITE GRAVE'
             break;
           case 'deficit-focal':
+            submetidoUtiValue += 'DÉFICIT FOCAL '
             if (submetidoUti.length>0)
               submetidoUti += ' e DÉFICIT FOCAL'
             else
               submetidoUti += ' sendo encaminhado à UTI por DÉFICIT FOCAL'
             break;
           case 'efeito-de-massa-intracraniana':
+            submetidoUtiValue += 'EFEITO DE MASSA INTRACRANIANA '
             if (submetidoUti.length>0)
               submetidoUti += ' e EFEITO DE MASSA INTRACRANIANA'
             else
               submetidoUti += ' sendo encaminhado à UTI por EFEITO DE MASSA INTRACRANIANA'
             break;
           case 'insuficiencia-hepatica':
+          submetidoUtiValue += 'INSUFICIÊNCIA HEPÁTICA '
           if (submetidoUti.length>0)
             submetidoUti += ' e INSUFICIÊNCIA HEPÁTICA'
           else
             submetidoUti += ' sendo encaminhado à UTI por INSUFICIÊNCIA HEPÁTICA'
             break;
           case 'alteracao-do-nivel-de-consciencia':
+            submetidoUtiValue += 'ALTERAÇÃO DO NÍVEL DE CONSCIÊNCIA '
             if (submetidoUti.length>0)
               submetidoUti += ' e ALTERAÇÃO DO NÍVEL DE CONSCIÊNCIA'
             else
               submetidoUti += ' sendo encaminhado à UTI por ALTERAÇÃO DO NÍVEL DE CONSCIÊNCIA'
             break;
           case 'Nosocomial':
-              infectadoAntes = 'NOSOCOMIAL'
+            infectadoAntesValue += 'NOSOCOMIAL '
+            infectadoAntes = 'NOSOCOMIAL'
             break;
           case 'Respiratória':
+            infectadoAntesValue += 'RESPIRATÓRIA '
             infectadoAntes = 'RESPIRATÓRIA'
             break;
           case '<14 dias':
-              internadoAntes = 'menos de 14 DIAS'
-              break;
+            infectadoAntesValue += '<14 dias '
+            internadoAntes = 'menos de 14 DIAS'
+            break;
           case '14-27 dias':
+            infectadoAntesValue += '14-27 dias '
             internadoAntes = 'entre 14 E 27 DIAS'
             break;
           case '>=28 dias':
+            infectadoAntesValue += '>=28 dias '
             internadoAntes = 'mais de 28 DIAS'
             break;
           case '3-4':
+            gcsValue = '3 a 4'
             gcs = '3 a 4'
             break;
           case '5':
+            gcsValue = '5'
             gcs = '5'
             break;
           case '6':
+            gcsValue = '6'
             gcs = '6'
             break;
-          case '7-12':
+          case '7-12':'entre 7 a 12'
+            gcsValue =
             gcs = 'entre 7 a 12'
             break;
           case '>=13':
+            gcsValue = '>=13'
             gcs = '&#8805;13' //"&#8805;" is code for ">="
             break;
           case '<35 °C':
+            temperaturaValue = '<35 °C'
             temperatura = '<35 °C'
             break;
           case '>=35 °C':
+            temperaturaValue = '>=35 °C'
             temperatura = '&#8805;35 °C' //"&#8805;" is code for ">="
             break;
           case '<120 bpm':
+          freqCardValue = '<120 bpm'
             freqCard = '<120 bpm'
             break;
           case '120-159 bpm':
+          freqCardValue = '120-159 bpm'
             freqCard = '120-159 bpm'
             break;
           case '>=160 bpm':
+          freqCardValue = '>=160 bpm'
             freqCard = '>=160 bpm'
             break;
           case '<40 mmHg':
+            pressSistValue = '<40 mmHg'
             pressSist = '<40 mmHg'
             break;
           case '40-69 mmHg':
+            pressSistValue = '40-69 mmHg'
             pressSist = '40-69 mmHg'
             break;
           case '70-119 mmHg':
+            pressSistValue = '70-119 mmHg'
             pressSist = '70-119 mmHg'
             break;
           case '>=120 mmHg':
+            pressSistValue = '>=120 mmHg'
             pressSist = '&#8805;120 mmHg' //"&#8805;" is code for ">="
             break;
           case '<2 mg/dl':
+            bilirrubinaValue = '<2 mg/dl'
             bilirrubina = '<2 mg/dl'
             break;
           case '2-6 mg/dl':
+            bilirrubinaValue = '2-6 mg/dl'
             bilirrubina = '2-6 mg/dl'
             break;
           case '>=6 mg/dl':
+            bilirrubinaValue = '>=6 mg/dl'
             bilirrubina = '&#8805;6 mg/dl' //"&#8805;" is code for ">="d
             break;
             case '<1.2 mg/dl':
-              creatinina = '<1.2 mg/dl'
+              creatininaValue = '<1,2 mg/dl'
+              creatinina = '<1,2 mg/dl'
               break;
             case '1.2-1.9 mg/dl':
-              creatinina = '1.2-1.9 mg/dl'
+              creatininaValue = '1,2-1,9 mg/dl'
+              creatinina = '1,2-1,9 mg/dl'
               break;
             case '2-3.4 mg/dl':
-              creatinina = '2-3.4 mg/dl'
+              creatininaValue = '2-3,4 mg/dl'
+              creatinina = '2-3,4 mg/dl'
               break;
             case '>=3.5 mg/dl':
-              creatinina = '&#8805;3.5 mg/dl' //"&#8805;" is code for ">="
+              creatininaValue = '>=3,5 mg/dl'
+              creatinina = '&#8805;3,5 mg/dl' //"&#8805;" is code for ">="
               break;
             case '<=7.25':
-              ph = '&#8804;7.25'
+              ph = '<=7,25'
+              ph = '&#8804;7,25'
               break;
             case '>7.25':
-              ph = '&#62;7.25'
+              ph = '>7,25'
+              ph = '&#62;7,25'
               break;
             case '<15mil /mm³':
+              leucocitosValue = '<15mil /mm³'
               leucocitos = '<15mil /mm³'
               break;
             case '>=15mil /mm³':
+              leucocitosValue = '>=15mil /mm³'
               leucocitos = '&#8805;15mil /mm³' //"&#8805;" is code for ">="
               break;
             case '<20mil /mm³':
+              plaquetasValue = '<20mil /mm³'
               plaquetas = '<20mil /mm³'
               break;
             case '20-49mil /mm³':
+              plaquetasValue = '20-49mil /mm³'
               plaquetas = '20-49mil /mm³'
               break;
             case '50-99mil /mm³':
+              plaquetasValue = '50-99mil /mm³'
               plaquetas = '50-99mil /mm³'
               break;
             case '>=100mil /mm³':
+              plaquetasValue = '>=100mil /mm³'
               plaquetas = '&#8805;100mil /mm³'//"&#8805;" is code for ">="
               break;
             case 'paO2 >=60 sem VM':
+              oxigenacaoValue = 'sem VM com paO2 >=60'
               oxigenacao = ' sem VM com paO2 &#8805;60'//"&#8805;" is code for ">="
               break;
-            case 'pa02 <60 sem VM':
+            case 'paO2 <60 sem VM':
+              oxigenacaoValue = 'sem VM com paO2 <60'
               oxigenacao = ' sem VM com paO2 <60'
               break;
-            case 'P/F<100 em VM':
-              oxigenacao = ' em VM com P/F <100'
+            case 'paO2/FiO2<100 em VM':
+              oxigenacaoValue = 'em VM com paO2/FiO2 <100'
+              oxigenacao = ' em VM com paO2/FiO2 <100'
               break;
-            case 'P/F >=100 em VM':
-              oxigenacao = ' em VM com P/F &#8805;100'
+            case 'paO2/FiO2 >=100 em VM':
+              oxigenacaoValue = 'em VM com paO2/FiO2 >=100'
+              oxigenacao = ' em VM com paO2/FiO2 &#8805;100'
               break;
         }
       }
@@ -1133,6 +1213,7 @@ class Saps {
           case 'ic-nyha-iv':
           switch (elem.value) {
             case 'Sim':
+            comorbValue += 'IC NYHA IV '
             if(comorb.length>0)
               comorb += 'e IC NYHA IV '
             else
@@ -1143,6 +1224,7 @@ class Saps {
           case 'cancer-metastatico':
           switch (elem.value) {
             case 'Sim':
+            comorbValue += 'CÂNCER METASTÁTICO '
             if(comorb.length>0)
               comorb += 'e CÂNCER METASTÁTICO '
             else
@@ -1154,6 +1236,7 @@ class Saps {
 
           switch (elem.value) {
             case 'Sim':
+            comorbValue += 'TRATAMENTO ONCOLÓGICO '
             if(comorb.length>0)
               comorb += 'e TRATAMENTO ONCOLÓGICO '
             else
@@ -1165,6 +1248,7 @@ class Saps {
 
           switch (elem.value) {
             case 'Sim':
+            comorbValue += 'CÂNCER HEMATOLÓGICO '
             if(comorb.length>0)
               comorb += 'e CÂNCER HEMATOLÓGICO '
             else
@@ -1176,6 +1260,7 @@ class Saps {
 
           switch (elem.value) {
             case 'Sim':
+            comorbValue += 'CIRROSE '
             if(comorb.length>0)
               comorb += 'e CIRROSE '
             else
@@ -1187,6 +1272,7 @@ class Saps {
 
           switch (elem.value) {
             case 'Sim':
+            comorbValue += 'SIDA '
             if(comorb.length>0)
               comorb += 'e SIDA '
             else
@@ -1195,7 +1281,7 @@ class Saps {
           }
           break;
           case 'internado-antes-da-admissao-value':
-
+            internadoAntesValue = elem.value
             switch (elem.value) {
               case '<14 dias':
                 internadoAntes = 'menos de 14 DIAS'
@@ -1209,7 +1295,7 @@ class Saps {
             }
             break;
           case 'infectado-antes-da-admissao-value':
-
+            infectadoAntesValue = elem.value
             switch (elem.value) {
               case 'Nosocomial':
                   infectadoAntes = 'NOSOCOMIAL'
@@ -1221,13 +1307,14 @@ class Saps {
             break;
           break;
           case 'admissao-planejada':
-
           switch (elem.value) {
             case 'Sim':
             admissao = 'ELETIVAMENTE'
+            admissaoValue = 'ELETIVAMENTE'
             break;
             case 'Não':
             admissao = 'NÃO ELETIVAMENTE'
+            admissaoValue = 'NÃO ELETIVAMENTE'
             break;
           }
           break;
@@ -1235,16 +1322,18 @@ class Saps {
 
           switch (elem.value) {
             case 'Sim':
-            submetidoCirurgia = ' submetido à cirurgia de'
+            submetidoCirurgia = 'submetido à cirurgia '
             break;
           }
           break;
           case 'submetido-a-cirurgia-value':
             switch (elem.value) {
               case 'Cirurgia eletiva':
+                submetidoCirurgiaValue = 'ELETIVA'
                 submetidoCirurgia += 'ELETIVA '
                 break;
               case 'Cirurgia urgência':
+                submetidoCirurgiaValue = 'URGÊNCIA'
               submetidoCirurgia += 'URGÊNCIA '
                 break;
               default:
@@ -1255,18 +1344,23 @@ class Saps {
 
           switch (elem.value) {
             case '3-4':
+              gcsValue = '3 a 4'
             gcs = '3 a 4'
             break;
             case '5':
+              gcsValue = '5'
               gcs = '5'
             break;
             case '6':
+              gcsValue = '6'
               gcs = '6'
             break;
             case '7-12':
+              gcsValue = '7 a 12'
               gcs = 'entre 7 a 12'
             break;
             case '>=13':
+              gcsValue = '>=13'
               gcs = '&#8805;13' //"&#8805;" is code for ">="
             break;
 
@@ -1276,9 +1370,11 @@ class Saps {
 
           switch (elem.value) {
             case '<35 °C':
+            temperaturaValue = '<35 °C'
             temperatura = '<35 °C'
             break;
             case '>=35 °C':
+            temperaturaValue = '>=35 °C'
             temperatura = '&#8805;35 °C' //"&#8805;" is code for ">="
             break;
           }
@@ -1287,13 +1383,16 @@ class Saps {
 
           switch (elem.value) {
             case '<120 bpm':
+            freqCardValue = '<120 bpm'
             freqCard = '<120 bpm'
             break;
             case '120-159 bpm':
+            freqCardValue = '120-159 bpm'
             freqCard = '120-159 bpm'
             break;
             case '>=160 bpm':
-            freqCard = '>=160 bpm'
+            freqCardValue = '>=160 bpm'
+            freqCard = '&#8805;160 bpm'
             break;
           }
           break;
@@ -1301,21 +1400,25 @@ class Saps {
 
           switch (elem.value) {
             case '<40 mmHg':
+            pressSistValue = '<40 mmHg'
             pressSist = '<40 mmHg'
             break;
             case '40-69 mmHg':
+            pressSistValue = '40-69 mmHg'
             pressSist = '40-69 mmHg'
             break;
             case '70-119 mmHg':
+            pressSistValue = '70-119 mmHg'
             pressSist = '70-119 mmHg'
             break;
             case '>=120 mmHg':
+            pressSistValue = '>=120 mmHg'
             pressSist = '&#8805;120 mmHg' //"&#8805;" is code for ">="
             break;
           }
           break;
           case 'droga-vasoativa':
-
+          drogaVasoValue = elem.value
           switch (elem.value) {
             case 'Sim':
             drogaVaso = ' em'
@@ -1329,12 +1432,15 @@ class Saps {
 
           switch (elem.value) {
             case '<2 mg/dl':
+            bilirrubinaValue = '<2 mg/dl'
             bilirrubina = '<2 mg/dl'
             break;
             case '2-6 mg/dl':
+            bilirrubinaValue = '2-6 mg/dl'
             bilirrubina = '2-6 mg/dl'
             break;
             case '>=6 mg/dl':
+            bilirrubinaValue = '>=6 mg/dl'
             bilirrubina = '&#8805;6 mg/dl' //"&#8805;" is code for ">="d
             break;
           }
@@ -1343,15 +1449,19 @@ class Saps {
 
           switch (elem.value) {
             case '<1.2 mg/dl':
+            creatininaValue = '<1,2 mg/dl'
             creatinina = '<1,2 mg/dl'
             break;
             case '1.2-1.9 mg/dl':
+            creatininaValue = '1,2-1,9 mg/dl'
             creatinina = '1,2-1,9 mg/dl'
             break;
             case '2-3.4 mg/dl':
+            creatininaValue = '2-3,4 mg/dl'
             creatinina = '2-3,4 mg/dl'
             break;
             case '>=3.5 mg/dl':
+            creatininaValue = '>=3,5 mg/dl'
             creatinina = '&#8805;3,5 mg/dl' //"&#8805;" is code for ">="
             break;
           }
@@ -1359,10 +1469,12 @@ class Saps {
           case 'ph':
           switch (elem.value) {
             case '<=7.25':
+            phValue = '<=7,25'
             ph = '&#8804;7,25'
             break;
             case '>7.25':
-            ph = '&#62;7,25'
+            phValue = '>7,25'
+            ph = '>7,25'
             break;
           }
           break;
@@ -1370,9 +1482,11 @@ class Saps {
 
           switch (elem.value) {
             case '<15mil /mm³':
+            leucocitosValue = '<15mil /mm³'
             leucocitos = '<15mil /mm³'
             break;
             case '>=15mil /mm³':
+            leucocitosValue = '>=15mil /mm³'
             leucocitos = '&#8805;15mil /mm³' //"&#8805;" is code for ">="
             break;
           }
@@ -1381,15 +1495,19 @@ class Saps {
 
           switch (elem.value) {
             case '<20mil /mm³':
+            plaquetasValue = '<20mil /mm³'
             plaquetas = '<20mil /mm³'
             break;
             case '20-49mil /mm³':
+            plaquetasValue = '20-49mil /mm³'
             plaquetas = '20-49mil /mm³'
             break;
             case '50-99mil /mm³':
+            plaquetasValue = '50-99mil /mm³'
             plaquetas = '50-99mil /mm³'
             break;
             case '>=100mil /mm³':
+            plaquetasValue = '>=100mil /mm³'
             plaquetas = '&#8805;100mil /mm³'//"&#8805;" is code for ">="
             break;
           }
@@ -1398,16 +1516,20 @@ class Saps {
 
           switch (elem.value) {
             case 'paO2 >=60 sem VM':
+            oxigenacaoValue = 'sem VM com paO2 >=60'
             oxigenacao = ' sem VM com paO2 &#8805;60;'//"&#8805;" is code for ">="
             break;
-            case 'pa02 <60 sem VM':
+            case 'paO2 <60 sem VM':
+            oxigenacaoValue = 'sem VM com paO2 <60'
             oxigenacao = ' sem VM com paO2 <60;'
             break;
-            case 'P/F<100 em VM':
-            oxigenacao = ' em VM com P/F <100;'
+            case 'paO2/FiO2<100 em VM':
+            oxigenacaoValue = 'em VM com paO2/FiO2 <100'
+            oxigenacao = ' em VM com paO2/FiO2 <100;'
             break;
-            case 'P/F >=100 em VM':
-            oxigenacao = ' em VM com P/F &#8805;100;'
+            case 'paO2/FiO2 >=100 em VM':
+            oxigenacaoValue = 'em VM com paO2/FiO2 >=100'
+            oxigenacao = ' em VM com paO2/FiO2 &#8805;100;'
             break;
           }
           break;
@@ -1420,11 +1542,11 @@ class Saps {
         switch (elem.checked) {
           case true:
           switch (elem.id) {
-            case 'nrc-por-avc':
+            case 'neurocirurgia-por-acidente-vascular-cerebral':
             if(submetidoCirurgia.length>0 && !primeiroItemCirur)
-              submetidoCirurgia += ' e NCR sec. a AVC'
+              submetidoCirurgia += ' e neurocirurgia por acidente vascular cerebral'
             else{
-              submetidoCirurgia += ' NCR sec. a AVC'
+              submetidoCirurgia += ' neurocirurgia por acidente vascular cerebral'
               primeiroItemCirur = false
             }
             break;
@@ -1582,6 +1704,27 @@ class Saps {
     .replace(/\[_plaquetas\]/ig, plaquetas)
     .replace(/\[_oxigenacao\]/ig, oxigenacao)
 
+    let pacientAbstract = Saps.pacientAbstract
+    .replace(/\[_idade\]/ig, (idadeValue = ''?'Vazio':idadeValue))
+    .replace(/\[_origem\]/ig, (origemValue = ''?'Vazio':origemValue))
+    .replace(/\[_comorbidade\]/ig, (comorbValue = ''?'Vazio':comorbValue))
+    .replace(/\[_internadoDias\]/ig, (internadoAntesValue = ''?'Vazio':internadoAntesValue))
+    .replace(/\[_ifeccao\]/ig, (infectadoAntesValue = ''?'Vazio':infectadoAntesValue))
+    .replace(/\[_admissao\]/ig, (admissaoValue = ''?'Vazio':admissaoValue))
+    .replace(/\[_submetidoCirurgia\]/ig, (submetidoCirurgiaValue = ''?'Vazio':submetidoCirurgiaValue))
+    .replace(/\[_submetidoUti\]/ig, (submetidoUtiValue = ''?'Vazio':submetidoUtiValue))
+    .replace(/\[_gcs\]/ig, (gcsValue = ''?'Vazio':gcsValue))
+    .replace(/\[_temperatura\]/ig, (temperaturaValue = ''?'Vazio':temperaturaValue))
+    .replace(/\[_freqCardiaca\]/ig, (freqCardValue = ''?'Vazio':freqCardValue))
+    .replace(/\[_pressaoSistolica\]/ig, (pressSistValue = ''?'Vazio':pressSistValue))
+    .replace(/\[_drogaVasoativa\]/ig, (drogaVasoValue = ''?'Vazio':drogaVasoValue))
+    .replace(/\[_bilirrubina\]/ig, (bilirrubinaValue = ''?'Vazio':bilirrubinaValue))
+    .replace(/\[_creatinina\]/ig, (creatininaValue = ''?'Vazio':creatininaValue))
+    .replace(/\[_ph\]/ig, (phValue = ''?'Vazio':phValue))
+    .replace(/\[_leucocitos\]/ig, (leucocitosValue = ''?'Vazio':leucocitosValue))
+    .replace(/\[_plaquetas\]/ig, (plaquetasValue = ''?'Vazio':plaquetasValue))
+    .replace(/\[_oxigenacao\]/ig, (oxigenacaoValue = ''?'Vazio':oxigenacaoValue))
+
     if(!document.querySelector('#pacient-overview-wrapper > h5')){
       var txt = document.createElement('h5')
       txt.innerHTML = overviewText
@@ -1590,6 +1733,8 @@ class Saps {
       var txt = document.querySelector('#pacient-overview-wrapper > h5')
       txt.innerHTML = overviewText
     }
+    document.querySelector('#pacient-abstract').value = pacientAbstract
+    document.querySelector('dcc-submit[bind="submit-prognosis-lvl-txt"]')._computeTrigger()
     // console.log(overviewText)
     $('#pacient-overview-modal').modal('show')
 
@@ -1602,9 +1747,31 @@ class Saps {
 
   Saps.overviewText =
   `
-  Paciente de [_idade], encaminhado [_origem], portador de [_comorbidade]
-  [_internadoDias][_ifeccao][_admissao][_submetidoCirurgia][_submetidoUti]. À admissão, apresentava[_gcs][_temperatura]
+  Paciente [_idade], encaminhado [_origem], portador de [_comorbidade]
+  [_internadoDias][_ifeccao][_admissao][_submetidoCirurgia][_submetidoUti]. À admissão, apresentava [_gcs][_temperatura]
   [_freqCardiaca][_pressaoSistolica][_drogaVasoativa] uso de DVA. A seguir, os exames da admissão:
   [_bilirrubina][_creatinina][_ph][_leucocitos][_plaquetas][_oxigenacao]
+  `
+  Saps.pacientAbstract =
+  `
+  Idade: [_idade]<br>
+  Origem: [_origem]<br>
+  Comorbidade(s): [_comorbidade]<br>
+  Internado antes da admissão: [_internadoDias]<br>
+  Infectado antes da admissão: [_ifeccao]<br>
+  Admissão planejada: [_admissao]<br>
+  Submetido à cirugia: [_submetidoCirurgia]<br>
+  Motivo de admissão na UTI: [_submetidoUti]<br>
+  GCS: [_gcs]<br>
+  Temp: [_temperatura]<br>
+  FC: [_freqCardiaca]<br>
+  PAS: [_pressaoSistolica]<br>
+  Droga vaso: [_drogaVasoativa]<br>
+  Bilirrubina: [_bilirrubina]<br>
+  Creatinina: [_creatinina]<br>
+  pH: [_ph]<br>
+  Leucócitos:[_leucocitos]<br>
+  Plaquetas: [_plaquetas]<br>
+  Oxigenação: [_oxigenacao]<br>
   `
 })()
