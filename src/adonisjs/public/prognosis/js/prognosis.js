@@ -2938,25 +2938,38 @@
       }
 
     }
-    var selectedPacient
+    let selectedPacient
     const urlDiffic = new URL(document.location).searchParams.get('diffic')
     const currentLvl = document.querySelector('#current-lvl')
     const highestLvl = document.querySelector('#highest-lvl')
     const localCurrentLvl = localStorage.getItem('prognosis-current-lvl')
 
-    if((localCurrentLvl && localCurrentLvl != null) || currentLvl.value){
-      if((currentLvl && currentLvl.value != '') && (urlDiffic) && (localCurrentLvl != urlDiffic)){
-        if(highestLvl.value != '' && parseInt(highestLvl.value) >= urlDiffic){
-          localStorage.setItem('prognosis-current-lvl', urlDiffic)
-        }else if (currentLvl.value == ''){
-          localStorage.setItem('prognosis-current-lvl', 1)
-        }else{
+    if((localCurrentLvl && localCurrentLvl != null && localCurrentLvl != '') || currentLvl.value){
+      if(currentLvl && currentLvl.value != ''){
+        localStorage.setItem('prognosis-current-lvl', currentLvl.value)
+        if(highestLvl && highestLvl.value != ''){
           localStorage.setItem('prognosis-highest-lvl', highestLvl.value)
-          localStorage.setItem('prognosis-current-lvl', highestLvl.value)
+        }
+        if((urlDiffic) && (localStorage.getItem('prognosis-current-lvl') != urlDiffic)){
+          if(highestLvl.value != '' && parseInt(highestLvl.value) >= urlDiffic){
+            localStorage.setItem('prognosis-current-lvl', urlDiffic)
+          }else if (currentLvl.value == ''){
+            localStorage.setItem('prognosis-current-lvl', 1)
+          }else if(highestLvl.value != ''){
+            localStorage.setItem('prognosis-highest-lvl', highestLvl.value)
+            localStorage.setItem('prognosis-current-lvl', highestLvl.value)
+          }else{
+            localStorage.setItem('prognosis-highest-lvl', localStorage.getItem('prognosis-current-lvl'))
+          }
+        }
+        if(localStorage.getItem('prognosis-highest-lvl') == null || localStorage.getItem('prognosis-highest-lvl') == ''){
+          localStorage.setItem('prognosis-highest-lvl', localStorage.getItem('prognosis-current-lvl'))
         }
       }
-      if(highestLvl.value == '' && localStorage.getItem('prognosis-current-lvl') != null)
+
+      if(highestLvl.value == '' && localStorage.getItem('prognosis-current-lvl') != null){
         localStorage.setItem('prognosis-highest-lvl', localStorage.getItem('prognosis-current-lvl'))
+      }
       else if (highestLvl.value == '' && localStorage.getItem('prognosis-current-lvl') == null){
         localStorage.setItem('prognosis-highest-lvl', 1)
         localStorage.setItem('prognosis-current-lvl', 1)
