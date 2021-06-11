@@ -31,13 +31,9 @@ class DCCCellImage extends DCCCell {
 
   createIndividualInitial (row, col, props) {
     const light = super.createIndividualInitial(row, col, props)
-    /*
-    console.log("=== properties");
-    console.log(props);
-    console.log(light.properties);
-    */
     if (light.properties != null) {
       const center = this.space.computeCellCenter(row, col)
+      /*
       if (light.properties.flip != null && light.properties.flip != '') {
         light.element.setAttribute('transform-origin', center.x + ' ' + center.y)
         light.element.setAttribute('transform',
@@ -47,6 +43,7 @@ class DCCCellImage extends DCCCell {
         light.element.setAttribute('transform',
           'rotate(' + light.properties.rotate + ',' + center.x + ',' + center.y + ')')
       }
+      */
     }
     return light
   }
@@ -55,6 +52,7 @@ class DCCCellImage extends DCCCell {
     // console.log("=== center");
     // console.log(row + "," + col + "," + center.x + "," + center.y);
     if (properties != null) {
+      /*
       const center = this.space.computeCellCenter(row, col)
       if (properties.flip != null && properties.flip != '') {
         light.element.setAttribute('transform-origin', center.x + ' ' + center.y)
@@ -64,6 +62,7 @@ class DCCCellImage extends DCCCell {
       if (properties.rotate != null)
         element.setAttribute('transform',
           'rotate(' + properties.rotate + ',' + center.x + ',' + center.y + ')')
+      */
     }
   }
 }
