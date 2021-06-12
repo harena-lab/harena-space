@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Roda da Fortuna || Progresso</title>
+
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
+
+  <script src="/lib/axios-0.21.0/axios.min.js"></script>
+
+  <script src="/lib/jquery-3-4-1/jquery-3.4.1.slim.min.js"></script>
+  <script src="/lib/popper-1-15-0/popper.min.js"></script>
+  <script src="/lib/bootstrap-4.4.1/js/bootstrap.min.js"></script>
+  <script src="/lib/ckeditor5/ckeditor.js"></script>
+
+  <script src="/config/config.js"></script>
+  <script src="/infra/bus.js"></script>
+  <script src="/infra/basic.js"></script>
+  <script src="/infra/dcc-common-server-proxy.js"></script>
+  <script src="/infra/dcc-common-server-address.js"></script>
+  <script src="/infra/simple-page-tasks.js"></script>
+  <script src="/infra/token-validator.js"></script>
+  <script src="/infra/conditional-layout.js"></script>
+
+  <script>
+    Basic.service.rootPath = '../../'
+  </script>
+
+  <link rel="stylesheet" href="/lib/fontawesome-5-10-1/css/all.min.css">
+  <link rel="stylesheet" href="/lib/bootstrap-4.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/lib/quill-1-3-7/quill.snow.css">
+
+  <link rel="stylesheet" href="/dccs/css/dccs.css">
+  <link rel="stylesheet" href="/dccs/css/properties.css">
+  <!-- <link rel="stylesheet" href="/infra/css/common-player.css">
+  <link rel="stylesheet" href="/infra/css/common-author.css"> -->
+  <link rel="stylesheet" href="/prognosis/css/prognosis.css">
+
+
+  <script src="/context/context.js"></script>
+
+  <script src="/lib/quill-1-3-7/quill.min.js"></script>
+  <script src="/lib/d3.min.js"></script>
+
+  <script src="/dccs/base/dcc.js"></script>
+  <script src="/dccs/base/dcc-base.js"></script>
+  <script src="/dccs/base/dcc-visual.js"></script>
+  <script src="/dccs/components/visual/dcc-markdown.js"></script>
+  <script src="/dccs/components/visual/dcc-annotation.js"></script>
+  <script src="/dccs/components/visual/dcc-image.js"></script>
+  <script src="/dccs/components/visual/dcc-expression.js"></script>
+  <script src="/dccs/base/dcc-block.js"></script>
+  <script src="/dccs/components/visual/dcc-button.js"></script>
+  <script src="/dccs/components/visual/dcc-character.js"></script>
+  <script src="/dccs/components/visual/dcc-lively-dialog.js"></script>
+  <script src="/dccs/components/visual/dcc-notice-input.js"></script>
+  <script src="/dccs/components/visual/dcc-context-menu.js"></script>
+  <script src="/dccs/components/visual/dcc-state-select.js"></script>
+  <script src="/dccs/components/visual/dcc-image-marker.js"></script>
+  <script src="/dccs/base/dcc-styler.js"></script>
+  <script src="/dccs/components/visual/dcc-entity.js"></script>
+  <script src="/dccs/components/visual/dcc-input.js"></script>
+  <script src="/dccs/components/visual/dcc-input-typed.js"></script>
+  <script src="/dccs/components/visual/dcc-input-choice.js"></script>
+  <script src="/dccs/components/visual/dcc-input-table.js"></script>
+  <script src="/dccs/components/visual/dcc-slider.js"></script>
+  <script src="/dccs/components/visual/dcc-report.js"></script>
+  <script src="/dccs/components/visual/dcc-graph.js"></script>
+
+  <script src="/dccs/components/control/dcc-timer.js"></script>
+  <script src="/dccs/components/control/dcc-message.js"></script>
+  <script src="/dccs/components/control/dcc-compute.js"></script>
+
+  <script src="/dccs/base/subscribe-dcc.js"></script>
+  <script src="/dccs/base/trigger-dcc.js"></script>
+  <script src="/dccs/base/property-dcc.js"></script>
+  <script src="/dccs/base/connect-dcc.js"></script>
+  <script src="/dccs/base/end-dcc.js"></script>
+
+  <script src="/dccs/components/data/dcc-model.js"></script>
+  <script src="/dccs/components/data/dcc-submit.js"></script>
+  <script src="/dccs/components/data/dcc-record.js"></script>
+
+  <script src="/dccs/components/web/dcc-include.js"></script>
+  <script src="/dccs/components/web/dcc-dhtml.js"></script>
+  <script src="/dccs/components/web/dcc-rest.js"></script>
+
+  <script src="/infra/dcc-rest-proxy.js"></script>
+  <script src="/infra/dcc-basic.js"></script>
+
+  <script src="/lib/showdown-2-0-0/showdown.min.js"></script>
+  <script src="/translator/translator.js"></script>
+  <script src="/translator/item-templates.js"></script>
+
+  <script src="/prognosis/js/progress.js"></script>
+</head>
+
+<body>
+  <dcc-rest id="harena-prognosis-lvl" bind="harena-prognosis-lvl"></dcc-rest>
+
+  <dcc-include src="/author/partials/header.html"></dcc-include>
+  <main role="">
+    <div id="main-panel" class="d-flex flex-column vh-100 vw-100 index-boot-padding">
+      <div class=" d-flex flex-column w-xl-75 h-100 w-100 main-scroll scroll-y bg-dark mx-auto align-items-center">
+        <h1 class="txt-light mt-5">Seu progresso</h1>
+        <div class=" mt-5 d-flex flex-column w-75" id="btn-home-container">
+          <div id="progn-lvl-progress-wrapper" class="progn-lvl-progress-wrapper row row-cols-2 justify-content-center">
+            <div class="progn-lvl-progress col-lg-3 col-md-5 col-12 m-1 pt-2 bg-dark border border-light rounded">
+              <h5 class="mb-1 text-secondary" style="color:#808080; font-weight: bold;">Dificuldade: 1</h5>
+              <h5 class="mb-1 bg-secondary">Progresso: Completo</h5>
+              <h5 class="mb-1 bg-secondary">Acertou prognóstico? Sim</h5>
+              <h5 class="mb-1 bg-secondary">Criou o melhor cenário possível? Não</h5>
+              <h5 class="mb-1 bg-secondary">Pontuação: <i class="fas fa-star prognosis-perfect-prog"></i><i class="fas fa-star prognosis-perfect-prog"></i><i class="fas fa-star prognosis-perfect-prog"></i></h5>
+              <div class="row">
+                <button type="button" class="col btn btn-info w-100 mb-2"><i class="fas fa-play"></i></button>
+                <button type="button" class="col-3 btn btn-warning w-100 mb-2" data-toggle="modal" data-target="#pacient-overview-modal"><i class="far fa-address-card"></i></button>
+                <dcc-rest id="harena-user-property" bind="harena-user-property"></dcc-rest>
+                <div class="modal fade" id="pacient-overview-modal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="pacient-overview" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title">Resumo do paciente</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <!-- <dcc-dhtml id="" subscribe="" connect="">
+                          <end-dcc></end-dcc>
+                        </dcc-dhtml> -->
+
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <div class="progn-lvl-progress col-lg-3 col-md-5 col-12 m-1 pt-2 bg-light rounded">
+              <h5 class="mb-1 text-secondary" style="color:#808080; font-weight: bold;">Dificuldade: 2</h5>
+              <h5 class="mb-1 bg-secondary">Progresso: Em aberto</h5>
+              <h5 class="mb-1 bg-secondary">Acertou prognóstico? Sim</h5>
+              <h5 class="mb-1 bg-secondary">Criou o melhor cenário possível? Não</h5>
+              <h5 class="mb-1 bg-secondary">Pontuação: <i class="fas fa-star prognosis-half-prog"></i><i class="fas fa-star-half-alt prognosis-half-prog"></i><i class="far fa-star prognosis-half-prog"></i></h5>
+              <button type="button" name="button" class="btn btn-info w-100 mb-2"><i class="fas fa-play"></i></button>
+            </div>
+            <div class="progn-lvl-progress col-lg-3 col-md-5 col-12 m-1 pt-2 disabled-look rounded">
+              <div class="position-absolute" style="top:25%; left:40%; font-size: 4rem !important;">
+                <i class="fas fa-lock"></i>
+              </div>
+              <h5 class="mb-1 text-secondary" style="color:#808080; font-weight: bold;">Dificuldade: 3</h5>
+              <h5 class="mb-1 bg-secondary">Progresso: Incompleto</h5>
+              <!-- <h5 class="mb-1 bg-secondary">Diferença entre cálculo e jogador: +18% de diferença</h5>
+              <h5 class="mb-1 bg-secondary">Melhor taxa de sobrevivência criada: 50%</h5>
+              <h5 class="mb-1 bg-secondary">Melhor sobrevivência possível do nível: 43% (Incompleto)</h5> -->
+              <h5 class="mb-1 bg-secondary">Pontuação: <i class="far fa-star prognosis-bad-prog"></i><i class="far fa-star prognosis-bad-prog"></i><i class="far fa-star prognosis-bad-prog"></i></h5>
+              <button type="button" name="button" class="btn btn-info w-100 mb-2"><i class="fas fa-play"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <dcc-dhtml id="harena-dhtml-prognosis" connect="retrieve:harena-prognosis-lvl:service/request/get">
+    <input type="hidden" name="{{userProperty.0.title}}" id="current-lvl" value="{{userProperty.0.value}}">
+    <end-dcc></end-dcc>
+  </dcc-dhtml>
+</body>
+</html>

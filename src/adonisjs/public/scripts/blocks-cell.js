@@ -642,7 +642,7 @@ class ScriptBlocksCell {
         origin = [origin[1], origin[0]]
         trans = [trans[1], trans[0]]
       }
-      const rule = '<rule-dcc-cell-pair ' +
+      const rule = '<rule-dcc-cell-agent ' +
                 " probability='" + block.getFieldValue('probability') + "'" +
                 " transition='" +
                   ScriptBlocksCell.s._types[origin[0]] +
@@ -650,10 +650,12 @@ class ScriptBlocksCell {
                   ScriptBlocksCell.s._types[trans[0]] +
                   ScriptBlocksCell.s._types[trans[1]] + "'" +
                 '>\n' +
+                /*
                 '___\n' +
                 ((direction == 'left') ? '*__\n' : '__*\n') +
                 '___\n' +
-                '</rule-dcc-cell-pair>'
+                */
+                '</rule-dcc-cell-agent>'
       return rule
     }
     Blockly.JavaScript.transform_vertical = function (block) {
@@ -664,7 +666,7 @@ class ScriptBlocksCell {
         origin = [origin[1], origin[0]]
         trans = [trans[1], trans[0]]
       }
-      const rule = '<rule-dcc-cell-pair ' +
+      const rule = '<rule-dcc-cell-agent ' +
                 " probability='" + block.getFieldValue('probability') + "'" +
                 " transition='" +
                   ScriptBlocksCell.s._types[origin[0]] +
@@ -672,10 +674,12 @@ class ScriptBlocksCell {
                   ScriptBlocksCell.s._types[trans[0]] +
                   ScriptBlocksCell.s._types[trans[1]] + "'" +
                 '>\n' +
+                /*
                 ((direction == 'up') ? '_*_\n' : '___\n') +
                 '___\n' +
                 ((direction == 'down') ? '_*_\n' : '___\n') +
-                '</rule-dcc-cell-pair>'
+                */
+                '</rule-dcc-cell-agent>'
       console.log('=== neighbor rule')
       console.log(rule)
       return rule

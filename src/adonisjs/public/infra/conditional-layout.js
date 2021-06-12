@@ -23,8 +23,13 @@ class LayoutController {
   }
 
   async startController(){
-    if(document.readyState == 'loading')
+    if(document.readyState == 'loading'){
       await MessageBus.int.waitMessage('control/html/ready')
+    }
+
+    if(new URL(document.location).pathname == '/'){
+      this.dynamicMainPage()
+    }
 
     if(new URL(document.location).pathname == '/author/'){
       this.dynamicAuthor()
@@ -45,7 +50,6 @@ class LayoutController {
       MessageBus.int.publish('control/dhtml/status/request', {id: 'harena-dhtml-cases'})
       MessageBus.int.publish('control/dhtml/status/request', {id: 'dhtml-case'})
       // MessageBus.int.publish('control/dhtml/status/request', {id: 'dhtml-case-comments'})
-
     }
 
   }
@@ -372,6 +376,18 @@ class LayoutController {
           shareCaseEssentials[e].hidden = false
         }
       }
+    }
+  }
+
+  async dynamicMainPage(){
+    if(LayoutController.user.message.institution === 'progntrial' && document.querySelector('.home-play-container')){
+      const btnContainer = document.querySelector('.home-play-container')
+      const btnAuthor = btnContainer.querySelector('#author-btn')
+      const btnPlayer = btnContainer.querySelector('#player-btn')
+      btnAuthor.remove()
+      btnPlayer.textContent = 'Jogar Roda da Fortuna'
+      btnPlayer.setAttribute('onclick',`location.href='/prognosis'`)
+      btnPlayer.classList.remove('col-4','ml-4')
     }
   }
 

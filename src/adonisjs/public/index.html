@@ -22,6 +22,7 @@
     <script src="/infra/dcc-common-server-address.js"></script>
     <script src="/infra/simple-page-tasks.js"></script>
     <script src="/infra/token-validator.js"></script>
+    <script src="/infra/conditional-layout.js"></script>
 
     <script src="/dccs/base/dcc.js"></script>
     <script src="/dccs/base/dcc-base.js "></script>
@@ -84,9 +85,9 @@
                 <h1 class="home-header-text"> Jacinto Bemelhor: a clinical reasoning game</h1>
                 <p class="home-p-text">Join us in this adventure of becoming a doctor</p>
                 <div class="container-fluid">
-                  <div class="row">
-                    <div class="col-4 lets-play rounded-pill" onclick="location.href='/author/home'">Author</div>
-                    <div class="col-4 ml-4 lets-play rounded-pill" onclick="location.href='/player/home/category'">Player</div>
+                  <div class="row home-play-container">
+                    <button id="author-btn" class="btn col-4 lets-play rounded-pill" onclick="location.href='/author/home'">Author</button>
+                    <button id="player-btn" class="btn col-4 ml-4 lets-play rounded-pill" onclick="location.href='/player/home/category'">Player</button>
                   </div>
 
                 </div>

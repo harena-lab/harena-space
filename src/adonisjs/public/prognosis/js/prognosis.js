@@ -1,61 +1,77 @@
  class Prognosis {
   constructor() {
-    window.addEventListener('load', this.start)
+    this._ready = false
+    this.start = this.start.bind(this)
+    MessageBus.int.subscribe('control/dhtml/ready', this.start)
+    MessageBus.int.publish('control/dhtml/status/request', {id: 'harena-dhtml-prognosis-current-lvl'})
+    MessageBus.int.publish('control/dhtml/status/request', {id: 'harena-dhtml-prognosis-heighest-level'})
 
+    // MessageBus.int.subscribe('control/html/ready', this.start)
     // this.addPacientVariableOption = this.addPacientVariableOption.bind(this)
     // this.deletePacientVariableOption = this.deletePacientVariableOption.bind(this)
     // MessageBus.ext.subscribe('button/add-option/clicked', this.addPacientVariableOption)
     // MessageBus.ext.subscribe('button/delete-option/clicked', this.deletePacientVariableOption)
   }
 
-
   async start (){
-    Prognosis.i.expandMultiChoice()
-    if (new URL(document.location).pathname == '/prognosis/learn/player/') {
-      Prognosis.i.getPacientOptions()
-
-      const nextStep =  document.querySelector('#btn-next-step')
-      const fnnextStep = function (){
-        if(this.form.checkValidity()){
-            window.location.href = `/prognosis/learn/player/result?sapsCalc=${this.form.querySelector('#saps-survival').value}&playerCalc=${this.form.querySelector('#player-survival-rate').value}`
-        }
-        // console.log(this.form.querySelector('#saps-survival').value)
-        // console.log(this.form.querySelector('#player-survival-rate').value)
+    for (let i = 0; i < document.querySelectorAll('dcc-dhtml').length; i++) {
+      let dhtmlList = document.querySelectorAll('dcc-dhtml')
+      if(dhtmlList[i]._ready == true){
+        this._ready = true
+      }else{
+        this._ready = false
       }
-      nextStep.addEventListener('click', fnnextStep)
+    }
+    if(this._ready){
+      Prognosis.i.expandMultiChoice()
+      if (new URL(document.location).pathname == '/prognosis/learn/player/') {
+        Prognosis.i.getPacientOptions()
 
-      const createPacientBtn =  document.querySelector('#btn-create-pacient')
-      const fnCreatePacientBtn = function (){
-        if(this.form.checkValidity())
+        const nextStep =  document.querySelector('#btn-next-step')
+        const fnnextStep = function (){
+          if(this.form.checkValidity()){
+            window.location.href = `/prognosis/learn/player/result?calc=${this.form.querySelector('#saps-survival').value}&playerCalc=${this.form.querySelector('#player-survival-rate').value}`
+          }
+          // console.log(this.form.querySelector('#saps-survival').value)
+          // console.log(this.form.querySelector('#player-survival-rate').value)
+        }
+        nextStep.addEventListener('click', fnnextStep)
+
+        const createPacientBtn =  document.querySelector('#btn-create-pacient')
+        const fnCreatePacientBtn = function (){
+          if(this.form.checkValidity())
           Saps.i.calcSaps3Score(this.form)
-      }
-      createPacientBtn.addEventListener('click', fnCreatePacientBtn)
-
-      const playerSurvivalRate = document.querySelector('#player-survival-rate')
-      playerSurvivalRate.addEventListener('keyup', function(){
-        if(!this.checkValidity()){
-          this.reportValidity()
         }
-      })
+        createPacientBtn.addEventListener('click', fnCreatePacientBtn)
 
-    }
-    if (new URL(document.location).pathname.includes('/prognosis/calculator')){
-      Prognosis.i.getPacientOptions(true)
-    }
-    if (new URL(document.location).pathname.includes('/prognosis/creation')){
-      var btnAddOption = document.querySelectorAll('.btn-add-option')
-      for (var btn of btnAddOption) {
-        // console.log('============')
-        // console.log(btn)
-        btn.addEventListener('click', Prognosis.i.addPacientVariableOption)
+        const playerSurvivalRate = document.querySelector('#player-survival-rate')
+        const survivalRateOutputTxt = document.querySelector('#player-survival-rate-txt')
+        playerSurvivalRate.value = 0
+        survivalRateOutputTxt.innerHTML = playerSurvivalRate.value+'%'
+        playerSurvivalRate.addEventListener('input', function(){
+          survivalRateOutputTxt.innerHTML = playerSurvivalRate.value+'%'
+        })
+
       }
-      document.querySelector('#btn-update-idade-option').addEventListener('click', Prognosis.i.updatePacientVariableOption)
-    }
-    if (new URL(document.location).pathname.includes('/learn/player/result')){
-      for (var elem of document.querySelectorAll('input')) {
-        elem.checked = false
+      if (new URL(document.location).pathname.includes('/prognosis/calculator')){
+        Prognosis.i.getPacientOptions(true)
       }
-      Prognosis.i.playerResult()
+      if (new URL(document.location).pathname.includes('/prognosis/creation')){
+        var btnAddOption = document.querySelectorAll('.btn-add-option')
+        for (var btn of btnAddOption) {
+          // console.log('============')
+          // console.log(btn)
+          btn.addEventListener('click', Prognosis.i.addPacientVariableOption)
+        }
+        document.querySelector('#btn-update-idade-option').addEventListener('click', Prognosis.i.updatePacientVariableOption)
+        Prognosis.i.getPacientOptions(true)
+      }
+      if (new URL(document.location).pathname.includes('/learn/player/result')){
+        for (var elem of document.querySelectorAll('input')) {
+          elem.checked = false
+        }
+        Prognosis.i.playerResult()
+      }
     }
   }
 
@@ -91,6 +107,7 @@
 
               for (var i = 0; i < inputList.length; i++) {
                 inputList[i].checked = false
+                inputList[i].required = false
                 // var testWrapper = document.querySelector('#' + inputList[i].name + '-wrapper')
                 // var test = testWrapper.querySelectorAll('div > input')
                 // testWrapper.classList.add('d-none')
@@ -173,6 +190,8 @@
   }
 
   async addPacientVariableOption (topic, message){
+    console.log(topic)
+    console.log(message)
     const optionWrapper = document.querySelector('#'+ this.id.substring(4) +'-wrapper')
     const inputValue = this.offsetParent.querySelector('input')
     this.message = this.getAttribute('message')
@@ -213,13 +232,33 @@
   async pacientFormValidation(form){
 
     //Check if input has attribute 'required', also removes 'required' if input is hidden
+    let dependantInput = document.querySelectorAll(`div.d-none.progn-multi-wrapper[id*="wrapper"] > div.form-check > input`)
+    for (var elem of dependantInput) {
+      // console.log('============ i do not like it')
+      // console.log(elem)
+      elem.required = false
+    }
+    dependantInput = document.querySelectorAll(`div.progn-multi-wrapper:not(.d-none)[id*="wrapper"] > div.form-check > input`)
+    for (var elem of dependantInput) {
+      // console.log('============ i do not like itaaaa')
+      // console.log(elem)
+      if(!elem.required)
+        elem.required = true
+    }
+
+    /*
     const fnChildInputs = function (){
       var dependantInput = document.querySelectorAll(`div.d-none.progn-multi-wrapper[id*="wrapper"] > div.form-check > input`)
+
       for (var elem of dependantInput) {
+        // console.log('============ i do not like it')
+        // console.log(elem)
         elem.required = false
       }
       dependantInput = document.querySelectorAll(`div.progn-multi-wrapper:not(.d-none)[id*="wrapper"] > div.form-check > input`)
       for (var elem of dependantInput) {
+        // console.log('============ i do not like itaaaa')
+        // console.log(elem)
         if(!elem.required)
           elem.required = true
       }
@@ -228,6 +267,7 @@
       elem.removeEventListener('change', fnChildInputs)
       elem.addEventListener('change', fnChildInputs)
     }
+    */
     const fnCheckboxRequired = function (){
 
       var checkboxGroup = this.parentElement.parentElement.querySelectorAll('div.form-check > input[type=checkbox]')
@@ -259,7 +299,6 @@
       elem.addEventListener('change', fnCheckboxRequired)
     }
 
-    fnChildInputs()
   }
 
   removeAccent (src){
@@ -281,275 +320,281 @@
   async getPacientOptions (calculator){
     if(calculator){
       var pacientInfo = {
-        "idade":{
-          "locked": [
+        "pacients":[
+          {
 
-          ],
-          "open": [
-            "<40",//0
-            "40-59",//5
-            "60-69",//9
-            "70-74",//13
-            "75-79",//15
-            ">=80",//18
-          ]
-        },
-        "origem":{
-          "locked": [],
-          "open": [
-            "Pronto Socorro",//5
-            "Outra UTI",//7
-            "Nenhuma das anteriores",//8
-          ],
-        },
-        "comorbidade":{
-          "locked": [
+            "idade":{
+              "locked": [
 
-          ],
-          "open": [
-            {
-              "IC NYHA IV": {
-                "values": [
-                  "Não",
-                  "Sim",
-                ],
-              },//6
+              ],
+              "open": [
+                "<40",//0
+                "40-59",//5
+                "60-69",//9
+                "70-74",//13
+                "75-79",//15
+                ">=80",//18
+              ]
             },
-            {
-              "Câncer metastático": {
-                "values": [
-                  "Não",
-                  "Sim",
-                ],
-              },//11
+            "origem":{
+              "locked": [],
+              "open": [
+                "Pronto Socorro",//5
+                "Outra UTI",//7
+                "Nenhuma das anteriores",//8
+              ],
             },
-            {
-              "Terapia oncológica": {
-                "values": [
-                  "Não",
-                  "Sim",
-                ],
-              },//3
+            "comorbidade":{
+              "locked": [
+
+              ],
+              "open": [
+                {
+                  "IC NYHA IV": {
+                    "values": [
+                      "Não",
+                      "Sim",
+                    ],
+                  },//6
+                },
+                {
+                  "Câncer metastático": {
+                    "values": [
+                      "Não",
+                      "Sim",
+                    ],
+                  },//11
+                },
+                {
+                  "Terapia oncológica": {
+                    "values": [
+                      "Não",
+                      "Sim",
+                    ],
+                  },//3
+                },
+                {
+                  "Câncer hematológico": {
+                    "values": [
+                      "Não",
+                      "Sim",
+                    ],
+                  },//6 IF HAS SIDA + CANCER  it gets double points
+                },
+                {
+                  "Cirrose": {
+                    "values": [
+                      "Não",
+                      "Sim",
+                    ],
+                  },//8
+                },
+                {
+                  "SIDA": {
+                    "values": [
+                      "Não",
+                      "Sim",
+                    ],
+                  },//8   IF HEMATOLOGICA + SIDA = 16+12
+                },
+                {
+                  "Internado antes da admissão": {
+                    "cascade": "true",
+                    "radioYN": "true",
+                    "uniqueValues":"true",
+                    "values": [
+                      "<14 dias",//0
+                      "14-27 dias",//6
+                      ">=28 dias",//7
+                    ],
+                  },
+                },
+                {
+                  "Infectado antes da admissão": {
+                    "cascade": "true",
+                    "radioYN": "true",
+                    "multipleValues": "true",
+                    "values": [
+                      "Nosocomial",//4
+                      "Respiratória",//5
+                    ],
+                  },
+                },
+              ],
             },
-            {
-              "Câncer hematológico": {
-                "values": [
-                  "Não",
-                  "Sim",
-                ],
-              },//6 IF HAS SIDA + CANCER  it gets double points
+            "motivoAdmissao": {
+              "locked": [],
+              "open": [
+                {
+                  "Admissão Planejada": {
+                    "values":[
+                      "Não",//3
+                      "Sim",//0
+                    ]
+                  },
+                },
+                {
+                  "Submetido à cirurgia": {// no surgery = 5 //surgery = 16
+                    "cascade": "true",
+                    "radioYN": "true",
+                    "values": [
+                      "Cirurgia eletiva",//0
+                      "Cirurgia urgência",//6
+                    ],
+                    "child": [
+                      "Neurocirurgia por acidente vascular cerebral",//5
+                      "Revascularização miocárdica",//-6
+                      "Trauma",//-8
+                      "Transplante",//-11
+                      "Outro",//0
+                    ],
+                  },
+                },
+                {
+                  "Motivo de admissão na UTI": {//16
+                    "values": [
+                      "Arritmia",//-5 Out of arritmia and convulsão, choose the worst value if both apply
+                      "Choque hipovolêmico",//3
+                      "Outro choque",//5
+                      "Convulsão",//-4
+                      "Abdome agudo",//3
+                      "Pancreatite grave",//9
+                      "Déficit focal",//7
+                      "Efeito de massa intracraniana",//10
+                      "Insuficiência hepática", //6
+                      "Alteração do nível de consciência",//4
+                      "Nenhum dos anteriores",//0
+                    ],
+                  },
+                },
+              ]
             },
-            {
-              "Cirrose": {
-                "values": [
-                  "Não",
-                  "Sim",
-                ],
-              },//8
+            "statusClinico": {
+              "locked": [],
+              "open": [
+                {
+                  "Escala de Coma de Glasgow": {
+                    "uniqueValues":"true",
+                    "values": [
+                      "3-4",//15
+                      "5",//10
+                      "6",//7
+                      "7-12",//2
+                      ">=13",//0
+                    ],
+                  },
+                },
+                {
+                  "Temperatura": {
+                    "uniqueValues":"true",
+                    "values": [
+                      "<35 °C",//7
+                      ">=35 °C",//0
+                    ],
+                  },
+                },
+                {
+                  "Frequência cardíaca": {
+                    "uniqueValues":"true",
+                    "values": [
+                      "<120 bpm",//0
+                      "120-159 bpm",//5
+                      ">=160 bpm",//7
+                    ],
+                  },
+                },
+                {
+                  "Pressão sistólica": {
+                    "uniqueValues":"true",
+                    "values": [
+                      "<40 mmHg",//11
+                      "40-69 mmHg",//8
+                      "70-119 mmHg",//3
+                      ">=120 mmHg",//0
+                    ],
+                  },
+                },
+                {
+                  "Droga vasoativa": {
+                    "uniqueValues":"true",
+                    "values": [
+                      "Não",
+                      "Sim",//3
+                    ]
+                  },
+                },
+              ],
             },
-            {
-              "SIDA": {
-                "values": [
-                  "Não",
-                  "Sim",
-                ],
-              },//8   IF HEMATOLOGICA + SIDA = 16+12
+            "alteracoesLab": {
+              "locked": [],
+              "open": [
+                {
+                  "Bilirrubina": {
+                    "uniqueValues":"true",
+                    "values": [
+                      "<2 mg/dl",//0
+                      "2-6 mg/dl",//4
+                      ">=6 mg/dl",//5
+                    ],
+                  },
+                },
+                {
+                  "Creatinina": {
+                    "uniqueValues":"true",
+                    "values": [
+                      "<1.2 mg/dl",//0
+                      "1.2-1.9 mg/dl",//2
+                      "2-3.4 mg/dl",//7
+                      ">=3.5 mg/dl",//8
+                    ],
+                  },
+                },
+                {
+                  "pH": {
+                    "uniqueValues":"true",
+                    "values": [
+                      "<=7.25",//3
+                      ">7.25"//0
+                    ],
+                  },
+                },
+                {
+                  "Leucócitos": {
+                    "uniqueValues":"true",
+                    "values": [
+                      "<15mil /mm³",//0
+                      ">=15mil /mm³",//2
+                    ],
+                  },
+                },
+                {
+                  "Plaquetas": {
+                    "uniqueValues":"true",
+                    "values": [
+                      "<20mil /mm³",//13
+                      "20-49mil /mm³",//8
+                      "50-99mil /mm³",//5
+                      ">=100mil /mm³",//0
+                    ],
+                  },
+                },
+                {
+                  "Oxigenação": {
+                    "uniqueValues":"true",
+                    "values": [
+                      "paO2 >=60 sem VM",//0
+                      "paO2 <60 sem VM",//5
+                      "paO2/FiO2<100 em VM",//11
+                      "paO2/FiO2 >=100 em VM",//7
+                    ],
+                  },
+                },
+              ],
             },
-            {
-              "Internado antes da admissão": {
-                "cascade": "true",
-                "radioYN": "true",
-                "uniqueValues":"true",
-                "values": [
-                  "<14 dias",//0
-                  "14-27 dias",//6
-                  ">=28 dias",//7
-                ],
-              },
-            },
-            {
-              "Infectado antes da admissão": {
-                "cascade": "true",
-                "radioYN": "true",
-                "multipleValues": "true",
-                "values": [
-                  "Nosocomial",//4
-                  "Respiratória",//5
-                ],
-              },
-            },
-          ],
-        },
-        "motivoAdmissao": {
-          "locked": [],
-          "open": [
-            {
-              "Admissão Planejada": {
-                "values":[
-                  "Não",//3
-                  "Sim",//0
-                ]
-              },
-            },
-            {
-              "Submetido à cirurgia": {// no surgery = 5 //surgery = 16
-                "cascade": "true",
-                "radioYN": "true",
-                "values": [
-                  "Cirurgia eletiva",//0
-                  "Cirurgia urgência",//6
-                ],
-                "child": [
-                  "NRC por AVC",//5
-                  "Revascularização miocárdica",//-6
-                  "Trauma",//-8
-                  "Transplante",//-11
-                  "Outro",//0
-                ],
-              },
-            },
-            {
-              "Motivo de admissão na UTI": {//16
-                "values": [
-                  "Arritmia",//-5 Out of arritmia and convulsão, choose the worst value if both apply
-                  "Choque hipovolêmico",//3
-                  "Outro choque",//5
-                  "Convulsão",//-4
-                  "Abdome agudo",//3
-                  "Pancreatite grave",//9
-                  "Déficit focal",//7
-                  "Efeito de massa intracraniana",//10
-                  "Insuficiência hepática", //6
-                  "Alteração do nível de consciência",//4
-                  "Nenhum dos anteriores",//0
-                ],
-              },
-            },
-          ]
-        },
-        "statusClinico": {
-          "locked": [],
-          "open": [
-            {
-              "Escala de Coma de Glasgow": {
-                "uniqueValues":"true",
-                "values": [
-                  "3-4",//15
-                  "5",//10
-                  "6",//7
-                  "7-12",//2
-                  ">=13",//0
-                ],
-              },
-            },
-            {
-              "Temperatura": {
-                "uniqueValues":"true",
-                "values": [
-                  "<35 °C",//7
-                  ">=35 °C",//0
-                ],
-              },
-            },
-            {
-              "Frequência cardíaca": {
-                "uniqueValues":"true",
-                "values": [
-                  "<120 bpm",//0
-                  "120-159 bpm",//5
-                  ">=160 bpm",//7
-                ],
-              },
-            },
-            {
-              "Pressão sistólica": {
-                "uniqueValues":"true",
-                "values": [
-                  "<40 mmHg",//11
-                  "40-69 mmHg",//8
-                  "70-119 mmHg",//3
-                  ">=120 mmHg",//0
-                ],
-              },
-            },
-            {
-              "Droga vasoativa": {
-                "uniqueValues":"true",
-                "values": [
-                  "Não",
-                  "Sim",//3
-                ]
-              },
-            },
-          ],
-        },
-        "alteracoesLab": {
-          "locked": [],
-          "open": [
-            {
-              "Bilirrubina": {
-                "uniqueValues":"true",
-                "values": [
-                  "<2 mg/dl",//0
-                  "2-6 mg/dl",//4
-                  ">=6 mg/dl",//5
-                ],
-              },
-            },
-            {
-              "Creatinina": {
-                "uniqueValues":"true",
-                "values": [
-                  "<1.2 mg/dl",//0
-                  "1.2-1.9 mg/dl",//2
-                  "2-3.4 mg/dl",//7
-                  ">=3.5 mg/dl",//8
-                ],
-              },
-            },
-            {
-              "pH": {
-                "uniqueValues":"true",
-                "values": [
-                  "<=7.25",//3
-                  ">7.25"//0
-                ],
-              },
-            },
-            {
-              "Leucócitos": {
-                "uniqueValues":"true",
-                "values": [
-                  "<15mil /mm³",//0
-                  ">=15mil /mm³",//2
-                ],
-              },
-            },
-            {
-              "Plaquetas": {
-                "uniqueValues":"true",
-                "values": [
-                  "<20mil /mm³",//13
-                  "20-49mil /mm³",//8
-                  "50-99mil /mm³",//5
-                  ">=100mil /mm³",//0
-                ],
-              },
-            },
-            {
-              "Oxigenação": {
-                "uniqueValues":"true",
-                "values": [
-                  "paO2 >=60 sem VM",//0
-                  "pa02 <60 sem VM",//5
-                  "P/F<100 em VM",//11
-                  "P/F >=100 em VM",//7
-                ],
-              },
-            },
-          ],
-        },
-      }
+          }
+        ]
+    }
+
     } else {
       var pacientInfo = {
         "pacients":[
@@ -674,7 +719,7 @@
                       "Cirurgia urgência",
                     ],
                     "child": [
-                      "NRC por AVC",
+                      "Neurocirurgia por acidente vascular cerebral",
                       "Revascularização miocárdica",
                       "Trauma",
                       "Transplante",
@@ -815,9 +860,9 @@
                     "uniqueValues":"true",
                     "values": [
                       "paO2 >=60 sem VM",
-                      "pa02 <60 sem VM",
-                      "P/F<100 em VM",
-                      "P/F >=100 em VM",
+                      "paO2 <60 sem VM",
+                      "paO2/FiO2<100 em VM",
+                      "paO2/FiO2 >=100 em VM",
                     ],
                   },
                 },
@@ -1065,9 +1110,9 @@
                     "uniqueValues":"true",
                     "values": [
                       "paO2 >=60 sem VM",
-                      "pa02 <60 sem VM",
-                      "P/F<100 em VM",
-                      "P/F >=100 em VM",
+                      "paO2 <60 sem VM",
+                      "paO2/FiO2<100 em VM",
+                      "paO2/FiO2 >=100 em VM",
                     ],
                   },
                 },
@@ -1314,9 +1359,9 @@
                     "uniqueValues":"true",
                     "values": [
                       "paO2 >=60 sem VM",
-                      "pa02 <60 sem VM",
-                      "P/F<100 em VM",
-                      "P/F >=100 em VM",
+                      "paO2 <60 sem VM",
+                      "paO2/FiO2<100 em VM",
+                      "paO2/FiO2 >=100 em VM",
                     ],
                   },
                 },
@@ -1434,7 +1479,7 @@
                       "Cirurgia urgência"
                     ],
                     "child": [
-                      "NRC por AVC"
+                      "Neurocirurgia por acidente vascular cerebral"
                     ],
                   },
                 },
@@ -1564,9 +1609,9 @@
                     "uniqueValues":"true",
                     "values": [
                       "paO2 >=60 sem VM",
-                      "pa02 <60 sem VM",
-                      "P/F<100 em VM",
-                      "P/F >=100 em VM",
+                      "paO2 <60 sem VM",
+                      "paO2/FiO2<100 em VM",
+                      "paO2/FiO2 >=100 em VM",
                     ],
                   },
                 },
@@ -1809,9 +1854,9 @@
                     "uniqueValues":"true",
                     "values": [
                       "paO2 >=60 sem VM",
-                      "pa02 <60 sem VM",
-                      "P/F<100 em VM",
-                      "P/F >=100 em VM",
+                      "paO2 <60 sem VM",
+                      "paO2/FiO2<100 em VM",
+                      "paO2/FiO2 >=100 em VM",
                     ],
                   },
                 },
@@ -2053,9 +2098,9 @@
                     "uniqueValues":"true",
                     "values": [
                       "paO2 >=60 sem VM",
-                      "pa02 <60 sem VM",
-                      "P/F<100 em VM",
-                      "P/F >=100 em VM",
+                      "paO2 <60 sem VM",
+                      "paO2/FiO2<100 em VM",
+                      "paO2/FiO2 >=100 em VM",
                     ],
                   },
                 },
@@ -2292,9 +2337,9 @@
                     "uniqueValues":"true",
                     "values": [
                       "paO2 >=60 sem VM",
-                      "pa02 <60 sem VM",
-                      "P/F<100 em VM",
-                      "P/F >=100 em VM",
+                      "paO2 <60 sem VM",
+                      "paO2/FiO2<100 em VM",
+                      "paO2/FiO2 >=100 em VM",
                     ],
                   },
                 },
@@ -2462,7 +2507,7 @@
                       {
                         "Oxigenação": {
                           "values": [
-                            "P/F >=100 em VM",
+                            "paO2/FiO2 >=100 em VM",
                           ],
                         },
                       },
@@ -2668,7 +2713,7 @@
                       {
                         "Oxigenação": {
                           "values": [
-                            "P/F >=100 em VM",
+                            "paO2/FiO2 >=100 em VM",
                           ],
                         },
                       },
@@ -2858,7 +2903,7 @@
                       {
                         "Oxigenação": {
                           "values": [
-                            "P/F >=100 em VM",
+                            "paO2/FiO2 >=100 em VM",
                           ],
                         },
                       },
@@ -2893,22 +2938,67 @@
       }
 
     }
-    var selectedPacient
-    if((localStorage.getItem('prognosis-current-lvl') && localStorage.getItem('prognosis-current-lvl') != 'null') || new URL(document.location).searchParams.get('diffic')){
-      if(localStorage.getItem('prognosis-current-lvl') != new URL(document.location).searchParams.get('diffic')){
-        localStorage.setItem('prognosis-current-lvl', new URL(document.location).searchParams.get('diffic'))
+    let selectedPacient
+    const urlDiffic = new URL(document.location).searchParams.get('diffic')
+    const currentLvl = document.querySelector('#current-lvl')
+    const highestLvl = document.querySelector('#highest-lvl')
+    const localCurrentLvl = localStorage.getItem('prognosis-current-lvl')
+
+    if((localCurrentLvl && localCurrentLvl != null && localCurrentLvl != '') || currentLvl.value){
+      if(currentLvl && currentLvl.value != ''){
+        localStorage.setItem('prognosis-current-lvl', currentLvl.value)
+        if(highestLvl && highestLvl.value != ''){
+          localStorage.setItem('prognosis-highest-lvl', highestLvl.value)
+        }
+        if((urlDiffic) && (localStorage.getItem('prognosis-current-lvl') != urlDiffic)){
+          if(highestLvl.value != '' && parseInt(highestLvl.value) >= urlDiffic){
+            localStorage.setItem('prognosis-current-lvl', urlDiffic)
+          }else if (currentLvl.value == ''){
+            localStorage.setItem('prognosis-current-lvl', 1)
+          }else if(highestLvl.value != ''){
+            localStorage.setItem('prognosis-highest-lvl', highestLvl.value)
+            localStorage.setItem('prognosis-current-lvl', highestLvl.value)
+          }else{
+            localStorage.setItem('prognosis-highest-lvl', localStorage.getItem('prognosis-current-lvl'))
+          }
+        }
+        if(localStorage.getItem('prognosis-highest-lvl') == null || localStorage.getItem('prognosis-highest-lvl') == ''){
+          localStorage.setItem('prognosis-highest-lvl', localStorage.getItem('prognosis-current-lvl'))
+        }
+      }
+
+      if(highestLvl.value == '' && localStorage.getItem('prognosis-current-lvl') != null){
+        localStorage.setItem('prognosis-highest-lvl', localStorage.getItem('prognosis-current-lvl'))
+      }
+      else if (highestLvl.value == '' && localStorage.getItem('prognosis-current-lvl') == null){
+        localStorage.setItem('prognosis-highest-lvl', 1)
+        localStorage.setItem('prognosis-current-lvl', 1)
       }
       selectedPacient = pacientInfo.pacients[localStorage.getItem('prognosis-current-lvl')-1]
     }else{
+        selectedPacient = pacientInfo.pacients[0]
+        if(!new URL(document.location).pathname.includes('calculator'))
+          localStorage.setItem('prognosis-current-lvl', pacientInfo.pacients[0].dificuldade)
+    }
+    if(document.querySelector('#welcome-lvl-modal') && (localStorage.getItem('prognosis-current-lvl') == 1
+      || localStorage.getItem('prognosis-current-lvl')==null)){
+      var welcomeModal = document.querySelector('#welcome-lvl-modal')
+      welcomeModal.querySelector('.modal-title').textContent = 'Seu primeiro paciente'
+      welcomeModal.querySelector('.modal-body > p').textContent = `Esse primeiro paciente...bem, ele não é "mortal". As irmãs querem ter certeza que você
+      entende o básico antes de começar com os humanos reais. Com este aqui você
+      poderá fazer todas as mudanças possíveis. Tente fazer com que ele tenha as melhores chances de sobreviver!`
 
-      selectedPacient = pacientInfo.pacients[0]
-      localStorage.setItem('prognosis-current-lvl', pacientInfo.pacients[0].dificuldade)
+      $('#welcome-lvl-modal').modal('show')
     }
 
+    if(new URL(document.location).pathname.includes('calculator') || new URL(document.location).pathname.includes('creation'))
+      selectedPacient = pacientInfo.pacients[0]
 
     if(document.querySelector('h1.pacient-title')){
       var title = document.querySelector('h1.pacient-title')
-      title.innerHTML = 'João V'+selectedPacient.dificuldade
+
+      title.innerHTML = title.innerHTML
+      .replace('dificuldade 1',`dificuldade ${selectedPacient.dificuldade}`)
     }
 
     ////////////////////////////////// IDADE ///////////////////////////////////////////////////
@@ -3543,8 +3633,7 @@
 
   async playerResult(){
     const playerGuess = new URL(document.location).searchParams.get('playerCalc')
-    const sapsCalc = new URL(document.location).searchParams.get('sapsCalc')
-
+    const sapsCalc = new URL(document.location).searchParams.get('calc')
     const createRoulette = function (sectN){
       const diameter = 100
       const svgSize = diameter + 10
@@ -3552,10 +3641,10 @@
       const strokeWidth = "1"
       const svgRoot = document.querySelector('#svg-wrapper')
       const svgEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
-      svgEl.classList.add('spin')
+      svgEl.classList.add('spin','w-100','w-md-50','w-xl-40')
       svgEl.setAttribute('viewBox', '-55 -55 110 110')
-      svgEl.setAttribute('width',400)
-      svgEl.setAttribute('height',400)
+      // svgEl.setAttribute('width','100%')
+      // svgEl.setAttribute('height','100%')
       svgRoot.appendChild(svgEl)
       var gEl = document.createElementNS('http://www.w3.org/2000/svg', 'g')
       gEl.id = 'roulette-group'
@@ -3571,7 +3660,7 @@
            from="0"
            to="200"
            begin=""
-           dur="7s"
+           dur="8s"
            fill="freeze"
            calcMode="spline"
            repeatCount="1"
@@ -3664,13 +3753,12 @@
       sapsText.innerHTML = Prognosis.sapsCalcTxt
       .replace(/\[sapsSurvival\]/ig, sapsCalc+'%')
       .replace(/\[rouletteN\]/ig, Math.round(sapsCalc/10))
-
+      .replace(/\[plural\]/ig, ((Math.round(sapsCalc/10) > 1)?'s':''))
       const btnSpin = document.querySelector('#btn-spin-roulette')
       const fnBtnSpin = function (){
-        this.disabled = true
-        const sapsCalc = new URL(document.location).searchParams.get('sapsCalc')
+        const sapsCalc = new URL(document.location).searchParams.get('calc')
         if(availableN == selectedN.length){
-
+          this.disabled = true
           Prognosis.i.spinRoulette(selectedN)
           document.querySelector('#roulette-invalid').classList.add('d-none')
           if(!document.querySelector('#btn-spin-roulette').innerHTML.includes('novamente'))
@@ -3679,16 +3767,35 @@
           const btnNextLvl = document.querySelector('#btn-next-lvl')
           btnNextLvl.classList.remove('d-none')
           btnNextLvl.addEventListener('click', function (){
-            var nextLvl = parseInt(localStorage.getItem('prognosis-current-lvl'))+1
+            let nextLvl = parseInt(localStorage.getItem('prognosis-current-lvl'))+1
             if(nextLvl>10)
               nextLvl = 10
-            document.location.href = '/prognosis/learn/player/?diffic=' + (nextLvl)
+            // localStorage.setItem('prognosis-current-lvl', nextLvl)
+            document.location.href = '/prognosis/learn/player/?diffic=' + nextLvl
           })
         }else{
           document.querySelector('#roulette-invalid').classList.remove('d-none')
         }
       }
+      const rouletteAnim = document.querySelector('#roulette-anim')
+
+      const fnModalEnd = function (){
+        rouletteAnim.removeEventListener('endEvent', fnModalEnd)
+        setTimeout(function(){
+          $('#lvl-result-modal').modal('show')
+        }, 750)
+      }
       btnSpin.addEventListener('click', fnBtnSpin)
+      rouletteAnim.addEventListener('endEvent', fnModalEnd)
+
+      const prognResultAcc = document.querySelector('#prognosis-result-accuracy')
+      const prognResultCalc = document.querySelector('#prognosis-result-calc')
+      if (prognResultAcc && prognResultCalc){
+        const playerGuess = new URL(document.location).searchParams.get('playerCalc')
+        const sapsCalc = new URL(document.location).searchParams.get('calc')
+        const diffCalc = parseFloat(playerGuess)-parseFloat(sapsCalc)
+        /////ON PROGRESS
+      }
   }
 
   async spinRoulette(selectedN){
@@ -3737,7 +3844,7 @@
       }
       var wrapper = document.querySelector('#main-panel').firstElementChild
       if(selectedN.includes(angleToNum)){
-        resultTxt.innerHTML = 'Paciente sobreviveu'
+        resultTxt.innerHTML = 'Paciente sobreviveu :)'
         //#015b13
         var selectedEl = document.querySelector('#n-'+angleToNum)
         selectedEl.querySelector('path').setAttribute('fill','#015b13')
@@ -3745,13 +3852,13 @@
           wrapper.insertBefore(resultTxt, document.querySelector('.btn-info'))
       }
       else{
-        resultTxt.innerHTML = 'Paciente não sobreviveu'
+        resultTxt.innerHTML = 'Paciente não sobreviveu :('
         //#f05858
         //#9f0202
         var selectedEl = document.querySelector('#n-'+angleToNum)
         selectedEl.querySelector('path').setAttribute('fill','#9f0202')
         if(!document.querySelector('#roulette-result'))
-          wrapper.insertBefore(resultTxt, document.querySelector('.btn-info'))
+          wrapper.insertBefore(resultTxt, document.querySelector('#svg-wrapper').nextSibling)
 
       }
     }
@@ -3759,7 +3866,9 @@
       rouletteAnim.addEventListener('endEvent', fnEndSpin)
       btnSpin.dataset.roulette = true
     }
-    rouletteAnim.setAttribute('to', parseInt(rouletteAnim.getAttribute('from'))+getRandomInt(2000, 2700))
+    var randomRotate = getRandomInt(2000, 2880)
+    // console.log(randomRotate)
+    rouletteAnim.setAttribute('to', parseInt(rouletteAnim.getAttribute('from'))+randomRotate)
     rouletteAnim.beginElement()
 
   }
@@ -3827,6 +3936,6 @@
   Você respondeu que a chance do paciente sobreviver era: [playerGuess]
   `
   Prognosis.sapsCalcTxt = `
-  A chance calculada é de: [sapsSurvival].<br>Essa porcentagem te dá direito à escolha de [rouletteN] números.
+  A chance calculada é de: [sapsSurvival].<br>Essa porcentagem te dá direito à escolha de [rouletteN] número[plural].
   `
 })()
