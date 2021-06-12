@@ -28,10 +28,10 @@ class DCCSubmit extends DCCButton {
 
   async notify (topic, message) {
     // super.notify(topic, message)
-    if (message.role != null && message.role == 'submit') {
+    if (topic.toLowerCase().includes('submit')) {
       await this.computeSubmit()
       MessageBus.ext.publish(
-        MessageBus.buildResponseTopic(topic, message.body))
+        MessageBus.buildResponseTopic(topic, message))
     }
   }
 

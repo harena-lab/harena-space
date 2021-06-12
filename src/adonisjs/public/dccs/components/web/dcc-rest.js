@@ -105,15 +105,13 @@ class DCCRest extends DCCBase {
   }
 
   async notify (topic, message) {
-    if (message.role) {
-      let parameters = {}
-      let par = this._extractParameters(message)
-      if (topic.startsWith('var/'))
-        parameters[MessageBus.extractLevel(topic, 2)] = par
-      else
-        parameters = par
-      this.serviceRequest(topic, parameters)
-    }
+    let parameters = {}
+    let par = this._extractParameters(message)
+    if (topic.startsWith('var/'))
+      parameters[MessageBus.extractLevel(topic, 2)] = par
+    else
+      parameters = par
+    this.serviceRequest(topic, parameters)
   }
 
   _extractParameters(message) {

@@ -50,12 +50,10 @@ class DCCRSS extends DCCBase {
   }
 
   notify (topic, message) {
-    if (message.role) {
-      switch (message.role.toLowerCase()) {
-        case 'start': this.start(); break
-        case 'stop' : this.stop(); break
-        case 'step' : this.step(); break
-      }
+    switch (topic.toLowerCase()) {
+      case 'start': this.start(); break
+      case 'stop' : this.stop(); break
+      case 'step' : this.step(); break
     }
   }
 

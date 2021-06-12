@@ -34,10 +34,6 @@ class DCCRecord extends DCCBase {
   }
 
   store(topic, message) {
-    console.log('=== store')
-    console.log(topic)
-    console.log(message)
-    console.log(this.key)
     localStorage.setItem(this.key,
       JSON.stringify((message.body) ? message.body : message))
   }
@@ -57,11 +53,9 @@ class DCCRecord extends DCCBase {
   }
 
   async notify (topic, message) {
-    if (message.role) {
-      switch (message.role) {
-        case 'store': this.store(topic, message)
-                      break
-      }
+    switch (topic.toLowerCase()) {
+      case 'store': this.store(topic, message)
+                    break
     }
   }
 

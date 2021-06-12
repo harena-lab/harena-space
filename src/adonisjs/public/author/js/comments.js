@@ -50,7 +50,7 @@ class Comments {
           content[this._template].value.replace(/\//g, '.') + '/get')
         const form = '<form><dcc-dhtml subscribe="data/comments/get:update">' + tmpl.message +
                      '<end-dcc></end-dcc></dcc-dhtml>' +
-                     '<dcc-submit label="COMMENT" xstyle="in" subscribe="control/comments/submit:submit" topic="control/comments/edit/confirm" display="none"></dcc-submit></form>'
+                     '<dcc-submit label="COMMENT" xstyle="in" subscribe="control/comments/submit" topic="control/comments/edit/confirm" display="none"></dcc-submit></form>'
         document.querySelector('#comments-display').innerHTML = form
 
         this._comments = -1
