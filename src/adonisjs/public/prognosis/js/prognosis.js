@@ -6,7 +6,7 @@ class Prognosis {
     MessageBus.int.publish('control/dhtml/status/request', {id: 'harena-dhtml-prognosis-current-lvl'})
     MessageBus.int.publish('control/dhtml/status/request', {id: 'harena-dhtml-prognosis-heighest-level'})
 
-    // MessageBus.int.subscribe('control/html/ready', this.start)
+    MessageBus.int.subscribe('control/html/ready', this.start)
     // this.addPacientVariableOption = this.addPacientVariableOption.bind(this)
     // this.deletePacientVariableOption = this.deletePacientVariableOption.bind(this)
     // MessageBus.ext.subscribe('button/add-option/clicked', this.addPacientVariableOption)
@@ -21,6 +21,9 @@ class Prognosis {
       }else{
         this._ready = false
       }
+    }
+    if(document.querySelectorAll('dcc-dhtml').length == 0){
+      this._ready = true
     }
     if(this._ready){
       MessageBus.int.unsubscribe('control/dhtml/ready', this.start)
@@ -2968,10 +2971,10 @@ class Prognosis {
         }
       }
 
-      if(highestLvl.value == '' && localStorage.getItem('prognosis-current-lvl') != null){
+      if((highestLvl && highestLvl.value == '') && localStorage.getItem('prognosis-current-lvl') != null){
         localStorage.setItem('prognosis-highest-lvl', localStorage.getItem('prognosis-current-lvl'))
       }
-      else if (highestLvl.value == '' && localStorage.getItem('prognosis-current-lvl') == null){
+      else if ((highestLvl && highestLvl.value == '') && localStorage.getItem('prognosis-current-lvl') == null){
         localStorage.setItem('prognosis-highest-lvl', 1)
         localStorage.setItem('prognosis-current-lvl', 1)
       }
@@ -3634,148 +3637,7 @@ class Prognosis {
   }
 
   async extractPossibleOptions (selectedPacient){
-    /*
-    let pacientInfo = {
-      "pacient":{
-        "Idade":{
-          "values":{
-            "<40":0,
-            "40-59":5,
-            "60-69":9,
-            "70-74":13,
-            "75-79":15,
-            ">=80":18,
-          }
-        },
-        "Origem":{
-          "values":{
-            "Pronto Socorro":5,
-            "Outra UTI":7,
-            "Nenhuma das anteriores":8,
-          }
-        },
-        "Comorbidade":{
-          "values":{
-            "IC NYHA IV":6,
-            "Câncer metástatico":11,
-            "Terapia oncológica":3,
-            "Câncer hematológico":6,
-            "Cirrose":8,
-            "SIDA":8,
-            "Internado antes da admissão":{
-              "Não":0,
-              "<14 dias":0,
-              "14-27 dias":6,
-              ">=28 dias":7,
-            },
-            "Infectado antes da admissão":{
-              "Não":0,
-              "Nosocomial":4,
-              "Respiratória":5,
-            },
-          }
-        },
-        "Contexto da admissão":{
-          "values":{
-            "Admissão planejada":{
-              "Não":3,
-              "Sim":0,
-            },
-            "Submetido à cirurgia":{
-
-              "Não":5,
-              "Cirugia eletiva":0,
-              "Cirurgia urgência":6,
-              "Neurocirurgia por acidente vascular cerebral":5,
-              "Revascularização miocárdica":-6,
-              "Trauma":-8,
-              "Transplante":-11,
-              "Outro":0,
-            },
-            "Motivo de admissão na UTI":{
-              "Arritmia":-5,
-              "Choque hipovolêmico":3,
-              "Outro choque":5,
-              "Convulsão":-4,
-              "Abdome agudo":3,
-              "Pancreatite grave":9,
-              "Déficit focal":7,
-              "Efeito de massa intracraniana":10,
-              "Insuficiência hepática":6,
-              "Alteração do nível de consciência":4,
-              "Nenhum dos anteriores":0,
-            },
-          }
-        },
-        "Status clínico":{
-          "values":{
-            "Escala de Coma de Glasgow":{
-              "3-4":15,
-              "5":10,
-              "6":7,
-              "7-12":2,
-              ">=13":0,
-            },
-            "Temperatura":{
-              "<35 °C":7,
-              ">=35 °C":0,
-            },
-            "Frequência cardíaca":{
-              "<120 bpm":0,
-              "120-159 bpm":5,
-              ">=160 bpm":7,
-            },
-            "Pressão sistólica":{
-              "<40 mmHg":11,
-              "40-69 mmHg":8,
-              "70-119 mmHg":3,
-              ">=120 mmHg":0,
-            },
-            "Droga vasoativa":{
-              "Sim":3,
-              "Não":0,
-            },
-          }
-        },
-        "Alterações laboratoriais":{
-          "values":{
-            "Bilirrubina":{
-              "<2 mg/dl":0,
-              "2-6 mg/dl":4,
-              ">=6 mg/dl":5,
-            },
-            "Creatinina":{
-              "<1.2 mg/dl":0,
-              "1.2-1.9 mg/dl":2,
-              "2-3.4 mg/dl":7,
-              ">=3.5 mg/dl":8,
-            },
-            "pH":{
-              "<=7.25":3,
-              ">7.25":0,
-            },
-            "Leucócitos":{
-              "<15mil /mm³":0,
-              ">=15mil /mm³":2,
-            },
-            "Plaquetas":{
-              "<20mil /mm³":13,
-              "20-49mil /mm³":8,
-              "50-99mil /mm³":5,
-              ">=100mil /mm³":0,
-            },
-            "Oxigenação":{
-              "paO2 >=60 sem VM":0,
-              "paO2 <60 sem VM":5,
-              "paO2/FiO2 <100 em VM":11,
-              "paO2/FiO2 >=100 em VM":7,
-            },
-          }
-        },
-      }
-    }
-    */
-    let scoreValues = {
+  /*  let scoreValues = {
       "pacient":{
         "Idade":{
           "values":{
@@ -3931,6 +3793,148 @@ class Prognosis {
           }
         },
       }
+    },*/
+    let scoreValues = {
+      "pacient":{
+        "<40":0,
+        "40-59":5,
+        "60-69":9,
+        "70-74":13,
+        "75-79":15,
+        ">=80":18,
+
+        "Pronto Socorro":5,
+        "Outra UTI":7,
+        "Nenhuma das anteriores":8,
+
+
+        "IC NYHA IV":{
+          "Não":0,
+          "Sim":6,
+        },
+        "Câncer metastático":{
+          "Não":0,
+          "Sim":11,
+        },
+        "Terapia oncológica":{
+          "Não":0,
+          "Sim":3,
+        },
+        "Câncer hematológico":{
+          "Não":0,
+          "Sim":6,
+        },
+        "Cirrose":{
+          "Não":0,
+          "Sim":8,
+        },
+        "SIDA":{
+          "Não":0,
+          "Sim":8,
+        },
+        "Internado antes da admissão":{
+          "Não":0,
+          "<14 dias":0,
+          "14-27 dias":6,
+          ">=28 dias":7,
+        },
+        "Infectado antes da admissão":{
+          "Não":0,
+          "Nosocomial":4,
+          "Respiratória":5,
+        },
+
+
+        "Admissão planejada":{
+          "Não":3,
+          "Sim":0,
+        },
+        "Submetido à cirurgia":{
+
+          "Não":5,
+          "Cirurgia eletiva":0,
+          "Cirurgia urgência":6,
+          "Neurocirurgia por acidente vascular cerebral":5,
+          "Revascularização miocárdica":-6,
+          "Trauma":-8,
+          "Transplante":-11,
+          "Outro":0,
+        },
+        "Motivo de admissão na UTI":{
+          "Arritmia":-5,
+          "Choque hipovolêmico":3,
+          "Outro choque":5,
+          "Convulsão":-4,
+          "Abdome agudo":3,
+          "Pancreatite grave":9,
+          "Déficit focal":7,
+          "Efeito de massa intracraniana":10,
+          "Insuficiência hepática":6,
+          "Alteração do nível de consciência":4,
+          "Nenhum dos anteriores":0,
+        },
+
+
+        "Escala de Coma de Glasgow":{
+          "3-4":15,
+          "5":10,
+          "6":7,
+          "7-12":2,
+          ">=13":0,
+        },
+        "Temperatura":{
+          "<35 °C":7,
+          ">=35 °C":0,
+        },
+        "Frequência cardíaca":{
+          "<120 bpm":0,
+          "120-159 bpm":5,
+          ">=160 bpm":7,
+        },
+        "Pressão sistólica":{
+          "<40 mmHg":11,
+          "40-69 mmHg":8,
+          "70-119 mmHg":3,
+          ">=120 mmHg":0,
+        },
+        "Droga vasoativa":{
+          "Sim":3,
+          "Não":0,
+        },
+
+        "Bilirrubina":{
+          "<2 mg/dl":0,
+          "2-6 mg/dl":4,
+          ">=6 mg/dl":5,
+        },
+        "Creatinina":{
+          "<1.2 mg/dl":0,
+          "1.2-1.9 mg/dl":2,
+          "2-3.4 mg/dl":7,
+          ">=3.5 mg/dl":8,
+        },
+        "pH":{
+          "<=7.25":3,
+          ">7.25":0,
+        },
+        "Leucócitos":{
+          "<15mil /mm³":0,
+          ">=15mil /mm³":2,
+        },
+        "Plaquetas":{
+          "<20mil /mm³":13,
+          "20-49mil /mm³":8,
+          "50-99mil /mm³":5,
+          ">=100mil /mm³":0,
+        },
+        "Oxigenação":{
+          "paO2 >=60 sem VM":0,
+          "paO2 <60 sem VM":5,
+          "paO2/FiO2 <100 em VM":11,
+          "paO2/FiO2 >=100 em VM":7,
+        },
+
+      }
     },
         pacientOptions = {},
         lockedFindings = {},
@@ -4020,8 +4024,8 @@ class Prognosis {
     for (var i = 0; i < mainKeys.length; i++) {
 
       let fnVariable = Object.keys(selectedPacient)[i]
-      // console.log('====================================================================')
-      // console.log(fnVariable)
+      console.log('========================================================')
+      console.log(fnVariable)
       // console.log(selectedPacient[fnVariable])
       if(selectedPacient[fnVariable].locked) {
         if(Object.keys(selectedPacient[fnVariable].locked).length > 0){
@@ -4029,25 +4033,25 @@ class Prognosis {
         }
         for (let t = 0; t < selectedPacient[fnVariable].locked.length; t++) {
           let keyText = Object.keys(selectedPacient[fnVariable].locked[t])[0]
-          // console.log('============ locked option')
+          console.log('============ locked option')
 
           if(typeof Object.values(selectedPacient[fnVariable].locked)[t] == 'object'){
-            // console.log('============ object typeof key')
-            // console.log(Object.keys(selectedPacient[fnVariable].locked)[t])
-            // console.log('============ object typeof value')
-            // console.log(Object.values(selectedPacient[fnVariable].locked)[t])
+            console.log('============ object typeof key')
+            console.log(Object.keys(selectedPacient[fnVariable].locked)[t])
+            console.log('============ object typeof value')
+            console.log(Object.values(selectedPacient[fnVariable].locked)[t])
             let finding = findValue(Object.values(selectedPacient[fnVariable].locked)[t])
-            // console.log('============ object typeof findings')
-            // console.log(finding[Object.keys(finding)])
-            // console.log(lockedFindings)
+            console.log('============ object typeof findings')
+            console.log(finding[Object.keys(finding)])
+            console.log(lockedFindings)
             lockedFindings[fnVariable][Object.keys(finding)] = finding[Object.keys(finding)]
 
           }else{
-            // console.log(fnVariable)
-            // console.log(Object.values(selectedPacient[fnVariable].locked)[t])
-            // console.log('============ Saps3 value')
-            // console.log(pacientInfo['pacient'][fnVariable]['values']
-            // [Object.values(selectedPacient[fnVariable].locked)[t]])
+            console.log(fnVariable)
+            console.log(Object.values(selectedPacient[fnVariable].locked)[t])
+            console.log('============ Saps3 value')
+            console.log(pacientInfo['pacient'][fnVariable]['values']
+            [Object.values(selectedPacient[fnVariable].locked)[t]])
             lockedFindings[fnVariable] = Object.values(selectedPacient[fnVariable].locked)[t]
           }
         }
@@ -4059,23 +4063,23 @@ class Prognosis {
         }
         for (let t = 0; t < selectedPacient[fnVariable].open.length; t++) {
           let keyText = Object.keys(selectedPacient[fnVariable].open[t])[0]
-          // console.log('============ open option')
+          console.log('============ open option')
 
           if(typeof Object.values(selectedPacient[fnVariable].open)[t] == 'object'){
-            // console.log('============ object typeof key')
-            // console.log(Object.keys(selectedPacient[fnVariable].open)[t])
-            // console.log('============ object typeof value')
-            // console.log(Object.values(selectedPacient[fnVariable].open)[t])
+            console.log('============ object typeof key')
+            console.log(Object.keys(selectedPacient[fnVariable].open)[t])
+            console.log('============ object typeof value')
+            console.log(Object.values(selectedPacient[fnVariable].open)[t])
             let finding = findValue(Object.values(selectedPacient[fnVariable].open)[t])
-            // console.log('============ object typeof findings')
-            // console.log(finding[Object.keys(finding)])
+            console.log('============ object typeof findings')
+            console.log(finding[Object.keys(finding)])
             openFindings[fnVariable][Object.keys(finding)] = finding[Object.keys(finding)]
 
           }else{
-            // console.log(fnVariable)
-            // console.log(Object.values(selectedPacient[fnVariable].open)[t])
-            // console.log('============ pacientInfo value')
-            // console.log(scoreValues['pacient'][fnVariable]['values'][Object.values(selectedPacient[fnVariable].open)[t]])
+            console.log(fnVariable)
+            console.log(Object.values(selectedPacient[fnVariable].open)[t])
+            console.log('============ pacientInfo value')
+            console.log(scoreValues['pacient'][Object.values(selectedPacient[fnVariable].open)[t]])
             openFindings[fnVariable] = Object.values(selectedPacient[fnVariable].open)
           }
         }
@@ -4084,7 +4088,7 @@ class Prognosis {
     }
 
     if((pacientOptions.locked && Object.keys(pacientOptions.locked).length > 0)
-    && (pacientOptions.open && Object.keys(pacientOptions.open).length > 0)){
+    || (pacientOptions.open && Object.keys(pacientOptions.open).length > 0)){
       console.log('=================================================================================')
       console.log('============ calculating best options...')
       // console.log(pacientOptions)
@@ -4112,7 +4116,7 @@ class Prognosis {
             for (var z = 0; z < childValues.length; z++) {
               // console.log(childValues[z])
               // console.log(scoreValues['pacient'][mainKey]['values'][Object.keys(childKey)[x]][childValues[z]])
-              pacientScore['locked'][Object.keys(childKey)[x]] = scoreValues['pacient'][mainKey]['values'][Object.keys(childKey)[x]][childValues[z]]
+              pacientScore['locked'][Object.keys(childKey)[x]] = scoreValues['pacient'][Object.keys(childKey)[x]][childValues[z]]
 
             }
 
@@ -4121,7 +4125,7 @@ class Prognosis {
         }else{
           // console.log('============ single value')
           // console.log(pacientOptions['locked'][mainKey])
-          pacientScore['locked'][mainKey] = scoreValues['pacient'][mainKey]['values'][childKey]
+          pacientScore['locked'][mainKey] = scoreValues['pacient'][childKey]
         }
         // console.log('============ pacient Score')
         // console.log(pacientScore)
@@ -4150,20 +4154,59 @@ class Prognosis {
               console.log('============ child values')
               for (var z = 0; z < childValues.length; z++) {
                 console.log(childValues[z])
-                console.log(scoreValues['pacient'][mainKey]['values'][childValues[z]])
+                console.log(scoreValues['pacient'][childValues[z]])
                 console.log(pacientOptions.open[mainKey])
-                pacientScore['open'][mainKey][childValues[z]] = scoreValues['pacient'][mainKey]['values'][childValues[z]]
+                pacientScore['open'][mainKey][childValues[z]] = scoreValues['pacient'][childValues[z]]
               }
             }else{
               pacientScore['open'][Object.keys(childKey)[x]] = {}
+              pacientScore['open'][mainKey][Object.keys(childKey)[x]] = {}
               console.log('============ child values')
               for (var z = 0; z < childValues.length; z++) {
                 console.log(childValues[z])
-                console.log(scoreValues['pacient'][mainKey]['values'][Object.keys(childKey)[x]][childValues[z]])
-                console.log(pacientScore)
-                pacientScore['open'][Object.keys(childKey)[x]][childValues[z]] = scoreValues['pacient'][mainKey]['values'][Object.keys(childKey)[x]][childValues[z]]
+                if(scoreValues['pacient'][Object.keys(childKey)[x]]){
+                  console.log(scoreValues['pacient'][Object.keys(childKey)[x]][childValues[z]])
+                  console.log(typeof(scoreValues['pacient'][Object.keys(childKey)[x]][childValues[z]]))
+                  pacientScore['open'][Object.keys(childKey)[x]][childValues[z]] = scoreValues['pacient'][Object.keys(childKey)[x]][childValues[z]]
+                  console.log(pacientScore)
+                }else{
+                  console.log(scoreValues['pacient'][childValues[z]])
+                  console.log(typeof(scoreValues['pacient'][childValues[z]]))
+                  if((typeof(scoreValues['pacient'][childValues[z]]) == 'object') && typeof childValues[z] == 'string'){
+                    console.log('============ evolving...')
+                    console.log(scoreValues['pacient'][childValues[z]]['Sim'])
+                    pacientScore['open'][Object.keys(childKey)[x]][childValues[z]] = scoreValues['pacient'][childValues[z]]['Sim']
+                    console.log(pacientScore)
+                  }else if((typeof childValues[z] == 'object')){
+                    console.log('============ everything is object yey')
+                    let objKey = Object.keys(childValues[z])[0]
+                    let objValue = childValues[z][objKey]['values'][0]
+                    console.log(objKey)
+                    console.log(objValue)
+                    console.log(scoreValues['pacient'][objKey][objValue])
+                    pacientScore['open'][mainKey][Object.keys(childKey)[x]][objKey] = scoreValues['pacient'][objKey][objValue]
+                    console.log(pacientScore)
+                  }else{
+                    console.log(pacientScore)
+                    pacientScore['open'][Object.keys(childKey)[x]][childValues[z]] = scoreValues['pacient'][childValues[z]]
+                  }
+                }
               }
             }
+              if (pacientScore['open'][Object.keys(childKey)[x]]
+              && (pacientScore['open'][Object.keys(childKey)[x]].length == undefined && Object.entries(pacientScore['open'][Object.keys(childKey)[x]]).length == 0)) {
+                delete pacientScore['open'][Object.keys(childKey)[x]]
+              }else if (pacientScore['open'][mainKey][Object.keys(childKey)[x]]
+              && pacientScore['open'][mainKey][Object.keys(childKey)[x]].length == undefined) {
+                delete pacientScore['open'][mainKey][Object.keys(childKey)[x]]
+              }
+
+
+            // if(Object.entries(pacientScore['open'][Object.keys(childKey)[x]]) == '' ||){
+            //   delete pacientScore['open'][Object.keys(childKey)[x]]
+            // }else if (Object.entries(pacientScore['open'][mainKey][Object.keys(childKey)[x]]) == ''){
+            //   delete pacientScore['open'][mainKey][Object.keys(childKey)[x]]
+            // }
           }
 
         }else{
@@ -4234,6 +4277,14 @@ class Prognosis {
     console.log(lockedOptions)
     console.log('============ best pacient')
     console.log(openOptions + lockedOptions + 16)
+    let dynamicScore = openOptions + lockedOptions + 16
+    let logitDynamic = -32.6659+Math.log(dynamicScore+20.5958)*7.3068
+    let mortalityDynamic = Math.exp(logitDynamic)/ (1+ Math.exp(logitDynamic))
+    let mortalityPercentage = (Math.round(mortalityDynamic*1000)/1000)*100
+    console.log('============ dynamic score '+dynamicScore)
+    console.log('============ logit dynamic '+logitDynamic)
+    console.log('============ mortalityDynamic '+mortalityDynamic)
+    console.log('============ mortalityPercentage '+mortalityPercentage)
 
 
 
