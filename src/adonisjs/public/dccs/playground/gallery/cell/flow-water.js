@@ -45,10 +45,10 @@ _____________########
 <dcc-button label="Stop" topic="timer/stop"></dcc-button>
 
 <dcc-timer cycles="500" interval="100" publish="state/next">
-   <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
-   <subscribe-dcc topic="timer/stop" role="stop"></subscribe-dcc>
+   <subscribe-dcc topic="timer/start" map="start"></subscribe-dcc>
+   <subscribe-dcc topic="timer/stop" map="stop"></subscribe-dcc>
 </dcc-timer>
 
-<subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>`
+<subscribe-dcc target="cellular-space" topic="state/next" map="next"></subscribe-dcc>`
   )
 })()

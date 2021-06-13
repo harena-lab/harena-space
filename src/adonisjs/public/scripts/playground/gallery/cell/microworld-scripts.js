@@ -17,8 +17,8 @@
 <dcc-cell-image type="t" label="tardigrade" image="images/cell/tardigrade.svg"></dcc-cell-image>
 
 <dcc-timer cycles="100000" interval="1000" publish="state/next">
-   <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
-   <subscribe-dcc topic="timer/stop" role="stop"></subscribe-dcc>
+   <subscribe-dcc topic="timer/start" map="start"></subscribe-dcc>
+   <subscribe-dcc topic="timer/stop" map="stop"></subscribe-dcc>
 </dcc-timer>
 
 <div style="flex:48px; max-height:48px; display:flex; flex-direction:row">
@@ -31,11 +31,11 @@
    </div>
 </div>
 
-<subscribe-dcc target="cellular-space" topic="type/#" role="type"></subscribe-dcc>
-<subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>
-<subscribe-dcc target="cellular-space" topic="state/save" role="save"></subscribe-dcc>
-<subscribe-dcc target="cellular-space" topic="state/reset" role="reset"></subscribe-dcc>
-<subscribe-dcc target="cellular-space" topic="var/space_scale/changed" role="scale"></subscribe-dcc>`,
+<subscribe-dcc target="cellular-space" topic="type/#"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/next" map="next"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/save" map="save"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/reset" map="reset"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="var/space_scale/changed" map="scale"></subscribe-dcc>`,
 `Selecione um dos ícones abaixo para editar o ambiente:
 <div style="flex:48px; max-height:48px; display:flex; flex-direction:row; border:2px">
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">

@@ -101,7 +101,7 @@ class LayoutController {
       `<div class="home-author-sub-text align-self-center" style="color:#808080">FEEDBACK:</div>
       <dcc-rest id="harena-ask-feedback" bind="harena-ask-feedback"
       subscribe="service/request/post:retrieve"></dcc-rest>
-      <dcc-rest id="harena-case-property" bind="harena-case-property" subscribe="service/request/post:retrieve"></dcc-rest>
+      <dcc-rest id="harena-case-property" bind="harena-case-property" subscribe="service/request/post"></dcc-rest>
       <form id="form-case-property">
       <input type="hidden" id="property_value" name="property_value" value="">
       <input type="hidden" id="property_title" name="property_title" value="feedback">

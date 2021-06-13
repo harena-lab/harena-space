@@ -197,7 +197,7 @@
               </div>
               <dcc-submit id="filter-submit" bind="submit-filter" label="Filter" xstyle="btn btn-secondary" topic="cases/request/get"></dcc-submit>
             </form>
-            <dcc-rest id="harena-cases-filter" bind="harena-cases" subscribe="cases/request/get:retrieve"></dcc-rest>
+            <dcc-rest id="harena-cases-filter" bind="harena-cases" subscribe="cases/request/get"></dcc-rest>
             <!-- Containers to selectAll/share cases -->
             <div class="share-cases-element form-check mt-2 ml-auto" id="share-checkbox" hidden>
               <input class="form-check-input" type="checkbox" id="select-all-checkbox">

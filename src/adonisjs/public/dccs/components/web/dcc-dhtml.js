@@ -128,11 +128,9 @@ class DCCDHTML extends DCCBase {
   }
 
   notify (topic, message) {
-    if (message.role != null) {
-      switch (message.role) {
-        case 'update': this.recordUpdate(topic, message)
-                       break
-      }
+    switch (topic.toLowerCase()) {
+      case 'update': this.recordUpdate(topic, message)
+                     break
     }
   }
 

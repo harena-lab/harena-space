@@ -387,18 +387,16 @@ class DCCSpaceCellular extends DCCBase {
   }
 
   notify (topic, message) {
-    if (message.role) {
-      switch (message.role.toLowerCase()) {
-        case 'next': this.stateNext(); break
-        case 'cover-opacity':
-          this.coverOpacity = parseInt(message.body.value) / 100
-          this.querySelector('#cover-image').setAttribute('opacity', this.coverOpacity)
-          break
-        case 'scale':
-          this.scale = parseInt(message.body.value)
-          this._scaleSpace()
-          break
-      }
+    switch (topic.toLowerCase()) {
+      case 'next': this.stateNext(); break
+      case 'cover-opacity':
+        this.coverOpacity = parseInt(message.value) / 100
+        this.querySelector('#cover-image').setAttribute('opacity', this.coverOpacity)
+        break
+      case 'scale':
+        this.scale = parseInt(message.value)
+        this._scaleSpace()
+        break
     }
   }
 
@@ -549,17 +547,20 @@ class DCCSpaceCellularEditor extends DCCSpaceCellular {
 
   notify (topic, message) {
     super.notify(topic, message)
-    if (message.role) {
-      switch (message.role.toLowerCase()) {
-        case 'type': const tLabel = MessageBus.extractLevel(topic, 2)
-          if (tLabel.toLowerCase() == 'empty') { this._editType = '_' } else {
-            for (const t in this._cellTypes) {
-              if (this._cellTypes[t].label.toLowerCase() == tLabel.toLowerCase()) { this._editType = t }
-            }
-          }
-          if (message.body.value) { this._editProps = this.extractProperties(message.body.value) } else { this._editProps = null }
-          for (const t of this._tools) { t.inactivateTool() }
-          break
+    if (topic.startsWith('type/')) {
+      const tLabel = MessageBus.extractLevel(topic, 2)
+      if (tLabel.toLowerCase() == 'empty') { this._editType = '_' } else {
+        for (const t in this._cellTypes) {
+          if (this._cellTypes[t].label.toLowerCase() == tLabel.toLowerCase()) { this._editType = t }
+        }
+      }
+      if (message.value) {
+        this._editProps = this.extractProperties(message.value)
+      } else { this._editProps = null }
+      for (const t of this._tools) { t.inactivateTool() }
+      break
+    } else
+      switch (topic.toLowerCase()) {
         case 'reset': this.resetState(); break
         case 'edit': this.activateEditor(); break
         case 'view': this.deactivateEditor(); break
@@ -567,7 +568,6 @@ class DCCSpaceCellularEditor extends DCCSpaceCellular {
         case 'load': this.loadState(); break
         case 'download': this.downloadState(); break
       }
-    }
   }
 
   extractProperties (propsStr) {

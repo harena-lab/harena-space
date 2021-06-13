@@ -6,10 +6,12 @@ DCC.component(
   'xkcd',
   'dcc-rest',
   {
-    paths: {
-      'http://xkcd.com/{comic_id}/info.0.json': {
-        'get': {
-          operationId: 'info'
+    oas: {
+      paths: {
+        'http://xkcd.com/{comic_id}/info.0.json': {
+          'get': {
+            operationId: 'info'
+          }
         }
       }
     }
@@ -20,10 +22,12 @@ DCC.component(
   'coronavirus',
   'dcc-rest',
   {
-    paths: {
-      'https://api.quarantine.country/api/v1/spots/year?region={region}': {
-        'get': {
-          operationId: 'latest'
+    oas: {
+      paths: {
+        'https://api.quarantine.country/api/v1/spots/year?region={region}': {
+          'get': {
+            operationId: 'latest'
+          }
         }
       }
     }

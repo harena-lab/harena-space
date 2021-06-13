@@ -65,7 +65,7 @@ class DCCCompute extends DCCBase {
   }
 
   notify (topic, message) {
-    if (message.role && message.role.toLowerCase() == 'update')
+    if (topic.toLowerCase() == 'update')
       this.update()
   }
 
