@@ -1,7 +1,13 @@
 class Saps {
   constructor(){
-
+    this.bestPacient()
   }
+
+  // saps3Alg(score){
+  //   //-32.6659+Math.log(dynamicScore+20.5958)*7.3068 other calc
+  //   // 64.5990 +Math.log(dynamicScore+20.5958)*13.2322 south america calc
+  //   var logitDynamic = -32.6659+Math.log(dynamicScore+20.5958)*7.3068
+  // }
 
   async calcSaps3Score(pacientData){
     var idade
@@ -228,7 +234,7 @@ class Saps {
             case 'paO2 <60 sem VM':
               altLab.oxigenacao = 5
               break;
-            case 'paO2/FiO2<100 em VM':
+            case 'paO2/FiO2 <100 em VM':
               altLab.oxigenacao = 11
               break;
             case 'paO2/FiO2 >=100 em VM':
@@ -526,7 +532,7 @@ class Saps {
             case 'paO2 <60 sem VM':
             altLab.oxigenacao = 5
             break;
-            case 'paO2/FiO2<100 em VM':
+            case 'paO2/FiO2 <100 em VM':
             altLab.oxigenacao = 11
             break;
             case 'paO2/FiO2 >=100 em VM':
@@ -1194,7 +1200,7 @@ class Saps {
               oxigenacaoValue = 'sem VM com paO2 <60'
               oxigenacao = ' sem VM com paO2 <60'
               break;
-            case 'paO2/FiO2<100 em VM':
+            case 'paO2/FiO2 <100 em VM':
               oxigenacaoValue = 'em VM com paO2/FiO2 <100'
               oxigenacao = ' em VM com paO2/FiO2 <100'
               break;
@@ -1523,7 +1529,7 @@ class Saps {
             oxigenacaoValue = 'sem VM com paO2 <60'
             oxigenacao = ' sem VM com paO2 <60;'
             break;
-            case 'paO2/FiO2<100 em VM':
+            case 'paO2/FiO2 <100 em VM':
             oxigenacaoValue = 'em VM com paO2/FiO2 <100'
             oxigenacao = ' em VM com paO2/FiO2 <100;'
             break;
@@ -1705,25 +1711,25 @@ class Saps {
     .replace(/\[_oxigenacao\]/ig, oxigenacao)
 
     let pacientAbstract = Saps.pacientAbstract
-    .replace(/\[_idade\]/ig, (idadeValue = ''?'Vazio':idadeValue))
-    .replace(/\[_origem\]/ig, (origemValue = ''?'Vazio':origemValue))
-    .replace(/\[_comorbidade\]/ig, (comorbValue = ''?'Vazio':comorbValue))
-    .replace(/\[_internadoDias\]/ig, (internadoAntesValue = ''?'Vazio':internadoAntesValue))
-    .replace(/\[_ifeccao\]/ig, (infectadoAntesValue = ''?'Vazio':infectadoAntesValue))
-    .replace(/\[_admissao\]/ig, (admissaoValue = ''?'Vazio':admissaoValue))
-    .replace(/\[_submetidoCirurgia\]/ig, (submetidoCirurgiaValue = ''?'Vazio':submetidoCirurgiaValue))
-    .replace(/\[_submetidoUti\]/ig, (submetidoUtiValue = ''?'Vazio':submetidoUtiValue))
-    .replace(/\[_gcs\]/ig, (gcsValue = ''?'Vazio':gcsValue))
-    .replace(/\[_temperatura\]/ig, (temperaturaValue = ''?'Vazio':temperaturaValue))
-    .replace(/\[_freqCardiaca\]/ig, (freqCardValue = ''?'Vazio':freqCardValue))
-    .replace(/\[_pressaoSistolica\]/ig, (pressSistValue = ''?'Vazio':pressSistValue))
-    .replace(/\[_drogaVasoativa\]/ig, (drogaVasoValue = ''?'Vazio':drogaVasoValue))
-    .replace(/\[_bilirrubina\]/ig, (bilirrubinaValue = ''?'Vazio':bilirrubinaValue))
-    .replace(/\[_creatinina\]/ig, (creatininaValue = ''?'Vazio':creatininaValue))
-    .replace(/\[_ph\]/ig, (phValue = ''?'Vazio':phValue))
-    .replace(/\[_leucocitos\]/ig, (leucocitosValue = ''?'Vazio':leucocitosValue))
-    .replace(/\[_plaquetas\]/ig, (plaquetasValue = ''?'Vazio':plaquetasValue))
-    .replace(/\[_oxigenacao\]/ig, (oxigenacaoValue = ''?'Vazio':oxigenacaoValue))
+    .replace(/\[_idade\]/ig, idadeValue ||'Vazio')
+    .replace(/\[_origem\]/ig, origemValue ||'Vazio')
+    .replace(/\[_comorbidade\]/ig, comorbValue ||'Vazio')
+    .replace(/\[_internadoDias\]/ig, internadoAntesValue ||'Vazio')
+    .replace(/\[_ifeccao\]/ig, infectadoAntesValue ||'Vazio')
+    .replace(/\[_admissao\]/ig, admissaoValue ||'Vazio')
+    .replace(/\[_submetidoCirurgia\]/ig, submetidoCirurgiaValue ||'Vazio')
+    .replace(/\[_submetidoUti\]/ig, submetidoUtiValue ||'Vazio')
+    .replace(/\[_gcs\]/ig, gcsValue ||'Vazio')
+    .replace(/\[_temperatura\]/ig, temperaturaValue ||'Vazio')
+    .replace(/\[_freqCardiaca\]/ig, freqCardValue ||'Vazio')
+    .replace(/\[_pressaoSistolica\]/ig, pressSistValue ||'Vazio')
+    .replace(/\[_drogaVasoativa\]/ig, drogaVasoValue ||'Vazio')
+    .replace(/\[_bilirrubina\]/ig, bilirrubinaValue ||'Vazio')
+    .replace(/\[_creatinina\]/ig, creatininaValue ||'Vazio')
+    .replace(/\[_ph\]/ig, phValue ||'Vazio')
+    .replace(/\[_leucocitos\]/ig, leucocitosValue ||'Vazio')
+    .replace(/\[_plaquetas\]/ig, plaquetasValue ||'Vazio')
+    .replace(/\[_oxigenacao\]/ig, oxigenacaoValue ||'Vazio')
 
     if(!document.querySelector('#pacient-overview-wrapper > h5')){
       var txt = document.createElement('h5')
@@ -1735,10 +1741,245 @@ class Saps {
     }
     document.querySelector('#pacient-abstract').value = pacientAbstract
     document.querySelector('dcc-submit[bind="submit-prognosis-lvl-txt"]')._computeTrigger()
-    // console.log(overviewText)
     $('#pacient-overview-modal').modal('show')
 
   }
+
+  bestPacient(){
+    let pacientInfo = {
+      "pacient":{
+        "locked":{
+          "blac":0,
+          "bliopo":10,
+          "asd":3,
+          "sadf":5,
+        },
+        "open":{
+          "this":{
+            "!":1,
+            "asd":4,
+            "sdf":2,
+            "gfds":0,
+          },
+          "that":{
+            "!":10,
+            "asd":4,
+            "sdf":2,
+            "gfds":1,
+          },
+          "those":{
+            "group1":{
+              "asd1":1,
+              "gfds1":23,
+              "fdfg1":2,
+            },
+            "group2":{
+              "asd2":0,
+              "gfds2":23,
+              "fdfg2":1,
+            },
+          },
+
+        }
+      }
+    }
+    // pacientInfo = {
+    //   "pacients":{
+    //     "idade":{
+    //       "values":{
+    //         "<40":0,
+    //         "40-59":5,
+    //         "60-69":9,
+    //         "70-74":13,
+    //         "75-79":15,
+    //         ">=80":18,
+    //       }
+    //     },
+    //     "origem":{
+    //       "values":{
+    //         "Pronto Socorro":5,
+    //         "Outra UTI":7,
+    //         "Nenhuma das anteriores":8,
+    //       }
+    //     },
+    //     "comorbidade":{
+    //       "values":{
+    //         "IC NYHA IV":6,
+    //         "Câncer metástatico":11,
+    //         "Terapia oncológica":3,
+    //         "Câncer hematológico":6,
+    //         "Cirrose":8,
+    //         "SIDA":8,
+    //         "Internado antes da admissão":{
+    //           "Não":0,
+    //           "<14 dias":0,
+    //           "14-27 dias":6,
+    //           ">=28 dias":7,
+    //         },
+    //         "Infectado antes da admissão":{
+    //           "Não":0,
+    //           "Nosocomial":4,
+    //           "Respiratória":5,
+    //         },
+    //       }
+    //     },
+    //     "contexto da admissão":{
+    //       "values":{
+    //         "Admissão planejada":{
+    //           "Não":3,
+    //           "Sim":0,
+    //         },
+    //         "Submetido à cirurgia":{
+    //
+    //           "Não":5,
+    //           "Cirugia eletiva":0,
+    //           "Cirurgia urgência":6,
+    //           "Neurocirurgia por acidente vascular cerebral":5,
+    //           "Revascularização miocárdica":-6,
+    //           "Trauma":-8,
+    //           "Transplante":-11,
+    //           "Outro":0,
+    //         },
+    //         "Motivo de admissão na UTI":{
+    //           "Arritmia":-5,
+    //           "Choque hipovolêmico":3,
+    //           "Outro choque":5,
+    //           "Convulsão":-4,
+    //           "Abdome agudo":3,
+    //           "Pancreatite grave":9,
+    //           "Déficit focal":7,
+    //           "Efeito de massa intracraniana":10,
+    //           "Insuficiência hepática":6,
+    //           "Alteração do nível de consciência":4,
+    //           "Nenhum dos anteriores":0,
+    //         },
+    //       }
+    //     },
+    //     "Status clínico":{
+    //       "values":{
+    //         "Escala de Coma de Glasgow"{
+    //           "3-4":15,
+    //           "5":10,
+    //           "6":7,
+    //           "7-12":2,
+    //           ">=13":0,
+    //         },
+    //         "Temperatura":{
+    //           "<35 °C":7,
+    //           ">=35 °C":0,
+    //         },
+    //         "Frequência cardíaca":{
+    //           "<120 bpm":0,
+    //           "120-159 bpm":5,
+    //           ">=160 bpm":7,
+    //         },
+    //         "Pressão sistólica":{
+    //           "<40 mmHg":11,
+    //           "40-69 mmHg":8,
+    //           "70-119 mmHg":3,
+    //           ">=120 mmHg":0,
+    //         },
+    //         "Droga vasoativa":{
+    //           "Sim":3,
+    //           "Não":0,
+    //         },
+    //       }
+    //     },
+    //     "Alterações laboratoriais":{
+    //       "values":{
+    //         "Bilirrubina":{
+    //           "<2 mg/dl":0,
+    //           "2-6 mg/dl":4,
+    //           ">=6 mg/dl":5,
+    //         },
+    //         "Creatinina":{
+    //           "<1.2 mg/dl":0,
+    //           "1.2-1.9 mg/dl":2,
+    //           "2-3.4 mg/dl":7,
+    //           ">=3.5 mg/dl":8,
+    //         },
+    //         "pH":{
+    //           "<=7.25":3,
+    //           ">7.25":0,
+    //         },
+    //         "Leucócitos":{
+    //           "<15mil /mm³":0,
+    //           ">=15mil /mm³":2,
+    //         },
+    //         "Plaquetas":{
+    //           "<20mil /mm³":13,
+    //           "20-49mil /mm³":8,
+    //           "50-99mil /mm³":5,
+    //           ">=100mil /mm³":0,
+    //         },
+    //         "Oxigenação":{
+    //           "paO2 >=60 sem VM":0,
+    //           "paO2 <60 sem VM":5,
+    //           "paO2/FiO2 <100 em VM":11,
+    //           "paO2/FiO2 >=100 em VM":7,
+    //         },
+    //       }
+    //     },
+    //   }
+    // }
+    const checkOptions = function(object) {
+      let possible = []
+      for (let key of Object.values(object)) {
+        if(typeof key == 'object'){
+          let group = Object.values(key)
+          let groupValue = 0
+          for (let value of group) {
+            if(typeof value == 'object' && value!=null){
+              possible.push(checkOptions(groupValue))
+            }else if(value!=null){
+              groupValue+=value
+            }
+          }
+          possible.push(groupValue)
+        }else if (key!=null){
+          possible.push(key)
+        }
+      }
+
+      if(possible.length>0){
+        let bestOption
+        for (let variable of possible) {
+          if(variable < bestOption || bestOption == null){
+            bestOption = variable
+          }
+        }
+        return bestOption
+      }
+    }
+    let lockedOptions = 0
+    let openOptions = 0
+    if (pacientInfo.pacient.locked && Object.keys(pacientInfo.pacient.locked).length > 0) {
+      for (let i = 0; i < Object.keys(pacientInfo.pacient.locked).length; i++) {
+        lockedOptions += Object.values(pacientInfo.pacient.locked)[i]
+        console.log(lockedOptions)
+      }
+
+    }
+    if(pacientInfo.pacient.open && Object.keys(pacientInfo.pacient.open).length > 0){
+      for (let i = 0; i < Object.keys(pacientInfo.pacient.open).length; i++) {
+        // console.log('============ before')
+        // console.log(Object.values(pacientInfo.pacients.open)[i])
+        let object = Object.values(pacientInfo.pacient.open)[i]
+        // console.log('============open begins')
+        openOptions += checkOptions(object)
+        // console.log(openOptions)
+      }
+    }
+    console.log('============')
+    console.log(openOptions)
+    console.log(lockedOptions)
+    console.log('============ best pacient')
+    console.log(openOptions + lockedOptions)
+
+
+
+  }
+  
 }
 
 

@@ -32,7 +32,7 @@
       for (var prop of properties) {
         prognosisList[prop.title] = prop.value
       }
-      console.log(prognosisList)
+      // console.log(prognosisList)
     // console.log(properties)
     for (let i = 1; i < lvlProgress; i++) {
       let template = document.createElement('template')
@@ -42,11 +42,12 @@
         .replace(/\[pacientOverviewTxt\]/ig, prognosisList[`prognosis-lvl-${i}-pacient`])
         // .replace(/\[starPoints\]/ig, i)
         .replace(/\[bestPacient\]/ig, prognosisList[`prognosis-lvl-${i}-best-progn`])
-        .replace(/\[correctPrognosis\]/ig, prognosisList[`prognosis-lvl-${i}-best-guess`])
+        .replace(/\[correctPrognosis\]/ig, this.prognAccuracy(prognosisList[`prognosis-lvl-${i}-best-guess`]))
       progressWrapper.appendChild(template.content.cloneNode(true))
     }
 
   }
+
 }
 (function() {
   PrognosisProgress.i = new PrognosisProgress()
@@ -58,7 +59,7 @@
     <h5 class="mb-1 bg-secondary">Criou o melhor cenário possível? [bestPacient]</h5>
     <h5 class="mb-1 bg-secondary">Pontuação: [starPoints]</h5>
     <div class="row">
-      <button type="button" class="col btn btn-info w-100 mb-2"><i class="fas fa-play"></i></button>
+      <button type="button" class="col btn btn-info w-100 mb-2" onclick="document.location.href='/prognosis/learn/player?diffic=[currentLvl]'"><i class="fas fa-play"></i></button>
       <button type="button" class="col-3 btn btn-warning w-100 mb-2" data-toggle="modal" data-target="#pacient-overview-modal-[currentLvl]"><i class="far fa-address-card"></i></button>
       <div class="modal fade" id="pacient-overview-modal-[currentLvl]" tabindex="-1" role="dialog" aria-labelledby="pacient-overview" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">

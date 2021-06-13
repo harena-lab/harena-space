@@ -1,4 +1,4 @@
- class Prognosis {
+class Prognosis {
   constructor() {
     this._ready = false
     this.start = this.start.bind(this)
@@ -23,6 +23,7 @@
       }
     }
     if(this._ready){
+      MessageBus.int.unsubscribe('control/dhtml/ready', this.start)
       Prognosis.i.expandMultiChoice()
       if (new URL(document.location).pathname == '/prognosis/learn/player/') {
         Prognosis.i.getPacientOptions()
@@ -323,7 +324,7 @@
         "pacients":[
           {
 
-            "idade":{
+            "Idade":{
               "locked": [
 
               ],
@@ -336,7 +337,7 @@
                 ">=80",//18
               ]
             },
-            "origem":{
+            "Origem":{
               "locked": [],
               "open": [
                 "Pronto Socorro",//5
@@ -344,7 +345,7 @@
                 "Nenhuma das anteriores",//8
               ],
             },
-            "comorbidade":{
+            "Comorbidade":{
               "locked": [
 
               ],
@@ -422,11 +423,11 @@
                 },
               ],
             },
-            "motivoAdmissao": {
+            "Contexto da admissão": {
               "locked": [],
               "open": [
                 {
-                  "Admissão Planejada": {
+                  "Admissão planejada": {
                     "values":[
                       "Não",//3
                       "Sim",//0
@@ -469,7 +470,7 @@
                 },
               ]
             },
-            "statusClinico": {
+            "Status clínico": {
               "locked": [],
               "open": [
                 {
@@ -525,7 +526,7 @@
                 },
               ],
             },
-            "alteracoesLab": {
+            "Alterações laboratoriais": {
               "locked": [],
               "open": [
                 {
@@ -584,7 +585,7 @@
                     "values": [
                       "paO2 >=60 sem VM",//0
                       "paO2 <60 sem VM",//5
-                      "paO2/FiO2<100 em VM",//11
+                      "paO2/FiO2 <100 em VM",//11
                       "paO2/FiO2 >=100 em VM",//7
                     ],
                   },
@@ -600,7 +601,7 @@
         "pacients":[
           {
             "dificuldade": "1",
-            "idade":{
+            "Idade":{
               "locked": [
 
               ],
@@ -613,7 +614,7 @@
                 ">=80",
               ]
             },
-            "origem":{
+            "Origem":{
               "locked": [],
               "open": [
                 "Pronto Socorro",
@@ -621,7 +622,7 @@
                 "Nenhuma das anteriores",
               ],
             },
-            "comorbidade":{
+            "Comorbidade":{
               "locked": [
 
               ],
@@ -699,11 +700,11 @@
                 },
               ],
             },
-            "motivoAdmissao": {
+            "Contexto da admissão": {
               "locked": [],
               "open": [
                 {
-                  "Admissão Planejada": {
+                  "Admissão planejada": {
                     "values":[
                       "Não",
                       "Sim",
@@ -746,7 +747,7 @@
                 },
               ]
             },
-            "statusClinico": {
+            "Status clínico": {
               "locked": [],
               "open": [
                 {
@@ -802,7 +803,7 @@
                 },
               ],
             },
-            "alteracoesLab": {
+            "Alterações laboratoriais": {
               "locked": [],
               "open": [
                 {
@@ -861,7 +862,7 @@
                     "values": [
                       "paO2 >=60 sem VM",
                       "paO2 <60 sem VM",
-                      "paO2/FiO2<100 em VM",
+                      "paO2/FiO2 <100 em VM",
                       "paO2/FiO2 >=100 em VM",
                     ],
                   },
@@ -871,13 +872,13 @@
           },
           {
             "dificuldade": "2",
-            "idade":{
+            "Idade":{
               "locked": [
                 "<40"
               ],
               "open": []
             },
-            "origem":{
+            "Origem":{
               "locked": [],
               "open": [
                 "Pronto Socorro",
@@ -885,7 +886,7 @@
                 "Nenhuma das anteriores",
               ],
             },
-            "comorbidade":{
+            "Comorbidade":{
               "locked": [
 
               ],
@@ -963,10 +964,10 @@
                 },
               ],
             },
-            "motivoAdmissao": {
+            "Contexto da admissão": {
               "locked": [
                 {
-                  "Admissão Planejada": {
+                  "Admissão planejada": {
                     "values":[
                       "Sim",
                     ]
@@ -996,7 +997,7 @@
 
               ]
             },
-            "statusClinico": {
+            "Status clínico": {
               "locked": [],
               "open": [
                 {
@@ -1052,7 +1053,7 @@
                 },
               ],
             },
-            "alteracoesLab": {
+            "Alterações laboratoriais": {
               "locked": [],
               "open": [
                 {
@@ -1111,7 +1112,7 @@
                     "values": [
                       "paO2 >=60 sem VM",
                       "paO2 <60 sem VM",
-                      "paO2/FiO2<100 em VM",
+                      "paO2/FiO2 <100 em VM",
                       "paO2/FiO2 >=100 em VM",
                     ],
                   },
@@ -1121,13 +1122,13 @@
           },
           {
             "dificuldade": "3",
-            "idade":{
+            "Idade":{
               "locked": [
                 "<40"
               ],
               "open": []
             },
-            "origem":{
+            "Origem":{
               "locked": [],
               "open": [
                 "Pronto Socorro",
@@ -1135,7 +1136,7 @@
                 "Nenhuma das anteriores",
               ],
             },
-            "comorbidade":{
+            "Comorbidade":{
               "locked": [
 
               ],
@@ -1213,10 +1214,10 @@
                 },
               ],
             },
-            "motivoAdmissao": {
+            "Contexto da admissão": {
               "locked": [
                 {
-                  "Admissão Planejada": {
+                  "Admissão planejada": {
                     "values":[
                       "Não",
                     ]
@@ -1245,7 +1246,7 @@
 
               ]
             },
-            "statusClinico": {
+            "Status clínico": {
               "locked": [],
               "open": [
                 {
@@ -1301,7 +1302,7 @@
                 },
               ],
             },
-            "alteracoesLab": {
+            "Alterações laboratoriais": {
               "locked": [],
               "open": [
                 {
@@ -1360,7 +1361,7 @@
                     "values": [
                       "paO2 >=60 sem VM",
                       "paO2 <60 sem VM",
-                      "paO2/FiO2<100 em VM",
+                      "paO2/FiO2 <100 em VM",
                       "paO2/FiO2 >=100 em VM",
                     ],
                   },
@@ -1370,13 +1371,13 @@
           },
           {
             "dificuldade": "4",
-            "idade":{
+            "Idade":{
               "locked": [
                 "<40"
               ],
               "open": []
             },
-            "origem":{
+            "Origem":{
               "locked": [],
               "open": [
                 "Pronto Socorro",
@@ -1384,7 +1385,7 @@
                 "Nenhuma das anteriores",
               ],
             },
-            "comorbidade":{
+            "Comorbidade":{
               "locked": [
 
               ],
@@ -1462,10 +1463,10 @@
                 },
               ],
             },
-            "motivoAdmissao": {
+            "Contexto da admissão": {
               "locked": [
                 {
-                  "Admissão Planejada": {
+                  "Admissão planejada": {
                     "values":[
                       "Não",
                     ]
@@ -1495,7 +1496,7 @@
 
               ]
             },
-            "statusClinico": {
+            "Status clínico": {
               "locked": [],
               "open": [
                 {
@@ -1551,7 +1552,7 @@
                 },
               ],
             },
-            "alteracoesLab": {
+            "Alterações laboratoriais": {
               "locked": [],
               "open": [
                 {
@@ -1610,7 +1611,7 @@
                     "values": [
                       "paO2 >=60 sem VM",
                       "paO2 <60 sem VM",
-                      "paO2/FiO2<100 em VM",
+                      "paO2/FiO2 <100 em VM",
                       "paO2/FiO2 >=100 em VM",
                     ],
                   },
@@ -1620,13 +1621,13 @@
           },
           {
             "dificuldade": "5",
-            "idade":{
+            "Idade":{
               "locked": [
                 "<40"
               ],
               "open": []
             },
-            "origem":{
+            "Origem":{
               "locked": [],
               "open": [
                 "Pronto Socorro",
@@ -1634,7 +1635,7 @@
                 "Nenhuma das anteriores",
               ],
             },
-            "comorbidade":{
+            "Comorbidade":{
               "locked": [
 
               ],
@@ -1712,10 +1713,10 @@
                 },
               ],
             },
-            "motivoAdmissao": {
+            "Contexto da admissão": {
               "locked": [
                 {
-                  "Admissão Planejada": {
+                  "Admissão planejada": {
                     "values":[
                       "Sim",
                     ]
@@ -1745,7 +1746,7 @@
 
               ]
             },
-            "statusClinico": {
+            "Status clínico": {
               "locked": [
                 {
                   "Escala de Coma de Glasgow": {
@@ -1796,7 +1797,7 @@
 
               ],
             },
-            "alteracoesLab": {
+            "Alterações laboratoriais": {
               "locked": [],
               "open": [
                 {
@@ -1855,7 +1856,7 @@
                     "values": [
                       "paO2 >=60 sem VM",
                       "paO2 <60 sem VM",
-                      "paO2/FiO2<100 em VM",
+                      "paO2/FiO2 <100 em VM",
                       "paO2/FiO2 >=100 em VM",
                     ],
                   },
@@ -1865,13 +1866,13 @@
           },
           {
             "dificuldade": "6",
-            "idade":{
+            "Idade":{
               "locked": [
                 "<40"
               ],
               "open": []
             },
-            "origem":{
+            "Origem":{
               "locked": [],
               "open": [
                 "Pronto Socorro",
@@ -1879,7 +1880,7 @@
                 "Nenhuma das anteriores",
               ],
             },
-            "comorbidade":{
+            "Comorbidade":{
               "locked": [
 
               ],
@@ -1957,10 +1958,10 @@
                 },
               ],
             },
-            "motivoAdmissao": {
+            "Contexto da admissão": {
               "locked": [
                 {
-                  "Admissão Planejada": {
+                  "Admissão planejada": {
                     "values":[
                       "Não",
                     ]
@@ -1989,7 +1990,7 @@
 
               ]
             },
-            "statusClinico": {
+            "Status clínico": {
               "locked": [
                 {
                   "Escala de Coma de Glasgow": {
@@ -2040,7 +2041,7 @@
 
               ],
             },
-            "alteracoesLab": {
+            "Alterações laboratoriais": {
               "locked": [],
               "open": [
                 {
@@ -2099,7 +2100,7 @@
                     "values": [
                       "paO2 >=60 sem VM",
                       "paO2 <60 sem VM",
-                      "paO2/FiO2<100 em VM",
+                      "paO2/FiO2 <100 em VM",
                       "paO2/FiO2 >=100 em VM",
                     ],
                   },
@@ -2109,13 +2110,13 @@
           },
           {
             "dificuldade": "7",
-            "idade":{
+            "Idade":{
               "locked": [
                 "<40"
               ],
               "open": []
             },
-            "origem":{
+            "Origem":{
               "locked": [],
               "open": [
                 "Pronto Socorro",
@@ -2123,7 +2124,7 @@
                 "Nenhuma das anteriores",
               ],
             },
-            "comorbidade":{
+            "Comorbidade":{
               "locked": [
                 {
                   "Internado antes da admissão": {
@@ -2187,10 +2188,10 @@
                 },
               ],
             },
-            "motivoAdmissao": {
+            "Contexto da admissão": {
               "locked": [
                 {
-                  "Admissão Planejada": {
+                  "Admissão planejada": {
                     "values":[
                       "Não",
                     ]
@@ -2228,7 +2229,7 @@
 
               ]
             },
-            "statusClinico": {
+            "Status clínico": {
               "locked": [
                 {
                   "Escala de Coma de Glasgow": {
@@ -2279,7 +2280,7 @@
 
               ],
             },
-            "alteracoesLab": {
+            "Alterações laboratoriais": {
               "locked": [],
               "open": [
                 {
@@ -2338,7 +2339,7 @@
                     "values": [
                       "paO2 >=60 sem VM",
                       "paO2 <60 sem VM",
-                      "paO2/FiO2<100 em VM",
+                      "paO2/FiO2 <100 em VM",
                       "paO2/FiO2 >=100 em VM",
                     ],
                   },
@@ -2348,13 +2349,13 @@
           },
           {
             "dificuldade": "8",
-            "idade":{
+            "Idade":{
               "locked": [
                 "<40"
               ],
               "open": []
             },
-            "origem":{
+            "Origem":{
               "locked": [],
               "open": [
                 "Pronto Socorro",
@@ -2362,7 +2363,7 @@
                 "Nenhuma das anteriores",
               ],
             },
-            "comorbidade":{
+            "Comorbidade":{
               "locked": [
                 {
                   "Internado antes da admissão": {
@@ -2391,10 +2392,10 @@
                 },
               ],
             },
-            "motivoAdmissao": {
+            "Contexto da admissão": {
               "locked": [
                 {
-                  "Admissão Planejada": {
+                  "Admissão planejada": {
                     "values":[
                       "Não",
                     ]
@@ -2432,7 +2433,7 @@
 
               ]
             },
-            "statusClinico": {
+            "Status clínico": {
               "locked": [
                 {
                   "Escala de Coma de Glasgow": {
@@ -2483,7 +2484,7 @@
 
               ],
             },
-            "alteracoesLab": {
+            "Alterações laboratoriais": {
               "locked": [],
               "open": [
                 {
@@ -2547,13 +2548,13 @@
           },
           {
             "dificuldade": "9",
-            "idade":{
+            "Idade":{
               "locked": [
                 "<40"
               ],
               "open": []
             },
-            "origem":{
+            "Origem":{
               "locked": [],
               "open": [
                 "Pronto Socorro",
@@ -2561,7 +2562,7 @@
                 "Nenhuma das anteriores",
               ],
             },
-            "comorbidade":{
+            "Comorbidade":{
               "locked": [
                 {
                   "Internado antes da admissão": {
@@ -2590,10 +2591,10 @@
                 },
               ],
             },
-            "motivoAdmissao": {
+            "Contexto da admissão": {
               "locked": [
                 {
-                  "Admissão Planejada": {
+                  "Admissão planejada": {
                     "values":[
                       "Não",
                     ]
@@ -2631,7 +2632,7 @@
 
               ]
             },
-            "statusClinico": {
+            "Status clínico": {
               "locked": [
                 {
                   "Droga vasoativa": {
@@ -2689,7 +2690,7 @@
 
               ],
             },
-            "alteracoesLab": {
+            "Alterações laboratoriais": {
               "locked": [],
               "open": [
                 {
@@ -2753,20 +2754,20 @@
           },
           {
             "dificuldade": "10",
-            "idade":{
+            "Idade":{
               "locked": [
                 "<40"
               ],
               "open": []
             },
-            "origem":{
+            "Origem":{
               "locked": [
                 "Nenhuma das anteriores"
               ],
               "open": [
               ],
             },
-            "comorbidade":{
+            "Comorbidade":{
               "locked": [
                 {
                   "Internado antes da admissão": {
@@ -2795,10 +2796,10 @@
                 },
               ],
             },
-            "motivoAdmissao": {
+            "Contexto da admissão": {
               "locked": [
                 {
-                  "Admissão Planejada": {
+                  "Admissão planejada": {
                     "values":[
                       "Não",
                     ]
@@ -2836,7 +2837,7 @@
 
               ]
             },
-            "statusClinico": {
+            "Status clínico": {
               "locked": [
                 {
                   "Droga vasoativa": {
@@ -2886,7 +2887,7 @@
                 },
               ],
             },
-            "alteracoesLab": {
+            "Alterações laboratoriais": {
               "locked": [],
               "open": [
                 {
@@ -3002,7 +3003,7 @@
     }
 
     ////////////////////////////////// IDADE ///////////////////////////////////////////////////
-    if (selectedPacient.idade.open && selectedPacient.idade.open.length > 0) {
+    if (selectedPacient["Idade"].open && selectedPacient["Idade"].open.length > 0) {
       var idadeWrapper = document.querySelector('#idade-wrapper')
       var selectWrapper = idadeWrapper.querySelector('div.input-group')
       var htmlSelect = document.createElement('select')
@@ -3016,16 +3017,16 @@
       option.value = ''
       htmlSelect.appendChild(option)
 
-      for (var i = 0; i < selectedPacient.idade.open.length; i++) {
+      for (var i = 0; i < selectedPacient["Idade"].open.length; i++) {
         option = document.createElement('option')
-        option.value = selectedPacient.idade.open[i]
-        option.innerHTML = selectedPacient.idade.open[i]+' anos'
+        option.value = selectedPacient["Idade"].open[i]
+        option.innerHTML = selectedPacient["Idade"].open[i]+' anos'
         htmlSelect.appendChild(option)
 
 
       }
     }
-    if(selectedPacient.idade.locked && selectedPacient.idade.locked.length > 0){
+    if(selectedPacient["Idade"].locked && selectedPacient["Idade"].locked.length > 0){
       var idadeWrapper = document.querySelector('#idade-wrapper')
       var selectWrapper = idadeWrapper.querySelector('div.input-group')
       var htmlSelect = document.createElement('select')
@@ -3036,17 +3037,17 @@
       htmlSelect.id = 'idade'
       selectWrapper.appendChild(htmlSelect)
 
-      for (var i = 0; i < selectedPacient.idade.locked.length; i++) {
+      for (var i = 0; i < selectedPacient["Idade"].locked.length; i++) {
         option = document.createElement('option')
-        option.value = selectedPacient.idade.locked[i]
-        option.innerHTML = selectedPacient.idade.locked[i]+' anos'
+        option.value = selectedPacient["Idade"].locked[i]
+        option.innerHTML = selectedPacient["Idade"].locked[i]+' anos'
         htmlSelect.appendChild(option)
 
 
       }
     }
     ////////////////////////////////// ORIGEM ///////////////////////////////////////////////////
-    if (selectedPacient.origem.open && selectedPacient.origem.open.length > 0) {
+    if (selectedPacient["Origem"].open && selectedPacient["Origem"].open.length > 0) {
       var idadeWrapper = document.querySelector('#origem-wrapper')
       var selectWrapper = idadeWrapper.querySelector('div.input-group')
       var htmlSelect = document.createElement('select')
@@ -3060,14 +3061,14 @@
       option.value = ''
       htmlSelect.appendChild(option)
 
-      for (var i = 0; i < selectedPacient.origem.open.length; i++) {
+      for (var i = 0; i < selectedPacient["Origem"].open.length; i++) {
         option = document.createElement('option')
-        option.value = selectedPacient.origem.open[i]
-        option.innerHTML = selectedPacient.origem.open[i]
+        option.value = selectedPacient["Origem"].open[i]
+        option.innerHTML = selectedPacient["Origem"].open[i]
         htmlSelect.appendChild(option)
       }
     }
-    if (selectedPacient.origem.locked && selectedPacient.origem.locked.length > 0) {
+    if (selectedPacient["Origem"].locked && selectedPacient["Origem"].locked.length > 0) {
       var idadeWrapper = document.querySelector('#origem-wrapper')
       var selectWrapper = idadeWrapper.querySelector('div.input-group')
       var htmlSelect = document.createElement('select')
@@ -3078,10 +3079,10 @@
       htmlSelect.id = 'origem'
       selectWrapper.appendChild(htmlSelect)
 
-      for (var i = 0; i < selectedPacient.origem.locked.length; i++) {
+      for (var i = 0; i < selectedPacient["Origem"].locked.length; i++) {
         option = document.createElement('option')
-        option.value = selectedPacient.origem.locked[i]
-        option.innerHTML = selectedPacient.origem.locked[i]
+        option.value = selectedPacient["Origem"].locked[i]
+        option.innerHTML = selectedPacient["Origem"].locked[i]
         htmlSelect.appendChild(option)
       }
     }
@@ -3615,22 +3616,628 @@
     ////////////////////////////////// COMORBIDADE ///////////////////////////////////////////////////
     const comorbidadeWrapper = document.querySelector('#comorbidade-wrapper')
     var mainVariable = 'comorbidade'
-    objectfyPlayerOptions('comorbidade','comorbidade-wrapper','Comorbidade')
+    objectfyPlayerOptions('Comorbidade','comorbidade-wrapper','Comorbidade')
 
     ////////////////////////////////// MOTIVO DA ADMMISSAO ///////////////////////////////////////////////////
     const motivoAdmissaoWrapper = document.querySelector('#motivo-admissao-wrapper')
-    objectfyPlayerOptions('motivoAdmissao','motivo-admissao-wrapper','Motivo')
+    objectfyPlayerOptions('Contexto da admissão','motivo-admissao-wrapper','Motivo')
 
     ////////////////////////////////// STATUS CLINICO ///////////////////////////////////////////////////
-    objectfyPlayerOptions('statusClinico','status-clinico-wrapper','Status')
+    objectfyPlayerOptions('Status clínico','status-clinico-wrapper','Status')
 
     ////////////////////////////////// ALTERACOES LABORATORIAIS ///////////////////////////////////////////////////
-    objectfyPlayerOptions('alteracoesLab','alt-lab-wrapper','Alteração')
+    objectfyPlayerOptions('Alterações laboratoriais','alt-lab-wrapper','Alteração')
 
     Prognosis.i.expandMultiChoice()
     Prognosis.i.pacientFormValidation()
+    Prognosis.i.extractPossibleOptions(selectedPacient)
   }
 
+  async extractPossibleOptions (selectedPacient){
+    /*
+    let pacientInfo = {
+      "pacient":{
+        "Idade":{
+          "values":{
+            "<40":0,
+            "40-59":5,
+            "60-69":9,
+            "70-74":13,
+            "75-79":15,
+            ">=80":18,
+          }
+        },
+        "Origem":{
+          "values":{
+            "Pronto Socorro":5,
+            "Outra UTI":7,
+            "Nenhuma das anteriores":8,
+          }
+        },
+        "Comorbidade":{
+          "values":{
+            "IC NYHA IV":6,
+            "Câncer metástatico":11,
+            "Terapia oncológica":3,
+            "Câncer hematológico":6,
+            "Cirrose":8,
+            "SIDA":8,
+            "Internado antes da admissão":{
+              "Não":0,
+              "<14 dias":0,
+              "14-27 dias":6,
+              ">=28 dias":7,
+            },
+            "Infectado antes da admissão":{
+              "Não":0,
+              "Nosocomial":4,
+              "Respiratória":5,
+            },
+          }
+        },
+        "Contexto da admissão":{
+          "values":{
+            "Admissão planejada":{
+              "Não":3,
+              "Sim":0,
+            },
+            "Submetido à cirurgia":{
+
+              "Não":5,
+              "Cirugia eletiva":0,
+              "Cirurgia urgência":6,
+              "Neurocirurgia por acidente vascular cerebral":5,
+              "Revascularização miocárdica":-6,
+              "Trauma":-8,
+              "Transplante":-11,
+              "Outro":0,
+            },
+            "Motivo de admissão na UTI":{
+              "Arritmia":-5,
+              "Choque hipovolêmico":3,
+              "Outro choque":5,
+              "Convulsão":-4,
+              "Abdome agudo":3,
+              "Pancreatite grave":9,
+              "Déficit focal":7,
+              "Efeito de massa intracraniana":10,
+              "Insuficiência hepática":6,
+              "Alteração do nível de consciência":4,
+              "Nenhum dos anteriores":0,
+            },
+          }
+        },
+        "Status clínico":{
+          "values":{
+            "Escala de Coma de Glasgow":{
+              "3-4":15,
+              "5":10,
+              "6":7,
+              "7-12":2,
+              ">=13":0,
+            },
+            "Temperatura":{
+              "<35 °C":7,
+              ">=35 °C":0,
+            },
+            "Frequência cardíaca":{
+              "<120 bpm":0,
+              "120-159 bpm":5,
+              ">=160 bpm":7,
+            },
+            "Pressão sistólica":{
+              "<40 mmHg":11,
+              "40-69 mmHg":8,
+              "70-119 mmHg":3,
+              ">=120 mmHg":0,
+            },
+            "Droga vasoativa":{
+              "Sim":3,
+              "Não":0,
+            },
+          }
+        },
+        "Alterações laboratoriais":{
+          "values":{
+            "Bilirrubina":{
+              "<2 mg/dl":0,
+              "2-6 mg/dl":4,
+              ">=6 mg/dl":5,
+            },
+            "Creatinina":{
+              "<1.2 mg/dl":0,
+              "1.2-1.9 mg/dl":2,
+              "2-3.4 mg/dl":7,
+              ">=3.5 mg/dl":8,
+            },
+            "pH":{
+              "<=7.25":3,
+              ">7.25":0,
+            },
+            "Leucócitos":{
+              "<15mil /mm³":0,
+              ">=15mil /mm³":2,
+            },
+            "Plaquetas":{
+              "<20mil /mm³":13,
+              "20-49mil /mm³":8,
+              "50-99mil /mm³":5,
+              ">=100mil /mm³":0,
+            },
+            "Oxigenação":{
+              "paO2 >=60 sem VM":0,
+              "paO2 <60 sem VM":5,
+              "paO2/FiO2 <100 em VM":11,
+              "paO2/FiO2 >=100 em VM":7,
+            },
+          }
+        },
+      }
+    }
+    */
+    let scoreValues = {
+      "pacient":{
+        "Idade":{
+          "values":{
+            "<40":0,
+            "40-59":5,
+            "60-69":9,
+            "70-74":13,
+            "75-79":15,
+            ">=80":18,
+          }
+        },
+        "Origem":{
+          "values":{
+            "Pronto Socorro":5,
+            "Outra UTI":7,
+            "Nenhuma das anteriores":8,
+          }
+        },
+        "Comorbidade":{
+          "values":{
+            "IC NYHA IV":{
+              "Não":0,
+              "Sim":6,
+            },
+            "Câncer metastático":{
+              "Não":0,
+              "Sim":11,
+            },
+            "Terapia oncológica":{
+              "Não":0,
+              "Sim":3,
+            },
+            "Câncer hematológico":{
+              "Não":0,
+              "Sim":6,
+            },
+            "Cirrose":{
+              "Não":0,
+              "Sim":8,
+            },
+            "SIDA":{
+              "Não":0,
+              "Sim":8,
+            },
+            "Internado antes da admissão":{
+              "Não":0,
+              "<14 dias":0,
+              "14-27 dias":6,
+              ">=28 dias":7,
+            },
+            "Infectado antes da admissão":{
+              "Não":0,
+              "Nosocomial":4,
+              "Respiratória":5,
+            },
+          }
+        },
+        "Contexto da admissão":{
+          "values":{
+            "Admissão planejada":{
+              "Não":3,
+              "Sim":0,
+            },
+            "Submetido à cirurgia":{
+
+              "Não":5,
+              "Cirurgia eletiva":0,
+              "Cirurgia urgência":6,
+              "Neurocirurgia por acidente vascular cerebral":5,
+              "Revascularização miocárdica":-6,
+              "Trauma":-8,
+              "Transplante":-11,
+              "Outro":0,
+            },
+            "Motivo de admissão na UTI":{
+              "Arritmia":-5,
+              "Choque hipovolêmico":3,
+              "Outro choque":5,
+              "Convulsão":-4,
+              "Abdome agudo":3,
+              "Pancreatite grave":9,
+              "Déficit focal":7,
+              "Efeito de massa intracraniana":10,
+              "Insuficiência hepática":6,
+              "Alteração do nível de consciência":4,
+              "Nenhum dos anteriores":0,
+            },
+          }
+        },
+        "Status clínico":{
+          "values":{
+            "Escala de Coma de Glasgow":{
+              "3-4":15,
+              "5":10,
+              "6":7,
+              "7-12":2,
+              ">=13":0,
+            },
+            "Temperatura":{
+              "<35 °C":7,
+              ">=35 °C":0,
+            },
+            "Frequência cardíaca":{
+              "<120 bpm":0,
+              "120-159 bpm":5,
+              ">=160 bpm":7,
+            },
+            "Pressão sistólica":{
+              "<40 mmHg":11,
+              "40-69 mmHg":8,
+              "70-119 mmHg":3,
+              ">=120 mmHg":0,
+            },
+            "Droga vasoativa":{
+              "Sim":3,
+              "Não":0,
+            },
+          }
+        },
+        "Alterações laboratoriais":{
+          "values":{
+            "Bilirrubina":{
+              "<2 mg/dl":0,
+              "2-6 mg/dl":4,
+              ">=6 mg/dl":5,
+            },
+            "Creatinina":{
+              "<1.2 mg/dl":0,
+              "1.2-1.9 mg/dl":2,
+              "2-3.4 mg/dl":7,
+              ">=3.5 mg/dl":8,
+            },
+            "pH":{
+              "<=7.25":3,
+              ">7.25":0,
+            },
+            "Leucócitos":{
+              "<15mil /mm³":0,
+              ">=15mil /mm³":2,
+            },
+            "Plaquetas":{
+              "<20mil /mm³":13,
+              "20-49mil /mm³":8,
+              "50-99mil /mm³":5,
+              ">=100mil /mm³":0,
+            },
+            "Oxigenação":{
+              "paO2 >=60 sem VM":0,
+              "paO2 <60 sem VM":5,
+              "paO2/FiO2 <100 em VM":11,
+              "paO2/FiO2 >=100 em VM":7,
+            },
+          }
+        },
+      }
+    },
+        pacientOptions = {},
+        lockedFindings = {},
+        openFindings = {}
+        Object.defineProperty(pacientOptions,'locked',{
+          writable: true,
+          enumerable: true,
+          configurable: true
+        })
+        Object.defineProperty(pacientOptions,'open',{
+          writable: true,
+          enumerable: true,
+          configurable: true
+        })
+
+    console.log('============ extracting')
+    console.log(selectedPacient)
+    let mainKeys = Object.keys(selectedPacient)
+    console.log('============ keys')
+    console.log(mainKeys)
+
+    const findValue = function (object){
+      let findings = {}
+      let findingsValues = []
+      // console.log('============ find value object')
+      // console.log(object)
+      // console.log(Object.entries(object))
+      for (let i = 0; i < Object.keys(object).length; i++) {
+        // console.log('============ find for keys')
+        // console.log(Object.keys(object)[i])
+        // console.log(object[Object.keys(object)[i]])
+
+      }
+      for (let i = 0; i < Object.values(object).length; i++) {
+        // console.log('============ find for values')
+        // console.log(Object.values(object)[i])
+        // console.log(Object.entries(object)[i])
+        if(Object.values(object)[i]['values']){
+          let valueKeys = Object.values(object)[i]['values']
+          // console.log('============ looking for "values" keys')
+          for (let p = 0; p < valueKeys.length; p++) {
+            // console.log('============ value is:')
+            // console.log(Object.entries(object)[i][0])
+            // console.log(valueKeys[p])
+            findingsValues.push(valueKeys[p])
+          }
+        }
+        if(Object.values(object)[i]['child']){
+          let childKeys = Object.values(object)[i]['child']
+          // console.log('============ looking for "child" keys')
+          for (let p = 0; p < childKeys.length; p++) {
+            // console.log('============ value is:')
+            // console.log(Object.entries(object)[i][0])
+            // console.log(childKeys[p])
+            findingsValues.push(childKeys[p])
+
+          }
+        }
+        // console.log('================================ returning findings...')
+        // console.log(findings)
+        Object.defineProperty(findings,Object.entries(object)[i][0],{
+          value: findingsValues,
+          writable: true,
+          enumerable: true,
+          configurable: true,
+        })
+        return findings
+
+      }
+      /* for (let t = 0; t < Object.keys(object).length; t++) {
+        let keyText = Object.keys(selectedPacient[fnVariable].locked[t])[0]
+        console.log('============ locked option')
+
+        if(typeof Object.values(selectedPacient[fnVariable].locked)[t] == 'object'){
+          console.log('============ object typeof key')
+          console.log(Object.keys(selectedPacient[fnVariable].locked)[t])
+          console.log('============ object typeof value')
+          console.log(Object.values(selectedPacient[fnVariable].locked)[t])
+
+        }else{
+          console.log(fnVariable)
+          console.log(Object.values(selectedPacient[fnVariable].locked)[t])
+        }
+      }
+      */
+    }
+    for (var i = 0; i < mainKeys.length; i++) {
+
+      let fnVariable = Object.keys(selectedPacient)[i]
+      // console.log('====================================================================')
+      // console.log(fnVariable)
+      // console.log(selectedPacient[fnVariable])
+      if(selectedPacient[fnVariable].locked) {
+        if(Object.keys(selectedPacient[fnVariable].locked).length > 0){
+          lockedFindings[fnVariable] = {}
+        }
+        for (let t = 0; t < selectedPacient[fnVariable].locked.length; t++) {
+          let keyText = Object.keys(selectedPacient[fnVariable].locked[t])[0]
+          // console.log('============ locked option')
+
+          if(typeof Object.values(selectedPacient[fnVariable].locked)[t] == 'object'){
+            // console.log('============ object typeof key')
+            // console.log(Object.keys(selectedPacient[fnVariable].locked)[t])
+            // console.log('============ object typeof value')
+            // console.log(Object.values(selectedPacient[fnVariable].locked)[t])
+            let finding = findValue(Object.values(selectedPacient[fnVariable].locked)[t])
+            // console.log('============ object typeof findings')
+            // console.log(finding[Object.keys(finding)])
+            // console.log(lockedFindings)
+            lockedFindings[fnVariable][Object.keys(finding)] = finding[Object.keys(finding)]
+
+          }else{
+            // console.log(fnVariable)
+            // console.log(Object.values(selectedPacient[fnVariable].locked)[t])
+            // console.log('============ Saps3 value')
+            // console.log(pacientInfo['pacient'][fnVariable]['values']
+            // [Object.values(selectedPacient[fnVariable].locked)[t]])
+            lockedFindings[fnVariable] = Object.values(selectedPacient[fnVariable].locked)[t]
+          }
+        }
+        pacientOptions.locked = lockedFindings
+      }
+      if(selectedPacient[fnVariable].open){
+        if(Object.keys(selectedPacient[fnVariable].open).length > 0){
+          openFindings[fnVariable] = {}
+        }
+        for (let t = 0; t < selectedPacient[fnVariable].open.length; t++) {
+          let keyText = Object.keys(selectedPacient[fnVariable].open[t])[0]
+          // console.log('============ open option')
+
+          if(typeof Object.values(selectedPacient[fnVariable].open)[t] == 'object'){
+            // console.log('============ object typeof key')
+            // console.log(Object.keys(selectedPacient[fnVariable].open)[t])
+            // console.log('============ object typeof value')
+            // console.log(Object.values(selectedPacient[fnVariable].open)[t])
+            let finding = findValue(Object.values(selectedPacient[fnVariable].open)[t])
+            // console.log('============ object typeof findings')
+            // console.log(finding[Object.keys(finding)])
+            openFindings[fnVariable][Object.keys(finding)] = finding[Object.keys(finding)]
+
+          }else{
+            // console.log(fnVariable)
+            // console.log(Object.values(selectedPacient[fnVariable].open)[t])
+            // console.log('============ pacientInfo value')
+            // console.log(scoreValues['pacient'][fnVariable]['values'][Object.values(selectedPacient[fnVariable].open)[t]])
+            openFindings[fnVariable] = Object.values(selectedPacient[fnVariable].open)
+          }
+        }
+        pacientOptions.open = openFindings
+      }
+    }
+
+    if((pacientOptions.locked && Object.keys(pacientOptions.locked).length > 0)
+    && (pacientOptions.open && Object.keys(pacientOptions.open).length > 0)){
+      console.log('=================================================================================')
+      console.log('============ calculating best options...')
+      // console.log(pacientOptions)
+      // console.log('============ Locked Options')
+      // console.log(Object.entries(pacientOptions.locked))
+      // console.log('============ Open Options')
+      // console.log(Object.entries(pacientOptions.open))
+      let pacientScore = {}
+      pacientScore['locked'] = {}
+      pacientScore['open'] = {}
+      for (let i = 0; i < Object.keys(pacientOptions.locked).length; i++) {
+        let mainKey = Object.keys(pacientOptions.locked)[i]
+
+        // console.log('============ key')
+        // console.log(mainKey)
+        let childKey = pacientOptions.locked[mainKey]
+        // console.log(childKey)
+        if(typeof childKey == 'object'){
+          for (let x = 0; x < Object.keys(childKey).length; x++) {
+            // console.log('============ child key')
+            // console.log(Object.keys(childKey)[x])
+            let childValues = pacientOptions.locked[mainKey][Object.keys(childKey)[x]]
+            // console.log(childValues)
+            // console.log('============ child values')
+            for (var z = 0; z < childValues.length; z++) {
+              // console.log(childValues[z])
+              // console.log(scoreValues['pacient'][mainKey]['values'][Object.keys(childKey)[x]][childValues[z]])
+              pacientScore['locked'][Object.keys(childKey)[x]] = scoreValues['pacient'][mainKey]['values'][Object.keys(childKey)[x]][childValues[z]]
+
+            }
+
+          }
+
+        }else{
+          // console.log('============ single value')
+          // console.log(pacientOptions['locked'][mainKey])
+          pacientScore['locked'][mainKey] = scoreValues['pacient'][mainKey]['values'][childKey]
+        }
+        // console.log('============ pacient Score')
+        // console.log(pacientScore)
+
+        // pacientScore["locked"]
+        // pacientOptions.locked[Object.keys(pacientOptions.locked)[i]]
+        // pacientInfo
+      }
+      // console.log('=========================== starting open')
+      for (let i = 0; i < Object.keys(pacientOptions.open).length; i++) {
+        let mainKey = Object.keys(pacientOptions.open)[i]
+        // console.log('============ key')
+        // console.log(mainKey)
+        pacientScore['open'][mainKey] = {}
+
+        let childKey = pacientOptions.open[mainKey]
+        // console.log(childKey)
+        if(typeof childKey == 'object'){
+          for (let x = 0; x < Object.keys(childKey).length; x++) {
+
+            console.log('============ child key')
+            console.log(Object.keys(childKey)[x])
+            let childValues = pacientOptions.open[mainKey][Object.keys(childKey)[x]]
+            if(Array.isArray(childKey)){
+              childValues = pacientOptions.open[mainKey]
+              console.log('============ child values')
+              for (var z = 0; z < childValues.length; z++) {
+                console.log(childValues[z])
+                console.log(scoreValues['pacient'][mainKey]['values'][childValues[z]])
+                console.log(pacientOptions.open[mainKey])
+                pacientScore['open'][mainKey][childValues[z]] = scoreValues['pacient'][mainKey]['values'][childValues[z]]
+              }
+            }else{
+              pacientScore['open'][Object.keys(childKey)[x]] = {}
+              console.log('============ child values')
+              for (var z = 0; z < childValues.length; z++) {
+                console.log(childValues[z])
+                console.log(scoreValues['pacient'][mainKey]['values'][Object.keys(childKey)[x]][childValues[z]])
+                console.log(pacientScore)
+                pacientScore['open'][Object.keys(childKey)[x]][childValues[z]] = scoreValues['pacient'][mainKey]['values'][Object.keys(childKey)[x]][childValues[z]]
+              }
+            }
+          }
+
+        }else{
+          // console.log('============ single value')
+          // console.log(pacientOptions['open'][mainKey])
+          pacientScore['open'][mainKey] = scoreValues['pacient'][mainKey]['values'][childKey]
+        }
+        if(Object.entries(pacientScore['open'][mainKey]) == ''){
+          delete pacientScore['open'][mainKey]
+        }
+      }
+      this.bestPacientScore(pacientScore)
+    }
+
+  }
+  bestPacientScore(pacient){
+
+    const checkOptions = function(object) {
+      let possible = []
+      for (let key of Object.values(object)) {
+        if(typeof key == 'object'){
+          let group = Object.values(key)
+          let groupValue = 0
+          for (let value of group) {
+            if(typeof value == 'object' && value!=null){
+              possible.push(checkOptions(groupValue))
+            }else if(value!=null){
+              groupValue+=value
+            }
+          }
+          possible.push(groupValue)
+        }else if (key!=null){
+          possible.push(key)
+        }
+      }
+
+      if(possible.length>0){
+        let bestOption
+        for (let variable of possible) {
+          if(variable < bestOption || bestOption == null){
+            bestOption = variable
+          }
+        }
+        return bestOption
+      }
+    }
+    let lockedOptions = 0
+    let openOptions = 0
+    if (pacient.locked && Object.keys(pacient.locked).length > 0) {
+      for (let i = 0; i < Object.keys(pacient.locked).length; i++) {
+        lockedOptions += Object.values(pacient.locked)[i]
+        console.log(lockedOptions)
+      }
+
+    }
+    if(pacient.open && Object.keys(pacient.open).length > 0){
+      for (let i = 0; i < Object.keys(pacient.open).length; i++) {
+        // console.log('============ before')
+        // console.log(Object.values(pacients.open)[i])
+        let object = Object.values(pacient.open)[i]
+        // console.log('============open begins')
+        openOptions += checkOptions(object)
+        // console.log(openOptions)
+      }
+    }
+    console.log('============')
+    console.log(openOptions)
+    console.log(lockedOptions)
+    console.log('============ best pacient')
+    console.log(openOptions + lockedOptions + 16)
+
+
+
+  }
   async playerResult(){
     const playerGuess = new URL(document.location).searchParams.get('playerCalc')
     const sapsCalc = new URL(document.location).searchParams.get('calc')
@@ -3795,6 +4402,20 @@
         const sapsCalc = new URL(document.location).searchParams.get('calc')
         const diffCalc = parseFloat(playerGuess)-parseFloat(sapsCalc)
         /////ON PROGRESS
+        if(diffCalc > 10){
+          console.log('============ super estimado')
+          prognResultAcc.textContent = 'Super estimado'
+
+        }else if (diffCalc < -10) {
+          console.log('============ sub estimado')
+          prognResultAcc.textContent = 'Sub estimado'
+
+        }else if (diffCalc <= 10 && diffCalc >= -10) {
+          console.log('============ na mosca')
+          prognResultAcc.textContent = 'Na mosca! :)'
+
+        }
+
       }
   }
 
@@ -3849,7 +4470,7 @@
         var selectedEl = document.querySelector('#n-'+angleToNum)
         selectedEl.querySelector('path').setAttribute('fill','#015b13')
         if(!document.querySelector('#roulette-result'))
-          wrapper.insertBefore(resultTxt, document.querySelector('.btn-info'))
+          wrapper.insertBefore(resultTxt, document.querySelector('#svg-wrapper').nextSibling)
       }
       else{
         resultTxt.innerHTML = 'Paciente não sobreviveu :('
