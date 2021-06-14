@@ -93,14 +93,6 @@
   <script src="/translator/translator.js"></script>
   <script src="/translator/item-templates.js"></script>
 
-  <script src="/dccs/edit/properties.js"></script>
-  <script src="/dccs/edit/upload-adapter.js"></script>
-  <script src="/dccs/edit/inplace-editor.js"></script>
-  <script src="/dccs/edit/inplace-plain-editor.js"></script>
-  <script src="/dccs/edit/inplace-text-editor.js"></script>
-  <script src="/dccs/edit/inplace-image-editor.js"></script>
-
-  <script src="/author/js/panels.js"></script>
   <script src="/prognosis/js/prognosis.js"></script>
   <script src="/prognosis/js/saps.js"></script>
 </head>
@@ -108,6 +100,8 @@
 <body>
   <dcc-rest id="harena-user-property" bind="harena-user-property"></dcc-rest>
   <dcc-rest id="harena-prognosis-highest-lvl" bind="harena-prognosis-highest-lvl"></dcc-rest>
+  <dcc-rest id="harena-prognosis-perfect-lvl" bind="harena-prognosis-perfect-lvl"></dcc-rest>
+
 
   <div class="modal fade" id="lvl-result-modal" tabindex="-1" role="dialog" aria-labelledby="pacient-overview" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -127,25 +121,13 @@
               </div>
               <div class="w-100"></div>
               <div class="d-inline-flex">
-                  <h5>Prognóstico calculado: </h5>
-                  <h5 id="prognosis-result-calc" class="ml-1"></h5>
+                  <h5>Criou o melhor cenario possível: </h5>
+                  <h5 id="prognosis-perfect-cenario" class="ml-1"></h5>
                   <!-- <h5 class="ml-1 text-success"> (Melhoria!)</h5> -->
               </div>
             </div>
-            <!-- <dcc-dhtml id="" subscribe="" connect="">
-              <input type="hidden" id="prognosis-lvl-best-progn" value="">
-              <end-dcc></end-dcc>
-            </dcc-dhtml>
-            <dcc-dhtml id="" subscribe="" connect="">
-              <input type="hidden" id="prognosis-lvl-best-guess" value="">
-              <end-dcc></end-dcc>
-            </dcc-dhtml> -->
-            <button type="submit" class="btn btn-info" id="btn-next-step">Tentar novamente <i class="fas fa-redo"></i></button>
+            <button type="button" class="btn btn-info" id="btn-retry">Tentar novamente <i class="fas fa-redo"></i></button>
             <button type="button" class="btn btn-success" data-dismiss="modal">Continuar</button>
-            <!-- <dcc-submit xstyle="d-none" bind="submit-prognosis-lvl-txt"
-             connect="submit:harena-user-property:service/request/post"></dcc-submit>
-           <dcc-submit xstyle="d-none" bind="submit-prognosis-lvl-txt"
-             connect="submit:harena-user-property:service/request/put"></dcc-submit> -->
 
           </form>
         </div>
@@ -167,15 +149,18 @@
 
       <div class="text-danger d-none" id="roulette-invalid">Você ainda não selecionou todos os números disponíveis</div>
       <button type="button" class="mt-3 btn btn-info" data-roulette="false" id="btn-spin-roulette">Rodar a roleta</button>
-      <button type="button" class="mt-2 btn btn-info d-none" id='btn-next-lvl'>Próximo caso</button>
+      <button type="button" class="mt-2 btn btn-success d-none" id='btn-next-lvl'>Próximo caso</button>
       <dcc-submit label="Rodar a roleta" xstyle="out" location="btn-spin-roulette" bind="submit-prognosis-lvl"
        connect="submit:harena-user-property:service/request/put"></dcc-submit>
+
       <dcc-submit label="Rodar a roleta" xstyle="out" location="btn-spin-roulette" bind="submit-prognosis-highest-lvl"
        connect="submit:harena-user-property:service/request/put"></dcc-submit>
+
       <dcc-submit label="Rodar a roleta" xstyle="out" location="btn-spin-roulette" bind="submit-prognosis-lvl-guess"
        connect="submit:harena-user-property:service/request/post"></dcc-submit>
       <dcc-submit xstyle="d-none" bind="submit-prognosis-lvl-guess"
        connect="submit:harena-user-property:service/request/put"></dcc-submit>
+
       <dcc-submit label="Rodar a roleta" xstyle="out" location="btn-spin-roulette" bind="submit-prognosis-lvl-progn"
        connect="submit:harena-user-property:service/request/post"></dcc-submit>
       <dcc-submit xstyle="d-none" bind="submit-prognosis-lvl-progn"
@@ -189,6 +174,11 @@
     <input type="hidden" name="{{userProperty.0.title}}" id="next-lvl" value="{{userProperty.0.value}}">
     <end-dcc></end-dcc>
   </dcc-dhtml>
+  <dcc-dhtml id="harena-dhtml-prognosis-perfect" connect="retrieve:harena-prognosis-perfect-lvl:service/request/get">
+    <input type="hidden" name="{{userProperty.0.title}}" id="prognosis-lvl-perfect" value="{{userProperty.0.value}}">
+    <end-dcc></end-dcc>
+  </dcc-dhtml>
+
 </body>
 
 </html>

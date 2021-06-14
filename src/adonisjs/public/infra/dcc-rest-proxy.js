@@ -609,4 +609,30 @@
     }
   )
 
+  DCC.component(
+    'harena-prognosis-perfect-lvl',
+    'dcc-rest',
+    {
+      environment: {
+        'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api,
+        'propertyTitle':`prognosis-lvl-${localStorage.getItem('prognosis-current-lvl')}-perfect`,
+      },
+      oas: {
+        paths: {
+          '{url-manager}/user/property': {
+            'get': {
+              operationId: 'user-property',
+              parameters: [
+                {name: 'url-manager',
+                  in: 'path'},
+                {name: 'propertyTitle',
+                  in: 'query'},
+              ]
+            }
+          }
+        }
+      }
+    }
+  )
+
 })()

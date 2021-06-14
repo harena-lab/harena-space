@@ -386,4 +386,32 @@
     }
   )
 
+  DCC.component(
+    'submit-prognosis-perfect-lvl',
+    'dcc-submit',
+    {
+      pre: function (message, form, schema) {
+        const currentLvl = localStorage.getItem('prognosis-current-lvl')
+        const perfectScore = document.querySelector('#pacient-perfect')
+        if((currentLvl) && (perfectScore && perfectScore.value != '')){
+          message.value.propertyTitle = `prognosis-lvl-${currentLvl}-perfect`
+          message.value.propertyValue = perfectScore.value
+          return true
+        }else{
+          return false
+        }
+      },
+      pos: async function (response) {
+        const currentLvl = parseInt(localStorage.getItem('prognosis-current-lvl'))
+        const perfectScore = document.querySelector('#pacient-perfect')
+        if(document.querySelector(`dcc-submit[bind="submit-prognosis-perfect-lvl"][connect$="/post"]`)){
+          document.querySelector(`dcc-submit[bind="submit-prognosis-perfect-lvl"][connect$="/post"]`).remove()
+          if(parseInt(response[Object.keys(response)[0]].userProperty.value) != parseInt(perfectScore.value)){
+            const submitDcc = document.querySelector(`dcc-submit[bind="submit-prognosis-perfect-lvl"][connect$="/put"]`)
+            submitDcc._computeTrigger()
+          }
+        }
+      }
+    }
+  )
 })()

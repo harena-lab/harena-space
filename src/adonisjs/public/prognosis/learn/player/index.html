@@ -151,6 +151,7 @@
             </div>
             <input type="hidden" name="saps-survival" id="saps-survival" value="">
             <input type="hidden" id="pacient-abstract" value="">
+            <input type="hidden" id="pacient-perfect" value="">
             <button type="submit" class="btn btn-success" id="btn-next-step">Próximo passo</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
             <dcc-submit xstyle="d-none" bind="submit-prognosis-lvl-txt"
@@ -209,10 +210,17 @@
         <button type="submit" id="btn-create-pacient" class="btn btn-success w-100"> Revisar as escolhas</button>
         <dcc-submit label="Revisar as escolhas" xstyle="out" location="btn-create-pacient" bind="submit-prognosis-lvl"
          connect="submit:harena-user-property:service/request/post"></dcc-submit>
+
         <dcc-submit label="Revisar as escolhas" xstyle="out" location="btn-create-pacient" bind="submit-prognosis-highest-lvl"
          connect="submit:harena-user-property:service/request/post"></dcc-submit>
         <dcc-submit xstyle="d-none" bind="submit-prognosis-highest-lvl"
          connect="submit:harena-user-property:service/request/put"></dcc-submit>
+
+         <dcc-submit label="Revisar as escolhas" xstyle="out" location="btn-create-pacient" bind="submit-prognosis-perfect-lvl"
+          connect="submit:harena-user-property:service/request/post"></dcc-submit>
+         <dcc-submit xstyle="d-none" bind="submit-prognosis-perfect-lvl"
+          connect="submit:harena-user-property:service/request/put"></dcc-submit>
+
       </form>
       <div class="p-2">
 

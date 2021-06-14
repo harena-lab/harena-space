@@ -24,7 +24,7 @@
   <script src="/infra/conditional-layout.js"></script>
 
   <script>
-    Basic.service.rootPath = '../../'
+    Basic.service.rootPath = '../../../'
   </script>
 
   <link rel="stylesheet" href="/lib/fontawesome-5-10-1/css/all.min.css">
@@ -98,6 +98,8 @@
 
 <body>
   <dcc-rest id="harena-prognosis-lvl" bind="harena-prognosis-lvl"></dcc-rest>
+  <dcc-rest id="harena-prognosis-highest-lvl" bind="harena-prognosis-highest-lvl"></dcc-rest>
+
 
   <dcc-include src="/author/partials/header.html"></dcc-include>
   <main role="">
@@ -106,65 +108,13 @@
         <h1 class="txt-light mt-5">Seu progresso</h1>
         <div class=" mt-5 d-flex flex-column w-75" id="btn-home-container">
           <div id="progn-lvl-progress-wrapper" class="progn-lvl-progress-wrapper row row-cols-2 justify-content-center">
-            <div class="progn-lvl-progress col-lg-3 col-md-5 col-12 m-1 pt-2 bg-dark border border-light rounded">
-              <h5 class="mb-1 text-secondary" style="color:#808080; font-weight: bold;">Dificuldade: 1</h5>
-              <h5 class="mb-1 bg-secondary">Progresso: Completo</h5>
-              <h5 class="mb-1 bg-secondary">Acertou prognóstico? Sim</h5>
-              <h5 class="mb-1 bg-secondary">Criou o melhor cenário possível? Não</h5>
-              <h5 class="mb-1 bg-secondary">Pontuação: <i class="fas fa-star prognosis-perfect-prog"></i><i class="fas fa-star prognosis-perfect-prog"></i><i class="fas fa-star prognosis-perfect-prog"></i></h5>
-              <div class="row">
-                <button type="button" class="col btn btn-info w-100 mb-2"><i class="fas fa-play"></i></button>
-                <button type="button" class="col-3 btn btn-warning w-100 mb-2" data-toggle="modal" data-target="#pacient-overview-modal"><i class="far fa-address-card"></i></button>
-                <dcc-rest id="harena-user-property" bind="harena-user-property"></dcc-rest>
-                <div class="modal fade" id="pacient-overview-modal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="pacient-overview" aria-hidden="true">
-                  <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h5 class="modal-title">Resumo do paciente</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
-                        </button>
-                      </div>
-                      <div class="modal-body">
-                        <!-- <dcc-dhtml id="" subscribe="" connect="">
-                          <end-dcc></end-dcc>
-                        </dcc-dhtml> -->
-
-                        </form>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-            <div class="progn-lvl-progress col-lg-3 col-md-5 col-12 m-1 pt-2 bg-light rounded">
-              <h5 class="mb-1 text-secondary" style="color:#808080; font-weight: bold;">Dificuldade: 2</h5>
-              <h5 class="mb-1 bg-secondary">Progresso: Em aberto</h5>
-              <h5 class="mb-1 bg-secondary">Acertou prognóstico? Sim</h5>
-              <h5 class="mb-1 bg-secondary">Criou o melhor cenário possível? Não</h5>
-              <h5 class="mb-1 bg-secondary">Pontuação: <i class="fas fa-star prognosis-half-prog"></i><i class="fas fa-star-half-alt prognosis-half-prog"></i><i class="far fa-star prognosis-half-prog"></i></h5>
-              <button type="button" name="button" class="btn btn-info w-100 mb-2"><i class="fas fa-play"></i></button>
-            </div>
-            <div class="progn-lvl-progress col-lg-3 col-md-5 col-12 m-1 pt-2 disabled-look rounded">
-              <div class="position-absolute" style="top:25%; left:40%; font-size: 4rem !important;">
-                <i class="fas fa-lock"></i>
-              </div>
-              <h5 class="mb-1 text-secondary" style="color:#808080; font-weight: bold;">Dificuldade: 3</h5>
-              <h5 class="mb-1 bg-secondary">Progresso: Incompleto</h5>
-              <!-- <h5 class="mb-1 bg-secondary">Diferença entre cálculo e jogador: +18% de diferença</h5>
-              <h5 class="mb-1 bg-secondary">Melhor taxa de sobrevivência criada: 50%</h5>
-              <h5 class="mb-1 bg-secondary">Melhor sobrevivência possível do nível: 43% (Incompleto)</h5> -->
-              <h5 class="mb-1 bg-secondary">Pontuação: <i class="far fa-star prognosis-bad-prog"></i><i class="far fa-star prognosis-bad-prog"></i><i class="far fa-star prognosis-bad-prog"></i></h5>
-              <button type="button" name="button" class="btn btn-info w-100 mb-2"><i class="fas fa-play"></i></button>
-            </div>
           </div>
         </div>
       </div>
     </div>
   </main>
-  <dcc-dhtml id="harena-dhtml-prognosis" connect="retrieve:harena-prognosis-lvl:service/request/get">
-    <input type="hidden" name="{{userProperty.0.title}}" id="current-lvl" value="{{userProperty.0.value}}">
+  <dcc-dhtml id="harena-dhtml-prognosis" connect="retrieve:harena-prognosis-highest-lvl:service/request/get">
+    <input type="hidden" name="{{userProperty.0.title}}" id="highest-lvl" value="{{userProperty.0.value}}">
     <end-dcc></end-dcc>
   </dcc-dhtml>
 </body>
