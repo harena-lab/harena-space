@@ -1,6 +1,6 @@
 class Saps {
   constructor(){
-    this.bestPacient()
+
   }
 
   // saps3Alg(score){
@@ -722,7 +722,7 @@ class Saps {
     var logitDynamic = -32.6659+Math.log(dynamicScore+20.5958)*7.3068
     // console.log(logitDynamic)
     function round(value, precision) {
-      var multiplier = Math.pow(10, precision || 0);
+      let multiplier = Math.pow(10, precision || 0);
       return Math.round(value * multiplier) / multiplier;
     }
 
@@ -1956,7 +1956,6 @@ class Saps {
     if (pacientInfo.pacient.locked && Object.keys(pacientInfo.pacient.locked).length > 0) {
       for (let i = 0; i < Object.keys(pacientInfo.pacient.locked).length; i++) {
         lockedOptions += Object.values(pacientInfo.pacient.locked)[i]
-        console.log(lockedOptions)
       }
 
     }
@@ -1970,16 +1969,8 @@ class Saps {
         // console.log(openOptions)
       }
     }
-    console.log('============')
-    console.log(openOptions)
-    console.log(lockedOptions)
-    console.log('============ best pacient')
-    console.log(openOptions + lockedOptions)
-
-
-
   }
-  
+
 }
 
 

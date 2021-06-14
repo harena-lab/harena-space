@@ -80,20 +80,18 @@
   <script src="/translator/translator.js"></script>
   <script src="/translator/item-templates.js"></script>
 
-  <script src="/author/js/dcc-author-server-proxy.js"></script>
-  <script src="/author/js/panels.js"></script>
-  <script src="/author/js/navigator.js"></script>
-  <script src="/author/js/comments.js"></script>
-  <script src="/author/js/author.js"></script>
+  <script src="/prognosis/js/prognosis.js"></script>
+
 </head>
 
 <body>
+  <dcc-rest id="harena-prognosis-lvl" bind="harena-prognosis-lvl"></dcc-rest>
   <dcc-include src="/author/partials/header.html"></dcc-include>
   <main role="">
     <div id="main-panel" class="d-flex flex-column vh-100 vw-100 index-boot-padding">
       <div class=" d-flex flex-column w-xl-75 pb-5 h-100 w-100 bg-dark scroll-y mx-auto align-items-center">
         <h1 class="txt-light mt-5">Seja bem vindo à Roda da Fortuna!</h1>
-        <h4 class="pt-5 mt-5 mx-5">Olá, Dr(a).! Bem vindo à roda da fortuna!<br><br>
+        <h4 class="pt-5 mt-5 mx-5" style="text-align: justify; text-justify:inter-word;">Olá, Dr(a).! Bem vindo à roda da fortuna!<br><br>
           Aisa, moira cortadora do fio da vida, e Caronte, barqueiro do mundo dos mortos, se apaixonaram e estão em lua de mel!
           Desde então, ninguém mais morre! As moiras do nascimento e desenvolvimento precisam de um estagiário pra assumir o
           lugar de Aisa enquanto ela não volta do Caribe.
@@ -104,12 +102,20 @@
           Como estagiário, você pode usar o tear milenar, A RODA DA FORTUNA, para você determinar (alguns)
           parâmetros do seu paciente à admissão.<br><br>
           Então, para garantir que seu paciente sobreviva, quais parâmetros você escolheria?</h4>
-        <div class=" mt-5 d-flex flex-column w-75 justify-content-center" id="btn-home-container">
-          <button class="btn btn-success w-50 mx-auto" type="button" name="button" onclick="window.location.href='/prognosis/learn/player/'"> Aceito esse desafio!</button>
+        <div class=" mt-5 d-flex flex-row w-75 justify-content-center" id="btn-home-container">
+
+          <button class="btn btn-info w-50 mr-3 d-none" type="button" id="btn-progress"
+          onclick="window.location.href='/prognosis/learn/progress/'"> Lista das fases</button>
+          <button class="btn btn-success w-50 mx-auto" type="button" id="btn-continue"
+          onclick="window.location.href='/prognosis/learn/player/'"> Aceito esse desafio!</button>
         </div>
 
       </div>
     </div>
   </main>
+  <dcc-dhtml id="harena-dhtml-prognosis" connect="retrieve:harena-prognosis-lvl:service/request/get">
+    <input type="hidden" name="{{userProperty.0.title}}" id="current-lvl" value="{{userProperty.0.value}}">
+    <end-dcc></end-dcc>
+  </dcc-dhtml>
 </body>
 </html>

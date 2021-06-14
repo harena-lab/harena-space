@@ -1,82 +1,101 @@
 class Prognosis {
   constructor() {
     this._ready = false
-    this.start = this.start.bind(this)
-    MessageBus.int.subscribe('control/dhtml/ready', this.start)
-    MessageBus.int.publish('control/dhtml/status/request', {id: 'harena-dhtml-prognosis-current-lvl'})
-    MessageBus.int.publish('control/dhtml/status/request', {id: 'harena-dhtml-prognosis-heighest-level'})
+    this._totalReady = 0
+    this.preStart = this.preStart.bind(this)
+    MessageBus.int.subscribe('control/dhtml/ready', this.preStart)
+    MessageBus.int.subscribe('control/html/ready', this.preStart)
+    MessageBus.int.publish('control/dhtml/status/request')
 
-    MessageBus.int.subscribe('control/html/ready', this.start)
     // this.addPacientVariableOption = this.addPacientVariableOption.bind(this)
     // this.deletePacientVariableOption = this.deletePacientVariableOption.bind(this)
     // MessageBus.ext.subscribe('button/add-option/clicked', this.addPacientVariableOption)
     // MessageBus.ext.subscribe('button/delete-option/clicked', this.deletePacientVariableOption)
   }
+  async preStart () {
+    const dhtmlList = document.querySelectorAll('dcc-dhtml')
+    for (let i = 0; i < dhtmlList.length; i++) {
+      if(dhtmlList[i]._ready == true){
+        this._totalReady++
+      }
+      if(this._totalReady == dhtmlList.length){
+        MessageBus.int.unsubscribe('control/dhtml/ready', this.preStart)
+        MessageBus.int.unsubscribe('control/html/ready', this.preStart)
+        this.start()
+      }
+    }
+    if(dhtmlList.length == 0){
+      MessageBus.int.unsubscribe('control/html/ready', this.preStart)
+      this.start()
+    }
+  }
 
   async start (){
-    for (let i = 0; i < document.querySelectorAll('dcc-dhtml').length; i++) {
-      let dhtmlList = document.querySelectorAll('dcc-dhtml')
-      if(dhtmlList[i]._ready == true){
-        this._ready = true
-      }else{
-        this._ready = false
+    Prognosis.i.expandMultiChoice()
+    if (new URL(document.location).pathname == '/prognosis/learn/player/') {
+      Prognosis.i.getPacientOptions()
+
+      const nextStep =  document.querySelector('#btn-next-step')
+      const fnnextStep = function (){
+        if(this.form.checkValidity()){
+          window.location.href = `/prognosis/learn/player/result?calc=${this.form.querySelector('#saps-survival').value}&playerCalc=${this.form.querySelector('#player-survival-rate').value}`
+        }
+        // console.log(this.form.querySelector('#saps-survival').value)
+        // console.log(this.form.querySelector('#player-survival-rate').value)
       }
-    }
-    if(document.querySelectorAll('dcc-dhtml').length == 0){
-      this._ready = true
-    }
-    if(this._ready){
-      MessageBus.int.unsubscribe('control/dhtml/ready', this.start)
-      Prognosis.i.expandMultiChoice()
-      if (new URL(document.location).pathname == '/prognosis/learn/player/') {
-        Prognosis.i.getPacientOptions()
+      nextStep.addEventListener('click', fnnextStep)
 
-        const nextStep =  document.querySelector('#btn-next-step')
-        const fnnextStep = function (){
-          if(this.form.checkValidity()){
-            window.location.href = `/prognosis/learn/player/result?calc=${this.form.querySelector('#saps-survival').value}&playerCalc=${this.form.querySelector('#player-survival-rate').value}`
-          }
-          // console.log(this.form.querySelector('#saps-survival').value)
-          // console.log(this.form.querySelector('#player-survival-rate').value)
-        }
-        nextStep.addEventListener('click', fnnextStep)
+      const createPacientBtn =  document.querySelector('#btn-create-pacient')
+      const fnCreatePacientBtn = function (){
+        if(this.form.checkValidity())
+        Saps.i.calcSaps3Score(this.form)
+      }
+      createPacientBtn.addEventListener('click', fnCreatePacientBtn)
 
-        const createPacientBtn =  document.querySelector('#btn-create-pacient')
-        const fnCreatePacientBtn = function (){
-          if(this.form.checkValidity())
-          Saps.i.calcSaps3Score(this.form)
-        }
-        createPacientBtn.addEventListener('click', fnCreatePacientBtn)
-
-        const playerSurvivalRate = document.querySelector('#player-survival-rate')
-        const survivalRateOutputTxt = document.querySelector('#player-survival-rate-txt')
-        playerSurvivalRate.value = 0
+      const playerSurvivalRate = document.querySelector('#player-survival-rate')
+      const survivalRateOutputTxt = document.querySelector('#player-survival-rate-txt')
+      playerSurvivalRate.value = 0
+      survivalRateOutputTxt.innerHTML = playerSurvivalRate.value+'%'
+      playerSurvivalRate.addEventListener('input', function(){
         survivalRateOutputTxt.innerHTML = playerSurvivalRate.value+'%'
-        playerSurvivalRate.addEventListener('input', function(){
-          survivalRateOutputTxt.innerHTML = playerSurvivalRate.value+'%'
-        })
+      })
 
+    }
+    if (new URL(document.location).pathname.includes('/prognosis/calculator')){
+      Prognosis.i.getPacientOptions(true)
+    }
+    if (new URL(document.location).pathname.includes('/prognosis/creation')){
+      var btnAddOption = document.querySelectorAll('.btn-add-option')
+      for (var btn of btnAddOption) {
+        // console.log('============')
+        // console.log(btn)
+        btn.addEventListener('click', Prognosis.i.addPacientVariableOption)
       }
-      if (new URL(document.location).pathname.includes('/prognosis/calculator')){
-        Prognosis.i.getPacientOptions(true)
+      document.querySelector('#btn-update-idade-option').addEventListener('click', Prognosis.i.updatePacientVariableOption)
+      Prognosis.i.getPacientOptions(true)
+    }
+    if (new URL(document.location).pathname.includes('/learn/player/result')){
+      const retryLvl = document.querySelector('#btn-retry')
+      retryLvl.addEventListener('click', function(){
+        window.location.href = `/prognosis/learn/player/?diffic=${localStorage.getItem('prognosis-current-lvl')}`
+      })
+      for (var elem of document.querySelectorAll('input')) {
+        elem.checked = false
       }
-      if (new URL(document.location).pathname.includes('/prognosis/creation')){
-        var btnAddOption = document.querySelectorAll('.btn-add-option')
-        for (var btn of btnAddOption) {
-          // console.log('============')
-          // console.log(btn)
-          btn.addEventListener('click', Prognosis.i.addPacientVariableOption)
-        }
-        document.querySelector('#btn-update-idade-option').addEventListener('click', Prognosis.i.updatePacientVariableOption)
-        Prognosis.i.getPacientOptions(true)
-      }
-      if (new URL(document.location).pathname.includes('/learn/player/result')){
-        for (var elem of document.querySelectorAll('input')) {
-          elem.checked = false
-        }
-        Prognosis.i.playerResult()
+      Prognosis.i.playerResult()
+    }
+    if (new URL(document.location).pathname == '/prognosis/learn/') {
+
+      const currentLvl = document.querySelector('#current-lvl')
+      const btnProgress = document.querySelector('#btn-progress')
+      const btnContinue = document.querySelector('#btn-continue')
+      if(currentLvl.value != ''){
+        btnProgress.classList.remove('d-none')
+        btnContinue.setAttribute('onclick', 'location.href="/prognosis/learn/player"')
+        btnContinue.textContent = 'Continuar'
       }
     }
+
   }
 
   async expandMultiChoice (){
@@ -238,14 +257,10 @@ class Prognosis {
     //Check if input has attribute 'required', also removes 'required' if input is hidden
     let dependantInput = document.querySelectorAll(`div.d-none.progn-multi-wrapper[id*="wrapper"] > div.form-check > input`)
     for (var elem of dependantInput) {
-      // console.log('============ i do not like it')
-      // console.log(elem)
       elem.required = false
     }
     dependantInput = document.querySelectorAll(`div.progn-multi-wrapper:not(.d-none)[id*="wrapper"] > div.form-check > input`)
     for (var elem of dependantInput) {
-      // console.log('============ i do not like itaaaa')
-      // console.log(elem)
       if(!elem.required)
         elem.required = true
     }
@@ -3950,11 +3965,11 @@ class Prognosis {
           configurable: true
         })
 
-    console.log('============ extracting')
-    console.log(selectedPacient)
+    // console.log('============ extracting')
+    // console.log(selectedPacient)
     let mainKeys = Object.keys(selectedPacient)
-    console.log('============ keys')
-    console.log(mainKeys)
+    // console.log('============ keys')
+    // console.log(mainKeys)
 
     const findValue = function (object){
       let findings = {}
@@ -4024,8 +4039,8 @@ class Prognosis {
     for (var i = 0; i < mainKeys.length; i++) {
 
       let fnVariable = Object.keys(selectedPacient)[i]
-      console.log('========================================================')
-      console.log(fnVariable)
+      // console.log('========================================================')
+      // console.log(fnVariable)
       // console.log(selectedPacient[fnVariable])
       if(selectedPacient[fnVariable].locked) {
         if(Object.keys(selectedPacient[fnVariable].locked).length > 0){
@@ -4033,25 +4048,25 @@ class Prognosis {
         }
         for (let t = 0; t < selectedPacient[fnVariable].locked.length; t++) {
           let keyText = Object.keys(selectedPacient[fnVariable].locked[t])[0]
-          console.log('============ locked option')
+          // console.log('============ locked option')
 
           if(typeof Object.values(selectedPacient[fnVariable].locked)[t] == 'object'){
-            console.log('============ object typeof key')
-            console.log(Object.keys(selectedPacient[fnVariable].locked)[t])
-            console.log('============ object typeof value')
-            console.log(Object.values(selectedPacient[fnVariable].locked)[t])
+            // console.log('============ object typeof key')
+            // console.log(Object.keys(selectedPacient[fnVariable].locked)[t])
+            // console.log('============ object typeof value')
+            // console.log(Object.values(selectedPacient[fnVariable].locked)[t])
             let finding = findValue(Object.values(selectedPacient[fnVariable].locked)[t])
-            console.log('============ object typeof findings')
-            console.log(finding[Object.keys(finding)])
-            console.log(lockedFindings)
+            // console.log('============ object typeof findings')
+            // console.log(finding[Object.keys(finding)])
+            // console.log(lockedFindings)
             lockedFindings[fnVariable][Object.keys(finding)] = finding[Object.keys(finding)]
 
           }else{
-            console.log(fnVariable)
-            console.log(Object.values(selectedPacient[fnVariable].locked)[t])
-            console.log('============ Saps3 value')
-            console.log(pacientInfo['pacient'][fnVariable]['values']
-            [Object.values(selectedPacient[fnVariable].locked)[t]])
+            // console.log(fnVariable)
+            // console.log(Object.values(selectedPacient[fnVariable].locked)[t])
+            // console.log('============ Saps3 value')
+            // console.log(pacientInfo['pacient'][fnVariable]['values']
+            // [Object.values(selectedPacient[fnVariable].locked)[t]])
             lockedFindings[fnVariable] = Object.values(selectedPacient[fnVariable].locked)[t]
           }
         }
@@ -4063,23 +4078,23 @@ class Prognosis {
         }
         for (let t = 0; t < selectedPacient[fnVariable].open.length; t++) {
           let keyText = Object.keys(selectedPacient[fnVariable].open[t])[0]
-          console.log('============ open option')
+          // console.log('============ open option')
 
           if(typeof Object.values(selectedPacient[fnVariable].open)[t] == 'object'){
-            console.log('============ object typeof key')
-            console.log(Object.keys(selectedPacient[fnVariable].open)[t])
-            console.log('============ object typeof value')
-            console.log(Object.values(selectedPacient[fnVariable].open)[t])
+            // console.log('============ object typeof key')
+            // console.log(Object.keys(selectedPacient[fnVariable].open)[t])
+            // console.log('============ object typeof value')
+            // console.log(Object.values(selectedPacient[fnVariable].open)[t])
             let finding = findValue(Object.values(selectedPacient[fnVariable].open)[t])
-            console.log('============ object typeof findings')
-            console.log(finding[Object.keys(finding)])
+            // console.log('============ object typeof findings')
+            // console.log(finding[Object.keys(finding)])
             openFindings[fnVariable][Object.keys(finding)] = finding[Object.keys(finding)]
 
           }else{
-            console.log(fnVariable)
-            console.log(Object.values(selectedPacient[fnVariable].open)[t])
-            console.log('============ pacientInfo value')
-            console.log(scoreValues['pacient'][Object.values(selectedPacient[fnVariable].open)[t]])
+            // console.log(fnVariable)
+            // console.log(Object.values(selectedPacient[fnVariable].open)[t])
+            // console.log('============ pacientInfo value')
+            // console.log(scoreValues['pacient'][Object.values(selectedPacient[fnVariable].open)[t]])
             openFindings[fnVariable] = Object.values(selectedPacient[fnVariable].open)
           }
         }
@@ -4089,8 +4104,8 @@ class Prognosis {
 
     if((pacientOptions.locked && Object.keys(pacientOptions.locked).length > 0)
     || (pacientOptions.open && Object.keys(pacientOptions.open).length > 0)){
-      console.log('=================================================================================')
-      console.log('============ calculating best options...')
+      // console.log('===========================================================')
+      // console.log('============ calculating best options...')
       // console.log(pacientOptions)
       // console.log('============ Locked Options')
       // console.log(Object.entries(pacientOptions.locked))
@@ -4146,48 +4161,48 @@ class Prognosis {
         if(typeof childKey == 'object'){
           for (let x = 0; x < Object.keys(childKey).length; x++) {
 
-            console.log('============ child key')
-            console.log(Object.keys(childKey)[x])
+            // console.log('============ child key')
+            // console.log(Object.keys(childKey)[x])
             let childValues = pacientOptions.open[mainKey][Object.keys(childKey)[x]]
             if(Array.isArray(childKey)){
               childValues = pacientOptions.open[mainKey]
-              console.log('============ child values')
+              // console.log('============ child values')
               for (var z = 0; z < childValues.length; z++) {
-                console.log(childValues[z])
-                console.log(scoreValues['pacient'][childValues[z]])
-                console.log(pacientOptions.open[mainKey])
+                // console.log(childValues[z])
+                // console.log(scoreValues['pacient'][childValues[z]])
+                // console.log(pacientOptions.open[mainKey])
                 pacientScore['open'][mainKey][childValues[z]] = scoreValues['pacient'][childValues[z]]
               }
             }else{
               pacientScore['open'][Object.keys(childKey)[x]] = {}
               pacientScore['open'][mainKey][Object.keys(childKey)[x]] = {}
-              console.log('============ child values')
+              // console.log('============ child values')
               for (var z = 0; z < childValues.length; z++) {
-                console.log(childValues[z])
+                // console.log(childValues[z])
                 if(scoreValues['pacient'][Object.keys(childKey)[x]]){
-                  console.log(scoreValues['pacient'][Object.keys(childKey)[x]][childValues[z]])
-                  console.log(typeof(scoreValues['pacient'][Object.keys(childKey)[x]][childValues[z]]))
+                  // console.log(scoreValues['pacient'][Object.keys(childKey)[x]][childValues[z]])
+                  // console.log(typeof(scoreValues['pacient'][Object.keys(childKey)[x]][childValues[z]]))
                   pacientScore['open'][Object.keys(childKey)[x]][childValues[z]] = scoreValues['pacient'][Object.keys(childKey)[x]][childValues[z]]
-                  console.log(pacientScore)
+                  // console.log(pacientScore)
                 }else{
-                  console.log(scoreValues['pacient'][childValues[z]])
-                  console.log(typeof(scoreValues['pacient'][childValues[z]]))
+                  // console.log(scoreValues['pacient'][childValues[z]])
+                  // console.log(typeof(scoreValues['pacient'][childValues[z]]))
                   if((typeof(scoreValues['pacient'][childValues[z]]) == 'object') && typeof childValues[z] == 'string'){
-                    console.log('============ evolving...')
-                    console.log(scoreValues['pacient'][childValues[z]]['Sim'])
+                    // console.log('============ evolving...')
+                    // console.log(scoreValues['pacient'][childValues[z]]['Sim'])
                     pacientScore['open'][Object.keys(childKey)[x]][childValues[z]] = scoreValues['pacient'][childValues[z]]['Sim']
-                    console.log(pacientScore)
+                    // console.log(pacientScore)
                   }else if((typeof childValues[z] == 'object')){
-                    console.log('============ everything is object yey')
+                    // console.log('============ everything is object yey')
                     let objKey = Object.keys(childValues[z])[0]
                     let objValue = childValues[z][objKey]['values'][0]
-                    console.log(objKey)
-                    console.log(objValue)
-                    console.log(scoreValues['pacient'][objKey][objValue])
+                    // console.log(objKey)
+                    // console.log(objValue)
+                    // console.log(scoreValues['pacient'][objKey][objValue])
                     pacientScore['open'][mainKey][Object.keys(childKey)[x]][objKey] = scoreValues['pacient'][objKey][objValue]
-                    console.log(pacientScore)
+                    // console.log(pacientScore)
                   }else{
-                    console.log(pacientScore)
+                    // console.log(pacientScore)
                     pacientScore['open'][Object.keys(childKey)[x]][childValues[z]] = scoreValues['pacient'][childValues[z]]
                   }
                 }
@@ -4258,7 +4273,7 @@ class Prognosis {
     if (pacient.locked && Object.keys(pacient.locked).length > 0) {
       for (let i = 0; i < Object.keys(pacient.locked).length; i++) {
         lockedOptions += Object.values(pacient.locked)[i]
-        console.log(lockedOptions)
+        // console.log(lockedOptions)
       }
 
     }
@@ -4272,19 +4287,25 @@ class Prognosis {
         // console.log(openOptions)
       }
     }
-    console.log('============')
-    console.log(openOptions)
-    console.log(lockedOptions)
-    console.log('============ best pacient')
-    console.log(openOptions + lockedOptions + 16)
+    function round(value, precision) {
+      let multiplier = Math.pow(10, precision || 0);
+      return Math.round(value * multiplier) / multiplier;
+    }
+    // console.log('============')
+    // console.log(openOptions)
+    // console.log(lockedOptions)
+    // console.log('============ best pacient')
+    // console.log(openOptions + lockedOptions + 16)
     let dynamicScore = openOptions + lockedOptions + 16
     let logitDynamic = -32.6659+Math.log(dynamicScore+20.5958)*7.3068
     let mortalityDynamic = Math.exp(logitDynamic)/ (1+ Math.exp(logitDynamic))
     let mortalityPercentage = (Math.round(mortalityDynamic*1000)/1000)*100
-    console.log('============ dynamic score '+dynamicScore)
-    console.log('============ logit dynamic '+logitDynamic)
-    console.log('============ mortalityDynamic '+mortalityDynamic)
-    console.log('============ mortalityPercentage '+mortalityPercentage)
+
+    document.querySelector('#pacient-perfect').value = round((100 - mortalityPercentage),1)
+
+    // console.log('============ dynamic score '+dynamicScore)
+    // console.log('============ mortalityPercentage '+mortalityPercentage)
+    // console.log('============ survivalPercentage '+round((100 - mortalityPercentage),1))
 
 
 
@@ -4447,26 +4468,38 @@ class Prognosis {
       rouletteAnim.addEventListener('endEvent', fnModalEnd)
 
       const prognResultAcc = document.querySelector('#prognosis-result-accuracy')
-      const prognResultCalc = document.querySelector('#prognosis-result-calc')
-      if (prognResultAcc && prognResultCalc){
+      const prognPerfect = document.querySelector('#prognosis-perfect-cenario')
+      if (prognResultAcc){
         const playerGuess = new URL(document.location).searchParams.get('playerCalc')
         const sapsCalc = new URL(document.location).searchParams.get('calc')
         const diffCalc = parseFloat(playerGuess)-parseFloat(sapsCalc)
         /////ON PROGRESS
         if(diffCalc > 10){
-          console.log('============ super estimado')
+          // console.log('============ super estimado')
           prognResultAcc.textContent = 'Super estimado'
 
         }else if (diffCalc < -10) {
-          console.log('============ sub estimado')
+          // console.log('============ sub estimado')
           prognResultAcc.textContent = 'Sub estimado'
 
         }else if (diffCalc <= 10 && diffCalc >= -10) {
-          console.log('============ na mosca')
+          // console.log('============ na mosca')
           prognResultAcc.textContent = 'Na mosca! :)'
 
         }
 
+      }
+      if(prognPerfect){
+        const perfectValue = document.querySelector('#prognosis-lvl-perfect')
+        if(parseInt(perfectValue.value) == parseInt(sapsCalc)){
+          // console.log('============ paciente perfeito')
+
+          prognPerfect.textContent = 'Sim!'
+        }else{
+          // console.log('============ paciente imperfeito :(')
+          // console.log(perfectValue)
+          prognPerfect.textContent = 'Não...'
+        }
       }
   }
 
