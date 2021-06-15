@@ -89,13 +89,31 @@ class Prognosis {
       const currentLvl = document.querySelector('#current-lvl')
       const btnProgress = document.querySelector('#btn-progress')
       const btnContinue = document.querySelector('#btn-continue')
-      if(currentLvl.value != ''){
+      if(currentLvl.value != '' || (localStorage.getItem('prognosis-current-lvl')
+      && localStorage.getItem('prognosis-current-lvl') > 0)){
         btnProgress.classList.remove('d-none')
         btnContinue.setAttribute('onclick', 'location.href="/prognosis/learn/player"')
         btnContinue.textContent = 'Continuar'
       }
     }
+    if(document.querySelector('#db-highest')){
+      this.syncProgression()
+    }
 
+  }
+
+  async syncProgression(){
+    let dbHighest = document.querySelector('#db-highest')
+    let dbCurrent = document.querySelector('#db-current')
+    if (dbHighest.value != ''){
+      localStorage.setItem('prognosis-highest-lvl', dbHighest.value)
+      document.querySelector('dcc-submit[connect="submit:harena-user-property:service/request/post"]')._computeTrigger()
+    }
+    if(dbCurrent && dbCurrent.value != ''){
+      if (parseInt(localStorage.getItem('prognosis-current-lvl')) != parseInt(dbCurrent.value)) {
+        localStorage.setItem('prognosis-current-lvl', dbCurrent.value)
+      }
+    }
   }
 
   async expandMultiChoice (){
@@ -1254,8 +1272,7 @@ class Prognosis {
                 {
                   "Motivo de admissão na UTI": {
                     "values": [
-                      "Outro choque",
-                      "Pancreatite grave",
+                      "Arritmia"
                     ],
                   },
                 },
@@ -1409,50 +1426,15 @@ class Prognosis {
               ],
               "open": [
                 {
-                  "IC NYHA IV": {
+                  "Portador de":{
+                    "selectList": "true",
                     "values": [
-                      "Não",
-                      "Sim",
-                    ],
-                  },
-                },
-                {
-                  "Câncer metastático": {
-                    "values": [
-                      "Não",
-                      "Sim",
-                    ],
-                  },
-                },
-                {
-                  "Terapia oncológica": {
-                    "values": [
-                      "Não",
-                      "Sim",
-                    ],
-                  },
-                },
-                {
-                  "Câncer hematológico": {
-                    "values": [
-                      "Não",
-                      "Sim",
-                    ],
-                  },
-                },
-                {
-                  "Cirrose": {
-                    "values": [
-                      "Não",
-                      "Sim",
-                    ],
-                  },
-                },
-                {
-                  "SIDA": {
-                    "values": [
-                      "Não",
-                      "Sim",
+                      "IC NYHA IV",
+                      "Câncer metastático",
+                      "Terapia oncológica",
+                      "Câncer hematológico",
+                      "Cirrose",
+                      "SIDA",
                     ],
                   },
                 },
@@ -1659,50 +1641,15 @@ class Prognosis {
               ],
               "open": [
                 {
-                  "IC NYHA IV": {
+                  "Portador de":{
+                    "selectList": "true",
                     "values": [
-                      "Não",
-                      "Sim",
-                    ],
-                  },
-                },
-                {
-                  "Câncer metastático": {
-                    "values": [
-                      "Não",
-                      "Sim",
-                    ],
-                  },
-                },
-                {
-                  "Terapia oncológica": {
-                    "values": [
-                      "Não",
-                      "Sim",
-                    ],
-                  },
-                },
-                {
-                  "Câncer hematológico": {
-                    "values": [
-                      "Não",
-                      "Sim",
-                    ],
-                  },
-                },
-                {
-                  "Cirrose": {
-                    "values": [
-                      "Não",
-                      "Sim",
-                    ],
-                  },
-                },
-                {
-                  "SIDA": {
-                    "values": [
-                      "Não",
-                      "Sim",
+                      "IC NYHA IV",
+                      "Câncer metastático",
+                      "Terapia oncológica",
+                      "Câncer hematológico",
+                      "Cirrose",
+                      "SIDA",
                     ],
                   },
                 },
@@ -1904,50 +1851,15 @@ class Prognosis {
               ],
               "open": [
                 {
-                  "IC NYHA IV": {
+                  "Portador de":{
+                    "selectList": "true",
                     "values": [
-                      "Não",
-                      "Sim",
-                    ],
-                  },
-                },
-                {
-                  "Câncer metastático": {
-                    "values": [
-                      "Não",
-                      "Sim",
-                    ],
-                  },
-                },
-                {
-                  "Terapia oncológica": {
-                    "values": [
-                      "Não",
-                      "Sim",
-                    ],
-                  },
-                },
-                {
-                  "Câncer hematológico": {
-                    "values": [
-                      "Não",
-                      "Sim",
-                    ],
-                  },
-                },
-                {
-                  "Cirrose": {
-                    "values": [
-                      "Não",
-                      "Sim",
-                    ],
-                  },
-                },
-                {
-                  "SIDA": {
-                    "values": [
-                      "Não",
-                      "Sim",
+                      "IC NYHA IV",
+                      "Câncer metastático",
+                      "Terapia oncológica",
+                      "Câncer hematológico",
+                      "Cirrose",
+                      "SIDA",
                     ],
                   },
                 },
@@ -1998,8 +1910,7 @@ class Prognosis {
                 {
                   "Motivo de admissão na UTI": {
                     "values": [
-                      "Outro choque",
-                      "Pancreatite grave",
+                      "Alteração do nível de consciência"
                     ],
                   },
                 },
@@ -2135,11 +2046,10 @@ class Prognosis {
               "open": []
             },
             "Origem":{
-              "locked": [],
+              "locked": [
+                "Outra UTI"
+              ],
               "open": [
-                "Pronto Socorro",
-                "Outra UTI",
-                "Nenhuma das anteriores",
               ],
             },
             "Comorbidade":{
@@ -2157,50 +2067,15 @@ class Prognosis {
               ],
               "open": [
                 {
-                  "IC NYHA IV": {
+                  "Portador de":{
+                    "selectList": "true",
                     "values": [
-                      "Não",
-                      "Sim",
-                    ],
-                  },
-                },
-                {
-                  "Câncer metastático": {
-                    "values": [
-                      "Não",
-                      "Sim",
-                    ],
-                  },
-                },
-                {
-                  "Terapia oncológica": {
-                    "values": [
-                      "Não",
-                      "Sim",
-                    ],
-                  },
-                },
-                {
-                  "Câncer hematológico": {
-                    "values": [
-                      "Não",
-                      "Sim",
-                    ],
-                  },
-                },
-                {
-                  "Cirrose": {
-                    "values": [
-                      "Não",
-                      "Sim",
-                    ],
-                  },
-                },
-                {
-                  "SIDA": {
-                    "values": [
-                      "Não",
-                      "Sim",
+                      "IC NYHA IV",
+                      "Câncer metastático",
+                      "Terapia oncológica",
+                      "Câncer hematológico",
+                      "Cirrose",
+                      "SIDA",
                     ],
                   },
                 },
@@ -2432,8 +2307,7 @@ class Prognosis {
                 {
                   "Motivo de admissão na UTI": {
                     "values": [
-                      "Outro choque",
-                      "Pancreatite grave",
+                      "Convulsão"
                     ],
                   },
                 },
@@ -2631,8 +2505,7 @@ class Prognosis {
                 {
                   "Motivo de admissão na UTI": {
                     "values": [
-                      "Outro choque",
-                      "Pancreatite grave",
+                      "Insuficiência hepática"
                     ],
                   },
                 },
@@ -2836,8 +2709,7 @@ class Prognosis {
                 {
                   "Motivo de admissão na UTI": {
                     "values": [
-                      "Outro choque",
-                      "Pancreatite grave",
+                      "Outro choque"
                     ],
                   },
                 },
@@ -3000,14 +2872,28 @@ class Prognosis {
           localStorage.setItem('prognosis-current-lvl', pacientInfo.pacients[0].dificuldade)
     }
     if(document.querySelector('#welcome-lvl-modal') && (localStorage.getItem('prognosis-current-lvl') == 1
-      || localStorage.getItem('prognosis-current-lvl')==null)){
-      var welcomeModal = document.querySelector('#welcome-lvl-modal')
+      || localStorage.getItem('prognosis-current-lvl')==null) && (!localStorage.getItem('hide-intro-1'))){
+      let welcomeModal = document.querySelector('#welcome-lvl-modal')
       welcomeModal.querySelector('.modal-title').textContent = 'Seu primeiro paciente'
-      welcomeModal.querySelector('.modal-body > p').textContent = `Esse primeiro paciente...bem, ele não é "mortal". As irmãs querem ter certeza que você
-      entende o básico antes de começar com os humanos reais. Com este aqui você
-      poderá fazer todas as mudanças possíveis. Tente fazer com que ele tenha as melhores chances de sobreviver!`
+      welcomeModal.querySelector('.modal-body > p').innerHTML = `Hoje é seu primeiro dia no estágio.
+      As moiras não acham que você está preparado para ser mandado direto pro trabalho em campo,
+      então elas querem te testar. Qual o perfil do paciente que Aisa raramente cortaria o fio da vida?
+      <br><br>Escolha as variáveis que aumentam a chance de sobrevivência do paciente à chegada na UTI.`
 
       $('#welcome-lvl-modal').modal('show')
+      localStorage.setItem('hide-intro-2', true)
+    }else if(document.querySelector('#welcome-lvl-modal') && (localStorage.getItem('prognosis-current-lvl') == 2)
+    && (!localStorage.getItem('hide-intro-2'))){
+      let welcomeModal = document.querySelector('#welcome-lvl-modal')
+      welcomeModal.querySelector('.modal-title').textContent = 'Nem mesmo os deuses'
+      welcomeModal.querySelector('.modal-body > p').innerHTML = `Continuando seu treinamento,
+      as moiras querem te mostrar que nem os deuses escolhem tudo... Quem dirá você! Nas próximas fases,
+      alguns parâmetros já estarão pré-definidos, demarcados com esse símbolo: <i class="fas fa-lock"></i>.
+      <br><br> Com os demais, continue escolhendo opções que aumentem
+      a chance de sobrevivência do seu paciente.`
+
+      $('#welcome-lvl-modal').modal('show')
+      localStorage.setItem('hide-intro-2', true)
     }
 
     if(new URL(document.location).pathname.includes('calculator') || new URL(document.location).pathname.includes('creation'))
@@ -3974,27 +3860,34 @@ class Prognosis {
     const findValue = function (object){
       let findings = {}
       let findingsValues = []
-      // console.log('============ find value object')
-      // console.log(object)
-      // console.log(Object.entries(object))
+      console.log('============ find value object')
+      console.log(object)
+      console.log(Object.entries(object))
       for (let i = 0; i < Object.keys(object).length; i++) {
-        // console.log('============ find for keys')
-        // console.log(Object.keys(object)[i])
-        // console.log(object[Object.keys(object)[i]])
+        console.log('============ find for keys')
+        console.log(Object.keys(object)[i])
+        console.log(object[Object.keys(object)[i]])
 
       }
       for (let i = 0; i < Object.values(object).length; i++) {
-        // console.log('============ find for values')
-        // console.log(Object.values(object)[i])
-        // console.log(Object.entries(object)[i])
+        console.log('============ find for values')
+        console.log(Object.values(object)[i])
+        console.log(Object.entries(object)[i])
+        if(Object.values(object)[i]['values'] && object[Object.keys(object)[i]]['selectList']){
+          // console.log('============ modern uau')
+        }
         if(Object.values(object)[i]['values']){
           let valueKeys = Object.values(object)[i]['values']
-          // console.log('============ looking for "values" keys')
+          console.log('============ looking for "values" keys')
           for (let p = 0; p < valueKeys.length; p++) {
-            // console.log('============ value is:')
-            // console.log(Object.entries(object)[i][0])
-            // console.log(valueKeys[p])
-            findingsValues.push(valueKeys[p])
+            console.log('============ value is:')
+            console.log(Object.entries(object)[i][0])
+            console.log(valueKeys[p])
+            if(typeof valueKeys[p] == 'string')
+              findingsValues.push(valueKeys[p])
+            else {
+              findingsValues.push(findValue(valueKeys[p]))
+            }
           }
         }
         if(Object.values(object)[i]['child']){
@@ -4016,6 +3909,8 @@ class Prognosis {
           enumerable: true,
           configurable: true,
         })
+        console.log('============ findings returned')
+        console.log(findings)
         return findings
 
       }
@@ -4081,15 +3976,32 @@ class Prognosis {
           // console.log('============ open option')
 
           if(typeof Object.values(selectedPacient[fnVariable].open)[t] == 'object'){
+            let currentObj = selectedPacient[fnVariable].open
+            let keyObj = Object.keys(currentObj)[t]
+            let valueObj = Object.values(currentObj)[t]
             // console.log('============ object typeof key')
-            // console.log(Object.keys(selectedPacient[fnVariable].open)[t])
+            // console.log(keyObj)
             // console.log('============ object typeof value')
-            // console.log(Object.values(selectedPacient[fnVariable].open)[t])
-            let finding = findValue(Object.values(selectedPacient[fnVariable].open)[t])
-            // console.log('============ object typeof findings')
-            // console.log(finding[Object.keys(finding)])
-            openFindings[fnVariable][Object.keys(finding)] = finding[Object.keys(finding)]
-
+            // console.log(valueObj)
+            let nestedObj = Object.keys(currentObj[keyObj])[0]
+            // if(currentObj[keyObj][nestedObj]['selectList'] == 'true'){
+            //   console.log('============loooooooooooooooooooooooooooooooooool')
+            //   console.log(currentObj[keyObj][nestedObj]['values'])
+            //   console.log(fnVariable)
+            //   console.log(Object.values(selectedPacient[fnVariable].open)[t])
+            //   console.log('============ pacientInfo value')
+            //   console.log(scoreValues['pacient'][Object.values(selectedPacient[fnVariable].open)[t]])
+            //   // openFindings[fnVariable] = Object.values(selectedPacient[fnVariable].open)
+            // }else{
+              let finding = findValue(Object.values(selectedPacient[fnVariable].open)[t])
+              console.log('============recieved from findValue')
+              console.log(finding)
+              console.log('============ object typeof findings')
+              console.log(finding[Object.keys(finding)])
+              console.log(finding[Object.values(finding)])
+              console.log(finding[Object.entries(finding)])
+              openFindings[fnVariable][Object.keys(finding)] = finding[Object.keys(finding)]
+            // }
           }else{
             // console.log(fnVariable)
             // console.log(Object.values(selectedPacient[fnVariable].open)[t])
@@ -4152,46 +4064,47 @@ class Prognosis {
       // console.log('=========================== starting open')
       for (let i = 0; i < Object.keys(pacientOptions.open).length; i++) {
         let mainKey = Object.keys(pacientOptions.open)[i]
-        // console.log('============ key')
-        // console.log(mainKey)
+        console.log('============ key')
+        console.log(mainKey)
         pacientScore['open'][mainKey] = {}
 
         let childKey = pacientOptions.open[mainKey]
-        // console.log(childKey)
+        console.log(childKey)
         if(typeof childKey == 'object'){
           for (let x = 0; x < Object.keys(childKey).length; x++) {
 
-            // console.log('============ child key')
-            // console.log(Object.keys(childKey)[x])
+            console.log('============ child key')
+            console.log(Object.keys(childKey)[x])
             let childValues = pacientOptions.open[mainKey][Object.keys(childKey)[x]]
             if(Array.isArray(childKey)){
               childValues = pacientOptions.open[mainKey]
-              // console.log('============ child values')
+              console.log('============ child values')
               for (var z = 0; z < childValues.length; z++) {
-                // console.log(childValues[z])
-                // console.log(scoreValues['pacient'][childValues[z]])
-                // console.log(pacientOptions.open[mainKey])
+                console.log(childValues[z])
+                console.log(scoreValues['pacient'][childValues[z]])
+                console.log(pacientOptions.open[mainKey])
                 pacientScore['open'][mainKey][childValues[z]] = scoreValues['pacient'][childValues[z]]
               }
             }else{
               pacientScore['open'][Object.keys(childKey)[x]] = {}
               pacientScore['open'][mainKey][Object.keys(childKey)[x]] = {}
-              // console.log('============ child values')
+              console.log('============ child values not array')
               for (var z = 0; z < childValues.length; z++) {
-                // console.log(childValues[z])
+                console.log(childValues[z])
                 if(scoreValues['pacient'][Object.keys(childKey)[x]]){
-                  // console.log(scoreValues['pacient'][Object.keys(childKey)[x]][childValues[z]])
-                  // console.log(typeof(scoreValues['pacient'][Object.keys(childKey)[x]][childValues[z]]))
+                  console.log(scoreValues['pacient'][Object.keys(childKey)[x]][childValues[z]])
+                  console.log(typeof(scoreValues['pacient'][Object.keys(childKey)[x]][childValues[z]]))
                   pacientScore['open'][Object.keys(childKey)[x]][childValues[z]] = scoreValues['pacient'][Object.keys(childKey)[x]][childValues[z]]
-                  // console.log(pacientScore)
+                  console.log(pacientScore)
                 }else{
-                  // console.log(scoreValues['pacient'][childValues[z]])
-                  // console.log(typeof(scoreValues['pacient'][childValues[z]]))
+
+                  console.log(scoreValues['pacient'][childValues[z]])
+                  console.log(typeof(scoreValues['pacient'][childValues[z]]))
                   if((typeof(scoreValues['pacient'][childValues[z]]) == 'object') && typeof childValues[z] == 'string'){
-                    // console.log('============ evolving...')
-                    // console.log(scoreValues['pacient'][childValues[z]]['Sim'])
+                    console.log('============ evolving...')
+                    console.log(scoreValues['pacient'][childValues[z]]['Sim'])
                     pacientScore['open'][Object.keys(childKey)[x]][childValues[z]] = scoreValues['pacient'][childValues[z]]['Sim']
-                    // console.log(pacientScore)
+                    console.log(pacientScore)
                   }else if((typeof childValues[z] == 'object')){
                     // console.log('============ everything is object yey')
                     let objKey = Object.keys(childValues[z])[0]
@@ -4199,31 +4112,38 @@ class Prognosis {
                     // console.log(objKey)
                     // console.log(objValue)
                     // console.log(scoreValues['pacient'][objKey][objValue])
-                    pacientScore['open'][mainKey][Object.keys(childKey)[x]][objKey] = scoreValues['pacient'][objKey][objValue]
-                    // console.log(pacientScore)
+                    if(scoreValues['pacient'][childValues[z]] == null){
+                      console.log('============ cmon legtsdo')
+                      console.log(Object.keys(childValues[z])[0])
+                      console.log(Object.values(childValues[z])[0][0])
+                      pacientScore['open'][mainKey][objKey] = scoreValues['pacient'][objKey][Object.values(childValues[z])[0][0]]
+                      console.log('============ trying to find empty')
+                      console.log()
+                    }else {
+                      pacientScore['open'][mainKey][Object.keys(childKey)[x]][objKey] = scoreValues['pacient'][objKey][objValue]
+                    }
+                    console.log(pacientScore)
                   }else{
-                    // console.log(pacientScore)
+                    console.log(pacientScore)
                     pacientScore['open'][Object.keys(childKey)[x]][childValues[z]] = scoreValues['pacient'][childValues[z]]
                   }
                 }
               }
             }
-              if (pacientScore['open'][Object.keys(childKey)[x]]
-              && (pacientScore['open'][Object.keys(childKey)[x]].length == undefined && Object.entries(pacientScore['open'][Object.keys(childKey)[x]]).length == 0)) {
-                delete pacientScore['open'][Object.keys(childKey)[x]]
-              }else if (pacientScore['open'][mainKey][Object.keys(childKey)[x]]
-              && pacientScore['open'][mainKey][Object.keys(childKey)[x]].length == undefined) {
-                delete pacientScore['open'][mainKey][Object.keys(childKey)[x]]
-              }
-
-
-            // if(Object.entries(pacientScore['open'][Object.keys(childKey)[x]]) == '' ||){
-            //   delete pacientScore['open'][Object.keys(childKey)[x]]
-            // }else if (Object.entries(pacientScore['open'][mainKey][Object.keys(childKey)[x]]) == ''){
-            //   delete pacientScore['open'][mainKey][Object.keys(childKey)[x]]
-            // }
+            if (pacientScore['open'][Object.keys(childKey)[x]]
+            && (pacientScore['open'][Object.keys(childKey)[x]].length == undefined && Object.entries(pacientScore['open'][Object.keys(childKey)[x]]).length == 0)) {
+              delete pacientScore['open'][Object.keys(childKey)[x]]
+            }else if (pacientScore['open'][mainKey][Object.keys(childKey)[x]]
+            && pacientScore['open'][mainKey][Object.keys(childKey)[x]].length == undefined) {
+              delete pacientScore['open'][mainKey][Object.keys(childKey)[x]]
+            }
+            if(pacientScore['open'][mainKey][Object.keys(childKey)[x]] && Object.entries(pacientScore['open'][mainKey][Object.keys(childKey)[x]]).length == 0){
+              console.log('=====================================================================')
+              console.log('deleting')
+              console.log()
+              delete pacientScore['open'][mainKey][Object.keys(childKey)[x]]
+            }
           }
-
         }else{
           // console.log('============ single value')
           // console.log(pacientOptions['open'][mainKey])
@@ -4238,7 +4158,8 @@ class Prognosis {
 
   }
   bestPacientScore(pacient){
-
+    console.log('============ recieving pacient for best score check')
+    console.log(pacient)
     const checkOptions = function(object) {
       let possible = []
       for (let key of Object.values(object)) {
@@ -4249,6 +4170,8 @@ class Prognosis {
             if(typeof value == 'object' && value!=null){
               possible.push(checkOptions(groupValue))
             }else if(value!=null){
+              console.log('============ this is a group')
+              console.log(value)
               groupValue+=value
             }
           }
@@ -4265,6 +4188,8 @@ class Prognosis {
             bestOption = variable
           }
         }
+        console.log('============ best option')
+        console.log(bestOption)
         return bestOption
       }
     }
@@ -4280,7 +4205,7 @@ class Prognosis {
     if(pacient.open && Object.keys(pacient.open).length > 0){
       for (let i = 0; i < Object.keys(pacient.open).length; i++) {
         // console.log('============ before')
-        // console.log(Object.values(pacients.open)[i])
+        // console.log(Object.values(pacient.open)[i])
         let object = Object.values(pacient.open)[i]
         // console.log('============open begins')
         openOptions += checkOptions(object)
@@ -4294,8 +4219,8 @@ class Prognosis {
     // console.log('============')
     // console.log(openOptions)
     // console.log(lockedOptions)
-    // console.log('============ best pacient')
-    // console.log(openOptions + lockedOptions + 16)
+    console.log('============ best pacient')
+    console.log(openOptions + lockedOptions + 16)
     let dynamicScore = openOptions + lockedOptions + 16
     let logitDynamic = -32.6659+Math.log(dynamicScore+20.5958)*7.3068
     let mortalityDynamic = Math.exp(logitDynamic)/ (1+ Math.exp(logitDynamic))
@@ -4305,7 +4230,7 @@ class Prognosis {
 
     // console.log('============ dynamic score '+dynamicScore)
     // console.log('============ mortalityPercentage '+mortalityPercentage)
-    // console.log('============ survivalPercentage '+round((100 - mortalityPercentage),1))
+    console.log('============ survivalPercentage '+round((100 - mortalityPercentage),1))
 
 
 
@@ -4442,16 +4367,6 @@ class Prognosis {
           document.querySelector('#roulette-invalid').classList.add('d-none')
           if(!document.querySelector('#btn-spin-roulette').innerHTML.includes('novamente'))
             document.querySelector('#btn-spin-roulette').innerHTML += ' novamente'
-
-          const btnNextLvl = document.querySelector('#btn-next-lvl')
-          btnNextLvl.classList.remove('d-none')
-          btnNextLvl.addEventListener('click', function (){
-            let nextLvl = parseInt(localStorage.getItem('prognosis-current-lvl'))+1
-            if(nextLvl>10)
-              nextLvl = 10
-            // localStorage.setItem('prognosis-current-lvl', nextLvl)
-            document.location.href = '/prognosis/learn/player/?diffic=' + nextLvl
-          })
         }else{
           document.querySelector('#roulette-invalid').classList.remove('d-none')
         }
@@ -4517,7 +4432,15 @@ class Prognosis {
       return Math.floor(Math.random() * (max - min)) + min;
     }
     const fnEndSpin = function(){
-
+      const btnNextLvl = document.querySelector('#btn-next-lvl')
+      btnNextLvl.classList.remove('d-none')
+      btnNextLvl.addEventListener('click', function (){
+        let nextLvl = parseInt(localStorage.getItem('prognosis-current-lvl'))+1
+        if(nextLvl>10)
+          nextLvl = 10
+        // localStorage.setItem('prognosis-current-lvl', nextLvl)
+        document.location.href = '/prognosis/learn/player/?diffic=' + nextLvl
+      })
       btnSpin.disabled = false
 
       rouletteAngle = rouletteSVG.transform.animVal[0].angle

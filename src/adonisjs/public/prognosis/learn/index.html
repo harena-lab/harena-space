@@ -85,23 +85,24 @@
 </head>
 
 <body>
+  <dcc-rest id="harena-user-property" bind="harena-user-property"></dcc-rest>
+  <dcc-rest id="harena-prognosis-highest-lvl" bind="harena-prognosis-highest-lvl"></dcc-rest>
   <dcc-rest id="harena-prognosis-lvl" bind="harena-prognosis-lvl"></dcc-rest>
   <dcc-include src="/author/partials/header.html"></dcc-include>
   <main role="">
     <div id="main-panel" class="d-flex flex-column vh-100 vw-100 index-boot-padding">
-      <div class=" d-flex flex-column w-xl-75 pb-5 h-100 w-100 bg-dark scroll-y mx-auto align-items-center">
+      <div class=" d-flex flex-column w-xl-75 pb-5 h-100 w-100 bg-dark main-scroll scroll-y mx-auto align-items-center">
         <h1 class="txt-light mt-5">Seja bem vindo à Roda da Fortuna!</h1>
-        <h4 class="pt-5 mt-5 mx-5" style="text-align: justify; text-justify:inter-word;">Olá, Dr(a).! Bem vindo à roda da fortuna!<br><br>
-          Aisa, moira cortadora do fio da vida, e Caronte, barqueiro do mundo dos mortos, se apaixonaram e estão em lua de mel!
-          Desde então, ninguém mais morre! As moiras do nascimento e desenvolvimento precisam de um estagiário pra assumir o
-          lugar de Aisa enquanto ela não volta do Caribe.
-          Pra ver se o estagiário entende bem sobre o ciclo da vida, o teste começa em um lugar onde há muitos mortais
-          doentes: a UTI! Assumindo esse plantão, será que você consegue dizer quem tem maior chance
-          de sobreviver à tesoura de Aisa? <br>
-          Te convido a fazer parte das moiras da grécia antiga, as tecelãs dos destinos dos deuses e dos mortais.
-          Como estagiário, você pode usar o tear milenar, A RODA DA FORTUNA, para você determinar (alguns)
-          parâmetros do seu paciente à admissão.<br><br>
-          Então, para garantir que seu paciente sobreviva, quais parâmetros você escolheria?</h4>
+        <h4 class="pt-5 mt-5 mx-5" style="text-align: justify; text-justify:inter-word;">Olá, Dr(a)., seja bem vindo à RODA DA FORTUNA!<br><br>
+          Como o time de Hades, deus grego do submundo, está desfalcado, o balanço das mortes ficou muito
+          desorganizado… A única solução que as moiras do nascimento e desenvolvimento tiveram foi contratar um
+          estagiário pra fazer o papel de Aisa e permitir que aqueles que precisam morrer possam finalmente fechar
+           o seu ciclo de vida.<br>
+          O estágio começará na UTI, um lugar onde há muitos mortais doentes... E a vaga tá aberta.
+          Topa ocupar esse espaço e ganhar umas horas extra-curriculares?
+          As tecelãs dos destinos dos deuses e dos mortais te emprestarão o tear milenar, a RODA DA FORTUNA,
+          para você determinar parâmetros do seu paciente à admissão.<br><br>
+          Será que você sabe dizer quem tem maior chance de sobreviver?</h4>
         <div class=" mt-5 d-flex flex-row w-75 justify-content-center" id="btn-home-container">
 
           <button class="btn btn-info w-50 mr-3 d-none" type="button" id="btn-progress"
@@ -113,9 +114,23 @@
       </div>
     </div>
   </main>
+  <dcc-submit xstyle="d-none" bind="submit-prognosis-highest-lvl"
+   connect="submit:harena-user-property:service/request/post"></dcc-submit>
+  <dcc-submit xstyle="d-none" bind="submit-prognosis-highest-lvl"
+   connect="submit:harena-user-property:service/request/put"></dcc-submit>
+
   <dcc-dhtml id="harena-dhtml-prognosis" connect="retrieve:harena-prognosis-lvl:service/request/get">
     <input type="hidden" name="{{userProperty.0.title}}" id="current-lvl" value="{{userProperty.0.value}}">
     <end-dcc></end-dcc>
   </dcc-dhtml>
+
+   <dcc-dhtml id="harena-dhtml-prognosis-current-lvl" connect="retrieve:harena-prognosis-lvl:service/request/get">
+     <input type="hidden" name="{{userProperty.0.title}}" id="db-current" value="{{userProperty.0.value}}">
+     <end-dcc></end-dcc>
+   </dcc-dhtml>
+   <dcc-dhtml id="harena-dhtml-prognosis-heighest-lvl" connect="retrieve:harena-prognosis-highest-lvl:service/request/get">
+     <input type="hidden" name="{{userProperty.0.title}}" id="db-highest" value="{{userProperty.0.value}}">
+     <end-dcc></end-dcc>
+   </dcc-dhtml>
 </body>
 </html>

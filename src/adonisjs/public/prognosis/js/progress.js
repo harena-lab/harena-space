@@ -38,23 +38,27 @@
     const failColor = 'bg-secondary text-dark'
 
     function checkAccuracy(diff){
-      if(diff > 10){
-        return 'Super estimado.'
+      if(diff!=null){
+        if(diff > 10){
+          return 'Super estimado.'
 
-      }else if (diff < -10) {
-        return 'Sub estimado.'
+        }else if (diff < -10) {
+          return 'Sub estimado.'
 
-      }else if (diff <= 10 && diff >= -10) {
-        return 'Na mosca!'
+        }else if (diff <= 10 && diff >= -10) {
+          return 'Na mosca!'
 
-      }
+        }
+    }else{
+      return 'Incompleto'
+    }
     }
     function stars(success, max, half){
 
       let resultStar = ''
       if(success.length == max){
         resultStar = `<i class="fas fa-star prognosis-perfect-prog"></i><i class="fas fa-star prognosis-perfect-prog"></i><i class="fas fa-star prognosis-perfect-prog"></i>`
-      }else if (success.length <= half && success.length>1) {
+      }else if (success.length <= half && success.length>=1) {
         for (let i = 0; i < success.length; i++) {
           resultStar += `<i class="fas fa-star prognosis-half-prog"></i>`
         }
@@ -102,10 +106,23 @@
       let overviewTxt = prognosisList[`prognosis-lvl-${i}-pacient`]
       let bestProgn = prognosisList[`prognosis-lvl-${i}-best-progn`]
       let perfectValue = prognosisList[`prognosis-lvl-${i}-perfect`]
+      let bestScenario = false
+      let lvlCompleted = false
+      if((bestProgn == perfectValue) && (bestProgn != null && perfectValue != null)){
+        bestScenario = true
+      }else{
+        bestScenario = false
+      }
+      if(bestProgn == null || perfectValue == null){
+        lvlCompleted = false
+      }else {
+        lvlCompleted = true
+      }
 
       let accuracy = checkAccuracy(diffCalc)
-      let lvlSuccess = [true]
-      if(bestProgn == perfectValue)
+      let lvlSuccess = []
+
+      if(bestScenario)
         lvlSuccess.push(true)
       if(accuracy == 'Na mosca!')
         lvlSuccess.push(true)
@@ -114,11 +131,11 @@
       template.innerHTML = PrognosisProgress.lvlContainer
         .replace(/\[containerColor\]/ig, 'bg-dark')
         .replace(/\[currentLvl\]/ig, i)
-        .replace(/\[progress\]/ig, 'Completo')
-        .replace(/\[progressColor\]/ig, 'text-light bg-success')
+        .replace(/\[progress\]/ig, lvlCompleted?'Completo':'Em aberto')
+        .replace(/\[progressColor\]/ig, lvlCompleted?successColor:'bg-warning text-dark')
         .replace(/\[pacientOverviewTxt\]/ig, overviewTxt)
-        .replace(/\[bestPacient\]/ig, (bestProgn == perfectValue?'Sim':'Não'))
-        .replace(/\[bestPacientColor\]/ig, bestProgn == perfectValue?successColor:failColor)
+        .replace(/\[bestPacient\]/ig, bestScenario?'Sim':'Não')
+        .replace(/\[bestPacientColor\]/ig, bestScenario?successColor:failColor)
         .replace(/\[correctPrognosis\]/ig, accuracy)
         .replace(/\[correctPrognosisColor\]/ig, (accuracy == 'Na mosca!'?successColor:failColor))
         .replace(/\[starPoints\]/ig, stars(lvlSuccess, 3, 2))
