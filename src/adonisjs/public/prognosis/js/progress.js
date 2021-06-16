@@ -58,7 +58,7 @@
       let resultStar = ''
       if(success.length == max){
         resultStar = `<i class="fas fa-star prognosis-perfect-prog"></i><i class="fas fa-star prognosis-perfect-prog"></i><i class="fas fa-star prognosis-perfect-prog"></i>`
-      }else if (success.length <= half && success.length>=1) {
+      }else if (success.length <= half && success.length>=1 && success.length<max) {
         for (let i = 0; i < success.length; i++) {
           resultStar += `<i class="fas fa-star prognosis-half-prog"></i>`
         }
@@ -125,6 +125,8 @@
       if(bestScenario)
         lvlSuccess.push(true)
       if(accuracy == 'Na mosca!')
+        lvlSuccess.push(true)
+      if(lvlCompleted)
         lvlSuccess.push(true)
 
       let template = document.createElement('template')
