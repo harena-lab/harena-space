@@ -424,7 +424,7 @@
         const perfectScore = document.querySelector('#pacient-perfect')
         if(document.querySelector(`dcc-submit[bind="submit-prognosis-perfect-lvl"][connect$="/post"]`)){
           document.querySelector(`dcc-submit[bind="submit-prognosis-perfect-lvl"][connect$="/post"]`).remove()
-          if(parseInt(response[Object.keys(response)[0]].userProperty.value) != parseInt(perfectScore.value)){
+          if(parseFloat(response[Object.keys(response)[0]].userProperty.value) != parseFloat(perfectScore.value)){
             const submitDcc = document.querySelector(`dcc-submit[bind="submit-prognosis-perfect-lvl"][connect$="/put"]`)
             submitDcc._computeTrigger()
           }

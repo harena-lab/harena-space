@@ -2881,7 +2881,7 @@ class Prognosis {
       <br><br>Escolha as variáveis que aumentam a chance de sobrevivência do paciente à chegada na UTI.`
 
       $('#welcome-lvl-modal').modal('show')
-      localStorage.setItem('hide-intro-2', true)
+      localStorage.setItem('hide-intro-1', true)
     }else if(document.querySelector('#welcome-lvl-modal') && (localStorage.getItem('prognosis-current-lvl') == 2)
     && (!localStorage.getItem('hide-intro-2'))){
       let welcomeModal = document.querySelector('#welcome-lvl-modal')
@@ -3991,9 +3991,6 @@ class Prognosis {
               delete pacientScore['open'][mainKey][Object.keys(childKey)[x]]
             }
             if(pacientScore['open'][mainKey][Object.keys(childKey)[x]] && Object.entries(pacientScore['open'][mainKey][Object.keys(childKey)[x]]).length == 0){
-              // console.log('=====================================================================')
-              // console.log('deleting')
-              // console.log()
               delete pacientScore['open'][mainKey][Object.keys(childKey)[x]]
             }
           }
@@ -4083,7 +4080,7 @@ class Prognosis {
 
     // console.log('============ dynamic score '+dynamicScore)
     // console.log('============ mortalityPercentage '+mortalityPercentage)
-    console.log('============ '+round((100 - mortalityPercentage),1))
+    // console.log('============ '+round((100 - mortalityPercentage),1))
 
 
 
