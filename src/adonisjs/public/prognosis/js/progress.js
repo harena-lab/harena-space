@@ -76,18 +76,62 @@
     }
     function lastAvailable (wrapper, highest){
       let template = document.createElement('template')
-      template.innerHTML = PrognosisProgress.lvlContainer
-        .replace(/\[containerColor\]/ig, 'bg-light')
-        .replace(/\[currentLvl\]/ig, highest)
-        .replace(/\[progress\]/ig, 'Em aberto')
-        .replace(/\[progressColor\]/ig, 'text-dark bg-warning')
-        .replace(/\[pacientOverviewTxt\]/ig, '')
-        .replace(/\[bestPacient\]/ig, '')
-        .replace(/\[bestPacientColor\]/ig, failColor)
-        .replace(/\[correctPrognosis\]/ig, '')
-        .replace(/\[correctPrognosisColor\]/ig, failColor)
-        .replace(/\[starPoints\]/ig, stars([], 3, 2))
-        .replace(/\[overviewPart\]/ig, '')
+      if(highestLvl == '10'){
+        let diffCalc = prognosisList[`prognosis-lvl-10-best-guess`]
+        let overviewTxt = prognosisList[`prognosis-lvl-10-pacient`]
+        let bestProgn = prognosisList[`prognosis-lvl-10-best-progn`]
+        let perfectValue = prognosisList[`prognosis-lvl-10-perfect`]
+        let bestScenario = false
+        let lvlCompleted = false
+        if((bestProgn == perfectValue) && (bestProgn != null && perfectValue != null)){
+          bestScenario = true
+        }else{
+          bestScenario = false
+        }
+        if(bestProgn == null || perfectValue == null){
+          lvlCompleted = false
+        }else {
+          lvlCompleted = true
+        }
+
+        let accuracy = checkAccuracy(diffCalc)
+        let lvlSuccess = []
+
+        if(bestScenario)
+          lvlSuccess.push(true)
+        if(accuracy == 'Na mosca!')
+          lvlSuccess.push(true)
+        if(lvlCompleted)
+          lvlSuccess.push(true)
+
+        template.innerHTML = PrognosisProgress.lvlContainer
+          .replace(/\[containerColor\]/ig, 'bg-dark')
+          .replace(/\[currentLvl\]/ig, '10')
+          .replace(/\[progress\]/ig, lvlCompleted?'Completo':'Em aberto')
+          .replace(/\[progressColor\]/ig, lvlCompleted?successColor:'bg-warning text-dark')
+          .replace(/\[pacientOverviewTxt\]/ig, overviewTxt)
+          .replace(/\[bestPacient\]/ig, bestScenario?'Sim':'Não')
+          .replace(/\[bestPacientColor\]/ig, bestScenario?successColor:failColor)
+          .replace(/\[correctPrognosis\]/ig, accuracy)
+          .replace(/\[correctPrognosisColor\]/ig, (accuracy == 'Na mosca!'?successColor:failColor))
+          .replace(/\[starPoints\]/ig, stars(lvlSuccess, 3, 2))
+          .replace(/\[overviewPart\]/ig, PrognosisProgress.overviewTxt
+                                          .replace(/\[currentLvl\]/ig, '10')
+                                          .replace(/\[pacientOverviewTxt\]/ig, overviewTxt))
+      }else {
+        template.innerHTML = PrognosisProgress.lvlContainer
+          .replace(/\[containerColor\]/ig, 'bg-light')
+          .replace(/\[currentLvl\]/ig, highest)
+          .replace(/\[progress\]/ig, 'Em aberto')
+          .replace(/\[progressColor\]/ig, 'text-dark bg-warning')
+          .replace(/\[pacientOverviewTxt\]/ig, '')
+          .replace(/\[bestPacient\]/ig, '')
+          .replace(/\[bestPacientColor\]/ig, failColor)
+          .replace(/\[correctPrognosis\]/ig, '')
+          .replace(/\[correctPrognosisColor\]/ig, failColor)
+          .replace(/\[starPoints\]/ig, stars([], 3, 2))
+          .replace(/\[overviewPart\]/ig, '')
+      }
       wrapper.appendChild(template.content.cloneNode(true))
     }
     function lockedLvls (wrapper, highest){

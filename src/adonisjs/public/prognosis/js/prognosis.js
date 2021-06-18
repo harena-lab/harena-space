@@ -4284,12 +4284,17 @@ class Prognosis {
     const fnEndSpin = function(){
       const btnNextLvl = document.querySelector('#btn-next-lvl')
       btnNextLvl.classList.remove('d-none')
+      if(parseInt(localStorage.getItem('prognosis-current-lvl')) == 10 || parseInt(localStorage.getItem('prognosis-current-lvl'))+1 == 10)
+        btnNextLvl.innerHTML = 'Voltar para lista'
       btnNextLvl.addEventListener('click', function (){
         let nextLvl = parseInt(localStorage.getItem('prognosis-current-lvl'))+1
         if(nextLvl>10)
           nextLvl = 10
-        // localStorage.setItem('prognosis-current-lvl', nextLvl)
-        document.location.href = '/prognosis/learn/player/?diffic=' + nextLvl
+        if(nextLvl<10)
+          document.location.href = '/prognosis/learn/player/?diffic=' + nextLvl
+        else{
+          document.location.href = '/prognosis/learn/progress'
+        }
       })
       btnSpin.disabled = false
 
