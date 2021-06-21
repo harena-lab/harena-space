@@ -4284,7 +4284,7 @@ class Prognosis {
     const fnEndSpin = function(){
       const btnNextLvl = document.querySelector('#btn-next-lvl')
       btnNextLvl.classList.remove('d-none')
-      if(parseInt(localStorage.getItem('prognosis-current-lvl')) == 10 || parseInt(localStorage.getItem('prognosis-current-lvl'))+1 == 10)
+      if(parseInt(localStorage.getItem('prognosis-current-lvl')) == 10)
         btnNextLvl.innerHTML = 'Voltar para lista'
       btnNextLvl.addEventListener('click', function (){
         let nextLvl = parseInt(localStorage.getItem('prognosis-current-lvl'))+1
