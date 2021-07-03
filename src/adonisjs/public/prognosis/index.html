@@ -89,27 +89,20 @@
   <script src="/translator/translator.js"></script>
   <script src="/translator/item-templates.js"></script>
 
-  <script src="/dccs/edit/properties.js"></script>
-  <script src="/dccs/edit/upload-adapter.js"></script>
-  <script src="/dccs/edit/inplace-editor.js"></script>
-  <script src="/dccs/edit/inplace-plain-editor.js"></script>
-  <script src="/dccs/edit/inplace-text-editor.js"></script>
-  <script src="/dccs/edit/inplace-image-editor.js"></script>
+  <script src="/prognosis/js/prognosis.js"></script>
 
-  <script src="/author/js/dcc-author-server-proxy.js"></script>
-  <script src="/author/js/panels.js"></script>
-  <script src="/author/js/navigator.js"></script>
-  <script src="/author/js/comments.js"></script>
-  <script src="/author/js/author.js"></script>
 </head>
 
 <body>
+  <dcc-rest id="harena-user-property" bind="harena-user-property"></dcc-rest>
+  <dcc-rest id="harena-prognosis-lvl" bind="harena-prognosis-lvl"></dcc-rest>
+  <dcc-rest id="harena-prognosis-highest-lvl" bind="harena-prognosis-highest-lvl"></dcc-rest>
   <dcc-include src="/author/partials/header.html"></dcc-include>
   <main role="">
     <div id="main-panel" class="d-flex flex-column vh-100 vw-100 scroll-y index-boot-padding">
       <div class=" d-flex flex-column w-lg-75 h-100 w-100 bg-dark mx-auto align-items-center">
         <h1 class="border-top border-bottom rounded mt-5">Roda da Fortuna</h1>
-        <div class="mt-5 d-flex flex-column w-50" id="btn-home-container" >
+        <div class="mt-5 d-flex flex-column w-100 w-sm-75 w-md-50" id="btn-home-container" >
           <button class="btn btn-light m-1 " type="button" name="btn-learn" id="btn-learn" onclick="location.href = '/prognosis/learn'"> Aprendendo prognóstico</button>
           <button class="btn btn-light m-1 disabled" type="button" name="btn-challenge-1" id="btn-challenge-1"> Challenge 1  <i class="fas fa-lock"></i></button>
           <button class="btn btn-light m-1 disabled" type="button" name="btn-challenge-2" id="btn-challenge-2">  Challenge 2 <i class="fas fa-lock"></i></button>
@@ -118,5 +111,18 @@
       </div>
     </div>
   </main>
-</body>
+  <dcc-submit xstyle="d-none" bind="submit-prognosis-highest-lvl"
+   connect="submit:harena-user-property:service/request/post"></dcc-submit>
+  <dcc-submit xstyle="d-none" bind="submit-prognosis-highest-lvl"
+   connect="submit:harena-user-property:service/request/put"></dcc-submit>
+
+   <dcc-dhtml id="harena-dhtml-prognosis-current-lvl" connect="retrieve:harena-prognosis-lvl:service/request/get">
+     <input type="hidden" name="{{userProperty.0.title}}" id="db-current" value="{{userProperty.0.value}}">
+     <end-dcc></end-dcc>
+   </dcc-dhtml>
+   <dcc-dhtml id="harena-dhtml-prognosis-heighest-lvl" connect="retrieve:harena-prognosis-highest-lvl:service/request/get">
+     <input type="hidden" name="{{userProperty.0.title}}" id="db-highest" value="{{userProperty.0.value}}">
+     <end-dcc></end-dcc>
+   </dcc-dhtml>
+ </body>
 </html>

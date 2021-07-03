@@ -23,9 +23,9 @@ _*_
 <dcc-button label="Play" topic="timer/start"></dcc-button>
 
 <dcc-timer cycles="10" interval="1000" publish="state/next">
-   <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
+   <subscribe-dcc topic="timer/start" map="start"></subscribe-dcc>
 </dcc-timer>
 
-<subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>`
+<subscribe-dcc target="cellular-space" topic="state/next" map="next"></subscribe-dcc>`
   )
 })()

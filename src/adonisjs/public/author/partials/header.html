@@ -2,12 +2,9 @@
   <dcc-rest id="harena-login" bind="harena-login"></dcc-rest>
   <nav>
       <div class="d-flex overflow-hidden pt-2 mr-4" id="harena-header">
+        
       <span class="inline-flex mr-4 rounded-md ml-auto " id="header-login">
         <div id="login-block">
-          <!-- <a href="/login" class="inline-flex items-center px-4 py-2 text-base bg-white">
-            Log in
-          </a> -->
-          <!-- <div class="dropdown"> -->
             <button id="loginDropdownBtn" class="btn btn-light border-top border-left border-right text-primary pl-4 pt-1 dropdown-toggle " type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Login
             </button>
@@ -23,12 +20,10 @@
                 <label for="password">Password</label>
                 <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
               </div>
-              <!-- <button class="btn btn-outline-primary" id="btn-login">Submit form</button> -->
               <dcc-submit id="btn-submit-login" bind="submit-login" label="Login" xstyle="btn btn-outline-primary" connect="submit:harena-login:service/request/post"></dcc-submit>
               <div id="login-message-alert" class="alert mt-3" role="alert">
               </div>
             </form>
-          <!-- </div> -->
         </div>
         <div id="logout-block" style="display: none;">
           <dcc-rest id="harena-logout" bind="harena-logout"></dcc-rest>

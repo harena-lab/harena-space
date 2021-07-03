@@ -67,14 +67,12 @@ class DCCTimer extends DCCBase {
   }
 
   notify (topic, message) {
-    if (message.role) {
-      switch (message.role.toLowerCase()) {
-        case 'reset': this.reset(); break
-        case 'start': this.start(); break
-        case 'stop' : this.stop(); break
-        case 'step' : this.step(); break
-        case 'interval': this.interval = message.body.value; break
-      }
+    switch (topic.toLowerCase()) {
+      case 'reset': this.reset(); break
+      case 'start': this.start(); break
+      case 'stop' : this.stop(); break
+      case 'step' : this.step(); break
+      case 'interval': this.interval = message.value; break
     }
   }
 

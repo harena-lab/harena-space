@@ -75,10 +75,8 @@ class RuleDCCCellNeighbor extends RuleDCCTransition {
   }
 
   notify (topic, message) {
-    if (message.role) {
-      switch (message.role.toLowerCase()) {
-        case 'probability': this.probability = message.body.value; break
-      }
+    switch (topic.toLowerCase()) {
+      case 'probability': this.probability = message.value; break
     }
   }
 }

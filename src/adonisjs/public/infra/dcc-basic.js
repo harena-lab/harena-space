@@ -39,9 +39,10 @@
           }
 
            setTimeout(function(){
-             if(new URL(document.location).searchParams.get('redirected')
-             && new URL(document.location).searchParams.get('redirected') != 'null'){
-               var redirectTo = sessionStorage.getItem('redirectBack')
+             if(new URL(document.location).searchParams.get('redirected')){
+               let redirectTo = sessionStorage.getItem('redirectBack')
+               if(redirectTo == null || redirectTo == '')
+                redirectTo = '/'
                sessionStorage.removeItem('redirectBack')
                window.location.href = redirectTo
              }else{
@@ -351,18 +352,32 @@
       pre: function (message, form, schema) {
         let currentLvl
         let highestLvl
+        let nextLvl = document.querySelector('#next-lvl')
         if(localStorage.getItem('prognosis-current-lvl') && localStorage.getItem('prognosis-highest-lvl')){
-          if(document.querySelector('#next-lvl')){
-            if(document.querySelector('#next-lvl').value == localStorage.getItem('prognosis-highest-lvl')){
-              highestLvl = parseInt(document.querySelector('#next-lvl').value) + 1
+          if(nextLvl){
+            if(nextLvl.value == localStorage.getItem('prognosis-highest-lvl')
+            && parseInt(nextLvl.value) != 10){
+              if(parseInt(nextLvl.value) < 10)
+                highestLvl = nextLvl.value + 1
+              else if(parseInt(nextLvl.value) > 10)
+                highestLvl = 10
             }else{
-              highestLvl = parseInt(document.querySelector('#next-lvl').value)
+              highestLvl = nextLvl.value
             }
           }else{
             if(parseInt(localStorage.getItem('prognosis-current-lvl'))
             >= parseInt(localStorage.getItem('prognosis-highest-lvl'))){
-              currentLvl = parseInt(localStorage.getItem('prognosis-current-lvl'))
-              highestLvl = currentLvl
+              if(parseInt(localStorage.getItem('prognosis-current-lvl') <=10)) {
+                currentLvl = parseInt(localStorage.getItem('prognosis-current-lvl'))
+                highestLvl = currentLvl
+              }else{
+                localStorage.setItem('prognosis-current-lvl', 10)
+                localStorage.setItem('prognosis-highest-lvl', 10)
+                currentLvl = parseInt(localStorage.getItem('prognosis-current-lvl'))
+                highestLvl = currentLvl
+              }
+            }else if (parseInt(localStorage.getItem('prognosis-highest-lvl')) > 10){
+              highestLvl = 10
             }
           }
 
@@ -375,13 +390,16 @@
       },
       pos: async function (response) {
         const currentLvl = parseInt(localStorage.getItem('prognosis-current-lvl'))
+        localStorage.setItem('prognosis-highest-lvl', parseInt(response[Object.keys(response)[0]].userProperty.value))
         if(document.querySelector(`dcc-submit[bind="submit-prognosis-highest-lvl"][connect$="/post"]`)){
           document.querySelector(`dcc-submit[bind="submit-prognosis-highest-lvl"][connect$="/post"]`).remove()
-          if(parseInt(response[Object.keys(response)[0]].userProperty.value) < currentLvl){
+          if(parseInt(response[Object.keys(response)[0]].userProperty.value) < currentLvl
+          || parseInt(response[Object.keys(response)[0]].userProperty.value)>10){
             const submitDcc = document.querySelector(`dcc-submit[bind="submit-prognosis-highest-lvl"][connect$="/put"]`)
             submitDcc._computeTrigger()
           }
         }
+
       }
     }
   )
@@ -406,7 +424,7 @@
         const perfectScore = document.querySelector('#pacient-perfect')
         if(document.querySelector(`dcc-submit[bind="submit-prognosis-perfect-lvl"][connect$="/post"]`)){
           document.querySelector(`dcc-submit[bind="submit-prognosis-perfect-lvl"][connect$="/post"]`).remove()
-          if(parseInt(response[Object.keys(response)[0]].userProperty.value) != parseInt(perfectScore.value)){
+          if(parseFloat(response[Object.keys(response)[0]].userProperty.value) != parseFloat(perfectScore.value)){
             const submitDcc = document.querySelector(`dcc-submit[bind="submit-prognosis-perfect-lvl"][connect$="/put"]`)
             submitDcc._computeTrigger()
           }

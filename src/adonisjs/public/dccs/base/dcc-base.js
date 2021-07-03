@@ -22,7 +22,7 @@ class DCCBase extends HTMLElement {
 
   disconnectedCallback () {
     if (this._substopic != null) {
-      if (this._subsrole != null)
+      if (this._subsmap != null)
         MessageBus.ext.unsubscribe(this._substopic, this.toNotify)
       else
         MessageBus.ext.unsubscribe(this._substopic, this.notify)
@@ -80,20 +80,21 @@ class DCCBase extends HTMLElement {
     this._subscribeTopic(newValue)
   }
 
-  _subscribeTopic (topicRole) {
-    const colon = topicRole.lastIndexOf(':')
+  _subscribeTopic (topicMap) {
+    const colon = topicMap.lastIndexOf(':')
     if (colon != -1) {
-      this._substopic = topicRole.substring(0, colon)
-      this._subsrole = topicRole.substring(colon + 1)
+      this._substopic = topicMap.substring(0, colon)
+      this._subsmap = topicMap.substring(colon + 1)
       MessageBus.ext.subscribe(this._substopic, this.toNotify)
     } else {
-      this._substopic = topicRole
-      MessageBus.ext.subscribe(topicRole, this.notify)
+      this._substopic = topicMap
+      MessageBus.ext.subscribe(topicMap, this.notify)
     }
   }
 
   toNotify (topic, message) {
-    this.notify(topic, {role: this._subsrole, body: message})
+    // this.notify(topic, {role: this._subsmap, body: message})
+    this.notify((this._subsmap) ? this._subsmap : topic, message)
   }
 
   notify (topic, message) {

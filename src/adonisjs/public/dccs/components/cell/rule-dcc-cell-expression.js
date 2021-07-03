@@ -43,11 +43,9 @@ class RuleDCCCellExpression extends RuleDCCTransition {
   /* Methods
       *******/
   notify (topic, message) {
-    if (message.role) {
-      switch (message.role.toLowerCase()) {
-        case 'time-rate': this.timeRate = message.body.value; break
-        case 'time-mili': this.timeRate = 1 / message.body.value; break
-      }
+    switch (topic.toLowerCase()) {
+      case 'time-rate': this.timeRate = message.value; break
+      case 'time-mili': this.timeRate = 1 / message.value; break
     }
   }
 
