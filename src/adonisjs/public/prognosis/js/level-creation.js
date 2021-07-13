@@ -7,6 +7,112 @@ class LevelCreationTool {
   }
 
   async test(){
+    const navSelection = document.querySelector('#creation-selection-tab').querySelectorAll('.nav-link')
+
+    const fnCascadeListener = function(){
+      const cascadeCheck = document.querySelector(`#chck-cascade-option`)
+      const creationWrapper = document.querySelector('#creation-container-wrapper')
+      const childCreation = document.querySelector('#child-creation-container')
+
+      if (cascadeCheck.checked) {
+        if (this.nodeName == 'A' && !this.classList.contains('cascade-nav')) {
+          if (childCreation) {
+            childCreation.remove()
+          }
+        }
+        if(!childCreation){
+          let template = document.createElement('template')
+          template.innerHTML = LevelCreationTool.cascadeDiv
+          creationWrapper.appendChild(template.content.cloneNode(true))
+        }
+      }else{
+        if (childCreation) {
+          childCreation.remove()
+        }
+      }
+
+    }
+    const fnBundleListener = function(){
+
+      if(event.target.getAttribute('href') == '#bundle' || event.target.id == 'input-number-bundle'){
+        let bundleQuant = document.querySelector('#input-number-bundle')
+        let template = document.createElement('template')
+        let creationContainer = document.querySelector('#creation-container-wrapper')
+        let bundleContainers = document.querySelectorAll('[id^="creation-container-bundle-"]')
+
+        if (bundleQuant.value > bundleContainers.length+1) {
+          for (let i = 1; i <= (bundleQuant.value - (bundleContainers.length+1)); i++) {
+            template = document.createElement('template')
+            if(bundleContainers.length > 1){
+              template.innerHTML = LevelCreationTool.bundleDiv
+              .replace(/\[id\]/ig, bundleContainers.length+1)
+            }else{
+              template.innerHTML = LevelCreationTool.bundleDiv
+              .replace(/\[id\]/ig, i)
+            }
+            creationContainer.appendChild(template.content.cloneNode(true))
+          }
+        }else if (bundleContainers.length == 0) {
+          for (let i = 1; i < bundleQuant.value; i++) {
+            template.innerHTML = LevelCreationTool.bundleDiv
+            .replace(/\[id\]/ig, i)
+            creationContainer.appendChild(template.content.cloneNode(true))
+          }
+        }else{
+          bundleContainers = document.querySelectorAll('[id^="creation-container-bundle-"]')
+          for (let i = bundleQuant.value; i >= ((bundleContainers.length)); i--) {
+            bundleContainers[i-1].remove()
+          }
+        }
+
+      }else{
+        let bundleContainers = document.querySelectorAll('[id^="creation-container-bundle-"]')
+        for (let i = 0; i < bundleContainers.length; i++) {
+          bundleContainers[i].remove()
+        }
+      }
+    }
+    const fnBuildLvlListener = function(){
+      let rootOption = document.querySelectorAll('.pacient-info-wrapper')
+
+      console.log(LevelCreationTool.pacient)
+      for (let i = 0; i < rootOption.length; i++) {
+        let optionsWrapperLocked = rootOption[i].querySelector('.pacient-info-values[data-progn="locked"]')
+        let optionsWrapperOpen = rootOption[i].querySelector('.pacient-info-values[data-progn="open"]')
+        let optionsLocked = optionsWrapperLocked.querySelectorAll('[id^="option-group-"]')
+        let optionsOpen = optionsWrapperOpen.querySelectorAll('[id^="option-group-"]')
+        optionsWrapperLocked.prognObj = {'locked':[]}
+        optionsWrapperopen.prognObj = {'open':[]}
+        for (let k = 0; k < optionsOpen.length; k++) {
+          console.log('============ open option '+k)
+          if (optionsOpen[k].prognObj.bundleCreator) {
+            console.log('============ bundle found')
+            console.log(optionsOpen[k].prognObj.bundleCreator)
+            optionsWrapperopen.prognObj['open'].push(optionsOpen[k].prognObj.bundleCreator)
+          }else{
+            console.log(optionsOpen[k].prognObj)
+            optionsWrapperopen.prognObj['open'].push(optionsOpen[k].prognObj)
+          }
+        }
+        for (let k = 0; k < optionsLocked.length; k++) {
+          console.log('============ locked option '+k)
+          console.log(optionsLocked[k].prognObj)
+          optionsWrapperLocked.prognObj['locked'].push(optionsLocked[k].prognObj)
+        }
+        console.log('============ open obj')
+        console.log(optionsWrapperopen.prognObj['open'])
+        console.log('============ locked obj')
+        console.log(optionsWrapperLocked.prognObj['locked'])
+      }
+    }
+    document.querySelector(`#chck-cascade-option`).addEventListener('click', fnCascadeListener)
+    document.querySelector(`#input-number-bundle`).addEventListener('change', fnBundleListener)
+    document.querySelector('#btn-build-lvl').addEventListener('click', fnBuildLvlListener)
+    for (let nav of navSelection) {
+      nav.addEventListener('click', fnCascadeListener)
+      nav.addEventListener('click', fnBundleListener)
+    }
+
     MessageBus.int.unsubscribe('control/html/ready', this.test)
 
     const optionList =
@@ -22,7 +128,7 @@ class LevelCreationTool {
     `
 
     const options = Prognosis.sapsScoreValues
-    console.log(Object.keys(options['pacient']))
+    // console.log(Object.keys(options['pacient']))
     for (let i = 0; i < Object.keys(options['pacient']).length; i++) {
       let parentKey = Object.keys(options['pacient'])[i]
       let template = document.createElement('template')
@@ -45,8 +151,124 @@ class LevelCreationTool {
     }
   }
 
+  async addPadding (obj, padding, isClass){
+    if (isClass)
+      obj.classList.add(padding)
+    else
+      obj.style.padding = padding
+  }
+
+  async createPrognSelectObj (htmlWrapper, objName, optionsList, includeParentTitle){
+
+    let optionValues = []
+    htmlWrapper['prognObj'] = {}
+    htmlWrapper['prognObj'][objName] = {"selectList":"true"}
+
+    for (let i = 0; i < optionsList.length; i++) {
+      let valueText = optionsList[i].dataset.parentTitle
+      let value = optionsList[i].innerText
+
+      if(includeParentTitle){
+        let rootObj = {}
+        rootObj[valueText] = {}
+
+        if (value != null || value != '') {
+          if(value !== 'Sim' && value !== 'Não'){
+            rootObj[valueText]['values'] = [value]
+            optionValues.push(rootObj)
+          }else if(!optionValues.includes(valueText)){
+            optionValues.push(valueText)
+          }
+        }
+      }else{
+        if (value != null || value != '') {
+          if(value !== 'Sim' && value !== 'Não'){
+            optionValues.push(value)
+          }else if(!optionValues.includes(valueText)){
+            optionValues.push(valueText)
+          }
+
+        }
+      }
+      htmlWrapper['prognObj'][objName]['values'] = optionValues
+    }
+  }
+
+  async createPrognRadioObj (htmlWrapper, objName, optionsList, properties){
+    let optionValues = []
+    let childOptionValues = []
+    htmlWrapper['prognObj'] = {}
+    htmlWrapper['prognObj'][objName] = {"uniqueValues":"true"}
+    if(properties.cascade == 'true'){
+      htmlWrapper['prognObj'][objName]['cascade'] = "true"
+    }
+    if(properties.radioYN == 'true'){
+      htmlWrapper['prognObj'][objName]['radioYN'] = "true"
+    }
+
+    for (let i = 0; i < optionsList['parentValues'].length; i++) {
+      let valueText = optionsList['parentValues'][i].dataset.parentTitle
+      let value = optionsList['parentValues'][i].innerText
+      if (value != null || value != '') {
+        optionValues.push(value)
+      }
+
+      htmlWrapper['prognObj'][objName]['values'] = optionValues
+    }
+    for (let i = 0; i < optionsList['childValues'].length; i++) {
+      let valueText = optionsList['childValues'][i].dataset.parentTitle
+      let value = optionsList['childValues'][i].innerText
+      if (value != null || value != '') {
+        childOptionValues.push(value)
+      }
+
+      htmlWrapper['prognObj'][objName]['child'] = childOptionValues
+    }
+  }
+
+  async createPrognBundleObj (htmlWrapper, objName, optionsList, properties){
+    let optionValues = []
+    let bundleOption = {}
+    htmlWrapper['prognObj'] = {"bundleCreator":{}}
+    console.log('============ obj')
+    console.log(optionsList)
+    for (let k = 0; k < Object.keys(optionsList).length; k++) {
+
+      bundleOption[`${objName} ${k+1}`] = {"groupedChoices":"true"}
+      optionValues = []
+      for (let i = 0; i < optionsList[Object.keys(optionsList)[k]].length; i++) {
+        let valueText = optionsList[Object.keys(optionsList)[k]][i].dataset.parentTitle
+        let value = optionsList[Object.keys(optionsList)[k]][i].innerText
+        if (value != null || value != '') {
+          optionValues.push(value)
+        }
+
+        bundleOption[`${objName} ${k+1}`]['values'] = optionValues
+      }
+    }
+    htmlWrapper['prognObj']['bundleCreator'] = bundleOption
+    console.log(htmlWrapper)
+  }
+
+  async createPrognRadioObj (htmlWrapper, objName, optionsList, properties){
+    let optionValues = []
+    let childOptionValues = []
+    htmlWrapper['prognObj'] = {}
+    htmlWrapper['prognObj'][objName] = {"multipleValues":"true"}
+
+    for (let i = 0; i < optionsList['parentValues'].length; i++) {
+      let valueText = optionsList['parentValues'][i].dataset.parentTitle
+      let value = optionsList['parentValues'][i].innerText
+      if (value != null || value != '') {
+        optionValues.push(value)
+      }
+
+      htmlWrapper['prognObj'][objName]['values'] = optionValues
+    }
+  }
+
   async dragStartHandler (ev){
-      console.log("dragStart: dropEffect = " + ev.dataTransfer.dropEffect + " ; effectAllowed = " + ev.dataTransfer.effectAllowed);
+    console.log("dragStart: dropEffect = " + ev.dataTransfer.dropEffect + " ; effectAllowed = " + ev.dataTransfer.effectAllowed);
     ev.dataTransfer.setData("text", ev.target.id);
     ev.dataTransfer.effectAllowed = "move";
   }
@@ -58,17 +280,35 @@ class LevelCreationTool {
     // Get the id of the target and add the moved element to the target's DOM
     let data = ev.dataTransfer.getData("text")
     let target = ev.target
+    let currentTarget = ev.currentTarget
+    let objData = document.querySelector(`#${data}`)
     console.log('============ data '+ data)
-    if(target.classList.contains('drop-container'))
-      target.appendChild(document.getElementById(data))
-    else if (target.parentElement.classList.contains('drop-container')) {
-      target.parentElement.appendChild(document.getElementById(data))
+    if(currentTarget.classList.contains('drop-container')){
+      if(objData.parentElement.childElementCount == 1 && objData.parentElement.id!= 'creation-dump')
+        this.addPadding(objData.parentElement, 'pb-5',true)
+      currentTarget.appendChild(objData)
+      currentTarget.classList.remove('pb-5')
     }
-    if (target.classList.contains('pancient-info-values')){
-      console.log('============')
-      this.pacient.new = {'key':'value'}
-      console.log(this.pacient)
-    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    /*if (target.classList.contains('pancient-info-values')){
+      let optionBuilt = document.querySelector(`#${data}`)
+      optionBuilt['prognObj'] = {}
+      if (optionBuilt.querySelector('select')) {
+        let selectOptions = optionBuilt.querySelectorAll('select > option')
+        let optionValues = []
+        console.log('============ select list found')
+        for (let i = 0; i < selectOptions.length; i++) {
+          if(selectOptions[i].value != '')
+          optionValues.push(selectOptions[i].value)
+        }
+        optionBuilt['prognObj'][target.dataset.optionName] = {"selectList":"true"}
+        optionBuilt['prognObj'][target.dataset.optionName]['values'] = optionValues
+        console.log('============ select list object')
+        console.log(optionBuilt)
+
+      }
+    }*/
   }
 
   async dragover_handler(ev) {
@@ -101,37 +341,11 @@ class LevelCreationTool {
 
     template.innerHTML = LevelCreationTool.deleteOptBtn
     optionContainer.appendChild(template.content.cloneNode(true))
+    //////////////////////////////////////////////////////////////////////////
+    let optionCreated = document.querySelector(`#option-group-${id}`)
   }
 
-  async selectListCreation(ev) {
-    console.log(ev.target.parentElement)
-    const optionList = ev.target.parentElement.children
-    const template = document.createElement('template')
-    template.innerHTML = Prognosis.playerSelectList
-    .replace(/\[id\]/ig, 'idade')
-
-    let obj = document.querySelector('#here-buddy')
-    obj.appendChild(template.content.cloneNode(true))
-
-    let selectList = document.querySelector('#idade')
-    obj.prependTxt = obj.parentElement.querySelector('.input-group-prepend')
-    obj.prependTxt.copy = document.createElement('label')
-    obj.prependTxt.copy.classList.add('input-group-text')
-    obj.prependTxt.copy.textContent = 'Idade'
-    obj.prependTxt.appendChild(obj.prependTxt.copy)
-
-    for (let i = 0; i < optionList.length; i++) {
-      if (optionList[i].classList.contains('option-list')) {
-        console.log(optionList[i].innerHTML)
-        let option = document.createElement('option')
-        option.textContent = optionList[i].textContent + 'anos'
-        option.value = optionList[i].textContent
-        selectList.appendChild(option)
-      }
-    }
-  }
-
-  async protSelectList(wrapper, keyId, keyText, optionsList) {
+  async selectListCreator(wrapper, keyId, keyText, optionsList, includeParent) {
     let template = document.createElement('template')
     let obj = document.querySelector('#options-'+ keyId+'-wrapper')
 
@@ -145,42 +359,300 @@ class LevelCreationTool {
     obj.prependTxt.copy.innerText = keyText
     obj.prependTxt.appendChild(obj.prependTxt.copy)
 
+    this.createPrognSelectObj (obj.parentElement, keyText, optionsList, includeParent)
+
+    optionsList[0].parentElement.classList.add('pb-5')
     for (let z = 0; z < optionsList.length; z++) {
+      let valueText = optionsList[z].dataset.parentTitle
+      let value = optionsList[z].innerText
 
       //Check if select list must include id (because of complex values. e.g.(id'bilirrubina' value'3-4'), instead of just 'bilirrubina')
-      if(1 ==2){
-        let baseKey = selectedPacient[fnVariable].open[i][keyText]['values'][z]
-        let valueText = optionsList[z].dataset.parentValue
-        let value = optionsList[z].innerText
+      if(includeParent){
+        const selectList = document.querySelector("#" + keyId)
+        let option = document.createElement('option')
+        option.value = value
 
-        const selectList = document.querySelector("#" + keyId)
-        let option = document.createElement('option')
-        option.innerText = valueText+': '+value
-        option.value = value
-        selectList.appendChild(option)
+        if(valueText != null || valueText != ''){
+          if (value == 'Sim' || value == 'Não') {
+            option.innerText = valueText
+            option.value = valueText
+            if(!selectList.querySelector(`[value="${valueText}"]`)){
+              selectList.appendChild(option)
+            }
+          }else {
+            option.innerText = valueText+': '+value
+            selectList.appendChild(option)
+          }
+        }
+        else{
+          option.innerText = value
+          selectList.appendChild(option)
+        }
+
       }else{
-        let value = optionsList[z].innerText
         const selectList = document.querySelector("#" + keyId)
         let option = document.createElement('option')
-        option.innerText = value
-        option.value = value
-        selectList.appendChild(option)
+
+        if(value == 'Sim' || value == 'Não'){
+          option.innerText = valueText
+          option.value = valueText
+          if(!selectList.querySelector(`[value="${valueText}"]`)){
+            selectList.appendChild(option)
+          }
+        }else {
+          option.innerText = value
+          option.value = value
+          selectList.appendChild(option)
+        }
+      }
+      optionsList[z].remove()
+
+    }
+  }
+
+  async radioCreator(wrapper, keyId, keyText, optionsList, properties) {
+    let template = document.createElement('template')
+    let obj = document.querySelector('#options-'+ keyId+'-wrapper')
+    optionsList['parentValues'][0].parentElement.classList.add('pb-5')
+    obj.prependTxt = obj.parentElement.querySelector('.input-group-prepend')
+    obj.prependTxt.copy = document.createElement('label')
+    obj.prependTxt.copy.classList.add('input-group-text')
+    obj.prependTxt.copy.textContent = keyText
+    obj.prependTxt.appendChild(obj.prependTxt.copy)
+    ///////////////////////////////////////////////////////////////////////////////
+    template = document.createElement('template')
+    template.innerHTML = Prognosis.playerOptionRadio
+    .replace(/\[id\]/ig, keyId+'-nao')
+    .replace(/\[name\]/ig, keyId)
+    .replace(/\[value\]/ig, 'Não')
+    .replace(/\[valueText\]/ig, 'Não')
+    obj.appendChild(template.content.cloneNode(true))
+
+    template = document.createElement('template')
+    template.innerHTML = Prognosis.playerOptionRadio
+    .replace(/\[id\]/ig, keyId+'-sim')
+    .replace(/\[name\]/ig, keyId)
+    .replace(/\[value\]/ig, 'Sim')
+    .replace(/\[valueText\]/ig, 'Sim')
+    obj.appendChild(template.content.cloneNode(true))
+    ///////////////////////////////////////////////////////////////////////////////
+    ////Cascade div
+    let cascadeDiv = document.createElement('div')
+    cascadeDiv.id = `${keyId}-wrapper`
+    cascadeDiv.classList.add('progn-multi-wrapper', 'border', 'rounded')
+    cascadeDiv.style.backgroundColor = "#b5b5b5"
+    obj.appendChild(cascadeDiv)
+    ///////////////////////////////////////////////////////////////////////////////
+    for (let z = 0; z < optionsList['parentValues'].length; z++) {
+      let value = optionsList['parentValues'][z].innerText
+      template = document.createElement('template')
+      template.innerHTML = Prognosis.playerOptionRadio
+      .replace(/\[name\]/ig, keyId)
+      .replace(/\[id\]/ig, (keyId+'-'+Prognosis.i.removeAccent(value)))
+      .replace(/\[value\]/ig, (value))
+      .replace(/\[valueText\]/ig, value)
+      if(properties.cascade == 'true'){
+        document.querySelector(`#${cascadeDiv.id}`).appendChild(template.content.cloneNode(true))
+      }else{
+        obj.appendChild(template.content.cloneNode(true))
+      }
+
+      optionsList['parentValues'][z].remove()
+
+    }
+    this.createPrognRadioObj (obj.parentElement, keyText, optionsList, properties)
+    ///////////////////////////////////////////////////////////////////////////////
+    console.log('============')
+    if(properties.cascade == 'true'){
+      optionsList['childValues'][0].parentElement.classList.add('pb-5')
+      let cascadeDivChild = document.createElement('div')
+      cascadeDivChild.id = `${keyId}-value-wrapper`
+      cascadeDivChild.classList.add('progn-multi-wrapper','border', 'rounded')
+      cascadeDivChild.style.backgroundColor = "#cebfbf"
+      cascadeDiv.appendChild(cascadeDivChild)
+      for (let z = 0; z < optionsList['childValues'].length; z++) {
+        let childText = optionsList['childValues'][z].innerText
+        let childId = Prognosis.i.removeAccent(childText).replace(new RegExp('[ ]','ig'), '-')
+        if(optionsList['childValues'].length == 2){
+          template = document.createElement('template')
+          template.innerHTML = Prognosis.playerOptionRadio
+          .replace(/\[id\]/ig, childId)
+          .replace(/\[name\]/ig, childId+'-value')
+          .replace(/\[valueText\]/ig, childText)
+          document.querySelector(`#${cascadeDivChild.id}`).appendChild(template.content.cloneNode(true))
+
+        }else{
+          template = document.createElement('template')
+          template.innerHTML = Prognosis.playerOptionCheckbox
+          .replace(/\[id\]/ig, childId)
+          .replace(/\[value\]/ig, childText)
+          .replace(/\[valueText\]/ig, childText)
+          document.querySelector(`#${cascadeDivChild.id}`).appendChild(template.content.cloneNode(true))
+        }
+        optionsList['childValues'][z].remove()
       }
     }
   }
 
-  async oneMoreToSelect (){
-    let selectTitle = document.querySelector('#input-title-select-list').value
-    let optionList = document.querySelectorAll('#select-list-creation-container > [id ^= "option-"] ')
-    await this.createOption ((document.querySelector('#creation-dump')), true, selectTitle, 'idade')
-    this.protSelectList((document.querySelector('#creation-dump')), 'idade', selectTitle, optionList)
+  async bundleCreator(wrapper, keyId, keyText, optionsList, properties) {
+    let obj = document.querySelector(`#options-${keyId}-wrapper`)
+    this.createPrognBundleObj(obj.parentElement, keyText, optionsList, properties)
+    for (let i = 1; i <= Object.keys(optionsList).length; i++) {
+      let template = document.createElement('template')
+      // optionsList[`bundle${i}`][0].parentElement.classList.add('pb-5')
+      // obj.prependTxt = obj.parentElement.querySelector('.input-group-prepend')
+      // obj.prependTxt.copy = document.createElement('label')
+      // obj.prependTxt.copy.classList.add('input-group-text')
+      // obj.prependTxt.copy.textContent = keyText
+      // obj.prependTxt.appendChild(obj.prependTxt.copy)
+      ///////////////////////////////////////////////////////////////////////////////
+      template.innerHTML = Prognosis.playerGroupedOption
+      .replace(/\[id\]/ig, (`${keyId}-${i}`))
+      .replace(/\[prependText\]/ig, (`${keyText} ${i}`))
+      .replace(/\[name\]/ig, (keyId.substring(0,8)+'-activator'))
+      obj.appendChild(template.content.cloneNode(true))
+
+      let fnGroupActivator = function (){
+        let groupValues = document.querySelectorAll(`[id^="options-"] > .input-group >
+        [id^="grouped-"] > div > input`)
+        for (let elem of groupValues) {
+          let parentActivator = elem.parentElement.parentElement.id
+          elem.checked = document.querySelector(`#${parentActivator.substring(8,(parentActivator.length - 8))}`).checked
+        }
+      }
+      console.log('============')
+      console.log(`#${keyId}-${i}`)
+      console.log(optionsList)
+      document.querySelector(`#${keyId}-${i}`).addEventListener('change', fnGroupActivator)
+      ///////////////////////////////////////////////////////////////////////////////
+      let currentBundle = optionsList[Object.keys(optionsList)[i-1]]
+      for (let k = 0; k < currentBundle.length; k++) {
+        let baseKey = currentBundle[k]
+        let valueText = baseKey.dataset.parentTitle
+        let valueId = Prognosis.i.removeAccent(valueText).replace(new RegExp('[ ]','ig'), '-')
+        let value = baseKey.innerText
+
+        template = document.createElement('template')
+        template.innerHTML = Prognosis.playerOptionRadio
+        .replace(/\[valueText\]/ig, valueText+`: ${value}`)
+        .replace(/\[value\]/ig, value)
+        .replace(/\[id\]/ig, valueId)
+        .replace(/\[name\]/ig, valueId)
+
+        let optionsWrapper = obj.querySelector(`#grouped-${keyId}-${i}-wrapper`)
+        optionsWrapper.appendChild(template.content.cloneNode(true))
+        document.querySelector('#'+valueId).removeAttribute('required')
+        currentBundle[k].remove()
+      }
+    }
   }
+
+  async checkListCreator(wrapper, keyId, keyText, optionsList, properties) {
+
+    let template = document.createElement('template')
+    let obj = document.querySelector('#options-'+ keyId+'-wrapper')
+    optionsList['parentValues'][0].parentElement.classList.add('pb-5')
+    obj.prependTxt = obj.parentElement.querySelector('.input-group-prepend')
+    obj.prependTxt.copy = document.createElement('label')
+    obj.prependTxt.copy.classList.add('input-group-text')
+    obj.prependTxt.copy.textContent = keyText
+    obj.prependTxt.appendChild(obj.prependTxt.copy)
+    ///////////////////////////////////////////////////////////////////////////////
+    for (let z = 0; z < optionsList['parentValues'].length; z++) {
+      let value = optionsList['parentValues'][z].innerText
+      template = document.createElement('template')
+      template.innerHTML = Prognosis.playerOptionCheckbox
+      .replace(/\[id\]/ig, keyId)
+      .replace(/\[value\]/ig, value)
+      .replace(/\[valueText\]/ig, value)
+      obj.appendChild(template.content.cloneNode(true))
+
+      optionsList['parentValues'][z].remove()
+
+    }
+  }
+
+  async createSelectList (){
+    let selectTitle = document.querySelector('#input-title-option').value
+    let selectId = Prognosis.i.removeAccent(selectTitle)
+    let optionsList = document.querySelectorAll('#creation-container > [id ^= "option-"] ')
+    let insertParentName = document.querySelector('#chck-select-parent-name').checked
+    await this.createOption ((document.querySelector('#creation-dump')), true, selectTitle, selectId)
+    this.selectListCreator((document.querySelector('#creation-dump')), selectId, selectTitle, optionsList, insertParentName)
+  }
+
+  async createRadio (){
+    let selectTitle = document.querySelector('#input-title-option').value
+    let selectId = Prognosis.i.removeAccent(selectTitle)
+    let optionsList = {}
+    optionsList['parentValues'] = document.querySelectorAll('#creation-container > [id ^= "option-"] ')
+    optionsList['childValues'] = document.querySelectorAll('#child-creation-container > [id ^= "option-"] ')
+    let insertParentName = document.querySelector('#chck-select-parent-name').checked
+    let cascade = document.querySelector('#chck-cascade-option').checked
+    let insertRadioYN = document.querySelector('#chck-radioyn-option').checked
+    let properties = {"parentName":`${insertParentName}`,"cascade":`${cascade}`, "radioYN":`${insertRadioYN}`}
+    await this.createOption ((document.querySelector('#creation-dump')), true, selectTitle, selectId)
+    this.radioCreator((document.querySelector('#creation-dump')), selectId, selectTitle, optionsList, properties)
+  }
+
+  async createBundle (){
+    let selectTitle = document.querySelector('#input-title-option').value
+    let selectId = Prognosis.i.removeAccent(selectTitle)
+    let optionsList = {}
+    let numBundles = document.querySelector('#input-number-bundle').value
+    for (let i = 1; i <= numBundles; i++) {
+      if (i==1)
+        optionsList[`${selectTitle} ${i}`] = document.querySelectorAll(`#creation-container > [id ^= "option-"]`)
+      else
+        optionsList[`${selectTitle} ${i}`] = document.querySelectorAll(`#creation-container-bundle-${i-1} > [id ^= "option-"]`)
+    }
+    let insertParentName = document.querySelector('#chck-select-parent-name').checked
+
+    let properties = {"parentName":`${insertParentName}`,"groupedChoices":'true'}
+    await this.createOption ((document.querySelector('#creation-dump')), true, selectTitle, selectId)
+    this.bundleCreator((document.querySelector('#creation-dump')), selectId, selectTitle, optionsList, properties)
+
+
+  }
+
+  async createCheckList (){
+    let selectTitle = document.querySelector('#input-title-option').value
+    let selectId = Prognosis.i.removeAccent(selectTitle)
+    let optionsList = {}
+    optionsList['parentValues'] = document.querySelectorAll('#creation-container > [id ^= "option-"] ')
+    let insertParentName = document.querySelector('#chck-select-parent-name').checked
+    let properties = {"parentName":`${insertParentName}`}
+    await this.createOption ((document.querySelector('#creation-dump')), true, selectTitle, selectId)
+    this.checkListCreator((document.querySelector('#creation-dump')), selectId, selectTitle, optionsList, properties)
+
+
+  }
+
+  // async buildPacientLevel (optionsList){
+  //   let rootOption = optionsList.querySelectorAll('.pacient-info-wrapper')
+  //   console.log(LevelCreationTool.pacient)
+  //   for (let i = 0; i < rootOption.length; i++) {
+  //     let optionsLocked = rootOption[i].querySelector('.pacient-info-values[data-progn="locked"]')
+  //     let optionsOpen = rootOption[i].querySelector('.pacient-info-values[data-progn="open"]')
+  //   }
+  // }
 }
 
 
 (function () {
   LevelCreationTool.i = new LevelCreationTool()
+
   LevelCreationTool.deleteOptBtn =`
   <button type="button" name="button" class="btn btn-danger btn-delete-option">X</button>`
+  LevelCreationTool.cascadeDiv = `
+  <div class="col h-100 border rounded pb-5 pt-1 drop-container" style="background-color:#cebfbf;"
+  id="child-creation-container"
+  ondrop="LevelCreationTool.i.drop_handler(event)" ondragover="LevelCreationTool.i.dragover_handler(event)">
+  </div>`
+  LevelCreationTool.bundleDiv = `
+  <div class="col h-100 border rounded pb-5 pt-1 drop-container" style="background-color:#cebfbf;"
+  id="creation-container-bundle-[id]"
+  ondrop="LevelCreationTool.i.drop_handler(event)" ondragover="LevelCreationTool.i.dragover_handler(event)">
+  </div>`
 
 })()

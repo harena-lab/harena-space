@@ -23,22 +23,22 @@ class Saps {
           case 'idade':
             idade = elem.value
             switch (idade) {
-              case '<40':
+              case '<40 anos':
               idade = 0
               break;
-              case '40-59':
+              case '40-59 anos':
               idade = 5
               break;
-              case '60-69':
+              case '60-69 anos':
               idade = 9
               break;
-              case '70-74':
+              case '70-74 anos':
               idade = 13
               break;
-              case '75-79':
+              case '75-79 anos':
               idade = 15
               break;
-              case '>=80':
+              case '>=80 anos':
               idade = 18
               break;
           }
@@ -882,22 +882,22 @@ class Saps {
             idade = elem.value
             idadeValue = elem.value
             switch (idade) {
-              case '<40':
+              case '<40 anos':
               idade = 'menos que 40 anos'
               break;
-              case '40-59':
+              case '40-59 anos':
               idade = 'entre 40 e 59 anos'
               break;
-              case '60-69':
+              case '60-69 anos':
               idade = 'entre 60 e 69 anos'
               break;
-              case '70-74':
+              case '70-74 anos':
               idade = 'entre 70 e 74 anos'
               break;
-              case '75-79':
+              case '75-79 anos':
               idade = 'entre 75 e 79 anos'
               break;
-              case '>=80':
+              case '>=80 anos':
               idade = 'mais que 80 anos'
               break;
           }

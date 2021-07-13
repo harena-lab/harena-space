@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Prognosis - Learn</title>
+  <title>Prognosis - Level Creation</title>
 
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
@@ -110,7 +110,7 @@
   <main role="">
     <div id="main-panel" class="d-flex flex-column vh-100 vw-100 scroll-y index-boot-padding bg-secondary">
 
-      <div class="d-flex flex-column h-100 px-2 pb-4 debug-border bg-dark text-center scroll-y">
+      <div class="d-flex flex-column h-100 px-2 pb-4 debug-border bg-dark text-center main-scroll scroll-y">
         <div class="row h-100">
           <div class="col-8">
             <h1 class="debug-border txt-light my-5">Pacient Info</h1>
@@ -118,7 +118,15 @@
               <div class="row justify-content-center">
                 <h3>Idade: </h3>
               </div>
-              <div class="pancient-info-values drop-container pb-5 idade"
+              <h4 style="font-size: 1rem !important;">Opções abertas</h4>
+              <div class="pacient-info-values border rounded drop-container mx-1 pb-3 pb-5" style="border-width: 3px !important;"
+              data-option-name="idade" data-progn="open"
+              ondrop="LevelCreationTool.i.drop_handler(event)" ondragover="LevelCreationTool.i.dragover_handler(event)">
+
+              </div>
+              <h4 style="font-size: 1rem !important;">Opções predefinidas <i class="fas fa-lock"></i> </h4>
+              <div class="pacient-info-values border rounded drop-container mx-1 pb-3 pb-5" style="background-color:#9d9d88; border-width: 3px !important;"
+              data-option-name="idade" data-progn="locked"
               ondrop="LevelCreationTool.i.drop_handler(event)" ondragover="LevelCreationTool.i.dragover_handler(event)">
 
               </div>
@@ -127,7 +135,8 @@
               <div class="">
                 <h3>Origem: </h3>
               </div>
-              <div class="pancient-info-values drop-container pb-5 origem">
+              <div class="pacient-info-values drop-container pb-5 origem" data-option-name="Origem"
+              ondrop="LevelCreationTool.i.drop_handler(event)" ondragover="LevelCreationTool.i.dragover_handler(event)">
 
               </div>
             </div>
@@ -135,7 +144,8 @@
               <div class="">
                 <h3>Comorbidade: </h3>
               </div>
-              <div class="pancient-info-values drop-container pb-5 comorbidade" >
+              <div class="pacient-info-values drop-container pb-5 comorbidade" data-option-name="Comorbidade"
+              ondrop="LevelCreationTool.i.drop_handler(event)" ondragover="LevelCreationTool.i.dragover_handler(event)">
 
               </div>
 
@@ -145,7 +155,8 @@
                 <h3>Motivo da admissão: </h3>
               </div>
 
-              <div class="pancient-info-values drop-container pb-5 admissao" >
+              <div class="pacient-info-values drop-container pb-5 admissao" data-option-name="Motivo da admissão"
+              ondrop="LevelCreationTool.i.drop_handler(event)" ondragover="LevelCreationTool.i.dragover_handler(event)">
 
               </div>
             </div>
@@ -153,7 +164,8 @@
               <div class="">
                 <h3>Status Clínico: </h3>
               </div>
-              <div class="pancient-info-values drop-container pb-5 status-clinico" >
+              <div class="pacient-info-values drop-container pb-5 status-clinico" data-option-name="Status Clínico"
+              ondrop="LevelCreationTool.i.drop_handler(event)" ondragover="LevelCreationTool.i.dragover_handler(event)">
 
               </div>
 
@@ -162,33 +174,76 @@
               <div class="">
                 <h3>Alterações laboratoriais: </h3>
               </div>
-              <div class="pancient-info-values drop-container pb-5 alt-laboratoriais" >
+              <div class="pacient-info-values drop-container pb-5 alt-laboratoriais" data-option-name="Alterações laboratoriais"
+              ondrop="LevelCreationTool.i.drop_handler(event)" ondragover="LevelCreationTool.i.dragover_handler(event)">
 
               </div>
             </div>
             <div class="p-2">
-
+              <button type="button" class="w-50 btn btn-success" id="btn-build-lvl"> Construir nível</button>
             </div>
           </div>
-          <div class="col-4 my-5">
+          <div class="col-4 my-5 h-75">
             <div class="bg-white mb-2 border rounded">
-              Select List creator
-              <input type="text" id="input-title-select-list" placeholder="Insira o titulo da lista..." value="">
+              <ul class="nav nav-tabs" id="creation-selection-tab" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link active" data-toggle="tab" href="#selectList" role="tab" aria-selected="true">Select list</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" data-toggle="tab" href="#bundle" role="tab" aria-selected="false">Bundle</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link cascade-nav" id="radio-tab" data-toggle="tab" href="#radio" role="tab" aria-selected="false">Radio</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link cascade-nav" id="checkList-tab" data-toggle="tab" href="#checkList" role="tab" aria-selected="false">Checklist</a>
+                </li>
+              </ul>
               <div class="custom-control custom-checkbox">
                 <input type="checkbox" class="custom-control-input" id="chck-select-parent-name">
-                <label class="custom-control-label" for="chck-select-parent-name">Inserir nome antes do valor</label>
+                <label class="custom-control-label" for="chck-select-parent-name">Inserir nome da familia antes</label>
+                <input type="text" class="mb-1" id="input-title-option" placeholder="Insira o titulo da lista..." value="">
               </div>
-              Drag items to compose the select list
-              <div class="bg-secondary border rounded m-1 pb-5 drop-container" id="select-list-creation-container"
-              ondrop="LevelCreationTool.i.drop_handler(event)" ondragover="LevelCreationTool.i.dragover_handler(event)">
+              <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="selectList" role="tabpanel">
+                  <button type="button" id="btn-create-select-list" class="btn btn-success" onclick="LevelCreationTool.i.createSelectList()">Create</button>
+                </div>
+                <div class="tab-pane fade" id="checkList" role="tabpanel">
+                  <button type="button" id="btn-create-select-list" class="btn btn-success" onclick="LevelCreationTool.i.createCheckList()">Create</button>
+                </div>
+                <div class="tab-pane fade" id="radio" role="tabpanel">
+                  <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="chck-cascade-option">
+                    <label class="custom-control-label" for="chck-cascade-option">Duas camadas</label>
+                  </div>
+                  <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="chck-radioyn-option">
+                    <label class="custom-control-label" for="chck-radioyn-option">Sim/não (antes das opções)</label>
+                  </div>
+                  <button type="button" id="btn-create-general-options" class="btn btn-success" onclick="LevelCreationTool.i.createRadio()">Create</button>
+                </div>
+                <div class="tab-pane fade" id="bundle" role="tabpanel">
+                  <div class="custom-input">
+                    <label class="custom-label" for="input-number-bundle">Nº bundles</label>
+                    <input type="number" min="2" id="input-number-bundle" placeholder="Quantidade de bundles.." value="2">
+                  </div>
+                  <button type="button" id="btn-create-bundle" class="btn btn-success" onclick="LevelCreationTool.i.createBundle()">Create</button>
+                </div>
+              </div>
+              Drag items to compose the options
+              <div class="row bg-secondary border rounded m-1 py-1" id="creation-container-wrapper">
+                <div class="col h-100 bg-secondary pb-5 drop-container" id="creation-container"
+                ondrop="LevelCreationTool.i.drop_handler(event)" ondragover="LevelCreationTool.i.dragover_handler(event)">
+
+                </div>
 
               </div>
-              <button type="button" id="btn-create-select-list" class="btn btn-success" onclick="LevelCreationTool.i.oneMoreToSelect()">Create</button>
-            </div>
-            <div class="" id="creation-dump">
 
             </div>
-            <div class="flex-column bg-white border rounded" id="option-list-wrapper">
+            <div class="bg-white p-0" id="creation-dump">
+
+            </div>
+            <div class="flex-column bg-white border rounded h-75 scroll-y" id="option-list-wrapper">
 
             </div>
           </div>

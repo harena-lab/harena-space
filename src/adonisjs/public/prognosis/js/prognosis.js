@@ -459,7 +459,7 @@ class Prognosis {
       for (var i = 0; i < selectedPacient["Idade"].open.length; i++) {
         option = document.createElement('option')
         option.value = selectedPacient["Idade"].open[i]
-        option.innerHTML = selectedPacient["Idade"].open[i]+' anos'
+        option.innerHTML = selectedPacient["Idade"].open[i]
         htmlSelect.appendChild(option)
 
 
@@ -479,7 +479,7 @@ class Prognosis {
       for (var i = 0; i < selectedPacient["Idade"].locked.length; i++) {
         option = document.createElement('option')
         option.value = selectedPacient["Idade"].locked[i]
-        option.innerHTML = selectedPacient["Idade"].locked[i]+' anos'
+        option.innerHTML = selectedPacient["Idade"].locked[i]
         htmlSelect.appendChild(option)
 
 
@@ -1766,12 +1766,12 @@ class Prognosis {
 
           ],
           "open": [
-            "<40",//0
-            "40-59",//5
-            "60-69",//9
-            "70-74",//13
-            "75-79",//15
-            ">=80",//18
+            "<40 anos",//0
+            "40-59 anos",//5
+            "60-69 anos",//9
+            "70-74 anos",//13
+            "75-79 anos",//15
+            ">=80 anos",//18
           ]
         },
         "Origem":{
@@ -2042,12 +2042,12 @@ class Prognosis {
 
           ],
           "open": [
-            "<40",
-            "40-59",
-            "60-69",
-            "70-74",
-            "75-79",
-            ">=80",
+            "<40 anos",
+            "40-59 anos",
+            "60-69 anos",
+            "70-74 anos",
+            "75-79 anos",
+            ">=80 anos",
           ]
         },
         "Origem":{
@@ -2310,7 +2310,7 @@ class Prognosis {
         "dificuldade": "2",
         "Idade":{
           "locked": [
-            "<40"
+            "<40 anos"
           ],
           "open": []
         },
@@ -2560,7 +2560,7 @@ class Prognosis {
         "dificuldade": "3",
         "Idade":{
           "locked": [
-            "<40"
+            "<40 anos"
           ],
           "open": []
         },
@@ -2808,7 +2808,7 @@ class Prognosis {
         "dificuldade": "4",
         "Idade":{
           "locked": [
-            "<40"
+            "<40 anos"
           ],
           "open": []
         },
@@ -3023,7 +3023,7 @@ class Prognosis {
         "dificuldade": "5",
         "Idade":{
           "locked": [
-            "<40"
+            "<40 anos"
           ],
           "open": []
         },
@@ -3233,7 +3233,7 @@ class Prognosis {
         "dificuldade": "6",
         "Idade":{
           "locked": [
-            "<40"
+            "<40 anos"
           ],
           "open": []
         },
@@ -3441,7 +3441,7 @@ class Prognosis {
         "dificuldade": "7",
         "Idade":{
           "locked": [
-            "<40"
+            "<40 anos"
           ],
           "open": []
         },
@@ -3644,7 +3644,7 @@ class Prognosis {
         "dificuldade": "8",
         "Idade":{
           "locked": [
-            "<40"
+            "<40 anos"
           ],
           "open": []
         },
@@ -3842,7 +3842,7 @@ class Prognosis {
         "dificuldade": "9",
         "Idade":{
           "locked": [
-            "<40"
+            "<40 anos"
           ],
           "open": []
         },
@@ -4047,7 +4047,7 @@ class Prognosis {
         "dificuldade": "10",
         "Idade":{
           "locked": [
-            "<40"
+            "<40 anos"
           ],
           "open": []
         },
@@ -4230,12 +4230,12 @@ class Prognosis {
 
   Prognosis.sapsScoreValues = {
     "pacient":{
-      "<40":0,
-      "40-59":5,
-      "60-69":9,
-      "70-74":13,
-      "75-79":15,
-      ">=80":18,
+      "<40 anos":0,
+      "40-59 anos":5,
+      "60-69 anos":9,
+      "70-74 anos":13,
+      "75-79 anos":15,
+      ">=80 anos":18,
 
       "Pronto Socorro":5,
       "Outra UTI":7,
