@@ -9,14 +9,22 @@ class DCCSlider extends DCCInput {
   }
 
   connectedCallback () {
-    if (!this.hasAttribute('min')) { this.min = DCCSlider.defaultValueMin }
-    if (!this.hasAttribute('max')) { this.max = DCCSlider.defaultValueMax }
-    if (!this.hasAttribute('value')) { this.value = Math.round((parseInt('' + this.min) + parseInt('' + this.max)) / 2) }
+    if (this.hasAttribute('min'))
+      this._min = this.min
+    else
+      this._min = DCCSlider.defaultValueMin
+    if (this.hasAttribute('max'))
+      this._max = this.max
+    else
+      this._max = DCCSlider.defaultValueMax
+
+    this._value = (this.hasAttribute('value')) ? parseInt(this.value) :
+        Math.round((parseInt('' + this._min) + parseInt('' + this._max)) / 2)
 
     super.connectedCallback()
     this.innerHTML = ''
 
-    MessageBus.int.publish('var/' + this.variable + '/input/ready',
+    MessageBus.int.publish('var/' + this._variable + '/input/ready',
       DCCSlider.elementTag)
   }
 
@@ -57,12 +65,12 @@ class DCCSlider extends DCCInput {
 
   inputChanged () {
     this.changed = true
-    this.value = this._inputVariable.value
-    if (this._inputIndex) { this._inputIndex.innerHTML = this.value }
-    MessageBus.ext.publish('var/' + this.variable + '/changed',
+    this._value = this._inputVariable.value
+    if (this._inputIndex) { this._inputIndex.innerHTML = this._value }
+    MessageBus.ext.publish('var/' + this._variable + '/changed',
       {
         sourceType: DCCSlider.elementTag,
-        value: this.value
+        value: this._value
       })
   }
 
@@ -79,34 +87,33 @@ class DCCSlider extends DCCInput {
   // _injectDCC(presentation, render) {
   async _renderInterface () {
     // === pre presentation setup
-    const statement =
-         (this.hasAttribute('xstyle') && this.xstyle.startsWith('out'))
-           ? '' : this._statement
+    const statement = (this._xstyle.startsWith('out'))
+                        ? '' : this._statement
 
     const index = (this.index)
-      ? "<span id='" + this.variable + "-index'>" +
-              ((this.mandatory) ? '  ' : this.value) +
+      ? "<span id='" + this._variable + "-index'>" +
+              ((this.mandatory) ? '  ' : this._value) +
            '</span>'
       : ''
 
     const html = DCCSlider.templateElement
       .replace('[statement]', statement)
-      .replace('[variable]', this.variable)
-      .replace('[value]', this.value)
-      .replace('[min]', this.min)
-      .replace('[max]', this.max)
+      .replace('[variable]', this._variable)
+      .replace('[value]', this._value)
+      .replace('[min]', this._min)
+      .replace('[max]', this._max)
       .replace('[render]', this._renderStyle())
       .replace('[index]', index)
 
     // === presentation setup (DCC Block)
     let presentation
-    if (this.hasAttribute('xstyle') && this.xstyle.startsWith('out')) {
+    if (this._xstyle.startsWith('out')) {
       await this._applyRender(this._statement, 'innerHTML', 'text')
       presentation = await this._applyRender(html, 'innerHTML', 'slider')
     } else { presentation = await this._applyRender(html, 'innerHTML', 'slider') }
 
     // === post presentation setup
-    const selector = '#' + this.variable.replace(/\./g, '\\.')
+    const selector = '#' + this._variable.replace(/\./g, '\\.')
     this._inputVariable = presentation.querySelector(selector)
     this._inputVariable.oninput = this.inputChanged
     if (this.hasAttribute('index')) { this._inputIndex = presentation.querySelector(selector + '-index') }

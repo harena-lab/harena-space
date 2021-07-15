@@ -16,15 +16,17 @@ class DCCBlock extends DCCVisual {
   async connectedCallback () {
     super.connectedCallback()
 
-    if (!this.hasAttribute('xstyle')) {
-      this.xstyle = 'theme'
+    if (this.hasAttribute('xstyle'))
+      this._xstyle = this.xstyle
+    else {
+      this._xstyle = 'theme'
       if (MessageBus.page.hasSubscriber('dcc/request/xstyle')) {
         const stylem = await MessageBus.page.request('dcc/request/xstyle')
-        this.xstyle = stylem.message
+        this._xstyle = stylem.message
       }
     }
 
-    if (this.xstyle.startsWith('out') &&
+    if (this._xstyle.startsWith('out') &&
           !this.hasAttribute('location') &&
           MessageBus.page.hasSubscriber('dcc/request/location')) {
       const locationM = await MessageBus.page.request('dcc/request/location',
@@ -73,6 +75,7 @@ class DCCBlock extends DCCVisual {
 
   set xstyle (newValue) {
     this.setAttribute('xstyle', newValue)
+    this._xstyle = newValue
   }
 
   /* Rendering */
@@ -95,7 +98,7 @@ class DCCBlock extends DCCVisual {
     */
   _renderStyle () {
     let render
-    switch (this.xstyle) {
+    switch (this._xstyle) {
       // no style
       case 'none': render = ''
         break
@@ -108,7 +111,7 @@ class DCCBlock extends DCCVisual {
       case 'out': render = this.elementTag() + '-theme'
         break
         // style defined directly in the attribute xstyle
-      default: render = this.xstyle
+      default: render = this._xstyle
     }
 
     return render
@@ -132,7 +135,7 @@ class DCCBlock extends DCCVisual {
     let presentation = null
     // location #in to indicate the location attribute is not absent
     // but is not outside
-    if (this.xstyle.startsWith('out') &&
+    if (this._xstyle.startsWith('out') &&
         this.hasAttribute('location') && this.location != '#in') {
       /*
        * outer target interface
@@ -166,11 +169,11 @@ class DCCBlock extends DCCVisual {
                    "'>" + html + '</div>'
       }
 
-      if (this.xstyle == 'in') {
+      if (this._xstyle == 'in') {
         html = "<style>@import '" +
                       Basic.service.systemStyleResolver(this.elementTag() + '.css') +
                    "' </style>" + html
-      } else if (this.xstyle == 'theme') {
+      } else if (this._xstyle == 'theme') {
         if (Basic.service.currentCustomTheme != null)
           html = "<style>@import '" +
                    Basic.service.themeCustomStyleResolver(this.elementTag() + '.css') +
@@ -185,8 +188,8 @@ class DCCBlock extends DCCVisual {
 
       let host = this
       const allowShadow = (shadow == null) ? true : shadow
-      if (allowShadow && (this.xstyle == 'in' ||
-             this.xstyle == 'theme' || this.xstyle == 'none')) {
+      if (allowShadow && (this._xstyle == 'in' ||
+             this._xstyle == 'theme' || this._xstyle == 'none')) {
         host = (this.shadowRoot)
           ? this.shadowRoot : this.attachShadow({ mode: 'open' })
       }

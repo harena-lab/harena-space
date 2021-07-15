@@ -9,6 +9,10 @@ class DCCInput extends DCCBlock {
   }
 
   connectedCallback () {
+    if (this.hasAttribute('variable'))
+      this._variable = this.variable
+    else
+      this._variable = DCC.generateVarName()
     this._statement = (this.hasAttribute('statement'))
       ? this.statement : this.innerHTML
       // this.innerHTML = "";
@@ -18,9 +22,9 @@ class DCCInput extends DCCBlock {
     if (this.mandatory) {
       const inputIndication = (this._statement != null)
         ? this._statement
-        : this.variable.substring(this.variable.lastIndexOf('.') + 1)
+        : this._variable.substring(this._variable.lastIndexOf('.') + 1)
 
-      MessageBus.int.publish('var/' + this.variable + '/input/mandatory',
+      MessageBus.int.publish('var/' + this._variable + '/input/mandatory',
         inputIndication)
     }
   }

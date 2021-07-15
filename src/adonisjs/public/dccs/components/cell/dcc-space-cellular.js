@@ -558,7 +558,6 @@ class DCCSpaceCellularEditor extends DCCSpaceCellular {
         this._editProps = this.extractProperties(message.value)
       } else { this._editProps = null }
       for (const t of this._tools) { t.inactivateTool() }
-      break
     } else
       switch (topic.toLowerCase()) {
         case 'reset': this.resetState(); break
