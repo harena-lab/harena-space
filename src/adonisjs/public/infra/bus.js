@@ -56,8 +56,10 @@ class MessageBus {
   }
 
   async publish (topic, message) {
-    for (const l in this._listeners) {
-      if (this.matchTopic(l, topic)) { this._listeners[l].callback(topic, message) }
+    let listeners = this._listeners.slice()
+    for (const l in listeners) {
+      if (this.matchTopic(listeners[l], topic))
+        listeners[l].callback(topic, message)
     }
 
     if (this._externalized) {
@@ -103,16 +105,18 @@ class MessageBus {
   /* Checks if this topic has a subscriber */
   hasSubscriber (topic) {
     let hasSub = false
-    for (let l = 0; !hasSub && l < this._listeners.length; l++) { hasSub = this.matchTopic(l, topic) }
+    let listeners = this._listeners.slice()
+    for (let l = 0; !hasSub && l < listeners.length; l++) {
+      hasSub = this.matchTopic(listeners[l], topic) }
     return hasSub
   }
 
-  matchTopic (index, topic) {
+  matchTopic (listener, topic) {
     let matched = false
-    if (this._listeners[index].regexp) {
-      const matchStr = this._listeners[index].regexp.exec(topic)
+    if (listener.regexp) {
+      const matchStr = listener.regexp.exec(topic)
       if (matchStr != null && matchStr[0] === topic) { matched = true }
-    } else if (this._listeners[index].topic === topic) { matched = true }
+    } else if (listener.topic === topic) { matched = true }
     return matched
   }
 
