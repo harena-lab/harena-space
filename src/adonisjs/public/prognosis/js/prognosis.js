@@ -31,8 +31,9 @@ class Prognosis {
   }
 
   async start (){
-    if(document.querySelectorAll('.progn-multi-wrapper') != null)
+    if(document.querySelectorAll('.progn-multi-wrapper') != null){
       Prognosis.i.expandMultiChoice()
+    }
     if (new URL(document.location).pathname == '/prognosis/learn/player/') {
       Prognosis.i.getPacientOptions()
 
@@ -359,7 +360,6 @@ class Prognosis {
     let pacientInfo
     if(calculator){
       pacientInfo = Prognosis.pacientGeneral
-
     } else {
       pacientInfo = Prognosis.learningPrognosisLvls
 
@@ -988,8 +988,8 @@ class Prognosis {
     objectfyPlayerOptions('Alterações laboratoriais','alt-lab-wrapper','Alteração')
 
     Prognosis.i.expandMultiChoice()
+    Prognosis.i.pacientFormValidation()
     if (!new URL(document.location).pathname.includes('calculator')) {
-      Prognosis.i.pacientFormValidation()
       Prognosis.i.extractPossibleOptions(selectedPacient)
     }
   }
@@ -1699,20 +1699,34 @@ class Prognosis {
 
           ],
           "open": [
-            "<40 anos",//0
-            "40-59 anos",//5
-            "60-69 anos",//9
-            "70-74 anos",//13
-            "75-79 anos",//15
-            ">=80 anos",//18
+            {
+              "Idade":{
+                "selectList":"true",
+                "values":[
+                  "<40 anos",//0
+                  "40-59 anos",//5
+                  "60-69 anos",//9
+                  "70-74 anos",//13
+                  "75-79 anos",//15
+                  ">=80 anos",//18
+                ]
+              }
+            }
           ]
         },
         "Origem":{
           "locked": [],
           "open": [
-            "Pronto Socorro",//5
-            "Outra UTI",//7
-            "Nenhuma das anteriores",//8
+            {
+              "Origem":{
+                "selectList":"true",
+                "values":[
+                  "Pronto Socorro",//5
+                  "Outra UTI",//7
+                  "Nenhuma das anteriores",//8
+                ]
+              }
+            }
           ],
         },
         "Comorbidade":{
@@ -4336,7 +4350,7 @@ class Prognosis {
           },
           "<14 dias":{
             "saps":0,
-            "text":"menos de 14 dias",
+            "text":"há menos de 14 dias",
           },
           "14-27 dias":{
             "saps":6,
@@ -4344,7 +4358,7 @@ class Prognosis {
           },
           ">=28 dias":{
             "saps":7,
-            "text":"mais de 28 dias",
+            "text":"há mais de 28 dias",
           },
         },
       },

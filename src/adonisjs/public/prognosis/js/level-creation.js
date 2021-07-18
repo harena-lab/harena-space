@@ -11,7 +11,7 @@ class LevelCreationTool {
   }
 
   async start(){
-    
+
     const navSelection = document.querySelector('#creation-selection-tab').querySelectorAll('.nav-link')
     const fnCascadeListener = function(){
       const cascadeCheck = document.querySelector(`#chck-cascade-option`)
