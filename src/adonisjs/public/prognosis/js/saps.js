@@ -8,17 +8,215 @@ class Saps {
   //   // 64.5990 +Math.log(dynamicScore+20.5958)*13.2322 south america calc
   //   var logitDynamic = -32.6659+Math.log(dynamicScore+20.5958)*7.3068
   // }
+  buildSapsText (type, source){
+    // || IDADE || ORIGEM || COMORMIDADE || CONTEXTO DA ADMISSÃO || STATUS CLÍNICO || ALTERAÇÕES LABORATORIAIS
+    let sapsGroups = {}
+    let txtReady = {}
+    sapsGroups['Idade'] = ['Idade']
+    sapsGroups['Origem'] = ['Origem']
+    sapsGroups['Comorbidade'] = ['IC NYHA IV','Câncer metastático','Terapia oncológica',
+     'Câncer hematológico','Cirrose','SIDA']
+    sapsGroups['Contexto da admissão'] = []
+    sapsGroups['Status clínico'] = ['Escala de Coma de Glasgow','Temperatura',
+     'Frequência cardíaca','Pressão sistólica','Droga vasoativa']
+    sapsGroups['Alterações laboratoriais'] = ['Bilirrubina','Creatinina','pH','Leucócitos'
+     ,'Plaquetas','Oxigenação']
 
+    let keys = Object.keys(source)
+    console.log('============ source keys')
+    console.log(keys)
+    if(type == 'complex'){
+      for (let i = 0; i < keys.length; i++) {
+        switch (keys[i]) {
+          case 'Internado antes da admissão':
+            txtReady[keys[i]] = `, internado há ${source[keys[i]]} antes da admissão, `
+            break;
+          case 'Infectado antes da admissão':
+            txtReady[keys[i]] = `com infecção ${source[keys[i]][0]}`
+            for (var k = 1; k < source[keys[i]].length; k++) {
+              txtReady[keys[i]] += ` e ${source[keys[i]][k]}`
+            }
+            txtReady[keys[i]] += '.'
+            break;
+          case 'Admissão planejada':
+            txtReady[keys[i]] = ` Admitido ${source[keys[i]]}, `
+            break;
+          case 'Submetido à cirurgia':
+            let firstTxt
+            for (let k = 0; k < source[keys[i]].length; k++) {
+              if (!source[keys[i]][k].includes('submetido à cirurgia')) {
+                if (txtReady[keys[i]])
+                  txtReady[keys[i]] += ` e ${source[keys[i]][k]}`
+                else
+                  txtReady[keys[i]] = ` ${source[keys[i]][k]}`
+              }else {
+                firstTxt = source[keys[i]][k]
+              }
+            }
+            txtReady[keys[i]] = firstTxt + txtReady[keys[i]]
+            break;
+          case 'Motivo de admissão na UTI':
+            txtReady[keys[i]] = `, sendo encaminhado à UTI por ${source[keys[i]][0]}`
+            for (let k = 1; k < source[keys[i]].length; k++) {
+              txtReady[keys[i]] += ` e ${source[keys[i]][k]}`
+            }
+            break;
+          case 'Escala de Coma de Glasgow':
+            txtReady[keys[i]] = ` GCS de ${source[keys[i]]},`
+            break;
+          case 'Temperatura':
+            txtReady[keys[i]] = ` Temp ${source[keys[i]]},`
+            break;
+          case 'Frequência cardíaca':
+            txtReady[keys[i]] = ` FC ${source[keys[i]]},`
+            break;
+          case 'Pressão sistólica':
+            txtReady[keys[i]] = ` PAS ${source[keys[i]]},`
+            break;
+          case 'Bilirrubina':
+            txtReady[keys[i]] = ` Bilirrubina total ${source[keys[i]]};`
+            break;
+          case 'Creatinina':
+            txtReady[keys[i]] = ` Creatinina ${source[keys[i]]};`
+            break;
+          case 'pH':
+            txtReady[keys[i]] = ` pH ${source[keys[i]]};`
+            break;
+          case 'Leucócitos':
+            txtReady[keys[i]] = ` Leucócitos ${source[keys[i]]};`
+            break;
+          case 'Plaquetas':
+            txtReady[keys[i]] = ` Plaquetas ${source[keys[i]]};`
+            break;
+          default:
+            txtReady[keys[i]] = source[keys[i]]
+        }
+          if (sapsGroups['Idade'].indexOf(keys[i]) > -1) {
+            console.log('============ idade group')
+            console.log(keys[i])
+            console.log(source[keys[i]])
+            txtReady[keys[i]] = source[keys[i]]
+          }else if (sapsGroups['Origem'].indexOf(keys[i]) > -1) {
+            console.log('============ origem group')
+            console.log(keys[i])
+            console.log(source[keys[i]])
+            txtReady[keys[i]] = source[keys[i]]
+          }else if (sapsGroups['Comorbidade'].indexOf(keys[i]) > -1) {
+            console.log('============ comorbidade group')
+            console.log(keys[i])
+            console.log(source[keys[i]])
+            if (txtReady['Comorbidade'])
+              txtReady['Comorbidade'] += `e ${source[keys[i]]} `
+            else
+              txtReady['Comorbidade'] = `${source[keys[i]]} `
+          }
+          // else if (keys[i] == 'Internado antes da admissão') {
+          //   txtReady[keys[i]] = ` internado há ${source[keys[i]]} antes da admissão, `
+          //   //' sem internação antes da admissão,'
+          // }else if (keys[i] == 'Infectado antes da admissão') {
+          //   txtReady[keys[i]] = ` com infecção ${source[keys[i]]}.`
+          //   //' sem infecção.'
+          // }else if (keys[i] == 'Admissão planejada') {
+          //   txtReady[keys[i]] = ` Admitido ${source[keys[i]]},`
+          //   //' não submetido à cirurgia'
+          // }else if (sapsGroups['Contexto da admissão'].indexOf(keys[i]) > -1) {
+          //   console.log('============ contexto admissão group')
+          //   console.log(keys[i])
+          //   console.log(source[keys[i]])
+          // }else if (sapsGroups['Status clínico'].indexOf(keys[i]) > -1) {
+          //   console.log('============ status clinico group')
+          //   console.log(keys[i])
+          //   console.log(source[keys[i]])
+          // }else if (sapsGroups['Alterações laboratoriais'].indexOf(keys[i]) > -1) {
+          //   console.log('============ alt lab group')
+          //   console.log(keys[i])
+          //   console.log(source[keys[i]])
+          // }
+      }
+      console.log('============ Built text schemme')
+      console.log(txtReady)
+      let _overviewText = Saps.overviewText
+      .replace(/\[_idade\]/ig, txtReady['Idade'])
+      .replace(/\[_origem\]/ig, txtReady['Origem'])
+      .replace(/\[_comorbidade\]/ig, txtReady['Comorbidade'])
+      .replace(/\[_internadoDias\]/ig, txtReady['Internado antes da admissão'])
+      .replace(/\[_ifeccao\]/ig, txtReady['Infectado antes da admissão'])
+      .replace(/\[_admissao\]/ig, txtReady['Admissão planejada'])
+      .replace(/\[_submetidoCirurgia\]/ig, txtReady['Submetido à cirurgia'])
+      .replace(/\[_submetidoUti\]/ig, txtReady['Motivo de admissão na UTI'])
+      .replace(/\[_gcs\]/ig, txtReady['Escala de Coma de Glasgow'])
+      .replace(/\[_temperatura\]/ig, txtReady['Temperatura'])
+      .replace(/\[_freqCardiaca\]/ig, txtReady['Frequência cardíaca'])
+      .replace(/\[_pressaoSistolica\]/ig, txtReady['Pressão sistólica'])
+      .replace(/\[_drogaVasoativa\]/ig, txtReady['Droga vasoativa'])
+      .replace(/\[_bilirrubina\]/ig, txtReady['Bilirrubina'])
+      .replace(/\[_creatinina\]/ig, txtReady['Creatinina'])
+      .replace(/\[_ph\]/ig, txtReady['pH'])
+      .replace(/\[_leucocitos\]/ig, txtReady['Leucócitos'])
+      .replace(/\[_plaquetas\]/ig, txtReady['Plaquetas'])
+      .replace(/\[_oxigenacao\]/ig, txtReady['Oxigenação'])
+      console.log(_overviewText)
+    }else if(type == 'abstract') {
+      for (let i = 0; i < keys.length; i++) {
+        array[i]
+      }
+    }
+    return txtReady
+  }
   async calcSaps3Score(pacientData){
-    var idade
-    var origem
-    var comorb = {}
-    var motvAdm = {}
-    var statsClinico = {}
-    var altLab = {}
+    let idade
+    let origem
+    let comorb = {}
+    let motvAdm = {}
+    let statsClinico = {}
+    let altLab = {}
+    let sapsTextBuild = {}
 
     for (var elem of pacientData.querySelectorAll('select')) {
       if(elem.validity.valid){
+        let sapsScoreValues = Prognosis.sapsScoreValues['pacient']
+        let sapsScoreKeys = Object.keys(sapsScoreValues)
+        for (let i = 0; i < sapsScoreKeys.length; i++) {
+          let valueKey = Object.keys(sapsScoreValues[sapsScoreKeys[i]]['values'])
+          if(Prognosis.i.removeAccent(sapsScoreKeys[i]) == Prognosis.i.removeAccent(elem.value)){
+            let sapsValue = sapsScoreValues[sapsScoreKeys[i]]['values']['Sim']['saps']
+            let sapsText = sapsScoreValues[sapsScoreKeys[i]]['values']['Sim']['text']
+            console.log('==============================================')
+            console.log('============ selected')
+            console.log(sapsScoreKeys[i])
+
+            console.log(sapsValue)
+            console.log('============ text')
+            console.log(sapsText)
+            if (sapsText != ''){
+              if (!sapsTextBuild[sapsScoreKeys[i]]) {
+                sapsTextBuild[sapsScoreKeys[i]] = []
+              }
+              sapsTextBuild[sapsScoreKeys[i]].push(sapsText)
+            }
+          }else {
+            for (let k = 0; k < valueKey.length; k++) {
+              let sapsValue = sapsScoreValues[sapsScoreKeys[i]]['values'][valueKey[k]]['saps']
+              let sapsText = sapsScoreValues[sapsScoreKeys[i]]['values'][valueKey[k]]['text']
+              if(Prognosis.i.removeAccent(valueKey[k]) == Prognosis.i.removeAccent(elem.value)){
+                console.log('==============================================')
+                console.log('============ selected')
+                console.log(valueKey[k])
+
+                console.log(sapsValue)
+                console.log('============ text')
+                console.log(sapsText)
+                if (sapsText != ''){
+                  if (!sapsTextBuild[sapsScoreKeys[i]]) {
+                    sapsTextBuild[sapsScoreKeys[i]] = []
+                  }
+
+                  sapsTextBuild[sapsScoreKeys[i]].push(sapsText)
+                }
+              }
+            }
+          }
+        }
         switch (elem.id) {
           case 'idade':
             idade = elem.value
@@ -247,7 +445,34 @@ class Saps {
     }
     for (var elem of pacientData.querySelectorAll('input[type=radio]')) {
       if(elem.validity.valid && elem.checked){
-        // console.log(elem.name)
+        let sapsScoreValues = Prognosis.sapsScoreValues['pacient']
+        let sapsScoreKeys = Object.keys(sapsScoreValues)
+        for (let i = 0; i < sapsScoreKeys.length; i++) {
+          let valueKeys = Object.keys(sapsScoreValues[sapsScoreKeys[i]]['values'])
+          if (Prognosis.i.removeAccent(sapsScoreKeys[i]) == Prognosis.i.removeAccent(elem.name)
+          || Prognosis.i.removeAccent(sapsScoreKeys[i]) == Prognosis.i.removeAccent(elem.name.substring(0,(elem.name.length - 6)))) {
+            for (let k = 0; k < valueKeys.length; k++) {
+              if (Prognosis.i.removeAccent(valueKeys[k]) == Prognosis.i.removeAccent(elem.value)) {
+                let selectedOpt = sapsScoreValues[sapsScoreKeys[i]]['values'][valueKeys[k]]
+                let sapsValue = selectedOpt['saps']
+                let sapsText = selectedOpt['text']
+                console.log('============ Selected radio')
+                console.log(elem.name)
+                console.log(elem.value)
+                console.log('============ SAPS translated info')
+                console.log(sapsValue)
+                console.log(sapsText)
+                if (sapsText != ''){
+                  if (!sapsTextBuild[sapsScoreKeys[i]]) {
+                    sapsTextBuild[sapsScoreKeys[i]] = []
+                  }
+                  sapsTextBuild[sapsScoreKeys[i]].push(sapsText)
+                }
+              }
+            }
+          }
+        }
+
         switch (elem.name) {
           case 'ic-nyha-iv':
           switch (elem.value) {
@@ -548,6 +773,34 @@ class Saps {
         // console.log(elem.id)
         switch (elem.checked) {
           case true:
+          // console.log('============ checkList saps selected elem')
+          // console.log(elem.id)
+          // console.log(Prognosis.i.removeAccent(elem.id))
+          // console.log(elem.innerText)
+          let sapsScoreValues = Prognosis.sapsScoreValues['pacient']
+          let sapsScoreKeys = Object.keys(sapsScoreValues)
+          for (let i = 0; i < sapsScoreKeys.length; i++) {
+            let valueKeys = Object.keys(sapsScoreValues[sapsScoreKeys[i]]['values'])
+            for (let k = 0; k < valueKeys.length; k++) {
+              let selectedOpt = sapsScoreValues[sapsScoreKeys[i]]['values'][valueKeys[k]]
+              if (Prognosis.i.removeAccent(valueKeys[k]) == Prognosis.i.removeAccent(elem.id)) {
+                let sapsValue = selectedOpt['saps']
+                let sapsText = selectedOpt['text']
+                console.log('============ Selected checkbox')
+                console.log(elem.value)
+                console.log(elem.id)
+                console.log('============ SAPS translated info')
+                console.log(sapsValue)
+                console.log(sapsText)
+                if (sapsText != ''){
+                  if (!sapsTextBuild[sapsScoreKeys[i]]) {
+                    sapsTextBuild[sapsScoreKeys[i]] = []
+                  }
+                  sapsTextBuild[sapsScoreKeys[i]].push(sapsText)
+                }
+              }
+            }
+          }
           switch (elem.id) {
             case 'cirurgia-urgencia':
             motvAdm.motvCirurgia = 6
@@ -665,6 +918,9 @@ class Saps {
         }
       }
     }
+    console.log('============ the raw sapsText')
+    console.log(sapsTextBuild)
+    this.buildSapsText('complex', sapsTextBuild)
     motvAdm.uti = 16
     // console.log('============ motvADM')
     // console.log(motvAdm)
@@ -725,7 +981,7 @@ class Saps {
     // 64.5990 +Math.log(dynamicScore+20.5958)*13.2322 south america calc
     var logitDynamic = -32.6659+Math.log(dynamicScore+20.5958)*7.3068
     // console.log(logitDynamic)
-    function round(value, precision) {
+    function round(value,precision) {
       let multiplier = Math.pow(10, precision || 0);
       return Math.round(value * multiplier) / multiplier;
     }
@@ -874,9 +1130,52 @@ class Saps {
     let leucocitosValue = ''
     let plaquetasValue = ''
     let oxigenacaoValue = ''
-
+    let sapsScoreValues = Prognosis.sapsScoreValues['pacient']
+    let sapsScoreKeys = Object.keys(sapsScoreValues)
     for (var elem of pacientData.querySelectorAll('select')) {
       if(elem.validity.valid){
+
+        for (let i = 0; i < sapsScoreKeys.length; i++) {
+          let valueKey = Object.keys(sapsScoreValues[sapsScoreKeys[i]]['values'])
+          if(Prognosis.i.removeAccent(sapsScoreKeys[i]) == Prognosis.i.removeAccent(elem.value)){
+            let sapsValue = sapsScoreValues[sapsScoreKeys[i]]['values']['Sim']['saps']
+            let sapsText = sapsScoreValues[sapsScoreKeys[i]]['values']['Sim']['text']
+            console.log('==============================================')
+            console.log('============ selected')
+            console.log(sapsScoreKeys[i])
+
+            console.log(sapsValue)
+            console.log('============ text')
+            console.log(sapsText)
+            if (sapsText != ''){
+              if (!sapsTextBuild[sapsScoreKeys[i]]) {
+                sapsTextBuild[sapsScoreKeys[i]] = []
+              }
+              sapsTextBuild[sapsScoreKeys[i]].push(sapsText)
+            }
+          }else {
+            for (let k = 0; k < valueKey.length; k++) {
+              let sapsValue = sapsScoreValues[sapsScoreKeys[i]]['values'][valueKey[k]]['saps']
+              let sapsText = sapsScoreValues[sapsScoreKeys[i]]['values'][valueKey[k]]['text']
+              if(Prognosis.i.removeAccent(valueKey[k]) == Prognosis.i.removeAccent(elem.value)){
+                console.log('==============================================')
+                console.log('============ selected')
+                console.log(valueKey[k])
+
+                console.log(sapsValue)
+                console.log('============ text')
+                console.log(sapsText)
+                if (sapsText != ''){
+                  if (!sapsTextBuild[sapsScoreKeys[i]]) {
+                    sapsTextBuild[sapsScoreKeys[i]] = []
+                  }
+
+                  sapsTextBuild[sapsScoreKeys[i]].push(sapsText)
+                }
+              }
+            }
+          }
+        }
         switch (elem.id) {
           case 'idade':
             idade = elem.value
@@ -1218,7 +1517,32 @@ class Saps {
     }
     for (var elem of pacientData.querySelectorAll('input[type=radio]')) {
       if(elem.validity.valid && elem.checked){
-        // console.log(elem.name)
+
+        for (let i = 0; i < sapsScoreKeys.length; i++) {
+          let valueKeys = Object.keys(sapsScoreValues[sapsScoreKeys[i]]['values'])
+          if (Prognosis.i.removeAccent(sapsScoreKeys[i]) == Prognosis.i.removeAccent(elem.name)
+          || Prognosis.i.removeAccent(sapsScoreKeys[i]) == Prognosis.i.removeAccent(elem.name.substring(0,(elem.name.length - 6)))) {
+            for (let k = 0; k < valueKeys.length; k++) {
+              if (Prognosis.i.removeAccent(valueKeys[k]) == Prognosis.i.removeAccent(elem.value)) {
+                let selectedOpt = sapsScoreValues[sapsScoreKeys[i]]['values'][valueKeys[k]]
+                let sapsValue = selectedOpt['saps']
+                let sapsText = selectedOpt['text']
+                console.log('============ Selected radio')
+                console.log(elem.name)
+                console.log(elem.value)
+                console.log('============ SAPS translated info')
+                console.log(sapsValue)
+                console.log(sapsText)
+                if (sapsText != ''){
+                  if (!sapsTextBuild[sapsScoreKeys[i]]) {
+                    sapsTextBuild[sapsScoreKeys[i]] = []
+                  }
+                  sapsTextBuild[sapsScoreKeys[i]].push(sapsText)
+                }
+              }
+            }
+          }
+        }
         switch (elem.name) {
           case 'ic-nyha-iv':
           switch (elem.value) {
@@ -1750,43 +2074,6 @@ class Saps {
   }
 
   bestPacient(){
-    let pacientInfo = {
-      "pacient":{
-        "locked":{
-          "blac":0,
-          "bliopo":10,
-          "asd":3,
-          "sadf":5,
-        },
-        "open":{
-          "this":{
-            "!":1,
-            "asd":4,
-            "sdf":2,
-            "gfds":0,
-          },
-          "that":{
-            "!":10,
-            "asd":4,
-            "sdf":2,
-            "gfds":1,
-          },
-          "those":{
-            "group1":{
-              "asd1":1,
-              "gfds1":23,
-              "fdfg1":2,
-            },
-            "group2":{
-              "asd2":0,
-              "gfds2":23,
-              "fdfg2":1,
-            },
-          },
-
-        }
-      }
-    }
 
     const checkOptions = function(object) {
       let possible = []

@@ -1,21 +1,17 @@
 class LevelCreationTool {
   constructor(){
     this.pacient = Object.create(null)
-    this.test = this.test.bind(this)
-    MessageBus.int.subscribe('control/html/ready', this.test)
     this.preStart = this.preStart.bind(this)
     MessageBus.int.subscribe('control/html/ready', this.preStart)
   }
+
   async preStart(){
     MessageBus.int.unsubscribe('control/html/ready', this.preStart)
-    MessageBus.int.unsubscribe('control/html/ready', this.test)
-    console.log('============ pre startign...')
-    this.test()
+    this.start()
   }
 
-  async test(){
-    MessageBus.int.unsubscribe('control/html/ready', this.preStart)
-    MessageBus.int.unsubscribe('control/html/ready', this.test)
+  async start(){
+    
     const navSelection = document.querySelector('#creation-selection-tab').querySelectorAll('.nav-link')
     const fnCascadeListener = function(){
       const cascadeCheck = document.querySelector(`#chck-cascade-option`)
@@ -172,9 +168,9 @@ class LevelCreationTool {
       .replace(/\[field\]/ig, parentKey)
       .replace(/\[id\]/ig, i)
       optionListWrapper.appendChild(template.content.cloneNode(true))
-      for (let x = 0; x < Object.keys(options['pacient'][parentKey]).length; x++) {
+      for (let x = 0; x < Object.keys(options['pacient'][parentKey]['values']).length; x++) {
         let parentObj = document.querySelector(`#option-${i}`)
-        let childValue = Object.keys(options['pacient'][parentKey])[x]
+        let childValue = Object.keys(options['pacient'][parentKey]['values'])[x]
         template = document.createElement('template')
         template.innerHTML = optionChild
         .replace(/\[field\]/ig, childValue)
@@ -213,9 +209,18 @@ class LevelCreationTool {
       for (let k = 0; k < optionsOpen.length; k++) {
         // console.log('============ open option '+k)
         if (optionsOpen[k].prognObj.bundleCreator) {
-          // console.log('============ bundle found')
-          // console.log(optionsOpen[k].prognObj.bundleCreator)
-          optionsWrapperOpen.prognObj['open'].push(optionsOpen[k].prognObj.bundleCreator)
+          console.log('============ bundle found')
+          console.log(optionsOpen[k].prognObj.bundleCreator)
+          let bundle = optionsOpen[k].prognObj.bundleCreator
+          for (let z = 0; z < Object.keys(bundle).length; z++) {
+            console.log('============ keys')
+            console.log(Object.keys(bundle)[z])
+            let capsule = {}
+            capsule[Object.keys(bundle)[z]] = bundle[Object.keys(bundle)[z]]
+            optionsWrapperOpen.prognObj['open'].push(capsule)
+            console.log('============ opening..')
+            console.log(optionsWrapperOpen.prognObj['open'])
+          }
         }else{
           // console.log(optionsOpen[k].prognObj)
           optionsWrapperOpen.prognObj['open'].push(optionsOpen[k].prognObj)
@@ -246,7 +251,7 @@ class LevelCreationTool {
     download("prognLvl.json",JSON.stringify(LevelCreationTool.i.pacient))
   }
 
-  async addPadding (obj, padding, isClass){
+  addPadding (obj, padding, isClass){
     if (isClass)
       obj.classList.add(padding)
     else
@@ -263,7 +268,7 @@ class LevelCreationTool {
       let valueText = optionsList[i].dataset.parentTitle
       let value = optionsList[i].innerText
 
-      if(includeParentTitle){
+      if(includeParentTitle && valueText){
         let rootObj = {}
         rootObj[valueText] = {}
 
@@ -290,6 +295,8 @@ class LevelCreationTool {
   }
 
   async createPrognRadioObj (htmlWrapper, objName, optionsList, properties){
+    console.log('============ properties')
+    console.log(properties)
     let optionValues = []
     let childOptionValues = []
     htmlWrapper['prognObj'] = {}
@@ -333,7 +340,11 @@ class LevelCreationTool {
       for (let i = 0; i < optionsList[Object.keys(optionsList)[k]].length; i++) {
         let valueText = optionsList[Object.keys(optionsList)[k]][i].dataset.parentTitle
         let value = optionsList[Object.keys(optionsList)[k]][i].innerText
-        if (value != null || value != '') {
+        if (valueText) {
+          let parentOption = {}
+          parentOption[valueText] = {"values":[value]}
+          optionValues.push(parentOption)
+        }else {
           optionValues.push(value)
         }
 
@@ -344,22 +355,22 @@ class LevelCreationTool {
     // console.log(htmlWrapper)
   }
 
-  async createPrognRadioObj (htmlWrapper, objName, optionsList, properties){
-    let optionValues = []
-    let childOptionValues = []
-    htmlWrapper['prognObj'] = {}
-    htmlWrapper['prognObj'][objName] = {"multipleValues":"true"}
-
-    for (let i = 0; i < optionsList['parentValues'].length; i++) {
-      let valueText = optionsList['parentValues'][i].dataset.parentTitle
-      let value = optionsList['parentValues'][i].innerText
-      if (value != null || value != '') {
-        optionValues.push(value)
-      }
-
-      htmlWrapper['prognObj'][objName]['values'] = optionValues
-    }
-  }
+  /* async createPrognRadioObj (htmlWrapper, objName, optionsList, properties){
+  //   let optionValues = []
+  //   let childOptionValues = []
+  //   htmlWrapper['prognObj'] = {}
+  //   htmlWrapper['prognObj'][objName] = {"multipleValues":"true"}
+  //
+  //   for (let i = 0; i < optionsList['parentValues'].length; i++) {
+  //     let valueText = optionsList['parentValues'][i].dataset.parentTitle
+  //     let value = optionsList['parentValues'][i].innerText
+  //     if (value != null || value != '') {
+  //       optionValues.push(value)
+  //     }
+  //
+  //     htmlWrapper['prognObj'][objName]['values'] = optionValues
+  //   }
+}*/
 
   async dragStartHandler (ev){
     console.log("dragStart: dropEffect = " + ev.dataTransfer.dropEffect + " ; effectAllowed = " + ev.dataTransfer.effectAllowed);
@@ -459,9 +470,8 @@ class LevelCreationTool {
     for (let z = 0; z < optionsList.length; z++) {
       let valueText = optionsList[z].dataset.parentTitle
       let value = optionsList[z].innerText
-
       //Check if select list must include id (because of complex values. e.g.(id'bilirrubina' value'3-4'), instead of just 'bilirrubina')
-      if(includeParent){
+      if(includeParent && valueText){
         const selectList = document.querySelector("#" + keyId)
         let option = document.createElement('option')
         option.value = value
@@ -628,16 +638,26 @@ class LevelCreationTool {
       for (let k = 0; k < currentBundle.length; k++) {
         let baseKey = currentBundle[k]
         let valueText = baseKey.dataset.parentTitle
-        let valueId = Prognosis.i.removeAccent(valueText).replace(new RegExp('[ ]','ig'), '-')
+        let valueId
+        if(valueText)
+        valueId = Prognosis.i.removeAccent(valueText).replace(new RegExp('[ ]','ig'), '-')
         let value = baseKey.innerText
 
         template = document.createElement('template')
-        template.innerHTML = Prognosis.playerOptionRadio
-        .replace(/\[valueText\]/ig, valueText+`: ${value}`)
-        .replace(/\[value\]/ig, value)
-        .replace(/\[id\]/ig, valueId)
-        .replace(/\[name\]/ig, valueId)
-
+        if(valueText){
+          template.innerHTML = Prognosis.playerOptionRadio
+          .replace(/\[valueText\]/ig, valueText+`: ${value}`)
+          .replace(/\[value\]/ig, value)
+          .replace(/\[id\]/ig, valueId)
+          .replace(/\[name\]/ig, valueId)
+        }
+        else {
+          template.innerHTML = Prognosis.playerOptionRadio
+          .replace(/\[valueText\]/ig, value)
+          .replace(/\[value\]/ig, value)
+          .replace(/\[id\]/ig, valueId)
+          .replace(/\[name\]/ig, valueId)
+        }
         let optionsWrapper = obj.querySelector(`#grouped-${keyId}-${i}-wrapper`)
         optionsWrapper.appendChild(template.content.cloneNode(true))
         document.querySelector('#'+valueId).removeAttribute('required')

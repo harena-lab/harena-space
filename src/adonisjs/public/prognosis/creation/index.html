@@ -102,7 +102,7 @@
 
   <script src="/author/js/panels.js"></script>
   <script src="/prognosis/js/prognosis.js"></script>
-
+  <script src="/prognosis/js/level-creation.js"></script>
 </head>
 
 <body>
@@ -120,7 +120,7 @@
               </div>
               <h4 style="font-size: 1rem !important;">Opções abertas</h4>
               <div class="pacient-info-values border rounded drop-container mx-1 pb-3 pb-5" style="border-width: 3px !important;"
-              data-option-name="idade" data-progn="open"
+              data-option-name="Idade" data-progn="open"
               ondrop="LevelCreationTool.i.drop_handler(event)" ondragover="LevelCreationTool.i.dragover_handler(event)">
 
               </div>
@@ -164,7 +164,7 @@
             </div>
             <div class="debug-border m-1 d-flex flex-column pacient-info-wrapper bg-light">
               <div class="">
-                <h3>Motivo da admissão: </h3>
+                <h3>Contexto da admissão: </h3>
               </div>
 
               <h4 style="font-size: 1rem !important;">Opções abertas</h4>
@@ -180,7 +180,7 @@
             </div>
             <div class="debug-border m-1 d-flex flex-column pacient-info-wrapper bg-light">
               <div class="">
-                <h3>Status Clínico: </h3>
+                <h3>Status clínico: </h3>
               </div>
 
               <h4 style="font-size: 1rem !important;">Opções abertas</h4>
@@ -224,17 +224,17 @@
                   <a class="nav-link" data-toggle="tab" href="#bundle" role="tab" aria-selected="false">Bundle</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link cascade-nav" id="radio-tab" data-toggle="tab" href="#radio" role="tab" aria-selected="false">Radio</a>
+                  <a class="nav-link cascade-nav" id="radio-tab" data-toggle="tab" href="#radio" role="tab" aria-selected="false">Radio/Checklist</a>
                 </li>
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                   <a class="nav-link cascade-nav" id="checkList-tab" data-toggle="tab" href="#checkList" role="tab" aria-selected="false">Checklist</a>
-                </li>
+                </li> -->
               </ul>
               <div class="custom-control custom-checkbox">
                 <input type="checkbox" class="custom-control-input" id="chck-select-parent-name">
                 <label class="custom-control-label" for="chck-select-parent-name">Inserir nome da familia antes</label>
-                <input type="text" class="mb-1" id="input-title-option" placeholder="Insira o titulo da lista..." value="">
               </div>
+              <input type="text" class="mb-1" id="input-title-option" placeholder="Insira o titulo da lista..." value="">
               <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="selectList" role="tabpanel">
                   <button type="button" id="btn-create-select-list" class="btn btn-success" onclick="LevelCreationTool.i.createSelectList()">Create</button>
@@ -293,5 +293,5 @@
     </div>
   </main>
 </body>
-<script src="/prognosis/js/level-creation.js"></script>
+
 </html>
