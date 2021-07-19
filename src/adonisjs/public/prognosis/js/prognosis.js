@@ -4533,7 +4533,7 @@ class Prognosis {
             "text":"<40 mmHg",
           },
           "40-69 mmHg":{
-            "saps":5,
+            "saps":8,
             "text":"40-69 mmHg",
           },
           "70-119 mmHg":{
@@ -4549,11 +4549,11 @@ class Prognosis {
       "Droga vasoativa":{
         "values":{
           "Não":{
-            "saps":3,
+            "saps":0,
             "text":"sem",
           },
           "Sim":{
-            "saps":0,
+            "saps":3,
             "text":"em",
           },
         },
