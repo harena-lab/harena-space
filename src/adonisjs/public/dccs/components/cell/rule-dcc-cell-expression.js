@@ -43,11 +43,9 @@ class RuleDCCCellExpression extends RuleDCCTransition {
   /* Methods
       *******/
   notify (topic, message) {
-    if (message.role) {
-      switch (message.role.toLowerCase()) {
-        case 'time-rate': this.timeRate = message.body.value; break
-        case 'time-mili': this.timeRate = 1 / message.body.value; break
-      }
+    switch (topic.toLowerCase()) {
+      case 'time-rate': this.timeRate = message.value; break
+      case 'time-mili': this.timeRate = 1 / message.value; break
     }
   }
 
@@ -125,7 +123,20 @@ class RuleDCCCellAgent extends RuleDCCTransition {
       console.log(cstate.properties);
       */
 
-    if (!cstate.properties) { cstate.properties = { rotate: '0' } } else if (!cstate.properties.rotate) { cstate.properties.rotate = '0' }
+    if (!cstate.properties) {
+      cstate.properties = { rotate: '0' }
+    } else {
+      if (!cstate.properties.rotate)
+        cstate.properties.rotate = '0'
+
+      if (cstate.properties.flip) {
+        if (cstate.properties.flip == 'h' || cstate.properties.flip == 'v') {
+          cstate.properties.rotate =
+            (parseInt(cstate.properties.rotate) + 180) % 360
+          delete cstate.properties.flip
+        }
+      }
+    }
 
     const movement = RuleDCCCellAgent.movement[cstate.properties.rotate]
 

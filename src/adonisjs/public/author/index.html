@@ -38,34 +38,34 @@
     <script src="/lib/quill-1-3-7/quill.min.js"></script>
     <script src="/lib/d3.min.js"></script>
 
-    <script src="../dccs/base/dcc.js"></script>
-    <script src="../dccs/base/dcc-base.js"></script>
-    <script src="../dccs/base/dcc-visual.js"></script>
-    <script src="../dccs/components/visual/dcc-markdown.js"></script>
-    <script src="../dccs/components/visual/dcc-annotation.js"></script>
-    <script src="../dccs/components/visual/dcc-image.js"></script>
-    <script src="../dccs/components/visual/dcc-expression.js"></script>
-    <script src="../dccs/base/dcc-block.js"></script>
-    <script src="../dccs/components/visual/dcc-button.js"></script>
-    <script src="../dccs/components/visual/dcc-character.js"></script>
-    <script src="../dccs/components/visual/dcc-lively-dialog.js"></script>
-    <script src="../dccs/components/visual/dcc-notice-input.js"></script>
-    <script src="../dccs/components/visual/dcc-context-menu.js"></script>
-    <script src="../dccs/components/visual/dcc-state-select.js"></script>
-    <script src="../dccs/components/visual/dcc-image-marker.js"></script>
-    <script src="../dccs/base/dcc-styler.js"></script>
-    <script src="../dccs/components/visual/dcc-entity.js"></script>
-    <script src="../dccs/components/visual/dcc-input.js"></script>
-    <script src="../dccs/components/visual/dcc-input-typed.js"></script>
-    <script src="../dccs/components/visual/dcc-input-choice.js"></script>
-    <script src="../dccs/components/visual/dcc-input-table.js"></script>
-    <script src="../dccs/components/visual/dcc-slider.js"></script>
-    <script src="../dccs/components/visual/dcc-report.js"></script>
-    <script src="../dccs/components/visual/dcc-graph.js"></script>
+    <script src="/dccs/base/dcc.js"></script>
+    <script src="/dccs/base/dcc-base.js"></script>
+    <script src="/dccs/base/dcc-visual.js"></script>
+    <script src="/dccs/components/visual/dcc-markdown.js"></script>
+    <script src="/dccs/components/visual/dcc-annotation.js"></script>
+    <script src="/dccs/components/visual/dcc-image.js"></script>
+    <script src="/dccs/components/visual/dcc-expression.js"></script>
+    <script src="/dccs/base/dcc-block.js"></script>
+    <script src="/dccs/components/visual/dcc-button.js"></script>
+    <script src="/dccs/components/visual/dcc-character.js"></script>
+    <script src="/dccs/components/visual/dcc-lively-dialog.js"></script>
+    <script src="/dccs/components/visual/dcc-notice-input.js"></script>
+    <script src="/dccs/components/visual/dcc-context-menu.js"></script>
+    <script src="/dccs/components/visual/dcc-state-select.js"></script>
+    <script src="/dccs/components/visual/dcc-image-marker.js"></script>
+    <script src="/dccs/base/dcc-styler.js"></script>
+    <script src="/dccs/components/visual/dcc-entity.js"></script>
+    <script src="/dccs/components/visual/dcc-input.js"></script>
+    <script src="/dccs/components/visual/dcc-input-typed.js"></script>
+    <script src="/dccs/components/visual/dcc-input-choice.js"></script>
+    <script src="/dccs/components/visual/dcc-input-table.js"></script>
+    <script src="/dccs/components/visual/dcc-slider.js"></script>
+    <script src="/dccs/components/visual/dcc-report.js"></script>
+    <script src="/dccs/components/visual/dcc-graph.js"></script>
 
-    <script src="../dccs/components/control/dcc-timer.js"></script>
-    <script src="../dccs/components/control/dcc-message.js"></script>
-    <script src="../dccs/components/control/dcc-compute.js"></script>
+    <script src="/dccs/components/control/dcc-timer.js"></script>
+    <script src="/dccs/components/control/dcc-message.js"></script>
+    <script src="/dccs/components/control/dcc-compute.js"></script>
 
     <script src="/dccs/base/subscribe-dcc.js"></script>
     <script src="/dccs/base/trigger-dcc.js"></script>
@@ -76,6 +76,7 @@
     <script src="/dccs/components/data/dcc-model.js"></script>
     <script src="/dccs/components/data/dcc-submit.js"></script>
     <script src="/dccs/components/data/dcc-record.js"></script>
+    <script src="/dccs/components/data/dcc-form.js"></script>
 
     <script src="/dccs/components/web/dcc-include.js"></script>
     <script src="/dccs/components/web/dcc-dhtml.js"></script>
@@ -111,7 +112,7 @@
     <!-- Login/logout header -->
     <dcc-include src="/author/partials/header.html"></dcc-include>
     <!-- Start of settings modal -->
-    <dcc-rest id="harena-case" bind="harena-case" subscribe="service/request/get:retrieve"></dcc-rest>
+    <dcc-rest id="harena-case" bind="harena-case" subscribe="service/request/get"></dcc-rest>
     <dcc-dhtml id="dhtml-case" subscribe="service/response/get/harena-case:update">
       <div class="modal fade" id="settings-modal" tabindex="-1" role="dialog" aria-labelledby="settings-modal" aria-hidden="true">
         <div class="modal-dialog" role="document">

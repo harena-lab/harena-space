@@ -23,8 +23,13 @@ class LayoutController {
   }
 
   async startController(){
-    if(document.readyState == 'loading')
+    if(document.readyState == 'loading'){
       await MessageBus.int.waitMessage('control/html/ready')
+    }
+
+    if(new URL(document.location).pathname == '/'){
+      this.dynamicMainPage()
+    }
 
     if(new URL(document.location).pathname == '/author/'){
       this.dynamicAuthor()
@@ -45,7 +50,6 @@ class LayoutController {
       MessageBus.int.publish('control/dhtml/status/request', {id: 'harena-dhtml-cases'})
       MessageBus.int.publish('control/dhtml/status/request', {id: 'dhtml-case'})
       // MessageBus.int.publish('control/dhtml/status/request', {id: 'dhtml-case-comments'})
-
     }
 
   }
@@ -97,7 +101,7 @@ class LayoutController {
       `<div class="home-author-sub-text align-self-center" style="color:#808080">FEEDBACK:</div>
       <dcc-rest id="harena-ask-feedback" bind="harena-ask-feedback"
       subscribe="service/request/post:retrieve"></dcc-rest>
-      <dcc-rest id="harena-case-property" bind="harena-case-property" subscribe="service/request/post:retrieve"></dcc-rest>
+      <dcc-rest id="harena-case-property" bind="harena-case-property" subscribe="service/request/post"></dcc-rest>
       <form id="form-case-property">
       <input type="hidden" id="property_value" name="property_value" value="">
       <input type="hidden" id="property_title" name="property_title" value="feedback">
@@ -372,6 +376,18 @@ class LayoutController {
           shareCaseEssentials[e].hidden = false
         }
       }
+    }
+  }
+
+  async dynamicMainPage(){
+    if(LayoutController.user.message.institution === 'progntrial' && document.querySelector('.home-play-container')){
+      const btnContainer = document.querySelector('.home-play-container')
+      const btnAuthor = btnContainer.querySelector('#author-btn')
+      const btnPlayer = btnContainer.querySelector('#player-btn')
+      btnAuthor.remove()
+      btnPlayer.textContent = 'Jogar Roda da Fortuna'
+      btnPlayer.setAttribute('onclick',`location.href='/prognosis'`)
+      btnPlayer.classList.remove('col-4','ml-4')
     }
   }
 

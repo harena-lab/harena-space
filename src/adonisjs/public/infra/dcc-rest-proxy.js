@@ -182,6 +182,7 @@
         'fUserType': new URL(document.location).searchParams.get('fUserType'),
         'fSpecialty': new URL(document.location).searchParams.get('fSpecialty'),
         'fPropertyValue': new URL(document.location).searchParams.get('fPropertyValue'),
+        'fSearchStr': new URL(document.location).searchParams.get('fSearchStr'),
         'page': new URL(document.location).searchParams.get('page'),
         'nItems': new URL(document.location).searchParams.get('limit'),
       },
@@ -207,6 +208,8 @@
                   in: 'query'},
                 {name: 'fPropertyValue',
                   in: 'query'},
+                {name: 'fSearchStr',
+                  in: 'query'},
                 {name: 'page',
                   in: 'query'},
                 {name: 'nItems',
@@ -231,6 +234,7 @@
         'fUserType': new URL(document.location).searchParams.get('fUserType'),
         'fSpecialty': new URL(document.location).searchParams.get('fSpecialty'),
         'fPropertyValue': new URL(document.location).searchParams.get('fPropertyValue'),
+        'fSearchStr': new URL(document.location).searchParams.get('fSearchStr'),
         'page': new URL(document.location).searchParams.get('page'),
         'nItems': new URL(document.location).searchParams.get('limit'),
       },
@@ -253,6 +257,8 @@
                 {name: 'fProperty',
                   in: 'query'},
                 {name: 'fPropertyValue',
+                  in: 'query'},
+                {name: 'fSearchStr',
                   in: 'query'},
                 {name: 'page',
                   in: 'query'},
@@ -509,4 +515,130 @@
       }
     }
   )
+
+  DCC.component(
+    'harena-user-property',
+    'dcc-rest',
+    {
+      environment: {
+        'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api,
+      },
+      oas: {
+        paths: {
+          '{url-manager}/user/property': {
+            'get': {
+              operationId: 'user-property',
+              parameters: [
+                {name: 'url-manager',
+                  in: 'path'},
+                {name: 'propertyTitle',
+                  in: 'query'}
+              ]
+            },
+            'post': {
+              operationId: 'user-property',
+              parameters: [
+                {name: 'url-manager',
+                  in: 'path'},
+                {name: 'propertyTitle',
+                  in: 'query'},
+                {name: 'propertyValue',
+                  in: 'query'},
+              ]
+            },
+            'put': {
+              operationId: 'user-property',
+              parameters: [
+                {name: 'url-manager',
+                  in: 'path'},
+                {name: 'propertyTitle',
+                  in: 'query'},
+                {name: 'propertyValue',
+                  in: 'query'},
+              ]
+            },
+          }
+        }
+      }
+    }
+  )
+
+  DCC.component(
+    'harena-prognosis-lvl',
+    'dcc-rest',
+    {
+      environment: {
+        'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api,
+        'propertyTitle':'prognosis-current-lvl',
+      },
+      oas: {
+        paths: {
+          '{url-manager}/user/property': {
+            'get': {
+              operationId: 'user-property',
+              parameters: [
+                {name: 'url-manager',
+                  in: 'path'},
+                {name: 'propertyTitle',
+                  in: 'query'},
+              ]
+            }
+          }
+        }
+      }
+    }
+  )
+
+  DCC.component(
+    'harena-prognosis-highest-lvl',
+    'dcc-rest',
+    {
+      environment: {
+        'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api,
+        'propertyTitle':'prognosis-highest-lvl',
+      },
+      oas: {
+        paths: {
+          '{url-manager}/user/property': {
+            'get': {
+              operationId: 'user-property',
+              parameters: [
+                {name: 'url-manager',
+                  in: 'path'},
+                {name: 'propertyTitle',
+                  in: 'query'},
+              ]
+            }
+          }
+        }
+      }
+    }
+  )
+
+  DCC.component(
+    'harena-prognosis-perfect-lvl',
+    'dcc-rest',
+    {
+      environment: {
+        'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api,
+        'propertyTitle':`prognosis-lvl-${localStorage.getItem('prognosis-current-lvl')}-perfect`,
+      },
+      oas: {
+        paths: {
+          '{url-manager}/user/property': {
+            'get': {
+              operationId: 'user-property',
+              parameters: [
+                {name: 'url-manager',
+                  in: 'path'},
+                {name: 'propertyTitle',
+                  in: 'query'},
+              ]
+            }
+          }
+        }
+      }
+    }
+  )
+
 })()

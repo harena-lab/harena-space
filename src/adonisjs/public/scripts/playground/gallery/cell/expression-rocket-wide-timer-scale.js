@@ -31,16 +31,16 @@
 <dcc-cell-image type="#" label="cloudb" image="images/cell/cloud01-black.svg"></dcc-cell-image>
 
 <dcc-timer cycles="100000" interval="1" publish="state/next">
-   <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
-   <subscribe-dcc topic="timer/stop" role="stop"></subscribe-dcc>
-   <subscribe-dcc topic="var/timer_interval/changed" role="interval"></subscribe-dcc>
+   <subscribe-dcc topic="timer/start" map="start"></subscribe-dcc>
+   <subscribe-dcc topic="timer/stop" map="stop"></subscribe-dcc>
+   <subscribe-dcc topic="var/timer_interval/changed" map="interval"></subscribe-dcc>
 </dcc-timer>
 
-<subscribe-dcc target="cellular-space" topic="type/#" role="type"></subscribe-dcc>
-<subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>
-<subscribe-dcc target="cellular-space" topic="state/save" role="save"></subscribe-dcc>
-<subscribe-dcc target="cellular-space" topic="state/reset" role="reset"></subscribe-dcc>
-<subscribe-dcc target="cellular-space" topic="var/space_scale/changed" role="scale"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="type/#"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/next" map="next"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/save" map="save"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/reset" map="reset"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="var/space_scale/changed" map="scale"></subscribe-dcc>
 <div style="flex:48px; max-height:48px; display:flex; flex-direction:row">
    <div style="flex:20%; max-width:96px; max-height:48px">
       <img style="max-width:48px; max-height:48px; margin-left:24px; margin-right:24px"

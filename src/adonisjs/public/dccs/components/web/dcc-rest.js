@@ -38,6 +38,9 @@ class DCCRest extends DCCBase {
   async restRequest(method, parameters) {
     // console.log('============ rest method')
     // console.log(method)
+    // console.log('=== service request')
+    // console.log(method)
+    // console.log(parameters)
     let result = null
 
     if (this._setup.environment)
@@ -46,6 +49,7 @@ class DCCRest extends DCCBase {
 
     if (this._setup != null && this._setup.oas != null &&
         this._setup.oas.paths != null) {
+      // console.log('--- inside request')
       const paths = Object.keys(this._setup.oas.paths)
       if (paths.length > 0) {
         let url = paths[0]
@@ -83,8 +87,10 @@ class DCCRest extends DCCBase {
             // console.log(endpointResponse.data)
           })
           .catch(function (error) {
-            // console.log(error.response.data)
-            result = error.response.data
+            console.log('===== error in request')
+            console.log(error.message)
+            console.log('=====')
+            result = error.message
           })
 
       }
@@ -105,15 +111,13 @@ class DCCRest extends DCCBase {
   }
 
   async notify (topic, message) {
-    if (message.role) {
-      let parameters = {}
-      let par = this._extractParameters(message)
-      if (topic.startsWith('var/'))
-        parameters[MessageBus.extractLevel(topic, 2)] = par
-      else
-        parameters = par
-      this.serviceRequest(topic, parameters)
-    }
+    let parameters = {}
+    let par = this._extractParameters(message)
+    if (topic.startsWith('par/'))
+      parameters[MessageBus.extractLevel(topic, 2)] = par
+    else
+      parameters = par
+    this.serviceRequest(topic, parameters)
   }
 
   _extractParameters(message) {

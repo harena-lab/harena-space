@@ -1,8 +1,8 @@
 class PageController {
   constructor () {
-    var isPageReady = false
-    var dhtmlLoaded = false
-    var hasremovedLoading = false
+    let isPageReady = false
+    let dhtmlLoaded = false
+    let hasremovedLoading = false
     PageController.scriptsComplete = false
     this.removeLoadingIcon = this.removeLoadingIcon.bind(this)
     this.pageReady = this.pageReady.bind(this)
@@ -19,7 +19,7 @@ class PageController {
     })
     MessageBus.int.subscribe('control/dhtml/ready', this.removeLoadingIcon)
     MessageBus.ext.subscribe('control/case/ready', this.removeLoadingIcon)
-    MessageBus.ext.subscribe('control/validate/ready', this.removeLoadingIcon)
+    MessageBus.int.subscribe('control/validate/ready', this.removeLoadingIcon)
     MessageBus.int.subscribe('control/html/ready', this.pageReady)
   }
   async pageReady(){
@@ -27,7 +27,7 @@ class PageController {
     if(!this.isPageReady){
       // Verifies if the page contains the correct element
       if(document.querySelector('#filter-form')){
-        var filterElements = []
+        let filterElements = []
         if(document.querySelector('#fInstitution'))
           filterElements.push(document.querySelector('#fInstitution').id)
         if(document.querySelector('#fUserType'))
@@ -41,13 +41,30 @@ class PageController {
         PageController.instance.updateValuesFromUrl(filterElements)
       }
     }
+    //Set listener to hide elements on scroll down
+    if(document.querySelector('.main-scroll')){
+    let prevScrollpos = document.querySelector('.main-scroll').scrollTop
+    document.querySelector('.main-scroll').addEventListener('scroll', function() {
+      let currentScrollPos = document.querySelector('.main-scroll').scrollTop
+      if (prevScrollpos > currentScrollPos) {
+        document.querySelector('.up-scroll').style.top = "0"
+      } else {
+        document.querySelector('.up-scroll').style.top = "-50px"
+      }
+      prevScrollpos = currentScrollPos;
+    })
+    }
+
+    if(new URL(document.location).pathname.includes('/prognosis')){
+      this.prognosisGameDropdownMenu()
+    }
     this.isPageReady = true
   }
 
   async removeLoadingIcon(){
-    var dhtmlList = document.querySelectorAll('dcc-dhtml')
+    let dhtmlList = document.querySelectorAll('dcc-dhtml')
     this.dhtmlLoaded = true
-    for(var i in dhtmlList){
+    for(let i in dhtmlList){
       if(dhtmlList[i]._ready == false){
         this.dhtmlLoaded = false
       }
@@ -71,6 +88,7 @@ class PageController {
         console.log(e)
       }
       PageController.instance.appropriateBreadcrumb()
+
       PageController.scriptsComplete = true
       // console.log(PageController.scriptsComplete)
       this.hasremovedLoading = true
@@ -113,23 +131,23 @@ class PageController {
       if(url.searchParams.get('preview')){
         const breadcrumbGroup = document.querySelector('#breadcrumb-group')
         for (let c = 0; c < breadcrumbGroup.childElementCount;){
-          console.log('============')
-          console.log('child count updated')
-          console.log(breadcrumbGroup.childElementCount)
+          // console.log('============')
+          // console.log('child count updated')
+          // console.log(breadcrumbGroup.childElementCount)
 
-          console.log('current child')
-          console.log(c)
-          console.log(breadcrumbGroup.children[c])
-          console.log('============')
+          // console.log('current child')
+          // console.log(c)
+          // console.log(breadcrumbGroup.children[c])
+          // console.log('============')
           if(!breadcrumbGroup.children[c].id){
-            console.log('not found id..deleting element')
-            console.log(breadcrumbGroup.children[c])
+            // console.log('not found id..deleting element')
+            // console.log(breadcrumbGroup.children[c])
             breadcrumbGroup.removeChild(breadcrumbGroup.children[c])
             c = 0
-            console.log('returning index to ' + c)
+            // console.log('returning index to ' + c)
           }else {
-            console.log('found id')
-            console.log(breadcrumbGroup.children[c])
+            // console.log('found id')
+            // console.log(breadcrumbGroup.children[c])
             c++
           }
         }
@@ -214,6 +232,13 @@ class PageController {
       }
     }
   }
+
+  async prognosisGameDropdownMenu (){
+    const header = document.querySelector('#harena-header')
+    let template = document.createElement('template')
+    template.innerHTML = PageController.prognosisGameDropdownMenu
+    header.insertBefore(template.content.cloneNode(true), header.firstElementChild)
+  }
 }
 (function () {
   PageController.instance = new PageController()
@@ -223,5 +248,17 @@ class PageController {
   `<div id="loading-page-container" class="d-flex flex-column justify-content-center align-items-center" style="position:absolute; top:50%; left:50%;">
   <div class="spinner-border align-self-center" role="status" aria-hidden="true"></div>
   <strong class="align-self-center">Loading...</strong>
+  </div>`
+  PageController.prognosisGameDropdownMenu =`
+  <div class=" ml-2 harena-menu">
+    <button class="btn btn-secondary" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="dropdown-menu bg-plaster" aria-labelledby="dropdownMenu2">
+      <a class="dropdown-item" href="/prognosis/">Página inicial</a>
+      <div class="dropdown-divider"></div>
+      <a class="dropdown-item" href="/prognosis/learn">Aprendendo Prognóstico</a>
+      <a class="dropdown-item" href="/prognosis/learn/progress">Lista de fases</a>
+    </div>
   </div>`
 })()

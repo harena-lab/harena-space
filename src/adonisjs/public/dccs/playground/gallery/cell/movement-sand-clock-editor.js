@@ -132,18 +132,18 @@ Selecione abaixo a chance de cada um dos eventos:
 </div>
 
 <dcc-timer cycles="800" interval="50" publish="state/next">
-   <subscribe-dcc topic="timer/start" role="start"></subscribe-dcc>
-   <subscribe-dcc topic="timer/stop" role="stop"></subscribe-dcc>
+   <subscribe-dcc topic="timer/start" map="start"></subscribe-dcc>
+   <subscribe-dcc topic="timer/stop" map="stop"></subscribe-dcc>
 </dcc-timer>
 
-<subscribe-dcc target="cellular-space" topic="type/#" role="type"></subscribe-dcc>
-<subscribe-dcc target="cellular-space" topic="state/next" role="next"></subscribe-dcc>
-<subscribe-dcc target="cellular-space" topic="state/save" role="save"></subscribe-dcc>
-<subscribe-dcc target="cellular-space" topic="state/load" role="load"></subscribe-dcc>
-<subscribe-dcc target="cellular-space" topic="state/download" role="download"></subscribe-dcc>
-<subscribe-dcc target="fall-vertical" topic="var/fall_vertical/changed" role="probability"></subscribe-dcc>
-<subscribe-dcc target="fall-oblique" topic="var/fall_oblique/changed" role="probability"></subscribe-dcc>
-<subscribe-dcc target="roll" topic="var/roll/changed" role="probability"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="type/#"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/next" map="next"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/save" map="save"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/load" map="load"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="state/download" map="download"></subscribe-dcc>
+<subscribe-dcc target="fall-vertical" topic="var/fall_vertical/changed" map="probability"></subscribe-dcc>
+<subscribe-dcc target="fall-oblique" topic="var/fall_oblique/changed" map="probability"></subscribe-dcc>
+<subscribe-dcc target="roll" topic="var/roll/changed" map="probability"></subscribe-dcc>
 
 </div>
 </div>`

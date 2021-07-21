@@ -71,6 +71,50 @@
     <div id="alert-feedback" class="alert alert-success ml-2 mt-5" role="alert" style="position:absolute; display:none;">
     </div>
 
+    <!-- Filter options advanced -->
+    <div class="modal fade" id="filter-modal" tabindex="-1" role="dialog" aria-labelledby="filter-modal" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Filter by:</h5>
+          </div>
+          <div class="modal-body">
+            <form class="pl-2 align-items-center row" id="filter-form">
+              <div class="pr-3">
+                <dcc-rest id="harena-institutions" bind="harena-institutions"></dcc-rest>
+                <dcc-dhtml id="harena-dhtml-institutions" connect="retrieve:harena-institutions:service/request/get">
+
+                  <select id="fInstitution" name="fInstitution" class="custom-select custom-select-sm">
+                    <option selected value="">Institution</option>
+                    {{@foreach . institution}}
+                    <option value={{institution.id}}>{{institution.acronym}}</option>
+                    {{@endfor}}
+                  </select>
+
+                  <end-dcc></end-dcc>
+                </dcc-dhtml>
+              </div>
+              <div class="pr-3">
+                <select id="fUserType" name="fUserType" class="custom-select custom-select-sm">
+                  <option selected value="">User type</option>
+                  <option value="professor">Professor</option>
+                  <option value="student">Student</option>
+                </select>
+              </div>
+              <div class="pr-3" style="width: 120px;">
+                <input type="text" class="form-control custom-select-sm" id="fSpecialty" placeholder="Specialty">
+              </div>
+              <input type="text" class="mr-2 my-2 form-control custom-select-sm" id="fSearchStr"
+               placeholder="Search similar title, keywords or description...">
+
+              <dcc-submit id="filter-submit" bind="submit-filter" label="Filter" xstyle="btn btn-secondary" topic="cases/request/get"></dcc-submit>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End filter options advanced -->
+
     <!-- Share casel modal -->
     <dcc-rest id="harena-share-cases" bind="harena-share-cases"></dcc-rest>
     <div class="modal fade" id="share-modal" tabindex="-1" role="dialog" aria-labelledby="share-modal" aria-hidden="true">
@@ -164,35 +208,8 @@
             <p>Continue editing your drafted cases.</p>
           </div>
           <div class="home-author-padding align-items-center rounded row sticky-top" style="z-index:3;">
-            <form class="pl-2 align-items-center row" id="filter-form">
-              <div class="p-2 ml-4">Filter by: </div>
-              <div class="pr-3">
-                <dcc-rest id="harena-institutions" bind="harena-institutions"></dcc-rest>
-                <dcc-dhtml id="harena-dhtml-institutions" connect="retrieve:harena-institutions:service/request/get">
-
-                  <select id="fInstitution" name="fInstitution" class="custom-select custom-select-sm">
-                    <option selected value="">Institution</option>
-                    {{@foreach . institution}}
-                    <option value={{institution.id}}>{{institution.acronym}}</option>
-                    {{@endfor}}
-                  </select>
-
-                  <end-dcc></end-dcc>
-                </dcc-dhtml>
-              </div>
-              <div class="pr-3">
-                <select id="fUserType" name="fUserType" class="custom-select custom-select-sm">
-                  <option selected value="">User type</option>
-                  <option value="professor">Professor</option>
-                  <option value="student">Student</option>
-                </select>
-              </div>
-              <div class="pr-3" style="width: 120px;">
-                <input type="text" class="form-control custom-select-sm" id="fSpecialty" placeholder="Specialty">
-              </div>
-              <dcc-submit id="filter-submit" bind="submit-filter" label="Filter" xstyle="btn btn-secondary" topic="cases/request/get"></dcc-submit>
-            </form>
-            <dcc-rest id="harena-cases-filter" bind="harena-cases" subscribe="cases/request/get:retrieve"></dcc-rest>
+            <button type="button" class="btn btn-secondary mx-2" data-toggle="modal" data-target="#filter-modal"><i class="fas fa-filter"></i> Filter</button>
+            <dcc-rest id="harena-cases-filter" bind="harena-cases" subscribe="cases/request/get"></dcc-rest>
 
             <!-- Containers to selectAll/share cases -->
             <div class="share-cases-element form-check mt-2 ml-auto" id="share-checkbox" hidden>

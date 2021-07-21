@@ -5,6 +5,13 @@
     "icon": "plain/case/plain.png",
     "scope": "case",
     "environment": "development"},
+"Zombie":
+    {"questId": "zombie",
+     "description": "Zombie Venom.",
+     "path": "zombie/case/empty",
+     "icon": "zombie/case/plain.png",
+     "scope": "case",
+     "environment": "development"},
 "Quiz da Emergência":
    {"questId": "quiz-da-emergencia",
     "description": "Um quiz com quatro alternativas.",

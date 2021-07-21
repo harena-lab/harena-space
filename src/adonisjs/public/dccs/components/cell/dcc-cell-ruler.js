@@ -59,15 +59,13 @@ class DCCCellRuler extends DCCBase {
   }
 
   notify (topic, message) {
-    if (message.role) {
-      switch (message.role.toLowerCase()) {
-        case 'activate': this.activateTool()
-          break
-        case 'inactivate': this.inactivateTool()
-          break
-        case 'reset': this.resetTool()
-          break
-      }
+    switch (topic.toLowerCase()) {
+      case 'activate': this.activateTool()
+        break
+      case 'inactivate': this.inactivateTool()
+        break
+      case 'reset': this.resetTool()
+        break
     }
   }
 

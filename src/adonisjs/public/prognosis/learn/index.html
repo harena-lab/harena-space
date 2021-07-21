@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Roda da Fortuna || Aprenda Prognóstico</title>
+
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
+
+  <script src="/lib/axios-0.21.0/axios.min.js"></script>
+
+  <script src="/lib/jquery-3-4-1/jquery-3.4.1.slim.min.js"></script>
+  <script src="/lib/popper-1-15-0/popper.min.js"></script>
+  <script src="/lib/bootstrap-4.4.1/js/bootstrap.min.js"></script>
+  <script src="/lib/ckeditor5/ckeditor.js"></script>
+
+  <script src="/config/config.js"></script>
+  <script src="/infra/bus.js"></script>
+  <script src="/infra/basic.js"></script>
+  <script src="/infra/dcc-common-server-proxy.js"></script>
+  <script src="/infra/dcc-common-server-address.js"></script>
+  <script src="/infra/simple-page-tasks.js"></script>
+  <script src="/infra/token-validator.js"></script>
+  <script src="/infra/conditional-layout.js"></script>
+
+  <script>
+    Basic.service.rootPath = '../../'
+  </script>
+
+  <link rel="stylesheet" href="/lib/fontawesome-5-10-1/css/all.min.css">
+  <link rel="stylesheet" href="/lib/bootstrap-4.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/lib/quill-1-3-7/quill.snow.css">
+
+  <link rel="stylesheet" href="/dccs/css/dccs.css">
+  <link rel="stylesheet" href="/dccs/css/properties.css">
+  <!-- <link rel="stylesheet" href="/infra/css/common-player.css">
+  <link rel="stylesheet" href="/infra/css/common-author.css"> -->
+  <link rel="stylesheet" href="/prognosis/css/prognosis.css">
+
+
+  <script src="/context/context.js"></script>
+
+  <script src="/lib/quill-1-3-7/quill.min.js"></script>
+  <script src="/lib/d3.min.js"></script>
+
+  <script src="/dccs/base/dcc.js"></script>
+  <script src="/dccs/base/dcc-base.js"></script>
+  <script src="/dccs/base/dcc-visual.js"></script>
+  <script src="/dccs/components/visual/dcc-markdown.js"></script>
+  <script src="/dccs/components/visual/dcc-annotation.js"></script>
+  <script src="/dccs/components/visual/dcc-image.js"></script>
+  <script src="/dccs/components/visual/dcc-expression.js"></script>
+  <script src="/dccs/base/dcc-block.js"></script>
+  <script src="/dccs/components/visual/dcc-button.js"></script>
+  <script src="/dccs/components/visual/dcc-character.js"></script>
+  <script src="/dccs/base/dcc-styler.js"></script>
+  <script src="/dccs/components/visual/dcc-entity.js"></script>
+
+  <script src="/dccs/components/control/dcc-timer.js"></script>
+  <script src="/dccs/components/control/dcc-message.js"></script>
+  <script src="/dccs/components/control/dcc-compute.js"></script>
+
+  <script src="/dccs/base/subscribe-dcc.js"></script>
+  <script src="/dccs/base/trigger-dcc.js"></script>
+  <script src="/dccs/base/property-dcc.js"></script>
+  <script src="/dccs/base/connect-dcc.js"></script>
+  <script src="/dccs/base/end-dcc.js"></script>
+
+  <script src="/dccs/components/data/dcc-model.js"></script>
+  <script src="/dccs/components/data/dcc-submit.js"></script>
+
+  <script src="/dccs/components/web/dcc-include.js"></script>
+  <script src="/dccs/components/web/dcc-dhtml.js"></script>
+  <script src="/dccs/components/web/dcc-rest.js"></script>
+
+  <script src="/infra/dcc-rest-proxy.js"></script>
+  <script src="/infra/dcc-basic.js"></script>
+
+  <script src="/lib/showdown-2-0-0/showdown.min.js"></script>
+  <script src="/translator/translator.js"></script>
+  <script src="/translator/item-templates.js"></script>
+
+  <script src="/prognosis/js/prognosis.js"></script>
+
+</head>
+
+<body>
+  <dcc-rest id="harena-user-property" bind="harena-user-property"></dcc-rest>
+  <dcc-rest id="harena-prognosis-highest-lvl" bind="harena-prognosis-highest-lvl"></dcc-rest>
+  <dcc-rest id="harena-prognosis-lvl" bind="harena-prognosis-lvl"></dcc-rest>
+  <dcc-include src="/author/partials/header.html"></dcc-include>
+  <main role="">
+    <div id="main-panel" class="d-flex flex-column vh-100 vw-100 index-boot-padding">
+      <div class=" d-flex flex-column w-xl-75 pb-5 h-100 w-100 bg-dark main-scroll scroll-y mx-auto align-items-center">
+        <h1 class="txt-light mt-5">Seja bem vindo à Roda da Fortuna!</h1>
+        <h4 class="pt-5 mt-5 mx-5" style="text-align: justify; text-justify:inter-word;">Olá, Dr(a)., seja bem vindo à RODA DA FORTUNA!<br><br>
+          Aisa, moira cortadora do fio da vida, e Caronte, barqueiro do submundo, se apaixonaram e estão em lua de mel!<br><br>
+          Como o time de Hades, deus grego do submundo, está desfalcado, o balanço das mortes ficou muito
+          desorganizado… A única solução que as moiras do nascimento e desenvolvimento tiveram foi contratar um
+          estagiário pra fazer o papel de Aisa e permitir que aqueles que precisam morrer possam finalmente fechar
+           o seu ciclo de vida.<br>
+          O estágio começará na UTI, um lugar onde há muitos mortais doentes... E a vaga tá aberta.
+          Topa ocupar esse espaço e ganhar umas horas extra-curriculares?
+          As tecelãs dos destinos dos deuses e dos mortais te emprestarão o tear milenar, a RODA DA FORTUNA,
+          para você determinar parâmetros do seu paciente à admissão.<br><br>
+          Será que você sabe dizer quem tem maior chance de sobreviver?</h4>
+        <div class=" mt-5 d-flex flex-row w-75 justify-content-center" id="btn-home-container">
+
+          <button class="btn btn-info w-50 mr-3 d-none" type="button" id="btn-progress"
+          onclick="window.location.href='/prognosis/learn/progress/'"> Lista das fases</button>
+          <button class="btn btn-success w-50 mx-auto" type="button" id="btn-continue"
+          onclick="window.location.href='/prognosis/learn/player/'"> Aceito esse desafio!</button>
+        </div>
+
+      </div>
+    </div>
+  </main>
+  <dcc-submit xstyle="d-none" bind="submit-prognosis-highest-lvl"
+   connect="submit:harena-user-property:service/request/post"></dcc-submit>
+  <dcc-submit xstyle="d-none" bind="submit-prognosis-highest-lvl"
+   connect="submit:harena-user-property:service/request/put"></dcc-submit>
+
+  <dcc-dhtml id="harena-dhtml-prognosis" connect="retrieve:harena-prognosis-lvl:service/request/get">
+    <input type="hidden" name="{{userProperty.0.title}}" id="current-lvl" value="{{userProperty.0.value}}">
+    <end-dcc></end-dcc>
+  </dcc-dhtml>
+
+   <dcc-dhtml id="harena-dhtml-prognosis-current-lvl" connect="retrieve:harena-prognosis-lvl:service/request/get">
+     <input type="hidden" name="{{userProperty.0.title}}" id="db-current" value="{{userProperty.0.value}}">
+     <end-dcc></end-dcc>
+   </dcc-dhtml>
+   <dcc-dhtml id="harena-dhtml-prognosis-heighest-lvl" connect="retrieve:harena-prognosis-highest-lvl:service/request/get">
+     <input type="hidden" name="{{userProperty.0.title}}" id="db-highest" value="{{userProperty.0.value}}">
+     <end-dcc></end-dcc>
+   </dcc-dhtml>
+</body>
+</html>

@@ -11,6 +11,9 @@
   .w-sm-50 {
   width:50%!important;
   }
+  .w-sm-40{
+    width:40%!important;
+  }
   .w-sm-25 {
   width:25%!important;
   }
@@ -22,6 +25,9 @@
   }
   .h-sm-50 {
   height:50%!important;
+  }
+  .h-sm-40{
+    height:40%!important;
   }
   .h-sm-25 {
   height:25%!important;
@@ -39,6 +45,9 @@
   .w-md-50 {
   width:50%!important;
   }
+  .w-md-40{
+    width:40%!important;
+  }
   .w-md-25 {
   width:25%!important;
   }
@@ -50,6 +59,9 @@
   }
   .h-md-50 {
   height:50%!important;
+  }
+  .h-md-40{
+    height:40%!important;
   }
   .h-md-25 {
   height:25%!important;
@@ -67,6 +79,9 @@
   .w-lg-50 {
   width:50%!important;
   }
+  .w-lg-40{
+    width:40%!important;
+  }
   .w-lg-25 {
   width:25%!important;
   }
@@ -78,6 +93,9 @@
   }
   .h-lg-50 {
   height:50%!important;
+  }
+  .h-lg-40{
+    height:40%!important;
   }
   .h-lg-25 {
   height:25%!important;
@@ -95,6 +113,9 @@
   .w-xl-50 {
   width:50%!important;
   }
+  .w-xl-40{
+    width:40%!important;
+  }
   .w-xl-25 {
   width:25%!important;
   }
@@ -106,6 +127,9 @@
   }
   .h-xl-50 {
   height:50%!important;
+  }
+  .h-xl-40{
+    height:40%!important;
   }
   .h-xl-25 {
   height:25%!important;

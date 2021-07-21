@@ -3,34 +3,35 @@
 
 class SubscribeDCC extends HTMLElement {
   connectedCallback () {
-    this.publishWithRole = this.publishWithRole.bind(this)
+    this.publishWithMap = this.publishWithMap.bind(this)
     if (this.hasAttribute('topic')) {
       this._targetObj = (this.hasAttribute('target'))
         ? document.querySelector('#' + this.target) : this.parentNode
 
-      if (!this.hasAttribute('role')) {
+      if (!this.hasAttribute('map')) {
         MessageBus.ext.subscribe(this.topic, this._targetObj.notify) }
       else {
-        MessageBus.ext.subscribe(this.topic, this.publishWithRole) }
+        MessageBus.ext.subscribe(this.topic, this.publishWithMap) }
     }
   }
 
   disconnectedCallback () {
-    if (!this.hasAttribute('role')) {
+    if (!this.hasAttribute('map')) {
       MessageBus.ext.unsubscribe(this.topic, this._targetObj.notify) }
     else {
-      MessageBus.ext.unsubscribe(this.topic, this.publishWithRole) }
+      MessageBus.ext.unsubscribe(this.topic, this.publishWithMap) }
   }
 
-  publishWithRole (topic, message) {
-    this._targetObj.notify(topic, { role: this.role, body: message })
+  publishWithMap (topic, message) {
+    // this._targetObj.notify(topic, { role: this.role, body: message })
+    this._targetObj.notify(this.map, message)
   }
 
   /* Properties
       **********/
 
   static get observedAttributes () {
-    return ['target', 'topic', 'role']
+    return ['target', 'topic', 'map']
   }
 
   get target () {
@@ -49,12 +50,12 @@ class SubscribeDCC extends HTMLElement {
     this.setAttribute('topic', newValue)
   }
 
-  get role () {
-    return this.getAttribute('role')
+  get map () {
+    return this.getAttribute('map')
   }
 
-  set role (newValue) {
-    this.setAttribute('role', newValue)
+  set map (newValue) {
+    this.setAttribute('map', newValue)
   }
 }
 

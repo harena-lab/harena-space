@@ -99,6 +99,7 @@ class DraftManager {
         const listenerFnSelectAll = function () {
           for (let c in cl){
             try {
+
               let editButton = cl[c].children[0]
               const caseContainer = document.querySelector('#b'+editButton.id.substring(1))
               const shareCheckbox = document.querySelector('#c'+editButton.id.substring(1))
@@ -115,6 +116,8 @@ class DraftManager {
                 caseContainer.style.backgroundColor = ''
                 caseContainer.firstElementChild.style.color = '#808080'
               }
+              var changeEv = new Event('change')
+              shareCheckbox.dispatchEvent(changeEv)
             } catch (e) {
               break
             }
