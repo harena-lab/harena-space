@@ -67,7 +67,7 @@ class TokenController {
         } catch (e) {
           // console.log(e)
         }
-        MessageBus.ext.publish('control/validate/ready')
+        MessageBus.int.publish('control/validate/ready')
       }else{
         setTimeout(function(){
           TokenController.instance.changeHeaderButtons(response)
@@ -91,7 +91,6 @@ class TokenController {
         //     // console.log(e)
         //   }
         //   console.log('============')
-        //   MessageBus.ext.publish('control/validate/ready')
       });*/
       }
   }

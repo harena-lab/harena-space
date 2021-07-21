@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Prognosis - Learn</title>
+  <title>Prognosis - Level Creation</title>
 
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
@@ -102,474 +102,196 @@
 
   <script src="/author/js/panels.js"></script>
   <script src="/prognosis/js/prognosis.js"></script>
+  <script src="/prognosis/js/level-creation.js"></script>
 </head>
 
 <body>
-  <!-- Idade option modal -->
-  <div class="modal fade" id="add-idade-modal" tabindex="-1" role="dialog" aria-labelledby="add-idade-modal" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-body">
-          <form>
-            <div class="form-row mb-0 pb-0">
-              <div class="form-group mb-0" id="wrapper-entity">
-                <label for="entity">Idade (18 a 100):</label>
-                <div class="input-group mb-3">
-                  <input type="number" min="18" max="100" class="form-control" placeholder="Adicione uma idade de 18 a 100" aria-label="Adicione uma idade">
-                  <div class="input-group-append">
-                    <!-- <dcc-button id="btn-add-idade-option" label="Adicionar" xstyle="btn btn-outline-secondary" topic="button/add-option/clicked" message="idade"> </dcc-button> -->
-                    <button id="btn-add-idade-option" type="button" class="btn btn-outline-secondary btn-add-option" message="idade"> Adicionar</button>
+  <dcc-include src="/author/partials/header.html"></dcc-include>
+  <main role="">
+    <div id="main-panel" class="d-flex flex-column vh-100 vw-100 scroll-y index-boot-padding bg-secondary">
+
+      <div class="d-flex flex-column h-100 px-2 pb-4 debug-border bg-dark text-center main-scroll">
+        <div class="row h-100">
+          <div class="col-8 h-100 scroll-y">
+            <h1 class="debug-border txt-light my-5">Pacient Info</h1>
+            <div class="debug-border mt-5 d-flex flex-column pacient-info-wrapper bg-light">
+              <div class="row justify-content-center">
+                <h3>Idade: </h3>
+              </div>
+              <h4 style="font-size: 1rem !important;">Opções abertas</h4>
+              <div class="pacient-info-values border rounded drop-container mx-1 pb-3 pb-5" style="border-width: 3px !important;"
+              data-option-name="Idade" data-progn="open"
+              ondrop="LevelCreationTool.i.drop_handler(event)" ondragover="LevelCreationTool.i.dragover_handler(event)">
+
+              </div>
+              <h4 style="font-size: 1rem !important;">Opções predefinidas <i class="fas fa-lock"></i> </h4>
+              <div class="pacient-info-values border rounded drop-container mx-1 pb-3 pb-5" style="background-color:#9d9d88; border-width: 3px !important;"
+              data-option-name="idade" data-progn="locked"
+              ondrop="LevelCreationTool.i.drop_handler(event)" ondragover="LevelCreationTool.i.dragover_handler(event)">
+
+              </div>
+            </div>
+            <div class="debug-border m-1 d-flex flex-column pacient-info-wrapper bg-light">
+              <div class="">
+                <h3>Origem: </h3>
+              </div>
+              <h4 style="font-size: 1rem !important;">Opções abertas</h4>
+              <div class="pacient-info-values border rounded drop-container mx-1 pb-3 pb-5" style="border-width: 3px !important;"
+              data-option-name="Origem" data-progn="open"
+              ondrop="LevelCreationTool.i.drop_handler(event)" ondragover="LevelCreationTool.i.dragover_handler(event)">
+              </div>
+              <h4 style="font-size: 1rem !important;">Opções predefinidas <i class="fas fa-lock"></i> </h4>
+              <div class="pacient-info-values border rounded drop-container mx-1 pb-3 pb-5" style="background-color:#9d9d88; border-width: 3px !important;"
+              data-option-name="Origem" data-progn="locked"
+              ondrop="LevelCreationTool.i.drop_handler(event)" ondragover="LevelCreationTool.i.dragover_handler(event)">
+              </div>
+            </div>
+            <div class="debug-border m-1 d-flex flex-column pacient-info-wrapper bg-light">
+              <div class="">
+                <h3>Comorbidade: </h3>
+              </div>
+              <h4 style="font-size: 1rem !important;">Opções abertas</h4>
+              <div class="pacient-info-values border rounded drop-container mx-1 pb-3 pb-5" style="border-width: 3px !important;"
+              data-option-name="Comorbidade" data-progn="open"
+              ondrop="LevelCreationTool.i.drop_handler(event)" ondragover="LevelCreationTool.i.dragover_handler(event)">
+              </div>
+              <h4 style="font-size: 1rem !important;">Opções predefinidas <i class="fas fa-lock"></i> </h4>
+              <div class="pacient-info-values border rounded drop-container mx-1 pb-3 pb-5" style="background-color:#9d9d88; border-width: 3px !important;"
+              data-option-name="Comorbidade" data-progn="locked"
+              ondrop="LevelCreationTool.i.drop_handler(event)" ondragover="LevelCreationTool.i.dragover_handler(event)">
+              </div>
+
+            </div>
+            <div class="debug-border m-1 d-flex flex-column pacient-info-wrapper bg-light">
+              <div class="">
+                <h3>Contexto da admissão: </h3>
+              </div>
+
+              <h4 style="font-size: 1rem !important;">Opções abertas</h4>
+              <div class="pacient-info-values border rounded drop-container mx-1 pb-3 pb-5" style="border-width: 3px !important;"
+              data-option-name="Motivo da admissão" data-progn="open"
+              ondrop="LevelCreationTool.i.drop_handler(event)" ondragover="LevelCreationTool.i.dragover_handler(event)">
+              </div>
+              <h4 style="font-size: 1rem !important;">Opções predefinidas <i class="fas fa-lock"></i> </h4>
+              <div class="pacient-info-values border rounded drop-container mx-1 pb-3 pb-5" style="background-color:#9d9d88; border-width: 3px !important;"
+              data-option-name="Motivo da admissão" data-progn="locked"
+              ondrop="LevelCreationTool.i.drop_handler(event)" ondragover="LevelCreationTool.i.dragover_handler(event)">
+              </div>
+            </div>
+            <div class="debug-border m-1 d-flex flex-column pacient-info-wrapper bg-light">
+              <div class="">
+                <h3>Status clínico: </h3>
+              </div>
+
+              <h4 style="font-size: 1rem !important;">Opções abertas</h4>
+              <div class="pacient-info-values border rounded drop-container mx-1 pb-3 pb-5" style="border-width: 3px !important;"
+              data-option-name="Status Clínico" data-progn="open"
+              ondrop="LevelCreationTool.i.drop_handler(event)" ondragover="LevelCreationTool.i.dragover_handler(event)">
+              </div>
+              <h4 style="font-size: 1rem !important;">Opções predefinidas <i class="fas fa-lock"></i> </h4>
+              <div class="pacient-info-values border rounded drop-container mx-1 pb-3 pb-5" style="background-color:#9d9d88; border-width: 3px !important;"
+              data-option-name="Status Clínico" data-progn="locked"
+              ondrop="LevelCreationTool.i.drop_handler(event)" ondragover="LevelCreationTool.i.dragover_handler(event)">
+              </div>
+            </div>
+            <div class="debug-border m-1 d-flex flex-column pacient-info-wrapper bg-light">
+              <div class="">
+                <h3>Alterações laboratoriais: </h3>
+              </div>
+
+              <h4 style="font-size: 1rem !important;">Opções abertas</h4>
+              <div class="pacient-info-values border rounded drop-container mx-1 pb-3 pb-5" style="border-width: 3px !important;"
+              data-option-name="Alterações laboratoriais" data-progn="open"
+              ondrop="LevelCreationTool.i.drop_handler(event)" ondragover="LevelCreationTool.i.dragover_handler(event)">
+              </div>
+              <h4 style="font-size: 1rem !important;">Opções predefinidas <i class="fas fa-lock"></i> </h4>
+              <div class="pacient-info-values border rounded drop-container mx-1 pb-3 pb-5" style="background-color:#9d9d88; border-width: 3px !important;"
+              data-option-name="Alterações laboratoriais" data-progn="locked"
+              ondrop="LevelCreationTool.i.drop_handler(event)" ondragover="LevelCreationTool.i.dragover_handler(event)">
+              </div>
+            </div>
+            <div class="p-2">
+              <button type="button" class="w-50 btn btn-success" id="btn-build-lvl" onclick="LevelCreationTool.i.buildPacient()"> Construir nível</button>
+            </div>
+          </div>
+          <div class="col-4 my-5 h-75">
+            <div class="bg-white mb-2 border rounded">
+              <ul class="nav nav-tabs" id="creation-selection-tab" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link active" data-toggle="tab" href="#selectList" role="tab" aria-selected="true">Select list</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" data-toggle="tab" href="#bundle" role="tab" aria-selected="false">Bundle</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link cascade-nav" id="radio-tab" data-toggle="tab" href="#radio" role="tab" aria-selected="false">Radio/Checklist</a>
+                </li>
+                <!-- <li class="nav-item">
+                  <a class="nav-link cascade-nav" id="checkList-tab" data-toggle="tab" href="#checkList" role="tab" aria-selected="false">Checklist</a>
+                </li> -->
+              </ul>
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="chck-select-parent-name">
+                <label class="custom-control-label" for="chck-select-parent-name">Inserir nome da familia antes</label>
+              </div>
+              <input type="text" class="mb-1" id="input-title-option" placeholder="Insira o titulo da lista..." value="">
+              <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="selectList" role="tabpanel">
+                  <button type="button" id="btn-create-select-list" class="btn btn-success" onclick="LevelCreationTool.i.createSelectList()">Create</button>
+                </div>
+                <div class="tab-pane fade" id="checkList" role="tabpanel">
+                  <button type="button" id="btn-create-select-list" class="btn btn-success" onclick="LevelCreationTool.i.createCheckList()">Create</button>
+                </div>
+                <div class="tab-pane fade" id="radio" role="tabpanel">
+                  <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="chck-cascade-option">
+                    <label class="custom-control-label" for="chck-cascade-option">Duas camadas</label>
                   </div>
-                </div>
-              </div>
-            </div>
-            <div id="add-idade-option-wrapper">
-            </div>
-            <div class="w-100">
-
-              </div>
-            <button id="btn-update-idade-option" type="button" class="btn btn-success" data-dismiss="modal" value="idade">Salvar opções</button>
-            <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- Idade option modal -->
-  <!-- <main role=""> -->
-  <div id="main-panel" class="d-flex flex-column vh-100 vw-100 scroll-y index-boot-padding bg-secondary">
-    <div class="d-flex flex-column w-lg-75 h-100 w-100 px-2 pb-4 debug-border bg-dark mx-auto text-center scroll-y">
-      <h1 class="debug-border txt-light my-5">Pacient Info</h1>
-      <div class="debug-border mt-5 d-flex flex-column pacient-info-wrapper bg-light">
-        <div class="row justify-content-center">
-          <h3>Idade: </h3>
-          <button class="btn p-0" type="button" id="btn-add-idade" data-toggle="modal" data-target="#add-idade-modal">
-            <i class="fas fa-plus-circle" style="font-size: 2rem;"></i>
-          </button>
-
-        </div>
-        <div class="pancient-info-values idade">
-
-          <!-- <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="idadeRadioOptions" id="idade1" value="<40">
-              <label class="form-check-label" for="idade1"><40</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="idadeRadioOptions" id="idade2" value="40-59">
-              <label class="form-check-label" for="idade2">40-59</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="idadeRadioOptions" id="idade3" value="70-74">
-              <label class="form-check-label" for="idade3">70-74</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="idadeRadioOptions" id="idade4" value="75-79">
-              <label class="form-check-label" for="idade4">75-79</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="idadeRadioOptions" id="idade5" value=">=80">
-              <label class="form-check-label" for="idade5">>=80</label>
-            </div> -->
-        </div>
-      </div>
-      <div class="debug-border m-1 d-flex flex-column pacient-info-wrapper" style="background-color: RGB(200,200,200);">
-
-          <div class="">
-            <h3>Origem: </h3>
-          </div>
-          <div class="pancient-info-values">
-
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="origemRadioOptions" id="origem1" value="pronto-socorro">
-              <label class="form-check-label" for="origem1">Pronto Socorro</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="origemRadioOptions" id="origem2" value="outra-uti">
-              <label class="form-check-label" for="origem2">Outra UTI</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="origemRadioOptions" id="origem3" value="nda">
-              <label class="form-check-label" for="origem3">Nenhuma das Anteriores</label>
-            </div>
-        </div>
-      </div>
-      <div class="debug-border m-1 d-flex flex-column pacient-info-wrapper bg-light">
-          <div class="">
-            <h3>Comorbidade: </h3>
-          </div>
-          <div class="pancient-info-values comorbidade">
-            <div class="bg-offwhite">
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="comorbidade-ic-nyga-iv" value="ic-nyga-iv">
-                <label class="form-check-label" for="comorbidade-ic-nyga-iv">IC NYHA IV</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="comorbidade-cancer-metastico" value="cancer-metastico">
-                <label class="form-check-label" for="comorbidade-cancer-metastico">Câncer metastático</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="comorbidade-cancer-hematologico" value="cancer-hematologico">
-                <label class="form-check-label" for="comorbidade-cancer-hematologico">Câncer hematológico</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="comorbidade-terapia-oncologica" value="terapia-oncologica">
-                <label class="form-check-label" for="comorbidade-terapia-oncologica">Terapia oncológica</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="comorbidade-cirrose" value="cirrose">
-                <label class="form-check-label" for="comorbidade-cirrose">Cirrose </label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="comorbidade-sida" value="sida">
-                <label class="form-check-label" for="comorbidade-sida">SIDA </label>
-              </div>
-            </div>
-
-            <div class="w-100"></div>
-            <div class="bg-light">
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="comorbidade-int-antes-admissao" value="int-antes-admissao">
-                <label class="form-check-label" for="comorbidade-int-antes-admissao">Internado antes da admissão </label>
-              </div>
-              <div class="d-none progn-multi-wrapper" id="comorbidade-int-antes-admissao-wrapper">
-                <div class="form-check form-check-inline ">
-                  <input class="form-check-input" type="radio" name="comorbidade-int-antes-admissao-value" id="comorbidade-int-antes-admissao1" value="14-27">
-                  <label class="form-check-label" for="comorbidade-int-antes-admissao1">14-27</label>
-                </div>
-                <div class="form-check form-check-inline ">
-                  <input class="form-check-input" type="radio" name="comorbidade-int-antes-admissao-value" id="comorbidade-int-antes-admissao2" value=">=28">
-                  <label class="form-check-label" for="comorbidade-int-antes-admissao2">>=28</label>
-                </div>
-              </div>
-            </div>
-
-            <div class="w-100"></div>
-            <div class="bg-offwhite">
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="comorbidade-infect-antes-admissao" value="infect-antes-admissao">
-                <label class="form-check-label" for="comorbidade-infect-antes-admissao">Infectado antes da admissão </label>
-              </div>
-              <div class="d-none progn-multi-wrapper" id="comorbidade-infect-antes-admissao-wrapper">
-                <div class="form-check form-check-inline ">
-                  <input class="form-check-input" type="radio" name="comorbidade-infect-antes-admissao-value" id="comorbidade-infect-antes-admissao1" value="nosocomial">
-                  <label class="form-check-label" for="comorbidade-infect-antes-admissao1">Nosocomial</label>
-                </div>
-                <div class="form-check form-check-inline ">
-                  <input class="form-check-input" type="radio" name="comorbidade-infect-antes-admissao-value" id="comorbidade-infect-antes-admissao2" value="respiratoria">
-                  <label class="form-check-label" for="comorbidade-infect-antes-admissao2">Respiratória</label>
-                </div>
-              </div>
-            </div>
-
-          </div>
-
-      </div>
-      <div class="debug-border m-1 d-flex flex-column pacient-info-wrapper bg-light">
-          <div class="">
-            <h3>Motivo da admissão: </h3>
-          </div>
-
-          <div class="pancient-info-values admissao">
-            <div class="bg-offwhite">
-              <label class="form-check-label" for="admissao-planejada">Admissão Planejada?</label>
-
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="admissao-planejada-value" id="admissao-planejada-value-1" value="sim">
-                <label class="form-check-label" for="admissao-planejada">Sim</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="admissao-planejada-value" id="admissao-planejada-value-2" value="nao">
-                <label class="form-check-label" for="admissao-planejada">Não</label>
-              </div>
-            </div>
-            <div class="w-100"></div>
-            <div class="bg-light">
-              <div class="form-check form-check">
-                <input class="form-check-input" type="checkbox" id="admissao-cirurgica" value="admissao-cirurgica">
-                <label class="form-check-label" for="admissao-cirurgica">Admissão cirúrgica</label>
-              </div>
-              <div class="d-none progn-multi-wrapper" id="admissao-cirurgica-wrapper">
-                <div class="form-check form-check-inline ">
-                  <input class="form-check-input" type="radio" name="admissao-motivo-cirurgico" id="admissao-motivo-cirurgico-1" value="eletiva">
-                  <label class="form-check-label" for="admissao-motivo-cirurgico-1"> Cirurgia Eletiva</label>
-                </div>
-                <div class="form-check form-check-inline ">
-                  <input class="form-check-input" type="radio" name="admissao-motivo-cirurgico" id="admissao-motivo-cirurgico-2" value="urgencia">
-                  <label class="form-check-label" for="admissao-motivo-cirurgico-2"> Cirurgia Urgência</label>
-                </div>
-                <div class="d-none progn-multi-wrapper bg-offwhite" id="admissao-motivo-cirurgico-wrapper">
-                    <div class="form-check form-check-inline ">
-                      <input class="form-check-input" type="radio" name="admissao-motivo-cirurgico-value" id="admissao-motivo-cirurgico1" value="ncr-avc">
-                      <label class="form-check-label" for="admissao-motivo-cirurgico1">NCR por AVC</label>
-                    </div>
-                    <div class="form-check form-check-inline ">
-                      <input class="form-check-input" type="radio" name="admissao-motivo-cirurgico-value" id="admissao-motivo-cirurgico2" value="revascular-miorcardica">
-                      <label class="form-check-label" for="admissao-motivo-cirurgico2">Revascularização miocárdica</label>
-                    </div>
-                    <div class="form-check form-check-inline ">
-                      <input class="form-check-input" type="radio" name="admissao-motivo-cirurgico-value" id="admissao-motivo-cirurgico3" value="trauma">
-                      <label class="form-check-label" for="admissao-motivo-cirurgico3">Trauma</label>
-                    </div>
-                    <div class="form-check form-check-inline ">
-                      <input class="form-check-input" type="radio" name="admissao-motivo-cirurgico-value" id="admissao-motivo-cirurgico4" value="transplante">
-                      <label class="form-check-label" for="admissao-motivo-cirurgico4">Transplante</label>
-                    </div>
-                    <div class="form-check form-check-inline ">
-                      <input class="form-check-input" type="radio" name="admissao-motivo-cirurgico-value" id="admissao-motivo-cirurgico5" value="outro">
-                      <label class="form-check-label" for="admissao-motivo-cirurgico5">Outro</label>
-                    </div>
+                  <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="chck-radioyn-option">
+                    <label class="custom-control-label" for="chck-radioyn-option">Sim/não (antes das opções)</label>
                   </div>
-              </div>
-            </div>
-
-
-            <div class="w-100"></div>
-            <div class="form-check form-check">
-              <input class="form-check-input" type="checkbox" id="admissao-motivo-clinico" value="motivo-clinico">
-              <label class="form-check-label" for="admissao-motivo-clinico">Admissão clínica</label>
-            </div>
-              <div class="d-none progn-multi-wrapper row row-cols-5 px-3" id="admissao-motivo-clinico-wrapper">
-                <div class="form-check border-bottom">
-                  <input class="form-check-input" type="radio" name="admissao-motivo-clinico-value" id="admissao-motivo-clinico1" value="arritmia">
-                  <label class="form-check-label" for="admissao-motivo-clinico1">Arritmia</label>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="option-type" id="option-radio" value="uniqueValues">
+                    <label class="form-check-label" for="option-radio">Radio</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="option-type" id="option-checklist" value="multipleValues">
+                    <label class="form-check-label" for="option-checklist">Checklist</label>
+                  </div>
+                  <button type="button" id="btn-create-general-options" class="btn btn-success" onclick="LevelCreationTool.i.createRadio()">Create</button>
                 </div>
-                <div class="form-check border-bottom">
-                  <input class="form-check-input" type="radio" name="admissao-motivo-clinico-value" id="admissao-motivo-clinico2" value="choque-hipovolemico">
-                  <label class="form-check-label" for="admissao-motivo-clinico2">Choque hipovolêmico</label>
-                </div>
-                <div class="form-check border-bottom text-truncate" data-toggle="tooltip" data-placement="bottom" title="Choque cardiogênico, distributivo, obstrutivo ou misto">
-                  <input class="form-check-input" type="radio" name="admissao-motivo-clinico-value" id="admissao-motivo-clinico3" value="choque-card-distr-obstr-misto">
-                  <label class="form-check-label " for="admissao-motivo-clinico3">Outro choque</label>
-                </div>
-                <div class="form-check border-bottom">
-                  <input class="form-check-input" type="radio" name="admissao-motivo-clinico-value" id="admissao-motivo-clinico4" value="convulsao">
-                  <label class="form-check-label" for="admissao-motivo-clinico4">Convulsão</label>
-                </div>
-                <div class="form-check border-bottom">
-                  <input class="form-check-input" type="radio" name="admissao-motivo-clinico-value" id="admissao-motivo-clinico4" value="abdome-agudo">
-                  <label class="form-check-label" for="admissao-motivo-clinico4">Abdome agudo</label>
-                </div>
-                <div class="form-check border-bottom">
-                  <input class="form-check-input" type="radio" name="admissao-motivo-clinico-value" id="admissao-motivo-clinico5" value="pancreatite-grave">
-                  <label class="form-check-label" for="admissao-motivo-clinico5">Pancreatite grave</label>
-                </div>
-                <div class="form-check border-bottom">
-                  <input class="form-check-input" type="radio" name="admissao-motivo-clinico-value" id="admissao-motivo-clinico6" value="deficit-focal">
-                  <label class="form-check-label" for="admissao-motivo-clinico6">Déficit focal</label>
-                </div>
-                <div class="form-check border-bottom">
-                  <input class="form-check-input" type="radio" name="admissao-motivo-clinico-value" id="admissao-motivo-clinico7" value="efeito-massa-intracraniana">
-                  <label class="form-check-label" for="admissao-motivo-clinico7">Efeito de massa intracraniana</label>
-                </div>
-                <div class="form-check border-bottom">
-                  <input class="form-check-input" type="radio" name="admissao-motivo-clinico-value" id="admissao-motivo-clinico8" value="insuficiencia-hepatica">
-                  <label class="form-check-label" for="admissao-motivo-clinico8">Insuficiência hepática</label>
-                </div>
-                <div class="form-check border-bottom">
-                  <input class="form-check-input" type="radio" name="admissao-motivo-clinico-value" id="admissao-motivo-clinico9" value="alt-nivel-consciencia">
-                  <label class="form-check-label" for="admissao-motivo-clinico9">Alteração do nível de consciência</label>
-                </div>
-                <div class="form-check border-bottom">
-                  <input class="form-check-input" type="radio" name="admissao-motivo-clinico-value" id="admissao-motivo-clinico10" value="outro">
-                  <label class="form-check-label" for="admissao-motivo-clinico10">Outro</label>
+                <div class="tab-pane fade" id="bundle" role="tabpanel">
+                  <div class="custom-input">
+                    <label class="custom-label" for="input-number-bundle">Nº bundles</label>
+                    <input type="number" min="2" id="input-number-bundle" placeholder="Quantidade de bundles.." value="2">
+                  </div>
+                  <button type="button" id="btn-create-bundle" class="btn btn-success" onclick="LevelCreationTool.i.createBundle()">Create</button>
                 </div>
               </div>
-          </div>
-      </div>
-      <div class="debug-border m-1 d-flex flex-column pacient-info-wrapper">
-        <div class="">
-          <h3>Status Clínico: </h3>
-        </div>
-        <div class="pancient-info-values status-clinico">
+              Drag items to compose the options
+              <div class="row bg-secondary border rounded m-1 py-1" id="creation-container-wrapper">
+                <div class="col h-100 bg-secondary pb-5 drop-container" id="creation-container"
+                ondrop="LevelCreationTool.i.drop_handler(event)" ondragover="LevelCreationTool.i.dragover_handler(event)">
 
-          <div class="form-check form-check">
-            <input class="form-check-input" type="checkbox" id="status-clinico-gcs" value="gcs">
-            <label class="form-check-label" for="status-clinico-gcs">GCS</label>
-          </div>
-          <div class="d-none progn-multi-wrapper" id="status-clinico-gcs-wrapper">
-            <div class="form-check form-check-inline ">
-              <input class="form-check-input" type="radio" name="status-clinico-gcs-value" id="status-clinico-gcs-value-1" value="3-4">
-              <label class="form-check-label" for="status-clinico-gcs-value-1">3-4</label>
-            </div>
-            <div class="form-check form-check-inline ">
-              <input class="form-check-input" type="radio" name="status-clinico-gcs-value" id="status-clinico-gcs-value-2" value="5">
-              <label class="form-check-label" for="status-clinico-gcs-value-2">5</label>
-            </div>
-            <div class="form-check form-check-inline ">
-              <input class="form-check-input" type="radio" name="status-clinico-gcs-value-value" id="status-clinico-gcs-value-3" value="6">
-              <label class="form-check-label" for="status-clinico-gcs-value-3">6</label>
-            </div>
-            <div class="form-check form-check-inline ">
-              <input class="form-check-input" type="radio" name="status-clinico-gcs-value" id="status-clinico-gcs-value-4" value="7-12">
-              <label class="form-check-label" for="status-clinico-gcs-value-4">7-12</label>
-            </div>
-            <div class="form-check form-check-inline ">
-              <input class="form-check-input" type="radio" name="status-clinico-gcs-value" id="status-clinico-gcs-value-5" value=">=13">
-              <label class="form-check-label" for="status-clinico-gcs-value-5">>=13</label>
-            </div>
-          </div>
-          <div class="w-100"></div>
-          <div class="form-check form-check">
-            <label class="form-check-label">Temperatura</label>
-          </div>
-          <div class="form-check form-check-inline ">
-            <input class="form-check-input" type="radio" name="status-clinico-temp" id="status-clinico-temp-1" value="<35">
-            <label class="form-check-label" for="status-clinico-temp-1"><35</label>
-          </div>
-          <div class="form-check form-check-inline ">
-            <input class="form-check-input" type="radio" name="status-clinico-temp" id="status-clinico-temp-2" value=">=35">
-            <label class="form-check-label" for="status-clinico-temp-2">>=35</label>
-          </div>
-          <div class="form-check form-check">
-            <label class="form-check-label">Frequência cardíaca</label>
-          </div>
-          <div class="form-check form-check-inline ">
-            <input class="form-check-input" type="radio" name="status-clinico-freq-card" id="status-clinico-freq-card-1" value="<120">
-            <label class="form-check-label" for="status-clinico-freq-card-1"><120</label>
-          </div>
-          <div class="form-check form-check-inline ">
-            <input class="form-check-input" type="radio" name="status-clinico-freq-card" id="status-clinico-freq-card-2" value="120-159">
-            <label class="form-check-label" for="status-clinico-freq-card-2">120-159</label>
-          </div>
-          <div class="form-check form-check-inline ">
-            <input class="form-check-input" type="radio" name="status-clinico-freq-card" id="status-clinico-freq-card-3" value=">=160">
-            <label class="form-check-label" for="status-clinico-freq-card-3">>=160</label>
-          </div>
-          <div class="form-check form-check">
-            <label class="form-check-label">Pressão sistólica</label>
-          </div>
-          <div class="form-check form-check-inline ">
-            <input class="form-check-input" type="radio" name="status-clinico-pressao-sistolica" id="status-clinico-pressao-sistolica-1" value="<40">
-            <label class="form-check-label" for="status-clinico-pressao-sistolica-1"><40</label>
-          </div>
-          <div class="form-check form-check-inline ">
-            <input class="form-check-input" type="radio" name="status-clinico-pressao-sistolica" id="status-clinico-pressao-sistolica-2" value="40-69">
-            <label class="form-check-label" for="status-clinico-pressao-sistolica-2">40-69</label>
-          </div>
-          <div class="form-check form-check-inline ">
-            <input class="form-check-input" type="radio" name="status-clinico-pressao-sistolica" id="status-clinico-pressao-sistolica-3" value="70-119">
-            <label class="form-check-label" for="status-clinico-pressao-sistolica-3">70-119</label>
-          </div>
-          <div class="form-check form-check-inline ">
-            <input class="form-check-input" type="radio" name="status-clinico-pressao-sistolica" id="status-clinico-pressao-sistolica-4" value=">=120">
-            <label class="form-check-label" for="status-clinico-pressao-sistolica-4">>=120</label>
-          </div>
-          <div class="form-check form-check">
-            <label class="form-check-label" for="status-clinico-droga-vasoativa">Dogra vasoativa?</label>
-          </div>
-          <div class="form-check form-check-inline ">
-            <input class="form-check-input" type="radio" name="status-clinico-droga-vasoativa-value" id="status-clinico-droga-vasoativa-value-1" value="sim">
-            <label class="form-check-label" for="status-clinico-droga-vasoativa-value-1">Sim</label>
-          </div>
-          <div class="form-check form-check-inline ">
-            <input class="form-check-input" type="radio" name="status-clinico-droga-vasoativa-value" id="status-clinico-droga-vasoativa-value-2" value="nao">
-            <label class="form-check-label" for="status-clinico-droga-vasoativa-value-2">Não</label>
-          </div>
+                </div>
 
+              </div>
+
+            </div>
+            <div class="bg-white p-0" id="creation-dump">
+
+            </div>
+            <div class="flex-column bg-white border rounded h-75 scroll-y" id="option-list-wrapper">
+
+            </div>
+          </div>
         </div>
 
-
-      </div>
-      <div class="debug-border m-1 d-flex flex-column pacient-info-wrapper">
-          <div class="">
-            <h3>Alterações laboratoriais: </h3>
-          </div>
-          <div class="pancient-info-values alt-laboratoriais">
-
-            <div class="form-check form-check">
-              <input class="form-check-input" type="checkbox" id="alt-laboratoriais-bilirrubina" value="bilirrubina">
-              <label class="form-check-label" for="alt-laboratoriais-bilirrubina">Bilirrubina</label>
-            </div>
-            <div class="d-none progn-multi-wrapper" id="alt-laboratoriais-bilirrubina-wrapper">
-              <div class="form-check form-check-inline ">
-                <input class="form-check-input" type="radio" name="alt-laboratoriais-bilirrubina-value" id="alt-laboratoriais-bilirrubina-1" value="<2">
-                <label class="form-check-label" for="alt-laboratoriais-bilirrubina-1"><2</label>
-              </div>
-              <div class="form-check form-check-inline ">
-                <input class="form-check-input" type="radio" name="alt-laboratoriais-bilirrubina-value" id="alt-laboratoriais-bilirrubina-2" value="2-6">
-                <label class="form-check-label" for="alt-laboratoriais-bilirrubina-2">2-6</label>
-              </div>
-              <div class="form-check form-check-inline ">
-                <input class="form-check-input" type="radio" name="alt-laboratoriais-bilirrubina-value" id="alt-laboratoriais-bilirrubina-3" value=">=6">
-                <label class="form-check-label" for="alt-laboratoriais-bilirrubina-3">>=6</label>
-              </div>
-            </div>
-
-            <div class="form-check form-check">
-              <input class="form-check-input" type="checkbox" id="alt-laboratoriais-creatinina" value="creatinina">
-              <label class="form-check-label" for="alt-laboratoriais-creatinina">creatinina</label>
-            </div>
-            <div class="d-none progn-multi-wrapper" id="alt-laboratoriais-creatinina-wrapper">
-              <div class="form-check form-check-inline ">
-                <input class="form-check-input" type="radio" name="alt-laboratoriais-creatinina-value" id="alt-laboratoriais-creatinina-1" value="<1.2">
-                <label class="form-check-label" for="alt-laboratoriais-creatinina-1"><1.2</label>
-              </div>
-              <div class="form-check form-check-inline ">
-                <input class="form-check-input" type="radio" name="alt-laboratoriais-creatinina-value" id="alt-laboratoriais-creatinina-2" value="1.2-1.9">
-                <label class="form-check-label" for="alt-laboratoriais-creatinina-2">1.2-1.9</label>
-              </div>
-              <div class="form-check form-check-inline ">
-                <input class="form-check-input" type="radio" name="alt-laboratoriais-creatinina-value" id="alt-laboratoriais-creatinina-3" value="1-3.4">
-                <label class="form-check-label" for="alt-laboratoriais-creatinina-3">1-3.4</label>
-              </div>
-              <div class="form-check form-check-inline ">
-                <input class="form-check-input" type="radio" name="alt-laboratoriais-creatinina-value" id="alt-laboratoriais-creatinina-4" value=">=3.5">
-                <label class="form-check-label" for="alt-laboratoriais-creatinina-4">>=3.5</label>
-              </div>
-            </div>
-
-            <div class="form-check form-check">
-              <input class="form-check-input" type="checkbox" id="alt-laboratoriais-plaqueta" value="plaqueta">
-              <label class="form-check-label" for="alt-laboratoriais-plaqueta">Plaquetas</label>
-            </div>
-            <div class="d-none progn-multi-wrapper" id="alt-laboratoriais-plaqueta-wrapper">
-              <div class="form-check form-check-inline ">
-                <input class="form-check-input" type="radio" name="alt-laboratoriais-plaqueta-value" id="alt-laboratoriais-plaqueta-1" value="<20mil">
-                <label class="form-check-label" for="alt-laboratoriais-plaqueta-1"><20mil</label>
-              </div>
-              <div class="form-check form-check-inline ">
-                <input class="form-check-input" type="radio" name="alt-laboratoriais-plaqueta-value" id="alt-laboratoriais-plaqueta-2" value="20-49mil">
-                <label class="form-check-label" for="alt-laboratoriais-plaqueta-2">20-49mil</label>
-              </div>
-              <div class="form-check form-check-inline ">
-                <input class="form-check-input" type="radio" name="alt-laboratoriais-plaqueta-value" id="alt-laboratoriais-plaqueta-3" value="50-99mil">
-                <label class="form-check-label" for="alt-laboratoriais-plaqueta-3">50-99mil</label>
-              </div>
-              <div class="form-check form-check-inline ">
-                <input class="form-check-input" type="radio" name="alt-laboratoriais-plaqueta-value" id="alt-laboratoriais-plaqueta-4" value=">=100mil">
-                <label class="form-check-label" for="alt-laboratoriais-plaqueta-4">>=100mil</label>
-              </div>
-            </div>
-
-            <div class="form-check form-check">
-              <input class="form-check-input" type="checkbox" id="alt-laboratoriais-oxigenacao" value="oxigenacao">
-              <label class="form-check-label" for="alt-laboratoriais-oxigenacao">Oxigenação</label>
-            </div>
-            <div class="d-none progn-multi-wrapper" id="alt-laboratoriais-oxigenacao-wrapper">
-              <div class="form-check form-check-inline ">
-                <input class="form-check-input" type="radio" name="alt-laboratoriais-oxigenacao-value" id="alt-laboratoriais-oxigenacao-1" value="paO2 >=60 sem VM">
-                <label class="form-check-label" for="alt-laboratoriais-oxigenacao-1">paO2 >=60 sem VM</label>
-              </div>
-              <div class="form-check form-check-inline ">
-                <input class="form-check-input" type="radio" name="alt-laboratoriais-oxigenacao-value" id="alt-laboratoriais-oxigenacao-2" value="paO2 <60 sem VM">
-                <label class="form-check-label" for="alt-laboratoriais-oxigenacao-2">paO2 <60 sem VM</label>
-              </div>
-              <div class="form-check form-check-inline ">
-                <input class="form-check-input" type="radio" name="alt-laboratoriais-oxigenacao-value" id="alt-laboratoriais-oxigenacao-3" value="P/F <100 em VM">
-                <label class="form-check-label" for="alt-laboratoriais-oxigenacao-3">P/F <100 em VM</label>
-              </div>
-              <div class="form-check form-check-inline ">
-                <input class="form-check-input" type="radio" name="alt-laboratoriais-oxigenacao-value" id="alt-laboratoriais-oxigenacao-4" value="P/F >=100 em VM">
-                <label class="form-check-label" for="alt-laboratoriais-oxigenacao-4">P/F >=100 em VM</label>
-              </div>
-            </div>
-          </div>
-      </div>
-      <div class="p-2">
 
       </div>
     </div>
-  </div>
-  <!-- </main> -->
+  </main>
 </body>
+
 </html>

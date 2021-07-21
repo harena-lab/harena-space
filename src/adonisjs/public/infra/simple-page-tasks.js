@@ -19,7 +19,7 @@ class PageController {
     })
     MessageBus.int.subscribe('control/dhtml/ready', this.removeLoadingIcon)
     MessageBus.ext.subscribe('control/case/ready', this.removeLoadingIcon)
-    MessageBus.ext.subscribe('control/validate/ready', this.removeLoadingIcon)
+    MessageBus.int.subscribe('control/validate/ready', this.removeLoadingIcon)
     MessageBus.int.subscribe('control/html/ready', this.pageReady)
   }
   async pageReady(){
