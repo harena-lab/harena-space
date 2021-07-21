@@ -84,9 +84,10 @@ class EditDCC {
   _fetchElementWrapper () {
     // looks for a knot-wrapper or equivalent
     let elWrapper = this._editElement
+    const xstyle = (this._editDCC.xstyle != null) ? this._editDCC.xstyle :
+                   (this._editDCC._xstyle != null) ? this._editDCC._xstyle : null
     if (this._editElement != null &&
-          this._editDCC.xstyle && this._editDCC.xstyle != 'out' &&
-          this._editDCC.xstyle != 'out-image') {
+        xstyle != null && xstyle != 'out' && xstyle != 'out-image') {
       let ew = elWrapper.parentNode
       while (ew != null && (!ew.id || !ew.id.endsWith('-wrapper'))) { ew = ew.parentNode }
       // otherwise, finds the element outside dccs

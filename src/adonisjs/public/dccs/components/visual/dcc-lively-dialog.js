@@ -10,6 +10,11 @@ class DCCLivelyTalk extends DCCVisual {
     this._scheduleAnimation = this._scheduleAnimation.bind(this)
 
     this.notify = this.notify.bind(this)
+
+    if (this.hasAttribute('id')) {
+      MessageBus.page.provides(this.id, 'action/speech', this.notify)
+      MessageBus.page.provides(this.id, 'action/clear', this.notify)
+    }
   }
 
   static get observedAttributes () {
@@ -49,10 +54,12 @@ class DCCLivelyTalk extends DCCVisual {
       right: '-1, 1'
     }
 
-    const durationWeb = (this.duration != null) ? this.duration : '2s'
+    const durationWeb = (this.duration != null) ? this.duration : '0s'
     const delayWeb = (this.delay != null) ? this.delay : '0s'
     const directionWeb = (this.direction != null) ? this.direction : 'left'
     const bubbleWeb = (this.bubble != null) ? this.bubble : 'bubble'
+    const characterWeb = (this.character != null) ? this.character : 'person'
+    const speechWeb = (this.speech != null) ? this.speech : ''
 
     let templateHTML =
          `<style>
@@ -60,7 +67,7 @@ class DCCLivelyTalk extends DCCVisual {
             position: relative;
             left: 100%;
           }
-          
+
           @keyframes dcc-block-displacement {
             [direction]
           }
@@ -79,25 +86,25 @@ class DCCLivelyTalk extends DCCVisual {
             animation-delay: [delay];
             animation-fill-mode: forwards;
           }
-          
+
            @media (orientation: landscape) {
              .dcc-direction {
                display: flex;
                flex-direction: row;
              }
            }
-           
+
            @media (orientation: portrait) {
              .dcc-direction {
                display: flex;
                flex-direction: column;
              }
            }
-          
+
           .dcc-character {
              flex-basis: 100px;
           }
-          
+
           .dcc-bubble {
              background-repeat: no-repeat;
              background-size: 100% 100%;
@@ -105,7 +112,7 @@ class DCCLivelyTalk extends DCCVisual {
              padding: 15px 15px 10px 80px;
              transform: scale([transform]);
           }
-          
+
           @media (orientation: landscape) {
              .dcc-bubble {
                 background-image: url("images/[bubble-file]-landscape.png");
@@ -122,7 +129,7 @@ class DCCLivelyTalk extends DCCVisual {
              transform: scale([transform]);
              text-align: [align];
           }
-          
+
           </style>
           <div class="dcc-entrance-container">
              <div id="presentation-dcc" class="dcc-hidden"></div>
@@ -142,12 +149,12 @@ class DCCLivelyTalk extends DCCVisual {
 
     this._setPresentation(this._shadow.querySelector('#presentation-dcc'))
 
-    const charImg = 'images/' + this.character.toLowerCase()
+    const charImg = 'images/' + characterWeb.toLowerCase()
       .replace(/ /igm, '_') + '-icon.png'
 
     const imageHTML = "<div class='dcc-character'><img id='dcc-talk-character' src='" +
-                        charImg + "' title='" + this.character + "' width='100px'></div>"
-    const speechHTML = "<div class='dcc-bubble'><div id='dcc-talk-text' class='dcc-speech'>" + this.speech + '</div></div>'
+                        charImg + "' title='" + characterWeb + "' width='100px'></div>"
+    const speechHTML = "<div class='dcc-bubble'><div id='dcc-talk-text' class='dcc-speech'>" + speechWeb + '</div></div>'
 
     this._presentation.innerHTML = (directionWeb == 'left') ? imageHTML + speechHTML : speechHTML + imageHTML
     this._presentation.querySelector('img').addEventListener('load', this._imageLoaded)
@@ -218,7 +225,16 @@ class DCCLivelyTalk extends DCCVisual {
   }
 
   notify (topic, message) {
-    this.speech = this._prefixSpeech + ((message.value) ? message.value : message)
+    if (!topic.includes('/'))
+      topic = 'action/' + topic
+    switch (topic.toLowerCase()) {
+      case 'action/speech':
+        this.speech = this._prefixSpeech + ((message.value) ? message.value : message)
+        break
+      case 'action/clear':
+        this.speech = this._prefixSpeech + ''
+        break
+    }
   }
 
   /* Editable Component */

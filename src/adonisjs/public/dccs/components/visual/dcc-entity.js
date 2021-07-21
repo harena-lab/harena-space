@@ -44,7 +44,7 @@ class DCCEntity extends DCCBlock {
 
   static get observedAttributes () {
     return DCCVisual.observedAttributes.concat(
-      ['sequence', 'entity', 'text', 'xstyle'])
+      ['sequence', 'entity', 'text'])
   }
 
   get sequence () {
@@ -71,28 +71,20 @@ class DCCEntity extends DCCBlock {
     this.setAttribute('text', newValue)
   }
 
-  get xstyle () {
-    return this.getAttribute('xstyle')
-  }
-
-  set xstyle (newValue) {
-    this.setAttribute('xstyle', newValue)
-  }
-
   /* Rendering */
 
   async _renderInterface () {
     // this._presentationEntity = [];
-    if (this.hasAttribute('xstyle') && this.xstyle.startsWith('out')) {
+    if (this._xstyle.startsWith('out')) {
       await this._applyRender(this.entity,
-        (this.xstyle == 'out-image') ? 'title' : 'innerHTML',
+        (this._xstyle == 'out-image') ? 'title' : 'innerHTML',
         'entity')
 
       if (this.image) { await this._applyRender(this.image, 'image', 'image') }
 
       if (this._text) {
         await this._applyRender(this._text,
-          (this.xstyle == 'out-image') ? 'title' : 'innerHTML',
+          (this._xstyle == 'out-image') ? 'title' : 'innerHTML',
           'text')
       }
     } else {
@@ -133,7 +125,7 @@ class DCCEntity extends DCCBlock {
                flex-direction: row;
              }
            }
-           
+
            @media (orientation: portrait) {
              .dcc-entity-style {
                display: flex;

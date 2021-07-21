@@ -110,7 +110,7 @@ class DCCButton extends DCCBlock {
 
     // === presentation setup (DCC Block)
     await this._applyRender(html,
-      (this.xstyle == 'out-image') ? 'title' : 'innerHTML')
+      (this._xstyle == 'out-image') ? 'title' : 'innerHTML')
 
     // === post presentation setup
     // <TODO> provisory
@@ -149,7 +149,6 @@ class DCCButton extends DCCBlock {
   async _computeTrigger () {
     if (this._active && this._checkPre()) {
       const message = { sourceType: DCCButton.elementTag }
-      await this.multiRequest('click', message)
       if (this.hasAttribute('variable')) {
         const v = (this.variable.includes(':'))
           ? this.variable.substring(0, this.variable.indexOf(':')) : this.variable
@@ -163,6 +162,7 @@ class DCCButton extends DCCBlock {
         if (this.hasAttribute('message')) { message.value = this.message }
         MessageBus.ext.publish(topic, message)
       }
+      await this.multiRequest('click', message)
     }
   }
 
