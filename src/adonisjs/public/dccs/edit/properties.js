@@ -67,7 +67,7 @@ class Properties {
             editp.inlineProperty, this)
           break
         case 'image':
-          this._editor = new EditDCCImage(obj, dcc, editp.htmls, this)
+          this._editor = new EditDCCImage(obj, dcc, this)
           break
         case 'option':
           if (this._item > -1) {
