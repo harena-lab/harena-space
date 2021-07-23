@@ -438,9 +438,6 @@ class Prognosis {
       title.innerHTML = title.innerHTML
       .replace('dificuldade 1',`dificuldade ${selectedPacient.dificuldade}`)
     }
-    ////////////////////////////////// IDADE ///////////////////////////////////////////////////
-
-    ////////////////////////////////// ORIGEM ///////////////////////////////////////////////////
 
     ////////////////////////////////////////////////////////////////////////////////////////////
     function objectfyPlayerOptions(fnVariable, fnWrapper, fnPrependTxt){
@@ -458,8 +455,7 @@ class Prognosis {
           var textSelect = document.querySelector('#options-'+keyId+'-wrapper')
           if(selectedPacient[fnVariable].locked[i][keyText]['values'].length == 1 &&
           (selectedPacient[fnVariable].locked[i][keyText]['values'][0] == "Sim" ||
-          selectedPacient[fnVariable].locked[i][keyText]['values'][0] == "Não"))
-          {
+          selectedPacient[fnVariable].locked[i][keyText]['values'][0] == "Não")){
             var template = document.createElement('template')
             // template.innerHTML = Prognosis.playerOptionInputDisabled
             // .replace(/\[value\]/ig, keyText)
@@ -633,6 +629,44 @@ class Prognosis {
               textSelect.querySelector('#'+(keyId+'-'+Prognosis.i.removeAccent(value).replace(new RegExp('[ ]','ig'), '-'))).checked = true
             }
           }
+          else if (selectedPacient[fnVariable].locked[i][keyText]['selectList'] &&
+          selectedPacient[fnVariable].locked[i][keyText]['selectList'] == 'true') {
+            var template = document.createElement('template')
+            template.innerHTML = Prognosis.playerSelectList
+            .replace(/\[id\]/ig, (keyId))
+            textSelect.appendChild(template.content.cloneNode(true))
+            document.querySelector(`#${keyId}`).classList.add('disabled-look')
+            var obj = document.querySelector('#options-'+ keyId+'-wrapper')
+            obj.prependTxt = obj.parentElement.querySelector('.input-group-prepend')
+            obj.prependTxt.copy = document.createElement('label')
+            obj.prependTxt.copy.classList.add('input-group-text')
+            obj.prependTxt.copy.textContent = keyText
+            obj.prependTxt.appendChild(obj.prependTxt.copy)
+
+            for (var z = 0; z < selectedPacient[fnVariable].locked[i][keyText]['values'].length; z++) {
+
+              //Check if select list must include id (because of complex values. e.g.(id'bilirrubina' value'3-4'), instead of just 'bilirrubina')
+              if(selectedPacient[fnVariable].locked[i][keyText]['values'][z]
+              [Object.keys(selectedPacient[fnVariable].locked[i][keyText]['values'][z])]){
+                var baseKey = selectedPacient[fnVariable].locked[i][keyText]['values'][z]
+                var valueText = Object.keys(baseKey)[0]
+                var value = baseKey[Object.keys(baseKey)]['values'][0]
+
+                const selectList = document.querySelector("#" + keyId)
+                var option = document.createElement('option')
+                option.textContent = valueText+': '+value
+                option.value = value
+                selectList.appendChild(option)
+              }else{
+                var value = selectedPacient[fnVariable].locked[i][keyText]['values'][z]
+                const selectList = document.querySelector("#" + keyId)
+                var option = document.createElement('option')
+                option.textContent = value
+                option.value = (Prognosis.i.removeAccent(value).replace(new RegExp('[ ]','ig'), '-'))
+                selectList.appendChild(option)
+              }
+            }
+          }
           else{
             // document.querySelector('#options-'+keyId+'-wrapper').appendChild(template.content.cloneNode(true))
             var obj = document.querySelector('#options-'+ keyId+'-wrapper')
@@ -688,8 +722,7 @@ class Prognosis {
           var textSelect = document.querySelector('#options-'+keyId+'-wrapper')
           if(selectedPacient[fnVariable].open[i][keyText]['values'].length == 2 &&
           (selectedPacient[fnVariable].open[i][keyText]['values'][0] == "Sim" ||
-          selectedPacient[fnVariable].open[i][keyText]['values'][1] == "Sim"))
-          {
+          selectedPacient[fnVariable].open[i][keyText]['values'][1] == "Sim")){
             var template = document.createElement('template')
             // template.innerHTML = Prognosis.playerOptionInputDisabled
             // .replace(/\[value\]/ig, keyText)
@@ -973,17 +1006,11 @@ class Prognosis {
     ////////////////////////////////// ORIGEM ///////////////////////////////////////////////////
     objectfyPlayerOptions('Origem','origem-wrapper','Origem')
     ////////////////////////////////// COMORBIDADE ///////////////////////////////////////////////////
-    const comorbidadeWrapper = document.querySelector('#comorbidade-wrapper')
-    var mainVariable = 'comorbidade'
     objectfyPlayerOptions('Comorbidade','comorbidade-wrapper','Comorbidade')
-
     ////////////////////////////////// MOTIVO DA ADMMISSAO ///////////////////////////////////////////////////
-    const motivoAdmissaoWrapper = document.querySelector('#motivo-admissao-wrapper')
     objectfyPlayerOptions('Contexto da admissão','motivo-admissao-wrapper','Motivo')
-
     ////////////////////////////////// STATUS CLINICO ///////////////////////////////////////////////////
     objectfyPlayerOptions('Status clínico','status-clinico-wrapper','Status')
-
     ////////////////////////////////// ALTERACOES LABORATORIAIS ///////////////////////////////////////////////////
     objectfyPlayerOptions('Alterações laboratoriais','alt-lab-wrapper','Alteração')
 
@@ -2113,6 +2140,7 @@ class Prognosis {
               "Submetido à cirurgia": {
                 "cascade": "true",
                 "radioYN": "true",
+                "uniqueValues": "true",
                 "values": [
                   "Cirurgia eletiva",
                   "Cirurgia urgência",
@@ -2286,9 +2314,16 @@ class Prognosis {
         "Origem":{
           "locked": [],
           "open": [
-            "Pronto Socorro",
-            "Outra UTI",
-            "Nenhuma das anteriores",
+            {
+              "Origem":{
+                "selectList": "true",
+                "values":[
+                  "Pronto Socorro",
+                  "Outra UTI",
+                  "Nenhuma das anteriores",
+                ]
+              }
+            }
           ],
         },
         "Comorbidade":{
@@ -2529,16 +2564,30 @@ class Prognosis {
         "dificuldade": "3",
         "Idade":{
           "locked": [
-            "<40 anos"
+            {
+              "Idade":{
+                "selectList":"true",
+                "values":[
+                  "<40 anos"
+                ]
+              }
+            }
           ],
           "open": []
         },
         "Origem":{
           "locked": [],
           "open": [
-            "Pronto Socorro",
-            "Outra UTI",
-            "Nenhuma das anteriores",
+            {
+              "Origem":{
+                "selectList": "true",
+                "values":[
+                  "Pronto Socorro",
+                  "Outra UTI",
+                  "Nenhuma das anteriores",
+                ]
+              }
+            }
           ],
         },
         "Comorbidade":{
@@ -2777,16 +2826,30 @@ class Prognosis {
         "dificuldade": "4",
         "Idade":{
           "locked": [
-            "<40 anos"
+            {
+              "Idade":{
+                "selectList":"true",
+                "values":[
+                  "<40 anos"
+                ]
+              }
+            }
           ],
           "open": []
         },
         "Origem":{
           "locked": [],
           "open": [
-            "Pronto Socorro",
-            "Outra UTI",
-            "Nenhuma das anteriores",
+            {
+              "Origem":{
+                "selectList": "true",
+                "values":[
+                  "Pronto Socorro",
+                  "Outra UTI",
+                  "Nenhuma das anteriores",
+                ]
+              }
+            }
           ],
         },
         "Comorbidade":{
@@ -2992,16 +3055,30 @@ class Prognosis {
         "dificuldade": "5",
         "Idade":{
           "locked": [
-            "<40 anos"
+            {
+              "Idade":{
+                "selectList":"true",
+                "values":[
+                  "<40 anos"
+                ]
+              }
+            }
           ],
           "open": []
         },
         "Origem":{
           "locked": [],
           "open": [
-            "Pronto Socorro",
-            "Outra UTI",
-            "Nenhuma das anteriores",
+            {
+              "Origem":{
+                "selectList": "true",
+                "values":[
+                  "Pronto Socorro",
+                  "Outra UTI",
+                  "Nenhuma das anteriores",
+                ]
+              }
+            }
           ],
         },
         "Comorbidade":{
@@ -3202,16 +3279,30 @@ class Prognosis {
         "dificuldade": "6",
         "Idade":{
           "locked": [
-            "<40 anos"
+            {
+              "Idade":{
+                "selectList":"true",
+                "values":[
+                  "<40 anos"
+                ]
+              }
+            }
           ],
           "open": []
         },
         "Origem":{
           "locked": [],
           "open": [
-            "Pronto Socorro",
-            "Outra UTI",
-            "Nenhuma das anteriores",
+            {
+              "Origem":{
+                "selectList": "true",
+                "values":[
+                  "Pronto Socorro",
+                  "Outra UTI",
+                  "Nenhuma das anteriores",
+                ]
+              }
+            }
           ],
         },
         "Comorbidade":{
@@ -3410,13 +3501,27 @@ class Prognosis {
         "dificuldade": "7",
         "Idade":{
           "locked": [
-            "<40 anos"
+            {
+              "Idade":{
+                "selectList":"true",
+                "values":[
+                  "<40 anos"
+                ]
+              }
+            }
           ],
           "open": []
         },
         "Origem":{
           "locked": [
-            "Outra UTI"
+            {
+              "Origem":{
+                "selectList":"true",
+                "values":[
+                  "Outra UTI"
+                ]
+              }
+            }
           ],
           "open": [
           ],
@@ -3825,16 +3930,30 @@ class Prognosis {
         "dificuldade": "9",
         "Idade":{
           "locked": [
-            "<40 anos"
+            {
+              "Idade":{
+                "selectList":"true",
+                "values":[
+                  "<40 anos"
+                ]
+              }
+            }
           ],
           "open": []
         },
         "Origem":{
           "locked": [],
           "open": [
-            "Pronto Socorro",
-            "Outra UTI",
-            "Nenhuma das anteriores",
+            {
+              "Origem":{
+                "selectList":"true",
+                "values":[
+                  "Pronto Socorro",
+                  "Outra UTI",
+                  "Nenhuma das anteriores",
+                ]
+              }
+            }
           ],
         },
         "Comorbidade":{
@@ -4032,6 +4151,7 @@ class Prognosis {
           "locked": [
           {
             "Idade":{
+              "selectList":"true",
               "values":[
                 "<40 anos"
               ]
@@ -4044,6 +4164,7 @@ class Prognosis {
           "locked": [
             {
               "Origem":{
+                "selectList":"true",
                 "values":[
                   "Nenhuma das anteriores"
                 ]
