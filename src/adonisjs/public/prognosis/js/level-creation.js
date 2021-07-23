@@ -10,27 +10,196 @@ class LevelCreationTool {
     this.start()
   }
 
+  buildSapsObj(sapsList, parentName, optName){
+    for (let x = 0; x < Object.keys(sapsList['pacient'][parentName]['values']).length; x++) {
+      if (Object.keys(sapsList['pacient'][parentName]['values'])[x] == optName) {
+        let parentObj = document.querySelector(`[data-group-title="${parentName}"]`)
+        let childValue = Object.keys(sapsList['pacient'][parentName]['values'])[x]
+        let parentNum = parentObj.id.split('-')[1]
+        let template = document.createElement('template')
+        template.innerHTML = LevelCreationTool.optionChild
+        .replace(/\[field\]/ig, childValue)
+        .replace(/\[parentValue\]/ig, parentName)
+        .replace(/\[parentId\]/ig, parentNum)
+        .replace(/\[id\]/ig, x)
+
+        let sibling
+        if(parentObj.querySelector(`#option-${parentNum}-value-${x+1}`))
+          sibling = parentObj.querySelector(`#option-${parentNum}-value-${x+1}`)
+        else if(parentObj.querySelector(`#option-${parentNum}-value-${x-1}`))
+          sibling = parentObj.querySelector(`#option-${parentNum}-value-${x-1}`).nextSibling
+        else
+          sibling = parentObj.firstElementChild
+        if(!document.querySelector(`#${template.content.firstElementChild.id}`))
+          parentObj.insertBefore(template.content.cloneNode(true), sibling)
+      }
+    }
+  }
+
+  returnSapsChildToParent (sapsObj, parent){
+    let idL
+    let idx = sapsObj.id.indexOf('-')
+    if(!parent)
+    parent = document.querySelector(`[data-group-title="${sapsObj.dataset.parentTitle}"]`)
+    while (idx != -1) {
+      idL = idx
+      idx = sapsObj.id.indexOf('-', idx + 1)
+    }
+
+    let sibling
+    if(parent.querySelector(`#${sapsObj.id.substring(0,idL+1)}${parseInt(sapsObj.id.split('-')[3])+1}`))
+      sibling = parent.querySelector(`#${sapsObj.id.substring(0,idL+1)}${parseInt(sapsObj.id.split('-')[3])+1}`)
+    else if(parent.querySelector(`#${sapsObj.id.substring(0,idL+1)}${parseInt(sapsObj.id.split('-')[3])-1}`))
+      sibling = parent.querySelector(`#${sapsObj.id.substring(0,idL+1)}${parseInt(sapsObj.id.split('-')[3])-1}`).nextSibling
+    else
+      sibling = parent.firstElementChild
+
+    parent.insertBefore(sapsObj, sibling)
+  }
+
+  returnOptionsToList (options){
+    for (let i = 0; i < options.length; i++) {
+      this.returnSapsChildToParent(options[i])
+    }
+  }
+
+  async deconstructObj(elemToRetrieve){
+    const sapsList = Prognosis.sapsScoreValues
+    console.log('============ starting deconstruction...')
+    console.log('============ elem type')
+    console.log(elemToRetrieve)
+    let createdObj = elemToRetrieve.target.parentElement
+    console.log(createdObj)
+    let mainWrapper = createdObj.querySelector(`[id^="options-"][id$="-wrapper"]`)
+    let dElem = mainWrapper.querySelectorAll(`[data-deconstructible="true"]`)
+    let uParent
+    for (let deconstrElem of dElem) {
+      for (let i = 0; i < Object.keys(sapsList['pacient']).length; i++) {
+        let parentKey = Object.keys(sapsList['pacient'])[i]
+        for (let x = 0; x < Object.keys(sapsList['pacient'][parentKey]['values']).length; x++) {
+          let childValue = Object.keys(sapsList['pacient'][parentKey]['values'])[x]
+          if (deconstrElem.value != 'Sim' && deconstrElem.value != 'Não') {
+            if (childValue == deconstrElem.value){
+              uParent = parentKey
+              break
+            }
+          }else if(dElem.length <= 2){
+            if (deconstrElem.type == 'radio') {
+              if (deconstrElem.name == Prognosis.i.removeAccent(parentKey))
+              uParent = parentKey
+            }else{
+              if (deconstrElem.id == Prognosis.i.removeAccent(parentKey))
+              uParent = parentKey
+            }
+          }
+        }
+      }
+    }
+    for (let deconstrElem of dElem) {
+      switch (deconstrElem.nodeName) {
+        case 'SELECT':
+        // console.log(deconstrElem)
+        const options = deconstrElem.querySelectorAll('option')
+        // console.log(options)
+          for (let elem of options) {
+            if(elem.value != null && elem.value != ''){
+              // console.log('============ dissecting...')
+              // console.log(elem.value)
+              for (let i = 0; i < Object.keys(sapsList['pacient']).length; i++) {
+                let parentKey = Object.keys(sapsList['pacient'])[i]
+                if(elem.value == parentKey){
+                  console.log(parentKey)
+                  this.buildSapsObj(sapsList, parentKey, 'Sim')
+
+                }
+                for (let x = 0; x < Object.keys(sapsList['pacient'][parentKey]['values']).length; x++) {
+                  let childValue = Object.keys(sapsList['pacient'][parentKey]['values'])[x]
+                  if (childValue == elem.value){
+                    this.buildSapsObj(sapsList, parentKey, childValue)
+                  }
+                }
+              }
+            }
+          }
+          if(createdObj.parentElement.id != 'creation-dump'
+          && createdObj.parentElement.childElementCount == 1)
+            this.addPadding(createdObj.parentElement,'pb-5',true)
+          createdObj.remove()
+          break;
+        case 'INPUT':
+          if(deconstrElem.parentElement.parentElement.id.includes('grouped-')){
+            for (let i = 0; i < Object.keys(sapsList['pacient']).length; i++) {
+              let parentKey = Object.keys(sapsList['pacient'])[i]
+              let objValue = deconstrElem.value
+              if(deconstrElem.name == Prognosis.i.removeAccent(parentKey)){
+                if(sapsList['pacient'][parentKey]['values'][objValue]){
+                  console.log('============ building bundle...')
+                  console.log('============ parentKey')
+                  console.log(parentKey)
+                  console.log('============ value')
+                  console.log(objValue)
+                  this.buildSapsObj(sapsList, parentKey, objValue)
+                }
+              }
+            }
+            if(deconstrElem == dElem[dElem.length-1]){
+              let dropContainer = deconstrElem.closest('.drag-option-built').parentElement
+              if(dropContainer.id != 'creation-dump'
+              && dropContainer.childElementCount == 1)
+                this.addPadding(dropContainer,'pb-5',true)
+              createdObj.remove()
+            }
+          }else if (deconstrElem.type == 'radio') {
+              let parentKey = uParent
+                for (let x = 0; x < Object.keys(sapsList['pacient'][parentKey]['values']).length; x++) {
+                  let childValue = Object.keys(sapsList['pacient'][parentKey]['values'])[x]
+                  if (childValue == deconstrElem.value){
+                    this.buildSapsObj(sapsList, parentKey, childValue)
+                  }
+                }
+
+            if(deconstrElem == dElem[dElem.length-1]){
+              let dropContainer = deconstrElem.closest('.drag-option-built').parentElement
+              if(dropContainer.id != 'creation-dump'
+              && dropContainer.childElementCount == 1)
+                this.addPadding(dropContainer,'pb-5',true)
+              createdObj.remove()
+            }
+          }
+          break;
+        default:
+          console.log('============ default switch node')
+          console.log(deconstrElem.nodeName)
+      }
+    }
+
+  }
+
   async start(){
 
     const navSelection = document.querySelector('#creation-selection-tab').querySelectorAll('.nav-link')
-    const fnCascadeListener = function(){
+    const fnCascadeListener = function(event){
       const cascadeCheck = document.querySelector(`#chck-cascade-option`)
       const creationWrapper = document.querySelector('#creation-container-wrapper')
       const childCreation = document.querySelector('#child-creation-container')
 
       if (cascadeCheck.checked) {
-        if (this.nodeName == 'A' && !this.classList.contains('cascade-nav')) {
+        if (event.target.nodeName == 'A' && !event.target.classList.contains('cascade-nav')) {
           if (childCreation) {
+            if(childCreation.childElementCount > 0)
+              LevelCreationTool.i.returnOptionsToList(childCreation.children)
             childCreation.remove()
           }
         }
-        if(!childCreation){
+        if(!childCreation && event.target.classList.contains('cascade-nav') || event.target.id == 'chck-cascade-option'){
           let template = document.createElement('template')
           template.innerHTML = LevelCreationTool.cascadeDiv
           creationWrapper.appendChild(template.content.cloneNode(true))
         }
       }else{
         if (childCreation) {
+          if(childCreation.childElementCount > 0)
+            LevelCreationTool.i.returnOptionsToList(childCreation.children)
           childCreation.remove()
         }
       }
@@ -146,25 +315,13 @@ class LevelCreationTool {
       nav.addEventListener('click', fnBundleListener)
     }
 
-    const optionList =
-    `
-    <div class="option-list mb-1 bg-warning border rounded" draggable="true"
-    ondragstart="LevelCreationTool.i.dragStartHandler(event)" id="option-[id]">[field]</div>
-    `
-    const optionChild =
-    `
-    <div class="option-list mb-1 bg-info border rounded" draggable="true"
-    ondragstart="LevelCreationTool.i.dragStartHandler(event)"
-    id="option-[parentId]-value-[id]" data-parent-title="[parentValue]">[field]</div>
-    `
-
     const options = Prognosis.sapsScoreValues
     // console.log(Object.keys(options['pacient']))
     for (let i = 0; i < Object.keys(options['pacient']).length; i++) {
       let parentKey = Object.keys(options['pacient'])[i]
       let template = document.createElement('template')
       const optionListWrapper = document.querySelector('#option-list-wrapper')
-      template.innerHTML = optionList
+      template.innerHTML = LevelCreationTool.optionList
       .replace(/\[field\]/ig, parentKey)
       .replace(/\[id\]/ig, i)
       optionListWrapper.appendChild(template.content.cloneNode(true))
@@ -172,7 +329,7 @@ class LevelCreationTool {
         let parentObj = document.querySelector(`#option-${i}`)
         let childValue = Object.keys(options['pacient'][parentKey]['values'])[x]
         template = document.createElement('template')
-        template.innerHTML = optionChild
+        template.innerHTML = LevelCreationTool.optionChild
         .replace(/\[field\]/ig, childValue)
         .replace(/\[parentValue\]/ig, parentKey)
         .replace(/\[parentId\]/ig, i)
@@ -295,8 +452,7 @@ class LevelCreationTool {
   }
 
   async createPrognRadioObj (htmlWrapper, objName, optionsList, properties){
-    console.log('============ properties')
-    console.log(properties)
+
     let optionValues = []
     let childOptionValues = []
     htmlWrapper['prognObj'] = {}
@@ -378,7 +534,7 @@ class LevelCreationTool {
     ev.dataTransfer.effectAllowed = "move";
   }
 
-  async drop_handler(ev) {
+  async dropHandler(ev) {
     console.log("drop: dropEffect = " + ev.dataTransfer.dropEffect + " ; effectAllowed = " + ev.dataTransfer.effectAllowed);
     ev.preventDefault();
 
@@ -391,8 +547,25 @@ class LevelCreationTool {
     if(currentTarget.classList.contains('drop-container')){
       if(objData.parentElement.childElementCount == 1 && objData.parentElement.id!= 'creation-dump')
         this.addPadding(objData.parentElement, 'pb-5',true)
-      currentTarget.appendChild(objData)
-      currentTarget.classList.remove('pb-5')
+      if (objData.classList.contains('option-list') && ev.currentTarget.id == 'creation-container') {
+        for (let i = 0; i < objData.children.length;) {
+          ev.currentTarget.appendChild(objData.children[0])
+          document.querySelector('#input-title-option').value = objData.dataset.groupTitle
+        }
+      }else if (objData.classList.contains('option-list')
+      && ev.currentTarget.classList.contains('secondary-creation-container')) {
+        for (let i = 0; i < objData.children.length;) {
+          ev.currentTarget.appendChild(objData.children[0])
+        }
+
+      }else{
+        currentTarget.appendChild(objData)
+        currentTarget.classList.remove('pb-5')
+      }
+    }else if (ev.currentTarget.id == 'option-list-wrapper' && !objData.classList.contains('option-list')) {
+      if(objData.parentElement.childElementCount == 1 && objData.parentElement.id!= 'creation-dump')
+        this.addPadding(objData.parentElement, 'pb-5',true)
+      this.returnSapsChildToParent (objData)
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////
@@ -416,7 +589,7 @@ class LevelCreationTool {
     }*/
   }
 
-  async dragover_handler(ev) {
+  async dragOverHandler(ev) {
     console.log("dragOver: dropEffect = " + ev.dataTransfer.dropEffect + " ; effectAllowed = " + ev.dataTransfer.effectAllowed);
     ev.preventDefault();
     // Set the dropEffect to move
@@ -456,7 +629,10 @@ class LevelCreationTool {
 
     template.innerHTML = Prognosis.playerSelectList
     .replace(/\[id\]/ig, (keyId))
+
     obj.appendChild(template.content.cloneNode(true))
+    let radioTemp = document.querySelector(`#${template.content.firstElementChild.id}`)
+    radioTemp.dataset.deconstructible = 'true'
 
     obj.prependTxt = obj.parentElement.querySelector('.input-group-prepend')
     obj.prependTxt.copy = document.createElement('label')
@@ -517,6 +693,9 @@ class LevelCreationTool {
   async radioCreator(wrapper, keyId, keyText, optionsList, properties) {
     let template = document.createElement('template')
     let obj = document.querySelector('#options-'+ keyId+'-wrapper')
+    console.log('============ key id ')
+    console.log(keyId)
+    console.log(obj)
     optionsList['parentValues'][0].parentElement.classList.add('pb-5')
     obj.prependTxt = obj.parentElement.querySelector('.input-group-prepend')
     obj.prependTxt.copy = document.createElement('label')
@@ -533,6 +712,9 @@ class LevelCreationTool {
       .replace(/\[valueText\]/ig, 'Não')
       obj.appendChild(template.content.cloneNode(true))
 
+      let radioTemp = document.querySelector(`#${template.content.firstElementChild.querySelector('input').id}`)
+      radioTemp.dataset.deconstructible = 'true'
+
       template = document.createElement('template')
       template.innerHTML = Prognosis.playerOptionRadio
       .replace(/\[id\]/ig, keyId+'-sim')
@@ -540,6 +722,9 @@ class LevelCreationTool {
       .replace(/\[value\]/ig, 'Sim')
       .replace(/\[valueText\]/ig, 'Sim')
       obj.appendChild(template.content.cloneNode(true))
+
+      radioTemp = document.querySelector(`#${template.content.firstElementChild.querySelector('input').id}`)
+      radioTemp.dataset.deconstructible = 'true'
     }
     ///////////////////////////////////////////////////////////////////////////////
     let cascadeDiv = document.createElement('div')
@@ -553,25 +738,28 @@ class LevelCreationTool {
     ///////////////////////////////////////////////////////////////////////////////
     for (let z = 0; z < optionsList['parentValues'].length; z++) {
       let value = optionsList['parentValues'][z].innerText
-      template = document.createElement('template')
-      if(properties['uniqueValues'] == 'true'){
-        template.innerHTML = Prognosis.playerOptionRadio
-        .replace(/\[name\]/ig, keyId)
-        .replace(/\[id\]/ig, (keyId+'-'+Prognosis.i.removeAccent(value)))
-        .replace(/\[value\]/ig, (value))
-        .replace(/\[valueText\]/ig, value)
-      }else if(properties['multipleValues'] == 'true'){
-        template.innerHTML = Prognosis.playerOptionCheckbox
-        .replace(/\[id\]/ig, keyId)
-        .replace(/\[value\]/ig, value)
-        .replace(/\[valueText\]/ig, value)
+      if((value != 'Sim' && value != 'Não')|| properties['radioYN'] != 'true'){
+        template = document.createElement('template')
+        if(properties['uniqueValues'] == 'true'){
+          template.innerHTML = Prognosis.playerOptionRadio
+          .replace(/\[name\]/ig, keyId)
+          .replace(/\[id\]/ig, (keyId+'-'+Prognosis.i.removeAccent(value)))
+          .replace(/\[value\]/ig, (value))
+          .replace(/\[valueText\]/ig, value)
+        }else if(properties['multipleValues'] == 'true'){
+          template.innerHTML = Prognosis.playerOptionCheckbox
+          .replace(/\[id\]/ig, keyId)
+          .replace(/\[value\]/ig, value)
+          .replace(/\[valueText\]/ig, value)
+        }
+        if(properties['cascade'] == 'true' || properties['radioYN'] == 'true'){
+          document.querySelector(`#${cascadeDiv.id}`).appendChild(template.content.cloneNode(true))
+        }else{
+          obj.appendChild(template.content.cloneNode(true))
+        }
+        let radioTemp = document.querySelector(`#${template.content.firstElementChild.querySelector('input').id}`)
+        radioTemp.dataset.deconstructible = 'true'
       }
-      if(properties['cascade'] == 'true' || properties['radioYN'] == 'true'){
-        document.querySelector(`#${cascadeDiv.id}`).appendChild(template.content.cloneNode(true))
-      }else{
-        obj.appendChild(template.content.cloneNode(true))
-      }
-
       optionsList['parentValues'][z].remove()
 
     }
@@ -593,6 +781,7 @@ class LevelCreationTool {
           .replace(/\[id\]/ig, childId)
           .replace(/\[name\]/ig, childId+'-value')
           .replace(/\[valueText\]/ig, childText)
+
           document.querySelector(`#${cascadeDivChild.id}`).appendChild(template.content.cloneNode(true))
 
         }else if(properties['multipleValues'] == 'true'){
@@ -601,8 +790,12 @@ class LevelCreationTool {
           .replace(/\[id\]/ig, childId)
           .replace(/\[value\]/ig, childText)
           .replace(/\[valueText\]/ig, childText)
+
           document.querySelector(`#${cascadeDivChild.id}`).appendChild(template.content.cloneNode(true))
         }
+        let radioTemp = document.querySelector(`#${template.content.firstElementChild.querySelector('input').id}`)
+        radioTemp.dataset.deconstructible = 'true'
+
         optionsList['childValues'][z].remove()
       }
     }
@@ -628,9 +821,6 @@ class LevelCreationTool {
           elem.checked = document.querySelector(`#${parentActivator.substring(8,(parentActivator.length - 8))}`).checked
         }
       }
-      // console.log('============')
-      // console.log(`#${keyId}-${i}`)
-      // console.log(optionsList)
       document.querySelector(`#${keyId}-${i}`).addEventListener('change', fnGroupActivator)
       ///////////////////////////////////////////////////////////////////////////////
       let currentBundle = optionsList[Object.keys(optionsList)[i-1]]
@@ -648,19 +838,23 @@ class LevelCreationTool {
           template.innerHTML = Prognosis.playerOptionRadio
           .replace(/\[valueText\]/ig, valueText+`: ${value}`)
           .replace(/\[value\]/ig, value)
-          .replace(/\[id\]/ig, valueId)
+          .replace(/\[id\]/ig, `${valueId}-${Prognosis.i.removeAccent(value)}`)
           .replace(/\[name\]/ig, valueId)
         }
         else {
           template.innerHTML = Prognosis.playerOptionRadio
           .replace(/\[valueText\]/ig, value)
           .replace(/\[value\]/ig, value)
-          .replace(/\[id\]/ig, valueId)
+          .replace(/\[id\]/ig, `${valueId}-${Prognosis.i.removeAccent(value)}`)
           .replace(/\[name\]/ig, valueId)
         }
         let optionsWrapper = obj.querySelector(`#grouped-${keyId}-${i}-wrapper`)
         optionsWrapper.appendChild(template.content.cloneNode(true))
-        document.querySelector('#'+valueId).removeAttribute('required')
+        let radioId = template.content.firstElementChild.querySelector('input').id
+        let radioTemp = document.querySelector(`#${radioId}`)
+        radioTemp.dataset.deconstructible = 'true'
+
+        document.querySelector(`#${radioId}`).removeAttribute('required')
         currentBundle[k].remove()
       }
     }
@@ -791,17 +985,29 @@ class LevelCreationTool {
 (function () {
   LevelCreationTool.i = new LevelCreationTool()
 
+  LevelCreationTool.optionList =
+  `
+  <div class="option-list mb-1 bg-warning border rounded" draggable="true"
+  ondragstart="LevelCreationTool.i.dragStartHandler(event)" data-group-title="[field]" id="option-[id]">[field]</div>
+  `
+  LevelCreationTool.optionChild =
+  `
+  <div class="option-child mb-1 bg-info border rounded" draggable="true"
+  ondragstart="LevelCreationTool.i.dragStartHandler(event)"
+  id="option-[parentId]-value-[id]" data-parent-title="[parentValue]">[field]</div>
+  `
+
   LevelCreationTool.deleteOptBtn =`
-  <button type="button" name="button" class="btn btn-danger btn-delete-option">X</button>`
+  <button type="button" name="button" class="btn btn-danger btn-delete-option" onclick="LevelCreationTool.i.deconstructObj(event)">X</button>`
   LevelCreationTool.cascadeDiv = `
-  <div class="col h-100 border rounded pb-5 pt-1 drop-container" style="background-color:#cebfbf;"
+  <div class="col h-100 border rounded pb-5 pt-1 drop-container secondary-creation-container" style="background-color:#cebfbf;"
   id="child-creation-container"
-  ondrop="LevelCreationTool.i.drop_handler(event)" ondragover="LevelCreationTool.i.dragover_handler(event)">
+  ondrop="LevelCreationTool.i.dropHandler(event)" ondragover="LevelCreationTool.i.dragOverHandler(event)">
   </div>`
   LevelCreationTool.bundleDiv = `
-  <div class="col h-100 border rounded pb-5 pt-1 drop-container" style="background-color:#cebfbf;"
+  <div class="col h-100 border rounded pb-5 pt-1 drop-container secondary-creation-container" style="background-color:#cebfbf;"
   id="creation-container-bundle-[id]"
-  ondrop="LevelCreationTool.i.drop_handler(event)" ondragover="LevelCreationTool.i.dragover_handler(event)">
+  ondrop="LevelCreationTool.i.dropHandler(event)" ondragover="LevelCreationTool.i.dragOverHandler(event)">
   </div>`
 
 })()
