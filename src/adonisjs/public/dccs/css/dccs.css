@@ -79,6 +79,14 @@
    cursor: pointer;
 }
 
+/* Progress Bar DCC
+ ******************/
+
+:root {
+   --dcc-progress-back: lightgray;
+   --dcc-progress-front: rgb(100, 100, 255);
+}
+
 /*
 .ck.ck-reset_all {
    position: sticky !important;

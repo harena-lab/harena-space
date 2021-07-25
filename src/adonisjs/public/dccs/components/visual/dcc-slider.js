@@ -9,14 +9,8 @@ class DCCSlider extends DCCInput {
   }
 
   connectedCallback () {
-    if (this.hasAttribute('min'))
-      this._min = this.min
-    else
-      this._min = DCCSlider.defaultValueMin
-    if (this.hasAttribute('max'))
-      this._max = this.max
-    else
-      this._max = DCCSlider.defaultValueMax
+    this._min = (this.hasAttribute('min')) ? this.min : DCCSlider.defaultValueMin
+    this._max = (this.hasAttribute('max')) ? this.max : DCCSlider.defaultValueMax
 
     this._value = (this.hasAttribute('value')) ? parseInt(this.value) :
         Math.round((parseInt('' + this._min) + parseInt('' + this._max)) / 2)
@@ -42,6 +36,7 @@ class DCCSlider extends DCCInput {
   }
 
   set min (newValue) {
+    this._min = newValue
     this.setAttribute('min', newValue)
   }
 
@@ -50,6 +45,7 @@ class DCCSlider extends DCCInput {
   }
 
   set max (newValue) {
+    this._max = newValue
     this.setAttribute('max', newValue)
   }
 

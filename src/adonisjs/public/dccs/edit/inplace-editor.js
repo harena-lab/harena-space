@@ -201,6 +201,9 @@ class EditDCC {
     const ep = await this._extendedPanel(
       EditDCC.imageBrowseTemplate, 'image')
     let path = null
+    console.log('===== files selected')
+    for (let f of ep.content.files)
+      console.log(f)
     if (ep.clicked === 'confirm' && ep.content.files[0]) {
       const asset = await
       MessageBus.ext.request('data/asset//new',
@@ -260,6 +263,6 @@ class EditDCCProperties extends EditDCC {
           EditDCC.buttonCancelSVG + '</div>' +
 `   </div>
 </div>
-<input type="file" id="ext-content" name="ext-content"
+<input type="file" id="ext-content" name="ext-content" multiple="multiple"
        accept="image/png, image/jpeg, image/svg">`
 })()
