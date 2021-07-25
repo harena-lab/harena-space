@@ -87,10 +87,10 @@ class LevelCreationTool {
             if (deconstrElem.type == 'radio') {
               if (deconstrElem.name == Prognosis.i.removeAccent(parentKey))
               uParent = parentKey
-            }else{
-              if (deconstrElem.id == Prognosis.i.removeAccent(parentKey))
-              uParent = parentKey
             }
+          }else{
+            if (deconstrElem.id == Prognosis.i.removeAccent(parentKey))
+            uParent = parentKey
           }
         }
       }
@@ -154,6 +154,8 @@ class LevelCreationTool {
                 for (let x = 0; x < Object.keys(sapsList['pacient'][parentKey]['values']).length; x++) {
                   let childValue = Object.keys(sapsList['pacient'][parentKey]['values'])[x]
                   if (childValue == deconstrElem.value){
+                    // console.log(childValue)
+                    // console.log(deconstrElem.value)
                     this.buildSapsObj(sapsList, parentKey, childValue)
                   }
                 }
@@ -163,6 +165,25 @@ class LevelCreationTool {
               if(dropContainer.id != 'creation-dump'
               && dropContainer.childElementCount == 1)
                 this.addPadding(dropContainer,'pb-5',true)
+              createdObj.remove()
+            }
+          }else if (deconstrElem.type == 'checkbox') {
+            let parentKey = uParent
+            console.log(deconstrElem)
+            for (let x = 0; x < Object.keys(sapsList['pacient'][parentKey]['values']).length; x++) {
+
+              let childValue = Object.keys(sapsList['pacient'][parentKey]['values'])[x]
+              if (childValue == deconstrElem.value){
+                console.log(childValue)
+                console.log(deconstrElem.value)
+                this.buildSapsObj(sapsList, parentKey, childValue)
+              }
+            }
+            if(deconstrElem == dElem[dElem.length-1]){
+              let dropContainer = deconstrElem.closest('.drag-option-built').parentElement
+              if(dropContainer.id != 'creation-dump'
+              && dropContainer.childElementCount == 1)
+              this.addPadding(dropContainer,'pb-5',true)
               createdObj.remove()
             }
           }
@@ -748,7 +769,7 @@ class LevelCreationTool {
           .replace(/\[valueText\]/ig, value)
         }else if(properties['multipleValues'] == 'true'){
           template.innerHTML = Prognosis.playerOptionCheckbox
-          .replace(/\[id\]/ig, keyId)
+          .replace(/\[id\]/ig, (keyId+'-'+Prognosis.i.removeAccent(value)))
           .replace(/\[value\]/ig, value)
           .replace(/\[valueText\]/ig, value)
         }
@@ -757,6 +778,7 @@ class LevelCreationTool {
         }else{
           obj.appendChild(template.content.cloneNode(true))
         }
+
         let radioTemp = document.querySelector(`#${template.content.firstElementChild.querySelector('input').id}`)
         radioTemp.dataset.deconstructible = 'true'
       }
@@ -887,7 +909,7 @@ class LevelCreationTool {
 
   async createSelectList (){
     let selectTitle = document.querySelector('#input-title-option').value
-    if(document.querySelector('#'+Prognosis.i.removeAccent(selectTitle))) {
+    if(document.querySelector(`#option-group-${Prognosis.i.removeAccent(selectTitle)}`)) {
       let newTitle = prompt("Nome da opção duplicado, digite outro valor")
 
       if (Prognosis.i.removeAccent(newTitle) != Prognosis.i.removeAccent(selectTitle)) {
@@ -905,15 +927,15 @@ class LevelCreationTool {
 
     let selectTitle = document.querySelector('#input-title-option').value
 
-    if(document.querySelector('#'+Prognosis.i.removeAccent(selectTitle))) {
+    if(document.querySelector(`#option-group-${Prognosis.i.removeAccent(selectTitle)}`)) {
       let newTitle = prompt("Nome da opção duplicado, digite outro valor")
 
       if (Prognosis.i.removeAccent(newTitle) != Prognosis.i.removeAccent(selectTitle)) {
         selectTitle = newTitle
       }
     }
-    let selectId = Prognosis.i.removeAccent(selectTitle)
 
+    let selectId = Prognosis.i.removeAccent(selectTitle)
     let optionsList = {}
     optionsList['parentValues'] = document.querySelectorAll('#creation-container > [id ^= "option-"] ')
     optionsList['childValues'] = document.querySelectorAll('#child-creation-container > [id ^= "option-"] ')
@@ -935,7 +957,7 @@ class LevelCreationTool {
 
   async createBundle (){
     let selectTitle = document.querySelector('#input-title-option').value
-    if(document.querySelector('#'+Prognosis.i.removeAccent(selectTitle))) {
+    if(document.querySelector(`#option-group-${Prognosis.i.removeAccent(selectTitle)}`)) {
       let newTitle = prompt("Nome da opção duplicado, digite outro valor")
 
       if (Prognosis.i.removeAccent(newTitle) != Prognosis.i.removeAccent(selectTitle)) {
@@ -962,7 +984,7 @@ class LevelCreationTool {
 
   async createCheckList (){
     let selectTitle = document.querySelector('#input-title-option').value
-    if(document.querySelector('#'+Prognosis.i.removeAccent(selectTitle))) {
+    if(document.querySelector(`#option-group-${Prognosis.i.removeAccent(selectTitle)}`)) {
       let newTitle = prompt("Nome da opção duplicado, digite outro valor")
 
       if (Prognosis.i.removeAccent(newTitle) != Prognosis.i.removeAccent(selectTitle)) {
