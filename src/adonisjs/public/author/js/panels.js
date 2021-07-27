@@ -103,6 +103,11 @@ class Panels {
     document.querySelector('#button-expand-prop').style.display = 'initial'
     document.querySelector('#button-expand-com').style.display = 'initial'
     document.querySelector('#button-expand-art').style.display = 'initial'
+
+    document.querySelector('#properties-block').style.display = 'none'
+    document.querySelector('#comments-block').style.display = 'none'
+    document.querySelector('#artifacts-block').style.display = 'none'
+
     this._elementsBlock.style.display = 'none'
     this._elementsMain.style.minWidth = ''
     this._knotMain.style.width = '100%'
@@ -132,13 +137,10 @@ class Panels {
   setupPropertiesExpand () {
     this.setupPropertiesPanelExpand()
     document.querySelector('#properties-block').style.display = 'initial'
-    document.querySelector('#comments-block').style.display = 'none'
-    // this._commentsVisible = false
   }
 
   setupCommentsExpand () {
     this.setupPropertiesPanelExpand()
-    // document.querySelector('#properties-block').style.display = 'none'
     this._commentsVisible = true
     document.querySelector('#comments-block').style.display = 'block'
     MessageBus.int.publish('control/comments/editor')
@@ -146,6 +148,7 @@ class Panels {
 
   setupArtifactsExpand () {
     this.setupPropertiesPanelExpand()
+    document.querySelector('#artifacts-block').style.display = 'initial'
   }
 
   setupProperties () {

@@ -53,7 +53,8 @@ class Translator {
     const compiledCase = {
       id: caseId,
       knots: {},
-      layers: {}
+      layers: {},
+      slayers: {}
     }
 
     const layerBlocks = this._indexLayers(markdown, compiledCase)
@@ -88,27 +89,46 @@ class Translator {
   _indexLayers (markdown, compiledCase) {
     const layerBlocks = markdown.split(Translator.marksLayerTitle)
 
+    let isStatic = false
     for (let lb = 1; lb < layerBlocks.length; lb += 2) {
       const layer = {
         _source: layerBlocks[lb + 1]
       }
       this._compileUnityMarkdown(layer)
       this._compileMerge(layer)
-      compiledCase.layers[layerBlocks[lb].trim()] = layer
+      const layerName = layerBlocks[lb].trim()
+      if (layerName.toLowerCase() == 'template')
+        isStatic = true
+      if (isStatic)
+        compiledCase.slayers[layerName] = layer
+      else
+        compiledCase.layers[layerName] = layer
     }
 
     return layerBlocks
   }
 
   _extractCaseMetadata (compiledCase) {
-    if (compiledCase.layers.Data) {
-      const content = compiledCase.layers.Data.content
-      for (const c in content) {
-        if (content[c].type == 'field') {
-          if (content[c].field == 'namespaces') { Context.instance.addNamespaceSet(content[c].value) } else if (Translator.globalFields.includes(content[c].field)) { compiledCase[content[c].field] = content[c].value }
+    let layers = compiledCase.layers
+    let r = 1
+    while (r < 3) {
+      if (layers.Data) {
+        let content = layers.Data.content
+        for (const c in content) {
+          if (content[c].type == 'field') {
+            if (content[c].field == 'namespaces')
+              Context.instance.addNamespaceSet(content[c].value)
+            else if (Translator.globalFields.includes(content[c].field))
+              compiledCase[content[c].field] = content[c].value
+          }
         }
       }
+      r++
+      layers = compiledCase.slayers
     }
+    if (compiledCase.layers.Flow || compiledCase.slayers.Flow)
+      compiledCase.flow = (compiledCase.layers.Flow) ?
+        compiledCase.layers.Flow.content : compiledCase.slayers.Flow.content
   }
 
   /*
@@ -1188,6 +1208,10 @@ class Translator {
         md += compiledCase.knots[kn]._source
       } else {
         md += compiledCase.knots[kn]._sourceHead + '\n'
+        const contentMd =
+          this.contentToMarkdown(compiledCase.knots[kn].content)
+        md += contentMd
+        /*
         let newContent = 0
         for (const ct in compiledCase.knots[kn].content) {
           const content = compiledCase.knots[kn].content[ct]
@@ -1204,24 +1228,45 @@ class Translator {
           }
         }
         if (newContent == 0)
+        */
+        if (contentMd.length > 0)
           md += '\n'
       }
     }
 
     // <TODO> provisory
     if (compiledCase.layers) {
-      const dynamicLayers = ['Template', 'Comments']
+      for (const l in compiledCase.layers)
+        md += Translator.markdownTemplates.layer.replace('[title]', l) +
+              compiledCase.layers[l]._source
 
-      const includeAllLayers =
-        includeStatic || !Object.keys(compiledCase.layers).includes('Template')
-
-      for (const l in compiledCase.layers) {
-        if (includeAllLayers || dynamicLayers.includes(l))
+      if (includeStatic || !compiledCase.slayers.Template)
+        for (const l in compiledCase.slayers)
           md += Translator.markdownTemplates.layer.replace('[title]', l) +
-                   compiledCase.layers[l]._source
-      }
+                compiledCase.slayers[l]._source
+      else if (compiledCase.slayers.Template)
+        md += Translator.markdownTemplates.layer.replace('[title]', 'Template') +
+              compiledCase.slayers.Template._source
     }
 
+    return md
+  }
+
+  contentToMarkdown (unityContent) {
+    let md = ''
+    for (const ct in unityContent) {
+      const content = unityContent[ct]
+
+      if (!content.inherited) {
+        // linefeed of the merged block (if block), otherwise linefeed of the content
+        md += content._source +
+                    (((content.mergeLine === undefined &&
+                       Translator.isLine.includes(content.type)) ||
+                      (content.mergeLine !== undefined &&
+                       content.mergeLine))
+                      ? '\n' : '')
+      }
+    }
     return md
   }
 

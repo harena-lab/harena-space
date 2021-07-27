@@ -211,7 +211,7 @@ class EditDCC {
           file: ep.content.files[0],
           caseid: Basic.service.currentCaseId
         })
-      path = asset.message
+      path = asset.message.filename
     }
     this._removeExtendedPanel()
     return path

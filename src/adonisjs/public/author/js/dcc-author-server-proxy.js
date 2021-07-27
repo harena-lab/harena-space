@@ -388,8 +388,11 @@ class DCCAuthorServer {
       data: data,
       withCredentials: true,
       onUploadProgress: function(progressEvent) {
-        let percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
-        console.log('upload: ' + percentCompleted + '%')
+        let percentCompleted =
+          Math.round((progressEvent.loaded * 100) / progressEvent.total) + '%'
+        if (message.progress)
+          MessageBus.ext.publish(message.progress, percentCompleted)
+        console.log('upload: ' + percentCompleted)
       }
     }
     await axios(config)
@@ -397,7 +400,7 @@ class DCCAuthorServer {
         console.log('=== response image upload')
         console.log(response)
         MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-          response.data.filename)
+          response.data)
       })
       .catch(function (error) {
         console.log('=== delete case error')

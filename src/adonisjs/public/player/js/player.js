@@ -304,8 +304,8 @@ class PlayerManager {
   }
 
   _caseFlow () {
-    if (this._compiledCase.layers && this._compiledCase.layers.Flow) {
-      const content = this._compiledCase.layers.Flow.content
+    if (this._compiledCase.flow) {
+      const content = this._compiledCase.flow
       let flow = null
       let c = 0
       while (c < content.length && flow == null) {

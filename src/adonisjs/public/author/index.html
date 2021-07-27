@@ -60,6 +60,7 @@
     <script src="/dccs/components/visual/dcc-input-choice.js"></script>
     <script src="/dccs/components/visual/dcc-input-table.js"></script>
     <script src="/dccs/components/visual/dcc-slider.js"></script>
+    <script src="/dccs/components/visual/dcc-progress.js"></script>
     <script src="/dccs/components/visual/dcc-report.js"></script>
     <script src="/dccs/components/visual/dcc-graph.js"></script>
 
@@ -418,6 +419,9 @@
                     <div id="comments-display" class="d-flex flex-column sty-knot-panel p-1" style="overflow-y:auto !important; overflow-x:hidden !important;"></div>
                  </div>
                  <div id="artifacts-block" class="sty-properties-block std-border" style="display:none">
+                    <div id="progress-artifacts"></div>
+                    <input type="file" id="artifacts-select" name="artifacts-select" multiple="multiple"
+                           accept="image/png, image/jpeg, image/svg, audio/mpeg, video/mp4, video/webm">
                  </div>
               </div>
             </div>

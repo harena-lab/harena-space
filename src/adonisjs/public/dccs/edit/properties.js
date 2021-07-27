@@ -377,7 +377,7 @@ class Properties {
               file: field.files[0],
               caseid: Basic.service.currentCaseId
             })
-          objProperty = asset.message
+          objProperty = asset.message.filename
         }
         break
     }
