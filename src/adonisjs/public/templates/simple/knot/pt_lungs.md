@@ -4,59 +4,87 @@
 
 Video - Deslizamento pleural D
 
-<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
+{{PD-DP
+<video></video>
+}}
 
 Video - Deslizamento pleural E
 
-<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
+{{PE-DP
+<video></video>
+}}
 
 Video - Anterosuperior D
 
-<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
+{{PD-AS
+<video></video>
+}}
 
 Video - Anteroinferior D
 
-<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
+{{PD-AI
+<video></video>
+}}
 
 Video - Laterosuperior D
 
-<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
+{{PD-LS
+<video></video>
+}}
 
 Video - Lateroinferior D
 
-<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
+{{PD-LI
+<video></video>
+}}
 
 Video - Anterosuperior E
 
-<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
+{{PE-AS
+<video></video>
+}}
 
 Video - Anteroinferior E
 
-<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
+{{PE-AI
+<video></video>
+}}
 
 Video - Laterosuperior E
 
-<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
+{{PE-LS
+<video></video>
+}}
 
 Video - Lateroinferior E
 
-<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
+{{PE-LI
+<video></video>
+}}
 
 Video - Posterosuperior D
 
-<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
+{{PD-PS
+<video></video>
+}}
 
 Video - Posteroinferior D
 
-<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
+{{PD-PI
+<video></video>
+}}
 
 Video - Posterosuperior E
 
-<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
+{{PE-PS
+<video></video>
+}}
 
 Video - Posteroinferior E
 
-<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
+{{PE-PI
+<video></video>
+}}
 
 {{findings
 Describe here your findings concerning the following videos.

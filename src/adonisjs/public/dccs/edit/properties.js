@@ -440,17 +440,30 @@ class Properties {
         visual: 'inline'
       }
     }},
-    media: {default: {
-      subtype: {
-        type: 'shortStr',
-        label: 'Type'
+    media: {
+      default: {
+        subtype: {
+          type: 'shortStr',
+          label: 'Type'
+        },
+        path: {
+          type: 'media',
+          label: 'Media',
+          visual: 'inline'
+        }
       },
-      path: {
-        type: 'media',
-        label: 'Media',
-        visual: 'inline'
+      expand: {
+        subtype: {
+          type: 'shortStr',
+          label: 'Type'
+        },
+        path: {
+          type: 'media',
+          label: 'Media',
+          visual: 'inline'
+        }
       }
-    }},
+    },
     option: {default: {
       label: {
         type: 'shortStr',

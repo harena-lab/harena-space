@@ -4,15 +4,21 @@
 
 Video
 
-<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
+{{CV-VI
+<video></video>
+}}
 
-Image 1
+Inspiration Image
 
-![POCUS Image](template/pocus_image.png)
+{{CV-II
+![POCUS Image](template/image-stub.svg)
+}}
 
-Image 2
+Expiration Image
 
-![POCUS Image](template/pocus_image.png)
+{{CV-IE
+![POCUS Image](template/image-stub.svg)
+}}
 
 {{findings
 Describe here your findings concerning the following video and photos.

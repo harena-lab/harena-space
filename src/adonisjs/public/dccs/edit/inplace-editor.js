@@ -195,7 +195,6 @@ class EditDCC {
 
     this._extendedSub = {
       cancel: panelExtended.querySelector('#ext-cancel'),
-      // content: panelExtended.querySelector('#artifact-browse')
     }
     if (modality === 'image' || modality === 'media') {
       const artifacts = this._properties.artifacts

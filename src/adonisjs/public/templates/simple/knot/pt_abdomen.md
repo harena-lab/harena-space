@@ -4,19 +4,27 @@
 
 QSD
 
-<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
+{{AB-QSD
+<video></video>
+}}
 
 QSE
 
-<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
+{{AB-QSE
+<video></video>
+}}
 
 Pelve transversal
 
-<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
+{{AB-PT
+<video></video>
+}}
 
 Pelve longitudinal
 
-<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
+{{AB-PL
+<video></video>
+}}
 
 {{findings
 Describe here your findings concerning the following videos.

@@ -4,43 +4,63 @@
 
 Video - Rim D (varredura longitudinal)
 
-<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
+{{RD-VL
+<video></video>
+}}
 
 Video - Rim D (varredura transversal)
 
-<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
+{{RD-VT
+<video></video>
+}}
 
 Image - Medida longitudinal do rim D
 
-![POCUS Image](template/pocus_image.png)
+{{RD-ML
+![POCUS Image](template/image-stub.svg)
+}}
 
 Video - Rim E (varredura longitudinal)
 
-<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
+{{RE-VL
+<video></video>
+}}
 
 Video - Rim E (varredura transversal)
 
-<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
+{{RE-VT
+<video></video>
+}}
 
 Image - Medida longitudinal do rim E
 
-![POCUS Image](template/pocus_image.png)
+{{RE-ML
+![POCUS Image](template/image-stub.svg)
+}}
 
 Video - Bexiga (varredura longitudinal)
 
-<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
+{{BX-VL
+<video></video>
+}}
 
 Video - Bexiga (varredura transversal)
 
-<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
+{{BX-VT
+<video></video>
+}}
 
 Image - Medidas da bexiga (longitudinal)
 
-![POCUS Image](template/pocus_image.png)
+{{BX-ML
+![POCUS Image](template/image-stub.svg)
+}}
 
 Image - Medidas da bexiga (transveral)
 
-![POCUS Image](template/pocus_image.png)
+{{BX-MT
+![POCUS Image](template/image-stub.svg)
+}}
 
 {{findings
 Describe here your findings concerning the following video and photos.

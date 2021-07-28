@@ -4,27 +4,39 @@
 
 Image - Ao proximal
 
-![POCUS Image](template/pocus_image.png)
+{{AO-P
+![POCUS Image](template/image-stub.svg)
+}}
 
 Video - Ao distal
 
-<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
+{{AO-D
+<video></video>
+}}
 
 Image - Ao distal
 
-![POCUS Image](template/pocus_image.png)
+{{AO-D
+![POCUS Image](template/image-stub.svg)
+}}
 
 Image - Ilíacas
 
-![POCUS Image](template/pocus_image.png)
+{{AO-I
+![POCUS Image](template/image-stub.svg)
+}}
 
 Image - Ao medial
 
-![POCUS Image](template/pocus_image.png)
+{{AO-M
+![POCUS Image](template/image-stub.svg)
+}}
 
 Video - Varredura ao longitudinal
 
-<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
+{{AO-L
+<video></video>
+}}
 
 {{findings
 Describe here your findings concerning the following video and photos.

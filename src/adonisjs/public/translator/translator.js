@@ -516,7 +516,7 @@ class Translator {
       }
     }
 
-    // fourth cycle - aggregates texts, mentions, annotations, selects, and images
+    // fourth cycle - aggregates texts, mentions, annotations, selects, images, and media
     let tblock
     let tblockSeq
     for (let c = 0; c < compiled.length; c++) {
@@ -1306,6 +1306,8 @@ class Translator {
         break
       case 'image': element._source = this._imageObjToMd(element)
         break
+      case 'media': element._source = this._mediaObjToMd(element)
+        break
       case 'option': element._source = this._optionObjToMd(element)
         break
       case 'field': element._source = this._fieldObjToMd(element)
@@ -1580,9 +1582,9 @@ class Translator {
   _mediaMdToObj (matchArray) {
     const media = {
       type: 'media',
-      subtype: matchArray[1].trim(),
-      path: matchArray[2].trim()
+      subtype: matchArray[1].trim()
     }
+    if (matchArray[2] != null) { media.path = matchArray[2].trim() }
     return media
   }
 
@@ -1595,15 +1597,23 @@ class Translator {
       result = Translator.htmlTemplatesEditable.media
         .replace('[seq]', obj.seq)
         .replace('[author]', this._authorAttrSub(superseq))
-        .replace('[subtype]', obj.subtype)
-        .replace('[source]', obj.path)
+        .replace(/\[subtype\]/g, obj.subtype)
+        .replace('[source]', (obj.path)
+          ? ' source="' + obj.path + '"' : '')
     } else {
       let resize = ''
       result = Translator.htmlTemplates.media
-        .replace('[subtype]', obj.subtype)
-        .replace('[source]', obj.path)
+        .replace(/\[subtype\]/g, obj.subtype)
+        .replace('[source]', (obj.path)
+          ? '<source src="' + Basic.service.imageResolver(obj.path) + '">' : '')
     }
     return result
+  }
+
+  _mediaObjToMd (obj) {
+    return Translator.markdownTemplates.media
+      .replace(/\[subtype\]/g, obj.subtype)
+      .replace('[source]', obj.path)
   }
 
   /*
@@ -2451,7 +2461,7 @@ class Translator {
       inline: true
     },
     media: {
-      mark: /<(video|audio)(?:[^>]*)?><source src="([^"]+)"><\/(:?video|audio)>/im
+      mark: /<(video|audio)(?:[^>]*)?>(?:<source src="([^"]+)">)?<\/(:?video|audio)>/im
     },
     field: {
       mark: /^([ \t]*)(?:[\+\*])[ \t]+([\w.\/\?&#\-][\w.\/\?&#\- \t]*):[ \t]*([^&>\n\r\f'][^&>\n\r\f]*)?(?:'([^']*)')?(?:-(?:(?:&gt;)|>)[ \t]*([^\(\n\r\f]+))?$/im,
@@ -2541,8 +2551,8 @@ class Translator {
   Translator.subordinatorElement = ['entity']
   Translator.isLine = ['knot', 'field', 'item', 'option', 'divert-script', 'entity', 'input',
     'compute', 'context-open']
-  Translator.textBlockCandidate = ['select', 'annotation', 'text', 'mention', 'image',
-    'output', 'divert']
+  Translator.textBlockCandidate = ['select', 'annotation', 'text', 'mention',
+    'image', 'media', 'output', 'divert']
   Translator.scriptable = ['compute', 'divert-script']
 
   Translator.fieldSet = ['vocabularies', 'answers', 'states', 'labels']

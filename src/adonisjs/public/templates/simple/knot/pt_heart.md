@@ -4,27 +4,39 @@
 
 Video - Sub-xifoide / subscostal
 
-<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
+{{CO-SX
+<video></video>
+}}
 
 Video - Para-esternal longa
 
-<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
+{{CO-PL
+<video></video>
+}}
 
 Video - Para-esternal curta nível V. aortica
 
-<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
+{{CO-PV
+<video></video>
+}}
 
 Video - Para-esternal curta nível mitral
 
-<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
+{{CO-PM
+<video></video>
+}}
 
 Video - Para-esternal curta nível papilares
 
-<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
+{{CO-PP
+<video></video>
+}}
 
 Video - Apical de 4 câmaras
 
-<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
+{{CO-A4
+<video></video>
+}}
 
 {{findings
 Describe here your findings concerning the following videos.
