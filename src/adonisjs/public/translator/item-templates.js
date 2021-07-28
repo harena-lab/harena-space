@@ -28,6 +28,8 @@
 `,
     image:
 '<figure class="image[imgresized]"[resize]><img src="[path]"[alt]>[caption]</figure>',
+    media:
+'<[subtype] controls><source src="[source]"></video>',
     option:
 '<dcc-button id=\'dcc[seq]\'[author] topic=\'[target]\' label=\'[display]\'[divert][message][image][connect][show]></dcc-button>[compute]',
     divert:
@@ -84,7 +86,9 @@ Translator.htmlSubTemplates = {
 
 `,
     image:
-'<dcc-image id=\'dcc[seq]\'[author] image=\'[path]\' alternative=\'[alternative]\'[title]></dcc-image>'
+'<dcc-image id=\'dcc[seq]\'[author] image=\'[path]\' alternative=\'[alternative]\'[title]></dcc-image>',
+    media:
+'<dcc-media id="dcc[seq]" type="[subtype]" source="[source]"[author]></dcc-media>'
   }
 
   Translator.markdownTemplates = {

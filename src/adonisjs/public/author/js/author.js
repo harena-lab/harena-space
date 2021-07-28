@@ -101,9 +101,9 @@ class AuthorManager {
     Panels.start()
 
     Properties.s.attachPanelDetails(
-      document.querySelector('#properties-panel'),
-      document.querySelector('#properties-buttons'),
-      this
+      document.querySelector('#properties-panel')
+      // document.querySelector('#properties-buttons'),
+      // this
     )
 
     this._mainPanel = document.querySelector('#main-panel')
@@ -278,24 +278,6 @@ class AuthorManager {
 
     const caseObj = await MessageBus.ext.request('data/case/' + caseId + '/get')
 
-    /*
-    const caseObj = await MessageBus.ext.request(
-      'service/request/get', {caseId: caseId})
-
-    let source = caseObj.message.source
-    const template =
-      source.match(/^___ Template ___[\n]*\*[ \t]+template[ \t]*:[ \t]*(.+)$/im)
-    if (template != null && template[1] != null) {
-      console.log('=== template')
-      console.log(template)
-      const templateMd =
-        await MessageBus.ext.request(
-          'data/template/' + template[1].replace(/\//g, '.') +
-            '/get', {static: true})
-      source += templateMd.message
-    }
-    */
-
     this._currentCaseTitle = caseObj.message.title
     await this._compile(caseObj.message.source)
     await this._showCase()
@@ -308,8 +290,6 @@ class AuthorManager {
 
     this._knots = this._compiledCase.knots
 
-    // Basic.service.currentThemeFamily = this._compiledCase.theme
-
     Basic.service.composedThemeFamily(this._compiledCase.theme)
     if (this._compiledCase.title) { this._currentCaseTitle = this._compiledCase.title }
 
@@ -318,6 +298,9 @@ class AuthorManager {
   }
 
   async _showCase (selectKnot) {
+    this._showArtifacts()
+    Properties.s.artifacts = this._compiledCase.artifacts
+
     await this._navigator.mountTreeCase(this, this._compiledCase.knots)
 
     let sk
@@ -329,6 +312,17 @@ class AuthorManager {
     }
 
     MessageBus.ext.publish('control/knot/selected', sk)
+  }
+
+  _showArtifacts () {
+    if (this._compiledCase.artifacts) {
+      let artHTML = ''
+      for (let a in this._compiledCase.artifacts)
+        artHTML += '<div><a href="' + Basic.service.imageResolver(a) +
+                   '" target="_blank">' +
+                   this._compiledCase.artifacts[a] + '</a></div>'
+      document.querySelector('#case-artifacts').innerHTML = artHTML
+    }
   }
 
   /*
@@ -963,6 +957,9 @@ class AuthorManager {
       art.innerHTML =
         '<dcc-progress index><subscribe-dcc topic="' + prMsg + '" map="update">' +
         '</subscribe-dcc></dcc-progress>'
+      let ref = document.createElement('div')
+      progSpace.appendChild(ref)
+      ref.innerHTML = f.name
       const artifact = await
         MessageBus.ext.request('data/asset//new',
           {
@@ -970,13 +967,13 @@ class AuthorManager {
             caseid: Basic.service.currentCaseId,
             progress: prMsg
           })
-      let ref = document.createElement('div')
-      progSpace.appendChild(ref)
       ref.innerHTML = '<a href="' + artifact.message.url + '" target="_blank">' +
                       f.name + '</a>'
       this._insertArtifactReference(artifact.message.filename, f.name)
       console.log(f)
     }
+    progSpace.innerHTML = ''
+    this._showArtifacts()
     console.log('=== case with artifacts')
     console.log(this._compiledCase)
   }
@@ -999,17 +996,19 @@ class AuthorManager {
       artifacts = {
         _source: '',
         type: 'field',
-        name: 'artifacts',
+        field: 'artifacts',
         value: {}
       }
       artifacts.seq = (content.length == 0) ? 1 : content[content.length - 1].seq + 1
       content.push(artifacts)
+      this._compiledCase.artifacts = artifacts.value
+      Properties.s.artifacts = this._compiledCase.artifacts
     }
 
     artifacts.value[artifactId] = artifactName
     Translator.instance.updateElementMarkdown(artifacts)
     this._compiledCase.layers.Data._source =
-      Translator.instance.contentToMarkdown(content)
+      '\n' + Translator.instance.contentToMarkdown(content)
     console.log('=== updated artifact')
     console.log(artifacts)
   }

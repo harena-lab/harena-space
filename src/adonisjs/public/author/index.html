@@ -44,6 +44,7 @@
     <script src="/dccs/components/visual/dcc-markdown.js"></script>
     <script src="/dccs/components/visual/dcc-annotation.js"></script>
     <script src="/dccs/components/visual/dcc-image.js"></script>
+    <script src="/dccs/components/visual/dcc-media.js"></script>
     <script src="/dccs/components/visual/dcc-expression.js"></script>
     <script src="/dccs/base/dcc-block.js"></script>
     <script src="/dccs/components/visual/dcc-button.js"></script>
@@ -95,7 +96,7 @@
     <script src="/dccs/edit/inplace-editor.js"></script>
     <script src="/dccs/edit/inplace-plain-editor.js"></script>
     <script src="/dccs/edit/inplace-text-editor.js"></script>
-    <script src="/dccs/edit/inplace-image-editor.js"></script>
+    <script src="/dccs/edit/inplace-media-editor.js"></script>
 
     <script src="/author/js/dcc-author-server-proxy.js"></script>
     <script src="/author/js/panels.js"></script>
@@ -419,6 +420,7 @@
                     <div id="comments-display" class="d-flex flex-column sty-knot-panel p-1" style="overflow-y:auto !important; overflow-x:hidden !important;"></div>
                  </div>
                  <div id="artifacts-block" class="sty-properties-block std-border" style="display:none">
+                    <div id="case-artifacts"></div>
                     <div id="progress-artifacts"></div>
                     <input type="file" id="artifacts-select" name="artifacts-select" multiple="multiple"
                            accept="image/png, image/jpeg, image/svg, audio/mpeg, video/mp4, video/webm">

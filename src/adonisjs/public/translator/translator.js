@@ -996,7 +996,8 @@ class Translator {
     switch (mdType) {
       case 'knot' : obj = this._knotMdToObj(match); break
       case 'blockquote': obj = this._blockquoteMdToObj(match); break
-      case 'image' : obj = this._imageMdToObj(match); break
+      case 'image': obj = this._imageMdToObj(match); break
+      case 'media': obj = this._mediaMdToObj(match); break
       case 'option' : obj = this._optionMdToObj(match); break
       case 'item' : obj = this._itemMdToObj(match); break
       case 'field' : obj = this._fieldMdToObj(match); break
@@ -1168,6 +1169,7 @@ class Translator {
         case 'script': html = this._scriptObjToHTML(obj, superseq)
           break
         case 'image' : html = this._imageObjToHTML(obj, superseq); break
+        case 'media' : html = this._mediaObjToHTML(obj, superseq); break
         case 'option' : html = this._optionObjToHTML(obj); break
         case 'field' : html = this._fieldObjToHTML(obj); break
         case 'divert-script' :
@@ -1229,8 +1231,10 @@ class Translator {
         }
         if (newContent == 0)
         */
+        /*
         if (contentMd.length > 0)
           md += '\n'
+        */
       }
     }
 
@@ -1260,13 +1264,19 @@ class Translator {
       if (!content.inherited) {
         // linefeed of the merged block (if block), otherwise linefeed of the content
         md += content._source +
-                    (((content.mergeLine === undefined &&
-                       Translator.isLine.includes(content.type)) ||
-                      (content.mergeLine !== undefined &&
-                       content.mergeLine))
+                    ((((content.mergeLine === undefined &&
+                        Translator.isLine.includes(content.type)) ||
+                       (content.mergeLine !== undefined &&
+                        content.mergeLine)) &&
+                        (content._source.length < 1 ||
+                         content._source[content._source.length-1] != '\n'))
                       ? '\n' : '')
       }
     }
+    if (md.length < 1 || md[md.length-1] != '\n')
+      md += '\n\n'
+    else if (md.length < 2 || md[md.length-2] != '\n')
+      md += '\n'
     return md
   }
 
@@ -1562,6 +1572,38 @@ class Translator {
       .replace('{resize}', resize)
       .replace('{title}',
         (obj.title) ? ' "' + obj.title + '"' : '')
+  }
+
+  /*
+   * Media Md to Obj
+   */
+  _mediaMdToObj (matchArray) {
+    const media = {
+      type: 'media',
+      subtype: matchArray[1].trim(),
+      path: matchArray[2].trim()
+    }
+    return media
+  }
+
+  /*
+   * Media Obj to HTML
+   */
+  _mediaObjToHTML (obj, superseq) {
+    let result
+    if (this.authoringRender && superseq == -1) {
+      result = Translator.htmlTemplatesEditable.media
+        .replace('[seq]', obj.seq)
+        .replace('[author]', this._authorAttrSub(superseq))
+        .replace('[subtype]', obj.subtype)
+        .replace('[source]', obj.path)
+    } else {
+      let resize = ''
+      result = Translator.htmlTemplates.media
+        .replace('[subtype]', obj.subtype)
+        .replace('[source]', obj.path)
+    }
+    return result
   }
 
   /*
@@ -2408,6 +2450,9 @@ class Translator {
       mark: /([ \t]*)!\[([\w \t]*)\]\(<?([\w:.\/\?&#\-~]+)>?[ \t]*(?:=(\d*(?:\.\d+[^x \t"\)])?)(?:x(\d*(?:\.\d+[^ \t"\)])?))?)?[ \t]*(?:"([\w ]*)")?\)/im,
       inline: true
     },
+    media: {
+      mark: /<(video|audio)(?:[^>]*)?><source src="([^"]+)"><\/(:?video|audio)>/im
+    },
     field: {
       mark: /^([ \t]*)(?:[\+\*])[ \t]+([\w.\/\?&#\-][\w.\/\?&#\- \t]*):[ \t]*([^&>\n\r\f'][^&>\n\r\f]*)?(?:'([^']*)')?(?:-(?:(?:&gt;)|>)[ \t]*([^\(\n\r\f]+))?$/im,
       subfield: true,
@@ -2504,7 +2549,7 @@ class Translator {
 
   Translator.inputSubtype = ['short', 'text', 'group select', 'table']
 
-  Translator.globalFields = ['theme', 'title', 'role', 'templates']
+  Translator.globalFields = ['theme', 'title', 'role', 'templates', 'artifacts']
 
   Translator.reservedNavigation = ['case.next', 'knot.start',
     'knot.previous', 'knot.next',
