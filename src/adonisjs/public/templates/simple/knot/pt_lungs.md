@@ -32,6 +32,12 @@ Video - Laterosuperior D
 <video></video>
 }}
 
+Video - Lateroinferior D (parênquima)
+
+{{PD-IP
+<video></video>
+}}
+
 Video - Lateroinferior D
 
 {{PD-LI
@@ -53,6 +59,12 @@ Video - Anteroinferior E
 Video - Laterosuperior E
 
 {{PE-LS
+<video></video>
+}}
+
+Video - Lateroinferior E (parênquima)
+
+{{PE-IP
 <video></video>
 }}
 
