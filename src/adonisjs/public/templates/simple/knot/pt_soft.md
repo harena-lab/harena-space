@@ -1,4 +1,4 @@
-# Soft Parts (detailed)
+# Soft Parts: Basic
 
 **Soft Parts - POCUS Exam Videos and Photos:**
 
@@ -29,8 +29,6 @@ Image - Medidas no transversal
 {{findings
 Describe here your findings concerning the following video and photos.
 }}
-
-* Next -> Flow.Next
 
 {{comments
 * template: simple/knot/pt_soft

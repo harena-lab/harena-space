@@ -1,4 +1,4 @@
-# Articulate (detailed)
+# Articulate: Basic
 
 **Articulate - POCUS Exam Videos and Photos:**
 
@@ -25,8 +25,6 @@ Image - Medidas no transversal
 {{AR-MT
 ![POCUS Image](template/image-stub.svg)
 }}
-
-* Next -> Flow.Next
 
 {{findings
 Describe here your findings concerning the following video and photos.

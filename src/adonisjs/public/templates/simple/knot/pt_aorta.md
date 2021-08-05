@@ -1,4 +1,4 @@
-# Aorta (detailed)
+# Aorta: Basic
 
 **Aorta - POCUS Exam Videos and Photos:**
 
@@ -41,8 +41,6 @@ Video - Varredura ao longitudinal
 {{findings
 Describe here your findings concerning the following video and photos.
 }}
-
-* Next -> Flow.Next
 
 {{comments
 * template: simple/knot/pt_aorta

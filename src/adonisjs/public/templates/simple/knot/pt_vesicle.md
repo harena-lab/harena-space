@@ -1,4 +1,4 @@
-# Vesicle and Portal Triad (detailed)
+# Vesicle and Portal Triad: Basic
 
 **Vesicle and Portal Triad - POCUS Exam Videos and Photos:**
 
@@ -35,8 +35,6 @@ Image - Ducto biliar comum
 {{findings
 Describe here your findings concerning the following video and photos.
 }}
-
-* Next -> Flow.Next
 
 {{comments
 * template: simple/knot/pt_vesicle

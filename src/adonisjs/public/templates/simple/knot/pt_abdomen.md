@@ -1,4 +1,4 @@
-# Abdomen (detailed)
+# Abdomen: Basic
 
 **Abdomen for free liquid detection - POCUS Exam Videos:**
 
@@ -29,8 +29,6 @@ Pelve longitudinal
 {{findings
 Describe here your findings concerning the following videos.
 }}
-
-* Next -> Flow.Next
 
 {{comments
 * template: simple/knot/pt_abdomen

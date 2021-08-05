@@ -1,4 +1,4 @@
-# Cava (detailed)
+# Cava: Basic
 
 **Cava - POCUS Exam Videos and Photos:**
 
@@ -23,8 +23,6 @@ Expiration Image
 {{findings
 Describe here your findings concerning the following video and photos.
 }}
-
-* Next -> Flow.Next
 
 {{comments
 * template: simple/knot/pt_cava

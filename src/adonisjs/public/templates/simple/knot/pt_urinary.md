@@ -1,4 +1,4 @@
-# Urinary (detailed)
+# Urinary: Basic
 
 **Urinary - POCUS Exam Videos and Photos:**
 
@@ -65,8 +65,6 @@ Image - Medidas da bexiga (transveral)
 {{findings
 Describe here your findings concerning the following video and photos.
 }}
-
-* Next -> Flow.Next
 
 {{comments
 * template: simple/knot/pt_urinary

@@ -1,4 +1,4 @@
-# Ocular (detailed)
+# Ocular: Basic
 
 **Ocular - POCUS Exam Videos and Photos:**
 
@@ -23,8 +23,6 @@ Image - Medida do diâmetro nervo óptico
 {{findings
 Describe here your findings concerning the following video and photos.
 }}
-
-* Next -> Flow.Next
 
 {{comments
 * template: simple/knot/pt_ocular

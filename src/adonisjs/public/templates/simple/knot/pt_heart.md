@@ -1,4 +1,4 @@
-# Heart (detailed)
+# Heart: Basic
 
 **Heart - POCUS Exam Videos:**
 
@@ -41,8 +41,6 @@ Video - Apical de 4 câmaras
 {{findings
 Describe here your findings concerning the following videos.
 }}
-
-* Next -> Flow.Next
 
 {{comments
 * template: simple/knot/pt_heart

@@ -1,4 +1,4 @@
-# Lower Limb Veins (detailed)
+# Lower Limb Veins: Basic
 
 **Lower Limb Veins - POCUS Exam Videos:**
 
@@ -69,8 +69,6 @@ Video - Poplitea E2
 {{findings
 Describe here your findings concerning the following videos.
 }}
-
-* Next -> Flow.Next
 
 {{comments
 * template: simple/knot/pt_llv

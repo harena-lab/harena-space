@@ -1,4 +1,4 @@
-# Lungs (detailed)
+# Lungs: Basic
 
 **Lungs - POCUS Exam Videos:**
 
@@ -89,8 +89,6 @@ Video - Posteroinferior E
 {{findings
 Describe here your findings concerning the following videos.
 }}
-
-* Next -> Flow.Next
 
 {{comments
 * template: simple/knot/pt_lungs
