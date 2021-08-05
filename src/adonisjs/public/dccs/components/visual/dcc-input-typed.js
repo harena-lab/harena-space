@@ -13,7 +13,7 @@ class DCCInputTyped extends DCCInput {
     super.connectedCallback()
     this.innerHTML = ''
 
-    MessageBus.int.publish('var/' + this.variable + '/input/ready',
+    MessageBus.int.publish('var/' + this._variable + '/input/ready',
       DCCInputTyped.elementTag)
   }
 
@@ -55,7 +55,7 @@ class DCCInputTyped extends DCCInput {
   inputTyped () {
     this.changed = true
     this.value = this._inputVariable.value
-    MessageBus.ext.publish('var/' + this.variable + '/typed',
+    MessageBus.ext.publish('var/' + this._variable + '/typed',
       {
         sourceType: DCCInputTyped.elementTag,
         value: this.value
@@ -65,7 +65,7 @@ class DCCInputTyped extends DCCInput {
   inputChanged () {
     this.changed = true
     this.value = this._inputVariable.value
-    MessageBus.ext.publish('var/' + this.variable + '/changed',
+    MessageBus.ext.publish('var/' + this._variable + '/changed',
       {
         sourceType: DCCInputTyped.elementTag,
         value: this.value
@@ -85,21 +85,20 @@ class DCCInputTyped extends DCCInput {
   // _injectDCC(presentation, render) {
   async _renderInterface () {
     // === pre presentation setup
-    const statement =
-         (this.hasAttribute('xstyle') && this.xstyle.startsWith('out'))
-           ? '' : this._statement
+    const statement = (this._xstyle.startsWith('out'))
+                        ? '' : this._statement
 
     let html
     if (this.hasAttribute('rows') && this.rows > 1) {
       html = DCCInputTyped.templateElements.area
         .replace('[statement]', statement)
         .replace('[rows]', this.rows)
-        .replace('[variable]', this.variable)
+        .replace('[variable]', this._variable)
         .replace('[render]', this._renderStyle())
     } else {
       html = DCCInputTyped.templateElements.text
         .replace('[statement]', statement)
-        .replace('[variable]', this.variable)
+        .replace('[variable]', this._variable)
         .replace('[render]', this._renderStyle())
         .replace('[itype]', (this.hasAttribute('itype'))
           ? " type='" + this.itype + "'" : '')
@@ -107,13 +106,13 @@ class DCCInputTyped extends DCCInput {
 
     // === presentation setup (DCC Block)
     let presentation
-    if (this.hasAttribute('xstyle') && this.xstyle.startsWith('out')) {
+    if (this._xstyle.startsWith('out')) {
       await this._applyRender(this._statement, 'innerHTML', 'text')
       presentation = await this._applyRender(html, 'innerHTML', 'input')
     } else { presentation = await this._applyRender(html, 'innerHTML', 'input') }
 
     // === post presentation setup
-    const selector = '#' + this.variable.replace(/\./g, '\\.')
+    const selector = '#' + this._variable.replace(/\./g, '\\.')
     this._inputVariable = presentation.querySelector(selector)
     this._inputVariable.addEventListener('input', this.inputTyped)
     this._inputVariable.addEventListener('change', this.inputChanged)

@@ -207,6 +207,7 @@ class PresentationDCC {
       this._param = {buttonType}
     else
       this._param.buttonType = buttonType
+    console.log('control/element/' + this._id + '/selected')
     MessageBus.ext.publish(
       'control/element/' + this._id + '/selected', this._param)
   }

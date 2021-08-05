@@ -23,6 +23,14 @@ class Properties {
     this._panelDetails = panel
   }
 
+  get artifacts () {
+    return this._artifacts
+  }
+
+  set artifacts (artifacts) {
+    this._artifacts = artifacts
+  }
+
   async closePreviousProperties () {
     if (this._editor != null)
       await this._editor.handleConfirm()
@@ -67,7 +75,10 @@ class Properties {
             editp.inlineProperty, this)
           break
         case 'image':
-          this._editor = new EditDCCImage(obj, dcc, editp.htmls, this)
+          this._editor = new EditDCCMedia(obj, dcc, this, 'image')
+          break
+        case 'media':
+          this._editor = new EditDCCMedia(obj, dcc, this, 'media')
           break
         case 'option':
           if (this._item > -1) {
@@ -377,7 +388,7 @@ class Properties {
               file: field.files[0],
               caseid: Basic.service.currentCaseId
             })
-          objProperty = asset.message
+          objProperty = asset.message.filename
         }
         break
     }
@@ -429,6 +440,30 @@ class Properties {
         visual: 'inline'
       }
     }},
+    media: {
+      default: {
+        subtype: {
+          type: 'shortStr',
+          label: 'Type'
+        },
+        path: {
+          type: 'media',
+          label: 'Media',
+          visual: 'inline'
+        }
+      },
+      expand: {
+        subtype: {
+          type: 'shortStr',
+          label: 'Type'
+        },
+        path: {
+          type: 'media',
+          label: 'Media',
+          visual: 'inline'
+        }
+      }
+    },
     option: {default: {
       label: {
         type: 'shortStr',
@@ -645,6 +680,12 @@ class Properties {
    <label class="styp-field-label std-border" for="pfield[n]">[label]</label>
    <input type="file" id="pfield[n]" name="pfield[n]" class="styd-selector styp-field-value"
           accept="image/png, image/jpeg, image/svg">
+</div>`,
+    media:
+`<div class="styd-notice styd-border-notice">
+<label class="styp-field-label std-border" for="pfield[n]">[label]</label>
+<input type="file" id="pfield[n]" name="pfield[n]" class="styd-selector styp-field-value"
+      accept="audio/mpeg, video/mp4, video/webm">
 </div>`,
     selectOpen:
 `<div class="styp-field-row">

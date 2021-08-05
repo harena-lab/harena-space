@@ -1,40 +1,52 @@
-# E-FAST (detailed)
+# E-FAST: Basic
 
 **E-FAST - POCUS Exam Videos:**
 
 Deslizamento pleural D
 
-<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
+{{EF-DD
+<video></video>
+}}
 
 Deslizamento pleural E
 
-<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
+{{EF-DE
+<video></video>
+}}
 
 Subxifóide/subcostal
 
-<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
+{{EF-SX
+<video></video>
+}}
 
 QSD
 
-<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
+{{EF-QSD
+<video></video>
+}}
 
 QSE
 
-<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
+{{EF-QSE
+<video></video>
+}}
 
 Pelve (plano transversal)
 
-<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
+{{EF-PT
+<video></video>
+}}
 
 Pelve (plano longitudinal)
 
-<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
+{{EF-PL
+<video></video>
+}}
 
 {{findings
 Describe here your findings concerning the following videos.
 }}
-
-* Next -> Flow.Next
 
 {{comments
 * template: simple/knot/pt_efast

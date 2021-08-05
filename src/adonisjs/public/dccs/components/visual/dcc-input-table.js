@@ -21,7 +21,7 @@ class DCCInputTable extends DCCInput {
     super.connectedCallback()
     this.innerHTML = ''
 
-    MessageBus.int.publish('var/' + this.variable + '/input/ready',
+    MessageBus.int.publish('var/' + this._variable + '/input/ready',
       DCCInputTable.elementTag)
   }
 
@@ -87,7 +87,7 @@ class DCCInputTable extends DCCInput {
     const row = parseInt(id.substring(p + 1)) - 1
     this._value[row][col] = event.target.value
 
-    MessageBus.ext.publish('var/' + this.variable + '/changed',
+    MessageBus.ext.publish('var/' + this._variable + '/changed',
       {
         sourceType: DCCInputTable.elementTag,
         value: this._value
@@ -116,9 +116,8 @@ class DCCInputTable extends DCCInput {
       '</span>'
 
     // === pre presentation setup
-    const statement =
-         (this.hasAttribute('xstyle') && this.xstyle.startsWith('out'))
-           ? '' : this._statement
+    const statement = (this._xstyle.startsWith('out'))
+                        ? '' : this._statement
 
     let content = ''
     if (this.hasAttribute('schema')) {
@@ -145,7 +144,7 @@ class DCCInputTable extends DCCInput {
       content += '<tr>'
       for (let c = 1; c <= this.cols; c++) {
         content += "<td><input type='text' id='" +
-                       this.variable + '_' + r + '_' + c + "'>" +
+                       this._variable + '_' + r + '_' + c + "'>" +
                        ((this._value[r - 1][c - 1] == null) ? '' : this._value[r - 1][c - 1]) +
                        '</input></td>'
       }
@@ -154,13 +153,13 @@ class DCCInputTable extends DCCInput {
 
     const html = templateElements
       .replace('[statement]', statement)
-      .replace('[variable]', this.variable)
+      .replace('[variable]', this._variable)
       .replace('[render]', this._renderStyle())
       .replace('[content]', content)
 
     // === presentation setup (DCC Block)
     let presentation
-    if (this.hasAttribute('xstyle') && this.xstyle.startsWith('out')) {
+    if (this._xstyle.startsWith('out')) {
       await this._applyRender(this._statement, 'innerHTML', 'text')
       presentation = await this._applyRender(html, 'innerHTML', 'input')
     } else { presentation = await this._applyRender(html, 'innerHTML', 'input') }
@@ -170,7 +169,7 @@ class DCCInputTable extends DCCInput {
       this._inputSet = []
       for (let r = 1; r <= this.rows; r++) {
         for (let c = 1; c <= this.cols; c++) {
-          const v = document.getElementById(this.variable + '_' + r + '_' + c)
+          const v = document.getElementById(this._variable + '_' + r + '_' + c)
           v.addEventListener('change', this.inputChanged)
           this._inputSet.push(v)
         }
