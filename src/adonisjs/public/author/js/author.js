@@ -793,7 +793,7 @@ class AuthorManager {
 
       // finding the next nonblank node
       let pos
-      if (position = 'previous') { pos = (contentSel[elSel - 1].type == 'linefeed') ? elSel - 2 : elSel - 1 } else { pos = (contentSel[elSel + 1].type == 'linefeed') ? elSel + 2 : elSel + 1 }
+      if (position == 'previous') { pos = (contentSel[elSel - 1].type == 'linefeed') ? elSel - 2 : elSel - 1 } else { pos = (contentSel[elSel + 1].type == 'linefeed') ? elSel + 2 : elSel + 1 }
 
       // exchanging sequence ids
       const elSeq = contentSel[elSel].seq
