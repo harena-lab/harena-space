@@ -2,243 +2,259 @@
 <textarea class="form-control" id="details" name="details" placeholder="Enter the comments">
 {{details}}
 </textarea>
+
 <hr>
+
 <h3>Video - QSD</h3>
 <hr>
-<h4 class="mt-1">Gain</h4>
+
+<h4 class="mt-1">Ganho</h4>
 
 <div class="bg-light border border-secondary rounded pl-2">
   <div class="form-check">
-    <input type="radio" id="video_qsd_gain1"
-      name="video_qsd_gain" value="1" class="form-check-input" {{checked?video_qsd_gain1:1}}>
-    <label for="video_qsd_gain1" class="form-check-label">1. little</label>
+    <input type="radio" id="ab-qsd_gain"
+      name="ab-qsd_gain" value="insufficient" class="form-check-input" {{checked?ab-qsd_gain:insufficient}}>
+    <label for="ab-qsd_gain" class="form-check-label">1. insuficiente</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="video_qsd_gain2"
-      name="video_qsd_gain" value="2" class="form-check-input" {{checked?video_qsd_gain2:2}}>
-    <label for="video_qsd_gain2" class="form-check-label">2. excessive</label>
+    <input type="radio" id="ab-qsd_gain"
+      name="ab-qsd_gain" value="appropriate" class="form-check-input" {{checked?ab-qsd_gain:appropriate}}>
+    <label for="ab-qsd_gain" class="form-check-label">2. apropriado</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="video_qsd_gain3"
-      name="video_qsd_gain" value="3" class="form-check-input" {{checked?video_qsd_gain3:3}}>
-    <label for="video_qsd_gain3" class="form-check-label">3. appropriate</label>
+    <input type="radio" id="ab-qsd_gain"
+      name="ab-qsd_gain" value="excessive" class="form-check-input" {{checked?ab-qsd_gain:excessive}}>
+    <label for="ab-qsd_gain" class="form-check-label">3. excessivo</label>
   </div>
 </div>
 
-<h4 class="mt-1">Depth</h4>
+<h4 class="mt-1">Profundidade</h4>
 
 <div class="bg-light border border-secondary rounded pl-2">
   <div class="form-check">
-    <input type="radio" id="video_qsd_depth1"
-      name="video_qsd_depth" value="1" class="form-check-input" {{checked?video_qsd_depth1:1}}>
-    <label for="video_qsd_depth1" class="form-check-label">1. little</label>
+    <input type="radio" id="ab-qsd_depth"
+      name="ab-qsd_depth" value="insufficient" class="form-check-input" {{checked?ab-qsd_depth:insufficient}}>
+    <label for="ab-qsd_depth" class="form-check-label">1. insuficiente</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="video_qsd_depth2"
-      name="video_qsd_depth" value="2" class="form-check-input" {{checked?video_qsd_depth2:2}}>
-    <label for="video_qsd_depth2" class="form-check-label">2. excessive</label>
+    <input type="radio" id="ab-qsd_depth"
+      name="ab-qsd_depth" value="appropriate" class="form-check-input" {{checked?ab-qsd_depth:appropriate}}>
+    <label for="ab-qsd_depth" class="form-check-label">2. apropriado</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="video_qsd_depth3"
-      name="video_qsd_depth" value="3" class="form-check-input" {{checked?video_qsd_depth3:3}}>
-    <label for="video_qsd_depth3" class="form-check-label">3. appropriate</label>
+    <input type="radio" id="ab-qsd_depth"
+      name="ab-qsd_depth" value="excessive" class="form-check-input" {{checked?ab-qsd_depth:excessive}}>
+    <label for="ab-qsd_depth" class="form-check-label">3. excessivo</label>
   </div>
 </div>
 
-<h4 class="mt-1">Anatomical References</h4>
+<h4 class="mt-1">Referências anatômicas/qualidade</h4>
 
 <div class="bg-light border border-secondary rounded pl-2">
   <div class="form-check">
-    <input type="radio" id="video_qsd_anatomical1"
-      name="video_qsd_anatomical" value="1" class="form-check-input" {{checked?video_qsd_anatomical1:1}}>
-    <label for="video_qsd_anatomical1" class="form-check-label">1. absent</label>
+    <input type="checkbox" id="ab-qsd_diaphragm"
+      name="ab-qsd_diaphragm" value="not_present" class="form-check-input" {{checked?ab-qsd_diaphragm:not_present}}>
+    <label for="ab-qsd_diaphragm" class="form-check-label">Diafragma ausente</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="video_qsd_anatomical2"
-      name="video_qsd_anatomical" value="2" class="form-check-input" {{checked?video_qsd_anatomical2:2}}>
-    <label for="video_qsd_anatomical2" class="form-check-label">2. partially present</label>
+    <input type="checkbox" id="ab-qsd_morrison_hepatorenal_space"
+      name="ab-qsd_morrison_hepatorenal_space" value="not_present" class="form-check-input" {{checked?ab-qsd_morrison_hepatorenal_space:not_present}}>
+    <label for="ab-qsd_morrison_hepatorenal_space" class="form-check-label">Espaço de Morrison/hepatorenal ausente</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="video_qsd_anatomical3"
-      name="video_qsd_anatomical" value="3" class="form-check-input" {{checked?video_qsd_anatomical3:3}}>
-    <label for="video_qsd_anatomical3" class="form-check-label">3. present</label>
+    <input type="checkbox" id="ab-qsd_lower_pole_right_kidney"
+      name="ab-qsd_lower_pole_right_kidney" value="not_present" class="form-check-input" {{checked?ab-qsd_lower_pole_right_kidney:not_present}}>
+    <label for="ab-qsd_lower_pole_right_kidney" class="form-check-label">Pólo inferior do rim direito ausente</label>
   </div>
 </div>
+
 <hr>
+
 <h3>Video - QSE</h3>
 <hr>
-<h4 class="mt-1">Gain</h4>
+
+<h4 class="mt-1">Ganho</h4>
 
 <div class="bg-light border border-secondary rounded pl-2">
   <div class="form-check">
-    <input type="radio" id="video_qse_gain1"
-      name="video_qse_gain" value="1" class="form-check-input" {{checked?video_qse_gain1:1}}>
-    <label for="video_qse_gain1" class="form-check-label">1. little</label>
+    <input type="radio" id="ab-qse_gain"
+      name="ab-qse_gain" value="insufficient" class="form-check-input" {{checked?ab-qse_gain:insufficient}}>
+    <label for="ab-qse_gain" class="form-check-label">1. insuficiente</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="video_qse_gain2"
-      name="video_qse_gain" value="2" class="form-check-input" {{checked?video_qse_gain2:2}}>
-    <label for="video_qse_gain2" class="form-check-label">2. excessive</label>
+    <input type="radio" id="ab-qse_gain"
+      name="ab-qse_gain" value="appropriate" class="form-check-input" {{checked?ab-qse_gain:appropriate}}>
+    <label for="ab-qse_gain" class="form-check-label">2. apropriado</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="video_qse_gain3"
-      name="video_qse_gain" value="3" class="form-check-input" {{checked?video_qse_gain3:3}}>
-    <label for="video_qse_gain3" class="form-check-label">3. appropriate</label>
+    <input type="radio" id="ab-qse_gain"
+      name="ab-qse_gain" value="excessive" class="form-check-input" {{checked?ab-qse_gain:excessive}}>
+    <label for="ab-qse_gain" class="form-check-label">3. excessivo</label>
   </div>
 </div>
-<h4 class="mt-1">Depth</h4>
+
+<h4 class="mt-1">Profundidade</h4>
+
 <div class="bg-light border border-secondary rounded pl-2">
   <div class="form-check">
-    <input type="radio" id="video_qse_depth1"
-      name="video_qse_depth" value="1" class="form-check-input" {{checked?video_qse_depth1:1}}>
-    <label for="video_qse_depth1" class="form-check-label">1. little</label>
+    <input type="radio" id="ab-qse_depth"
+      name="ab-qse_depth" value="insufficient" class="form-check-input" {{checked?ab-qse_depth:insufficient}}>
+    <label for="ab-qse_depth" class="form-check-label">1. insuficiente</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="video_qse_depth2"
-      name="video_qse_depth" value="2" class="form-check-input" {{checked?video_qse_depth2:2}}>
-    <label for="video_qse_depth2" class="form-check-label">2. excessive</label>
+    <input type="radio" id="ab-qse_depth"
+      name="ab-qse_depth" value="appropriate" class="form-check-input" {{checked?ab-qse_depth:appropriate}}>
+    <label for="ab-qse_depth" class="form-check-label">2. apropriado</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="video_qse_depth3"
-      name="video_qse_depth" value="3" class="form-check-input" {{checked?video_qse_depth3:3}}>
-    <label for="video_qse_depth3" class="form-check-label">3. appropriate</label>
+    <input type="radio" id="ab-qse_depth"
+      name="ab-qse_depth" value="excessive" class="form-check-input" {{checked?ab-qse_depth:excessive}}>
+    <label for="ab-qse_depth" class="form-check-label">3. excessivo</label>
   </div>
 </div>
-<h4 class="mt-1">Anatomical References</h4>
+
+<h4 class="mt-1">Referências anatômicas/qualidade</h4>
+
 <div class="bg-light border border-secondary rounded pl-2">
   <div class="form-check">
-    <input type="radio" id="video_qse_anatomical1"
-      name="video_qse_anatomical" value="1" class="form-check-input" {{checked?video_qse_anatomical1:1}}>
-    <label for="video_qse_anatomical1" class="form-check-label">1. absent</label>
+    <input type="checkbox" id="ab-qse_diaphragm"
+      name="ab-qse_diaphragm" value="not_present" class="form-check-input" {{checked?ab-qse_diaphragm:not_present}}>
+    <label for="ab-qse_diaphragm" class="form-check-label">Diafragma ausente</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="video_qse_anatomical2"
-      name="video_qse_anatomical" value="2" class="form-check-input" {{checked?video_qse_anatomical2:2}}>
-    <label for="video_qse_anatomical2" class="form-check-label">2. partially absent</label>
+    <input type="checkbox" id="ab-qse_spenorenal_recess"
+      name="ab-qse_spenorenal_recess" value="not_present" class="form-check-input" {{checked?ab-qse_spenorenal_recess:not_present}}>
+    <label for="ab-qse_spenorenal_recess" class="form-check-label">Espaço espleno renal ausente</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="video_qse_anatomical3"
-      name="video_qse_anatomical" value="3" class="form-check-input" {{checked?video_qse_anatomical3:3}}>
-    <label for="video_qse_anatomical3" class="form-check-label">3. present</label>
+    <input type="checkbox" id="ab-qse_posterior_tip_of_spleen"
+      name="ab-qse_posterior_tip_of_spleen" value="not_present" class="form-check-input" {{checked?ab-qse_posterior_tip_of_spleen:not_present}}>
+    <label for="ab-qse_posterior_tip_of_spleen" class="form-check-label">Ponta posterior do baço ausente</label>
+  </div>
+  <div class="form-check">
+    <input type="checkbox" id="ab-qse_lower_pole_left_kidney"
+      name="ab-qse_lower_pole_left_kidney" value="not_present" class="form-check-input" {{checked?ab-qse_lower_pole_left_kidney:not_present}}>
+    <label for="ab-qse_lower_pole_left_kidney" class="form-check-label">Pólo inferior do rim esquerdo ausente</label>
   </div>
 </div>
+
 <hr>
 <h3>Video - Pelve transversal</h3>
 <hr>
-<h4 class="mt-1">Gain</h4>
+
+<h4 class="mt-1">Ganho</h4>
+
 <div class="bg-light border border-secondary rounded pl-2">
   <div class="form-check">
-    <input type="radio" id="video_pelve_t_gain1"
-      name="video_pelve_t_gain" value="1" class="form-check-input" {{checked?video_pelve_t_gain1:1}}>
-    <label for="video_pelve_t_gain1" class="form-check-label">1. little</label>
+    <input type="radio" id="ab-pt_gain"
+      name="ab-pt_gain" value="insufficient" class="form-check-input" {{checked?ab-pt_gain:insufficient}}>
+    <label for="ab-pt_gain" class="form-check-label">1. insuficiente</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="video_pelve_t_gain2"
-      name="video_pelve_t_gain" value="2" class="form-check-input" {{checked?video_pelve_t_gain2:2}}>
-    <label for="video_pelve_t_gain2" class="form-check-label">2. excessive</label>
+    <input type="radio" id="ab-pt_gain"
+      name="ab-pt_gain" value="appropriate" class="form-check-input" {{checked?ab-pt_gain:appropriate}}>
+    <label for="ab-pt_gain" class="form-check-label">2. apropriado</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="video_pelve_t_gain3"
-      name="video_pelve_t_gain" value="3" class="form-check-input" {{checked?video_pelve_t_gain3:3}}>
-    <label for="video_pelve_t_gain3" class="form-check-label">3. appropriate</label>
+    <input type="radio" id="ab-pt_gain"
+      name="ab-pt_gain" value="excessive" class="form-check-input" {{checked?ab-pt_gain:excessive}}>
+    <label for="ab-pt_gain" class="form-check-label">3. excessivo</label>
   </div>
 </div>
-<h4 class="mt-1">Depth</h4>
+
+<h4 class="mt-1">Profundidade</h4>
+
 <div class="bg-light border border-secondary rounded pl-2">
   <div class="form-check">
-    <input type="radio" id="video_pelve_t_depth1"
-      name="video_pelve_t_depth" value="1" class="form-check-input" {{checked?video_pelve_t_depth1:1}}>
-    <label for="video_pelve_t_depth1" class="form-check-label">1. little</label>
+    <input type="radio" id="ab-pt_depth"
+      name="ab-pt_depth" value="insufficient" class="form-check-input" {{checked?ab-pt_depth:insufficient}}>
+    <label for="ab-pt_depth" class="form-check-label">1. insuficiente</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="video_pelve_t_depth2"
-      name="video_pelve_t_depth" value="2" class="form-check-input" {{checked?video_pelve_t_depth2:2}}>
-    <label for="video_pelve_t_depth2" class="form-check-label">2. excessive</label>
+    <input type="radio" id="ab-pt_depth"
+      name="ab-pt_depth" value="appropriate" class="form-check-input" {{checked?ab-pt_depth:appropriate}}>
+    <label for="ab-pt_depth" class="form-check-label">2. apropriado</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="video_pelve_t_depth3"
-      name="video_pelve_t_depth" value="3" class="form-check-input" {{checked?video_pelve_t_depth3:3}}>
-    <label for="video_pelve_t_depth3" class="form-check-label">3. appropriate</label>
+    <input type="radio" id="ab-pt_depth"
+      name="ab-pt_depth" value="excessive" class="form-check-input" {{checked?ab-pt_depth:excessive}}>
+    <label for="ab-pt_depth" class="form-check-label">3. excessivo</label>
   </div>
 </div>
+
 <h4 class="mt-1">Anatomical References</h4>
 <div class="bg-light border border-secondary rounded pl-2">
-  <div class="form-check">
-    <input type="radio" id="video_pelve_t_anatomical1"
-      name="video_pelve_t_anatomical" value="1" class="form-check-input" {{checked?video_pelve_t_anatomical1:1}}>
-    <label for="video_pelve_t_anatomical1" class="form-check-label">1. absent</label>
-  </div>
-  <div class="form-check">
-    <input type="radio" id="video_pelve_t_anatomical2"
-      name="video_pelve_t_anatomical" value="2" class="form-check-input" {{checked?video_pelve_t_anatomical2:2}}>
-    <label for="video_pelve_t_anatomical2" class="form-check-label">2. partially present</label>
-  </div>
-  <div class="form-check">
-    <input type="radio" id="video_pelve_t_anatomical3"
-      name="video_pelve_t_anatomical" value="3" class="form-check-input" {{checked?video_pelve_t_anatomical3:3}}>
-    <label for="video_pelve_t_anatomical3" class="form-check-label">3. present</label>
-  </div>
+   <div class="form-check">
+     <input type="checkbox" id="ab-pt_bladder"
+       name="ab-pt_bladder" value="not_present" class="form-check-input" {{checked?ab-pt_bladder:not_present}}>
+     <label for="ab-pt_bladder" class="form-check-label">Bexiga ausente</label>
+   </div>
+   <div class="form-check">
+     <input type="checkbox" id="ab-pt_prostate_uterus"
+       name="ab-pt_prostate_uterus" value="not_present" class="form-check-input" {{checked?ab-pt_prostate_uterus:not_present}}>
+     <label for="ab-pt_prostate_uterus" class="form-check-label">Próstata/útero ausente</label>
+   </div>
 </div>
+
 <hr>
 <h3>Video - Pelve longitudinal</h3>
 <hr>
-<h4 class="mt-1">Gain</h4>
+
+<h4 class="mt-1">Ganho</h4>
+
 <div class="bg-light border border-secondary rounded pl-2">
   <div class="form-check">
-    <input type="radio" id="video_pelve_l_gain1"
-      name="video_pelve_l_gain" value="1" class="form-check-input" {{checked?video_pelve_l_gain1:1}}>
-    <label for="video_pelve_l_gain1" class="form-check-label">1. little</label>
+    <input type="radio" id="ab-pl_gain"
+      name="ab-pl_gain" value="insufficient" class="form-check-input" {{checked?ab-pl_gain:insufficient}}>
+    <label for="ab-pl_gain" class="form-check-label">1. insuficiente</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="video_pelve_l_gain2"
-      name="video_pelve_l_gain" value="2" class="form-check-input" {{checked?video_pelve_l_gain2:2}}>
-    <label for="video_pelve_l_gain2" class="form-check-label">2. excessive</label>
+    <input type="radio" id="ab-pl_gain"
+      name="ab-pl_gain" value="appropriate" class="form-check-input" {{checked?ab-pl_gain:appropriate}}>
+    <label for="ab-pl_gain" class="form-check-label">2. apropriado</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="video_pelve_l_gain3"
-      name="video_pelve_l_gain" value="3" class="form-check-input" {{checked?video_pelve_l_gain3:3}}>
-    <label for="video_pelve_l_gain3" class="form-check-label">3. appropriate</label>
+    <input type="radio" id="ab-pl_gain"
+      name="ab-pl_gain" value="excessive" class="form-check-input" {{checked?ab-pl_gain:excessive}}>
+    <label for="ab-pl_gain" class="form-check-label">3. excessivo</label>
   </div>
 </div>
-<h4 class="mt-1">Depth</h4>
+
+<h4 class="mt-1">Profundidade</h4>
+
 <div class="bg-light border border-secondary rounded pl-2">
   <div class="form-check">
-    <input type="radio" id="video_pelve_l_depth1"
-      name="video_pelve_l_depth" value="1" class="form-check-input" {{checked?video_pelve_l_depth1:1}}>
-    <label for="video_pelve_l_depth1" class="form-check-label">1. little</label>
+    <input type="radio" id="ab-pl_depth"
+      name="ab-pl_depth" value="insufficient" class="form-check-input" {{checked?ab-pl_depth:insufficient}}>
+    <label for="ab-pl_depth" class="form-check-label">1. insuficiente</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="video_pelve_l_depth2"
-      name="video_pelve_l_depth" value="2" class="form-check-input" {{checked?video_pelve_l_depth2:2}}>
-    <label for="video_pelve_l_depth2" class="form-check-label">2. excessive</label>
+    <input type="radio" id="ab-pl_depth"
+      name="ab-pl_depth" value="appropriate" class="form-check-input" {{checked?ab-pl_depth:appropriate}}>
+    <label for="ab-pl_depth" class="form-check-label">2. apropriado</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="video_pelve_l_depth3"
-      name="video_pelve_l_depth" value="3" class="form-check-input" {{checked?video_pelve_l_depth3:3}}>
-    <label for="video_pelve_l_depth3" class="form-check-label">3. appropriate</label>
+    <input type="radio" id="ab-pl_depth"
+      name="ab-pl_depth" value="excessive" class="form-check-input" {{checked?ab-pl_depth:excessive}}>
+    <label for="ab-pl_depth" class="form-check-label">3. excessivo</label>
   </div>
 </div>
+
 <h4 class="mt-1">Anatomical References</h4>
 <div class="bg-light border border-secondary rounded pl-2">
-  <div class="form-check">
-    <input type="radio" id="video_pelve_l_anatomical1"
-      name="video_pelve_l_anatomical" value="1" class="form-check-input" {{checked?video_pelve_l_anatomical1:1}}>
-    <label for="video_pelve_l_anatomical1" class="form-check-label">1. absent</label>
-  </div>
-  <div class="form-check">
-    <input type="radio" id="video_pelve_l_anatomical2"
-      name="video_pelve_l_anatomical" value="2" class="form-check-input" {{checked?video_pelve_l_anatomical2:2}}>
-    <label for="video_pelve_l_anatomical2" class="form-check-label">2. partially present</label>
-  </div>
-  <div class="form-check">
-    <input type="radio" id="video_pelve_l_anatomical3"
-      name="video_pelve_l_anatomical" value="3" class="form-check-input" {{checked?video_pelve_l_anatomical3:3}}>
-    <label for="video_pelve_l_anatomical3" class="form-check-label">3. present</label>
-  </div>
+   <div class="form-check">
+     <input type="checkbox" id="ab-pl_bladder"
+       name="ab-pl_bladder" value="not_present" class="form-check-input" {{checked?ab-pl_bladder:not_present}}>
+     <label for="ab-pl_bladder" class="form-check-label">Bexiga ausente</label>
+   </div>
+   <div class="form-check">
+     <input type="checkbox" id="ab-pl_prostate_uterus"
+       name="ab-pl_prostate_uterus" value="not_present" class="form-check-input" {{checked?ab-pl_prostate_uterus:not_present}}>
+     <label for="ab-pl_prostate_uterus" class="form-check-label">Próstata/útero ausente</label>
+   </div>
 </div>
 <hr>
 <div class="text-center">
-  <button type="button" class="btn btn-secondary" id="btn-save-comments" >SAVE COMMENTS</button>
-  <dcc-button topic="control/case/save" label="SAVE COMMENTS" location="btn-save-comments" xstyle="out"></dcc-button>
+  <dcc-button topic="control/case/save" label="SAVE COMMENTS" xstyle="theme"></dcc-button>
 </div>
 <hr>

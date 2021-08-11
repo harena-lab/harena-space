@@ -34,7 +34,11 @@ class DCCBlock extends DCCVisual {
       this.location = locationM.message
     }
 
-    if (document.readyState === 'complete') { this._renderInterface() } else { window.addEventListener('load', this._renderInterface) }
+    if (document.readyState === 'complete') {
+      this._renderInterface()
+    } else {
+      window.addEventListener('load', this._renderInterface)
+    }
   }
 
   /* Attribute Handling */
