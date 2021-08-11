@@ -4,43 +4,42 @@
 </textarea>
 
 <h3>Video - Varredura longitudinal</h3>
-<h4 class="mt-1">Gain</h4>
 
 <div class="bg-light border border-secondary rounded pl-2">
   <div class="form-check">
-    <input type="radio" id="video_varr_long_gain1"
-      name="video_varr_long_gain" value="1" class="form-check-input" {{checked?video_varr_long_gain1:1}}>
-    <label for="video_varr_long_gain1" class="form-check-label">1. little</label>
+    <input type="radio" id="ar-vl_gain"
+      name="ar-vl_gain" value="insufficient" class="form-check-input" {{checked?ar-vl_gain:insufficient}}>
+    <label for="ar-vl_gain" class="form-check-label">1. insuficiente</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="video_varr_long_gain2"
-      name="video_varr_long_gain" value="2" class="form-check-input" {{checked?video_varr_long_gain2:2}}>
-    <label for="video_varr_long_gain2" class="form-check-label">2. excessive</label>
+    <input type="radio" id="ar-vl_gain"
+      name="ar-vl_gain" value="appropriate" class="form-check-input" {{checked?ar-vl_gain:appropriate}}>
+    <label for="ar-vl_gain" class="form-check-label">2. apropriado</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="video_varr_long_gain3"
-      name="video_varr_long_gain" value="3" class="form-check-input" {{checked?video_varr_long_gain3:3}}>
-    <label for="video_varr_long_gain3" class="form-check-label">3. appropriate</label>
+    <input type="radio" id="ar-vl_gain"
+      name="ar-vl_gain" value="excessive" class="form-check-input" {{checked?ar-vl_gain:excessive}}>
+    <label for="ar-vl_gain" class="form-check-label">3. excessivo</label>
   </div>
 </div>
 
-<h4 class="mt-1">Depth</h4>
+<h4 class="mt-1">Profundidade</h4>
 
 <div class="bg-light border border-secondary rounded pl-2">
   <div class="form-check">
-    <input type="radio" id="video_varr_long_depth1"
-      name="video_varr_long_depth" value="1" class="form-check-input" {{checked?video_varr_long_depth1:1}}>
-    <label for="video_varr_long_depth1" class="form-check-label">1. little</label>
+    <input type="radio" id="ar-vl_depth"
+      name="ar-vl_depth" value="insufficient" class="form-check-input" {{checked?ar-vl_depth:insufficient}}>
+    <label for="ar-vl_depth" class="form-check-label">1. insuficiente</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="video_varr_long_depth2"
-      name="video_varr_long_depth" value="2" class="form-check-input" {{checked?video_varr_long_depth2:2}}>
-    <label for="video_varr_long_depth2" class="form-check-label">2. excessive</label>
+    <input type="radio" id="ar-vl_depth"
+      name="ar-vl_depth" value="appropriate" class="form-check-input" {{checked?ar-vl_depth:appropriate}}>
+    <label for="ar-vl_depth" class="form-check-label">2. apropriado</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="video_varr_long_depth3"
-      name="video_varr_long_depth" value="3" class="form-check-input" {{checked?video_varr_long_depth3:3}}>
-    <label for="video_varr_long_depth3" class="form-check-label">3. appropriate</label>
+    <input type="radio" id="ar-vl_depth"
+      name="ar-vl_depth" value="excessive" class="form-check-input" {{checked?ar-vl_depth:excessive}}>
+    <label for="ar-vl_depth" class="form-check-label">3. excessivo</label>
   </div>
 </div>
 
@@ -48,60 +47,61 @@
 
 <div class="bg-light border border-secondary rounded pl-2">
   <div class="form-check">
-    <input type="radio" id="video_varr_long_anatomical1"
-      name="video_varr_long_anatomical" value="1" class="form-check-input" {{checked?video_varr_long_anatomical1:1}}>
-    <label for="video_varr_long_anatomical1" class="form-check-label">1. absent</label>
+    <input type="radio" id="ar-vl_anatomical_references"
+      name="ar-vl_anatomical_references" value="absent" class="form-check-input" {{checked?ar-vl_anatomical_references:absent}}>
+    <label for="ar-vl_anatomical_references" class="form-check-label">1. ausentes</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="video_varr_long_anatomical2"
-      name="video_varr_long_anatomical" value="2" class="form-check-input" {{checked?video_varr_long_anatomical2:2}}>
-    <label for="video_varr_long_anatomical2" class="form-check-label">2. partially present</label>
+    <input type="radio" id="ar-vl_anatomical_references"
+      name="ar-vl_anatomical_references" value="partially_present" class="form-check-input" {{checked?ar-vl_anatomical_references:partially_present}}>
+    <label for="ar-vl_anatomical_references" class="form-check-label">2. parcialmente presentes</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="video_varr_long_anatomical3"
-      name="video_varr_long_anatomical" value="3" class="form-check-input" {{checked?video_varr_long_anatomical3:3}}>
-    <label for="video_varr_long_anatomical3" class="form-check-label">3. present</label>
+    <input type="radio" id="ar-vl_anatomical_references"
+      name="ar-vl_anatomical_references" value="present" class="form-check-input" {{checked?ar-vl_anatomical_references:present}}>
+    <label for="ar-vl_anatomical_references" class="form-check-label">3. presentes</label>
   </div>
 </div>
 
 <h3>Video - Varredura transversal</h3>
-<h4 class="mt-1">Gain</h4>
+
+<h4 class="mt-1">Ganho</h4>
 
 <div class="bg-light border border-secondary rounded pl-2">
   <div class="form-check">
-    <input type="radio" id="video_varr_trans_gain1"
-      name="video_varr_trans_gain" value="1" class="form-check-input" {{checked?video_varr_trans_gain1:1}}>
-    <label for="video_varr_trans_gain1" class="form-check-label">1. little</label>
+    <input type="radio" id="ar-vt_gain"
+      name="ar-vt_gain" value="insufficient" class="form-check-input" {{checked?ar-vt_gain:insufficient}}>
+    <label for="ar-vt_gain" class="form-check-label">1. insuficiente</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="video_varr_trans_gain2"
-      name="video_varr_trans_gain" value="2" class="form-check-input" {{checked?video_varr_trans_gain2:2}}>
-    <label for="video_varr_trans_gain2" class="form-check-label">2. excessive</label>
+    <input type="radio" id="ar-vt_gain"
+      name="ar-vt_gain" value="appropriate" class="form-check-input" {{checked?ar-vt_gain:appropriate}}>
+    <label for="ar-vt_gain" class="form-check-label">2. apropriado</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="video_varr_trans_gain3"
-      name="video_varr_trans_gain" value="3" class="form-check-input" {{checked?video_varr_trans_gain3:3}}>
-    <label for="video_varr_trans_gain3" class="form-check-label">3. appropriate</label>
+    <input type="radio" id="ar-vt_gain"
+      name="ar-vt_gain" value="excessive" class="form-check-input" {{checked?ar-vt_gain:excessive}}>
+    <label for="ar-vt_gain" class="form-check-label">3. excessivo</label>
   </div>
 </div>
 
-<h4 class="mt-1">Depth</h4>
+<h4 class="mt-1">Profundidade</h4>
 
 <div class="bg-light border border-secondary rounded pl-2">
   <div class="form-check">
-    <input type="radio" id="video_varr_trans_depth1"
-      name="video_varr_trans_depth" value="1" class="form-check-input" {{checked?video_varr_trans_depth1:1}}>
-    <label for="video_varr_trans_depth1" class="form-check-label">1. little</label>
+    <input type="radio" id="ar-vt_depth"
+      name="ar-vt_depth" value="insufficient" class="form-check-input" {{checked?ar-vt_depth:insufficient}}>
+    <label for="ar-vt_depth" class="form-check-label">1. insuficiente</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="video_varr_trans_depth2"
-      name="video_varr_trans_depth" value="2" class="form-check-input" {{checked?video_varr_trans_depth2:2}}>
-    <label for="video_varr_trans_depth2" class="form-check-label">2. excessive</label>
+    <input type="radio" id="ar-vt_depth"
+      name="ar-vt_depth" value="appropriate" class="form-check-input" {{checked?ar-vt_depth:appropriate}}>
+    <label for="ar-vt_depth" class="form-check-label">2. apropriado</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="video_varr_trans_depth3"
-      name="video_varr_trans_depth" value="3" class="form-check-input" {{checked?video_varr_trans_depth3:3}}>
-    <label for="video_varr_trans_depth3" class="form-check-label">3. appropriate</label>
+    <input type="radio" id="ar-vt_depth"
+      name="ar-vt_depth" value="excessive" class="form-check-input" {{checked?ar-vt_depth:excessive}}>
+    <label for="ar-vt_depth" class="form-check-label">3. excessivo</label>
   </div>
 </div>
 
@@ -109,147 +109,136 @@
 
 <div class="bg-light border border-secondary rounded pl-2">
   <div class="form-check">
-    <input type="radio" id="video_varr_trans_anatomical1"
-      name="video_varr_trans_anatomical" value="1" class="form-check-input" {{checked?video_varr_trans_anatomical1:1}}>
-    <label for="video_varr_trans_anatomical1" class="form-check-label">1. absent</label>
+    <input type="radio" id="ar-vt_anatomical_references"
+      name="ar-vt_anatomical_references" value="absent" class="form-check-input" {{checked?ar-vt_anatomical_references:absent}}>
+    <label for="ar-vt_anatomical_references" class="form-check-label">1. ausentes</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="video_varr_trans_anatomical2"
-      name="video_varr_trans_anatomical" value="2" class="form-check-input" {{checked?video_varr_trans_anatomical2:2}}>
-    <label for="video_varr_trans_anatomical2" class="form-check-label">2. partially present</label>
+    <input type="radio" id="ar-vt_anatomical_references"
+      name="ar-vt_anatomical_references" value="partially_present" class="form-check-input" {{checked?ar-vt_anatomical_references:partially_present}}>
+    <label for="ar-vt_anatomical_references" class="form-check-label">2. parcialmente presentes</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="video_varr_trans_anatomical3"
-      name="video_varr_trans_anatomical" value="3" class="form-check-input" {{checked?video_varr_trans_anatomical3:3}}>
-    <label for="video_varr_trans_anatomical3" class="form-check-label">3. present</label>
+    <input type="radio" id="ar-vt_anatomical_references"
+      name="ar-vt_anatomical_references" value="present" class="form-check-input" {{checked?ar-vt_anatomical_references:present}}>
+    <label for="ar-vt_anatomical_references" class="form-check-label">3. presentes</label>
   </div>
 </div>
 
 <h3>Image - Medidas no longitudinal</h3>
-<h4 class="mt-1">Gain</h4>
 
 <div class="bg-light border border-secondary rounded pl-2">
   <div class="form-check">
-    <input type="radio" id="image_med_long_gain1"
-      name="image_med_long_gain" value="1" class="form-check-input" {{checked?image_med_long_gain1:1}}>
-    <label for="image_med_long_gain1" class="form-check-label">1. little</label>
+    <input type="radio" id="ar-ml_gain"
+      name="ar-ml_gain" value="insufficient" class="form-check-input" {{checked?ar-ml_gain:insufficient}}>
+    <label for="ar-ml_gain" class="form-check-label">1. insuficiente</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="image_med_long_gain2"
-      name="image_med_long_gain" value="2" class="form-check-input" {{checked?image_med_long_gain2:2}}>
-    <label for="image_med_long_gain2" class="form-check-label">2. excessive</label>
+    <input type="radio" id="ar-ml_gain"
+      name="ar-ml_gain" value="appropriate" class="form-check-input" {{checked?ar-ml_gain:appropriate}}>
+    <label for="ar-ml_gain" class="form-check-label">2. apropriado</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="image_med_long_gain3"
-      name="image_med_long_gain" value="3" class="form-check-input" {{checked?image_med_long_gain3:3}}>
-    <label for="image_med_long_gain3" class="form-check-label">3. appropriate</label>
+    <input type="radio" id="ar-ml_gain"
+      name="ar-ml_gain" value="excessive" class="form-check-input" {{checked?ar-ml_gain:excessive}}>
+    <label for="ar-ml_gain" class="form-check-label">3. excessivo</label>
   </div>
 </div>
 
-<h4 class="mt-1">Depth</h4>
+<h4 class="mt-1">Profundidade</h4>
 
 <div class="bg-light border border-secondary rounded pl-2">
   <div class="form-check">
-    <input type="radio" id="image_med_long_depth1"
-      name="image_med_long_depth" value="1" class="form-check-input" {{checked?image_med_long_depth1:1}}>
-    <label for="image_med_long_depth1" class="form-check-label">1. little</label>
+    <input type="radio" id="ar-ml_depth"
+      name="ar-ml_depth" value="insufficient" class="form-check-input" {{checked?ar-ml_depth:insufficient}}>
+    <label for="ar-ml_depth" class="form-check-label">1. insuficiente</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="image_med_long_depth2"
-      name="image_med_long_depth" value="2" class="form-check-input" {{checked?image_med_long_depth2:2}}>
-    <label for="image_med_long_depth2" class="form-check-label">2. excessive</label>
+    <input type="radio" id="ar-ml_depth"
+      name="ar-ml_depth" value="appropriate" class="form-check-input" {{checked?ar-ml_depth:appropriate}}>
+    <label for="ar-ml_depth" class="form-check-label">2. apropriado</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="image_med_long_depth3"
-      name="image_med_long_depth" value="3" class="form-check-input" {{checked?image_med_long_depth3:3}}>
-    <label for="image_med_long_depth3" class="form-check-label">3. appropriate</label>
+    <input type="radio" id="ar-ml_depth"
+      name="ar-ml_depth" value="excessive" class="form-check-input" {{checked?ar-ml_depth:excessive}}>
+    <label for="ar-ml_depth" class="form-check-label">3. excessivo</label>
   </div>
 </div>
 
 <h4 class="mt-1">Anatomical References</h4>
 
 <div class="bg-light border border-secondary rounded pl-2">
-  <div class="form-check">
-    <input type="radio" id="image_med_long_anatomical1"
-      name="image_med_long_anatomical" value="1" class="form-check-input" {{checked?image_med_long_anatomical1:1}}>
-    <label for="image_med_long_anatomical1" class="form-check-label">1. absent</label>
-  </div>
-  <div class="form-check">
-    <input type="radio" id="image_med_long_anatomical2"
-      name="image_med_long_anatomical" value="2" class="form-check-input" {{checked?image_med_long_anatomical2:2}}>
-    <label for="image_med_long_anatomical2" class="form-check-label">2. partially present</label>
-  </div>
-  <div class="form-check">
-    <input type="radio" id="image_med_long_anatomical3"
-      name="image_med_long_anatomical" value="3" class="form-check-input" {{checked?image_med_long_anatomical3:3}}>
-    <label for="image_med_long_anatomical3" class="form-check-label">3. present</label>
-  </div>
+   <div class="form-check">
+     <input type="radio" id="ar-ml_measurements"
+       name="ar-ml_measurements" value="adequate" class="form-check-input" {{checked?ar-ml_measurements:adequate}}>
+     <label for="ar-ml_measurements" class="form-check-label">1. adequadas</label>
+   </div>
+   <div class="form-check">
+     <input type="radio" id="ar-ml_measurements"
+       name="ar-ml_measurements" value="inadequate" class="form-check-input" {{checked?ar-ml_measurements:inadequate}}>
+     <label for="ar-ml_measurements" class="form-check-label">2. inadequadas</label>
+   </div>
 </div>
 
 <h3>Image - Medidas no transversal</h3>
-<h4 class="mt-1">Gain</h4>
+
+<h4 class="mt-1">Ganho</h4>
 
 <div class="bg-light border border-secondary rounded pl-2">
   <div class="form-check">
-    <input type="radio" id="image_med_trans_gain1"
-      name="image_med_trans_gain" value="1" class="form-check-input" {{checked?image_med_trans_gain1:1}}>
-    <label for="image_med_trans_gain1" class="form-check-label">1. little</label>
+    <input type="radio" id="ar-mt_gain"
+      name="ar-mt_gain" value="insufficient" class="form-check-input" {{checked?ar-mt_gain:insufficient}}>
+    <label for="ar-mt_gain" class="form-check-label">1. insuficiente</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="image_med_trans_gain2"
-      name="image_med_trans_gain" value="2" class="form-check-input" {{checked?image_med_trans_gain2:2}}>
-    <label for="image_med_trans_gain2" class="form-check-label">2. excessive</label>
+    <input type="radio" id="ar-mt_gain"
+      name="ar-mt_gain" value="appropriate" class="form-check-input" {{checked?ar-mt_gain:appropriate}}>
+    <label for="ar-mt_gain" class="form-check-label">2. apropriado</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="image_med_trans_gain3"
-      name="image_med_trans_gain" value="3" class="form-check-input" {{checked?image_med_trans_gain3:3}}>
-    <label for="image_med_trans_gain3" class="form-check-label">3. appropriate</label>
+    <input type="radio" id="ar-mt_gain"
+      name="ar-mt_gain" value="excessive" class="form-check-input" {{checked?ar-mt_gain:excessive}}>
+    <label for="ar-mt_gain" class="form-check-label">3. excessivo</label>
   </div>
 </div>
 
-<h4 class="mt-1">Depth</h4>
+<h4 class="mt-1">Profundidade</h4>
 
 <div class="bg-light border border-secondary rounded pl-2">
   <div class="form-check">
-    <input type="radio" id="image_med_trans_depth1"
-      name="image_med_trans_depth" value="1" class="form-check-input" {{checked?image_med_trans_depth1:1}}>
-    <label for="image_med_trans_depth1" class="form-check-label">1. little</label>
+    <input type="radio" id="ar-mt_depth"
+      name="ar-mt_depth" value="insufficient" class="form-check-input" {{checked?ar-mt_depth:insufficient}}>
+    <label for="ar-mt_depth" class="form-check-label">1. insuficiente</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="image_med_trans_depth2"
-      name="image_med_trans_depth" value="2" class="form-check-input" {{checked?image_med_trans_depth2:2}}>
-    <label for="image_med_trans_depth2" class="form-check-label">2. excessive</label>
+    <input type="radio" id="ar-mt_depth"
+      name="ar-mt_depth" value="appropriate" class="form-check-input" {{checked?ar-mt_depth:appropriate}}>
+    <label for="ar-mt_depth" class="form-check-label">2. apropriado</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="image_med_trans_depth3"
-      name="image_med_trans_depth" value="3" class="form-check-input" {{checked?image_med_trans_depth3:3}}>
-    <label for="image_med_trans_depth3" class="form-check-label">3. appropriate</label>
+    <input type="radio" id="ar-mt_depth"
+      name="ar-mt_depth" value="excessive" class="form-check-input" {{checked?ar-mt_depth:excessive}}>
+    <label for="ar-mt_depth" class="form-check-label">3. excessivo</label>
   </div>
 </div>
 
 <h4 class="mt-1">Anatomical References</h4>
 
 <div class="bg-light border border-secondary rounded pl-2">
-  <div class="form-check">
-    <input type="radio" id="image_med_trans_anatomical1"
-      name="image_med_trans_anatomical" value="1" class="form-check-input" {{checked?image_med_trans_anatomical1:1}}>
-    <label for="image_med_trans_anatomical1" class="form-check-label">1. absent</label>
-  </div>
-  <div class="form-check">
-    <input type="radio" id="image_med_trans_anatomical2"
-      name="image_med_trans_anatomical" value="2" class="form-check-input" {{checked?image_med_trans_anatomical2:2}}>
-    <label for="image_med_trans_anatomical2" class="form-check-label">2. partially present</label>
-  </div>
-  <div class="form-check">
-    <input type="radio" id="image_med_trans_anatomical3"
-      name="image_med_trans_anatomical" value="3" class="form-check-input" {{checked?image_med_trans_anatomical3:3}}>
-    <label for="image_med_trans_anatomical3" class="form-check-label">3. present</label>
-  </div>
+   <div class="form-check">
+     <input type="radio" id="ar-mt_measurements"
+       name="ar-mt_measurements" value="adequate" class="form-check-input" {{checked?ar-mt_measurements:adequate}}>
+     <label for="ar-mt_measurements" class="form-check-label">1. adequadas</label>
+   </div>
+   <div class="form-check">
+     <input type="radio" id="ar-mt_measurements"
+       name="ar-mt_measurements" value="inadequate" class="form-check-input" {{checked?ar-mt_measurements:inadequate}}>
+     <label for="ar-mt_measurements" class="form-check-label">2. inadequadas</label>
+   </div>
 </div>
 
 <hr>
 <div class="text-center">
-  <button type="button" class="btn btn-secondary" id="btn-save-comments" >SAVE COMMENTS</button>
-  <dcc-button topic="control/case/save" label="SAVE COMMENTS" location="btn-save-comments" xstyle="out"></dcc-button>
+  <dcc-button topic="control/case/save" label="SAVE COMMENTS" xstyle="theme"></dcc-button>
 </div>
 <hr>

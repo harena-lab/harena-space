@@ -14,13 +14,14 @@ class DCCCompute extends DCCBase {
     if (this.hasAttribute('expression')) {
       this._compiled =
         DCCCompute.compileStatementSet(this.expression.toLowerCase())
-      if (this._compiled != null && this.onload)
+      if (this._compiled != null && this.onload) {
         await this.update()
         if (this.active) {
           const variables = DCCCompute.filterVariables(this._compiled, false)
           for (let v of variables)
             MessageBus.ext.subscribe('var/' + v + '/set', this.update)
         }
+      }
     }
 
     if (this.hasAttribute('id'))
