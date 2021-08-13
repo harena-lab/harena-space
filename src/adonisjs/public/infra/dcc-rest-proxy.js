@@ -414,8 +414,6 @@
         'subject_grade':'professor',
         'subject': sessionStorage.getItem('harena-user-institution-id'),
         'table_id': new URL(document.location).searchParams.get('id'),
-
-        'case_id': new URL(document.location).searchParams.get('id'),
       },
       oas: {
         paths: {
