@@ -53,7 +53,8 @@ class Translator {
     const compiledCase = {
       id: caseId,
       knots: {},
-      layers: {}
+      layers: {},
+      slayers: {}
     }
 
     const layerBlocks = this._indexLayers(markdown, compiledCase)
@@ -88,27 +89,46 @@ class Translator {
   _indexLayers (markdown, compiledCase) {
     const layerBlocks = markdown.split(Translator.marksLayerTitle)
 
+    let isStatic = false
     for (let lb = 1; lb < layerBlocks.length; lb += 2) {
       const layer = {
         _source: layerBlocks[lb + 1]
       }
       this._compileUnityMarkdown(layer)
       this._compileMerge(layer)
-      compiledCase.layers[layerBlocks[lb].trim()] = layer
+      const layerName = layerBlocks[lb].trim()
+      if (layerName.toLowerCase() == 'template')
+        isStatic = true
+      if (isStatic)
+        compiledCase.slayers[layerName] = layer
+      else
+        compiledCase.layers[layerName] = layer
     }
 
     return layerBlocks
   }
 
   _extractCaseMetadata (compiledCase) {
-    if (compiledCase.layers.Data) {
-      const content = compiledCase.layers.Data.content
-      for (const c in content) {
-        if (content[c].type == 'field') {
-          if (content[c].field == 'namespaces') { Context.instance.addNamespaceSet(content[c].value) } else if (Translator.globalFields.includes(content[c].field)) { compiledCase[content[c].field] = content[c].value }
+    let layers = compiledCase.layers
+    let r = 1
+    while (r < 3) {
+      if (layers.Data) {
+        let content = layers.Data.content
+        for (const c in content) {
+          if (content[c].type == 'field') {
+            if (content[c].field == 'namespaces')
+              Context.instance.addNamespaceSet(content[c].value)
+            else if (Translator.globalFields.includes(content[c].field))
+              compiledCase[content[c].field] = content[c].value
+          }
         }
       }
+      r++
+      layers = compiledCase.slayers
     }
+    if (compiledCase.layers.Flow || compiledCase.slayers.Flow)
+      compiledCase.flow = (compiledCase.layers.Flow) ?
+        compiledCase.layers.Flow.content : compiledCase.slayers.Flow.content
   }
 
   /*
@@ -496,7 +516,7 @@ class Translator {
       }
     }
 
-    // fourth cycle - aggregates texts, mentions, annotations, selects, and images
+    // fourth cycle - aggregates texts, mentions, annotations, selects, images, and media
     let tblock
     let tblockSeq
     for (let c = 0; c < compiled.length; c++) {
@@ -976,7 +996,8 @@ class Translator {
     switch (mdType) {
       case 'knot' : obj = this._knotMdToObj(match); break
       case 'blockquote': obj = this._blockquoteMdToObj(match); break
-      case 'image' : obj = this._imageMdToObj(match); break
+      case 'image': obj = this._imageMdToObj(match); break
+      case 'media': obj = this._mediaMdToObj(match); break
       case 'option' : obj = this._optionMdToObj(match); break
       case 'item' : obj = this._itemMdToObj(match); break
       case 'field' : obj = this._fieldMdToObj(match); break
@@ -1148,6 +1169,7 @@ class Translator {
         case 'script': html = this._scriptObjToHTML(obj, superseq)
           break
         case 'image' : html = this._imageObjToHTML(obj, superseq); break
+        case 'media' : html = this._mediaObjToHTML(obj, superseq); break
         case 'option' : html = this._optionObjToHTML(obj); break
         case 'field' : html = this._fieldObjToHTML(obj); break
         case 'divert-script' :
@@ -1188,6 +1210,10 @@ class Translator {
         md += compiledCase.knots[kn]._source
       } else {
         md += compiledCase.knots[kn]._sourceHead + '\n'
+        const contentMd =
+          this.contentToMarkdown(compiledCase.knots[kn].content)
+        md += contentMd
+        /*
         let newContent = 0
         for (const ct in compiledCase.knots[kn].content) {
           const content = compiledCase.knots[kn].content[ct]
@@ -1204,24 +1230,53 @@ class Translator {
           }
         }
         if (newContent == 0)
+        */
+        /*
+        if (contentMd.length > 0)
           md += '\n'
+        */
       }
     }
 
     // <TODO> provisory
     if (compiledCase.layers) {
-      const dynamicLayers = ['Template', 'Comments']
+      for (const l in compiledCase.layers)
+        md += Translator.markdownTemplates.layer.replace('[title]', l) +
+              compiledCase.layers[l]._source
 
-      const includeAllLayers =
-        includeStatic || !Object.keys(compiledCase.layers).includes('Template')
-
-      for (const l in compiledCase.layers) {
-        if (includeAllLayers || dynamicLayers.includes(l))
+      if (includeStatic || !compiledCase.slayers.Template)
+        for (const l in compiledCase.slayers)
           md += Translator.markdownTemplates.layer.replace('[title]', l) +
-                   compiledCase.layers[l]._source
-      }
+                compiledCase.slayers[l]._source
+      else if (compiledCase.slayers.Template)
+        md += Translator.markdownTemplates.layer.replace('[title]', 'Template') +
+              compiledCase.slayers.Template._source
     }
 
+    return md
+  }
+
+  contentToMarkdown (unityContent) {
+    let md = ''
+    for (const ct in unityContent) {
+      const content = unityContent[ct]
+
+      if (!content.inherited) {
+        // linefeed of the merged block (if block), otherwise linefeed of the content
+        md += content._source +
+                    ((((content.mergeLine === undefined &&
+                        Translator.isLine.includes(content.type)) ||
+                       (content.mergeLine !== undefined &&
+                        content.mergeLine)) &&
+                        (content._source.length < 1 ||
+                         content._source[content._source.length-1] != '\n'))
+                      ? '\n' : '')
+      }
+    }
+    if (md.length < 1 || md[md.length-1] != '\n')
+      md += '\n\n'
+    else if (md.length < 2 || md[md.length-2] != '\n')
+      md += '\n'
     return md
   }
 
@@ -1250,6 +1305,8 @@ class Translator {
       case 'linefeed': element._source = this._linefeedObjToMd(element)
         break
       case 'image': element._source = this._imageObjToMd(element)
+        break
+      case 'media': element._source = this._mediaObjToMd(element)
         break
       case 'option': element._source = this._optionObjToMd(element)
         break
@@ -1517,6 +1574,46 @@ class Translator {
       .replace('{resize}', resize)
       .replace('{title}',
         (obj.title) ? ' "' + obj.title + '"' : '')
+  }
+
+  /*
+   * Media Md to Obj
+   */
+  _mediaMdToObj (matchArray) {
+    const media = {
+      type: 'media',
+      subtype: matchArray[1].trim()
+    }
+    if (matchArray[2] != null) { media.path = matchArray[2].trim() }
+    return media
+  }
+
+  /*
+   * Media Obj to HTML
+   */
+  _mediaObjToHTML (obj, superseq) {
+    let result
+    if (this.authoringRender && superseq == -1) {
+      result = Translator.htmlTemplatesEditable.media
+        .replace('[seq]', obj.seq)
+        .replace('[author]', this._authorAttrSub(superseq))
+        .replace(/\[subtype\]/g, obj.subtype)
+        .replace('[source]', (obj.path)
+          ? ' source="' + obj.path + '"' : '')
+    } else {
+      let resize = ''
+      result = Translator.htmlTemplates.media
+        .replace(/\[subtype\]/g, obj.subtype)
+        .replace('[source]', (obj.path)
+          ? '<source src="' + Basic.service.imageResolver(obj.path) + '">' : '')
+    }
+    return result
+  }
+
+  _mediaObjToMd (obj) {
+    return Translator.markdownTemplates.media
+      .replace(/\[subtype\]/g, obj.subtype)
+      .replace('[source]', obj.path)
   }
 
   /*
@@ -2360,8 +2457,11 @@ class Translator {
       mark: /^[ \t]*>[ \t]*/im
     },
     image: {
-      mark: /([ \t]*)!\[([\w \t]*)\]\(<?([\w:.\/\?&#\-~]+)>?[ \t]*(?:=(\d*(?:\.\d+[^x \t"\)])?)(?:x(\d*(?:\.\d+[^ \t"\)])?))?)?[ \t]*(?:"([\w ]*)")?\)/im,
+      mark: /([ \t]*)!\[([^\]\n\r\f]*)\]\(<?([\w:.\/\?&#\-~]+)>?[ \t]*(?:=(\d*(?:\.\d+[^x \t"\)])?)(?:x(\d*(?:\.\d+[^ \t"\)])?))?)?[ \t]*(?:"([\w ]*)")?\)/im,
       inline: true
+    },
+    media: {
+      mark: /<(video|audio)(?:[^>]*)?>(?:<source src="([^"]+)">)?<\/(:?video|audio)>/im
     },
     field: {
       mark: /^([ \t]*)(?:[\+\*])[ \t]+([\w.\/\?&#\-][\w.\/\?&#\- \t]*):[ \t]*([^&>\n\r\f'][^&>\n\r\f]*)?(?:'([^']*)')?(?:-(?:(?:&gt;)|>)[ \t]*([^\(\n\r\f]+))?$/im,
@@ -2451,15 +2551,15 @@ class Translator {
   Translator.subordinatorElement = ['entity']
   Translator.isLine = ['knot', 'field', 'item', 'option', 'divert-script', 'entity', 'input',
     'compute', 'context-open']
-  Translator.textBlockCandidate = ['select', 'annotation', 'text', 'mention', 'image',
-    'output', 'divert']
+  Translator.textBlockCandidate = ['select', 'annotation', 'text', 'mention',
+    'image', 'media', 'output', 'divert']
   Translator.scriptable = ['compute', 'divert-script']
 
   Translator.fieldSet = ['vocabularies', 'answers', 'states', 'labels']
 
   Translator.inputSubtype = ['short', 'text', 'group select', 'table']
 
-  Translator.globalFields = ['theme', 'title', 'role', 'templates']
+  Translator.globalFields = ['theme', 'title', 'role', 'templates', 'artifacts']
 
   Translator.reservedNavigation = ['case.next', 'knot.start',
     'knot.previous', 'knot.next',

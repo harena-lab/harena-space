@@ -38,6 +38,8 @@ class AuthorManager {
 
     this.updateSourceField = this.updateSourceField.bind(this)
 
+    this._uploadArtifacts = this._uploadArtifacts.bind(this)
+
     this._caseModified = false
 
     window.onbeforeunload = function () {
@@ -97,12 +99,11 @@ class AuthorManager {
 
     // build singletons
     Panels.start()
-    // Properties.start(this);
 
     Properties.s.attachPanelDetails(
-      document.querySelector('#properties-panel'),
-      document.querySelector('#properties-buttons'),
-      this
+      document.querySelector('#properties-panel')
+      // document.querySelector('#properties-buttons'),
+      // this
     )
 
     this._mainPanel = document.querySelector('#main-panel')
@@ -110,32 +111,12 @@ class AuthorManager {
     this._knotPanel = document.querySelector('#knot-panel')
     this._messageSpace = document.querySelector('#message-space')
     this.authorizeCommentSection()
-    // this._userid = await Basic.service.signin();
 
-    /*
-      const authorState = Basic.service.authorStateRetrieve();
-      this._userid = authorState.userid;
-
-      if (authorState.template) {
-         Basic.service.authorPropertyRemove("template");
-         this.caseNew(authorState.template.id);
-      } else
-         this._caseLoad(authorState.caseId);
-      */
+    document.querySelector("#artifacts-select").onchange = this._uploadArtifacts
 
     if (caseid != null) { this._caseLoad(caseid) }
 
-    /*
-      document.querySelector("#btn-save-settings")
-         .addEventListener("mousedown", this.updateSourceField);
-      */
-
-    /*
-      document.querySelector("#settings-modal")
-         .addEventListener("shown.bs.modal", this.updateSourceField);
-      */
     $('#settings-modal').on('shown.bs.modal', this.updateSourceField)
-    // this.caseLoadSelect();
   }
 
   async authorizeCommentSection(){
@@ -297,24 +278,6 @@ class AuthorManager {
 
     const caseObj = await MessageBus.ext.request('data/case/' + caseId + '/get')
 
-    /*
-    const caseObj = await MessageBus.ext.request(
-      'service/request/get', {caseId: caseId})
-
-    let source = caseObj.message.source
-    const template =
-      source.match(/^___ Template ___[\n]*\*[ \t]+template[ \t]*:[ \t]*(.+)$/im)
-    if (template != null && template[1] != null) {
-      console.log('=== template')
-      console.log(template)
-      const templateMd =
-        await MessageBus.ext.request(
-          'data/template/' + template[1].replace(/\//g, '.') +
-            '/get', {static: true})
-      source += templateMd.message
-    }
-    */
-
     this._currentCaseTitle = caseObj.message.title
     await this._compile(caseObj.message.source)
     await this._showCase()
@@ -327,8 +290,6 @@ class AuthorManager {
 
     this._knots = this._compiledCase.knots
 
-    // Basic.service.currentThemeFamily = this._compiledCase.theme
-
     Basic.service.composedThemeFamily(this._compiledCase.theme)
     if (this._compiledCase.title) { this._currentCaseTitle = this._compiledCase.title }
 
@@ -337,6 +298,9 @@ class AuthorManager {
   }
 
   async _showCase (selectKnot) {
+    this._showArtifacts()
+    Properties.s.artifacts = this._compiledCase.artifacts
+
     await this._navigator.mountTreeCase(this, this._compiledCase.knots)
 
     let sk
@@ -348,6 +312,17 @@ class AuthorManager {
     }
 
     MessageBus.ext.publish('control/knot/selected', sk)
+  }
+
+  _showArtifacts () {
+    if (this._compiledCase.artifacts) {
+      let artHTML = ''
+      for (let a in this._compiledCase.artifacts)
+        artHTML += '<div><a href="' + Basic.service.imageResolver(a) +
+                   '" target="_blank">' +
+                   this._compiledCase.artifacts[a] + '</a></div>'
+      document.querySelector('#case-artifacts').innerHTML = artHTML
+    }
   }
 
   /*
@@ -535,76 +510,11 @@ class AuthorManager {
     * ACTION: knot-selected
     */
   async knotSelected (topic, message) {
-    // this._removeFloatingMenu();
-    // let knotid = MessageBus.extractLevel(topic, 3);
     const knotid =
          (message == null || message === '') ? this._knotSelected : message
     console.log('=== knot selected')
     console.log(knotid)
     if (knotid != null) {
-      /*
-         console.log("=== miniatureF");
-         console.log("#mini-" + knotid.replace(/\./g, "_"));
-         const miniatureF =
-            document.querySelector("#mini-" + knotid.replace(/\./g, "_"));
-         let miniature = miniatureF.getElementsByTagName("div")[0];
-         */
-
-      // context menu
-      /*
-         if (knotid == this._knotSelected) {
-            // looks for a template considering the current categories
-            this._templateNewKnot = null;
-            if (this._knots[knotid].categories &&
-                this._compiledCase.templates &&
-                this._compiledCase.templates.categories) {
-               const templateCats = Object.keys(
-                  this._compiledCase.templates.categories);
-               this._templateNewKnot = [];
-               for (let cat of this._knots[knotid].categories)
-                  if (templateCats.includes(cat) &&
-                      !this._templateNewKnot.includes(
-                        this._compiledCase.templates.categories[cat]))
-                     this._templateNewKnot.push(
-                        this._compiledCase.templates.categories[cat]);
-               // deduplicate
-               // this._templateNewKnot =
-               //    this._templateNewKnot.filter(
-               //       (item, pos) => c.indexOf(item) === pos);
-               if (this._templateNewKnot.length == 0)
-                  this._templateNewKnot = null;
-            }
-            const extra =
-               ((this._templateNewKnot == null) ? "" :
-                  "<dcc-button topic='control/knot/new' label='Add' xstyle='in'>" +
-                        "</dcc-button>") +
-               "<dcc-button topic='control/knot/remove' label='Remove' xstyle='in'>" +
-                     "</dcc-button>";
-
-            // Properties.s.editKnotProperties(this._knots[this._knotSelected],
-            //                                 this._knotSelected, miniature, extra);
-            if (this._templateNewKnot != null) {
-               const miniBox = miniature.getBoundingClientRect();
-               this._buildFloatingMenu(miniBox.left, miniBox.top,
-                  "<dcc-button topic='control/knot/new' label='Add' xstyle='in'>" +
-                  "</dcc-button>");
-            }
-         } else {
-         */
-      /*
-         if (this._miniPrevious)
-            this._miniPrevious.classList.remove("sty-selected-knot");
-         miniature.classList.add("sty-selected-knot");
-         this._miniPrevious = miniature;
-         */
-
-      /*
-         if (this._knots[knotid].categories &&
-             this._knots[knotid].categories.indexOf("expansion") > -1) {
-            this._knotSelected = knotid;
-            this.knotNew();
-         } else {
-         */
       this._checkKnotModification(this._renderState)
       this._knotSelected = knotid
       this._htmlKnot = await Translator.instance.generateHTML(
@@ -626,29 +536,6 @@ class AuthorManager {
       this._comments.close()
     }
   }
-
-  // <TODO> no use - remove?
-  /*
-   _buildFloatingMenu(left, top, html) {
-      this._removeFloatingMenu();
-      this._floatingMenu = document.createElement("div");
-      this._floatingMenu.classList.add("sty-menu-floating");
-      this._floatingMenu.innerHTML = html;
-      const mainBox = this._mainPanel.getBoundingClientRect();
-      this._floatingMenu.style.left = (left - mainBox.left) + "px";
-      this._floatingMenu.style.top = (top - mainBox.top) + "px";
-      this._mainPanel.appendChild(this._floatingMenu);
-   }
-   */
-
-  /*
-   _removeFloatingMenu() {
-      if (this._floatingMenu != null) {
-         this._mainPanel.removeChild(this._floatingMenu);
-         this._floatingMenu = null;
-      }
-   }
-   */
 
   /*
     * ACTION: group-selected
@@ -693,23 +580,6 @@ class AuthorManager {
 
       console.log('=== k title')
       console.log(knotId)
-
-      /*
-      let last = 1
-      for (const k in this._knots) {
-        const kNumber = k.search(/Knot_[\d]+$/)
-        if (kNumber >= 0) {
-          const n = parseInt(k.substring(kNumber + 5))
-          last = (n > last) ? n : last
-        }
-      }
-      last++
-
-      const knotId = 'Knot_' + last
-      const knotMd = 'Knot_' + last
-
-      markdown = markdown.message.replace('_Knot_Name_', knotMd) + '\n'
-      */
 
       markdown = markdown.message.replace(templateTitle, knotMd) + '\n'
 
@@ -811,14 +681,6 @@ class AuthorManager {
 
   _renderKnot () {
     if (this._renderState == 1) {
-      /*
-      const promise = new Promise((resolve, reject) => {
-        const rendered = 'control/render/finished'
-        MessageBus.ext.subscribe(rendered, function(e) {resolve()})
-        this._knotPanel.innerHTML = this._htmlKnot + '<dcc-message message="' + rendered + '"></dcc-message>'
-      })
-      await promise
-      */
       this._knotPanel.innerHTML = this._htmlKnot
     }
     /* <TODO> temporarily disabled
@@ -851,30 +713,15 @@ class AuthorManager {
     /* nothing */;
 
     if (el != -1) {
-      /*
-      for (let edcc in this._editableDCCs)
-        if (this._editableDCCs[edcc].deactivateAuthor)
-          this._editableDCCs[edcc].deactivateAuthor()
-      */
-
-      // let dcc = this._editableDCCs[dccId]
       let dcc = await this._editableDCCWait(dccId)
       const element = this._knots[this._knotSelected].content[el]
 
-      // if (this._previousEditedDCC) { this._previousEditedDCC.reactivateAuthor() }
-
       const role = (message != null) ? message.role : null
-
-      // dcc.deactivateAuthorCurrent()
 
       this._previousEditedDCC = dcc
 
       // check for a dcc inside a dcc
       const presentationId = (message == null) ? null : message.presentationId
-      /*
-      dcc = (presentationId != null)
-        ? this._editableDCCs[presentationId] : dcc
-      */
       const parentDCC = dcc
       // check for a DCC inside a DCC
       if (presentationId != null) {
@@ -946,7 +793,7 @@ class AuthorManager {
 
       // finding the next nonblank node
       let pos
-      if (position = 'previous') { pos = (contentSel[elSel - 1].type == 'linefeed') ? elSel - 2 : elSel - 1 } else { pos = (contentSel[elSel + 1].type == 'linefeed') ? elSel + 2 : elSel + 1 }
+      if (position == 'previous') { pos = (contentSel[elSel - 1].type == 'linefeed') ? elSel - 2 : elSel - 1 } else { pos = (contentSel[elSel + 1].type == 'linefeed') ? elSel + 2 : elSel + 1 }
 
       // exchanging sequence ids
       const elSeq = contentSel[elSel].seq
@@ -997,14 +844,6 @@ class AuthorManager {
     const md = Translator.instance.assembleMarkdown(this._compiledCase, true)
     this._compile(md)
     this._showCase()
-
-    /*
-      let mini =document.querySelector("#t_" + previousTitle.replace(/ /g, "_"));
-      mini.setAttribute("id", "#t_" + newTitle.replace(/ /g, "_"));
-      mini.removeChild(mini.firstChild);
-      // let element = document.createElementNS("http://www.w3.org/2000/svg", "text");
-      mini.appendChild(document.createTextNode(newTitle));
-      */
 
     this._knotSelected = newIndex
   }
@@ -1103,7 +942,75 @@ class AuthorManager {
     const themeObj = families.message.find(function (s) { return s.id == this },
       Basic.service.currentThemeFamily)
     this._themeSVG = themeObj.svg
-    // this._themeSVG = families.message[Translator.instance.currentThemeFamily].svg;
+  }
+
+  async _uploadArtifacts () {
+    let files = document.querySelector('#artifacts-select').files
+    let progSpace = document.querySelector('#progress-artifacts')
+    console.log('===== files selected')
+    let a = 0
+    for (let f of files) {
+      let art = document.createElement('div')
+      progSpace.appendChild(art)
+      a++
+      let prMsg = "action/upload/artifact/" + a
+      art.innerHTML =
+        '<dcc-progress index><subscribe-dcc topic="' + prMsg + '" map="update">' +
+        '</subscribe-dcc></dcc-progress>'
+      let ref = document.createElement('div')
+      progSpace.appendChild(ref)
+      ref.innerHTML = f.name
+      const artifact = await
+        MessageBus.ext.request('data/asset//new',
+          {
+            file: f,
+            caseid: Basic.service.currentCaseId,
+            progress: prMsg
+          })
+      ref.innerHTML = '<a href="' + artifact.message.url + '" target="_blank">' +
+                      f.name + '</a>'
+      this._insertArtifactReference(artifact.message.filename, f.name)
+      console.log(f)
+    }
+    progSpace.innerHTML = ''
+    this._showArtifacts()
+    console.log('=== case with artifacts')
+    console.log(this._compiledCase)
+  }
+
+  _insertArtifactReference (artifactId, artifactName) {
+    if (!this._compiledCase.layers.Data) {
+      this._compiledCase.layers.Data = {
+        _source: '',
+        content: []
+      }
+    }
+
+    const content = this._compiledCase.layers.Data.content
+    let artifacts = null
+    for (let c of content)
+      if (c.type == 'field' && c.field == 'artifacts')
+        artifacts = c
+
+    if (artifacts == null) {
+      artifacts = {
+        _source: '',
+        type: 'field',
+        field: 'artifacts',
+        value: {}
+      }
+      artifacts.seq = (content.length == 0) ? 1 : content[content.length - 1].seq + 1
+      content.push(artifacts)
+      this._compiledCase.artifacts = artifacts.value
+      Properties.s.artifacts = this._compiledCase.artifacts
+    }
+
+    artifacts.value[artifactId] = artifactName
+    Translator.instance.updateElementMarkdown(artifacts)
+    this._compiledCase.layers.Data._source =
+      '\n' + Translator.instance.contentToMarkdown(content)
+    console.log('=== updated artifact')
+    console.log(artifacts)
   }
 }
 

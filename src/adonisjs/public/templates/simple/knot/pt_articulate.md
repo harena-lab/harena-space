@@ -1,24 +1,30 @@
-# Articulate (detailed)
+# Articulate: Basic
 
 **Articulate - POCUS Exam Videos and Photos:**
 
 Video - Varredura longitudinal
 
-<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
+{{AR-VL
+<video></video>
+}}
 
 Video - Varredura transversal
 
-<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
+{{AR-VT
+<video></video>
+}}
 
 Image - Medidas no longitudinal
 
-![POCUS Image](template/pocus_image.png)
+{{AR-ML
+![POCUS Image](template/image-stub.svg)
+}}
 
 Image - Medidas no transversal
 
-![POCUS Image](template/pocus_image.png)
-
-* Next -> Flow.Next
+{{AR-MT
+![POCUS Image](template/image-stub.svg)
+}}
 
 {{findings
 Describe here your findings concerning the following video and photos.

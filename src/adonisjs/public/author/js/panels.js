@@ -24,9 +24,6 @@ class Panels {
 
     this._buttonExpandNav = document.querySelector('#button-expand-nav')
     this._buttonRetractNav = document.querySelector('#button-retract-nav')
-    this._buttonExpandProp = document.querySelector('#button-expand-prop')
-    this._buttonRetractProp = document.querySelector('#button-retract-prop')
-    this._buttonCommentsNav = document.querySelector('#button-comments-nav')
 
     this._elementsBlock = document.querySelector('#elements-block')
     this._elementsMain = document.querySelector('#elements-main')
@@ -42,6 +39,9 @@ class Panels {
     this.setupCommentsExpand = this.setupCommentsExpand.bind(this)
     MessageBus.ext.subscribe('control/comments/expand',
       this.setupCommentsExpand)
+    this.setupArtifactsExpand = this.setupArtifactsExpand.bind(this)
+    MessageBus.ext.subscribe('control/artifacts/expand',
+        this.setupArtifactsExpand)
   }
 
   get commentsVisible () {
@@ -74,7 +74,7 @@ class Panels {
   }
 
   setupRegularNavigator () {
-    this._buttonExpandProp.style.display = 'initial'
+    document.querySelector('#button-expand-prop').style.display = 'initial'
     if (this._propertiesVisible) { this.setupPropertiesExpand() }
     // this._knotMain.classList.add('w-' + this._knotPanelSize)
     // this._navigationBlock.classList.remove('w-100')
@@ -94,14 +94,20 @@ class Panels {
     // this._navigationBlock.classList.add('w-100')
     this._buttonExpandNav.style.display = 'none'
     this._buttonRetractNav.style.display = 'initial'
-    this._buttonExpandProp.style.display = 'none'
+    document.querySelector('#button-expand-prop').style.display = 'none'
   }
 
   setupPropertiesRetract () {
     this._propertiesVisible = false
-    this._buttonRetractProp.style.display = 'none'
-    this._buttonExpandProp.style.display = 'initial'
-    this._buttonCommentsNav.style.display = 'initial'
+    document.querySelector('#button-retract-right').style.display = 'none'
+    document.querySelector('#button-expand-prop').style.display = 'initial'
+    document.querySelector('#button-expand-com').style.display = 'initial'
+    document.querySelector('#button-expand-art').style.display = 'initial'
+
+    document.querySelector('#properties-block').style.display = 'none'
+    document.querySelector('#comments-block').style.display = 'none'
+    document.querySelector('#artifacts-block').style.display = 'none'
+
     this._elementsBlock.style.display = 'none'
     this._elementsMain.style.minWidth = ''
     this._knotMain.style.width = '100%'
@@ -114,9 +120,10 @@ class Panels {
 
   setupPropertiesPanelExpand () {
     this._propertiesVisible = true
-    this._buttonRetractProp.style.display = 'initial'
-    this._buttonExpandProp.style.display = 'none'
-    this._buttonCommentsNav.style.display = 'none'
+    document.querySelector('#button-retract-right').style.display = 'initial'
+    document.querySelector('#button-expand-prop').style.display = 'none'
+    document.querySelector('#button-expand-com').style.display = 'none'
+    document.querySelector('#button-expand-art').style.display = 'none'
     this._elementsBlock.style.display = 'initial'
     this._elementsMain.style.minWidth = '25%'
     this._knotMain.style.width = '75%'
@@ -130,16 +137,18 @@ class Panels {
   setupPropertiesExpand () {
     this.setupPropertiesPanelExpand()
     document.querySelector('#properties-block').style.display = 'initial'
-    document.querySelector('#comments-block').style.display = 'none'
-    this._commentsVisible = false
   }
 
   setupCommentsExpand () {
     this.setupPropertiesPanelExpand()
-    document.querySelector('#properties-block').style.display = 'none'
     this._commentsVisible = true
     document.querySelector('#comments-block').style.display = 'block'
     MessageBus.int.publish('control/comments/editor')
+  }
+
+  setupArtifactsExpand () {
+    this.setupPropertiesPanelExpand()
+    document.querySelector('#artifacts-block').style.display = 'initial'
   }
 
   setupProperties () {

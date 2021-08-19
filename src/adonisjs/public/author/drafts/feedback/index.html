@@ -57,7 +57,7 @@
     <link rel="stylesheet" href="/infra/css/common-author.css">
 
     <script>
-      Basic.service.rootPath = '../../'
+      Basic.service.rootPath = '../../../'
     </script>
 
     <script src="/author/js/dcc-author-server-proxy.js"></script>
@@ -170,6 +170,7 @@
             <form class="pl-2 align-items-center row" id="filter-form">
               <div class="p-2 ml-4">Filter by: </div>
               <div class="pr-3">
+                <dcc-rest id="harena-institutions" bind="harena-institutions"></dcc-rest>
                 <!-- <dcc-rest id="harena-institutions" bind="harena-institutions"></dcc-rest>
                 <dcc-dhtml id="harena-dhtml-institutions" connect="retrieve:harena-institutions:service/request/get">
 

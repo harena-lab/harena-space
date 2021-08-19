@@ -376,54 +376,36 @@ class DCCAuthorServer {
 
   async uploadArtifact (topic, message) {
     const data = new FormData()
-    if (message.file) { data.append('file', message.file) } else if (message.b64) { data.append('image', this.b64toBlob(message.b64)) }
-    data.append('caseId', message.caseid)
-    /*
-    const header = {
-      async: true,
-      crossDomain: true,
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'cache-control': 'no-cache',
-        Authorization: 'Bearer ' + DCCCommonServer.token
-      },
-      processData: false,
-      contentType: false,
-      mimeType: 'multipart/form-data',
-      body: data
+    if (message.file) {
+      data.append('file', message.file)
+    } else if (message.b64) {
+      data.append('image', this.b64toBlob(message.b64))
     }
-    const response =
-         await fetch(DCCCommonServer.managerAddressAPI + 'artifact', header)
-    console.log('=== response image upload')
-    console.log(response)
-    const jsonResponse = await response.json()
-    console.log(jsonResponse)
-    MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-      jsonResponse.filename)
-    */
+    data.append('caseId', message.caseid)
     const config = {
       method: 'POST',
       url: DCCCommonServer.managerAddressAPI + 'artifact',
       data: data,
-      withCredentials: true
+      withCredentials: true,
+      onUploadProgress: function(progressEvent) {
+        let percentCompleted =
+          Math.round((progressEvent.loaded * 100) / progressEvent.total) + '%'
+        if (message.progress)
+          MessageBus.ext.publish(message.progress, percentCompleted)
+        console.log('upload: ' + percentCompleted)
+      }
     }
     await axios(config)
       .then(function (response) {
-        // return response.redirect('/')
         console.log('=== response image upload')
         console.log(response)
         MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-          response.data.filename)
+          response.data)
       })
       .catch(function (error) {
         console.log('=== delete case error')
         console.log(error)
       })
-    /* console.log("file: " + message.file);
-    // console.log("caseid: " + message.caseid);
-    console.log(header);
-    */
   }
 
   /*

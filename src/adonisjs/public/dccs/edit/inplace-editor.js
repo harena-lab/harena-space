@@ -84,9 +84,10 @@ class EditDCC {
   _fetchElementWrapper () {
     // looks for a knot-wrapper or equivalent
     let elWrapper = this._editElement
+    const xstyle = (this._editDCC.xstyle != null) ? this._editDCC.xstyle :
+                   (this._editDCC._xstyle != null) ? this._editDCC._xstyle : null
     if (this._editElement != null &&
-          this._editDCC.xstyle && this._editDCC.xstyle != 'out' &&
-          this._editDCC.xstyle != 'out-image') {
+        xstyle != null && xstyle != 'out' && xstyle != 'out-image') {
       let ew = elWrapper.parentNode
       while (ew != null && (!ew.id || !ew.id.endsWith('-wrapper'))) { ew = ew.parentNode }
       // otherwise, finds the element outside dccs
@@ -143,9 +144,9 @@ class EditDCC {
     return (y * Basic.referenceViewport.height / this._containerRect.height)
   }
 
-  async _extendedPanel (html, modality) {
+  async _extendedPanel (html, modality, ftypes) {
     this._editorExtended =
-         this._buildExtendedPanel(html, modality)
+         this._buildExtendedPanel(html, modality, ftypes)
 
     this._fetchEditorContainer().appendChild(this._editorExtended)
     this._editDCC.parentNode.insertBefore(
@@ -158,10 +159,15 @@ class EditDCC {
         this._extendedSub.confirm.onclick = function (e) {
           callback('confirm')
         }
-      } else if (this._extendedSub.image) {
-        this._extendedSub.image.onchange = function (e) {
-          callback('confirm')
-        }
+      } else {
+        if (this._extendedSub.select)
+          this._extendedSub.select.onchange = function (e) {
+            callback('confirm')
+          }
+        if (this._extendedSub.browse)
+          this._extendedSub.browse.onchange = function (e) {
+            callback('confirm')
+          }
       }
       this._extendedSub.cancel.onclick = function (e) {
         callback('cancel')
@@ -170,7 +176,8 @@ class EditDCC {
     const buttonClicked = await promise
     return {
       clicked: buttonClicked,
-      content: this._extendedSub.content
+      select: this._extendedSub.select,
+      browse: this._extendedSub.browse
     }
   }
 
@@ -181,35 +188,62 @@ class EditDCC {
     }
   }
 
-  _buildExtendedPanel (html, modality) {
+  _buildExtendedPanel (html, modality, ftypes) {
     const panelExtended = document.createElement('div')
     panelExtended.classList.add('inplace-editor-floating')
     panelExtended.innerHTML = html
 
     this._extendedSub = {
       cancel: panelExtended.querySelector('#ext-cancel'),
-      content: panelExtended.querySelector('#ext-content')
     }
-    if (modality === 'image') {
-      this._extendedSub.image = panelExtended.querySelector('#ext-content')
+    if (modality === 'image' || modality === 'media') {
+      const artifacts = this._properties.artifacts
+      let artList = {}
+      let hasList = false
+      if (artifacts != null)
+        for (let a in artifacts)
+          if (ftypes.select.includes(a.substring(a.lastIndexOf('.')+1))) {
+            artList[a] = artifacts[a]
+            hasList = true
+          }
+      if (hasList) {
+        const artifactDiv = panelExtended.querySelector('#artifact-list')
+        let html = '<select id="artifact-select">' +
+          '<option disabled selected value> -- select an artifact -- </option>'
+        for (let a in artList)
+          html += '<option value="' + a + '">' + artList[a] + '</option>'
+        html += '<option value="">New...</option></select>'
+        artifactDiv.innerHTML = html
+        this._extendedSub.select = artifactDiv.querySelector('#artifact-select')
+      } else {
+        this._extendedSub.browse = panelExtended.querySelector('#artifact-browse')
+        this._extendedSub.browse.style.display = 'initial'
+      }
     } else { this._extendedSub.confirm = panelExtended.querySelector('#ext-confirm') }
     return panelExtended
   }
 
-  async _imageUploadPanel () {
+  async _mediaUploadPanel (mtype, ftypes) {
     const ep = await this._extendedPanel(
-      EditDCC.imageBrowseTemplate, 'image')
+      EditDCC.imageBrowseTemplate, mtype, ftypes)
     let path = null
-    if (ep.clicked === 'confirm' && ep.content.files[0]) {
-      const asset = await
-      MessageBus.ext.request('data/asset//new',
-        {
-          file: ep.content.files[0],
-          caseid: Basic.service.currentCaseId
-        })
-      path = asset.message
+    if (ep.select != null)
+      path = ep.select.options[ep.select.selectedIndex].value
+    else {
+      console.log('===== files selected')
+      for (let f of ep.browse.files)
+        console.log(f)
+      if (ep.clicked === 'confirm' && ep.browse.files[0]) {
+        const asset = await
+        MessageBus.ext.request('data/asset//new',
+          {
+            file: ep.browse.files[0],
+            caseid: Basic.service.currentCaseId
+          })
+        path = asset.message.filename
+      }
+      this._removeExtendedPanel()
     }
-    this._removeExtendedPanel()
     return path
   }
 }
@@ -259,6 +293,7 @@ class EditDCCProperties extends EditDCC {
           EditDCC.buttonCancelSVG + '</div>' +
 `   </div>
 </div>
-<input type="file" id="ext-content" name="ext-content"
-       accept="image/png, image/jpeg, image/svg">`
+<div id="artifact-list"></div>
+<input type="file" id="artifact-browse" name="artifact-browse"
+       style="display:none" accept="image/png, image/jpeg, image/svg">`
 })()

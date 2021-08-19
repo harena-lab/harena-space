@@ -182,6 +182,7 @@
         'fUserType': new URL(document.location).searchParams.get('fUserType'),
         'fSpecialty': new URL(document.location).searchParams.get('fSpecialty'),
         'fPropertyValue': new URL(document.location).searchParams.get('fPropertyValue'),
+        'fSearchStr': new URL(document.location).searchParams.get('fSearchStr'),
         'page': new URL(document.location).searchParams.get('page'),
         'nItems': new URL(document.location).searchParams.get('limit'),
       },
@@ -207,6 +208,8 @@
                   in: 'query'},
                 {name: 'fPropertyValue',
                   in: 'query'},
+                {name: 'fSearchStr',
+                  in: 'query'},
                 {name: 'page',
                   in: 'query'},
                 {name: 'nItems',
@@ -231,6 +234,7 @@
         'fUserType': new URL(document.location).searchParams.get('fUserType'),
         'fSpecialty': new URL(document.location).searchParams.get('fSpecialty'),
         'fPropertyValue': new URL(document.location).searchParams.get('fPropertyValue'),
+        'fSearchStr': new URL(document.location).searchParams.get('fSearchStr'),
         'page': new URL(document.location).searchParams.get('page'),
         'nItems': new URL(document.location).searchParams.get('limit'),
       },
@@ -253,6 +257,8 @@
                 {name: 'fProperty',
                   in: 'query'},
                 {name: 'fPropertyValue',
+                  in: 'query'},
+                {name: 'fSearchStr',
                   in: 'query'},
                 {name: 'page',
                   in: 'query'},
@@ -408,8 +414,6 @@
         'subject_grade':'professor',
         'subject': sessionStorage.getItem('harena-user-institution-id'),
         'table_id': new URL(document.location).searchParams.get('id'),
-
-        'case_id': new URL(document.location).searchParams.get('id'),
       },
       oas: {
         paths: {

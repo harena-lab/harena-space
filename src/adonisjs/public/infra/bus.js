@@ -80,6 +80,9 @@ class MessageBus {
           extTopic = this._runningCase.runningId + '/' + topic
         }
 
+        // console.log('%%%%%%' + extTopic)
+        // console.log(extMessage)
+
         // const response = await fetch('https://harena.ds4h.org/logger/api/v1/message', {
         const response = await fetch(DCCCommonServer.loggerAddressAPI + 'message', {
           method: 'POST',

@@ -44,6 +44,7 @@
     <script src="/dccs/components/visual/dcc-markdown.js"></script>
     <script src="/dccs/components/visual/dcc-annotation.js"></script>
     <script src="/dccs/components/visual/dcc-image.js"></script>
+    <script src="/dccs/components/visual/dcc-media.js"></script>
     <script src="/dccs/components/visual/dcc-expression.js"></script>
     <script src="/dccs/base/dcc-block.js"></script>
     <script src="/dccs/components/visual/dcc-button.js"></script>
@@ -60,6 +61,7 @@
     <script src="/dccs/components/visual/dcc-input-choice.js"></script>
     <script src="/dccs/components/visual/dcc-input-table.js"></script>
     <script src="/dccs/components/visual/dcc-slider.js"></script>
+    <script src="/dccs/components/visual/dcc-progress.js"></script>
     <script src="/dccs/components/visual/dcc-report.js"></script>
     <script src="/dccs/components/visual/dcc-graph.js"></script>
 
@@ -94,7 +96,7 @@
     <script src="/dccs/edit/inplace-editor.js"></script>
     <script src="/dccs/edit/inplace-plain-editor.js"></script>
     <script src="/dccs/edit/inplace-text-editor.js"></script>
-    <script src="/dccs/edit/inplace-image-editor.js"></script>
+    <script src="/dccs/edit/inplace-media-editor.js"></script>
 
     <script src="/author/js/dcc-author-server-proxy.js"></script>
     <script src="/author/js/panels.js"></script>
@@ -389,8 +391,9 @@
           <div id="properties-expansion" class="sty-navigation-expansion">
             <div id="properties-set" class="sty-navigation-set">
               <dcc-button id="button-expand-prop" topic="control/properties/expand" label="Expand" image="/author/icons/icon-properties.svg"></dcc-button>
-              <dcc-button id="button-retract-prop" topic="control/properties/retract" label="Retract" image="/author/icons/icon-expansion-right.svg" style="display:none"></dcc-button>
-              <dcc-button id="button-comments-nav" topic="control/comments/expand" label="Comment" image="/author/icons/icon-comment.svg"></dcc-button>
+              <dcc-button id="button-retract-right" topic="control/properties/retract" label="Retract" image="/author/icons/icon-expansion-right.svg" style="display:none"></dcc-button>
+              <dcc-button id="button-expand-com" topic="control/comments/expand" label="Comment" image="/author/icons/icon-comment.svg"></dcc-button>
+              <dcc-button id="button-expand-art" topic="control/artifacts/expand" label="Artifacts" image="/author/icons/icon-media.svg"></dcc-button>
             </div>
           </div>
             <div id="elements-main" class="d-flex">
@@ -415,6 +418,12 @@
                  </div>
                  <div id="comments-block" class="sty-properties-block std-border" style="display:none">
                     <div id="comments-display" class="d-flex flex-column sty-knot-panel p-1" style="overflow-y:auto !important; overflow-x:hidden !important;"></div>
+                 </div>
+                 <div id="artifacts-block" class="sty-properties-block std-border" style="display:none">
+                    <div id="case-artifacts"></div>
+                    <div id="progress-artifacts"></div>
+                    <input type="file" id="artifacts-select" name="artifacts-select" multiple="multiple"
+                           accept="image/png, image/jpeg, image/svg, audio/mpeg, video/mp4, video/webm">
                  </div>
               </div>
             </div>

@@ -1,28 +1,34 @@
-# Soft Parts (detailed)
+# Soft Parts: Basic
 
 **Soft Parts - POCUS Exam Videos and Photos:**
 
 Video - Varredura longitudinal
 
-<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
+{{ML-VL
+<video></video>
+}}
 
 Video - Varredura transversal
 
-<video><source src="https://drive.google.com/file/d/1Tb5XsVsJPqMiYiCWLZo74v4_T28sBn58/view?usp=sharing"></video>
+{{ML-VT
+<video></video>
+}}
 
 Image - Medidas no longitudinal
 
-![POCUS Image](template/pocus_image.png)
+{{ML-ML
+![POCUS Image](template/image-stub.svg)
+}}
 
 Image - Medidas no transversal
 
-![POCUS Image](template/pocus_image.png)
+{{ML-MT
+![POCUS Image](template/image-stub.svg)
+}}
 
 {{findings
 Describe here your findings concerning the following video and photos.
 }}
-
-* Next -> Flow.Next
 
 {{comments
 * template: simple/knot/pt_soft

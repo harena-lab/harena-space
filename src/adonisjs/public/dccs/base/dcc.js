@@ -14,6 +14,11 @@ class DCC {
     return DCC.components[bind.toLowerCase() + "." + name.toLowerCase()];
   }
 
+  static generateVarName() {
+    DCC.varSequence++
+    return 'var' + DCC.varSequence
+  }
+
   // <FUTURE>
   /*
   static component(name, companion, content) {
@@ -35,4 +40,6 @@ class DCC {
 
   // defines if the environment will support DCC editing
   DCC.editable = false
+
+  DCC.varSequence = 0
 })()

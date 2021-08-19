@@ -1,4 +1,4 @@
-# Presentation (detailed)
+# Presentation: Basic
 
 **Patient Data**
 
@@ -31,13 +31,11 @@ Write here the **Main Hypothesis**.
 Write here the **POCUS questions**.
 }}
 
-* Next -> Flow.Next
-
 {{comments
 * template: simple/knot/pt_presentation
 }}
 
-# Conclusion (detailed)
+# Conclusion: Final
 
 {{conclusion
 **Conclusion**
@@ -48,6 +46,14 @@ Write here about your **conclusion**.
 {{comments
 * template: simple/knot/pt_conclusion
 }}
+
+# Basic (detailed,master_bottom)
+
+* Next -> Flow.Next
+
+# Final (detailed,master_bottom)
+
+* Next Case -> Case.Next
 
 ___ Template ___
 

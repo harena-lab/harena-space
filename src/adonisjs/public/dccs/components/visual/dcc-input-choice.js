@@ -25,8 +25,8 @@ class DCCInputOption extends DCCInput {
     if (!this.hasAttribute('value')) { this.value = this._statement.trim() }
 
     // <TODO> align with dcc-state-select
-    if (this._parent == null && this.hasAttribute('variable')) {
-      MessageBus.int.publish('var/' + this.variable + '/input/ready',
+    if (this._parent == null) {
+      MessageBus.int.publish('var/' + this._variable + '/input/ready',
         {
           sourceType: DCCInputOption.elementTag,
           content: this.value
@@ -99,7 +99,7 @@ class DCCInputOption extends DCCInput {
 
   inputChanged () {
     this.changed = true
-    MessageBus.ext.publish('var/' + this.variable + '/changed',
+    MessageBus.ext.publish('var/' + this._variable + '/changed',
       {
         sourceType: DCCInputOption.elementTag,
         value: this.value
@@ -121,7 +121,7 @@ class DCCInputOption extends DCCInput {
       // === pre presentation setup
       // <TODO> review this sentence (copied from dcc-input-typed but not analysed)
       const statement =
-            (this.hasAttribute('xstyle') && this.xstyle.startsWith('out'))
+            (this._xstyle.startsWith('out'))
               ? '' : this._statement
 
       const html = (this.target)
@@ -130,10 +130,10 @@ class DCCInputOption extends DCCInput {
           .replace('[target]', this.target)
           .replace('[statement]', child._statement)
           .replace('[value]', child.value)
-          .replace('[variable]', this.variable)
+          .replace('[variable]', this._variable)
         : "<input id='presentation-dcc' type='[exclusive]' name='[variable]' value='[value]'[checked]>[statement]</input>"
           .replace('[exclusive]', (this.hasAttribute('exclusive') ? 'radio' : 'checkbox'))
-          .replace('[variable]', this.variable)
+          .replace('[variable]', this._variable)
           .replace('[value]', this.value)
           .replace('[statement]', statement)
           .replace('[checked]', this.hasAttribute('checked') ? ' checked' : '')
@@ -231,7 +231,7 @@ class DCCInputChoice extends DCCInput {
     }
 
     this.changed = true
-    MessageBus.ext.publish('var/' + this.variable + '/changed',
+    MessageBus.ext.publish('var/' + this._variable + '/changed',
       {
         sourceType: DCCInputChoice.elementTag,
         value: this._value
@@ -275,7 +275,7 @@ class DCCInputChoice extends DCCInput {
     let child = this.firstChild
     const html = []
     let nop = 0
-    const varid = this.variable.replace(/\./g, '_')
+    const varid = this._variable.replace(/\./g, '_')
     let inStatement = true
     let statement = ''
     while (child != null) {
@@ -289,7 +289,7 @@ class DCCInputChoice extends DCCInput {
             .replace('[target]', (child.target) ? child.target : this.target)
             .replace('[statement]', child._statement)
             .replace('[value]', child.value)
-            .replace('[variable]', this.variable)
+            .replace('[variable]', this._variable)
             .replace('[connect]', (child.compute == null) ? '' :
               ' connect="click:presentation-dcc-[id]-compute:compute/update"'
                 .replace('[id]', iid))
@@ -301,7 +301,7 @@ class DCCInputChoice extends DCCInput {
             .replace('[id]', iid)
             .replace('[exclusive]',
               (this.hasAttribute('exclusive') ? 'radio' : 'checkbox'))
-            .replace('[variable]', this.variable)
+            .replace('[variable]', this._variable)
             .replace('[value]', child.value)
             .replace('[statement]', child._statement)
             .replace('[checked]', child.hasAttribute('checked') ? ' checked' : '')
@@ -398,7 +398,7 @@ class DCCInputChoice extends DCCInput {
     this._presentationIsReady()
 
     // <TODO> align with dcc-state-select
-    MessageBus.int.publish('var/' + this.variable + '/group_input/ready',
+    MessageBus.int.publish('var/' + this._variable + '/group_input/ready',
       DCCInputChoice.elementTag)
   }
 
