@@ -24,7 +24,7 @@ class DCCInput extends DCCBlock {
         ? this._statement
         : this._variable.substring(this._variable.lastIndexOf('.') + 1)
 
-      MessageBus.int.publish('var/' + this._variable + '/input/mandatory',
+      this._publish('var/' + this._variable + '/input/mandatory',
         inputIndication)
     }
   }

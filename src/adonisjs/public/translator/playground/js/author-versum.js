@@ -6,7 +6,7 @@
 
 class AuthorVersumManager {
   constructor () {
-   	MessageBus.page = new MessageBus(false)
+   	// MessageBus.page = new MessageBus(false)
     Basic.service.rootPath = '../../'
     DCCCommonServer.instance.local = true
   }
@@ -15,8 +15,8 @@ class AuthorVersumManager {
     this.translate = this.translate.bind(this)
     this.updateVisibility = this.updateVisibility.bind(this)
 
-    MessageBus.ext.subscribe('control/translate/example', this.translate)
-    MessageBus.ext.subscribe('var/output/changed', this.updateVisibility)
+    MessageBus.i.subscribe('control/translate/example', this.translate)
+    MessageBus.i.subscribe('var/output/changed', this.updateVisibility)
   }
 
   async translate (topic, message) {

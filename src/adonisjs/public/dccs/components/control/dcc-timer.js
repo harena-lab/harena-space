@@ -97,7 +97,7 @@ class DCCTimer extends DCCBase {
   async step () {
     this._currentCycle++
     if (this._currentCycle <= this.cycles) {
-      MessageBus.ext.publish(this.publish, this._currentCycle)
+      this._publish(this.publish, this._currentCycle, true)
       await this.multiRequest('cycle', this._currentCycle)
     }
   }

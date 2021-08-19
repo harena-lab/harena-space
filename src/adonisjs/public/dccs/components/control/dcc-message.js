@@ -3,7 +3,7 @@
 class DCCMessage extends DCCBase {
   connectedCallback () {
     super.connectedCallback()
-    MessageBus.ext.publish(this.message)
+    this._publish(this.message, null, true)
   }
 
   /* Attribute Handling */

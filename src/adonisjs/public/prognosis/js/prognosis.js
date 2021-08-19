@@ -3,14 +3,14 @@ class Prognosis {
     this._ready = false
     this._totalReady = 0
     this.preStart = this.preStart.bind(this)
-    MessageBus.int.subscribe('control/dhtml/ready', this.preStart)
-    MessageBus.int.subscribe('control/html/ready', this.preStart)
-    MessageBus.int.publish('control/dhtml/status/request')
+    MessageBus.i.subscribe('control/dhtml/ready', this.preStart)
+    MessageBus.i.subscribe('control/html/ready', this.preStart)
+    MessageBus.i.publish('control/dhtml/status/request')
 
     // this.addPacientVariableOption = this.addPacientVariableOption.bind(this)
     // this.deletePacientVariableOption = this.deletePacientVariableOption.bind(this)
-    // MessageBus.ext.subscribe('button/add-option/clicked', this.addPacientVariableOption)
-    // MessageBus.ext.subscribe('button/delete-option/clicked', this.deletePacientVariableOption)
+    // MessageBus.i.subscribe('button/add-option/clicked', this.addPacientVariableOption)
+    // MessageBus.i.subscribe('button/delete-option/clicked', this.deletePacientVariableOption)
   }
   async preStart () {
     const dhtmlList = document.querySelectorAll('dcc-dhtml')
@@ -19,13 +19,13 @@ class Prognosis {
         this._totalReady++
       }
       if(this._totalReady == dhtmlList.length){
-        MessageBus.int.unsubscribe('control/dhtml/ready', this.preStart)
-        MessageBus.int.unsubscribe('control/html/ready', this.preStart)
+        MessageBus.i.unsubscribe('control/dhtml/ready', this.preStart)
+        MessageBus.i.unsubscribe('control/html/ready', this.preStart)
         this.start()
       }
     }
     if(dhtmlList.length == 0){
-      MessageBus.int.unsubscribe('control/html/ready', this.preStart)
+      MessageBus.i.unsubscribe('control/html/ready', this.preStart)
       this.start()
     }
   }

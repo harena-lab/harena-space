@@ -62,7 +62,7 @@ class Translator {
 
     if (this._themeSettings) { delete this._themeSettings }
     if (compiledCase.theme) {
-      const themeSt = await MessageBus.int.request(
+      const themeSt = await MessageBus.i.request(
         'data/theme_family/' + Basic.service.decomposeThemeFamily(compiledCase.theme).family.toLowerCase() +
         '/settings')
       if (themeSt != null) { this._themeSettings = themeSt.message }
@@ -1089,9 +1089,9 @@ class Translator {
   }
 
   async loadTheme (themeName) {
-    const themeObj = await MessageBus.ext.request(
+    const themeObj = await MessageBus.i.request(
       'data/theme/' + Basic.service.currentThemeFamily.toLowerCase() +
-            '.' + themeName.toLowerCase() + '/get')
+            '.' + themeName.toLowerCase() + '/get', null, null, true)
     return themeObj.message
   }
 

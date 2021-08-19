@@ -18,7 +18,7 @@ class DCCGraph extends DCCVisual {
       .replace(/\[height\]/g, this.height)
 
     this._graph = new Graph(this, this.label,
-      this.layout, this.action)
+      this.layout, this.action, this._bus)
 
     // applies a pending import graph
     if (this._graphObj) {
@@ -238,7 +238,8 @@ class DCCNode extends DCCGraphPiece {
     if (this._node.graph == null) {
       this._node.graph =
             new Graph(this._node, this.label,
-              this._space.layout, this._space.action)
+                      this._space.layout, this._space.action,
+                      this._space._bus)
     }
     this._node.graph.addPiece(type, piece)
   }
@@ -294,10 +295,11 @@ class DCCEdge extends DCCGraphPiece {
  **************************/
 
 class Graph {
-  constructor (container, label, layout, action) {
+  constructor (container, label, layout, action, bus) {
     this._container = container
     this._label = label
     this._action = action
+    this._bus = bus
 
     this.cleanGraph()
 
@@ -350,7 +352,10 @@ class Graph {
     this['_' + type + 's'].push(piece)
     if (piece.presentation != null) {
       this._presentation.appendChild(piece.presentation)
-      if (this._action && type == 'node') { piece.action = this._action }
+      if (this._action && type == 'node') {
+        piece.action = this._action
+        piece.bus = this._bus
+      }
     }
     if (this._layout != null) { this._layout.organize() }
   }
@@ -373,7 +378,7 @@ class Graph {
       const gnode = new GraphNode(node)
       if (node.graph) {
         gnode.graph = new Graph(gnode, node.label,
-          this._layout.label, this._action)
+          this._layout.label, this._action, this._bus)
         gnode.graph.importGraph(node.graph)
       }
       this.addPiece('node', gnode)
@@ -412,6 +417,8 @@ class GraphNode extends GraphPiece {
     this._nodeClicked = this._nodeClicked.bind(this)
     this._nodeUnselect = this._nodeUnselect.bind(this)
     this._showContextMenu = this._showContextMenu.bind(this)
+
+    this._bus = MessageBus.i
 
     this._presentation =
          document.createElementNS('http://www.w3.org/2000/svg', 'g')
@@ -496,6 +503,14 @@ class GraphNode extends GraphPiece {
     this._presentation.addEventListener('click', this._nodeClicked)
   }
 
+  get bus () {
+    return this._bus
+  }
+
+  set bus (newValue) {
+    this._bus = newValue
+  }
+
   get graph () {
     return this._graph
   }
@@ -562,15 +577,15 @@ class GraphNode extends GraphPiece {
 
   _nodeClicked (event) {
     event.stopPropagation()
-    MessageBus.int.publish('graph/select/clear')
+    this._bus.publish('graph/select/clear')
     this._cover.classList.remove('dcc-node-cover-theme')
     this._cover.classList.add('dcc-node-selected-theme')
-    MessageBus.int.subscribe('graph/select/clear', this._nodeUnselect)
-    MessageBus.ext.publish(this._action, this.id)
+    this._bus.subscribe('graph/select/clear', this._nodeUnselect)
+    this._bus.publish(this._action, this.id, true)
   }
 
   _nodeUnselect () {
-    MessageBus.int.unsubscribe('graph/select/clear', this._nodeUnselect)
+    this._bus.unsubscribe('graph/select/clear', this._nodeUnselect)
     this._cover.classList.remove('dcc-node-selected-theme')
     this._cover.classList.add('dcc-node-cover-theme')
   }

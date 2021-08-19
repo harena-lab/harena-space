@@ -18,7 +18,7 @@ class EditDCCMedia extends EditDCC {
     console.log('=== media properties')
     console.log(this._properties)
     this._properties.applyProperties(true)
-    // MessageBus.ext.publish('properties/apply/details')
+    // MessageBus.i.publish('properties/apply/details', null, true)
   }
 
 

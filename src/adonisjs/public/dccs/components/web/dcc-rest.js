@@ -8,7 +8,7 @@ class DCCRest extends DCCBase {
     super()
     this.serviceRequest = this.serviceRequest.bind(this)
     this.serviceRequestC = this.serviceRequestC.bind(this)
-    MessageBus.int.subscribe('service/request/+', this.request)
+    this._subscribe('service/request/+', this.request)
   }
 
   // <FUTURE> Considering a complex schema
@@ -16,10 +16,10 @@ class DCCRest extends DCCBase {
     super.connectedCallback()
 
     if (this.hasAttribute('id')) {
-      MessageBus.page.provides(this.id, 'service/request/get', this.serviceRequestC)
-      MessageBus.page.provides(this.id, 'service/request/post', this.serviceRequestC)
-      MessageBus.page.provides(this.id, 'service/request/put', this.serviceRequestC)
-      MessageBus.page.provides(this.id, 'service/request/delete', this.serviceRequestC)
+      this._provides(this.id, 'service/request/get', this.serviceRequestC)
+      this._provides(this.id, 'service/request/post', this.serviceRequestC)
+      this._provides(this.id, 'service/request/put', this.serviceRequestC)
+      this._provides(this.id, 'service/request/delete', this.serviceRequestC)
     }
     /*
     const schema = await this.request('data/schema')
@@ -81,7 +81,7 @@ class DCCRest extends DCCBase {
         await axios(request)
           .then(function (endpointResponse) {
             // console.log(endpointResponse.status)
-            // MessageBus.ext.publish('data/service/' + opid, endpointResponse.data)
+            // this._publish('data/service/' + opid, endpointResponse.data, true)
             result = endpointResponse.data
             // console.log('============')
             // console.log(endpointResponse.data)
@@ -100,9 +100,10 @@ class DCCRest extends DCCBase {
 
   async serviceRequest (topic, message) {
     let result = await this.serviceRequestC(topic, message)
-    MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message), result)
+    this._publish(MessageBus.buildResponseTopic(topic, message), result, true)
     if (this.hasAttribute('id'))
-      MessageBus.ext.publish('service/response/' + MessageBus.extractLevel(topic, 3) + '/' + this.id, result)
+      this._publish('service/response/' + MessageBus.extractLevel(topic, 3) + '/' + this.id,
+        result, true)
   }
 
   async serviceRequestC (topic, message) {

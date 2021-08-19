@@ -226,5 +226,5 @@ ___ Data ___
   * evidence: http://purl.org/versum/evidence/`
   }
 
-  MessageBus.int.publish('control/case/load/ready', localCase)
+  MessageBus.i.publish('control/case/load/ready', localCase)
 })()

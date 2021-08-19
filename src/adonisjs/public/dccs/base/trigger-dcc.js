@@ -1,7 +1,7 @@
 /* DCC Trigger
   ************/
 
-class TriggerDCC extends HTMLElement {
+class TriggerDCC extends PrimitiveDCC {
   connectedCallback () {
     console.log('=== trigger dcc')
     this.notifyTrigger = this.notifyTrigger.bind(this)
@@ -25,7 +25,7 @@ class TriggerDCC extends HTMLElement {
       if (this.hasAttribute('value')) { message.body.value = this.value }
     }
     if (this._targetObj != null) { this._targetObj.notify(this.publish, message) }
-    if (this.hasAttribute('publish')) { MessageBus.ext.publish(this.publish, message) } else if (this._targetObj == null) { this._sourceObj.notify(this.publish, message) }
+    if (this.hasAttribute('publish')) { this._publish(this.publish, message, true) } else if (this._targetObj == null) { this._sourceObj.notify(this.publish, message) }
   }
 
   /* Properties

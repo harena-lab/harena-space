@@ -1,7 +1,7 @@
 /* DCC Connector
   **************/
 
-class ConnectDCC extends HTMLElement {
+class ConnectDCC extends PrimitiveDCC {
   connectedCallback () {
     if (this.hasAttribute('trigger') &&
         this.hasAttribute('to') && this.hasAttribute('topic')) {

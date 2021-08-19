@@ -1,7 +1,7 @@
 /* DCC Property
   *************/
 
-class PropertyDCC extends HTMLElement {
+class PropertyDCC extends PrimitiveDCC {
   connectedCallback () {
     if (this.hasAttribute('name')) {
       this._targetObj = (this.hasAttribute('target'))

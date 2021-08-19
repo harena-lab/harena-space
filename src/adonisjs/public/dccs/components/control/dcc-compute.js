@@ -19,13 +19,13 @@ class DCCCompute extends DCCBase {
         if (this.active) {
           const variables = DCCCompute.filterVariables(this._compiled, false)
           for (let v of variables)
-            MessageBus.ext.subscribe('var/' + v + '/set', this.update)
+            this._subscribe('var/' + v + '/set', this.update)
         }
       }
     }
 
     if (this.hasAttribute('id'))
-      MessageBus.page.provides(this.id, 'compute/update', this.update)
+      this._provides(this.id, 'compute/update', this.update)
   }
 
   /*
@@ -105,9 +105,9 @@ class DCCCompute extends DCCBase {
         else
           { message = 'knot/' + expression.target + '/navigate' }
         if (expression.parameter) {
-          MessageBus.ext.publish(message, expression.parameter)
+          this._publish(message, expression.parameter, true)
         } else {
-          MessageBus.ext.publish(message) }
+          this._publish(message, null, true) }
         break
     }
   }
@@ -225,7 +225,7 @@ class DCCCompute extends DCCBase {
       await DCCCompute.updateVariables(s[1])
       if (s[0] != null) {
         result = DCCCompute.computeCompiled(s[1])
-        await MessageBus.ext.request('var/' + s[0] + '/set', result)
+        await this._request('var/' + s[0] + '/set', result, null, true)
       } else if (compiledSet.length == 1) {
         result = DCCCompute.computeCompiled(s[1])
         // looks for a variable inside the expression
@@ -233,7 +233,7 @@ class DCCCompute extends DCCBase {
         if (autoAssign) {
           let variable = s[1].find(el => el[0] == 3)
           if (variable)
-            await MessageBus.ext.request('var/' + variable[1] + '/set', result)
+            await this._request('var/' + variable[1] + '/set', result, null, true)
         }
         */
       }
@@ -266,8 +266,8 @@ class DCCCompute extends DCCBase {
   static async updateVariables (compiled) {
     for (let c of compiled)
       if (c[0] == DCCCompute.role.variable) {
-        if (MessageBus.ext.hasSubscriber('var/' + c[1] + '/get')) {
-          const mess = await MessageBus.ext.request('var/' + c[1] + '/get')
+        if (this._hasSubscriber('var/' + c[1] + '/get')) {
+          const mess = await this._request('var/' + c[1] + '/get', null, null, true)
           if (mess.message != null) {
             const value = (mess.message.body != null)
               ? mess.message.body : mess.message

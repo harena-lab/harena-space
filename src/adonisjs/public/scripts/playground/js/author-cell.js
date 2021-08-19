@@ -12,7 +12,7 @@ class AuthorCellManager {
    	this._editMode = true
    	this._pĺaySpace = false
 
-   	MessageBus.page = new MessageBus(false)
+   	// MessageBus.page = new MessageBus(false)
     Basic.service.rootPath = '../../'
   }
 
@@ -26,14 +26,14 @@ class AuthorCellManager {
     this.cellsExpand = this.cellsExpand.bind(this)
     this.cellsRetract = this.cellsRetract.bind(this)
 
-    MessageBus.ext.subscribe('control/editor/switch', this.switchEditor)
-    MessageBus.ext.subscribe('control/space/play', this.playSpace)
-    MessageBus.ext.subscribe('control/space/stop', this.stopSpace)
-    MessageBus.ext.subscribe('control/space/restart', this.restartSpace)
-    MessageBus.ext.subscribe('control/script/expand', this.scriptExpand)
-    MessageBus.ext.subscribe('control/script/retract', this.scriptRetract)
-    MessageBus.ext.subscribe('control/cells/expand', this.cellsExpand)
-    MessageBus.ext.subscribe('control/cells/retract', this.cellsRetract)
+    MessageBus.i.subscribe('control/editor/switch', this.switchEditor)
+    MessageBus.i.subscribe('control/space/play', this.playSpace)
+    MessageBus.i.subscribe('control/space/stop', this.stopSpace)
+    MessageBus.i.subscribe('control/space/restart', this.restartSpace)
+    MessageBus.i.subscribe('control/script/expand', this.scriptExpand)
+    MessageBus.i.subscribe('control/script/retract', this.scriptRetract)
+    MessageBus.i.subscribe('control/cells/expand', this.cellsExpand)
+    MessageBus.i.subscribe('control/cells/retract', this.cellsRetract)
 
     this._scriptActive = true
 
@@ -114,7 +114,7 @@ class AuthorCellManager {
   }
 
   async switchEditor () {
-    MessageBus.ext.publish('timer/stop')
+    MessageBus.i.publish('timer/stop', null, true)
     this._editMode = !this._editMode
     this._updateVisibility()
 
@@ -124,17 +124,17 @@ class AuthorCellManager {
 	         const decision = await DCCNoticeInput.displayNotice(
 	            'Você quer retornar ao cenário original ou editar esse novo cenário que você está vendo?',
 	            'message', 'Voltar ao Original', 'Este Cenário')
-	         if (decision == 'Voltar ao Original') { MessageBus.ext.publish('state/reset') }
+	         if (decision == 'Voltar ao Original') { MessageBus.i.publish('state/reset', null, true) }
 	      }
-      MessageBus.ext.publish('space/edit')
+      MessageBus.i.publish('space/edit', null, true)
 	  } else {
-      MessageBus.ext.publish('state/save')
+      MessageBus.i.publish('state/save', null, true)
       if (this._scriptActive) {
-        await MessageBus.page.request('dcc/rules/clear')
+        await MessageBus.i.request('dcc/rules/clear')
         document.querySelector('#rules-panel').innerHTML =
               Blockly.JavaScript.workspaceToCode(this._playground)
       }
-      MessageBus.ext.publish('space/view')
+      MessageBus.i.publish('space/view', null, true)
 	  }
   }
 
@@ -142,18 +142,18 @@ class AuthorCellManager {
     document.querySelector('#play-button').style.display = 'none'
     document.querySelector('#stop-button').style.display = 'initial'
     this._playTriggered = true
-    MessageBus.ext.publish('timer/start')
+    MessageBus.i.publish('timer/start', null, true)
   }
 
   stopSpace () {
     document.querySelector('#play-button').style.display = 'initial'
     document.querySelector('#stop-button').style.display = 'none'
-    MessageBus.ext.publish('timer/stop')
+    MessageBus.i.publish('timer/stop', null, true)
   }
 
   restartSpace () {
-    MessageBus.ext.publish('timer/stop')
-    MessageBus.ext.publish('state/reset')
+    MessageBus.i.publish('timer/stop', null, true)
+    MessageBus.i.publish('state/reset', null, true)
   }
 
   scriptExpand () {

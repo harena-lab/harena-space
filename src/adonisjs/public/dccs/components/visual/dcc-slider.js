@@ -18,7 +18,7 @@ class DCCSlider extends DCCInput {
     super.connectedCallback()
     this.innerHTML = ''
 
-    MessageBus.int.publish('var/' + this._variable + '/input/ready',
+    this._publish('var/' + this._variable + '/input/ready',
       DCCSlider.elementTag)
   }
 
@@ -63,11 +63,11 @@ class DCCSlider extends DCCInput {
     this.changed = true
     this._value = this._inputVariable.value
     if (this._inputIndex) { this._inputIndex.innerHTML = this._value }
-    MessageBus.ext.publish('var/' + this._variable + '/changed',
+    this._publish('var/' + this._variable + '/changed',
       {
         sourceType: DCCSlider.elementTag,
         value: this._value
-      })
+      }, true)
   }
 
   /* Rendering */

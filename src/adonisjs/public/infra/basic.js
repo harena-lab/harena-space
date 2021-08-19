@@ -15,7 +15,7 @@ class Basic {
 
     /*
       this.requestCurrentThemeFamily = this.requestCurrentThemeFamily.bind(this);
-      MessageBus.ext.subscribe("control/_current_theme_name/get",
+      MessageBus.i.subscribe("control/_current_theme_name/get",
                                this.requestCurrentThemeFamily);
       */
   }
@@ -85,8 +85,8 @@ class Basic {
 
   /*
    requestCurrentThemeFamily(topic, message) {
-      MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-                             this.currentThemeFamily);
+      MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
+                           this.currentThemeFamily, true);
    }
    */
 
@@ -141,9 +141,9 @@ class Basic {
             await DCCNoticeInput.displayNotice("<h3>Signin</h3><h4>inform your password:</h4>",
                                          "password");
 
-         let loginReturn = await MessageBus.ext.request("data/user/login",
-                                                        {email: userEmail,
-                                                         password: userPass});
+         let loginReturn = await MessageBus.i.request("data/user/login",
+                                                      {email: userEmail,
+                                                       password: userPass}, null, true);
 
          userid = loginReturn.message.userid;
          if (userid == null)

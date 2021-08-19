@@ -70,7 +70,7 @@ class DCCRSS extends DCCBase {
 
   async step () {
     if (this._items.length == 0) { await this._loadRSS() }
-    if (this._currentCycle < this._items.length) { MessageBus.ext.publish(this.publish, this._items[this._currentCycle]) }
+    if (this._currentCycle < this._items.length) { this._publish(this.publish, this._items[this._currentCycle], true) }
     this._currentCycle++
   }
 

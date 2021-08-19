@@ -43,7 +43,7 @@ class ContextItem {
 
   sendMessage () {
     DCCContextMenu.close()
-    MessageBus.ext.publish(this._topicMessage.topic, this._topicMessage.message)
+    this._publish(this._topicMessage.topic, this._topicMessage.message, true)
   }
 }
 

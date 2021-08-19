@@ -9,7 +9,7 @@ class Context {
   }
 
   async loadContextIndex () {
-    const ctxIndex = await MessageBus.int.request('data/context/*/list')
+    const ctxIndex = await MessageBus.i.request('data/context/*/list')
     this._contextIndex = ctxIndex.message
   }
 
@@ -32,7 +32,7 @@ class Context {
     console.log(uri)
     console.log(this._contextIndex)
     const resource =
-         await MessageBus.int.request('data/context/' +
+         await MessageBus.i.request('data/context/' +
             this._contextIndex[uri].label + '/get',
          this._contextIndex[uri].resource)
     return JSON.parse(resource.message)

@@ -1,4 +1,4 @@
-class EndDCC  extends HTMLElement {
+class EndDCC  extends PrimitiveDCC {
   connectedCallback() {
     if (this._triggered == null) {
       let parent = this.parentNode

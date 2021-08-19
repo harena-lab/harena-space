@@ -12,8 +12,8 @@ class DCCLivelyTalk extends DCCVisual {
     this.notify = this.notify.bind(this)
 
     if (this.hasAttribute('id')) {
-      MessageBus.page.provides(this.id, 'action/speech', this.notify)
-      MessageBus.page.provides(this.id, 'action/clear', this.notify)
+      this._provides(this.id, 'action/speech', this.notify)
+      this._provides(this.id, 'action/clear', this.notify)
     }
   }
 

@@ -8,13 +8,13 @@ class Properties {
   /*
   constructor () {
     this.applyPropertiesDetails = this.applyPropertiesDetails.bind(this)
-    MessageBus.ext.subscribe('properties/apply/details',
+    MessageBus.i.subscribe('properties/apply/details',
       this.applyPropertiesDetails)
     this.applyPropertiesShort = this.applyPropertiesShort.bind(this)
-    MessageBus.ext.subscribe('properties/apply/short',
+    MessageBus.i.subscribe('properties/apply/short',
       this.applyPropertiesShort)
     this.closeProperties = this.closeProperties.bind(this)
-    MessageBus.ext.subscribe('properties/cancel/short',
+    MessageBus.i.subscribe('properties/cancel/short',
       this.closeProperties)
   }
   */
@@ -305,15 +305,15 @@ class Properties {
 
       if (this._knotOriginalTitle &&
              this._knotOriginalTitle != this._objProperties.title) {
-        MessageBus.ext.publish('control/knot/rename',
-          this._objProperties.title)
+        MessageBus.i.publish('control/knot/rename',
+          this._objProperties.title, true)
         delete this._knotOriginalTitle
       }
 
       /*
       delete this._objProperties
-      MessageBus.ext.publish('control/knot/update')
-      if (!details) { MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message)) }
+      MessageBus.i.publish('control/knot/update', null, true)
+      if (!details) { MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message), null, true) }
       */
     }
     await this.closeProperties(details)
@@ -324,9 +324,9 @@ class Properties {
       this._editor = null;
     if (this._objProperties) {
       delete this._objProperties
-      await MessageBus.ext.request('control/knot/update')
+      await MessageBus.i.request('control/knot/update', null, null, true)
     }
-    // if (!details) {MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message)) }
+    // if (!details) {MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message), null, true) }
   }
 
   async _applySingleProperty (property, seq, panel, sufix, previous) {
@@ -383,11 +383,11 @@ class Properties {
         // uploads the image
         if (field.files[0]) {
           const asset = await
-          MessageBus.ext.request('data/asset//new',
+          MessageBus.i.request('data/asset//new',
             {
               file: field.files[0],
               caseid: Basic.service.currentCaseId
-            })
+            }, null, true)
           objProperty = asset.message.filename
         }
         break

@@ -60,7 +60,7 @@ class DCCAggregator extends DCCBase {
     }
     this._aggregated = []
     const message = DCCAggregator.template.replace('{items}', html)
-    MessageBus.ext.publish(this.publish, message)
+    this._publish(this.publish, message, true)
   }
 }
 

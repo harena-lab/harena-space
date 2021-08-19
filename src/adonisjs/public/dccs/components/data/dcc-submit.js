@@ -7,7 +7,7 @@ class DCCSubmit extends DCCButton {
     super.connectedCallback()
     if (this.hasAttribute('id')) {
       this.computeSubmit = this.computeSubmit.bind(this)
-      MessageBus.page.provides(this.id, 'control/submit',
+      this._provides(this.id, 'control/submit',
                                this.computeSubmit)
     }
   }
@@ -30,8 +30,8 @@ class DCCSubmit extends DCCButton {
     // super.notify(topic, message)
     if (topic.toLowerCase().includes('submit')) {
       await this.computeSubmit()
-      MessageBus.ext.publish(
-        MessageBus.buildResponseTopic(topic, message))
+      this._publish(
+        MessageBus.buildResponseTopic(topic, message), null, true)
     }
   }
 
@@ -72,7 +72,7 @@ class DCCSubmit extends DCCButton {
           if (this._setup != null && this._setup.pos != null)
             this._setup.pos(response)
         } else
-          MessageBus.ext.publish(topic, message)
+          this._publish(topic, message, true)
       }
     }
   }

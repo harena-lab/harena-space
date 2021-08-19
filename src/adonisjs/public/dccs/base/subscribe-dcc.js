@@ -1,7 +1,7 @@
 /* DCC Subscriber
   ***************/
 
-class SubscribeDCC extends HTMLElement {
+class SubscribeDCC extends PrimitiveDCC {
   connectedCallback () {
     this.publishWithMap = this.publishWithMap.bind(this)
     if (this.hasAttribute('topic')) {
@@ -9,17 +9,17 @@ class SubscribeDCC extends HTMLElement {
         ? document.querySelector('#' + this.target) : this.parentNode
 
       if (!this.hasAttribute('map')) {
-        MessageBus.ext.subscribe(this.topic, this._targetObj.notify) }
+        this._subscribe(this.topic, this._targetObj.notify) }
       else {
-        MessageBus.ext.subscribe(this.topic, this.publishWithMap) }
+        this._subscribe(this.topic, this.publishWithMap) }
     }
   }
 
   disconnectedCallback () {
     if (!this.hasAttribute('map')) {
-      MessageBus.ext.unsubscribe(this.topic, this._targetObj.notify) }
+      this._unsubscribe(this.topic, this._targetObj.notify) }
     else {
-      MessageBus.ext.unsubscribe(this.topic, this.publishWithMap) }
+      this._unsubscribe(this.topic, this.publishWithMap) }
   }
 
   publishWithMap (topic, message) {
