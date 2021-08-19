@@ -9,6 +9,12 @@ class DCCSlider extends DCCInput {
   }
 
   connectedCallback () {
+    // <TODO> replicated provisory
+    if (this.hasAttribute('variable'))
+      this._variable = this.getAttribute('variable')
+    else
+      this._variable = DCC.generateVarName()
+
     this._min = (this.hasAttribute('min')) ? this.min : DCCSlider.defaultValueMin
     this._max = (this.hasAttribute('max')) ? this.max : DCCSlider.defaultValueMax
 

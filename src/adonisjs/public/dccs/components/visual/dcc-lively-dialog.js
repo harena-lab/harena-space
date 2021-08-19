@@ -58,7 +58,7 @@ class DCCLivelyTalk extends DCCVisual {
     const delayWeb = (this.delay != null) ? this.delay : '0s'
     const directionWeb = (this.direction != null) ? this.direction : 'left'
     const bubbleWeb = (this.bubble != null) ? this.bubble : 'bubble'
-    const characterWeb = (this.character != null) ? this.character : 'person'
+    const characterWeb = (this.character != null) ? this.character : 'character'
     const speechWeb = (this.speech != null) ? this.speech : ''
 
     let templateHTML =
@@ -212,9 +212,14 @@ class DCCLivelyTalk extends DCCVisual {
 
   set speech (newSpeech) {
     this.setAttribute('speech', newSpeech)
+    this._prefixSpeech = newSpeech
+    this._updateSpeech('')
+  }
+
+  _updateSpeech (addSpeech) {
     if (this._presentation != null) {
       const speechText = this._presentation.querySelector('#dcc-talk-text')
-      if (speechText != null) { speechText.innerHTML = newSpeech }
+      if (speechText != null) { speechText.innerHTML = this._prefixSpeech + addSpeech }
     }
   }
 
@@ -227,12 +232,15 @@ class DCCLivelyTalk extends DCCVisual {
   notify (topic, message) {
     if (!topic.includes('/'))
       topic = 'action/' + topic
+    console.log('=== update speech')
     switch (topic.toLowerCase()) {
       case 'action/speech':
-        this.speech = this._prefixSpeech + ((message.value) ? message.value : message)
+        // this.speech = this._prefixSpeech + ((message.value) ? message.value : message)
+        this._updateSpeech((message.value) ? message.value : message)
         break
       case 'action/clear':
-        this.speech = this._prefixSpeech + ''
+        // this.speech = this._prefixSpeech + ''
+        this._updateSpeech('')
         break
     }
   }

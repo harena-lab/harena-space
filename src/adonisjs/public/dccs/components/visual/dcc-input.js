@@ -47,11 +47,11 @@ class DCCInput extends DCCBlock {
   }
 
   get variable () {
-    return this.getAttribute('variable')
+    return this._variable
   }
 
   set variable (newValue) {
-    this.setAttribute('variable', newValue)
+    this._variable = newValue
   }
 
   get value () {
