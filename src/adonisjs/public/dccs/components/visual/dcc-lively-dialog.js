@@ -58,7 +58,8 @@ class DCCLivelyTalk extends DCCVisual {
     const delayWeb = (this.delay != null) ? this.delay : '0s'
     const directionWeb = (this.direction != null) ? this.direction : 'left'
     const bubbleWeb = (this.bubble != null) ? this.bubble : 'bubble'
-    const characterWeb = (this.character != null) ? this.character : 'character'
+    const characterWeb = (this.character != null) ?
+            this.character : 'images/character.png'
     const speechWeb = (this.speech != null) ? this.speech : ''
 
     let templateHTML =
@@ -149,11 +150,8 @@ class DCCLivelyTalk extends DCCVisual {
 
     this._setPresentation(this._shadow.querySelector('#presentation-dcc'))
 
-    const charImg = 'images/' + characterWeb.toLowerCase()
-      .replace(/ /igm, '_') + '-icon.png'
-
     const imageHTML = "<div class='dcc-character'><img id='dcc-talk-character' src='" +
-                        charImg + "' title='" + characterWeb + "' width='100px'></div>"
+                        characterWeb + "' title='character' width='100px'></div>"
     const speechHTML = "<div class='dcc-bubble'><div id='dcc-talk-text' class='dcc-speech'>" + speechWeb + '</div></div>'
 
     this._presentation.innerHTML = (directionWeb == 'left') ? imageHTML + speechHTML : speechHTML + imageHTML

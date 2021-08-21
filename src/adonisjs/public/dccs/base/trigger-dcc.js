@@ -3,6 +3,7 @@
 
 class TriggerDCC extends PrimitiveDCC {
   connectedCallback () {
+    super.connectedCallback ()
     console.log('=== trigger dcc')
     this.notifyTrigger = this.notifyTrigger.bind(this)
     if (this.hasAttribute('event')) {

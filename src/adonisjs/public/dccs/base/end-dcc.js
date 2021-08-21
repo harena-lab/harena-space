@@ -1,5 +1,6 @@
 class EndDCC  extends PrimitiveDCC {
   connectedCallback() {
+    super.connectedCallback()
     if (this._triggered == null) {
       let parent = this.parentNode
       while (parent != null && !parent.nodeName.toLowerCase().startsWith('dcc-'))

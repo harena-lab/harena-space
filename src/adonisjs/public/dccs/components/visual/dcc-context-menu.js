@@ -43,7 +43,8 @@ class ContextItem {
 
   sendMessage () {
     DCCContextMenu.close()
-    this._publish(this._topicMessage.topic, this._topicMessage.message, true)
+    // <TODO> Change to contextualized menu
+    MessageBus.i.publish(this._topicMessage.topic, this._topicMessage.message, true)
   }
 }
 

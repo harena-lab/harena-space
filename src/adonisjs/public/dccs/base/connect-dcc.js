@@ -3,6 +3,7 @@
 
 class ConnectDCC extends PrimitiveDCC {
   connectedCallback () {
+    super.connectedCallback()
     if (this.hasAttribute('trigger') &&
         this.hasAttribute('to') && this.hasAttribute('topic')) {
       this._fromObj = (this.hasAttribute('from'))

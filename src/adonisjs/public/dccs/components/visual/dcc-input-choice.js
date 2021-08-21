@@ -9,6 +9,7 @@
 class DCCInputOption extends DCCInput {
   constructor () {
     super()
+    this._variable = ''
     this.inputChanged = this.inputChanged.bind(this)
   }
 
@@ -157,6 +158,7 @@ class DCCInputChoice extends DCCInput {
   constructor () {
     super()
     this._options = []
+    this._variable = ''
     this.inputChanged = this.inputChanged.bind(this)
   }
 

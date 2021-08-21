@@ -1,5 +1,6 @@
 class ScopeDCC extends PrimitiveDCC {
   connectedCallback () {
+    super.connectedCallback ()
     this._bus = MessageBus.create(this.id)
   }
 

@@ -3,6 +3,7 @@
 
 class PropertyDCC extends PrimitiveDCC {
   connectedCallback () {
+    super.connectedCallback ()
     if (this.hasAttribute('name')) {
       this._targetObj = (this.hasAttribute('target'))
         ? document.querySelector('#' + this.target) : this.parentNode

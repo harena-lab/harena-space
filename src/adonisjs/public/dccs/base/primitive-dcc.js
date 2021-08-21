@@ -10,8 +10,7 @@ class PrimitiveDCC extends HTMLElement {
 
   connectedCallback () {
     let parent = this.parentNode
-    while (parent != null && (parent.tagName == null ||
-           parent.tagName.toLowerCase() != ScopeDCC.elementTag))
+    while (parent != null && !(parent instanceof ScopeDCC))
       parent = parent.parentNode
     if (parent != null)
       this._bus = parent.bus

@@ -3,6 +3,7 @@
 
 class SubscribeDCC extends PrimitiveDCC {
   connectedCallback () {
+    super.connectedCallback ()
     this.publishWithMap = this.publishWithMap.bind(this)
     if (this.hasAttribute('topic')) {
       this._targetObj = (this.hasAttribute('target'))

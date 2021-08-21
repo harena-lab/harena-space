@@ -152,10 +152,10 @@ class LayoutController {
 
       if(new URL(document.location).searchParams.get('fdbk')){
         setTimeout(function(){
-          document.querySelector('#button-comments-nav').click()
-          MessageBus.i.publish('control/properties/expand', null, true)
-          MessageBus.i.publish('control/comments/expand', null, true)
-          MessageBus.i.publish('control/comments/editor')
+          // document.querySelector('#button-comments-nav').click()
+          // MessageBus.i.publish('control/properties/expand')
+          MessageBus.i.publish('control/comments/expand')
+          // MessageBus.i.publish('control/comments/editor')
         }, 500)
       }
 
