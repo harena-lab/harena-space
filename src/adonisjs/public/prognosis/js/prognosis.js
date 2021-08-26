@@ -411,6 +411,7 @@ class Prognosis {
         selectedPacient = pacientInfo.pacients[0]
         if(!new URL(document.location).pathname.includes('calculator'))
           localStorage.setItem('prognosis-current-lvl', pacientInfo.pacients[0].dificuldade)
+          localStorage.setItem('prognosis-highest-lvl', pacientInfo.pacients[0].dificuldade)
     }
     if(document.querySelector('#welcome-lvl-modal') && (localStorage.getItem('prognosis-current-lvl') == 1
       || localStorage.getItem('prognosis-current-lvl')==null) && (!localStorage.getItem('hide-intro-1'))){
@@ -663,6 +664,9 @@ class Prognosis {
                 option.textContent = valueText+': '+value
                 option.value = value
                 selectList.appendChild(option)
+                if (selectList.querySelector(`option[value=""]`)) {
+                  selectList.querySelector(`option[value=""]`).remove()
+                }
               }else{
                 var value = selectedPacient[fnVariable].locked[i][keyText]['values'][z]
                 const selectList = document.querySelector("#" + keyId)
@@ -670,7 +674,11 @@ class Prognosis {
                 option.textContent = value
                 option.value = (Prognosis.i.removeAccent(value).replace(new RegExp('[ ]','ig'), '-'))
                 selectList.appendChild(option)
+                if (selectList.querySelector(`option[value=""]`)) {
+                  selectList.querySelector(`option[value=""]`).remove()
+                }
               }
+
             }
           }
           else{

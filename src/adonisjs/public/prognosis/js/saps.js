@@ -272,9 +272,9 @@ class Saps {
 
                   sapsTextBuild[sapsScoreKeys[i]].push(sapsText)
                 }*/
-                console.log('============ selected')
-                console.log(valueKey[k])
-                console.log(sapsValue)
+                // console.log('============ selected')
+                // console.log(valueKey[k])
+                // console.log(sapsValue)
                 if(!sapsCalcGroup[sapsScoreKeys[i]])
                   sapsCalcGroup[sapsScoreKeys[i]] = {}
                 sapsCalcGroup[sapsScoreKeys[i]][valueKey[k]] = sapsValue
@@ -534,9 +534,9 @@ class Saps {
                 //   }
                 //   sapsTextBuild[sapsScoreKeys[i]].push(sapsText)
                 // }*/
-                console.log('============ selected value')
-                console.log(valueKeys[k])
-                console.log(sapsValue)
+                // console.log('============ selected value')
+                // console.log(valueKeys[k])
+                // console.log(sapsValue)
                 if(!sapsCalcGroup[sapsScoreKeys[i]])
                   sapsCalcGroup[sapsScoreKeys[i]] = {}
                 if(valueKeys[k] == 'Não' || valueKeys[k] == 'Sim')
@@ -870,9 +870,9 @@ class Saps {
                   }
                   sapsTextBuild[sapsScoreKeys[i]].push(sapsText)
                 }*/
-                console.log('============ select value')
-                console.log(valueKeys[k])
-                console.log(sapsValue)
+                // console.log('============ select value')
+                // console.log(valueKeys[k])
+                // console.log(sapsValue)
                 if(!sapsCalcGroup[sapsScoreKeys[i]])
                   sapsCalcGroup[sapsScoreKeys[i]] = {}
                 sapsCalcGroup[sapsScoreKeys[i]][valueKeys[k]] = sapsValue
