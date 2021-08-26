@@ -142,7 +142,7 @@ body {
   background-color: #f2f2f2;
 }
 
-h1 {
+h1,h2 {
   font-weight: bold;
   color: #808080;
 }
@@ -222,4 +222,29 @@ color: #c1434f !important;
 }
 .bg-plaster{
   background-color: #d7d7d7 !important;
+}
+
+.character-mini{
+  margin-top: 3pt;
+  padding: 3pt;
+  border: 2pt solid black;
+  border-radius: 15pt;
+  width: 70pt;
+}
+.character-selection{
+  cursor: pointer;
+}
+.character-selection:hover{
+  background: #2917fb4d;
+}
+.character-mini.character-selection:hover{
+  width: 75pt;
+}
+
+.pacient-mini{
+  width: 70pt;
+  background:white;
+  border: 2pt solid black;
+  border-radius: 15pt;
+  padding: 2pt;
 }
