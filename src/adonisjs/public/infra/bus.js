@@ -60,8 +60,10 @@ class MessageBus {
   async publish (topic, message, track) {
     let listeners = this._listeners.slice()
     for (const l in listeners) {
-      if (this._matchTopic(listeners[l], topic))
-        listeners[l].callback(topic, message)
+      if (this._matchTopic(listeners[l], topic)) {
+        if (listeners[l].callback)
+          listeners[l].callback(topic, message)
+      }
     }
 
     if (track != null) {

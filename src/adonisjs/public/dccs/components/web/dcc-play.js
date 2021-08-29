@@ -11,6 +11,15 @@ class DCCPlay extends ScopeDCC {
 
   connectedCallback () {
     super.connectedCallback()
+
+    this._messages =
+      '<div id="messages-panel-{type}" style="width:97%;font-family:var(--dcc-play-font-family);' +
+        'font-size:var(--dcc-play-font-size);' +
+        'background-color:var(--dcc-play-background-color);display:none">' +
+      '<b>Messages on the Bus</b><br>' +
+      '<dcc-monitor id="monitor-{type}"{subscribe}></dcc-monitor>' +
+      '</div>'
+
     this._observer = new MutationObserver(this._scriptUpdated)
     this._observer.observe(this,
                            {attributes: true, childList: true, subtree: true})
@@ -19,24 +28,46 @@ class DCCPlay extends ScopeDCC {
 
     const template = document.createElement('template')
     template.innerHTML =
-    // '<div id="presentation-dcc">' +
     '<textarea style="width:97%;cursor:pointer;font-family:var(--dcc-play-font-family);' +
       'font-size:var(--dcc-play-font-size);background-color:var(--dcc-play-background-color)" rows="' +
     html.split(/\r\n|\r|\n/).length + '" id="script-dcc" readonly>' + html +
     '</textarea><button id="button-render" style="width:auto;display:none">Render</button>' +
-    '<scope-dcc><div id="render-dcc"><slot></slot></div></scope-dcc>'
+    '<scope-dcc>' +
+    '<div id="render-dcc"><slot></slot></div>' +
+    this._messages.replace(/{type}/gm, 'inside').replace('{subscribe}', ' subscribe="#"') +
+    '</scope-dcc>' + this._messages.replace(/{type}/gm, 'outside').replace('{subscribe}', '')
     if (!this.shadowRoot) {
       const shadow = this.attachShadow({ mode: 'open' })
       shadow.appendChild(template.content.cloneNode(true))
-      // this._setPresentation(shadow.querySelector('#presentation-dcc'))
       shadow.querySelector('#button-render')
             .addEventListener('click', this._computeRender)
       this._scriptPanel = shadow.querySelector('#script-dcc')
       this._scriptPanel.addEventListener('click', this._unlockScript)
       this._renderPanel = shadow.querySelector('#render-dcc')
       this._buttonRender = shadow.querySelector('#button-render')
-      // this._presentationIsReady()
+      this._messagesPanelInside = shadow.querySelector('#messages-panel-inside')
+      this._messagesPanelOutside = shadow.querySelector('#messages-panel-outside')
+      this._monitor = shadow.querySelector('#monitor-outside')
     }
+
+    if (this.messages) {
+      this._monitor._bus = this._bus
+      this._monitor._bus.subscribe('#', this._monitor.notify)
+      this._messagesPanelOutside.style.display = 'block'
+    }
+  }
+
+  static get observedAttributes () {
+    return ScopeDCC.observedAttributes.concat(['messages'])
+  }
+
+  get messages () {
+    return this.hasAttribute('messages')
+  }
+
+  set messages (showMessages) {
+    if (showMessages) { this.setAttribute('messages', '') }
+    else { this.removeAttribute('messages') }
   }
 
   _prepareHTML () {
@@ -51,8 +82,11 @@ class DCCPlay extends ScopeDCC {
   }
 
   _computeRender() {
-    if (this._scriptPanel != null)
+    if (this._scriptPanel != null) {
       this._renderPanel.innerHTML = this._scriptPanel.value
+      this._messagesPanelOutside.style.display = 'none'
+      this._messagesPanelInside.style.display = 'block'
+    }
   }
 
   _unlockScript() {

@@ -4,17 +4,16 @@
 class DCCRSS extends DCCBase {
   constructor () {
     super()
-    this.next = this.next.bind(this)
 
     this._items = []
-    this._currentCycle = 0
+    this._currentItem = 0
   }
 
   connectedCallback () {
     super.connectedCallback()
 
-    if (!this.hasAttribute('publish')) { this.publish = 'dcc/rss/post' }
-    if (!this.hasAttribute('interval')) { this.interval = 1000 }
+    if (!this.hasAttribute('topic')) { this._topic = 'dcc/rss/post' }
+    else { this._topic = this.topic }
   }
 
   /* Properties
@@ -22,7 +21,7 @@ class DCCRSS extends DCCBase {
 
   static get observedAttributes () {
     return DCCVisual.observedAttributes.concat(
-      ['source', 'publish', 'interval'])
+      ['source', 'topic'])
   }
 
   get source () {
@@ -33,49 +32,31 @@ class DCCRSS extends DCCBase {
     this.setAttribute('source', newValue)
   }
 
-  get publish () {
-    return this.getAttribute('publish')
+  get topic () {
+    return this.getAttribute('topic')
   }
 
-  set publish (newValue) {
-    this.setAttribute('publish', newValue)
-  }
-
-  get interval () {
-    return this.getAttribute('interval')
-  }
-
-  set interval (newValue) {
-    this.setAttribute('interval', newValue)
+  set topic (newValue) {
+    this._topic = newValue
+    this.setAttribute('topic', newValue)
   }
 
   notify (topic, message) {
+    if (!topic.includes('/'))
+      topic = 'action/' + topic
     switch (topic.toLowerCase()) {
-      case 'start': this.start(); break
-      case 'stop' : this.stop(); break
-      case 'step' : this.step(); break
+      // case 'action/start': this.start(); break
+      // case 'action/stop' : this.stop(); break
+      case 'action/next' : this.next(); break
     }
   }
 
-  async start () {
-    await this._loadRSS()
-    this._currentCycle = 0
-    this._timeout = setTimeout(this.next, this.interval)
-  }
-
   async next () {
-    await this.step()
-    if (this._currentCycle < this._items.length - 1) { this._timeout = setTimeout(this.next, this.interval) }
-  }
-
-  async step () {
     if (this._items.length == 0) { await this._loadRSS() }
-    if (this._currentCycle < this._items.length) { this._publish(this.publish, this._items[this._currentCycle], true) }
-    this._currentCycle++
-  }
-
-  stop () {
-    if (this._timeout) { clearTimeout(this._timeout) }
+    if (this._currentItem < this._items.length) {
+      this._publish(this._topic, this._items[this._currentItem], true)
+    }
+    this._currentItem++
   }
 
   async _loadRSS () {

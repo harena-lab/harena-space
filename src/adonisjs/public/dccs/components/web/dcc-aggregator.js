@@ -6,15 +6,16 @@ class DCCAggregator extends DCCBase {
     super()
 
     this._aggregated = []
-    this.notify = this.notify.bind(this)
   }
 
   connectedCallback () {
     super.connectedCallback()
 
-    if (!this.hasAttribute('publish')) { this.publish = 'dcc/aggregate/post' }
+    if (!this.hasAttribute('topic')) { this._topic = 'dcc/aggregate/post' }
+    else { this._topic = this.topic }
     if (this.hasAttribute('quantity')) {
-      if (typeof this.quantity === 'number') { this._quantity = this.quantity } else { this._quantity = parseInt(this.quantity) }
+      if (typeof this.quantity === 'number') { this._quantity = this.quantity }
+      else { this._quantity = parseInt(this.quantity) }
     } else { this._quantity = 5 }
   }
 
@@ -23,15 +24,16 @@ class DCCAggregator extends DCCBase {
 
   static get observedAttributes () {
     return DCCVisual.observedAttributes.concat(
-      ['publish', 'quantity'])
+      ['topic', 'quantity'])
   }
 
-  get publish () {
-    return this.getAttribute('publish')
+  get topic () {
+    return this.getAttribute('topic')
   }
 
-  set publish (newValue) {
-    this.setAttribute('publish', newValue)
+  set topic (newValue) {
+    this._topic = newValue
+    this.setAttribute('topic', newValue)
   }
 
   get quantity () {
@@ -39,6 +41,7 @@ class DCCAggregator extends DCCBase {
   }
 
   set quantity (newValue) {
+    this._quantity = newValue
     this.setAttribute('quantity', newValue)
   }
 
@@ -60,7 +63,7 @@ class DCCAggregator extends DCCBase {
     }
     this._aggregated = []
     const message = DCCAggregator.template.replace('{items}', html)
-    this._publish(this.publish, message, true)
+    this._publish(this._topic, message, true)
   }
 }
 

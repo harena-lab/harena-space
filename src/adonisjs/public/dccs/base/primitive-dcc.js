@@ -9,11 +9,16 @@ class PrimitiveDCC extends HTMLElement {
   }
 
   connectedCallback () {
+    let ag = this._findAggregator(ScopeDCC)
+    if (ag != null)
+      this._bus = ag.bus
+  }
+
+  _findAggregator(agClass) {
     let parent = this.parentNode
-    while (parent != null && !(parent instanceof ScopeDCC))
+    while (parent != null && !(parent instanceof agClass))
       parent = parent.parentNode
-    if (parent != null)
-      this._bus = parent.bus
+    return parent
   }
 
   _subscribe (topic, callback) {
