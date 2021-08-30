@@ -110,11 +110,17 @@ class Prognosis {
     if (dbHighest.value != ''){
       localStorage.setItem('prognosis-highest-lvl', dbHighest.value)
       document.querySelector('dcc-submit[connect="submit:harena-user-property:service/request/post"]')._computeTrigger()
+    }else {
+      localStorage.removeItem('prognosis-highest-lvl')
+      localStorage.removeItem('hide-intro-1')
+      localStorage.removeItem('hide-intro-2')
     }
     if(dbCurrent && dbCurrent.value != ''){
       if (parseInt(localStorage.getItem('prognosis-current-lvl')) != parseInt(dbCurrent.value)) {
         localStorage.setItem('prognosis-current-lvl', dbCurrent.value)
       }
+    }else {
+      localStorage.removeItem('prognosis-current-lvl')
     }
   }
 
@@ -351,8 +357,8 @@ class Prognosis {
     src = src.replace(new RegExp('[>]','ig'), 'maior')
     src = src.replace(new RegExp('[<]','ig'), 'menor')
     src = src.replace(new RegExp('[=]','ig'), 'igual')
-    src = src.replace(new RegExp('[/\|+_?;:.,*!@#$%&()¹²³°ªº]','ig'), '')
-    src = src.replace(new RegExp(' ','ig'), '-')
+    src = src.replace(new RegExp('[/\\|+_?;:.,*!@#$%&()¹²³°ªº]','ig'), '')
+    src = src.replace(new RegExp('[ \t]','ig'), '-')
     return src
   }
 
@@ -405,6 +411,7 @@ class Prognosis {
         selectedPacient = pacientInfo.pacients[0]
         if(!new URL(document.location).pathname.includes('calculator'))
           localStorage.setItem('prognosis-current-lvl', pacientInfo.pacients[0].dificuldade)
+          localStorage.setItem('prognosis-highest-lvl', pacientInfo.pacients[0].dificuldade)
     }
     if(document.querySelector('#welcome-lvl-modal') && (localStorage.getItem('prognosis-current-lvl') == 1
       || localStorage.getItem('prognosis-current-lvl')==null) && (!localStorage.getItem('hide-intro-1'))){
@@ -657,6 +664,9 @@ class Prognosis {
                 option.textContent = valueText+': '+value
                 option.value = value
                 selectList.appendChild(option)
+                if (selectList.querySelector(`option[value=""]`)) {
+                  selectList.querySelector(`option[value=""]`).remove()
+                }
               }else{
                 var value = selectedPacient[fnVariable].locked[i][keyText]['values'][z]
                 const selectList = document.querySelector("#" + keyId)
@@ -664,7 +674,11 @@ class Prognosis {
                 option.textContent = value
                 option.value = (Prognosis.i.removeAccent(value).replace(new RegExp('[ ]','ig'), '-'))
                 selectList.appendChild(option)
+                if (selectList.querySelector(`option[value=""]`)) {
+                  selectList.querySelector(`option[value=""]`).remove()
+                }
               }
+
             }
           }
           else{
@@ -1426,7 +1440,7 @@ class Prognosis {
     // console.log(openOptions)
     // console.log(lockedOptions)
     // console.log('============')
-    console.log(openOptions + lockedOptions + 16)
+    // console.log(openOptions + lockedOptions + 16)
     let dynamicScore = openOptions + lockedOptions + 16
     let logitDynamic = -32.6659+Math.log(dynamicScore+20.5958)*7.3068
     let mortalityDynamic = Math.exp(logitDynamic)/ (1+ Math.exp(logitDynamic))
@@ -1434,9 +1448,9 @@ class Prognosis {
 
     document.querySelector('#pacient-perfect').value = round((100 - mortalityPercentage),1)
 
-    console.log('============ dynamic score '+dynamicScore)
-    console.log('============ mortalityPercentage '+mortalityPercentage)
-    console.log('============ '+round((100 - mortalityPercentage),1))
+    // console.log('============ dynamic score '+dynamicScore)
+    // console.log('============ mortalityPercentage '+mortalityPercentage)
+    // console.log('============ '+round((100 - mortalityPercentage),1))
 
 
 
@@ -2017,7 +2031,7 @@ class Prognosis {
           ],
           "open": [
             {
-              "Idad":{
+              "Idade":{
                 "selectList":"true",
                 "values":[
                   "<40 anos",
@@ -2036,7 +2050,7 @@ class Prognosis {
           "locked": [],
           "open": [
             {
-              "Origes":{
+              "Origem":{
                 "selectList":"true",
                 "values":[
                   "Pronto Socorro",

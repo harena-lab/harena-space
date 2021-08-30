@@ -355,19 +355,23 @@
         let nextLvl = document.querySelector('#next-lvl')
         if(localStorage.getItem('prognosis-current-lvl') && localStorage.getItem('prognosis-highest-lvl')){
           if(nextLvl){
+            if(nextLvl.value == ''){
+              nextLvl.value = parseInt(localStorage.getItem('prognosis-current-lvl'))+1 || 2
+            }
             if(nextLvl.value == localStorage.getItem('prognosis-highest-lvl')
             && parseInt(nextLvl.value) != 10){
-              if(parseInt(nextLvl.value) < 10)
-                highestLvl = nextLvl.value + 1
-              else if(parseInt(nextLvl.value) > 10)
+              if(parseInt(nextLvl.value) < 10){
+                highestLvl = parseInt(nextLvl.value) + 1
+              }else if(parseInt(nextLvl.value) > 10){
                 highestLvl = 10
+              }
             }else{
-              highestLvl = nextLvl.value
+              highestLvl = parseInt(nextLvl.value)
             }
           }else{
             if(parseInt(localStorage.getItem('prognosis-current-lvl'))
             >= parseInt(localStorage.getItem('prognosis-highest-lvl'))){
-              if(parseInt(localStorage.getItem('prognosis-current-lvl') <=10)) {
+              if(parseInt(localStorage.getItem('prognosis-current-lvl')) <=10) {
                 currentLvl = parseInt(localStorage.getItem('prognosis-current-lvl'))
                 highestLvl = currentLvl
               }else{
