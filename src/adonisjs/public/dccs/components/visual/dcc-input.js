@@ -15,7 +15,6 @@ class DCCInput extends DCCBlock {
       this._variable = DCC.generateVarName()
     this._statement = (this.hasAttribute('statement'))
       ? this.statement : this.innerHTML
-      // this.innerHTML = "";
 
     super.connectedCallback()
 
@@ -47,11 +46,12 @@ class DCCInput extends DCCBlock {
   }
 
   get variable () {
-    return this._variable
+    return this.getAttribute('variable')
   }
 
   set variable (newValue) {
     this._variable = newValue
+    this.setAttribute('variable', newValue)
   }
 
   get value () {
