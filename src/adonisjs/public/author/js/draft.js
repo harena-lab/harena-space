@@ -9,11 +9,11 @@ class DraftManager {
          !!((mode != null && mode.toLowerCase() == 'advanced'))
 
     this.deleteCase = this.deleteCase.bind(this)
-    MessageBus.int.subscribe('control/case/delete', this.deleteCase)
+    MessageBus.i.subscribe('control/case/delete', this.deleteCase)
 
     if (advanced) {
       this.downloadCase = this.downloadCase.bind(this)
-      MessageBus.int.subscribe('control/case/download', this.downloadCase)
+      MessageBus.i.subscribe('control/case/download', this.downloadCase)
     }
 
     // const authorState = Basic.service.authorStateRetrieve();
@@ -21,15 +21,15 @@ class DraftManager {
     this._boxesPanel = document.querySelector('#case-boxes')
     // this._draftSelect(authorState.userid, advanced);
     // document.getElementsByClassName('buttons-container').length > 0
-    //   ? MessageBus.ext.subscribe('control/dhtml/ready', this._draftCategoryCasesSelect) : this._draftSelect(advanced)
-    // MessageBus.int.subscribe('control/dhtml/updated', this._draftCategoryCasesSelect)
-    MessageBus.int.subscribe('control/dhtml/ready', this._draftCategoryCasesSelect)
-    MessageBus.int.publish('control/dhtml/status/request', {id: 'harena-dhtml-cases'})
+    //   ? MessageBus.i.subscribe('control/dhtml/ready', this._draftCategoryCasesSelect) : this._draftSelect(advanced)
+    // MessageBus.i.subscribe('control/dhtml/updated', this._draftCategoryCasesSelect)
+    MessageBus.i.subscribe('control/dhtml/ready', this._draftCategoryCasesSelect)
+    MessageBus.i.publish('control/dhtml/status/request', {id: 'harena-dhtml-cases'})
   }
   //Not being used at the moment. #REVIEW
   async _draftSelect (advanced) {
 
-    const cases = await MessageBus.ext.request('data/case/*/list')
+    const cases = await MessageBus.i.request('data/case/*/list', null, null, true)
 
 
     const cl = cases.message
@@ -72,13 +72,13 @@ class DraftManager {
       // console.log('=== adding listener 1')
       deleteButton.addEventListener('click',
         function () {
-          MessageBus.int.publish('control/case/delete', this.id.substring(1))
+          MessageBus.i.publish('control/case/delete', this.id.substring(1))
         }
       )
       if (advanced) {
         downloadButton.addEventListener('click',
           function () {
-            MessageBus.int.publish('control/case/download', this.id.substring(1))
+            MessageBus.i.publish('control/case/download', this.id.substring(1))
           }
         )
       }
@@ -201,7 +201,7 @@ class DraftManager {
         if(deleteButton){
           // console.log('=== adding listener 2')
           const listenerFnRemove = function () {
-            MessageBus.int.publish('control/case/delete', editButton.id.substring(1))
+            MessageBus.i.publish('control/case/delete', editButton.id.substring(1))
           }
           deleteButton.removeEventListener('click', listenerFnRemove)
           deleteButton.addEventListener('click', listenerFnRemove)
@@ -209,7 +209,7 @@ class DraftManager {
         // if (advanced) {
         //   downloadButton.addEventListener('click',
         //     function () {
-        //       MessageBus.int.publish('control/case/download', this.id.substring(1))
+        //       MessageBus.i.publish('control/case/download', this.id.substring(1))
         //     })
         // }
       }
@@ -223,7 +223,7 @@ class DraftManager {
            'Are you sure that you want to delete this case? (write yes or no)',
            'input')
     if (decision.toLowerCase() == 'yes') {
-      await MessageBus.ext.request('data/case/' + message + '/delete')
+      await MessageBus.i.request('data/case/' + message + '/delete', null, null, true)
       // console.log(message);
       this._boxesPanel.querySelector('#b' + message).remove()
       // this._boxesPanel.removeChild(box)
@@ -231,8 +231,7 @@ class DraftManager {
   }
 
   async downloadCase (topic, message) {
-    const caseObj = await MessageBus.ext.request(
-      'data/case/' + message + '/get')
+    const caseObj = await MessageBus.i.request('data/case/' + message + '/get', null, null, true)
     Basic.service.downloadFile(
       caseObj.message.source, caseObj.message.title + '.md')
   }

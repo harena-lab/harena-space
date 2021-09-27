@@ -1,28 +1,47 @@
-<label for="details"><h3>Comments</h3></label>
-<textarea class="form-control" id="details" name="details" placeholder="Enter the comments">
+<label for="details"><h3>Comentários</h3></label>
+<textarea class="form-control" id="details" name="details" placeholder="Digite seus comentários">
 {{details}}
 </textarea>
+<h3>Nota</h3>
+<div class="bg-light border border-secondary rounded pl-2 form-check-inline">
+   <input type="radio" id="grade1"
+          name="grade" value="1" class="form-check-input" {{checked?grade:1}}>
+   <label for="grade1" class="form-check-label">1 | </label>
+   <input type="radio" id="grade2"
+          name="grade" value="2" class="form-check-input" {{checked?grade:2}}>
+   <label for="grade2" class="form-check-label">2 | </label>
+   <input type="radio" id="grade3"
+          name="grade" value="3" class="form-check-input" {{checked?grade:3}}>
+   <label for="grade3" class="form-check-label">3 | </label>
+   <input type="radio" id="grade4"
+          name="grade" value="4" class="form-check-input" {{checked?grade:4}}>
+   <label for="grade4" class="form-check-label">4 | </label>
+   <input type="radio" id="grade5"
+          name="grade" value="5" class="form-check-input" {{checked?grade:5}}>
+   <label for="grade5" class="form-check-label">5</label>
+</div>
 <hr>
-<h3>Video</h3>
+<hr>
+<h3>Vídeo</h3>
 <hr>
 
 <h4 class="mt-1">Ganho</h4>
 
 <div class="bg-light border border-secondary rounded pl-2">
   <div class="form-check">
-    <input type="radio" id="cv-vi_gain"
+    <input type="radio" id="cv-vi_gain1"
       name="cv-vi_gain" value="insufficient" class="form-check-input" {{checked?cv-vi_gain:insufficient}}>
-    <label for="cv-vi_gain" class="form-check-label">1. insuficiente</label>
+    <label for="cv-vi_gain1" class="form-check-label">1. insuficiente</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="cv-vi_gain"
+    <input type="radio" id="cv-vi_gain2"
       name="cv-vi_gain" value="appropriate" class="form-check-input" {{checked?cv-vi_gain:appropriate}}>
-    <label for="cv-vi_gain" class="form-check-label">2. apropriado</label>
+    <label for="cv-vi_gain2" class="form-check-label">2. apropriado</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="cv-vi_gain"
+    <input type="radio" id="cv-vi_gain3"
       name="cv-vi_gain" value="excessive" class="form-check-input" {{checked?cv-vi_gain:excessive}}>
-    <label for="cv-vi_gain" class="form-check-label">3. excessivo</label>
+    <label for="cv-vi_gain3" class="form-check-label">3. excessivo</label>
   </div>
 </div>
 
@@ -30,143 +49,217 @@
 
 <div class="bg-light border border-secondary rounded pl-2">
   <div class="form-check">
-    <input type="radio" id="cv-vi_depth"
+    <input type="radio" id="cv-vi_depth1"
       name="cv-vi_depth" value="insufficient" class="form-check-input" {{checked?cv-vi_depth:insufficient}}>
-    <label for="cv-vi_depth" class="form-check-label">1. insuficiente</label>
+    <label for="cv-vi_depth1" class="form-check-label">1. insuficiente</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="cv-vi_depth"
+    <input type="radio" id="cv-vi_depth2"
       name="cv-vi_depth" value="appropriate" class="form-check-input" {{checked?cv-vi_depth:appropriate}}>
-    <label for="cv-vi_depth" class="form-check-label">2. apropriado</label>
+    <label for="cv-vi_depth2" class="form-check-label">2. apropriado</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="cv-vi_depth"
+    <input type="radio" id="cv-vi_depth3"
       name="cv-vi_depth" value="excessive" class="form-check-input" {{checked?cv-vi_depth:excessive}}>
-    <label for="cv-vi_depth" class="form-check-label">3. excessivo</label>
+    <label for="cv-vi_depth3" class="form-check-label">3. excessivo</label>
   </div>
 </div>
-
-<h4 class="mt-1">Anatomical References</h4>
+<h4 class="mt-1">Referências anatómicas/qualidade</h4>
 
 <div class="bg-light border border-secondary rounded pl-2">
    <div class="form-check">
-     <input type="checkbox" id="cv-vi_suprahepatic"
-       name="cv-vi_suprahepatic" value="not_present" class="form-check-input" {{checked?cv-vi_suprahepatic:not_present}}>
-     <label for="cv-vi_suprahepatic" class="form-check-label">Supra-hepática ausente</label>
+     <input type="checkbox" id="cv-vi_anatomical_suprahepatic"
+       name="cv-vi_anatomical_suprahepatic" value="not_present" class="form-check-input" {{checked?cv-vi_anatomical_suprahepatic:not_present}}>
+     <label for="cv-vi_anatomical_suprahepatic" class="form-check-label">Supra-hepática ausente</label>
    </div>
    <div class="form-check">
-     <input type="checkbox" id="cv-vi_right_atrium_confluence"
-       name="cv-vi_right_atrium_confluence" value="not_present" class="form-check-input" {{checked?cv-vi_right_atrium_confluence:not_present}}>
-     <label for="cv-vi_right_atrium_confluence" class="form-check-label">Confluência no átrio direito ausente</label>
+     <input type="checkbox" id="cv-vi_anatomical_right_atrium_confluence"
+       name="cv-vi_anatomical_right_atrium_confluence" value="not_present" class="form-check-input" {{checked?cv-vi_anatomical_right_atrium_confluence:not_present}}>
+     <label for="cv-vi_anatomical_right_atrium_confluence" class="form-check-label">Confluência no átrio direito ausente</label>
    </div>
    <div class="form-check">
-     <input type="checkbox" id="cv-vi_cavas_largest_diameter"
-       name="cv-vi_cavas_largest_diameter" value="not_present" class="form-check-input" {{checked?cv-vi_cavas_largest_diameter:not_present}}>
-     <label for="cv-vi_cavas_largest_diameter" class="form-check-label">Maior diâmetro da cava ausente</label>
+     <input type="checkbox" id="cv-vi_anatomical_cavas_largest_diameter"
+       name="cv-vi_anatomical_cavas_largest_diameter" value="not_present" class="form-check-input" {{checked?cv-vi_anatomical_cavas_largest_diameter:not_present}}>
+     <label for="cv-vi_anatomical_cavas_largest_diameter" class="form-check-label">Maior diâmetro da cava ausente</label>
    </div>
 </div>
 
-<hr>
 <h4 class="mt-1">Achados - Diâmetro</h4>
 
 <div class="bg-light border border-secondary rounded pl-2">
-  <div class="form-check">
-    <input type="radio" id="cv-vi_findings_diameter"
-      name="cv-vi_findings_diameter" value="inconclusive_acquisition" class="form-check-input" {{checked?cv-vi_findings_diameter:inconclusive_acquisition}}>
-    <label for="cv-vi_findings_diameter" class="form-check-label">1. aquisição inconclusiva</label>
-  </div>
-  <div class="form-check">
-    <input type="radio" id="cv-vi_findings_diameter"
-      name="cv-vi_findings_diameter" value="less_2_1_cm" class="form-check-input" {{checked?cv-vi_findings_diameter:less_2_1_cm}}>
-    <label for="cv-vi_findings_diameter" class="form-check-label">2. menor que 2.1 cm</label>
-  </div>
-  <div class="form-check">
-    <input type="radio" id="cv-vi_findings_diameter"
-      name="cv-vi_findings_diameter" value="greater_equal_2_1_cm" class="form-check-input" {{checked?cv-vi_findings_diameter:greater_equal_2_1_cm}}>
-    <label for="cv-vi_findings_diameter" class="form-check-label">3. maior ou igual que 2.1 cm</label>
-  </div>
-  <div class="form-check">
-    <input type="radio" id="cv-vi_findings_diameter"
-      name="cv-vi_findings_diameter" value="collapsing" class="form-check-input" {{checked?cv-vi_findings_diameter:collapsing}}>
-    <label for="cv-vi_findings_diameter" class="form-check-label">4. colabada</label>
-  </div>
+   <div class="form-check">
+     <input type="radio" id="cv-vi_findings_diameter_findings_diameter1"
+       name="cv-vi_findings_diameter_findings_diameter" value="inconclusive_acquisition" class="form-check-input" {{checked?cv-vi_findings_diameter_findings_diameter:inconclusive_acquisition}}>
+     <label for="cv-vi_findings_diameter_findings_diameter1" class="form-check-label">Aquisição inconclusiva</label>
+   </div>
+   <div class="form-check">
+     <input type="radio" id="cv-vi_findings_diameter_findings_diameter2"
+       name="cv-vi_findings_diameter_findings_diameter" value="less_than_2_1_cm" class="form-check-input" {{checked?cv-vi_findings_diameter_findings_diameter:less_than_2_1_cm}}>
+     <label for="cv-vi_findings_diameter_findings_diameter2" class="form-check-label">Menor que 2.1 cm</label>
+   </div>
+   <div class="form-check">
+     <input type="radio" id="cv-vi_findings_diameter_findings_diameter3"
+       name="cv-vi_findings_diameter_findings_diameter" value="greater_or_equal_to_2_1_cm" class="form-check-input" {{checked?cv-vi_findings_diameter_findings_diameter:greater_or_equal_to_2_1_cm}}>
+     <label for="cv-vi_findings_diameter_findings_diameter3" class="form-check-label">Maior ou igual que 2.1 cm</label>
+   </div>
+   <div class="form-check">
+     <input type="radio" id="cv-vi_findings_diameter_findings_diameter4"
+       name="cv-vi_findings_diameter_findings_diameter" value="collapsing" class="form-check-input" {{checked?cv-vi_findings_diameter_findings_diameter:collapsing}}>
+     <label for="cv-vi_findings_diameter_findings_diameter4" class="form-check-label">Colabada</label>
+   </div>
 </div>
 
-<hr>
 <h4 class="mt-1">Achados - Variabilidade</h4>
 
 <div class="bg-light border border-secondary rounded pl-2">
-  <div class="form-check">
-    <input type="radio" id="cv-vi_findings_variability"
-      name="cv-vi_findings_variability" value="inconclusive_acquisition" class="form-check-input" {{checked?cv-vi_findings_variability:inconclusive_acquisition}}>
-    <label for="cv-vi_findings_variability" class="form-check-label">1. aquisição inconclusiva</label>
-  </div>
-  <div class="form-check">
-    <input type="radio" id="cv-vi_findings_variability"
-      name="cv-vi_findings_variability" value="greater_50_percent" class="form-check-input" {{checked?cv-vi_findings_variability:greater_50_percent}}>
-    <label for="cv-vi_findings_variability" class="form-check-label">2. maior do que 50%</label>
-  </div>
-  <div class="form-check">
-    <input type="radio" id="cv-vi_findings_variability"
-      name="cv-vi_findings_variability" value="less_50_percent" class="form-check-input" {{checked?cv-vi_findings_variability:less_50_percent}}>
-    <label for="cv-vi_findings_variability" class="form-check-label">3. menor do que 50%</label>
-  </div>
+   <div class="form-check">
+     <input type="radio" id="cv-vi_findings_variability_findings_variability1"
+       name="cv-vi_findings_variability_findings_variability" value="inconclusive_acquisition" class="form-check-input" {{checked?cv-vi_findings_variability_findings_variability:inconclusive_acquisition}}>
+     <label for="cv-vi_findings_variability_findings_variability1" class="form-check-label">Aquisição inconclusiva</label>
+   </div>
+   <div class="form-check">
+     <input type="radio" id="cv-vi_findings_variability_findings_variability2"
+       name="cv-vi_findings_variability_findings_variability" value="greater_than_50_percent" class="form-check-input" {{checked?cv-vi_findings_variability_findings_variability:greater_than_50_percent}}>
+     <label for="cv-vi_findings_variability_findings_variability2" class="form-check-label">Maior do que 50%</label>
+   </div>
+   <div class="form-check">
+     <input type="radio" id="cv-vi_findings_variability_findings_variability3"
+       name="cv-vi_findings_variability_findings_variability" value="less_than_50_percent" class="form-check-input" {{checked?cv-vi_findings_variability_findings_variability:less_than_50_percent}}>
+     <label for="cv-vi_findings_variability_findings_variability3" class="form-check-label">Menor do que 50%</label>
+   </div>
 </div>
+
 
 <hr>
 <h3>Imagem Inspiração</h3>
 <hr>
 
-<h4 class="mt-1">Measurement</h4>
+<h4 class="mt-1">Ganho</h4>
 
 <div class="bg-light border border-secondary rounded pl-2">
-   <div class="bg-light border border-secondary rounded pl-2">
-     <div class="form-check">
-       <input type="radio" id="cv_ii_measurements"
-         name="cv_ii_measurements" value="not_performed" class="form-check-input" {{checked?cv_ii_measurements:not_performed}}>
-       <label for="cv_ii_measurements" class="form-check-label">1. não efetuada</label>
-     </div>
-     <div class="form-check">
-       <input type="radio" id="cv_ii_measurements"
-         name="cv_ii_measurements" value="correct" class="form-check-input" {{checked?cv_ii_measurements:correct}}>
-       <label for="cv_ii_measurements" class="form-check-label">2. correta</label>
-     </div>
-     <div class="form-check">
-       <input type="radio" id="cv_ii_measurements"
-         name="cv_ii_measurements" value="incorrect" class="form-check-input" {{checked?cv_ii_measurements:incorrect}}>
-       <label for="cv_ii_measurements" class="form-check-label">3. incorreta</label>
-     </div>
+  <div class="form-check">
+    <input type="radio" id="cv-ii_gain1"
+      name="cv-ii_gain" value="insufficient" class="form-check-input" {{checked?cv-ii_gain:insufficient}}>
+    <label for="cv-ii_gain1" class="form-check-label">1. insuficiente</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="cv-ii_gain2"
+      name="cv-ii_gain" value="appropriate" class="form-check-input" {{checked?cv-ii_gain:appropriate}}>
+    <label for="cv-ii_gain2" class="form-check-label">2. apropriado</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="cv-ii_gain3"
+      name="cv-ii_gain" value="excessive" class="form-check-input" {{checked?cv-ii_gain:excessive}}>
+    <label for="cv-ii_gain3" class="form-check-label">3. excessivo</label>
+  </div>
+</div>
+
+<h4 class="mt-1">Profundidade</h4>
+
+<div class="bg-light border border-secondary rounded pl-2">
+  <div class="form-check">
+    <input type="radio" id="cv-ii_depth1"
+      name="cv-ii_depth" value="insufficient" class="form-check-input" {{checked?cv-ii_depth:insufficient}}>
+    <label for="cv-ii_depth1" class="form-check-label">1. insuficiente</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="cv-ii_depth2"
+      name="cv-ii_depth" value="appropriate" class="form-check-input" {{checked?cv-ii_depth:appropriate}}>
+    <label for="cv-ii_depth2" class="form-check-label">2. apropriado</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="cv-ii_depth3"
+      name="cv-ii_depth" value="excessive" class="form-check-input" {{checked?cv-ii_depth:excessive}}>
+    <label for="cv-ii_depth3" class="form-check-label">3. excessivo</label>
+  </div>
+</div>
+<h4 class="mt-1">Medida</h4>
+
+<div class="bg-light border border-secondary rounded pl-2">
+   <div class="form-check">
+     <input type="radio" id="cv-ii_measurements_measurements1"
+       name="cv-ii_measurements_measurements" value="not_performed" class="form-check-input" {{checked?cv-ii_measurements_measurements:not_performed}}>
+     <label for="cv-ii_measurements_measurements1" class="form-check-label">Não efetuada</label>
+   </div>
+   <div class="form-check">
+     <input type="radio" id="cv-ii_measurements_measurements2"
+       name="cv-ii_measurements_measurements" value="correct" class="form-check-input" {{checked?cv-ii_measurements_measurements:correct}}>
+     <label for="cv-ii_measurements_measurements2" class="form-check-label">Correta</label>
+   </div>
+   <div class="form-check">
+     <input type="radio" id="cv-ii_measurements_measurements3"
+       name="cv-ii_measurements_measurements" value="incorrect" class="form-check-input" {{checked?cv-ii_measurements_measurements:incorrect}}>
+     <label for="cv-ii_measurements_measurements3" class="form-check-label">Incorreta</label>
    </div>
 </div>
+
 
 <hr>
 <h3>Imagem Expiração</h3>
 <hr>
 
-<h4 class="mt-1">Measurement</h4>
+<h4 class="mt-1">Ganho</h4>
 
 <div class="bg-light border border-secondary rounded pl-2">
-   <div class="bg-light border border-secondary rounded pl-2">
-     <div class="form-check">
-       <input type="radio" id="cv_ie_measurements"
-         name="cv_ie_measurements" value="not_performed" class="form-check-input" {{checked?cv_ie_measurements:not_performed}}>
-       <label for="cv_ie_measurements" class="form-check-label">1. não efetuada</label>
-     </div>
-     <div class="form-check">
-       <input type="radio" id="cv_ie_measurements"
-         name="cv_ie_measurements" value="correct" class="form-check-input" {{checked?cv_ie_measurements:correct}}>
-       <label for="cv_ie_measurements" class="form-check-label">2. correta</label>
-     </div>
-     <div class="form-check">
-       <input type="radio" id="cv_ie_measurements"
-         name="cv_ie_measurements" value="incorrect" class="form-check-input" {{checked?cv_ie_measurements:incorrect}}>
-       <label for="cv_ie_measurements" class="form-check-label">3. incorreta</label>
-     </div>
+  <div class="form-check">
+    <input type="radio" id="cv-ie_gain1"
+      name="cv-ie_gain" value="insufficient" class="form-check-input" {{checked?cv-ie_gain:insufficient}}>
+    <label for="cv-ie_gain1" class="form-check-label">1. insuficiente</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="cv-ie_gain2"
+      name="cv-ie_gain" value="appropriate" class="form-check-input" {{checked?cv-ie_gain:appropriate}}>
+    <label for="cv-ie_gain2" class="form-check-label">2. apropriado</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="cv-ie_gain3"
+      name="cv-ie_gain" value="excessive" class="form-check-input" {{checked?cv-ie_gain:excessive}}>
+    <label for="cv-ie_gain3" class="form-check-label">3. excessivo</label>
+  </div>
+</div>
+
+<h4 class="mt-1">Profundidade</h4>
+
+<div class="bg-light border border-secondary rounded pl-2">
+  <div class="form-check">
+    <input type="radio" id="cv-ie_depth1"
+      name="cv-ie_depth" value="insufficient" class="form-check-input" {{checked?cv-ie_depth:insufficient}}>
+    <label for="cv-ie_depth1" class="form-check-label">1. insuficiente</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="cv-ie_depth2"
+      name="cv-ie_depth" value="appropriate" class="form-check-input" {{checked?cv-ie_depth:appropriate}}>
+    <label for="cv-ie_depth2" class="form-check-label">2. apropriado</label>
+  </div>
+  <div class="form-check">
+    <input type="radio" id="cv-ie_depth3"
+      name="cv-ie_depth" value="excessive" class="form-check-input" {{checked?cv-ie_depth:excessive}}>
+    <label for="cv-ie_depth3" class="form-check-label">3. excessivo</label>
+  </div>
+</div>
+<h4 class="mt-1">Medida</h4>
+
+<div class="bg-light border border-secondary rounded pl-2">
+   <div class="form-check">
+     <input type="radio" id="cv-ie_measurements_measurements1"
+       name="cv-ie_measurements_measurements" value="not_performed" class="form-check-input" {{checked?cv-ie_measurements_measurements:not_performed}}>
+     <label for="cv-ie_measurements_measurements1" class="form-check-label">Não efetuada</label>
+   </div>
+   <div class="form-check">
+     <input type="radio" id="cv-ie_measurements_measurements2"
+       name="cv-ie_measurements_measurements" value="correct" class="form-check-input" {{checked?cv-ie_measurements_measurements:correct}}>
+     <label for="cv-ie_measurements_measurements2" class="form-check-label">Correta</label>
+   </div>
+   <div class="form-check">
+     <input type="radio" id="cv-ie_measurements_measurements3"
+       name="cv-ie_measurements_measurements" value="incorrect" class="form-check-input" {{checked?cv-ie_measurements_measurements:incorrect}}>
+     <label for="cv-ie_measurements_measurements3" class="form-check-label">Incorreta</label>
    </div>
 </div>
 
 <hr>
+
 <div class="text-center">
-  <dcc-button topic="control/case/save" label="SAVE COMMENTS" xstyle="theme"></dcc-button>
+  <dcc-button topic="control/case/save" label="GRAVAR COMENTÁRIOS" xstyle="theme"></dcc-button>
 </div>
 <hr>

@@ -3,13 +3,14 @@
  */
 
 class MessageBus {
-  constructor (externalized) {
-    this._externalized = externalized
+  constructor () {
+    // this._externalized = externalized
     this._listeners = []
     this._providers = {}
     this._connections = {}
   }
 
+  /*
   get externalized () {
     return this._externalized
   }
@@ -17,6 +18,7 @@ class MessageBus {
   set externalized (newValue) {
     this._externalized = newValue
   }
+  */
 
   // <TODO> provisory
   defineRunningCase (runningCase) {
@@ -55,14 +57,16 @@ class MessageBus {
     }
   }
 
-  async publish (topic, message) {
+  async publish (topic, message, track) {
     let listeners = this._listeners.slice()
     for (const l in listeners) {
-      if (this.matchTopic(listeners[l], topic))
-        listeners[l].callback(topic, message)
+      if (this._matchTopic(listeners[l], topic)) {
+        if (listeners[l].callback)
+          listeners[l].callback(topic, message)
+      }
     }
 
-    if (this._externalized) {
+    if (track != null) {
       if (DCCCommonServer.loggerAddressAPI) {
         const currentDateTime = new Date()
         let extMessage = {
@@ -106,15 +110,20 @@ class MessageBus {
   }
 
   /* Checks if this topic has a subscriber */
-  hasSubscriber (topic) {
+  /* default: does not check regular expression */
+  hasSubscriber (topic, regexp) {
     let hasSub = false
     let listeners = this._listeners.slice()
     for (let l = 0; !hasSub && l < listeners.length; l++) {
-      hasSub = this.matchTopic(listeners[l], topic) }
+      if (regexp != null && regexp)
+        hasSub = this._matchTopic(listeners[l], topic)
+      else
+        hasSub = (topic == listeners[l].topic)
+    }
     return hasSub
   }
 
-  matchTopic (listener, topic) {
+  _matchTopic (listener, topic) {
     let matched = false
     if (listener.regexp) {
       const matchStr = listener.regexp.exec(topic)
@@ -243,6 +252,13 @@ class MessageBus {
    }
    */
 
+  static create (busId) {
+    let bus = new MessageBus()
+    if (busId != null)
+      MessageBus._bus[busId] = bus
+    return bus
+  }
+
   /* Message analysis services
      *************************/
 
@@ -287,7 +303,12 @@ class MessageBus {
   MessageBus._stamp = 1
   MessageBus._connection = 1
 
+  MessageBus._bus = {}
+  MessageBus.i = MessageBus.create('default')
+
+  /*
   MessageBus.int = new MessageBus(false)
   MessageBus.ext = new MessageBus(true)
   MessageBus.page = new MessageBus(false)
+  */
 })()

@@ -17,9 +17,9 @@ class EditDCCText extends EditDCC {
     // this._editDCC = dcc
     this._textChanged = false
     this.handleConfirm = this.handleConfirm.bind(this)
-    MessageBus.int.subscribe('control/editor/edit/confirm', this.handleConfirm)
+    MessageBus.i.subscribe('control/editor/edit/confirm', this.handleConfirm)
     this.handleCancel = this.handleCancel.bind(this)
-    MessageBus.int.subscribe('control/editor/edit/cancel', this.handleCancel)
+    MessageBus.i.subscribe('control/editor/edit/cancel', this.handleCancel)
 
     let presentation = null
     if (floating) {
@@ -125,14 +125,14 @@ class EditDCCText extends EditDCC {
   }
 
   async _closeEditor() {
-    MessageBus.int.unsubscribe('control/editor/edit/confirm', this.handleConfirm)
-    MessageBus.int.unsubscribe('control/editor/edit/cancel', this.handleCancel)
+    MessageBus.i.unsubscribe('control/editor/edit/confirm', this.handleConfirm)
+    MessageBus.i.unsubscribe('control/editor/edit/cancel', this.handleCancel)
     if (this._editorInstance)
       this._editorWrapper.removeChild(this._editorInstance)
     this._removeToolbarPanel()
     if (this._objField == null)
       await this._properties.closeProperties()
-    // MessageBus.ext.publish('control/knot/update')
+    // MessageBus.i.publish('control/knot/update', null, true)
   }
 
   async handleConfirm() {

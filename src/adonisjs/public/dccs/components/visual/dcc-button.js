@@ -18,10 +18,10 @@ class DCCButton extends DCCBlock {
 
     if (this.hasAttribute('topic') && this.topic.endsWith('/navigate')) {
       this.navigationBlocked = this.navigationBlocked.bind(this)
-      MessageBus.ext.subscribe('+/+/navigate/blocked', this.navigationBlocked)
+      this._subscribe('+/+/navigate/blocked', this.navigationBlocked)
     }
 
-    MessageBus.int.publish('control/button/' +
+    this._publish('control/button/' +
       (this.hasAttribute('id')
         ? this.id
         : (this.hasAttribute('label') ? this.label : '')
@@ -153,14 +153,14 @@ class DCCButton extends DCCBlock {
         const v = (this.variable.includes(':'))
           ? this.variable.substring(0, this.variable.indexOf(':')) : this.variable
         message.value = (this.variable.endsWith(':label')) ? this.label : this.message
-        MessageBus.ext.publish('var/' + v + '/changed', message)
+        this._publish('var/' + v + '/changed', message, true)
       }
       if (this.hasAttribute('label') || this.hasAttribute('topic')) {
         if (this.hasAttribute('topic') && this.topic.endsWith('/navigate')) { this._active = false }
         const topic = (this.hasAttribute('topic'))
           ? this.topic : 'button/' + this.label + '/clicked'
         if (this.hasAttribute('message')) { message.value = this.message }
-        MessageBus.ext.publish(topic, message)
+        this._publish(topic, message, true)
       }
       await this.multiRequest('click', message)
     }

@@ -3,5 +3,5 @@
 <div class="styt-pul-main">{knot}</div>
 `
 
-  MessageBus.int.publish('control/theme/right/load/ready', localTheme)
+  MessageBus.i.publish('control/theme/right/load/ready', localTheme)
 })()

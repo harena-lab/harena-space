@@ -14,8 +14,8 @@ class TemplateManager {
   }
 
   async _templateSelect () {
-    const templateList = await MessageBus.ext.request('data/template/*/list',
-      { scope: 'case' })
+    const templateList = await MessageBus.i.request('data/template/*/list',
+      { scope: 'case' }, null, true)
 
     const tl = templateList.message
     for (const t in tl) {
@@ -45,7 +45,7 @@ class TemplateManager {
         )
       }
     }
-    MessageBus.int.publish('control/dhtml/ready')
+    MessageBus.i.publish('control/dhtml/ready')
   }
 }
 

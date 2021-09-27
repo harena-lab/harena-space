@@ -18,9 +18,9 @@ class DCCVisual extends DCCBase {
     this._updateDisplay()
     if (this.hasAttribute('id')) {
       this.changeDisplay = this.changeDisplay.bind(this)
-      MessageBus.page.provides(this.id, 'style/display/initial',
+      this._provides(this.id, 'style/display/initial',
                                this.changeDisplay)
-      MessageBus.page.provides(this.id, 'style/display/none',
+      this._provides(this.id, 'style/display/none',
                                this.changeDisplay)
     }
   }
@@ -208,8 +208,8 @@ class PresentationDCC {
     else
       this._param.buttonType = buttonType
     console.log('control/element/' + this._id + '/selected')
-    MessageBus.ext.publish(
-      'control/element/' + this._id + '/selected', this._param)
+    MessageBus.i.publish(
+      'control/element/' + this._id + '/selected', this._param, true)
   }
 
   mouseoverListener (event) {

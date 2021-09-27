@@ -1,7 +1,7 @@
  class PrognosisProgress {
   constructor() {
     this.start = this.start.bind(this)
-    MessageBus.int.subscribe('control/dhtml/ready', this.start)
+    MessageBus.i.subscribe('control/dhtml/ready', this.start)
   }
 
   async start(){

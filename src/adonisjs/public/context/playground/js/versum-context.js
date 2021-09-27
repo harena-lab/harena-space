@@ -4,9 +4,9 @@
  * Authoring environment to test the Versum language.
  */
 
-class AuthorVersumManager {
+class VersumContextManager {
   constructor () {
-   	MessageBus.page = new MessageBus(false)
+   	// MessageBus.page = new MessageBus(false)
     Basic.service.rootPath = '../../'
     DCCCommonServer.instance.local = true
   }
@@ -15,8 +15,8 @@ class AuthorVersumManager {
     this.translate = this.translate.bind(this)
     this.updateVisibility = this.updateVisibility.bind(this)
 
-    MessageBus.ext.subscribe('control/translate/example', this.translate)
-    MessageBus.ext.subscribe('var/output/changed', this.updateVisibility)
+    MessageBus.i.subscribe('control/translate/example', this.translate)
+    MessageBus.i.subscribe('var/output/changed', this.updateVisibility)
   }
 
   async translate (topic, message) {
@@ -28,31 +28,33 @@ class AuthorVersumManager {
     const compiled = await Translator.instance.compileMarkdown(
       'test', document.querySelector('#editor').value)
     document.querySelector('#object-results').value = JSON.stringify(compiled, null, 3)
+    /*
     let html = ''
     for (const knot in compiled.knots) {
       // let mkHTML = await Translator.instance.generateKnotHTML(compiled.knots[knot].content);
       const mkHTML = await Translator.instance.generateHTML(compiled.knots[knot])
       html += mkHTML
     }
-    document.querySelector('#html-panel').value = html
-    document.querySelector('#render-panel').innerHTML = html
+    */
+    document.querySelector('#html-panel').value = Context.instance.toRDF(compiled)
+    // document.querySelector('#render-panel').innerHTML = html
   }
 
   updateVisibility (topic, message) {
-    for (const si in AuthorVersumManager.stateId) {
-      const s = document.querySelector('#' + AuthorVersumManager.stateId[si] + '-block')
+    for (const si in VersumContextManager.stateId) {
+      const s = document.querySelector('#' + VersumContextManager.stateId[si] + '-block')
       if (s != null) {
         s.style.display =
-               (AuthorVersumManager.stateVis[message.value][si] == 0) ? 'none' : 'initial'
+               (VersumContextManager.stateVis[message.value][si] == 0) ? 'none' : 'initial'
       }
     }
   }
 }
 
 (function () {
-  AuthorVersumManager.stateId = ['versum', 'object', 'html', 'rendered']
+  VersumContextManager.stateId = ['versum', 'object', 'html', 'rendered']
 
-  AuthorVersumManager.stateVis = {
+  VersumContextManager.stateVis = {
     'versum-object': [1, 1, 0, 0],
     'versum-html': [1, 0, 1, 0],
     'versum-rendered': [1, 0, 0, 1],
@@ -60,5 +62,5 @@ class AuthorVersumManager {
     'object-rendered': [0, 1, 0, 1]
   }
 
-  AuthorVersumManager.s = new AuthorVersumManager()
+  VersumContextManager.s = new VersumContextManager()
 })()

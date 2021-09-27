@@ -36,9 +36,9 @@ class DCCSpaceCellular extends DCCBase {
 
     if (!this._state && this._checkAllTypes()) { this._createIndividuals() }
 
-    MessageBus.page.subscribe('dcc/cell-type/register', this.cellTypeRegister)
-    MessageBus.page.subscribe('dcc/rule-cell/register', this.ruleRegister)
-    MessageBus.page.subscribe('dcc/tool-cell/register', this.toolRegister)
+    this._subscribe('dcc/cell-type/register', this.cellTypeRegister)
+    this._subscribe('dcc/rule-cell/register', this.ruleRegister)
+    this._subscribe('dcc/tool-cell/register', this.toolRegister)
   }
 
   _buildInnerHTML () {
@@ -113,7 +113,7 @@ class DCCSpaceCellular extends DCCBase {
   }
 
   disconnectedCallback () {
-    MessageBus.page.unsubscribe('dcc/cell-type/register', this.cellTypeRegister)
+    this._unsubscribe('dcc/cell-type/register', this.cellTypeRegister)
   }
 
   static get observedAttributes () {
@@ -435,7 +435,7 @@ class DCCSpaceCellularEditor extends DCCSpaceCellular {
     this._editType = '_'
     this.cellClicked = this.cellClicked.bind(this)
     this.rulesClear = this.rulesClear.bind(this)
-    MessageBus.page.subscribe('dcc/rules/clear', this.rulesClear)
+    this._subscribe('dcc/rules/clear', this.rulesClear)
   }
 
   connectedCallback () {
@@ -526,7 +526,7 @@ class DCCSpaceCellularEditor extends DCCSpaceCellular {
   rulesClear (topic, message) {
     this._rules = {}
     this._wildcardRules = []
-    MessageBus.page.publish(MessageBus.buildResponseTopic(topic, message), true)
+    this._publish(MessageBus.buildResponseTopic(topic, message), true)
   }
 
   // <TODO> provisory

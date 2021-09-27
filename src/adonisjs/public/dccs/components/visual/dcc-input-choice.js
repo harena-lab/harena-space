@@ -9,6 +9,7 @@
 class DCCInputOption extends DCCInput {
   constructor () {
     super()
+    this._variable = ''
     this.inputChanged = this.inputChanged.bind(this)
   }
 
@@ -26,7 +27,7 @@ class DCCInputOption extends DCCInput {
 
     // <TODO> align with dcc-state-select
     if (this._parent == null) {
-      MessageBus.int.publish('var/' + this._variable + '/input/ready',
+      this._publish('var/' + this._variable + '/input/ready',
         {
           sourceType: DCCInputOption.elementTag,
           content: this.value
@@ -99,11 +100,11 @@ class DCCInputOption extends DCCInput {
 
   inputChanged () {
     this.changed = true
-    MessageBus.ext.publish('var/' + this._variable + '/changed',
+    this._publish('var/' + this._variable + '/changed',
       {
         sourceType: DCCInputOption.elementTag,
         value: this.value
-      })
+      }, true)
   }
 
   /* Rendering */
@@ -157,6 +158,7 @@ class DCCInputChoice extends DCCInput {
   constructor () {
     super()
     this._options = []
+    this._variable = ''
     this.inputChanged = this.inputChanged.bind(this)
   }
 
@@ -231,11 +233,11 @@ class DCCInputChoice extends DCCInput {
     }
 
     this.changed = true
-    MessageBus.ext.publish('var/' + this._variable + '/changed',
+    this._publish('var/' + this._variable + '/changed',
       {
         sourceType: DCCInputChoice.elementTag,
         value: this._value
-      })
+      }, true)
   }
 
   /* Rendering */
@@ -398,7 +400,7 @@ class DCCInputChoice extends DCCInput {
     this._presentationIsReady()
 
     // <TODO> align with dcc-state-select
-    MessageBus.int.publish('var/' + this._variable + '/group_input/ready',
+    this._publish('var/' + this._variable + '/group_input/ready',
       DCCInputChoice.elementTag)
   }
 

@@ -9,22 +9,22 @@ class PlayerManager {
     this._state = new PlayState()
 
     this.controlEvent = this.controlEvent.bind(this)
-    MessageBus.ext.subscribe('control/#', this.controlEvent)
+    MessageBus.i.subscribe('control/#', this.controlEvent)
     this.navigateEvent = this.navigateEvent.bind(this)
-    MessageBus.ext.subscribe('knot/+/navigate', this.navigateEvent)
-    MessageBus.ext.subscribe('flow/+/navigate', this.navigateEvent)
-    MessageBus.ext.subscribe('case/+/navigate', this.navigateEvent)
-    MessageBus.ext.subscribe('variable/+/navigate', this.navigateEvent)
-    MessageBus.ext.subscribe('session/close', this.navigateEvent)
+    MessageBus.i.subscribe('knot/+/navigate', this.navigateEvent)
+    MessageBus.i.subscribe('flow/+/navigate', this.navigateEvent)
+    MessageBus.i.subscribe('case/+/navigate', this.navigateEvent)
+    MessageBus.i.subscribe('variable/+/navigate', this.navigateEvent)
+    MessageBus.i.subscribe('session/close', this.navigateEvent)
 
     this._notesStack = []
 
     // <TODO> temporary
     this.produceReport = this.produceReport.bind(this)
-    MessageBus.int.subscribe('/report/get', this.produceReport)
+    MessageBus.i.subscribe('/report/get', this.produceReport)
 
     this.caseCompleted = this.caseCompleted.bind(this)
-    MessageBus.ext.subscribe('case/completed', this.caseCompleted)
+    MessageBus.i.subscribe('case/completed', this.caseCompleted)
 
     // tracking
     this.trackTyping = this.trackTyping.bind(this)
@@ -51,21 +51,21 @@ class PlayerManager {
     this.trackTrigger(target)
 
     let mandatoryEmpty = null
-    const mandatoryM = await MessageBus.int.request('var/*/input/mandatory/get')
+    const mandatoryM = await MessageBus.i.request('var/*/input/mandatory/get')
     for (const m in mandatoryM.message) {
       if (mandatoryM.message[m].filled == false && mandatoryEmpty == null) {
         mandatoryEmpty = mandatoryM.message[m].message }
     }
 
     if (mandatoryEmpty != null) {
-      MessageBus.ext.publish(topic + '/blocked', 'Input missing: ' + mandatoryEmpty)
+      MessageBus.i.publish(topic + '/blocked', 'Input missing: ' + mandatoryEmpty, true)
       await DCCNoticeInput.displayNotice(
         'You must answer the question: ' + mandatoryEmpty,
         'message', 'Ok')
     } else {
       if (this._currentKnot != null) {
-        MessageBus.ext.publish('control/input/submit') // <TODO> provisory
-        MessageBus.ext.publish('knot/' + this._currentKnot + '/end')
+        MessageBus.i.publish('control/input/submit', null, true) // <TODO> provisory
+        MessageBus.i.publish('knot/' + this._currentKnot + '/end', null, true)
       }
 
       switch (topic) {
@@ -138,7 +138,7 @@ class PlayerManager {
                         console.log(target);
                         */
           if (MessageBus.matchFilter(topic, 'variable/+/navigate')) {
-            const result = await MessageBus.ext.request('var/' + target + '/get')
+            const result = await MessageBus.i.request('var/' + target + '/get', null, null, true)
             target = Translator.instance.findContext(
               this._compiledCase.knots, this._currentKnot,
               result.message)
@@ -226,7 +226,7 @@ class PlayerManager {
         await this._caseLoad(this._state.currentCase)
 
         this._caseFlow()
-        MessageBus.ext.publish('knot/<</navigate')
+        MessageBus.i.publish('knot/<</navigate', null, true)
       } else { this._state.sessionCompleted() }
     }
 
@@ -242,17 +242,17 @@ class PlayerManager {
             let pi = -1
             let cases = null
             if (!precase) {
-              const casesM = await MessageBus.ext.request('data/case/*/list',
+              const casesM = await MessageBus.i.request('data/case/*/list',
                 {
                   filterBy: 'user',
                   filter: this._state.userid
-                })
+                }, null, true)
               cases = casesM.message
               if (cases != null && cases.length == 1) { pi = 0 }
             }
 
             if (pi == -1) {
-              const casesM = await MessageBus.ext.request('data/case/*/list')
+              const casesM = await MessageBus.i.request('data/case/*/list', null, null, true)
               cases = casesM.message
 
               if (precase != null) {
@@ -275,7 +275,7 @@ class PlayerManager {
           this._caseFlow()
         }
       }
-      MessageBus.ext.publish('knot/<</navigate')
+      MessageBus.i.publish('knot/<</navigate', null, true)
       // this.knotLoad("entry");
     }
   }
@@ -284,11 +284,10 @@ class PlayerManager {
     Basic.service.currentCaseId =
       new URL(document.location).searchParams.get('id')
     /*
-    const caseObj = await MessageBus.ext.request(
-      'service/request/get', {caseId: Basic.service.currentCaseId})
+    const caseObj = await MessageBus.i.request(
+      'service/request/get', {caseId: Basic.service.currentCaseId}, null, true)
     */
-    const caseObj = await MessageBus.ext.request(
-      'data/case/' + Basic.service.currentCaseId + '/get')
+    const caseObj = await MessageBus.i.request('data/case/' + Basic.service.currentCaseId + '/get', null, null, true)
 
     this._currentCaseTitle = caseObj.message.title
 
@@ -300,7 +299,7 @@ class PlayerManager {
     this._knots = this._compiledCase.knots
     // Basic.service.currentThemeFamily = this._compiledCase.theme
     Basic.service.composedThemeFamily(this._compiledCase.theme)
-    MessageBus.ext.publish('control/case/ready')
+    MessageBus.i.publish('control/case/ready', null, true)
   }
 
   _caseFlow () {
@@ -351,8 +350,7 @@ class PlayerManager {
       */
     if (!DCCPlayerServer.localEnv) {
       if (parameter) {
-        MessageBus.ext.publish(
-          'var/' + knotName + '.parameter/set', parameter)
+        MessageBus.i.publish('var/' + knotName + '.parameter/set', parameter, true)
       }
       if (this._compiledCase.role && this._compiledCase.role == 'metacase' &&
              this._knots[knotName].categories &&
@@ -368,11 +366,11 @@ class PlayerManager {
         if (note) { this.presentNote(knot) } else { this.presentKnot(knot) }
       }
     }
-    MessageBus.ext.publish('knot/' + knotName + '/start')
+    MessageBus.i.publish('knot/' + knotName + '/start', null, true)
 
     if (this._knots[knotName].categories &&
         this._knots[knotName].categories.includes('end'))
-    { MessageBus.ext.publish('case/completed', {knotid: knotName}) }
+    { MessageBus.i.publish('case/completed', {knotid: knotName}, true) }
   }
 
   caseCompleted (topic, message) {
@@ -385,7 +383,7 @@ class PlayerManager {
   }
 
   presentKnot (knot) {
-    MessageBus.page = new MessageBus(false)
+    // MessageBus.page = new MessageBus(false)
 
     this._mainPanel.innerHTML = knot
     document.querySelector('#main-panel').scrollTo(0, 0)
@@ -402,7 +400,7 @@ class PlayerManager {
 
   presentNote (knot) {
     // <TODO> provisory
-    if (!MessageBus.page) { MessageBus.page = new MessageBus(false) }
+    // if (!MessageBus.page) { MessageBus.page = new MessageBus(false) }
 
     const dimensions = Basic.service.screenDimensions()
 
@@ -503,16 +501,16 @@ class PlayerManager {
               Basic.service.currentCaseId)
 
       this._state.runningCase = runningCase
-      MessageBus.ext.defineRunningCase(runningCase)
+      MessageBus.i.defineRunningCase(runningCase)
     }
   }
 
   resumeCase () {
     if (!PlayerManager.isCapsule) {
       // <TODO> this._runningCase is provisory
-      MessageBus.ext.publish('case/' + this._state.currentCase + '/resume', this._state.runningCase)
+      MessageBus.i.publish('case/' + this._state.currentCase + '/resume', this._state.runningCase, true)
 
-      MessageBus.ext.defineRunningCase(this._state.runningCase)
+      MessageBus.i.defineRunningCase(this._state.runningCase)
     }
   }
 
@@ -526,7 +524,7 @@ class PlayerManager {
   }
 
   startTrackTyping (variable) {
-    MessageBus.ext.subscribe('/' + variable + '/typed', this.trackTyping)
+    MessageBus.i.subscribe('/' + variable + '/typed', this.trackTyping)
   }
 
   trackTyping (topic, message) {
@@ -554,7 +552,7 @@ class PlayerManager {
       output.users[users.ids[u]] = profile
     }
 
-    MessageBus.int.publish('/report', {
+    MessageBus.i.publish('/report', {
       caseobj: server.getPlayerObj(),
       result: output
     })

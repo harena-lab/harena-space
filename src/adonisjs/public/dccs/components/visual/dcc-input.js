@@ -15,7 +15,6 @@ class DCCInput extends DCCBlock {
       this._variable = DCC.generateVarName()
     this._statement = (this.hasAttribute('statement'))
       ? this.statement : this.innerHTML
-      // this.innerHTML = "";
 
     super.connectedCallback()
 
@@ -24,7 +23,7 @@ class DCCInput extends DCCBlock {
         ? this._statement
         : this._variable.substring(this._variable.lastIndexOf('.') + 1)
 
-      MessageBus.int.publish('var/' + this._variable + '/input/mandatory',
+      this._publish('var/' + this._variable + '/input/mandatory',
         inputIndication)
     }
   }
@@ -51,6 +50,7 @@ class DCCInput extends DCCBlock {
   }
 
   set variable (newValue) {
+    this._variable = newValue
     this.setAttribute('variable', newValue)
   }
 

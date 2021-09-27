@@ -24,6 +24,8 @@
    <script src="../../infra/basic.js"></script>
    <script src="../../infra/dcc-common-server-proxy.js"></script>
 
+   <script src="../../dccs/base/primitive-dcc.js"></script>
+   <script src="../../dccs/base/scope-dcc.js"></script>
    <script src="../../dccs/base/subscribe-dcc.js"></script>
    <script src="../../dccs/base/trigger-dcc.js"></script>
    <script src="../../dccs/base/property-dcc.js"></script>
@@ -63,8 +65,8 @@
    <script>
       function start() {
          document.querySelector("#json-message").value = "";
-         MessageBus.ext.subscribe("control/render/example", render);
-         MessageBus.ext.subscribe("#", showJson);
+         MessageBus.i.subscribe("control/render/example", render);
+         MessageBus.i.subscribe("#", showJson);
 
          let parameters = window.location.search.substr(1);
          if (parameters != null && parameters.length > 0) {
@@ -99,7 +101,7 @@
 
 <body onload="start()">
    <script>
-      MessageBus.page = new MessageBus(false);
+      // MessageBus.page = new MessageBus(false);
       Basic.service.rootPath = "../../";
    </script>
 

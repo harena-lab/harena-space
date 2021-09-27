@@ -2,11 +2,11 @@ class LevelCreationTool {
   constructor(){
     this.pacient = Object.create(null)
     this.preStart = this.preStart.bind(this)
-    MessageBus.int.subscribe('control/html/ready', this.preStart)
+    MessageBus.i.subscribe('control/html/ready', this.preStart)
   }
 
   async preStart(){
-    MessageBus.int.unsubscribe('control/html/ready', this.preStart)
+    MessageBus.i.unsubscribe('control/html/ready', this.preStart)
     this.start()
   }
 

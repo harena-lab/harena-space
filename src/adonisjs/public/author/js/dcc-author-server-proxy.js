@@ -8,34 +8,33 @@
 class DCCAuthorServer {
   constructor () {
     this.loadModule = this.loadModule.bind(this)
-    MessageBus.ext.subscribe('data/module/+/get', this.loadModule)
+    MessageBus.i.subscribe('data/module/+/get', this.loadModule)
     this.loadTemplate = this.loadTemplate.bind(this)
-    MessageBus.ext.subscribe('data/template/+/get', this.loadTemplate)
+    MessageBus.i.subscribe('data/template/+/get', this.loadTemplate)
     this.loadTemplateComments = this.loadTemplateComments.bind(this)
-    MessageBus.ext.subscribe('data/template_comments/+/get',
-      this.loadTemplateComments)
+    MessageBus.i.subscribe('data/template_comments/+/get', this.loadTemplateComments)
     this.saveCase = this.saveCase.bind(this)
-    MessageBus.ext.subscribe('data/case/+/set', this.saveCase)
+    MessageBus.i.subscribe('data/case/+/set', this.saveCase)
     this.newCase = this.newCase.bind(this)
-    MessageBus.ext.subscribe('data/case//new', this.newCase)
+    MessageBus.i.subscribe('data/case//new', this.newCase)
     this.deleteCase = this.deleteCase.bind(this)
-    MessageBus.ext.subscribe('data/case/+/delete', this.deleteCase)
+    MessageBus.i.subscribe('data/case/+/delete', this.deleteCase)
 
     this.themeFamiliesList = this.themeFamiliesList.bind(this)
-    MessageBus.ext.subscribe('data/theme_family/*/list', this.themeFamiliesList)
+    MessageBus.i.subscribe('data/theme_family/*/list', this.themeFamiliesList)
 
     this.templatesList = this.templatesList.bind(this)
-    MessageBus.ext.subscribe('data/template/*/list', this.templatesList)
+    MessageBus.i.subscribe('data/template/*/list', this.templatesList)
     this.uploadArtifact = this.uploadArtifact.bind(this)
-    MessageBus.ext.subscribe('data/asset//new', this.uploadArtifact)
+    MessageBus.i.subscribe('data/asset//new', this.uploadArtifact)
 
     /*
       this.prepareCaseHTML = this.prepareCaseHTML.bind(this);
-      MessageBus.ext.subscribe("case/+/prepare", this.prepareCaseHTML);
+      MessageBus.i.subscribe("case/+/prepare", this.prepareCaseHTML);
       this.saveKnotHTML = this.saveKnotHTML.bind(this);
-      MessageBus.ext.subscribe("knot/+/set", this.saveKnotHTML);
+      MessageBus.i.subscribe("knot/+/set", this.saveKnotHTML);
       this.saveCaseObject = this.saveCaseObject.bind(this);
-      MessageBus.ext.subscribe("case/+/set", this.saveCaseObject);
+      MessageBus.i.subscribe("case/+/set", this.saveCaseObject);
       */
   }
 
@@ -68,8 +67,8 @@ class DCCAuthorServer {
         icon: '../themes/' + jsonResponse[t].path + '/images/' + jsonResponse[t].icon
       })
     }
-    MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-      busResponse)
+    MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
+      busResponse, true)
   }
 
   async templatesList (topic, message) {
@@ -96,8 +95,8 @@ class DCCAuthorServer {
         })
       }
     }
-    MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-      busResponse)
+    MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
+      busResponse, true)
   }
 
   async newCase (topic, message) {
@@ -122,8 +121,8 @@ class DCCAuthorServer {
     console.log('=== response:')
     console.log(response)
     const jsonResponse = await response.json()
-    MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-      jsonResponse.id)
+    MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
+      jsonResponse.id, true)
   }
 
   async saveCase (topic, message) {
@@ -200,11 +199,11 @@ class DCCAuthorServer {
           console.log(message)
 
           if(!response.data.error){
-            MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-            response.data.source)
+            MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
+              response.data.source, true)
           }else {
-            MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-            response.data.error)
+            MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
+              response.data.error, true)
           }
 
         })
@@ -240,8 +239,8 @@ class DCCAuthorServer {
     console.log('=== delete case')
     console.log(response)
     const jsonResponse = await response.json()
-    MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-      jsonResponse)
+    MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
+      jsonResponse, true)
     */
     const config = {
       method: 'DELETE',
@@ -256,8 +255,8 @@ class DCCAuthorServer {
         // return response.redirect('/')
         console.log('=== delete case')
         console.log(response)
-        MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-          response)
+        MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
+          response, true)
       })
       .catch(function (error) {
         console.log('=== delete case error')
@@ -277,8 +276,8 @@ class DCCAuthorServer {
     }
     const response = await fetch('../modules/' + moduleName + '.html', header)
     const textResponse = await response.text()
-    MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-      textResponse)
+    MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
+      textResponse, true)
   }
 
   async loadTemplate (topic, message) {
@@ -317,8 +316,8 @@ class DCCAuthorServer {
     //                                '.md', header)
     // const textResponse = await response.text()
     if (serviceResponse != null)
-      MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-        serviceResponse)
+      MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
+        serviceResponse, true)
   }
 
   async loadTemplateComments (topic, message) {
@@ -345,8 +344,8 @@ class DCCAuthorServer {
     })
 
     if (serviceResponse != null)
-      MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-        serviceResponse)
+      MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
+        serviceResponse, true)
   }
 
   b64toBlob (imageURL) {
@@ -391,7 +390,7 @@ class DCCAuthorServer {
         let percentCompleted =
           Math.round((progressEvent.loaded * 100) / progressEvent.total) + '%'
         if (message.progress)
-          MessageBus.ext.publish(message.progress, percentCompleted)
+          MessageBus.i.publish(message.progress, percentCompleted, true)
         console.log('upload: ' + percentCompleted)
       }
     }
@@ -399,8 +398,8 @@ class DCCAuthorServer {
       .then(function (response) {
         console.log('=== response image upload')
         console.log(response)
-        MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-          response.data)
+        MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
+          response.data, true)
       })
       .catch(function (error) {
         console.log('=== delete case error')
@@ -420,7 +419,7 @@ class DCCAuthorServer {
          }
       });
       const jsonResponse = await response.json();
-      MessageBus.ext.publish("case/" + caseName + "/prepare/directory", jsonResponse.directory);
+      MessageBus.i.publish("case/" + caseName + "/prepare/directory", jsonResponse.directory, true);
    }
 
    async saveKnotHTML(topic, message) {
@@ -436,7 +435,7 @@ class DCCAuthorServer {
          }
       });
       const jsonResponse = await response.json();
-      MessageBus.ext.publish("knot/" + knotId + "/set/status", jsonResponse.status);
+      MessageBus.i.publish("knot/" + knotId + "/set/status", jsonResponse.status, true);
    }
 
    async saveCaseObject(topic, message) {
@@ -454,7 +453,7 @@ class DCCAuthorServer {
             }
          });
          const jsonResponse = await response.json();
-         MessageBus.ext.publish("case/" + caseId + "/set/status", jsonResponse.status);
+         MessageBus.i.publish("case/" + caseId + "/set/status", jsonResponse.status, true);
       }
    }
    */

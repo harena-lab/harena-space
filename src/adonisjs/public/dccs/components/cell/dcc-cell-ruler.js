@@ -16,7 +16,7 @@ class DCCCellRuler extends DCCBase {
 
   connectedCallback () {
     super.connectedCallback()
-    MessageBus.page.publish('dcc/tool-cell/register', this)
+    this._publish('dcc/tool-cell/register', this)
   }
 
   static get observedAttributes () {

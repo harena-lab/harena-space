@@ -62,7 +62,7 @@ class Translator {
 
     if (this._themeSettings) { delete this._themeSettings }
     if (compiledCase.theme) {
-      const themeSt = await MessageBus.int.request(
+      const themeSt = await MessageBus.i.request(
         'data/theme_family/' + Basic.service.decomposeThemeFamily(compiledCase.theme).family.toLowerCase() +
         '/settings')
       if (themeSt != null) { this._themeSettings = themeSt.message }
@@ -181,22 +181,16 @@ class Translator {
     * Extract annotations of a single node
     */
   _extractKnotAnnotations (knot) {
-    /*
-      const mdAnnToObj = {
-         "context-open" : this._contextOpenMdToObj,
-         "context-close": this._contextCloseMdToObj,
-         annotation: this._annotationMdToObj,
-         select: this._selectMdToObj
-      };
-      */
-
     knot.annotations = []
     let currentSet = knot.annotations
-    // let maintainContext = false;
 
     let mdfocus = knot._source
 
-    // let newSource = "";
+    let uidWord = 1
+    let uidContext = null
+    let uidContextN = 0
+    let uidWordContext = 1
+    let insideContext = false
     let matchStart
     do {
       // look for the next nearest expression match
@@ -211,11 +205,23 @@ class Translator {
       }
 
       if (matchStart > -1) {
+        // count words before annotation - to buuild unique id
+        const before = mdfocus.substring(0, matchStart).match(/([\w-]+)/g)
+        const words = (before == null) ? 0 : before.length
+        uidWord += words
+        uidWordContext += words
+
         // translate the expression to an object
         const matchSize = mdfocus.match(Translator.marksAnnotation[selected])[0].length
         const toTranslate = mdfocus.substr(matchStart, matchSize)
         const match = Translator.marksAnnotation[selected].exec(toTranslate)
-        // let transObj = mdAnnToObj[selected]( );
+
+        const uid =
+          (insideContext)
+            ? (uidContext != null)
+              ? uidContext + '_' + uidWordContext
+              : 'w' + uidContextN + '_' + uidWordContext
+            : 'w0_' + uidWord
 
         // hierarchical annotation building inside contexts
         switch (selected) {
@@ -224,19 +230,35 @@ class Translator {
             currentSet.push(transObj)
             currentSet = []
             transObj.annotations = currentSet
+            uidContext = (transObj.id) ? transObj.id : null
+            uidContextN++
+            uidWordContext = 0
+            insideContext = true
             break
           case 'context-close':
             currentSet = knot.annotations
-            break
-          case 'select':
-            currentSet.push(this._selectMdToObj(match))
+            uidContext = null
+            insideContext = false
             break
           case 'annotation':
-            currentSet.push(this._annotationMdToObj(match))
+          case 'select':
+            let obj = (selected == 'annotation')
+              ? this._annotationMdToObj(match)
+              : this._selectMdToObj(match)
+            obj.id = uid
+            currentSet.push(obj)
+            const w = (obj.natural) ? obj.natural.complete : obj.expression
+            const wc = w.match(/([\w-]+)/g).length
+            uidWord += wc
+            uidWordContext += wc
             break
         }
 
-        if (matchStart + matchSize >= mdfocus.length) { matchStart = -1 } else { mdfocus = mdfocus.substring(matchStart + matchSize) }
+        if (matchStart + matchSize >= mdfocus.length)
+          { matchStart = -1 }
+        else
+          { mdfocus = mdfocus.substring(matchStart + matchSize) }
+
       }
     } while (matchStart > -1)
   }
@@ -1089,9 +1111,9 @@ class Translator {
   }
 
   async loadTheme (themeName) {
-    const themeObj = await MessageBus.ext.request(
+    const themeObj = await MessageBus.i.request(
       'data/theme/' + Basic.service.currentThemeFamily.toLowerCase() +
-            '.' + themeName.toLowerCase() + '/get')
+            '.' + themeName.toLowerCase() + '/get', null, null, true)
     return themeObj.message
   }
 
@@ -1623,13 +1645,11 @@ class Translator {
     const context = {
       type: 'context',
     }
-
-    if (matchArray[1] != null) context.namespace = matchArray[1].trim()
-    if (matchArray[2] != null) context.context = matchArray[2].trim()
-    if (matchArray[3] != null) {
-      context.evaluation = matchArray[3].trim()
-      context.options = matchArray[4]
-    }
+    if (matchArray[1] != null) { context.namespace = matchArray[1].trim() }
+    if (matchArray[2] != null) { context.context = matchArray[2].trim() }
+    if (matchArray[3] != null) { context.id = matchArray[3].trim() }
+    if (matchArray[4] != null) { context.property = matchArray[4].trim() }
+    if (matchArray[5] != null) { context.value = matchArray[5].trim() }
 
     return context
   }
@@ -2347,7 +2367,9 @@ class Translator {
 
     if (matchArray[1] != null) { context.namespace = matchArray[1].trim() }
     if (matchArray[2] != null) { context.context = matchArray[2].trim() }
-    if (matchArray[3] != null) { context.input = matchArray[3].trim().replace(/ /igm, '_') }
+    if (matchArray[3] != null) { context.id = matchArray[3].trim() }
+    if (matchArray[4] != null) { context.property = matchArray[4].trim() }
+    if (matchArray[5] != null) { context.value = matchArray[5].trim() }
 
     // <TODO> weak strategy -- improve
     // this._currentInputContext = context.context;
@@ -2510,7 +2532,7 @@ class Translator {
       // mark: /~[ \t]*(\w+)?[ \t]*([+\-*/=])[ \t]*(\d+(?:\.\d+)?)$/im
     },
     'context-open': {
-      mark: /\{\{(?:([^\:\n\r\f]+)\:)?([\w \t\+\-\*\."=%]+)?(?:\/([\w \t\.\:]+)\/)?$/im
+      mark: /\{\{(?:([^\:\n\r\f]+)\:)?([\w \t\+\-\*\."=%]+)?(?:@(\w+))?(?:\/((?:\w+\:)?\w+)(?:[ \t]+((?:\w+\:)?\w+))?\/)?$/im
     },
     'context-close': { mark: /^[ \t]*\}\}/im },
     select: {
