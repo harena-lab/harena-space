@@ -242,8 +242,8 @@ class EditDCC {
           }, null, true)
         path = asset.message.filename
       }
-      this._removeExtendedPanel()
     }
+    this._removeExtendedPanel()
     return path
   }
 }
