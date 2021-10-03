@@ -44,11 +44,11 @@ class Tracker {
   }
 
   inputReady (topic, message) {
-    this._updateVariable(topic, '')
+    this._initializeVariable(topic, '')
   }
 
   groupinputReady (topic, message) {
-    this._updateVariable(topic, {})
+    this._initializeVariable(topic, {})
     this._groupInput = MessageBus.extractLevel(topic, 2)
   }
 
@@ -110,9 +110,15 @@ class Tracker {
     }
   }
 
-  allMandatoryFilled (topic, message) {
+  _initializeVariable (topic, value) {
+    const v = MessageBus.extractLevel(topic, 2)
+    if (v != null && this._variables[v] == null)
+      this._updateVariable(topic, value)
+  }
+
+  allMandatoryFilled (topic, message, track) {
     MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
-      this._mandatoryFilled)
+      this._mandatoryFilled, track)
   }
 
   knotStart (topic, message) {

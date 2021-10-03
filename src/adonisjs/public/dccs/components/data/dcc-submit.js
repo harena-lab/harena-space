@@ -26,12 +26,12 @@ class DCCSubmit extends DCCButton {
     await this._computeTrigger()
   }
 
-  async notify (topic, message) {
+  async notify (topic, message, track) {
     // super.notify(topic, message)
     if (topic.toLowerCase().includes('submit')) {
       await this.computeSubmit()
       this._publish(
-        MessageBus.buildResponseTopic(topic, message), null, true)
+        MessageBus.buildResponseTopic(topic, message), null, track)
     }
   }
 

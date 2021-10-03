@@ -98,12 +98,12 @@ class DCCRest extends DCCBase {
     return result
   }
 
-  async serviceRequest (topic, message) {
+  async serviceRequest (topic, message, track) {
     let result = await this.serviceRequestC(topic, message)
-    this._publish(MessageBus.buildResponseTopic(topic, message), result, true)
+    this._publish(MessageBus.buildResponseTopic(topic, message), result, track)
     if (this.hasAttribute('id'))
       this._publish('service/response/' + MessageBus.extractLevel(topic, 3) + '/' + this.id,
-        result, true)
+        result, track)
   }
 
   async serviceRequestC (topic, message) {

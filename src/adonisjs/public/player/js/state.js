@@ -121,7 +121,7 @@ class PlayState {
     * Scenario Variables
     */
 
-  variableGet (topic, message) {
+  variableGet (topic, message, track) {
     let id = MessageBus.extractLevel(topic, 2)
 
     if (id != null)
@@ -134,7 +134,7 @@ class PlayState {
 
     if (id == '*')
       MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
-                           this._state.variables, true)
+                           this._state.variables, track)
     else {
       // tries to give a scope to the variable
       if (id != null && this._state.variables[id] == null) {
@@ -145,12 +145,12 @@ class PlayState {
 
       if (id != null) {
         MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
-          this._state.variables[id], true)
+          this._state.variables[id], track)
       }
     }
   }
 
-  variableSubGet (topic, message) {
+  variableSubGet (topic, message, track) {
     const completeId = MessageBus.extractLevel(topic, 2)
     if (completeId != null) {
       let result = null
@@ -162,11 +162,11 @@ class PlayState {
         }
       }
       MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
-        result, true)
+        result, track)
     }
   }
 
-  variableSet (topic, message) {
+  variableSet (topic, message, track) {
     const id = MessageBus.extractLevel(topic, 2)
     let status = false
     const content =
@@ -184,7 +184,7 @@ class PlayState {
     }
     this._stateStore()
     MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
-      status, true)
+      status, track)
  }
 
   /*

@@ -40,7 +40,7 @@ class DCCAuthorServer {
 
   // wrapper of the services
 
-  async themeFamiliesList (topic, message) {
+  async themeFamiliesList (topic, message, track) {
     const header = {
       async: true,
       crossDomain: true,
@@ -68,10 +68,10 @@ class DCCAuthorServer {
       })
     }
     MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
-      busResponse, true)
+      busResponse, track)
   }
 
-  async templatesList (topic, message) {
+  async templatesList (topic, message, track) {
     const header = {
       async: true,
       crossDomain: true,
@@ -96,10 +96,10 @@ class DCCAuthorServer {
       }
     }
     MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
-      busResponse, true)
+      busResponse, track)
   }
 
-  async newCase (topic, message) {
+  async newCase (topic, message, track) {
     const header = {
       async: true,
       crossDomain: true,
@@ -122,10 +122,10 @@ class DCCAuthorServer {
     console.log(response)
     const jsonResponse = await response.json()
     MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
-      jsonResponse.id, true)
+      jsonResponse.id, track)
   }
 
-  async saveCase (topic, message) {
+  async saveCase (topic, message, track) {
     if (message.format == 'markdown') {
       const caseId = MessageBus.extractLevel(topic, 3)
 
@@ -200,10 +200,10 @@ class DCCAuthorServer {
 
           if(!response.data.error){
             MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
-              response.data.source, true)
+              response.data.source, track)
           }else {
             MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
-              response.data.error, true)
+              response.data.error, track)
           }
 
         })
@@ -221,7 +221,7 @@ class DCCAuthorServer {
     }
   }
 
-  async deleteCase (topic, message) {
+  async deleteCase (topic, message, track) {
     const caseId = MessageBus.extractLevel(topic, 3)
     /*
     const header = {
@@ -256,7 +256,7 @@ class DCCAuthorServer {
         console.log('=== delete case')
         console.log(response)
         MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
-          response, true)
+          response, track)
       })
       .catch(function (error) {
         console.log('=== delete case error')
@@ -264,7 +264,7 @@ class DCCAuthorServer {
       })
   }
 
-  async loadModule (topic, message) {
+  async loadModule (topic, message, track) {
     const moduleName = MessageBus.extractLevel(topic, 3)
     const header = {
       async: true,
@@ -277,10 +277,10 @@ class DCCAuthorServer {
     const response = await fetch('../modules/' + moduleName + '.html', header)
     const textResponse = await response.text()
     MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
-      textResponse, true)
+      textResponse, track)
   }
 
-  async loadTemplate (topic, message) {
+  async loadTemplate (topic, message, track) {
     const templatePath =
          MessageBus.extractLevel(topic, 3).replace(/\./g, '/')
     /*
@@ -317,10 +317,10 @@ class DCCAuthorServer {
     // const textResponse = await response.text()
     if (serviceResponse != null)
       MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
-        serviceResponse, true)
+        serviceResponse, track)
   }
 
-  async loadTemplateComments (topic, message) {
+  async loadTemplateComments (topic, message, track) {
     const templatePath =
          MessageBus.extractLevel(topic, 3).replace(/\./g, '/')
 
@@ -345,7 +345,7 @@ class DCCAuthorServer {
 
     if (serviceResponse != null)
       MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
-        serviceResponse, true)
+        serviceResponse, track)
   }
 
   b64toBlob (imageURL) {
@@ -373,7 +373,7 @@ class DCCAuthorServer {
     return blob
   }
 
-  async uploadArtifact (topic, message) {
+  async uploadArtifact (topic, message, track) {
     const data = new FormData()
     if (message.file) {
       data.append('file', message.file)
@@ -399,7 +399,7 @@ class DCCAuthorServer {
         console.log('=== response image upload')
         console.log(response)
         MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
-          response.data, true)
+          response.data, track)
       })
       .catch(function (error) {
         console.log('=== delete case error')

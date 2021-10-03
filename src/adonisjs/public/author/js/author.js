@@ -817,14 +817,15 @@ class AuthorManager {
     }
   }
 
-  async knotUpdate (topic, message) {
+  async knotUpdate (topic, message, track) {
     if (this._knotSelected != null) {
       this._htmlKnot = await Translator.instance.generateHTML(
         this._knots[this._knotSelected])
       this._renderKnot()
     }
     if (topic != null && message != null)
-      MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message), null, true)
+      MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
+                           null, track)
   }
 
   knotRename (newTitle) {
