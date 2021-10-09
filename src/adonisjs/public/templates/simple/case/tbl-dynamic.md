@@ -13,7 +13,7 @@ Write here the **stem**.
 
 > Write here the **lead-in**.
 ? physical_examination
-    * type: text
+  * type: text
 
 * Next -> Flow.Next
 
@@ -42,7 +42,47 @@ Write here the **stem**.
 + Exam 4 <-> Exam 4
 + Exam 5 <-> Exam 5
 
-* Next -> Flow.Next
+* Next -> Conclusion
+
+## Exam 1 (detailed)
+
+Exam 1
+
+Exam.
+
+* Back -> Knot.Previous
+
+## Exam 2 (detailed)
+
+Exam 2
+
+Exam.
+
+* Back -> Knot.Previous
+
+## Exam 3 (detailed)
+
+<h2>Exam 3</h2>
+
+Exam.
+
+* Back -> Knot.Previous
+
+## Exam 4 (detailed)
+
+<h2>Exam 4</h2>
+
+Exam.
+
+* Back -> Knot.Previous
+
+## Exam 5 (detailed)
+
+<h2>Exam 5</h2>
+
+Exam.
+
+* Back -> Knot.Previous
 
 ## Conclusion (input)
 
@@ -57,46 +97,6 @@ Write here the **stem**.
   * type: text
 
 * Next Virtual Visit -> Case.Next
-
-## Exam 1 (note)
-
-Exam 1
-
-Exam.
-
-* Back -> Knot.Previous
-
-## Exam 2 (note)
-
-Exam 2
-
-Exam.
-
-* Back -> Knot.Previous
-
-## Exam 3 (note)
-
-<h2>Exam 3</h2>
-
-Exam.
-
-* Back -> Knot.Previous
-
-## Exam 4 (note)
-
-<h2>Exam 4</h2>
-
-Exam.
-
-* Back -> Knot.Previous
-
-## Exam 5 (note)
-
-<h2>Exam 5</h2>
-
-Exam.
-
-* Back -> Knot.Previous
 
 ___ Template ___
 

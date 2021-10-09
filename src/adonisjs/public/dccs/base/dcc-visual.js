@@ -203,11 +203,11 @@ class PresentationDCC {
   }
 
   editListener (buttonType) {
+    DCCContextMenu.close()
     if (this._param == null)
       this._param = {buttonType}
     else
       this._param.buttonType = buttonType
-    console.log('control/element/' + this._id + '/selected')
     MessageBus.i.publish(
       'control/element/' + this._id + '/selected', this._param, true)
   }

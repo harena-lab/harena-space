@@ -168,23 +168,12 @@ _searchTree(current, knotid) {
 
         // build edges of the graph
         // <TODO> adjust flow.next
-        const edgeMap = {
-          'knot.next': '#next',
-          'knot.previous': '#previous',
-          'flow.next': '#next'
-        }
         for (const c of knots[k].content) {
-          if (c.type == 'option' || c.type == 'divert') {
-            let target = c.contextTarget
-            const tl = target.toLowerCase()
-            if (edgeMap[tl] != null) { target = edgeMap[tl] }
-            if (!Translator.reservedNavigation.includes(target.toLowerCase())) {
-              current.edges.push({
-                source: k,
-                target: target
-              })
-            }
-          }
+          if (c.type == 'option' || c.type == 'divert')
+            this._insertEdge(current, k, c.contextTarget)
+          else if (c.type == 'input' && c.subtype == 'choice' && c.options)
+            for (const o in c.options)
+              this._insertEdge(current, k, c.options[o].contextTarget)
         }
 
         previousKnot = newKnot
@@ -193,6 +182,23 @@ _searchTree(current, knotid) {
 
     navigationGraph.cleanGraph()
     navigationGraph.importGraph(graph)
+  }
+
+  _insertEdge(current, source, contextTarget) {
+    const edgeMap = {
+      'knot.next': '#next',
+      'knot.previous': '#previous',
+      'flow.next': '#next'
+    }
+    let target = contextTarget
+    const tl = target.toLowerCase()
+    if (edgeMap[tl] != null) { target = edgeMap[tl] }
+    if (!Translator.reservedNavigation.includes(target.toLowerCase())) {
+      current.edges.push({
+        source: source,
+        target: target
+      })
+    }
   }
 
   /*

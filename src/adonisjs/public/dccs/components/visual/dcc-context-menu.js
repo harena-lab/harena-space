@@ -11,6 +11,9 @@ class DCCContextMenu {
     this._presentation.appendChild(template.content.cloneNode(true))
     const content = this._presentation.querySelector('#menu-content')
 
+    this._keyPressed = this._keyPressed.bind(this)
+    document.addEventListener('keydown', this._keyPressed)
+
     for (const i in items) {
       const menuItem = document.createElement('div')
       menuItem.classList.add('dcc-context-menu-item')
@@ -21,6 +24,17 @@ class DCCContextMenu {
     }
   }
 
+  _keyPressed (evt) {
+    evt = evt || window.event
+    let isEscape = false
+    if ("key" in evt)
+      isEscape = (evt.key === "Escape" || evt.key === "Esc")
+    else
+      isEscape = (evt.keyCode === 27)
+    if (isEscape)
+      DCCContextMenu.close()
+  }
+
   static async display (x, y, menu) {
     if (DCCContextMenu.menu != null) { DCCContextMenu.close() }
     DCCContextMenu.menu = new DCCContextMenu(x, y, menu)
@@ -29,6 +43,7 @@ class DCCContextMenu {
 
   static async close () {
     if (DCCContextMenu.menu != null) {
+      document.removeEventListener('keydown', DCCContextMenu.menu._keyPressed)
       document.body.removeChild(DCCContextMenu.menu._presentation)
       DCCContextMenu.menu = null
     }

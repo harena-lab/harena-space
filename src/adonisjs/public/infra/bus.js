@@ -68,6 +68,7 @@ class MessageBus {
       }
     }
 
+    /*
     if (track != null) {
       if (DCCCommonServer.loggerAddressAPI) {
         const currentDateTime = new Date()
@@ -103,6 +104,7 @@ class MessageBus {
 
       parent.postMessage({ topic: topic, message: message }, '*')
     }
+    */
   }
 
   /* Checks if this topic has a subscriber */

@@ -550,14 +550,28 @@ class AuthorManager {
    * ACTION: control/knot/new
    */
   async knotNew (message) {
+    console.log('=== new knot')
+    console.log(message)
     let template = (message != null) ? message.template : null
 
-    if (template == null) { template = await this._templateSelect('knot', this._templateNewKnot) }
+    if (template == null)
+      template = await this._templateSelect('knot', this._templateNewKnot)
 
     if (template != null) {
-      const knotTarget =
+      let knotTarget =
             (message != null && message.knotid != null)
               ? message.knotid : this._knotSelected
+
+      // inserts before a knot in the same level o
+      const level = this._knots[knotTarget].level
+      const knotIds = Object.keys(this._knots)
+      let kt = knotIds.indexOf(knotTarget) + 1
+      while (kt < this._knots.length &&
+             this._knots[knotIds[kt]].level < level)
+        kt++
+      knotTarget = knotIds[kt-1]
+      console.log('==== insert position')
+      console.log(knotTarget)
 
       let markdown = await MessageBus.i.request('data/template/' +
                               template.replace(/\//g, '.') + '/get', null, null, true)
@@ -577,9 +591,6 @@ class AuthorManager {
         knotId = ktitle.replace('_knot_number_', kn).replace(/ /, '_')
       } while (this._knots[knotId] != null)
       const knotMd = ktitle.replace('_knot_number_', kn)
-
-      console.log('=== k title')
-      console.log(knotId)
 
       markdown = markdown.message.replace(templateTitle, knotMd) + '\n'
 

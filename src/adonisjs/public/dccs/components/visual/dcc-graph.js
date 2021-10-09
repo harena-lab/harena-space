@@ -579,6 +579,7 @@ class GraphNode extends GraphPiece {
 
   _nodeClicked (event) {
     event.stopPropagation()
+    DCCContextMenu.close()
     this._bus.publish('graph/select/clear')
     this._cover.classList.remove('dcc-node-cover-theme')
     this._cover.classList.add('dcc-node-selected-theme')
