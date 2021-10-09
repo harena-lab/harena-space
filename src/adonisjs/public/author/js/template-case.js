@@ -48,9 +48,9 @@ class TemplateToCase {
           */
 
           const templateMd =
-            await MessageBus.ext.request(
+            await MessageBus.i.request(
               'data/template/' + params.get('template').replace(/\//g, '.') +
-                '/get', {static: false})
+                '/get', {static: false}, null, true)
           let markdown = templateMd.message
 
           if (markdown != null) {

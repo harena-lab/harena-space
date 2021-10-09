@@ -18,20 +18,20 @@ class DCCCommonServer {
       */
 
     // this.userLogin = this.userLogin.bind(this);
-    // MessageBus.ext.subscribe("data/user/login", this.userLogin);
+    // MessageBus.i.subscribe("data/user/login", this.userLogin);
     this.casesList = this.casesList.bind(this)
-    MessageBus.ext.subscribe('data/case/*/list', this.casesList)
+    MessageBus.i.subscribe('data/case/*/list', this.casesList)
     this.loadCase = this.loadCase.bind(this)
-    MessageBus.ext.subscribe('data/case/+/get', this.loadCase)
+    MessageBus.i.subscribe('data/case/+/get', this.loadCase)
     this.loadTheme = this.loadTheme.bind(this)
     this.themeFamilySettings = this.themeFamilySettings.bind(this)
-    MessageBus.int.subscribe('data/theme_family/+/settings',
+    MessageBus.i.subscribe('data/theme_family/+/settings',
       this.themeFamilySettings)
-    MessageBus.ext.subscribe('data/theme/+/get', this.loadTheme)
+    MessageBus.i.subscribe('data/theme/+/get', this.loadTheme)
     this.contextList = this.contextList.bind(this)
-    MessageBus.int.subscribe('data/context/*/list', this.contextList)
+    MessageBus.i.subscribe('data/context/*/list', this.contextList)
     this.loadContext = this.loadContext.bind(this)
-    MessageBus.int.subscribe('data/context/+/get', this.loadContext)
+    MessageBus.i.subscribe('data/context/+/get', this.loadContext)
   }
 
   /*
@@ -89,12 +89,12 @@ class DCCCommonServer {
          token: jsonResponse.token
       };
       this._token = jsonResponse.token;
-      MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-                             busResponse);
+      MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
+                           busResponse, true);
    }
    */
 
-  async casesList (topic, message) {
+  async casesList (topic, message, track) {
     const clearance = new URL(document.location).searchParams.get('clearance')
     const config = {
       method: 'GET',
@@ -139,11 +139,11 @@ class DCCCommonServer {
     busResponse.sort(function (c1, c2) {
       return (c1.title < c2.title) ? -1 : 1
     })
-    MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-      busResponse)
+    MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
+      busResponse, track)
   }
 
-  async loadCase (topic, message) {
+  async loadCase (topic, message, track) {
     let caseComplete
 
     if (HarenaConfig.local) {
@@ -151,13 +151,13 @@ class DCCCommonServer {
       this._caseScript.src = Basic.service.rootPath + 'cases/current-case.js'
       document.head.appendChild(this._caseScript)
       // <TODO> adjust topic
-      const caseM = await MessageBus.int.waitMessage('control/case/load/ready')
+      const caseM = await MessageBus.i.waitMessage('control/case/load/ready')
       caseComplete = caseM.message
     } else {
       // <TODO> the topic service/request/get is extremely fragile -- refactor
       const caseId = MessageBus.extractLevel(topic, 3)
-      const caseObj = await MessageBus.ext.request(
-        'service/request/get', {caseId: caseId})
+      const caseObj = await MessageBus.i.request(
+        'service/request/get', {caseId: caseId}, null, track)
 
       caseComplete = caseObj.message
       const template =
@@ -165,9 +165,9 @@ class DCCCommonServer {
           match(/^___ Template ___[\n]*\*[ \t]+template[ \t]*:[ \t]*(.+)$/im)
       if (template != null && template[1] != null) {
         const templateMd =
-          await MessageBus.ext.request(
+          await MessageBus.i.request(
             'data/template/' + template[1].replace(/\//g, '.') +
-              '/get', {static: true})
+              '/get', {static: true}, null, track)
         caseComplete.source += templateMd.message
       }
       /*
@@ -219,11 +219,11 @@ class DCCCommonServer {
 
     // console.log('=== case complete')
     // console.log(caseComplete)
-    MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-                           caseComplete)
+    MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
+                         caseComplete, track)
   }
 
-  async themeFamilySettings (topic, message) {
+  async themeFamilySettings (topic, message, track) {
     let settings = {}
     if (!HarenaConfig.local) {
       const themeFamily = MessageBus.extractLevel(topic, 3)
@@ -239,11 +239,11 @@ class DCCCommonServer {
                                       themeFamily + '/theme.json', header)
       settings = await response.json()
     }
-    MessageBus.int.publish(MessageBus.buildResponseTopic(topic, message),
-      settings)
+    MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
+      settings, track)
   }
 
-  async loadTheme (topic, message) {
+  async loadTheme (topic, message, track) {
     let themeObj
     const themeCompleteName = MessageBus.extractLevel(topic, 3)
     const separator = themeCompleteName.indexOf('.')
@@ -256,7 +256,7 @@ class DCCCommonServer {
                                  themeFamily + '/local/' + themeName + '.js'
       document.head.appendChild(this._themeScript)
       // <TODO> adjust topic
-      const themeM = await MessageBus.int.waitMessage('control/theme/' +
+      const themeM = await MessageBus.i.waitMessage('control/theme/' +
                                                          themeName +
                                                          '/load/ready')
       themeObj = themeM.message
@@ -274,11 +274,11 @@ class DCCCommonServer {
                                       '.html', header)
       themeObj = await response.text()
     }
-    MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-      themeObj)
+    MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
+      themeObj, track)
   }
 
-  async contextList (topic, message) {
+  async contextList (topic, message, track) {
     let ctxCatalog = {}
     if (!HarenaConfig.local) {
       const header = {
@@ -293,11 +293,11 @@ class DCCCommonServer {
         header)
       ctxCatalog = await response.json()
     }
-    MessageBus.int.publish(MessageBus.buildResponseTopic(topic, message),
-      ctxCatalog)
+    MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
+      ctxCatalog, track)
   }
 
-  async loadContext (topic, message) {
+  async loadContext (topic, message, track) {
     const header = {
       async: true,
       crossDomain: true,
@@ -309,8 +309,8 @@ class DCCCommonServer {
     const response = await fetch(Basic.service.rootPath + 'context/' +
                                    message.body, header)
     const textResponse = await response.text()
-    MessageBus.int.publish(MessageBus.buildResponseTopic(topic, message),
-      textResponse)
+    MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
+      textResponse, track)
   }
 }
 

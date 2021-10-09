@@ -14,11 +14,11 @@ class Navigator {
     this._showPreviewMiniature = false
 
     this.expandClicked = this.expandClicked.bind(this)
-    MessageBus.ext.subscribe('control/navigator/expand', this.expandClicked)
+    MessageBus.i.subscribe('control/navigator/expand', this.expandClicked)
     this.retractClicked = this.retractClicked.bind(this)
-    MessageBus.ext.subscribe('control/navigator/retract', this.retractClicked)
+    MessageBus.i.subscribe('control/navigator/retract', this.retractClicked)
     // this.upTree = this.upTree.bind(this);
-    // MessageBus.ext.subscribe("control/group/up", this.upTree);
+    // MessageBus.i.subscribe("control/group/up", this.upTree);
   }
 
   async expandClicked (topic, message) {
@@ -55,9 +55,9 @@ async downTree(knotid) {
                 !this._tree.children[0].children[c].render)
             c++;
          if (c < this._tree.children[0].children.length)
-            MessageBus.ext.publish("control/knot/" +
+            MessageBus.i.publish("control/knot/" +
                                    this._tree.children[0].children[c].knotid +
-                                   "/selected");
+                                   "/selected", null, true);
       }
    }
 }
@@ -67,7 +67,7 @@ async upTree() {
    this._tree = treeNode[0];
    this._innerTree = this._tree.level;
    await this._presentTreeCase();
-   MessageBus.ext.publish("control/knot/" + treeNode[1] + "/selected");
+   MessageBus.i.publish("control/knot/" + treeNode[1] + "/selected", null, true);
 }
 
 _searchTree(current, knotid) {
@@ -168,23 +168,12 @@ _searchTree(current, knotid) {
 
         // build edges of the graph
         // <TODO> adjust flow.next
-        const edgeMap = {
-          'knot.next': '#next',
-          'knot.previous': '#previous',
-          'flow.next': '#next'
-        }
         for (const c of knots[k].content) {
-          if (c.type == 'option' || c.type == 'divert') {
-            let target = c.contextTarget
-            const tl = target.toLowerCase()
-            if (edgeMap[tl] != null) { target = edgeMap[tl] }
-            if (!Translator.reservedNavigation.includes(target.toLowerCase())) {
-              current.edges.push({
-                source: k,
-                target: target
-              })
-            }
-          }
+          if (c.type == 'option' || c.type == 'divert')
+            this._insertEdge(current, k, c.contextTarget)
+          else if (c.type == 'input' && c.subtype == 'choice' && c.options)
+            for (const o in c.options)
+              this._insertEdge(current, k, c.options[o].contextTarget)
         }
 
         previousKnot = newKnot
@@ -195,6 +184,23 @@ _searchTree(current, knotid) {
     navigationGraph.importGraph(graph)
   }
 
+  _insertEdge(current, source, contextTarget) {
+    const edgeMap = {
+      'knot.next': '#next',
+      'knot.previous': '#previous',
+      'flow.next': '#next'
+    }
+    let target = contextTarget
+    const tl = target.toLowerCase()
+    if (edgeMap[tl] != null) { target = edgeMap[tl] }
+    if (!Translator.reservedNavigation.includes(target.toLowerCase())) {
+      current.edges.push({
+        source: source,
+        target: target
+      })
+    }
+  }
+
   /*
 async mountTreeCase(author, knots) {
    this.mountTreeCaseBefore(author, knots);
@@ -203,7 +209,7 @@ async mountTreeCase(author, knots) {
    this._navigationPanel = document.querySelector("#navigation-panel");
    this._knotPanel = document.querySelector("#knot-panel");
 
-   this._capsule = await MessageBus.ext.request("data/module/capsule/get");
+   this._capsule = await MessageBus.i.request("data/module/capsule/get", null, null, true);
 
    this._navigationPanel.innerHTML = "";
 
@@ -362,7 +368,7 @@ async _presentTreeCase() {
       .attr("fill", "black")
       .attr("cursor", "pointer")
       .on("click", function(d) {
-         MessageBus.ext.publish("control/knot/" + d.data.knotid + "/selected")})
+         MessageBus.i.publish("control/knot/" + d.data.knotid + "/selected", null, true)})
       .on("mouseover", function(d) {
          let t = document.querySelector("#t_" + d.data.id);
          t.removeChild(t.firstChild);
@@ -596,7 +602,7 @@ _drawGroups(knot, svg) {
             .attr("fill", "#76a7d7")
             .attr("stroke-width", "2")
             .on("click", function(d) {
-                MessageBus.ext.publish("control/group/" + knot.knotid + "/selected")})
+                MessageBus.i.publish("control/group/" + knot.knotid + "/selected", null, true)})
             .attr("cursor", "pointer");
    } else
       for (let kn in knot.children)

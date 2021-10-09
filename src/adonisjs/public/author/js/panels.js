@@ -31,16 +31,16 @@ class Panels {
     this._setupKnotHeight()
 
     this.setupPropertiesExpand = this.setupPropertiesExpand.bind(this)
-    MessageBus.ext.subscribe('control/properties/expand',
+    MessageBus.i.subscribe('control/properties/expand',
       this.setupPropertiesExpand)
     this.setupPropertiesRetract = this.setupPropertiesRetract.bind(this)
-    MessageBus.ext.subscribe('control/properties/retract',
+    MessageBus.i.subscribe('control/properties/retract',
       this.setupPropertiesRetract)
     this.setupCommentsExpand = this.setupCommentsExpand.bind(this)
-    MessageBus.ext.subscribe('control/comments/expand',
+    MessageBus.i.subscribe('control/comments/expand',
       this.setupCommentsExpand)
     this.setupArtifactsExpand = this.setupArtifactsExpand.bind(this)
-    MessageBus.ext.subscribe('control/artifacts/expand',
+    MessageBus.i.subscribe('control/artifacts/expand',
         this.setupArtifactsExpand)
   }
 
@@ -143,7 +143,7 @@ class Panels {
     this.setupPropertiesPanelExpand()
     this._commentsVisible = true
     document.querySelector('#comments-block').style.display = 'block'
-    MessageBus.int.publish('control/comments/editor')
+    MessageBus.i.publish('control/comments/editor')
   }
 
   setupArtifactsExpand () {

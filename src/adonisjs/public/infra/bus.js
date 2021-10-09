@@ -3,19 +3,20 @@
  */
 
 class MessageBus {
-  constructor (externalized) {
-    this._externalized = externalized
+  constructor () {
     this._listeners = []
     this._providers = {}
     this._connections = {}
+    this._debugger = null
   }
 
-  get externalized () {
-    return this._externalized
+  // <TODO> provisory, while it is not possible to debug only tracked messages
+  get debugger() {
+    return this._debugger
   }
 
-  set externalized (newValue) {
-    this._externalized = newValue
+  set debugger(newDebugger) {
+    this._debugger = newDebugger
   }
 
   // <TODO> provisory
@@ -55,22 +56,26 @@ class MessageBus {
     }
   }
 
-  async publish (topic, message) {
+  async publish (topic, message, track) {
+    if (track != null && this.debugger != null)
+      this.debugger(topic, message)
+
     let listeners = this._listeners.slice()
     for (const l in listeners) {
-      if (this.matchTopic(listeners[l], topic))
-        listeners[l].callback(topic, message)
+      if (this._matchTopic(listeners[l], topic)) {
+        if (listeners[l].callback)
+          listeners[l].callback(topic, message, track)
+      }
     }
 
-    if (this._externalized) {
+    /*
+    if (track != null) {
       if (DCCCommonServer.loggerAddressAPI) {
         const currentDateTime = new Date()
         let extMessage = {
           localTime: currentDateTime.toJSON()
         }
         if (message != null) extMessage.content = message
-        // let extMessage = (message != null) ? message : {}
-        // if (typeof message !== 'object') { extMessage = { content: message } }
         let extTopic = topic
         if (this._runningCase != null) {
           extMessage.track = {
@@ -80,10 +85,6 @@ class MessageBus {
           extTopic = this._runningCase.runningId + '/' + topic
         }
 
-        // console.log('%%%%%%' + extTopic)
-        // console.log(extMessage)
-
-        // const response = await fetch('https://harena.ds4h.org/logger/api/v1/message', {
         const response = await fetch(DCCCommonServer.loggerAddressAPI + 'message', {
           method: 'POST',
           body: JSON.stringify({
@@ -103,18 +104,24 @@ class MessageBus {
 
       parent.postMessage({ topic: topic, message: message }, '*')
     }
+    */
   }
 
   /* Checks if this topic has a subscriber */
-  hasSubscriber (topic) {
+  /* default: does not check regular expression */
+  hasSubscriber (topic, regexp) {
     let hasSub = false
     let listeners = this._listeners.slice()
     for (let l = 0; !hasSub && l < listeners.length; l++) {
-      hasSub = this.matchTopic(listeners[l], topic) }
+      if (regexp != null && regexp)
+        hasSub = this._matchTopic(listeners[l], topic)
+      else
+        hasSub = (topic == listeners[l].topic)
+    }
     return hasSub
   }
 
-  matchTopic (listener, topic) {
+  _matchTopic (listener, topic) {
     let matched = false
     if (listener.regexp) {
       const matchStr = listener.regexp.exec(topic)
@@ -123,7 +130,7 @@ class MessageBus {
     return matched
   }
 
-  async request (requestTopic, requestMessage, responseTopic) {
+  async request (requestTopic, requestMessage, responseTopic, track) {
     let rt
     let rm = (requestMessage != null) ? requestMessage : null
     if (responseTopic) { rt = responseTopic } else {
@@ -138,7 +145,7 @@ class MessageBus {
         resolve({ topic: topic, message: message, callback: callback })
       }
       this.subscribe(rt, callback)
-      this.publish(requestTopic, rm)
+      this.publish(requestTopic, rm, track)
     })
 
     const returnMessage = await promise
@@ -199,12 +206,7 @@ class MessageBus {
    *             connected
    */
   connect (id, topic, callback) {
-    // console.log('=== connect')
-    // console.log(id)
-    // console.log(topic)
     const key = id + ':' + topic
-    // console.log(key)
-    // console.log(this._providers[key])
     if (this._providers[key])
       callback.connectionReady(id, topic)
     else
@@ -226,22 +228,12 @@ class MessageBus {
     return response
   }
 
-  /*
-   connect(callback) {
-      const connection = MessageBus._connection;
-      this.subscribe("connection/" + connection, callback);
-      MessageBus._connection++;
-      return connection;
-   }
-
-   disconnect(connection, callback) {
-      this.unsubscribe("connection/" + connection, callback);
-   }
-
-   send(connection, message) {
-      this.publish("connection/" + connection, message);
-   }
-   */
+  static create (busId) {
+    let bus = new MessageBus()
+    if (busId != null)
+      MessageBus._bus[busId] = bus
+    return bus
+  }
 
   /* Message analysis services
      *************************/
@@ -261,13 +253,9 @@ class MessageBus {
   }
 
   /*
-    * Returns the label at a specific level of the message.
-    */
+   * Returns the label at a specific level of the message.
+   */
   static extractLevel (topic, level) {
-    // console.log('============ topic')
-    // console.log(topic)
-    // console.log('============ level')
-    // console.log(level)
     let label = null
     if (topic != null) {
       const levelSet = topic.split('/')
@@ -287,7 +275,6 @@ class MessageBus {
   MessageBus._stamp = 1
   MessageBus._connection = 1
 
-  MessageBus.int = new MessageBus(false)
-  MessageBus.ext = new MessageBus(true)
-  MessageBus.page = new MessageBus(false)
+  MessageBus._bus = {}
+  MessageBus.i = MessageBus.create('default')
 })()

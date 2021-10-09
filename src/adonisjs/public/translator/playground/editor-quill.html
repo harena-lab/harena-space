@@ -19,6 +19,8 @@
   <script src="../../config/config-standalone.js"></script>
 
   <script src="../../infra/bus.js"></script>
+  <script src="../../dccs/base/primitive-dcc.js"></script>
+  <script src="../../dccs/base/scope-dcc.js"></script>
   <script src="../../infra/basic.js"></script>
   <script src="../../infra/dcc-common-server-proxy.js"></script>
   <script src="../../dccs/base/dcc-base.js"></script>
@@ -98,7 +100,7 @@
 
       function start() {
          resultsPanel = document.querySelector("#results");
-         quill = new Quill("#editor", 
+         quill = new Quill("#editor",
             {theme: "snow",
              modules: {
                 toolbar: {
@@ -125,9 +127,9 @@
             "<span style='color:lightgray'>diagnostics</span>" +
             contributionSelectHTML;
 
-         MessageBus.ext.subscribe("control/delta/example", showDelta);
-         MessageBus.ext.subscribe("control/raw/example", showRaw);
-         MessageBus.ext.subscribe("control/clipboard/example", showClipboard);
+         MessageBus.i.subscribe("control/delta/example", showDelta);
+         MessageBus.i.subscribe("control/raw/example", showRaw);
+         MessageBus.i.subscribe("control/clipboard/example", showClipboard);
       }
 
       function showDelta(topic, message) {
@@ -167,7 +169,7 @@
 </head>
 <body onload="start()">
   <script>
-  MessageBus.page = new MessageBus(false);
+  // MessageBus.page = new MessageBus(false);
   Basic.service.rootPath = "../../";
   </script>
 

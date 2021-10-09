@@ -21,7 +21,7 @@ class DCCInputTable extends DCCInput {
     super.connectedCallback()
     this.innerHTML = ''
 
-    MessageBus.int.publish('var/' + this._variable + '/input/ready',
+    this._publish('var/' + this._variable + '/input/ready',
       DCCInputTable.elementTag)
   }
 
@@ -87,11 +87,11 @@ class DCCInputTable extends DCCInput {
     const row = parseInt(id.substring(p + 1)) - 1
     this._value[row][col] = event.target.value
 
-    MessageBus.ext.publish('var/' + this._variable + '/changed',
+    this._publish('var/' + this._variable + '/changed',
       {
         sourceType: DCCInputTable.elementTag,
         value: this._value
-      })
+      }, true)
   }
 
   /* Rendering */
@@ -128,8 +128,8 @@ class DCCInputTable extends DCCInput {
     }
 
     if (this.hasAttribute('player')) {
-      const value = await MessageBus.ext.request(
-        'var/' + this.player + '/get/sub', this.innerHTML)
+      const value = await this._request(
+        'var/' + this.player + '/get/sub', this.innerHTML, null, true)
       console.log('=== return value')
       console.log(value)
       const input = value.message

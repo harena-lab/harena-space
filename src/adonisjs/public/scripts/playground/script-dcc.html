@@ -31,6 +31,8 @@
 
    <script src="../blocks-dcc.js"></script>
 
+   <script src="../../dccs/base/primitive-dcc.js"></script>
+   <script src="../../dccs/base/scope-dcc.js"></script>
    <script src="../../dccs/base/subscribe-dcc.js"></script>
    <script src="../../dccs/base/property-dcc.js"></script>
    <script src="../../dccs/base/dcc-base.js"></script>
@@ -64,7 +66,7 @@
    <script src="../../dccs/components/cell/rule-dcc-cell.js"></script>
    <script src="../../dccs/components/cell/rule-dcc-cell-neighbor.js"></script>
 
-   <script src="gallery/mv/mechanical-ventilator-images.js"></script>   
+   <script src="gallery/mv/mechanical-ventilator-images.js"></script>
 
    <script>
       var playground;
@@ -86,8 +88,8 @@
              toolbox: toolbox});
 
          document.querySelector("#json-message").value = "";
-         MessageBus.ext.subscribe("control/code/generate", generate);
-         MessageBus.ext.subscribe("#", showJson);
+         MessageBus.i.subscribe("control/code/generate", generate);
+         MessageBus.i.subscribe("#", showJson);
       }
 
       function generate(topic, message) {
@@ -112,7 +114,7 @@
 
 <body onload="start()">
    <script>
-      MessageBus.page = new MessageBus(false);
+      // MessageBus.page = new MessageBus(false);
       Basic.service.rootPath = "../../";
    </script>
 

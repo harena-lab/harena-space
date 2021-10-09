@@ -10,10 +10,10 @@ class DCCRecord extends DCCBase {
     this.store = this.store.bind(this)
     this.retrieve = this.retrieve.bind(this)
     this.retrieveC = this.retrieveC.bind(this)
-    MessageBus.int.subscribe('data/record/store', this.store)
-    MessageBus.int.subscribe('data/record/retrieve', this.retrieve)
+    this._subscribe('data/record/store', this.store)
+    this._subscribe('data/record/retrieve', this.retrieve)
     if (this.hasAttribute('id'))
-      MessageBus.page.provides(this.id, 'data/record/retrieve', this.retrieveC)
+      this._provides(this.id, 'data/record/retrieve', this.retrieveC)
   }
 
   /* Properties
@@ -39,7 +39,7 @@ class DCCRecord extends DCCBase {
   }
 
   retrieve(topic, message) {
-    MessageBus.int.publish(MessageBus.buildResponseTopic(topic, message),
+    this._publish(MessageBus.buildResponseTopic(topic, message),
       this.retrieveC(topic, message))
   }
 

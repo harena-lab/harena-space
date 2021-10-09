@@ -3,5 +3,5 @@
 {knot}
 `
 
-  MessageBus.int.publish('control/theme/start/load/ready', localTheme)
+  MessageBus.i.publish('control/theme/start/load/ready', localTheme)
 })()

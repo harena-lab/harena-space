@@ -19,21 +19,21 @@ class DCCStyler extends DCCBase {
       for (const t in this._targeted) { this._targeted[t] = this._targeted[t].trim() }
     }
 
-    if (this.hasAttribute('xstyle')) { MessageBus.page.subscribe('dcc/request/xstyle', this.requestXstyle) }
+    if (this.hasAttribute('xstyle')) { this._subscribe('dcc/request/xstyle', this.requestXstyle) }
 
-    MessageBus.page.subscribe('dcc/request/location', this.requestLocation)
+    this._subscribe('dcc/request/location', this.requestLocation)
 
     /*
       if (this.hasAttribute("locations")) {
          this._locationSet = this.locations.split(";");
-         MessageBus.page.subscribe("dcc/request/location", this.requestLocation);
+         this._subscribe("dcc/request/location", this.requestLocation);
       }
       */
   }
 
   disconnectedCallback () {
-    MessageBus.page.unsubscribe('dcc/request/xstyle', this.requestXstyle)
-    MessageBus.page.unsubscribe('dcc/request/location', this.requestLocation)
+    this._unsubscribe('dcc/request/xstyle', this.requestXstyle)
+    this._unsubscribe('dcc/request/location', this.requestLocation)
   }
 
   /*
@@ -80,8 +80,8 @@ class DCCStyler extends DCCBase {
    */
 
   requestXstyle (topic, message) {
-    // MessageBus.page.publish("dcc/xstyle/" + message, this.xstyle);
-    MessageBus.page.publish(MessageBus.buildResponseTopic(topic, message),
+    // this._publish("dcc/xstyle/" + message, this.xstyle);
+    this._publish(MessageBus.buildResponseTopic(topic, message),
       this.xstyle)
   }
 
@@ -101,7 +101,7 @@ class DCCStyler extends DCCBase {
       location = DCCBlock.locationType + '-' + this._locationSet.generic
       this._locationSet.generic++
     } else { location = '#in' }
-    MessageBus.page.publish(
+    this._publish(
       MessageBus.buildResponseTopic(topic, message), location)
   }
 }

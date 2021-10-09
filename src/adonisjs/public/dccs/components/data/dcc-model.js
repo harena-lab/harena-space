@@ -7,7 +7,7 @@ class DCCModel extends DCCBase {
     super.connectedCallback()
 
     this.requestSchema = this.requestSchema.bind(this)
-    MessageBus.int.subscribe('data/schema/' + this.id, this.requestSchema)
+    this._subscribe('data/schema/' + this.id, this.requestSchema)
 
     console.log('=== model schema')
     console.log(this.schema)
@@ -21,7 +21,7 @@ class DCCModel extends DCCBase {
   }
 
   requestSchema (topic, message) {
-    MessageBus.int.publish(MessageBus.buildResponseTopic(topic, message), this.schema)
+    this._publish(MessageBus.buildResponseTopic(topic, message), this.schema)
   }
 }
 

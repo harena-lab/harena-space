@@ -151,9 +151,9 @@ class DCCState extends DCCBlock {
          this.value = allStates[n];
          this._stateDCCs[this.value].show();
          if (this.hasAttribute("variable"))
-            MessageBus.ext.publish("var/" + this.variable + "/changed",
-                                   {sourceType: DCCState.elementTag,
-                                    value: this.value});
+            this._publish("var/" + this.variable + "/changed",
+                                 {sourceType: DCCState.elementTag,
+                                  value: this.value}, true);
          */
     }
   }
@@ -164,11 +164,11 @@ class DCCState extends DCCBlock {
       this.value = newState
       this._stateDCCs[this.value].show()
       if (this.hasAttribute('variable')) {
-        MessageBus.ext.publish('var/' + this.variable + '/changed',
+        this._publish('var/' + this.variable + '/changed',
           {
             sourceType: DCCState.elementTag,
             value: this.value
-          })
+          }, true)
       }
     }
   }

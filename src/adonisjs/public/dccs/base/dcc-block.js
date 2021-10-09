@@ -20,16 +20,16 @@ class DCCBlock extends DCCVisual {
       this._xstyle = this.xstyle
     else {
       this._xstyle = 'theme'
-      if (MessageBus.page.hasSubscriber('dcc/request/xstyle')) {
-        const stylem = await MessageBus.page.request('dcc/request/xstyle')
+      if (this._hasSubscriber('dcc/request/xstyle')) {
+        const stylem = await this._request('dcc/request/xstyle')
         this._xstyle = stylem.message
       }
     }
 
     if (this._xstyle.startsWith('out') &&
           !this.hasAttribute('location') &&
-          MessageBus.page.hasSubscriber('dcc/request/location')) {
-      const locationM = await MessageBus.page.request('dcc/request/location',
+          this._hasSubscriber('dcc/request/location')) {
+      const locationM = await this._request('dcc/request/location',
         this.externalLocationType())
       this.location = locationM.message
     }

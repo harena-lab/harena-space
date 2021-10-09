@@ -26,10 +26,14 @@
   Basic.service.rootPath = '../../'
   </script>
 
+  <script src="/dccs/base/primitive-dcc.js"></script>
+  <script src="/dccs/base/scope-dcc.js"></script>
   <script src="/dccs/base/dcc.js"></script>
   <script src="/dccs/base/dcc-base.js "></script>
   <script src="/dccs/base/dcc-visual.js "></script>
   <script src="/dccs/base/dcc-block.js"></script>
+  <script src="/dccs/base/dcc-light.js "></script>
+
   <script src="/dccs/components/visual/dcc-button.js"></script>
   <script src="/dccs/components/visual/dcc-notice-input.js"></script>
 
@@ -49,6 +53,7 @@
 
   <script src="/infra/dcc-rest-proxy.js"></script>
   <script src="/infra/dcc-basic.js"></script>
+  <script src="/infra/dcc-logger.js"></script>
 
   <link rel="stylesheet" href="/lib/fontawesome-5-10-1/css/all.min.css">
   <link rel="stylesheet" href="/lib/bootstrap-4.4.1/css/bootstrap.min.css">
@@ -98,47 +103,104 @@
   <script src="/player/js/player.js"></script>
   <script src="/player/js/caselist.js"></script>
 
+  <style>
+  .collapsible {
+    background-color: #777;
+    color: white;
+    cursor: pointer;
+    padding: 18px;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 15px;
+  }
+
+  .active, .collapsible:hover {
+    background-color: #555;
+  }
+
+  .collapsible:after {
+    content: '\002B';
+    color: white;
+    font-weight: bold;
+    float: right;
+    margin-left: 5px;
+  }
+
+  .active:after {
+    content: "\2212";
+  }
+
+  .content {
+    padding: 0 18px;
+    max-height: 0;
+    overflow: scroll;
+    transition: max-height 0.2s ease-out;
+    background-color: #f1f1f1;
+  }
+  </style>
+
   <script>
      function start() {
+        MessageBus.i.debugger = function(topic, message) {
+           showLogger(topic, message)
+        }
+        document.querySelector('#logger-messages').innerHTML = ''
         PlayerManager.player.startPlayer()
-        document.querySelector("#logger-messages").value = "";
-        MessageBus.ext.subscribe("#", showLogger);
      }
 
      function showLogger(topic, message) {
-       const lm = document.querySelector("#logger-messages")
-         lm.value = lm.value +
-            "topic: " + topic + "\n" +
-            "message: " + JSON.stringify(message) + "\n\n";
+       const lm = document.querySelector('#logger-messages')
+       let div = document.createElement('div')
+       const msg = ((message == null) ? '[[empty]]'
+         : JSON.stringify(message, null, '  '))
+       div.innerHTML =
+          '<button class="collapsible">' +
+          topic.replace(/</gm, '&lt;').replace(/>/gm, '&gt;') +
+          '</button>' +
+          '<textarea class="content" style="width:100%" rows="' +
+             + msg.split(/\r\n|\r|\n/).length + '">' + msg +
+          '</textarea>'
+       const coll = div.getElementsByClassName('collapsible')
+       coll[0].addEventListener('click', function() {
+         this.classList.toggle('active')
+         var content = this.nextElementSibling
+         if (content.style.maxHeight)
+           content.style.maxHeight = null
+         else
+           content.style.maxHeight = '100%'
+       })
+       lm.appendChild(div)
+       lm.scrollTop = lm.scrollHeight - lm.clientHeight
      }
   </script>
 
 </head>
   <body onload="start()">
-  <div class="d-flex flex-column vh-100 vw-100 hidden-overflow">
-    <dcc-rest id="harena-case" bind="harena-case" subscribe="service/request/get"></dcc-rest>
-    <div class="mr-auto author-breadcrumb" id="preview-panel">
-    <!-- <div class="sty-preview-panel" id="preview-panel"> -->
-      <nav aria-label="breadcrumb">
-        <ol id="breadcrumb-group" class="breadcrumb">
-          <li class="breadcrumb-item"><a href="/">Welcome</a></li>
-          <li class="breadcrumb-item"><a href="/player/home/category">Categories</a></li>
-          <li id="case-list-breadcrumb" class="breadcrumb-item">
-            <a href="javascript:history.back()">Case List</a>
-          </li>
-          <li id="current-breadcrumb" class="breadcrumb-item active" aria-current="page">Current Case</li>
-        </ol>
-      </nav>
-    </div>
-    <main role="main" class="d-flex h-100 mb-3">
-      <div id="main-panel" class="d-flex flex-column pt-5 vh-100 col-6 scroll-y index-boot-padding">
-        <div id="player-panel" style="border-color: #004270; border-radius: 9px;	border-style: solid;	border-width: 13px;	border-bottom-width: 100px">
+     <div class="d-flex flex-column vh-100 vw-100 hidden-overflow">
+      <dcc-rest id="harena-case" bind="harena-case" subscribe="service/request/get"></dcc-rest>
+      <div class="mr-auto author-breadcrumb" id="preview-panel">
+        <nav aria-label="breadcrumb">
+          <ol id="breadcrumb-group" class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Welcome</a></li>
+            <li class="breadcrumb-item"><a href="/player/home/category">Categories</a></li>
+            <li id="case-list-breadcrumb" class="breadcrumb-item">
+              <a href="javascript:history.back()">Case List</a>
+            </li>
+            <li id="current-breadcrumb" class="breadcrumb-item active" aria-current="page">Current Case</li>
+          </ol>
+        </nav>
+      </div>
+      <main role="main" class="d-flex h-100 mb-3">
+        <div id="main-panel" class="d-flex flex-column pt-5 vh-100 col-6 scroll-y index-boot-padding">
+          <div id="player-panel" style="border-color: #004270; border-radius: 9px;	border-style: solid;	border-width: 13px;	border-bottom-width: 100px">
+          </div>
         </div>
-      </div>
-      <div id="logger-area" class="d-flex h-100 w-100">
-         <textarea id="logger-messages" style="overflow-y:scroll" class="w-100 h-100 std-monospace"></textarea>
-      </div>
-    </main>
-  </div>
+        <div id="logger-area" class="d-flex w-100" style="height: 90%">
+           <div id="logger-messages" style="overflow-y:scroll" class="w-100 h-100 std-monospace"></div>
+        </div>
+      </main>
+    </div>
 </body>
 </html>

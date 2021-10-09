@@ -18,7 +18,7 @@ class Comments {
     this._knotid = knotid
     this._activated = false
     this.activateComments = this.activateComments.bind(this)
-    MessageBus.int.subscribe('control/comments/editor', this.activateComments)
+    MessageBus.i.subscribe('control/comments/editor', this.activateComments)
   }
 
   get activated() {
@@ -45,9 +45,9 @@ class Comments {
         }
       }
       if (this._template != -1) {
-        const tmpl = await MessageBus.ext.request(
+        const tmpl = await MessageBus.i.request(
           'data/template_comments/' +
-          content[this._template].value.replace(/\//g, '.') + '/get')
+          content[this._template].value.replace(/\//g, '.') + '/get', null, null, true)
         const form = '<form><dcc-dhtml subscribe="data/comments/get:update">' + tmpl.message +
                      '<end-dcc></end-dcc></dcc-dhtml>' +
                      '<dcc-submit label="COMMENT" xstyle="in" subscribe="control/comments/submit" topic="control/comments/edit/confirm" display="none"></dcc-submit></form>'
@@ -60,7 +60,7 @@ class Comments {
             this._comments = c
             console.log('=== publishing')
             console.log(content[c].value)
-            MessageBus.ext.publish('data/comments/get', content[c].value)
+            MessageBus.i.publish('data/comments/get', content[c].value, true)
             break
           }
         }
@@ -68,7 +68,7 @@ class Comments {
     }
 
     this.commentsConfirm = this.commentsConfirm.bind(this)
-    MessageBus.ext.subscribe('control/comments/edit/confirm',
+    MessageBus.i.subscribe('control/comments/edit/confirm',
                              this.commentsConfirm)
    this.toggleRadioFindings()
 
@@ -98,9 +98,9 @@ class Comments {
     }
 
     this.commentsConfirm = this.commentsConfirm.bind(this)
-    MessageBus.int.subscribe('control/comments/edit/confirm', this.commentsConfirm)
+    MessageBus.i.subscribe('control/comments/edit/confirm', this.commentsConfirm)
     this.commentsCancel = this.commentsCancel.bind(this)
-    MessageBus.int.subscribe('control/comments/edit/cancel', this.commentsCancel)
+    MessageBus.i.subscribe('control/comments/edit/cancel', this.commentsCancel)
 
     let editorPanel = document.querySelector('#comments-editor')
 
@@ -232,9 +232,9 @@ class Comments {
 
   close() {
     console.log('*** unsubscribed')
-    MessageBus.int.unsubscribe('control/comments/editor', this.activateComments)
+    MessageBus.i.unsubscribe('control/comments/editor', this.activateComments)
     if (this._activated)
-      MessageBus.ext.unsubscribe('control/comments/edit/confirm',
+      MessageBus.i.unsubscribe('control/comments/edit/confirm',
                                  this.commentsConfirm)
   }
 }

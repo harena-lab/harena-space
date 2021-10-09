@@ -51,7 +51,11 @@ class Saps {
                 firstTxt = source[keys[i]][k]
               }
             }
-            txtGen[keys[i]] = firstTxt + txtGen[keys[i]]
+            if (txtGen[keys[i]]) {
+              txtGen[keys[i]] = firstTxt + txtGen[keys[i]]
+            }else {
+              txtGen[keys[i]] = firstTxt
+            }
             break;
           case 'Motivo de admissão na UTI':
             txtGen[keys[i]] = `, sendo encaminhado à UTI por ${source[keys[i]][0]}`
@@ -160,10 +164,18 @@ class Saps {
                   else
                     txtGen[keys[i]] = `${source[keys[i]][k]}`
                 }else {
-                  firstTxt = `${source[keys[i]][k].substring(20,(source[keys[i]][k].length))}; `
+                  if (source[keys[i]][k].includes('não submetido à cirurgia')) {
+                    firstTxt = 'não'
+                  }else {
+                    firstTxt = `${source[keys[i]][k].substring(20,(source[keys[i]][k].length))}; `
+                  }
                 }
               }
-              txtGen[keys[i]] = firstTxt + txtGen[keys[i]] + ';'
+              if (txtGen[keys[i]]) {
+                txtGen[keys[i]] = firstTxt + txtGen[keys[i]] + ';'
+              }else {
+                txtGen[keys[i]] = firstTxt;
+              }
               break;
             case 'Infectado antes da admissão':
               txtGen[keys[i]] = source[keys[i]][0]
@@ -272,9 +284,9 @@ class Saps {
 
                   sapsTextBuild[sapsScoreKeys[i]].push(sapsText)
                 }*/
-                console.log('============ selected')
-                console.log(valueKey[k])
-                console.log(sapsValue)
+                // console.log('============ selected')
+                // console.log(valueKey[k])
+                // console.log(sapsValue)
                 if(!sapsCalcGroup[sapsScoreKeys[i]])
                   sapsCalcGroup[sapsScoreKeys[i]] = {}
                 sapsCalcGroup[sapsScoreKeys[i]][valueKey[k]] = sapsValue
@@ -534,9 +546,9 @@ class Saps {
                 //   }
                 //   sapsTextBuild[sapsScoreKeys[i]].push(sapsText)
                 // }*/
-                console.log('============ selected value')
-                console.log(valueKeys[k])
-                console.log(sapsValue)
+                // console.log('============ selected value')
+                // console.log(valueKeys[k])
+                // console.log(sapsValue)
                 if(!sapsCalcGroup[sapsScoreKeys[i]])
                   sapsCalcGroup[sapsScoreKeys[i]] = {}
                 if(valueKeys[k] == 'Não' || valueKeys[k] == 'Sim')
@@ -870,9 +882,9 @@ class Saps {
                   }
                   sapsTextBuild[sapsScoreKeys[i]].push(sapsText)
                 }*/
-                console.log('============ select value')
-                console.log(valueKeys[k])
-                console.log(sapsValue)
+                // console.log('============ select value')
+                // console.log(valueKeys[k])
+                // console.log(sapsValue)
                 if(!sapsCalcGroup[sapsScoreKeys[i]])
                   sapsCalcGroup[sapsScoreKeys[i]] = {}
                 sapsCalcGroup[sapsScoreKeys[i]][valueKeys[k]] = sapsValue

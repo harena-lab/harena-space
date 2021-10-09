@@ -55,7 +55,7 @@ class DCCImageMarker extends DCCVisual {
   /* Rendering */
 
   async _renderInterface () {
-    const r = await MessageBus.page.request('dcc/marker-spot/set',
+    const r = await this._request('dcc/marker-spot/set',
       {
         label: this.label,
         coords: this._coords,
@@ -68,7 +68,7 @@ class DCCImageMarker extends DCCVisual {
   /* Event handling */
   markerSpot () {
     this._state = (this._state + 1) % 5
-    MessageBus.page.publish('dcc/marker-spot/selected',
+    this._publish('dcc/marker-spot/selected',
       {
         label: this.label,
         coords: this._coords,
@@ -118,12 +118,12 @@ class DCCGroupMarker extends DCCBase {
     this._imageCoord = this._imageG.getBoundingClientRect()
     // console.log(this._imageCoord);
 
-    MessageBus.page.subscribe('dcc/marker-context/request', this.requestContext)
-    MessageBus.page.subscribe('dcc/marker-states/request', this.requestStates)
-    MessageBus.page.subscribe('dcc/marker-spot/set', this.setMarkerSpot)
-    MessageBus.page.subscribe('dcc/marker-spot/selected', this.spotSelected)
+    this._subscribe('dcc/marker-context/request', this.requestContext)
+    this._subscribe('dcc/marker-states/request', this.requestStates)
+    this._subscribe('dcc/marker-spot/set', this.setMarkerSpot)
+    this._subscribe('dcc/marker-spot/selected', this.spotSelected)
 
-    MessageBus.int.publish('var/' + this.context + '/group_input/ready',
+    this._publish('var/' + this.context + '/group_input/ready',
       DCCGroupMarker.elementTag)
 
     if (this.hasAttribute('editor')) {
@@ -134,17 +134,17 @@ class DCCGroupMarker extends DCCBase {
   }
 
   disconnectedCallback () {
-    MessageBus.page.unsubscribe('dcc/marker-context/request', this.requestContext)
-    MessageBus.page.unsubscribe('dcc/marker-states/request', this.requestStates)
-    MessageBus.page.unsubscribe('dcc/marker-spot/set', this.setMarkerSpot)
+    this._unsubscribe('dcc/marker-context/request', this.requestContext)
+    this._unsubscribe('dcc/marker-states/request', this.requestStates)
+    this._unsubscribe('dcc/marker-spot/set', this.setMarkerSpot)
   }
 
   requestStates (topic, message) {
-    MessageBus.page.publish('dcc/marker-states/' + message, this.states)
+    this._publish('dcc/marker-states/' + message, this.states)
   }
 
   requestContext (topic, message) {
-    MessageBus.page.publish('dcc/marker-context/' + message, this.context)
+    this._publish('dcc/marker-context/' + message, this.context)
   }
 
   /*
@@ -204,7 +204,7 @@ class DCCGroupMarker extends DCCBase {
     message.rect = this._makeSpot(message.coords)
     this._spots.push(message)
     message.rect.addEventListener('click', message.handler)
-    MessageBus.page.publish(MessageBus.buildResponseTopic(topic, message),
+    this._publish(MessageBus.buildResponseTopic(topic, message),
       message.rect)
   }
 

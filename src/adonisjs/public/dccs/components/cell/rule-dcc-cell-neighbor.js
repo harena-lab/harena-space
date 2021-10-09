@@ -18,7 +18,7 @@ class RuleDCCCellNeighbor extends RuleDCCTransition {
     this._decimalProbability = parseInt(this.probability) / 100
     this._step = (this.hasAttribute('step')) ? parseInt(this.step) : 1
 
-    MessageBus.page.publish('dcc/rule-cell/register', this)
+    this._publish('dcc/rule-cell/register', this)
   }
 
   buildNeighborList (map) {

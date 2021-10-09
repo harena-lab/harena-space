@@ -9,11 +9,11 @@ class QuestManager {
     //      !!((mode != null && mode.toLowerCase() == 'advanced'))
     //
     // this.deleteCase = this.deleteCase.bind(this)
-    // MessageBus.int.subscribe('control/case/delete', this.deleteCase)
+    // MessageBus.i.subscribe('control/case/delete', this.deleteCase)
     //
     // if (advanced) {
     //   this.downloadCase = this.downloadCase.bind(this)
-    //   MessageBus.int.subscribe('control/case/download', this.downloadCase)
+    //   MessageBus.i.subscribe('control/case/download', this.downloadCase)
     // }
 
     // const authorState = Basic.service.authorStateRetrieve();

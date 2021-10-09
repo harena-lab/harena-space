@@ -12,15 +12,15 @@ class DCCDHTML extends DCCBase {
     super.connectedCallback()
 
     if (this.hasAttribute('autoupdate')) {
-      let record = await MessageBus.ext.request('var/*/get')
+      let record = await this._request('var/*/get', null, null, true)
       record = (record == null || record.message == null) ? {} : record.message
       this.recordUpdate('var/*/get', record)
       this.fieldUpdate = this.fieldUpdate.bind(this)
-      MessageBus.ext.subscribe('var/+/set', this.fieldUpdate)
+      this._subscribe('var/+/set', this.fieldUpdate)
     }
 
     this._ready = false
-    MessageBus.int.subscribe('control/dhtml/status/request', this.checkStatus)
+    this._subscribe('control/dhtml/status/request', this.checkStatus)
   }
 
   /*
@@ -58,7 +58,7 @@ class DCCDHTML extends DCCBase {
     }
     if (!this.hasAttribute('connect')) {
       this._ready = true
-      MessageBus.int.publish('control/dhtml/ready')
+      this._publish('control/dhtml/ready')
     }
   }
 
@@ -157,8 +157,8 @@ class DCCDHTML extends DCCBase {
 
   _updateRender () {
     this._renderHTML()
-    MessageBus.int.publish('web/dhtml/record/updated', DCCDHTML.elementTag)
-    MessageBus.int.publish('control/dhtml/updated')
+    this._publish('web/dhtml/record/updated', DCCDHTML.elementTag)
+    this._publish('control/dhtml/updated')
   }
 
   async connectionReady (id, topic) {
@@ -169,7 +169,7 @@ class DCCDHTML extends DCCBase {
 
     }
     this._ready = true
-    MessageBus.int.publish('control/dhtml/ready',
+    this._publish('control/dhtml/ready',
       (this.hasAttribute('id')) ? {id: this.id} : null)
       // console.log('============ dhtml')
       // console.log(this.id)
@@ -179,7 +179,7 @@ class DCCDHTML extends DCCBase {
     if (message == null ||
         message.id == null ||
         (this.hasAttribute('id') && message.id == this.id))
-      MessageBus.int.publish('control/dhtml/' +
+      this._publish('control/dhtml/' +
         ((this._ready) ? "ready" : "not-ready"),
         (this.hasAttribute('id')) ? {id: this.id} : null)
         // console.log('============ dhtml check')

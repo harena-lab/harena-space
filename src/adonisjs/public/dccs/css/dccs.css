@@ -51,12 +51,15 @@
    cursor: pointer;
 }
 
-/* Progress Bar DCC
- ******************/
+/* DCCs Variables
+ ****************/
 
 :root {
    --dcc-progress-back: lightgray;
    --dcc-progress-front: rgb(100, 100, 255);
+   --dcc-play-font-family: "Courier New", monospace;
+   --dcc-play-font-size: 1em;
+   --dcc-play-background-color: lightgray;
 }
 
 /*

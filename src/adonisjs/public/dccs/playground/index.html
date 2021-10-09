@@ -23,6 +23,8 @@
    <script src="../../infra/basic.js"></script>
    <script src="../../infra/dcc-common-server-proxy.js"></script>
 
+   <script src="../../dccs/base/primitive-dcc.js"></script>
+   <script src="../../dccs/base/scope-dcc.js"></script>
    <script src="../../dccs/base/dcc.js"></script>
    <script src="../../dccs/base/subscribe-dcc.js"></script>
    <script src="../../dccs/base/connect-dcc.js"></script>
@@ -33,6 +35,7 @@
 
    <script src="../../dccs/components/control/dcc-timer.js"></script>
    <script src="../../dccs/base/dcc-visual.js"></script>
+   <script src="../../dccs/components/visual/dcc-monitor.js"></script>
    <script src="../../dccs/components/visual/dcc-markdown.js"></script>
    <script src="../../dccs/components/visual/dcc-annotation.js"></script>
    <script src="../../dccs/components/visual/dcc-image.js"></script>
@@ -60,6 +63,8 @@
    <script src="../../dccs/components/web/dcc-web.js"></script>
    <script src="../../dccs/components/visual/dcc-graph.js"></script>
 
+   <script src="../../dccs/components/data/dcc-table-csv.js"></script>
+
    <script src="../../dccs/components/web/dcc-rss.js"></script>
    <script src="../../dccs/components/web/dcc-aggregator.js"></script>
    <script src="../../dccs/components/web/dcc-dhtml.js"></script>
@@ -76,13 +81,18 @@
    <script src="../../dccs/components/cell/rule-dcc-cell-neighbor.js"></script>
    <script src="../../dccs/components/cell/rule-dcc-cell-expression.js"></script>
 
+   <script src="../../dccs/components/ml/underscore.js"></script>
+   <script src="../../dccs/components/ml/data_util.js"></script>
+   <script src="../../dccs/components/ml/learningjs.js"></script>
+   <script src="../../dccs/components/ml/dcc-decision-tree.js"></script>
+
    <script src="../../player/js/state.js"></script>
 
    <script>
       function start() {
          document.querySelector("#json-message").value = "";
-         MessageBus.ext.subscribe("control/render/example", render);
-         MessageBus.ext.subscribe("#", showJson);
+         MessageBus.i.subscribe("control/render/example", render);
+         MessageBus.i.subscribe("#", showJson);
 
          let parameters = window.location.search.substr(1);
          if (parameters != null && parameters.length > 0) {
@@ -117,7 +127,7 @@
 
 <body onload="start()">
    <script>
-      MessageBus.page = new MessageBus(false)
+      // MessageBus.page = new MessageBus(false)
       Basic.service.rootPath = "../../"
       new PlayState()
    </script>
