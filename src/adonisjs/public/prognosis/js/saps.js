@@ -64,6 +64,7 @@ class Saps {
             }
             break;
           case 'Escala de Coma de Glasgow':
+
             txtGen[keys[i]] = ` GCS de ${source[keys[i]]},`
             break;
           case 'Temperatura':
@@ -126,7 +127,7 @@ class Saps {
       .replace(/\[_ifeccao\]/ig, txtGen['Infectado antes da admissão'])
       .replace(/\[_admissao\]/ig, txtGen['Admissão planejada'])
       .replace(/\[_submetidoCirurgia\]/ig, txtGen['Submetido à cirurgia'])
-      .replace(/\[_submetidoUti\]/ig, txtGen['Motivo de admissão na UTI'])
+      .replace(/\[_submetidoUti\]/ig, txtGen['Motivo de admissão na UTI'] ||'')
       .replace(/\[_gcs\]/ig, txtGen['Escala de Coma de Glasgow'])
       .replace(/\[_temperatura\]/ig, txtGen['Temperatura'])
       .replace(/\[_freqCardiaca\]/ig, txtGen['Frequência cardíaca'])
@@ -1186,10 +1187,11 @@ class Saps {
     }
     if(document.querySelector('#saps-survival')){
       document.querySelector('#saps-survival').value = round((100 - mortalityPercentage),1)
+      MessageBus.int.publish('var/sapsCalc/set', round((100 - mortalityPercentage),1), false)
     }
 
     $('#saps-result-modal').modal('show')
-    if (new URL(document.location).pathname == '/prognosis/learn/player/'){
+    if (new URL(document.location).pathname == '/prognosis/learn/player/' || new URL(document.location).pathname.includes('/prognosis/challenge')){
       Saps.i.pacientOverview(pacientData)
     }
 
@@ -1388,7 +1390,7 @@ class Saps {
   `
   Paciente [_idade], encaminhado [_origem], portador de [_comorbidade]
   [_internadoDias][_ifeccao][_admissao][_submetidoCirurgia][_submetidoUti]. À admissão, apresentava [_gcs][_temperatura]
-  [_freqCardiaca][_pressaoSistolica][_drogaVasoativa] uso de DVA. A seguir, os exames da admissão:
+  [_freqCardiaca][_pressaoSistolica] [_drogaVasoativa] uso de DVA. A seguir, os exames da admissão:
   [_bilirrubina][_creatinina][_ph][_leucocitos][_plaquetas][_oxigenacao]
   `
   Saps.pacientAbstract =
