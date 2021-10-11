@@ -92,6 +92,7 @@ class Panels {
     // this._knotMain.classList.remove('w-' + this._knotPanelSize)
     // this._navigationBlock.classList.remove('w-25')
     // this._navigationBlock.classList.add('w-100')
+    this._navigationBlock.style.width = '100%'
     this._buttonExpandNav.style.display = 'none'
     this._buttonRetractNav.style.display = 'initial'
     document.querySelector('#button-expand-prop').style.display = 'none'
