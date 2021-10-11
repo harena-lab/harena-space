@@ -8,9 +8,9 @@
 class AuthorManager {
   constructor () {
     this.start = this.start.bind(this)
-    MessageBus.ext.externalized = false
-    MessageBus.page = new MessageBus(false)
-    // MessageBus.int.subscribe('web/dhtml/record/updated', this.start)
+    // MessageBus.i.externalized = false
+    // MessageBus.page = new MessageBus(false, null, true)
+    // MessageBus.i.subscribe('web/dhtml/record/updated', this.start)
     Basic.service.host = this
     DCC.editable = true
 
@@ -34,7 +34,7 @@ class AuthorManager {
     this._templateNewKnot = null
 
     this.controlEvent = this.controlEvent.bind(this)
-    MessageBus.ext.subscribe('control/#', this.controlEvent)
+    MessageBus.i.subscribe('control/#', this.controlEvent)
 
     this.updateSourceField = this.updateSourceField.bind(this)
 
@@ -66,8 +66,8 @@ class AuthorManager {
    }
 
    requestCurrentThemeFamily(topic, message) {
-      MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-                             this.currentThemeFamily);
+      MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
+                           this.currentThemeFamily, true);
    }
 
    get currentCaseId() {
@@ -216,7 +216,7 @@ class AuthorManager {
   async caseLoadSelect () {
     const saved = await this.saveChangedCase()
 
-    const cases = await MessageBus.ext.request('data/case/*/list')
+    const cases = await MessageBus.i.request('data/case/*/list', null, null, true)
     // {user: this._userid});
 
     cases.message.sort(
@@ -258,15 +258,15 @@ class AuthorManager {
     // let template = await this._templateSelect("case");
 
     const templateMd =
-         await MessageBus.ext.request(
-           'data/template/' + template.replace(/\//g, '.') + '/get')
+         await MessageBus.i.request(
+           'data/template/' + template.replace(/\//g, '.') + '/get', null, null, true)
 
-    const caseId = await MessageBus.ext.request('data/case//new',
+    const caseId = await MessageBus.i.request('data/case//new',
       {
         format: 'markdown',
         title: 'Untitled',
         source: templateMd.message
-      })
+      }, null, true)
     this._caseLoad(caseId.message)
   }
 
@@ -276,7 +276,7 @@ class AuthorManager {
   async _caseLoad (caseId) {
     Basic.service.currentCaseId = caseId
 
-    const caseObj = await MessageBus.ext.request('data/case/' + caseId + '/get')
+    const caseObj = await MessageBus.i.request('data/case/' + caseId + '/get', null, null, true)
 
     this._currentCaseTitle = caseObj.message.title
     await this._compile(caseObj.message.source)
@@ -311,7 +311,7 @@ class AuthorManager {
       sk = knotIds[k]
     }
 
-    MessageBus.ext.publish('control/knot/selected', sk)
+    MessageBus.i.publish('control/knot/selected', sk, true)
   }
 
   _showArtifacts () {
@@ -350,11 +350,11 @@ class AuthorManager {
       this._checkKnotModification(this._renderState)
 
       const md = Translator.instance.assembleMarkdown(this._compiledCase, false)
-      const status = await MessageBus.ext.request(
+      const status = await MessageBus.i.request(
         'data/case/' + Basic.service.currentCaseId + '/set',
         { format: 'markdown',
           source: md
-        })
+        }, null, true)
 
       if(status.message && !status.message.includes('Error')  ){
         Basic.service.authorPropertyStore('caseId', Basic.service.currentCaseId)
@@ -488,8 +488,8 @@ class AuthorManager {
   }
 
   async _templateSelect (scope, filter) {
-    const templatesScope = await MessageBus.ext.request('data/template/*/list',
-      { scope: scope })
+    const templatesScope = await MessageBus.i.request('data/template/*/list',
+      { scope: scope }, null, true)
 
     let templateList = templatesScope.message
     if (filter != null) {
@@ -512,8 +512,6 @@ class AuthorManager {
   async knotSelected (topic, message) {
     const knotid =
          (message == null || message === '') ? this._knotSelected : message
-    console.log('=== knot selected')
-    console.log(knotid)
     if (knotid != null) {
       this._checkKnotModification(this._renderState)
       this._knotSelected = knotid
@@ -525,14 +523,14 @@ class AuthorManager {
       this._comments = new Comments(this._compiledCase, knotid)
       if (Panels.s.commentsVisible)
         this._comments.activateComments()
-      MessageBus.ext.publish('control/case/ready')
+      MessageBus.i.publish('control/case/ready', null, true)
     }
   }
 
   async _updateActiveComments() {
     if (this._comments != null) {
       if (this._comments.activated)
-        await MessageBus.ext.request('control/comments/submit')
+        await MessageBus.i.request('control/comments/submit', null, null, true)
       this._comments.close()
     }
   }
@@ -550,17 +548,31 @@ class AuthorManager {
    * ACTION: control/knot/new
    */
   async knotNew (message) {
+    console.log('=== new knot')
+    console.log(message)
     let template = (message != null) ? message.template : null
 
-    if (template == null) { template = await this._templateSelect('knot', this._templateNewKnot) }
+    if (template == null)
+      template = await this._templateSelect('knot', this._templateNewKnot)
 
     if (template != null) {
-      const knotTarget =
+      let knotTarget =
             (message != null && message.knotid != null)
               ? message.knotid : this._knotSelected
 
-      let markdown = await MessageBus.ext.request('data/template/' +
-                              template.replace(/\//g, '.') + '/get')
+      // inserts before a knot in the same level o
+      const level = this._knots[knotTarget].level
+      const knotIds = Object.keys(this._knots)
+      let kt = knotIds.indexOf(knotTarget) + 1
+      while (kt < knotIds.length &&
+             this._knots[knotIds[kt]].level > level)
+        kt++
+      knotTarget = knotIds[kt-1]
+      console.log('==== insert position')
+      console.log(knotTarget)
+
+      let markdown = await MessageBus.i.request('data/template/' +
+                              template.replace(/\//g, '.') + '/get', null, null, true)
 
       const templateTitle = Translator.instance.extractKnotTitle(markdown.message)
       let ktitle = templateTitle
@@ -577,9 +589,6 @@ class AuthorManager {
         knotId = ktitle.replace('_knot_number_', kn).replace(/ /, '_')
       } while (this._knots[knotId] != null)
       const knotMd = ktitle.replace('_knot_number_', kn)
-
-      console.log('=== k title')
-      console.log(knotId)
 
       markdown = markdown.message.replace(templateTitle, knotMd) + '\n'
 
@@ -774,7 +783,7 @@ class AuthorManager {
       this._knots[this._knotSelected].content.length - 1].seq + 1
     this._knots[this._knotSelected].content.push(newElement)
     Translator.instance.updateElementMarkdown(newElement)
-    MessageBus.ext.publish('control/knot/update')
+    MessageBus.i.publish('control/knot/update', null, true)
   }
 
   elementInsert (message) {
@@ -783,7 +792,7 @@ class AuthorManager {
       this._knots[this._knotSelected].content.length - 1].seq + 1
     this._knots[this._knotSelected].content.push(newElement)
     Translator.instance.updateElementMarkdown(newElement)
-    MessageBus.ext.publish('control/knot/update')
+    MessageBus.i.publish('control/knot/update', null, true)
   }
 
   elementSelectedMove (position) {
@@ -817,14 +826,15 @@ class AuthorManager {
     }
   }
 
-  async knotUpdate (topic, message) {
+  async knotUpdate (topic, message, track) {
     if (this._knotSelected != null) {
       this._htmlKnot = await Translator.instance.generateHTML(
         this._knots[this._knotSelected])
       this._renderKnot()
     }
     if (topic != null && message != null)
-      MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message))
+      MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
+                           null, track)
   }
 
   knotRename (newTitle) {
@@ -898,21 +908,21 @@ class AuthorManager {
           ? AuthorManager.jsonNote.replace('{knot}', finalHTML)
           : AuthorManager.jsonKnot.replace('{knot}', finalHTML)
 
-        await MessageBus.ext.request('knot/' + kn + '/set',
+        await MessageBus.i.request('knot/' + kn + '/set',
           {
             caseId: Basic.service.currentCaseId,
             format: 'html',
             source: finalHTML
           },
-          'knot/' + kn + '/set/status')
+          'knot/' + kn + '/set/status', true)
       }
     }
     this._messageSpace.innerHTML = 'Finalizing...'
 
     const caseJSON = Translator.instance.generateCompiledJSON(this._compiledCase)
-    await MessageBus.ext.request('case/' + Basic.service.currentCaseId + '/set',
+    await MessageBus.i.request('case/' + Basic.service.currentCaseId + '/set',
       { format: 'json', source: caseJSON },
-      'case/' + Basic.service.currentCaseId + '/set/status')
+      'case/' + Basic.service.currentCaseId + '/set/status', true)
 
     this._messageSpace.innerHTML = ''
 
@@ -935,7 +945,7 @@ class AuthorManager {
   }
 
   async _themeSelect () {
-    const families = await MessageBus.ext.request('data/theme_family/*/list')
+    const families = await MessageBus.i.request('data/theme_family/*/list', null, null, true)
     Basic.service.currentThemeFamily = await DCCNoticeInput.displayNotice(
       'Select a theme to be applied.',
       'list', 'Select', 'Cancel', families.message)
@@ -961,12 +971,12 @@ class AuthorManager {
       progSpace.appendChild(ref)
       ref.innerHTML = f.name
       const artifact = await
-        MessageBus.ext.request('data/asset//new',
+        MessageBus.i.request('data/asset//new',
           {
             file: f,
             caseid: Basic.service.currentCaseId,
             progress: prMsg
-          })
+          }, null, true)
       ref.innerHTML = '<a href="' + artifact.message.url + '" target="_blank">' +
                       f.name + '</a>'
       this._insertArtifactReference(artifact.message.filename, f.name)

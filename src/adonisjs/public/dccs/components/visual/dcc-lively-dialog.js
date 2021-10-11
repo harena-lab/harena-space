@@ -7,41 +7,38 @@ class DCCLivelyTalk extends DCCVisual {
     this._imageLoaded = this._imageLoaded.bind(this)
     this._imageWeb = null
 
-    this._scheduleAnimation = this._scheduleAnimation.bind(this)
-
     this.notify = this.notify.bind(this)
 
     if (this.hasAttribute('id')) {
-      MessageBus.page.provides(this.id, 'action/speech', this.notify)
-      MessageBus.page.provides(this.id, 'action/clear', this.notify)
+      this._provides(this.id, 'action/speech', this.notify)
+      this._provides(this.id, 'action/clear', this.notify)
     }
-  }
-
-  static get observedAttributes () {
-    return DCCVisual.observedAttributes.concat(
-      ['duration', 'delay', 'direction', 'character', 'bubble', 'speech'])
   }
 
   connectedCallback () {
     super.connectedCallback()
 
-    this._prefixSpeech = (this.speech) ? this.speech : ''
+    if (this.hasAttribute('dialog'))
+      this._dialog = document.querySelector('#' + this.dialog)
+    else
+      this._dialog = this._findAggregator(DCCLivelyDialog)
 
-    this.addEventListener('schedule-animation', this._scheduleAnimation)
-
-    this._dialog = document.querySelector('dcc-lively-dialog')
-    if (this._dialog == null) { this._buildVisual() } else {
-      const eventReady = new CustomEvent('talk-ready', { detail: this })
-      this._dialog.dispatchEvent(eventReady)
+    if (this._dialog != null) {
+      const schedule = this._dialog._animationSchedule()
+      this._duration = schedule.duration
+      this._delay = schedule.delay
+      this._direction = schedule.direction
+    } else {
+      this._duration = (this.duration != null) ? this.duration : '0s'
+      this._delay = (this.delay != null) ? this.delay : '0s'
+      this._direction = (this.direction != null) ? this.direction : 'left'
     }
-    super.connectedCallback()
-  }
-
-  _scheduleAnimation (event) {
-    this.duration = event.detail.duration
-    this.delay = event.detail.delay
-    this.direction = event.detail.direction
+    this._bubble = (this.bubble != null) ? this.bubble : 'bubble'
+    this._character = (this.character != null) ?
+            this.character : 'images/character.png'
+    this._speech = (this.speech != null) ? this.speech : ''
     this._buildVisual()
+    super.connectedCallback()
   }
 
   _buildVisual () {
@@ -54,109 +51,24 @@ class DCCLivelyTalk extends DCCVisual {
       right: '-1, 1'
     }
 
-    const durationWeb = (this.duration != null) ? this.duration : '0s'
-    const delayWeb = (this.delay != null) ? this.delay : '0s'
-    const directionWeb = (this.direction != null) ? this.direction : 'left'
-    const bubbleWeb = (this.bubble != null) ? this.bubble : 'bubble'
-    const characterWeb = (this.character != null) ? this.character : 'person'
-    const speechWeb = (this.speech != null) ? this.speech : ''
-
-    let templateHTML =
-         `<style>
-          .dcc-hidden {
-            position: relative;
-            left: 100%;
-          }
-
-          @keyframes dcc-block-displacement {
-            [direction]
-          }
-
-          .dcc-entrance-container {
-            width: 100%;
-            overflow: hidden;
-          }
-
-          .dcc-entrance {
-            position: relative;
-            left: 100%;
-            font-family: "Trebuchet MS", Helvetica, sans-serif;
-            animation-name: dcc-block-displacement;
-            animation-duration: [duration];
-            animation-delay: [delay];
-            animation-fill-mode: forwards;
-          }
-
-           @media (orientation: landscape) {
-             .dcc-direction {
-               display: flex;
-               flex-direction: row;
-             }
-           }
-
-           @media (orientation: portrait) {
-             .dcc-direction {
-               display: flex;
-               flex-direction: column;
-             }
-           }
-
-          .dcc-character {
-             flex-basis: 100px;
-          }
-
-          .dcc-bubble {
-             background-repeat: no-repeat;
-             background-size: 100% 100%;
-             flex-basis: 100%;
-             padding: 15px 15px 10px 80px;
-             transform: scale([transform]);
-          }
-
-          @media (orientation: landscape) {
-             .dcc-bubble {
-                background-image: url("images/[bubble-file]-landscape.png");
-             }
-          }
-
-          @media (orientation: portrait) {
-             .dcc-bubble {
-                background-image: url("images/[bubble-file]-portrait.png");
-             }
-          }
-
-          .dcc-speech {
-             transform: scale([transform]);
-             text-align: [align];
-          }
-
-          </style>
-          <div class="dcc-entrance-container">
-             <div id="presentation-dcc" class="dcc-hidden"></div>
-          </div>`
-
-    templateHTML = templateHTML.replace('[duration]', durationWeb)
-      .replace('[delay]', delayWeb)
-      .replace(/\[direction\]/igm, animationDirection[directionWeb])
-      .replace(/\[transform\]/igm, animationTransform[directionWeb])
-      .replace('[align]', directionWeb)
-      .replace(/\[bubble-file\]/igm, bubbleWeb)
-
     const template = document.createElement('template')
-    template.innerHTML = templateHTML
+    template.innerHTML =
+      DCCLivelyTalk.templateHTML.replace('[duration]', this._duration)
+        .replace('[delay]', this._delay)
+        .replace(/\[direction\]/igm, animationDirection[this._direction])
+        .replace(/\[transform\]/igm, animationTransform[this._direction])
+        .replace('[align]', this._direction)
+        .replace(/\[bubble-file\]/igm, this._bubble)
     this._shadow = this.attachShadow({ mode: 'open' })
     this._shadow.appendChild(template.content.cloneNode(true))
 
     this._setPresentation(this._shadow.querySelector('#presentation-dcc'))
 
-    const charImg = 'images/' + characterWeb.toLowerCase()
-      .replace(/ /igm, '_') + '-icon.png'
-
     const imageHTML = "<div class='dcc-character'><img id='dcc-talk-character' src='" +
-                        charImg + "' title='" + characterWeb + "' width='100px'></div>"
-    const speechHTML = "<div class='dcc-bubble'><div id='dcc-talk-text' class='dcc-speech'>" + speechWeb + '</div></div>'
+                        this._character + "' title='character' width='100px'></div>"
+    const speechHTML = "<div class='dcc-bubble'><div id='dcc-talk-text' class='dcc-speech'>" + this._speech + '</div></div>'
 
-    this._presentation.innerHTML = (directionWeb == 'left') ? imageHTML + speechHTML : speechHTML + imageHTML
+    this._presentation.innerHTML = (this._direction == 'left') ? imageHTML + speechHTML : speechHTML + imageHTML
     this._presentation.querySelector('img').addEventListener('load', this._imageLoaded)
 
     this._presentationIsReady()
@@ -166,11 +78,26 @@ class DCCLivelyTalk extends DCCVisual {
     this.removeEventListener('schedule-animation', this._scheduleAnimation)
   }
 
+  static get observedAttributes () {
+    return DCCVisual.observedAttributes.concat(
+      ['dialog', 'duration', 'delay', 'direction', 'character', 'bubble', 'speech'])
+  }
+
+  get dialog () {
+    return this.getAttribute('dialog')
+  }
+
+  set dialog (newDialog) {
+    this._dialog = newDialog
+    this.setAttribute('dialog', newDialog)
+  }
+
   get duration () {
     return this.getAttribute('duration')
   }
 
   set duration (newDuration) {
+    this._duration = newDuration
     this.setAttribute('duration', newDuration)
   }
 
@@ -179,6 +106,7 @@ class DCCLivelyTalk extends DCCVisual {
   }
 
   set delay (newDelay) {
+    this._delay = newDelay
     this.setAttribute('delay', newDelay)
   }
 
@@ -187,6 +115,7 @@ class DCCLivelyTalk extends DCCVisual {
   }
 
   set direction (newDirection) {
+    this._direction = newDirection
     this.setAttribute('direction', newDirection)
   }
 
@@ -195,6 +124,7 @@ class DCCLivelyTalk extends DCCVisual {
   }
 
   set character (newCharacter) {
+    this._character = newCharacter
     this.setAttribute('character', newCharacter)
   }
 
@@ -202,7 +132,8 @@ class DCCLivelyTalk extends DCCVisual {
     return this.getAttribute('bubble')
   }
 
-  set speech (newBubble) {
+  set bubble (newBubble) {
+    this._bubble = newBubble
     this.setAttribute('bubble', newBubble)
   }
 
@@ -211,10 +142,15 @@ class DCCLivelyTalk extends DCCVisual {
   }
 
   set speech (newSpeech) {
+    this._speech = newSpeech
     this.setAttribute('speech', newSpeech)
+    this._updateSpeech('')
+  }
+
+  _updateSpeech (addSpeech) {
     if (this._presentation != null) {
       const speechText = this._presentation.querySelector('#dcc-talk-text')
-      if (speechText != null) { speechText.innerHTML = newSpeech }
+      if (speechText != null) { speechText.innerHTML = this._speech + addSpeech }
     }
   }
 
@@ -229,10 +165,10 @@ class DCCLivelyTalk extends DCCVisual {
       topic = 'action/' + topic
     switch (topic.toLowerCase()) {
       case 'action/speech':
-        this.speech = this._prefixSpeech + ((message.value) ? message.value : message)
+        this._updateSpeech((message.value) ? message.value : (message.body) ? message.body : message)
         break
       case 'action/clear':
-        this.speech = this._prefixSpeech + ''
+        this._updateSpeech('')
         break
     }
   }
@@ -254,9 +190,9 @@ class DCCLivelyDialog extends DCCBase {
     super()
 
     this._sequenceCounter = 0
-    this._direction = 'left'
-
-    this._talkReady = this._talkReady.bind(this)
+    this._duration = (this.duration != null) ? this.duration : '1'
+    this._rate = (this.rate != null) ? this.rate : '2'
+    this._direction = (this.direction != null) ? this.direction : 'left'
   }
 
   /* Attribute Handling */
@@ -265,19 +201,12 @@ class DCCLivelyDialog extends DCCBase {
     return DCCBase.observedAttributes.concat(['rate', 'duration'])
   }
 
-  connectedCallback () {
-    this.addEventListener('talk-ready', this._talkReady)
-  }
-
-  disconnectedCallback () {
-    this.removeEventListener('talk-ready', this._talkReady)
-  }
-
   get rate () {
     return this.getAttribute('rate')
   }
 
   set rate (newRate) {
+    this._rate = newRate
     this.setAttribute('rate', newRate)
   }
 
@@ -286,26 +215,25 @@ class DCCLivelyDialog extends DCCBase {
   }
 
   set duration (newDuration) {
+    this._duration = newDuration
     this.setAttribute('duration', newDuration)
   }
 
   /* Rendering */
 
-  _talkReady (event) {
+  _animationSchedule () {
     const delayValue = (this._sequenceCounter == 0) ? 0
-      : ((this._sequenceCounter * parseInt(this.rate)) - parseInt(this.duration))
+      : ((this._sequenceCounter * parseInt(this._rate)) - parseInt(this._duration))
 
-    const eventSchedule = new CustomEvent('schedule-animation',
-      {
-        detail: {
-          duration: this.duration,
-          delay: delayValue + 's',
-          direction: this._direction
-        }
-      })
-    event.detail.dispatchEvent(eventSchedule)
+    const schedule = {
+      duration: this.duration,
+      delay: delayValue + 's',
+      direction: this._direction
+    }
+
     this._sequenceCounter++
     this._direction = (this._direction == 'left') ? 'right' : 'left'
+    return schedule
   }
 }
 
@@ -314,4 +242,77 @@ class DCCLivelyDialog extends DCCBase {
   customElements.define('dcc-lively-talk', DCCLivelyTalk)
   DCCLivelyDialog.editableCode = false
   customElements.define('dcc-lively-dialog', DCCLivelyDialog)
+  DCCLivelyTalk.templateHTML =
+`<style>
+ .dcc-hidden {
+   position: relative;
+   left: 100%;
+ }
+
+ @keyframes dcc-block-displacement {
+   [direction]
+ }
+
+ .dcc-entrance-container {
+   width: 100%;
+   overflow: hidden;
+ }
+
+ .dcc-entrance {
+   position: relative;
+   left: 100%;
+   font-family: "Trebuchet MS", Helvetica, sans-serif;
+   animation-name: dcc-block-displacement;
+   animation-duration: [duration];
+   animation-delay: [delay];
+   animation-fill-mode: forwards;
+ }
+
+  @media (orientation: landscape) {
+    .dcc-direction {
+      display: flex;
+      flex-direction: row;
+    }
+  }
+
+  @media (orientation: portrait) {
+    .dcc-direction {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+
+ .dcc-character {
+    flex-basis: 100px;
+ }
+
+ .dcc-bubble {
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    flex-basis: 100%;
+    padding: 15px 15px 10px 80px;
+    transform: scale([transform]);
+ }
+
+ @media (orientation: landscape) {
+    .dcc-bubble {
+       background-image: url("images/[bubble-file]-landscape.png");
+    }
+ }
+
+ @media (orientation: portrait) {
+    .dcc-bubble {
+       background-image: url("images/[bubble-file]-portrait.png");
+    }
+ }
+
+ .dcc-speech {
+    transform: scale([transform]);
+    text-align: [align];
+ }
+
+ </style>
+ <div class="dcc-entrance-container">
+    <div id="presentation-dcc" class="dcc-hidden"></div>
+ </div>`
 })()

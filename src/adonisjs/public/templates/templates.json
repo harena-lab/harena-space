@@ -61,6 +61,13 @@
     "icon": "simple/case/virtual_visit.png",
     "scope": "case",
     "environment": "jacinto"},
+ "TBL":
+   {"questId": "tbl",
+    "description": "Team based learning.",
+    "path": "simple/case/tbl",
+    "icon": "simple/case/tbl.png",
+    "scope": "case",
+    "environment": "jacinto"},
  "Podcast":
    {"questId": "podcast",
     "description": "Podcast.",

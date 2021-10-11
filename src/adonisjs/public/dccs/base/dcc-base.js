@@ -2,7 +2,7 @@
  * DCC which is the basis of all components
  */
 
-class DCCBase extends HTMLElement {
+class DCCBase extends PrimitiveDCC {
   constructor () {
     super()
     this.edit = this.edit.bind(this)
@@ -11,6 +11,7 @@ class DCCBase extends HTMLElement {
   }
 
   connectedCallback () {
+    super.connectedCallback()
     if (this.hasAttribute('bind'))
       this._setup = DCC.retrieve(this.bind.toLowerCase(), this.nodeName.toLowerCase())
     if (this.hasAttribute('subscribe'))
@@ -23,9 +24,9 @@ class DCCBase extends HTMLElement {
   disconnectedCallback () {
     if (this._substopic != null) {
       if (this._subsmap != null)
-        MessageBus.ext.unsubscribe(this._substopic, this.toNotify)
+        this._unsubscribe(this._substopic, this.toNotify)
       else
-        MessageBus.ext.unsubscribe(this._substopic, this.notify)
+        this._unsubscribe(this._substopic, this.notify)
     }
   }
 
@@ -85,10 +86,10 @@ class DCCBase extends HTMLElement {
     if (colon != -1) {
       this._substopic = topicMap.substring(0, colon)
       this._subsmap = topicMap.substring(colon + 1)
-      MessageBus.ext.subscribe(this._substopic, this.toNotify)
+      this._subscribe(this._substopic, this.toNotify)
     } else {
       this._substopic = topicMap
-      MessageBus.ext.subscribe(topicMap, this.notify)
+      this._subscribe(topicMap, this.notify)
     }
   }
 
@@ -137,7 +138,7 @@ class DCCBase extends HTMLElement {
       if (this._connections == null) this._connections = {}
       if (this._connections[trigger] == null) this._connections[trigger] = []
       this._connections[trigger].push({id: id, topic: topic})
-      MessageBus.page.connect(id, topic, this)
+      this._connect(id, topic, this)
     }
   }
 
@@ -151,10 +152,10 @@ class DCCBase extends HTMLElement {
       if (id != null) {
         const conId = this._connections[trigger].find(con => con.id == id)
         response =
-            await MessageBus.page.requestC(id, conId.topic, message)
+            await this._requestC(id, conId.topic, message)
       } else
         response =
-            await MessageBus.page.requestC(
+            await this._requestC(
               this._connections[trigger][0].id,
               this._connections[trigger][0].topic, message)
     return response
@@ -164,7 +165,7 @@ class DCCBase extends HTMLElement {
     let response = {}
     if (this._connections != null && this._connections[trigger] != null)
       for (let c of this._connections[trigger])
-        response[c.id] = await MessageBus.page.requestC(c.id, c.topic, message)
+        response[c.id] = await this._requestC(c.id, c.topic, message)
     return response
   }
 
@@ -174,7 +175,7 @@ class DCCBase extends HTMLElement {
   async update (topic, message) {
     if (this._connections != null && this._connections[topic] != null)
       for (let c of this._connections[topic]) {
-        await MessageBus.page.publish(topic + '/' + c, message)
+        await this._publish(topic + '/' + c, message)
   }
   */
 

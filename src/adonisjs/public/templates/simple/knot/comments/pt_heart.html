@@ -1,7 +1,26 @@
-<label for="details"><h3>Comments</h3></label>
-<textarea class="form-control" id="details" name="details" placeholder="Enter the comments">
+<label for="details"><h3>Comentários</h3></label>
+<textarea class="form-control" id="details" name="details" placeholder="Digite seus comentários">
 {{details}}
 </textarea>
+<h3>Nota</h3>
+<div class="bg-light border border-secondary rounded pl-2 form-check-inline">
+   <input type="radio" id="grade1"
+          name="grade" value="1" class="form-check-input" {{checked?grade:1}}>
+   <label for="grade1" class="form-check-label">1 | </label>
+   <input type="radio" id="grade2"
+          name="grade" value="2" class="form-check-input" {{checked?grade:2}}>
+   <label for="grade2" class="form-check-label">2 | </label>
+   <input type="radio" id="grade3"
+          name="grade" value="3" class="form-check-input" {{checked?grade:3}}>
+   <label for="grade3" class="form-check-label">3 | </label>
+   <input type="radio" id="grade4"
+          name="grade" value="4" class="form-check-input" {{checked?grade:4}}>
+   <label for="grade4" class="form-check-label">4 | </label>
+   <input type="radio" id="grade5"
+          name="grade" value="5" class="form-check-input" {{checked?grade:5}}>
+   <label for="grade5" class="form-check-label">5</label>
+</div>
+<hr>
 <hr>
 <h3>Vídeo - Sub-xifóide/sub-costal</h3>
 <hr>
@@ -10,19 +29,19 @@
 
 <div class="bg-light border border-secondary rounded pl-2">
   <div class="form-check">
-    <input type="radio" id="co-sx_gain"
+    <input type="radio" id="co-sx_gain1"
       name="co-sx_gain" value="insufficient" class="form-check-input" {{checked?co-sx_gain:insufficient}}>
-    <label for="co-sx_gain" class="form-check-label">1. insuficiente</label>
+    <label for="co-sx_gain1" class="form-check-label">1. insuficiente</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="co-sx_gain"
+    <input type="radio" id="co-sx_gain2"
       name="co-sx_gain" value="appropriate" class="form-check-input" {{checked?co-sx_gain:appropriate}}>
-    <label for="co-sx_gain" class="form-check-label">2. apropriado</label>
+    <label for="co-sx_gain2" class="form-check-label">2. apropriado</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="co-sx_gain"
+    <input type="radio" id="co-sx_gain3"
       name="co-sx_gain" value="excessive" class="form-check-input" {{checked?co-sx_gain:excessive}}>
-    <label for="co-sx_gain" class="form-check-label">3. excessivo</label>
+    <label for="co-sx_gain3" class="form-check-label">3. excessivo</label>
   </div>
 </div>
 
@@ -30,22 +49,21 @@
 
 <div class="bg-light border border-secondary rounded pl-2">
   <div class="form-check">
-    <input type="radio" id="co-sx_depth"
+    <input type="radio" id="co-sx_depth1"
       name="co-sx_depth" value="insufficient" class="form-check-input" {{checked?co-sx_depth:insufficient}}>
-    <label for="co-sx_depth" class="form-check-label">1. insuficiente</label>
+    <label for="co-sx_depth1" class="form-check-label">1. insuficiente</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="co-sx_depth"
+    <input type="radio" id="co-sx_depth2"
       name="co-sx_depth" value="appropriate" class="form-check-input" {{checked?co-sx_depth:appropriate}}>
-    <label for="co-sx_depth" class="form-check-label">2. apropriado</label>
+    <label for="co-sx_depth2" class="form-check-label">2. apropriado</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="co-sx_depth"
+    <input type="radio" id="co-sx_depth3"
       name="co-sx_depth" value="excessive" class="form-check-input" {{checked?co-sx_depth:excessive}}>
-    <label for="co-sx_depth" class="form-check-label">3. excessivo</label>
+    <label for="co-sx_depth3" class="form-check-label">3. excessivo</label>
   </div>
 </div>
-
 <h4 class="mt-1">Referências anatómicas/qualidade</h4>
 
 <div class="bg-light border border-secondary rounded pl-2">
@@ -165,19 +183,19 @@
 
 <div class="bg-light border border-secondary rounded pl-2">
   <div class="form-check">
-    <input type="radio" id="co-pl_gain"
+    <input type="radio" id="co-pl_gain1"
       name="co-pl_gain" value="insufficient" class="form-check-input" {{checked?co-pl_gain:insufficient}}>
-    <label for="co-pl_gain" class="form-check-label">1. insuficiente</label>
+    <label for="co-pl_gain1" class="form-check-label">1. insuficiente</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="co-pl_gain"
+    <input type="radio" id="co-pl_gain2"
       name="co-pl_gain" value="appropriate" class="form-check-input" {{checked?co-pl_gain:appropriate}}>
-    <label for="co-pl_gain" class="form-check-label">2. apropriado</label>
+    <label for="co-pl_gain2" class="form-check-label">2. apropriado</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="co-pl_gain"
+    <input type="radio" id="co-pl_gain3"
       name="co-pl_gain" value="excessive" class="form-check-input" {{checked?co-pl_gain:excessive}}>
-    <label for="co-pl_gain" class="form-check-label">3. excessivo</label>
+    <label for="co-pl_gain3" class="form-check-label">3. excessivo</label>
   </div>
 </div>
 
@@ -185,22 +203,21 @@
 
 <div class="bg-light border border-secondary rounded pl-2">
   <div class="form-check">
-    <input type="radio" id="co-pl_depth"
+    <input type="radio" id="co-pl_depth1"
       name="co-pl_depth" value="insufficient" class="form-check-input" {{checked?co-pl_depth:insufficient}}>
-    <label for="co-pl_depth" class="form-check-label">1. insuficiente</label>
+    <label for="co-pl_depth1" class="form-check-label">1. insuficiente</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="co-pl_depth"
+    <input type="radio" id="co-pl_depth2"
       name="co-pl_depth" value="appropriate" class="form-check-input" {{checked?co-pl_depth:appropriate}}>
-    <label for="co-pl_depth" class="form-check-label">2. apropriado</label>
+    <label for="co-pl_depth2" class="form-check-label">2. apropriado</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="co-pl_depth"
+    <input type="radio" id="co-pl_depth3"
       name="co-pl_depth" value="excessive" class="form-check-input" {{checked?co-pl_depth:excessive}}>
-    <label for="co-pl_depth" class="form-check-label">3. excessivo</label>
+    <label for="co-pl_depth3" class="form-check-label">3. excessivo</label>
   </div>
 </div>
-
 <h4 class="mt-1">Referências anatómicas/qualidade</h4>
 
 <div class="bg-light border border-secondary rounded pl-2">
@@ -310,19 +327,19 @@
 
 <div class="bg-light border border-secondary rounded pl-2">
   <div class="form-check">
-    <input type="radio" id="co-pv_gain"
+    <input type="radio" id="co-pv_gain1"
       name="co-pv_gain" value="insufficient" class="form-check-input" {{checked?co-pv_gain:insufficient}}>
-    <label for="co-pv_gain" class="form-check-label">1. insuficiente</label>
+    <label for="co-pv_gain1" class="form-check-label">1. insuficiente</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="co-pv_gain"
+    <input type="radio" id="co-pv_gain2"
       name="co-pv_gain" value="appropriate" class="form-check-input" {{checked?co-pv_gain:appropriate}}>
-    <label for="co-pv_gain" class="form-check-label">2. apropriado</label>
+    <label for="co-pv_gain2" class="form-check-label">2. apropriado</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="co-pv_gain"
+    <input type="radio" id="co-pv_gain3"
       name="co-pv_gain" value="excessive" class="form-check-input" {{checked?co-pv_gain:excessive}}>
-    <label for="co-pv_gain" class="form-check-label">3. excessivo</label>
+    <label for="co-pv_gain3" class="form-check-label">3. excessivo</label>
   </div>
 </div>
 
@@ -330,22 +347,21 @@
 
 <div class="bg-light border border-secondary rounded pl-2">
   <div class="form-check">
-    <input type="radio" id="co-pv_depth"
+    <input type="radio" id="co-pv_depth1"
       name="co-pv_depth" value="insufficient" class="form-check-input" {{checked?co-pv_depth:insufficient}}>
-    <label for="co-pv_depth" class="form-check-label">1. insuficiente</label>
+    <label for="co-pv_depth1" class="form-check-label">1. insuficiente</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="co-pv_depth"
+    <input type="radio" id="co-pv_depth2"
       name="co-pv_depth" value="appropriate" class="form-check-input" {{checked?co-pv_depth:appropriate}}>
-    <label for="co-pv_depth" class="form-check-label">2. apropriado</label>
+    <label for="co-pv_depth2" class="form-check-label">2. apropriado</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="co-pv_depth"
+    <input type="radio" id="co-pv_depth3"
       name="co-pv_depth" value="excessive" class="form-check-input" {{checked?co-pv_depth:excessive}}>
-    <label for="co-pv_depth" class="form-check-label">3. excessivo</label>
+    <label for="co-pv_depth3" class="form-check-label">3. excessivo</label>
   </div>
 </div>
-
 <h4 class="mt-1">Referências anatómicas/qualidade</h4>
 
 <div class="bg-light border border-secondary rounded pl-2">
@@ -370,19 +386,19 @@
 
 <div class="bg-light border border-secondary rounded pl-2">
   <div class="form-check">
-    <input type="radio" id="co-pm_gain"
+    <input type="radio" id="co-pm_gain1"
       name="co-pm_gain" value="insufficient" class="form-check-input" {{checked?co-pm_gain:insufficient}}>
-    <label for="co-pm_gain" class="form-check-label">1. insuficiente</label>
+    <label for="co-pm_gain1" class="form-check-label">1. insuficiente</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="co-pm_gain"
+    <input type="radio" id="co-pm_gain2"
       name="co-pm_gain" value="appropriate" class="form-check-input" {{checked?co-pm_gain:appropriate}}>
-    <label for="co-pm_gain" class="form-check-label">2. apropriado</label>
+    <label for="co-pm_gain2" class="form-check-label">2. apropriado</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="co-pm_gain"
+    <input type="radio" id="co-pm_gain3"
       name="co-pm_gain" value="excessive" class="form-check-input" {{checked?co-pm_gain:excessive}}>
-    <label for="co-pm_gain" class="form-check-label">3. excessivo</label>
+    <label for="co-pm_gain3" class="form-check-label">3. excessivo</label>
   </div>
 </div>
 
@@ -390,22 +406,21 @@
 
 <div class="bg-light border border-secondary rounded pl-2">
   <div class="form-check">
-    <input type="radio" id="co-pm_depth"
+    <input type="radio" id="co-pm_depth1"
       name="co-pm_depth" value="insufficient" class="form-check-input" {{checked?co-pm_depth:insufficient}}>
-    <label for="co-pm_depth" class="form-check-label">1. insuficiente</label>
+    <label for="co-pm_depth1" class="form-check-label">1. insuficiente</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="co-pm_depth"
+    <input type="radio" id="co-pm_depth2"
       name="co-pm_depth" value="appropriate" class="form-check-input" {{checked?co-pm_depth:appropriate}}>
-    <label for="co-pm_depth" class="form-check-label">2. apropriado</label>
+    <label for="co-pm_depth2" class="form-check-label">2. apropriado</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="co-pm_depth"
+    <input type="radio" id="co-pm_depth3"
       name="co-pm_depth" value="excessive" class="form-check-input" {{checked?co-pm_depth:excessive}}>
-    <label for="co-pm_depth" class="form-check-label">3. excessivo</label>
+    <label for="co-pm_depth3" class="form-check-label">3. excessivo</label>
   </div>
 </div>
-
 <h4 class="mt-1">Referências anatómicas/qualidade</h4>
 
 <div class="bg-light border border-secondary rounded pl-2">
@@ -430,19 +445,19 @@
 
 <div class="bg-light border border-secondary rounded pl-2">
   <div class="form-check">
-    <input type="radio" id="co-pp_gain"
+    <input type="radio" id="co-pp_gain1"
       name="co-pp_gain" value="insufficient" class="form-check-input" {{checked?co-pp_gain:insufficient}}>
-    <label for="co-pp_gain" class="form-check-label">1. insuficiente</label>
+    <label for="co-pp_gain1" class="form-check-label">1. insuficiente</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="co-pp_gain"
+    <input type="radio" id="co-pp_gain2"
       name="co-pp_gain" value="appropriate" class="form-check-input" {{checked?co-pp_gain:appropriate}}>
-    <label for="co-pp_gain" class="form-check-label">2. apropriado</label>
+    <label for="co-pp_gain2" class="form-check-label">2. apropriado</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="co-pp_gain"
+    <input type="radio" id="co-pp_gain3"
       name="co-pp_gain" value="excessive" class="form-check-input" {{checked?co-pp_gain:excessive}}>
-    <label for="co-pp_gain" class="form-check-label">3. excessivo</label>
+    <label for="co-pp_gain3" class="form-check-label">3. excessivo</label>
   </div>
 </div>
 
@@ -450,22 +465,21 @@
 
 <div class="bg-light border border-secondary rounded pl-2">
   <div class="form-check">
-    <input type="radio" id="co-pp_depth"
+    <input type="radio" id="co-pp_depth1"
       name="co-pp_depth" value="insufficient" class="form-check-input" {{checked?co-pp_depth:insufficient}}>
-    <label for="co-pp_depth" class="form-check-label">1. insuficiente</label>
+    <label for="co-pp_depth1" class="form-check-label">1. insuficiente</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="co-pp_depth"
+    <input type="radio" id="co-pp_depth2"
       name="co-pp_depth" value="appropriate" class="form-check-input" {{checked?co-pp_depth:appropriate}}>
-    <label for="co-pp_depth" class="form-check-label">2. apropriado</label>
+    <label for="co-pp_depth2" class="form-check-label">2. apropriado</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="co-pp_depth"
+    <input type="radio" id="co-pp_depth3"
       name="co-pp_depth" value="excessive" class="form-check-input" {{checked?co-pp_depth:excessive}}>
-    <label for="co-pp_depth" class="form-check-label">3. excessivo</label>
+    <label for="co-pp_depth3" class="form-check-label">3. excessivo</label>
   </div>
 </div>
-
 <h4 class="mt-1">Referências anatómicas/qualidade</h4>
 
 <div class="bg-light border border-secondary rounded pl-2">
@@ -518,26 +532,26 @@
 
 
 <hr>
-<h3>Vídeo – Para-esternal curta, nível papilares</h3>
+<h3>Vídeo - Apical de 4 câmaras</h3>
 <hr>
 
 <h4 class="mt-1">Ganho</h4>
 
 <div class="bg-light border border-secondary rounded pl-2">
   <div class="form-check">
-    <input type="radio" id="co-a4_gain"
+    <input type="radio" id="co-a4_gain1"
       name="co-a4_gain" value="insufficient" class="form-check-input" {{checked?co-a4_gain:insufficient}}>
-    <label for="co-a4_gain" class="form-check-label">1. insuficiente</label>
+    <label for="co-a4_gain1" class="form-check-label">1. insuficiente</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="co-a4_gain"
+    <input type="radio" id="co-a4_gain2"
       name="co-a4_gain" value="appropriate" class="form-check-input" {{checked?co-a4_gain:appropriate}}>
-    <label for="co-a4_gain" class="form-check-label">2. apropriado</label>
+    <label for="co-a4_gain2" class="form-check-label">2. apropriado</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="co-a4_gain"
+    <input type="radio" id="co-a4_gain3"
       name="co-a4_gain" value="excessive" class="form-check-input" {{checked?co-a4_gain:excessive}}>
-    <label for="co-a4_gain" class="form-check-label">3. excessivo</label>
+    <label for="co-a4_gain3" class="form-check-label">3. excessivo</label>
   </div>
 </div>
 
@@ -545,22 +559,21 @@
 
 <div class="bg-light border border-secondary rounded pl-2">
   <div class="form-check">
-    <input type="radio" id="co-a4_depth"
+    <input type="radio" id="co-a4_depth1"
       name="co-a4_depth" value="insufficient" class="form-check-input" {{checked?co-a4_depth:insufficient}}>
-    <label for="co-a4_depth" class="form-check-label">1. insuficiente</label>
+    <label for="co-a4_depth1" class="form-check-label">1. insuficiente</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="co-a4_depth"
+    <input type="radio" id="co-a4_depth2"
       name="co-a4_depth" value="appropriate" class="form-check-input" {{checked?co-a4_depth:appropriate}}>
-    <label for="co-a4_depth" class="form-check-label">2. apropriado</label>
+    <label for="co-a4_depth2" class="form-check-label">2. apropriado</label>
   </div>
   <div class="form-check">
-    <input type="radio" id="co-a4_depth"
+    <input type="radio" id="co-a4_depth3"
       name="co-a4_depth" value="excessive" class="form-check-input" {{checked?co-a4_depth:excessive}}>
-    <label for="co-a4_depth" class="form-check-label">3. excessivo</label>
+    <label for="co-a4_depth3" class="form-check-label">3. excessivo</label>
   </div>
 </div>
-
 <h4 class="mt-1">Referências anatómicas/qualidade</h4>
 
 <div class="bg-light border border-secondary rounded pl-2">
@@ -669,6 +682,6 @@
 <hr>
 
 <div class="text-center">
-  <dcc-button topic="control/case/save" label="SAVE COMMENTS" xstyle="theme"></dcc-button>
+  <dcc-button topic="control/case/save" label="GRAVAR COMENTÁRIOS" xstyle="theme"></dcc-button>
 </div>
 <hr>

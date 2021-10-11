@@ -29,11 +29,11 @@ class PlayState {
     this._metastate = {}
 
     this.variableGet = this.variableGet.bind(this)
-    MessageBus.ext.subscribe('var/+/get', this.variableGet)
+    MessageBus.i.subscribe('var/+/get', this.variableGet)
     this.variableSet = this.variableSet.bind(this)
-    MessageBus.ext.subscribe('var/+/set', this.variableSet)
+    MessageBus.i.subscribe('var/+/set', this.variableSet)
     this.variableSubGet = this.variableSubGet.bind(this)
-    MessageBus.ext.subscribe('var/+/get/sub', this.variableSubGet)
+    MessageBus.i.subscribe('var/+/get/sub', this.variableSubGet)
   }
 
   /*
@@ -121,7 +121,7 @@ class PlayState {
     * Scenario Variables
     */
 
-  variableGet (topic, message) {
+  variableGet (topic, message, track) {
     let id = MessageBus.extractLevel(topic, 2)
 
     if (id != null)
@@ -133,8 +133,8 @@ class PlayState {
     }
 
     if (id == '*')
-      MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-                             this._state.variables)
+      MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
+                           this._state.variables, track)
     else {
       // tries to give a scope to the variable
       if (id != null && this._state.variables[id] == null) {
@@ -144,13 +144,13 @@ class PlayState {
       }
 
       if (id != null) {
-        MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-          this._state.variables[id])
+        MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
+          this._state.variables[id], track)
       }
     }
   }
 
-  variableSubGet (topic, message) {
+  variableSubGet (topic, message, track) {
     const completeId = MessageBus.extractLevel(topic, 2)
     if (completeId != null) {
       let result = null
@@ -161,12 +161,12 @@ class PlayState {
           if (this._state.variables[id][v].content == message.body) { result = this._state.variables[id][v].state }
         }
       }
-      MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-        result)
+      MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
+        result, track)
     }
   }
 
-  variableSet (topic, message) {
+  variableSet (topic, message, track) {
     const id = MessageBus.extractLevel(topic, 2)
     let status = false
     const content =
@@ -183,8 +183,8 @@ class PlayState {
       status = true
     }
     this._stateStore()
-    MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-      status)
+    MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
+      status, track)
  }
 
   /*

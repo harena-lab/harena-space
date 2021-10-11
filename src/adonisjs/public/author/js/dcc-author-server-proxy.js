@@ -8,40 +8,39 @@
 class DCCAuthorServer {
   constructor () {
     this.loadModule = this.loadModule.bind(this)
-    MessageBus.ext.subscribe('data/module/+/get', this.loadModule)
+    MessageBus.i.subscribe('data/module/+/get', this.loadModule)
     this.loadTemplate = this.loadTemplate.bind(this)
-    MessageBus.ext.subscribe('data/template/+/get', this.loadTemplate)
+    MessageBus.i.subscribe('data/template/+/get', this.loadTemplate)
     this.loadTemplateComments = this.loadTemplateComments.bind(this)
-    MessageBus.ext.subscribe('data/template_comments/+/get',
-      this.loadTemplateComments)
+    MessageBus.i.subscribe('data/template_comments/+/get', this.loadTemplateComments)
     this.saveCase = this.saveCase.bind(this)
-    MessageBus.ext.subscribe('data/case/+/set', this.saveCase)
+    MessageBus.i.subscribe('data/case/+/set', this.saveCase)
     this.newCase = this.newCase.bind(this)
-    MessageBus.ext.subscribe('data/case//new', this.newCase)
+    MessageBus.i.subscribe('data/case//new', this.newCase)
     this.deleteCase = this.deleteCase.bind(this)
-    MessageBus.ext.subscribe('data/case/+/delete', this.deleteCase)
+    MessageBus.i.subscribe('data/case/+/delete', this.deleteCase)
 
     this.themeFamiliesList = this.themeFamiliesList.bind(this)
-    MessageBus.ext.subscribe('data/theme_family/*/list', this.themeFamiliesList)
+    MessageBus.i.subscribe('data/theme_family/*/list', this.themeFamiliesList)
 
     this.templatesList = this.templatesList.bind(this)
-    MessageBus.ext.subscribe('data/template/*/list', this.templatesList)
+    MessageBus.i.subscribe('data/template/*/list', this.templatesList)
     this.uploadArtifact = this.uploadArtifact.bind(this)
-    MessageBus.ext.subscribe('data/asset//new', this.uploadArtifact)
+    MessageBus.i.subscribe('data/asset//new', this.uploadArtifact)
 
     /*
       this.prepareCaseHTML = this.prepareCaseHTML.bind(this);
-      MessageBus.ext.subscribe("case/+/prepare", this.prepareCaseHTML);
+      MessageBus.i.subscribe("case/+/prepare", this.prepareCaseHTML);
       this.saveKnotHTML = this.saveKnotHTML.bind(this);
-      MessageBus.ext.subscribe("knot/+/set", this.saveKnotHTML);
+      MessageBus.i.subscribe("knot/+/set", this.saveKnotHTML);
       this.saveCaseObject = this.saveCaseObject.bind(this);
-      MessageBus.ext.subscribe("case/+/set", this.saveCaseObject);
+      MessageBus.i.subscribe("case/+/set", this.saveCaseObject);
       */
   }
 
   // wrapper of the services
 
-  async themeFamiliesList (topic, message) {
+  async themeFamiliesList (topic, message, track) {
     const header = {
       async: true,
       crossDomain: true,
@@ -68,11 +67,11 @@ class DCCAuthorServer {
         icon: '../themes/' + jsonResponse[t].path + '/images/' + jsonResponse[t].icon
       })
     }
-    MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-      busResponse)
+    MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
+      busResponse, track)
   }
 
-  async templatesList (topic, message) {
+  async templatesList (topic, message, track) {
     const header = {
       async: true,
       crossDomain: true,
@@ -96,11 +95,11 @@ class DCCAuthorServer {
         })
       }
     }
-    MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-      busResponse)
+    MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
+      busResponse, track)
   }
 
-  async newCase (topic, message) {
+  async newCase (topic, message, track) {
     const header = {
       async: true,
       crossDomain: true,
@@ -122,11 +121,11 @@ class DCCAuthorServer {
     console.log('=== response:')
     console.log(response)
     const jsonResponse = await response.json()
-    MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-      jsonResponse.id)
+    MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
+      jsonResponse.id, track)
   }
 
-  async saveCase (topic, message) {
+  async saveCase (topic, message, track) {
     if (message.format == 'markdown') {
       const caseId = MessageBus.extractLevel(topic, 3)
 
@@ -200,11 +199,11 @@ class DCCAuthorServer {
           console.log(message)
 
           if(!response.data.error){
-            MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-            response.data.source)
+            MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
+              response.data.source, track)
           }else {
-            MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-            response.data.error)
+            MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
+              response.data.error, track)
           }
 
         })
@@ -222,7 +221,7 @@ class DCCAuthorServer {
     }
   }
 
-  async deleteCase (topic, message) {
+  async deleteCase (topic, message, track) {
     const caseId = MessageBus.extractLevel(topic, 3)
     /*
     const header = {
@@ -240,8 +239,8 @@ class DCCAuthorServer {
     console.log('=== delete case')
     console.log(response)
     const jsonResponse = await response.json()
-    MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-      jsonResponse)
+    MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
+      jsonResponse, true)
     */
     const config = {
       method: 'DELETE',
@@ -256,8 +255,8 @@ class DCCAuthorServer {
         // return response.redirect('/')
         console.log('=== delete case')
         console.log(response)
-        MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-          response)
+        MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
+          response, track)
       })
       .catch(function (error) {
         console.log('=== delete case error')
@@ -265,7 +264,7 @@ class DCCAuthorServer {
       })
   }
 
-  async loadModule (topic, message) {
+  async loadModule (topic, message, track) {
     const moduleName = MessageBus.extractLevel(topic, 3)
     const header = {
       async: true,
@@ -277,11 +276,11 @@ class DCCAuthorServer {
     }
     const response = await fetch('../modules/' + moduleName + '.html', header)
     const textResponse = await response.text()
-    MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-      textResponse)
+    MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
+      textResponse, track)
   }
 
-  async loadTemplate (topic, message) {
+  async loadTemplate (topic, message, track) {
     const templatePath =
          MessageBus.extractLevel(topic, 3).replace(/\./g, '/')
     /*
@@ -317,11 +316,11 @@ class DCCAuthorServer {
     //                                '.md', header)
     // const textResponse = await response.text()
     if (serviceResponse != null)
-      MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-        serviceResponse)
+      MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
+        serviceResponse, track)
   }
 
-  async loadTemplateComments (topic, message) {
+  async loadTemplateComments (topic, message, track) {
     const templatePath =
          MessageBus.extractLevel(topic, 3).replace(/\./g, '/')
 
@@ -345,8 +344,8 @@ class DCCAuthorServer {
     })
 
     if (serviceResponse != null)
-      MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-        serviceResponse)
+      MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
+        serviceResponse, track)
   }
 
   b64toBlob (imageURL) {
@@ -374,7 +373,7 @@ class DCCAuthorServer {
     return blob
   }
 
-  async uploadArtifact (topic, message) {
+  async uploadArtifact (topic, message, track) {
     const data = new FormData()
     if (message.file) {
       data.append('file', message.file)
@@ -391,7 +390,7 @@ class DCCAuthorServer {
         let percentCompleted =
           Math.round((progressEvent.loaded * 100) / progressEvent.total) + '%'
         if (message.progress)
-          MessageBus.ext.publish(message.progress, percentCompleted)
+          MessageBus.i.publish(message.progress, percentCompleted, true)
         console.log('upload: ' + percentCompleted)
       }
     }
@@ -399,8 +398,8 @@ class DCCAuthorServer {
       .then(function (response) {
         console.log('=== response image upload')
         console.log(response)
-        MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message),
-          response.data)
+        MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
+          response.data, track)
       })
       .catch(function (error) {
         console.log('=== delete case error')
@@ -420,7 +419,7 @@ class DCCAuthorServer {
          }
       });
       const jsonResponse = await response.json();
-      MessageBus.ext.publish("case/" + caseName + "/prepare/directory", jsonResponse.directory);
+      MessageBus.i.publish("case/" + caseName + "/prepare/directory", jsonResponse.directory, true);
    }
 
    async saveKnotHTML(topic, message) {
@@ -436,7 +435,7 @@ class DCCAuthorServer {
          }
       });
       const jsonResponse = await response.json();
-      MessageBus.ext.publish("knot/" + knotId + "/set/status", jsonResponse.status);
+      MessageBus.i.publish("knot/" + knotId + "/set/status", jsonResponse.status, true);
    }
 
    async saveCaseObject(topic, message) {
@@ -454,7 +453,7 @@ class DCCAuthorServer {
             }
          });
          const jsonResponse = await response.json();
-         MessageBus.ext.publish("case/" + caseId + "/set/status", jsonResponse.status);
+         MessageBus.i.publish("case/" + caseId + "/set/status", jsonResponse.status, true);
       }
    }
    */

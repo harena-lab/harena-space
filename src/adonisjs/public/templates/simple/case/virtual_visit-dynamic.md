@@ -32,7 +32,7 @@ Write here the **stem**.
 
 * Next -> Flow.Next
 
-# Last Day (detailed)
+# Last Day (detailed, end)
 
 <h2>Last Day</h2>
 {{feedback

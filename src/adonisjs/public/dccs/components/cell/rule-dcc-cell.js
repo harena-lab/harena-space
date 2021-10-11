@@ -1,7 +1,7 @@
 /* DCC Rule Cell
   **************/
 
-class RuleDCCCell extends HTMLElement {
+class RuleDCCCell extends DCCBase {
   /* Properties
       **********/
 

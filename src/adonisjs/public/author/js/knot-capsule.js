@@ -5,9 +5,11 @@
  */
 
 class CapsuleManager {
+  /*
   constructor () {
     MessageBus.page = new MessageBus(false)
   }
+  */
 
   startCapsule () {
     PlayerManager.player._mainPanel = document.querySelector('#main-panel')

@@ -17,10 +17,10 @@ class PageController {
 
       // console.log(PageController.scriptsComplete)
     })
-    MessageBus.int.subscribe('control/dhtml/ready', this.removeLoadingIcon)
-    MessageBus.ext.subscribe('control/case/ready', this.removeLoadingIcon)
-    MessageBus.int.subscribe('control/validate/ready', this.removeLoadingIcon)
-    MessageBus.int.subscribe('control/html/ready', this.pageReady)
+    MessageBus.i.subscribe('control/dhtml/ready', this.removeLoadingIcon)
+    MessageBus.i.subscribe('control/case/ready', this.removeLoadingIcon)
+    MessageBus.i.subscribe('control/validate/ready', this.removeLoadingIcon)
+    MessageBus.i.subscribe('control/html/ready', this.pageReady)
   }
   async pageReady(){
     PageController.instance.paginationButtons(parseInt(new URL(document.location).searchParams.get('page') || 1))
@@ -75,7 +75,7 @@ class PageController {
           document.querySelector('main').classList.remove('invisible')
           if(document.querySelector('#loading-page-container'))
           document.querySelector('#loading-page-container').remove()
-          MessageBus.int.publish('control/html/ready')
+          MessageBus.i.publish('control/html/ready')
         }, 500)
       }
       try {

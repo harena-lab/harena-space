@@ -4,7 +4,7 @@ class CaseQueueManager {
 
     this._nextCase = this._nextCase.bind(this)
 
-    MessageBus.ext.subscribe('case/+/navigate', this._nextCase)
+    MessageBus.i.subscribe('case/+/navigate', this._nextCase)
     this.start()
   }
 
@@ -12,7 +12,7 @@ class CaseQueueManager {
     this._caseList = this._caseList.bind(this)
 
 
-    MessageBus.int.subscribe('control/dhtml/updated', this._caseList)
+    MessageBus.i.subscribe('control/dhtml/updated', this._caseList)
   }
 
   async _caseList () {

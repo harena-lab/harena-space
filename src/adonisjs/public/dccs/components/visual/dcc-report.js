@@ -3,8 +3,8 @@
 class DCCReport extends DCCVisual {
   connectedCallback () {
     this.presentReport = this.presentReport.bind(this)
-    MessageBus.int.subscribe('/report', this.presentReport)
-    MessageBus.int.publish('/report/get')
+    this._subscribe('/report', this.presentReport)
+    this._publish('/report/get')
     console.log('report solicitado')
     super.connectedCallback()
   }

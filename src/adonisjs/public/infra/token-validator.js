@@ -3,7 +3,7 @@ class TokenController {
 
     this._tokenChecked = false
     this.checkToken = this.checkToken.bind(this)
-    MessageBus.int.subscribe('control/button/logout-button/ready', this.checkToken)
+    MessageBus.i.subscribe('control/button/logout-button/ready', this.checkToken)
     if (window.location.pathname !== '/') {
       this.redirectUnlogged()
     }
@@ -35,7 +35,7 @@ class TokenController {
             // localStorage.setItem('harena-user-grade', endpointResponse.data.grade)
             // localStorage.setItem('harena-user-institution', endpointResponse.data.institution)
             // localStorage.setItem('harena-user-institution-id', endpointResponse.data.institutionId)
-            MessageBus.int.publish('data/user/info', endpointResponse.data)
+            MessageBus.i.publish('data/user/info', endpointResponse.data)
             TokenController.instance.changeHeaderButtons(endpointResponse.data)
           })
           .catch(function (error) {
@@ -67,7 +67,7 @@ class TokenController {
         } catch (e) {
           // console.log(e)
         }
-        MessageBus.int.publish('control/validate/ready')
+        MessageBus.i.publish('control/validate/ready')
       }else{
         setTimeout(function(){
           TokenController.instance.changeHeaderButtons(response)
@@ -111,7 +111,7 @@ class TokenController {
           // localStorage.setItem('harena-user-grade', endpointResponse.data.grade)
           // localStorage.setItem('harena-user-institution', endpointResponse.data.institution)
           // localStorage.setItem('harena-user-institution-id', endpointResponse.data.institutionId)
-          MessageBus.int.publish('data/user/info', endpointResponse.data)
+          MessageBus.i.publish('data/user/info', endpointResponse.data)
 
           TokenController.instance.changeHeaderButtons(endpointResponse.data)
         } else{

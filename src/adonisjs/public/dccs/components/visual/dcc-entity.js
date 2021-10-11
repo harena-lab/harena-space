@@ -24,7 +24,7 @@ class DCCEntity extends DCCBlock {
             this._presentationEntity[pr].dccid = this.id;
             this._presentationEntity[pr].addEventListener("click",
                function(){
-                  MessageBus.ext.publish("control/element/" + this.dccid + "/selected");
+                  this._publish("control/element/" + this.dccid + "/selected", null, true);
                }
             );
          }

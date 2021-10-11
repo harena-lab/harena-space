@@ -19,13 +19,13 @@ class DCCCompute extends DCCBase {
         if (this.active) {
           const variables = DCCCompute.filterVariables(this._compiled, false)
           for (let v of variables)
-            MessageBus.ext.subscribe('var/' + v + '/set', this.update)
+            this._subscribe('var/' + v + '/set', this.update)
         }
       }
     }
 
     if (this.hasAttribute('id'))
-      MessageBus.page.provides(this.id, 'compute/update', this.update)
+      this._provides(this.id, 'compute/update', this.update)
   }
 
   /*
@@ -71,7 +71,7 @@ class DCCCompute extends DCCBase {
   }
 
   async update() {
-    const result = await DCCCompute.computeExpression(this._compiled)
+    const result = await DCCCompute.computeExpression(this._compiled, this._bus)
     if (result)
       await this.multiRequest('true', null)
     else
@@ -96,7 +96,7 @@ class DCCCompute extends DCCBase {
     *   <properties according to the type>
     * }
     */
-  static computeExpressionObj (expression) {
+  static computeExpressionObj (expression, bus) {
     switch (expression.type) {
       case 'divert-script':
         let message
@@ -104,10 +104,11 @@ class DCCCompute extends DCCBase {
           { message = 'case/' + expression.target.substring(5) + '/navigate' }
         else
           { message = 'knot/' + expression.target + '/navigate' }
+        let cBus = (bus != null) ? bus : MessageBus.i
         if (expression.parameter) {
-          MessageBus.ext.publish(message, expression.parameter)
+          bus.publish(message, expression.parameter, true)
         } else {
-          MessageBus.ext.publish(message) }
+          bus.publish(message, null, true) }
         break
     }
   }
@@ -219,13 +220,14 @@ class DCCCompute extends DCCBase {
    * Computes a set of expressions, updating variables.
    * It returns the value of the last variable.
    */
-  static async computeExpression (compiledSet) {
+  static async computeExpression (compiledSet, bus) {
     let result = null
     for (let s of compiledSet) {
-      await DCCCompute.updateVariables(s[1])
+      await DCCCompute.updateVariables(s[1], bus)
       if (s[0] != null) {
         result = DCCCompute.computeCompiled(s[1])
-        await MessageBus.ext.request('var/' + s[0] + '/set', result)
+        let cBus = (bus != null) ? bus : MessageBus.i
+        await cBus.request('var/' + s[0] + '/set', result, null, true)
       } else if (compiledSet.length == 1) {
         result = DCCCompute.computeCompiled(s[1])
         // looks for a variable inside the expression
@@ -233,7 +235,7 @@ class DCCCompute extends DCCBase {
         if (autoAssign) {
           let variable = s[1].find(el => el[0] == 3)
           if (variable)
-            await MessageBus.ext.request('var/' + variable[1] + '/set', result)
+            await this._request('var/' + variable[1] + '/set', result, null, true)
         }
         */
       }
@@ -263,11 +265,12 @@ class DCCCompute extends DCCBase {
     return variables
   }
 
-  static async updateVariables (compiled) {
+  static async updateVariables (compiled, bus) {
     for (let c of compiled)
       if (c[0] == DCCCompute.role.variable) {
-        if (MessageBus.ext.hasSubscriber('var/' + c[1] + '/get')) {
-          const mess = await MessageBus.ext.request('var/' + c[1] + '/get')
+        let cBus = (bus != null) ? bus : MessageBus.i
+        if (cBus.hasSubscriber('var/' + c[1] + '/get')) {
+          const mess = await cBus.request('var/' + c[1] + '/get', null, null, true)
           if (mess.message != null) {
             const value = (mess.message.body != null)
               ? mess.message.body : mess.message

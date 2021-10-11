@@ -20,7 +20,7 @@ class DCCCell extends DCCBase {
 
     // Wait for all the options be ready
     Promise.all(promises).then(() => {
-      if (this.type) { MessageBus.page.publish('dcc/cell-type/register', this) }
+      if (this.type) { this._publish('dcc/cell-type/register', this) }
     })
   }
 

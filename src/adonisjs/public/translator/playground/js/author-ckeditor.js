@@ -13,7 +13,7 @@ function _harenaCustomUploadAdapterPlugin( editor ) {
 
 class AuthorCKEditor {
   constructor () {
-   	MessageBus.page = new MessageBus(false)
+   	// MessageBus.page = new MessageBus(false)
     Basic.service.rootPath = '../../'
     DCCCommonServer.instance.local = true
   }
@@ -40,8 +40,8 @@ class AuthorCKEditor {
         console.error( 'There was a problem initializing the editor.', error );
     } );
 
-    MessageBus.ext.subscribe("control/html/example", this.showHTML);
-    MessageBus.ext.subscribe("control/markdown/example", this.showMarkdown);
+    MessageBus.i.subscribe("control/html/example", this.showHTML);
+    MessageBus.i.subscribe("control/markdown/example", this.showMarkdown);
   }
 
   showHTML () {

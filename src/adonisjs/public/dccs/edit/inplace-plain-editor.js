@@ -4,10 +4,6 @@
 class EditDCCPlain {
   constructor (obj, dcc, htmlProp, field, properties) {
     if (field != null) {
-      /*
-      this.handleConfirm = this.handleConfirm.bind(this)
-      MessageBus.ext.subscribe('control/element/+/selected', this.handleConfirm)
-      */
       this._objProperties = obj
       this._editElement = dcc.currentPresentation()
       this._objField = field
@@ -21,9 +17,11 @@ class EditDCCPlain {
   async handleConfirm () {
     this._editElement.contentEditable = false
     this._objProperties[this._objField] =
-           this._editElement.innerHTML.trim().replace(/<br>$/i, '')
+           this._editElement.innerHTML.trim()
+             .replace(/\u200B/gm, '') // removing non printable special characters
+             .replace(/(?:<br>)+$/i, '')
+
     await this._properties.applyProperties(false)
-    // MessageBus.ext.request('properties/apply/short')
   }
 
   // <FUTURE>?
@@ -31,7 +29,7 @@ class EditDCCPlain {
   handleCancel () {
     this._editElement.contentEditable = false
     this._editElement.innerHTML = this._originalEdit
-    MessageBus.ext.request('properties/cancel/short')
+    MessageBus.i.request('properties/cancel/short', null, null, true)
   }
   */
 
