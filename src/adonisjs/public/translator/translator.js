@@ -400,7 +400,9 @@ class Translator {
           compiled[c].variable = knotId + '.input' + defaultInput
           defaultInput++
         }
-        if (compiled[c].variable.indexOf('.') == -1) { compiled[c].variable = knotId + '.' + compiled[c].variable }
+        if (compiled[c].variable.indexOf('.') == -1) {
+          compiled[c].variable = knotId + '.' + compiled[c].variable
+        }
         // <TODO> can be interesting this link in the future
         // compiled[c].variable = this.findContext(knotSet, knotId, compiled[c].variable);
         if (compiled[c].target) {
@@ -1377,9 +1379,15 @@ class Translator {
       type: 'knot'
     }
 
-    if (matchArray[2] != null) { knot.title = matchArray[2].trim() } else { knot.title = matchArray[5].trim() }
+    knot.unity = (matchArray[2] != null || matchArray[6] != null)
 
-    if (matchArray[3] != null) { knot.categories = matchArray[3].split(',') } else if (matchArray[6] != null) { knot.categories = matchArray[6].split(',') }
+    if (matchArray[3] != null) { knot.title = matchArray[3].trim() } else { knot.title = matchArray[7].trim() }
+
+    if (matchArray[4] != null) {
+      knot.categories = matchArray[4].split(',')
+    } else if (matchArray[8] != null) {
+      knot.categories = matchArray[8].split(',')
+    }
     if (knot.categories) {
       for (const c in knot.categories) { knot.categories[c] = knot.categories[c].trim() }
     }
@@ -1396,11 +1404,11 @@ class Translator {
       }
     }
 
-    if (matchArray[4] != null) { knot.inheritance = matchArray[4].trim() }
-    else if (matchArray[7] != null) { knot.inheritance = matchArray[7].trim() }
+    if (matchArray[5] != null) { knot.inheritance = matchArray[5].trim() }
+    else if (matchArray[9] != null) { knot.inheritance = matchArray[9].trim() }
 
     if (matchArray[1] != null) { knot.level = matchArray[1].trim().length } else
-    if (matchArray[8][0] == '=') { knot.level = 1 } else { knot.level = 2 }
+    if (matchArray[10][0] == '=') { knot.level = 1 } else { knot.level = 2 }
 
     return knot
   }
@@ -1414,6 +1422,7 @@ class Translator {
       categories = obj.categories.filter(c => !obj.categoriesInherited.includes(c))
     return Translator.markdownTemplates.knot
       .replace('[level]', '#'.repeat(obj.level))
+      .replace('[unity]', ((obj.unity) ? '* ' : ''))
       .replace('[title]', obj.title)
       .replace('[categories]',
         (categories)
@@ -2258,9 +2267,10 @@ class Translator {
         }
       }
 
+      // <TODO> provisory - removing the context of variable to save
       md = Translator.markdownTemplates.input
         .replace('{statement}', stm)
-        .replace('{variable}', obj.variable)
+        .replace('{variable}', obj.variable.substring(obj.variable.lastIndexOf('.') + 1))
         .replace('{subtype}',
           (obj.subtype) ? this._mdSubField('type', obj.subtype) : '')
         .replace('{extra}', extraAttr)
@@ -2471,7 +2481,7 @@ class Translator {
 
   Translator.element = {
     knot: {
-      mark: /(?:^[ \t]*(#+)[ \t]*([^\( \t\n\r\f\:][^\(\n\r\f\:]*)(?:\((\w[\w \t,]*)\))?[ \t]*(?:\:[ \t]*([^\(\n\r\f][^\(\n\r\f\t]*))?[ \t]*#*[ \t]*$)|(?:^[ \t]*([^\( \t\n\r\f\:][^\(\n\r\f\:]*)(?:\((\w[\w \t,]*)\))?[ \t]*(?:\:[ \t]*([^\(\n\r\f][^\(\n\r\f\t]*))?[ \t]*[\f\n\r][\n\r]?(==+|--+)$)/im,
+      mark: /(?:^[ \t]*(#+)[ \t]*(\*[ \t]*)?([^\( \t\n\r\f\:][^\(\n\r\f\:]*)(?:\((\w[\w \t,]*)\))?[ \t]*(?:\:[ \t]*([^\(\n\r\f][^\(\n\r\f\t]*))?[ \t]*#*[ \t]*$)|(?:^[ \t]*(\*[ \t]*)?([^\( \t\n\r\f\:][^\(\n\r\f\:]*)(?:\((\w[\w \t,]*)\))?[ \t]*(?:\:[ \t]*([^\(\n\r\f][^\(\n\r\f\t]*))?[ \t]*[\f\n\r][\n\r]?(==+|--+)$)/im,
       subfield: true,
       subimage: true
     },

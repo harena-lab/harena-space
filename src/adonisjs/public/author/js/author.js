@@ -512,8 +512,6 @@ class AuthorManager {
   async knotSelected (topic, message) {
     const knotid =
          (message == null || message === '') ? this._knotSelected : message
-    console.log('=== knot selected')
-    console.log(knotid)
     if (knotid != null) {
       this._checkKnotModification(this._renderState)
       this._knotSelected = knotid
@@ -566,8 +564,8 @@ class AuthorManager {
       const level = this._knots[knotTarget].level
       const knotIds = Object.keys(this._knots)
       let kt = knotIds.indexOf(knotTarget) + 1
-      while (kt < this._knots.length &&
-             this._knots[knotIds[kt]].level < level)
+      while (kt < knotIds.length &&
+             this._knots[knotIds[kt]].level > level)
         kt++
       knotTarget = knotIds[kt-1]
       console.log('==== insert position')
