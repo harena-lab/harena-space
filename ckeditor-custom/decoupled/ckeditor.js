@@ -269,6 +269,8 @@ class UploadMediaPlugin extends Plugin {
                   editor.model.insertContent(mediaElement,
                     editor.model.document.selection );
           			} );
+
+                this.off('uploadComplete')
           		}, { priority: 'low' } );
 
             }
@@ -418,7 +420,7 @@ class HarenaPlugin extends Plugin {
       // Callback executed once the image is clicked.
       view.on( 'execute', () => {
         const confirm = editor.config.get('harena.confirm')
-        MessageBus.int.publish(confirm)
+        MessageBus.i.publish(confirm)
       } );
 
       return view;
@@ -436,7 +438,7 @@ class HarenaPlugin extends Plugin {
       // Callback executed once the image is clicked.
       view.on( 'execute', () => {
         const cancel = editor.config.get('harena.cancel')
-        MessageBus.int.publish(cancel)
+        MessageBus.i.publish(cancel)
       } );
 
       return view;

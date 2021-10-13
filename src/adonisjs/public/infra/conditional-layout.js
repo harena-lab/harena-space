@@ -24,7 +24,7 @@ class LayoutController {
 
   async startController(){
     if(document.readyState == 'loading'){
-      await MessageBus.int.waitMessage('control/html/ready')
+      await MessageBus.i.waitMessage('control/html/ready')
     }
 
     if(new URL(document.location).pathname == '/'){
@@ -43,22 +43,22 @@ class LayoutController {
       this.dynamicShareCaseElements = this.dynamicShareCaseElements.bind(this)
       this.dynamicShareCaseModal = this.dynamicShareCaseModal.bind(this)
       // this.authorizeCommentSection = this.authorizeCommentSection.bind(this)
-      MessageBus.int.subscribe('control/dhtml/ready', this.dynamicShareCaseElements)
-      MessageBus.int.subscribe('control/dhtml/ready', this.dynamicShareCaseModal)
-      // MessageBus.int.subscribe('control/dhtml/ready', this.authorizeCommentSection)
-      MessageBus.int.publish('control/dhtml/status/request', {id: 'dhtml-subject'})
-      MessageBus.int.publish('control/dhtml/status/request', {id: 'harena-dhtml-cases'})
-      MessageBus.int.publish('control/dhtml/status/request', {id: 'dhtml-case'})
-      // MessageBus.int.publish('control/dhtml/status/request', {id: 'dhtml-case-comments'})
+      MessageBus.i.subscribe('control/dhtml/ready', this.dynamicShareCaseElements)
+      MessageBus.i.subscribe('control/dhtml/ready', this.dynamicShareCaseModal)
+      // MessageBus.i.subscribe('control/dhtml/ready', this.authorizeCommentSection)
+      MessageBus.i.publish('control/dhtml/status/request', {id: 'dhtml-subject'})
+      MessageBus.i.publish('control/dhtml/status/request', {id: 'harena-dhtml-cases'})
+      MessageBus.i.publish('control/dhtml/status/request', {id: 'dhtml-case'})
+      // MessageBus.i.publish('control/dhtml/status/request', {id: 'dhtml-case-comments'})
     }
 
   }
 
   async busMessages(){
     // console.log('======= starting conditional-layout')
-    LayoutController.user = await MessageBus.int.waitMessage('data/user/info')
+    LayoutController.user = await MessageBus.i.waitMessage('data/user/info')
     if(new URL(document.location).pathname == '/author/'){
-      LayoutController.case = await MessageBus.ext.waitMessage('service/response/get/harena-case')
+      LayoutController.case = await MessageBus.i.waitMessage('service/response/get/harena-case')
     }
     // console.log('============ starting controller dynamic')
     this.startController()
@@ -152,10 +152,10 @@ class LayoutController {
 
       if(new URL(document.location).searchParams.get('fdbk')){
         setTimeout(function(){
-          document.querySelector('#button-comments-nav').click()
-          MessageBus.ext.publish('control/properties/expand')
-          MessageBus.ext.publish('control/comments/expand')
-          MessageBus.int.publish('control/comments/editor')
+          // document.querySelector('#button-comments-nav').click()
+          // MessageBus.i.publish('control/properties/expand')
+          MessageBus.i.publish('control/comments/expand')
+          // MessageBus.i.publish('control/comments/editor')
         }, 500)
       }
 

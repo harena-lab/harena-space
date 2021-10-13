@@ -13,7 +13,7 @@ class DCCInputTyped extends DCCInput {
     super.connectedCallback()
     this.innerHTML = ''
 
-    MessageBus.int.publish('var/' + this._variable + '/input/ready',
+    this._publish('var/' + this._variable + '/input/ready',
       DCCInputTyped.elementTag)
   }
 
@@ -55,21 +55,21 @@ class DCCInputTyped extends DCCInput {
   inputTyped () {
     this.changed = true
     this.value = this._inputVariable.value
-    MessageBus.ext.publish('var/' + this._variable + '/typed',
+    this._publish('var/' + this._variable + '/typed',
       {
         sourceType: DCCInputTyped.elementTag,
         value: this.value
-      })
+      }, true)
   }
 
   inputChanged () {
     this.changed = true
     this.value = this._inputVariable.value
-    MessageBus.ext.publish('var/' + this._variable + '/changed',
+    this._publish('var/' + this._variable + '/changed',
       {
         sourceType: DCCInputTyped.elementTag,
         value: this.value
-      })
+      }, true)
   }
 
   /* Rendering */

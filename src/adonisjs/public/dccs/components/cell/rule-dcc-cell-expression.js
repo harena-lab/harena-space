@@ -13,7 +13,7 @@ class RuleDCCCellExpression extends RuleDCCTransition {
       this._compiled = DCCCompute.compileStatementSet(this.expression.toLowerCase())
     }
 
-    MessageBus.page.publish('dcc/rule-cell/register', this)
+    this._publish('dcc/rule-cell/register', this)
   }
 
   /* Properties
@@ -111,7 +111,7 @@ class RuleDCCCellExpression extends RuleDCCTransition {
 class RuleDCCCellAgent extends RuleDCCTransition {
   connectedCallback () {
     super.connectedCallback()
-    MessageBus.page.publish('dcc/rule-cell/register', this)
+    this._publish('dcc/rule-cell/register', this)
   }
 
   computeRule (spaceState, row, col) {

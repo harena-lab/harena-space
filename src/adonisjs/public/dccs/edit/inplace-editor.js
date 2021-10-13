@@ -41,11 +41,11 @@ class EditDCC {
   async _handleEditorAction (action) {
     if (action === 'confirm') {
       await this._properties.applyProperties(false)
-      // await MessageBus.ext.request('properties/apply/short')
+      // await MessageBus.i.request('properties/apply/short', null, null, true)
     } else {
       await this._properties.closeProperties(false)
     }
-      //await MessageBus.ext.request('properties/cancel/short')}
+      //await MessageBus.i.request('properties/cancel/short', null, null, true)}
     // else if (this._editDCC != null) { this._editDCC.reactivateAuthor() }
     this.closeEditor()
   }
@@ -235,15 +235,15 @@ class EditDCC {
         console.log(f)
       if (ep.clicked === 'confirm' && ep.browse.files[0]) {
         const asset = await
-        MessageBus.ext.request('data/asset//new',
+        MessageBus.i.request('data/asset//new',
           {
             file: ep.browse.files[0],
             caseid: Basic.service.currentCaseId
-          })
+          }, null, true)
         path = asset.message.filename
       }
-      this._removeExtendedPanel()
     }
+    this._removeExtendedPanel()
     return path
   }
 }

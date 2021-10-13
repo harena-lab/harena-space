@@ -2,7 +2,7 @@
 <html>
 <head>
    <meta charset="UTF-8">
-   <title>Knowledge Playground</title>
+   <title>Translator Playground</title>
 
    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
 
@@ -20,6 +20,8 @@
    <script src="../../infra/basic.js"></script>
    <script src="../../infra/dcc-common-server-proxy.js"></script>
 
+   <script src="../../dccs/base/primitive-dcc.js"></script>
+   <script src="../../dccs/base/scope-dcc.js"></script>
    <script src="../../dccs/base/dcc.js"></script>
    <script src="../../dccs/base/subscribe-dcc.js"></script>
    <script src="../../dccs/base/trigger-dcc.js"></script>
@@ -68,12 +70,13 @@
 
    <script src="../../translator/translator.js"></script>
    <script src="../../translator/item-templates.js"></script>
+   <script src="../context.js"></script>
 
-   <script src="js/author-versum.js"></script>
+   <script src="js/versum-context.js"></script>
 
    <title>Translator Playground</title>
 </head>
-<body onload="AuthorVersumManager.s.start()">
+<body onload="VersumContextManager.s.start()">
   <main role="main">
     <div class="d-flex flex-column vh-100 hidden-overflow">
       <div class="container-fluid">
@@ -85,12 +88,12 @@
           <div class="d-flex col-10">
              <dcc-input-choice variable="output" exclusive>
                 <b>Versum:</b>
-                <dcc-input-option value="versum-object" checked>Object</dcc-input-option>&nbsp;
-                <dcc-input-option value="versum-html">HTML</dcc-input-option>&nbsp;
-                <dcc-input-option value="versum-rendered">Rendered</dcc-input-option>&nbsp;---&nbsp;
+                <dcc-input-option value="versum-object" checked></dcc-input-option>Object&nbsp;
+                <dcc-input-option value="versum-html"></dcc-input-option>HTML&nbsp;
+                <dcc-input-option value="versum-rendered"></dcc-input-option>Rendered&nbsp;---&nbsp;
                 <b>Object:</b>
-                <dcc-input-option value="object-html">HTML</dcc-input-option>&nbsp;
-                <dcc-input-option value="object-rendered">Rendered</dcc-input-option>
+                <dcc-input-option value="object-html"></dcc-input-option>HTML&nbsp;
+                <dcc-input-option value="object-rendered"></dcc-input-option>Rendered
              </dcc-input-choice>
           </div>
         </nav>

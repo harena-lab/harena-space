@@ -61,7 +61,7 @@ class HarenaPlugin extends Plugin {
 
             // Callback executed once the image is clicked.
             view.on( 'execute', () => {
-                MessageBus.int.publish('control/editor/edit/confirm')
+                MessageBus.i.publish('control/editor/edit/confirm')
             } );
 
             return view;
@@ -78,7 +78,7 @@ class HarenaPlugin extends Plugin {
 
             // Callback executed once the image is clicked.
             view.on( 'execute', () => {
-              MessageBus.int.publish('control/editor/edit/cancel')
+              MessageBus.i.publish('control/editor/edit/cancel')
             } );
 
             return view;

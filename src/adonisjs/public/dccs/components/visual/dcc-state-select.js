@@ -42,8 +42,8 @@ class DCCStateSelect extends DCCVisual {
     this.completeId = this.id
 
     // <TODO> limited: considers only one group per page
-    if (this.hasAttribute('states')) { this._statesArr = this.states.split(',') } else if (MessageBus.page.hasSubscriber('dcc/request/select-parameters')) {
-      const parametersM = await MessageBus.page.request(
+    if (this.hasAttribute('states')) { this._statesArr = this.states.split(',') } else if (this._hasSubscriber('dcc/request/select-parameters')) {
+      const parametersM = await this._request(
         'dcc/request/select-parameters', this.id, 'dcc/select-parameters/' + this.id)
       const parameters = parametersM.message
 
@@ -57,7 +57,7 @@ class DCCStateSelect extends DCCVisual {
 
     this._render()
 
-    MessageBus.int.publish('var/' + this.completeId + '/subinput/ready',
+    this._publish('var/' + this.completeId + '/subinput/ready',
       {
         sourceType: DCCStateSelect.elementTag,
         content: this.innerHTML
@@ -151,8 +151,8 @@ class DCCStateSelect extends DCCVisual {
   async _render () {
     if (this.states != null) {
       if (this.hasAttribute('answer') || this.author) { this.selection = this.answer } else if (this.hasAttribute('player')) {
-        const value = await MessageBus.ext.request(
-          'var/' + this.player + '/get/sub', this.innerHTML)
+        const value = await this._request(
+          'var/' + this.player + '/get/sub', this.innerHTML, null, true)
         this.selection = value.message
       } else {
         this._presentation.addEventListener('mouseover', this._showState)
@@ -196,12 +196,12 @@ class DCCStateSelect extends DCCVisual {
   _changeState () {
     if (this.states != null) {
       this.selectionIndex = (this.selectionIndex + 1) % this._statesArr.length
-      MessageBus.ext.publish('var/' + this.completeId + '/state_changed',
+      this._publish('var/' + this.completeId + '/state_changed',
         {
           sourceType: DCCStateSelect.elementTag,
           state: this.selection,
           value: this.innerHTML
-        })
+        }, true)
     }
     this._renderInterface()
   }
@@ -215,7 +215,7 @@ class DCCGroupSelect extends DCCBlock {
     this.requestParameters = this.requestParameters.bind(this)
     this._groupReady = false
     this._pendingRequests = []
-    MessageBus.page.subscribe('dcc/request/select-parameters', this.requestParameters)
+    this._subscribe('dcc/request/select-parameters', this.requestParameters)
   }
 
   async connectedCallback () {
@@ -240,12 +240,12 @@ class DCCGroupSelect extends DCCBlock {
     this._groupReady = true
     this._answerRequests()
 
-    MessageBus.int.publish('var/' + this.variable + '/group_input/ready',
+    this._publish('var/' + this.variable + '/group_input/ready',
       DCCGroupSelect.elementTag)
   }
 
   disconnectedCallback () {
-    MessageBus.page.unsubscribe('dcc/request/select-parameters', this.requestParameters)
+    this._unsubscribe('dcc/request/select-parameters', this.requestParameters)
   }
 
   requestParameters (topic, message) {
@@ -255,7 +255,7 @@ class DCCGroupSelect extends DCCBlock {
 
   _answerRequests () {
     for (const r of this._pendingRequests) {
-      MessageBus.page.publish('dcc/select-parameters/' + r, {
+      this._publish('dcc/select-parameters/' + r, {
         variable: this.variable,
         states: this.states,
         styles: this.styles

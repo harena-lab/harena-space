@@ -62,7 +62,7 @@ class Translator {
 
     if (this._themeSettings) { delete this._themeSettings }
     if (compiledCase.theme) {
-      const themeSt = await MessageBus.int.request(
+      const themeSt = await MessageBus.i.request(
         'data/theme_family/' + Basic.service.decomposeThemeFamily(compiledCase.theme).family.toLowerCase() +
         '/settings')
       if (themeSt != null) { this._themeSettings = themeSt.message }
@@ -181,22 +181,16 @@ class Translator {
     * Extract annotations of a single node
     */
   _extractKnotAnnotations (knot) {
-    /*
-      const mdAnnToObj = {
-         "context-open" : this._contextOpenMdToObj,
-         "context-close": this._contextCloseMdToObj,
-         annotation: this._annotationMdToObj,
-         select: this._selectMdToObj
-      };
-      */
-
     knot.annotations = []
     let currentSet = knot.annotations
-    // let maintainContext = false;
 
     let mdfocus = knot._source
 
-    // let newSource = "";
+    let uidWord = 1
+    let uidContext = null
+    let uidContextN = 0
+    let uidWordContext = 1
+    let insideContext = false
     let matchStart
     do {
       // look for the next nearest expression match
@@ -211,11 +205,23 @@ class Translator {
       }
 
       if (matchStart > -1) {
+        // count words before annotation - to buuild unique id
+        const before = mdfocus.substring(0, matchStart).match(/([\w-]+)/g)
+        const words = (before == null) ? 0 : before.length
+        uidWord += words
+        uidWordContext += words
+
         // translate the expression to an object
         const matchSize = mdfocus.match(Translator.marksAnnotation[selected])[0].length
         const toTranslate = mdfocus.substr(matchStart, matchSize)
         const match = Translator.marksAnnotation[selected].exec(toTranslate)
-        // let transObj = mdAnnToObj[selected]( );
+
+        const uid =
+          (insideContext)
+            ? (uidContext != null)
+              ? uidContext + '_' + uidWordContext
+              : 'w' + uidContextN + '_' + uidWordContext
+            : 'w0_' + uidWord
 
         // hierarchical annotation building inside contexts
         switch (selected) {
@@ -224,19 +230,35 @@ class Translator {
             currentSet.push(transObj)
             currentSet = []
             transObj.annotations = currentSet
+            uidContext = (transObj.id) ? transObj.id : null
+            uidContextN++
+            uidWordContext = 0
+            insideContext = true
             break
           case 'context-close':
             currentSet = knot.annotations
-            break
-          case 'select':
-            currentSet.push(this._selectMdToObj(match))
+            uidContext = null
+            insideContext = false
             break
           case 'annotation':
-            currentSet.push(this._annotationMdToObj(match))
+          case 'select':
+            let obj = (selected == 'annotation')
+              ? this._annotationMdToObj(match)
+              : this._selectMdToObj(match)
+            obj.id = uid
+            currentSet.push(obj)
+            const w = (obj.natural) ? obj.natural.complete : obj.expression
+            const wc = w.match(/([\w-]+)/g).length
+            uidWord += wc
+            uidWordContext += wc
             break
         }
 
-        if (matchStart + matchSize >= mdfocus.length) { matchStart = -1 } else { mdfocus = mdfocus.substring(matchStart + matchSize) }
+        if (matchStart + matchSize >= mdfocus.length)
+          { matchStart = -1 }
+        else
+          { mdfocus = mdfocus.substring(matchStart + matchSize) }
+
       }
     } while (matchStart > -1)
   }
@@ -378,7 +400,9 @@ class Translator {
           compiled[c].variable = knotId + '.input' + defaultInput
           defaultInput++
         }
-        if (compiled[c].variable.indexOf('.') == -1) { compiled[c].variable = knotId + '.' + compiled[c].variable }
+        if (compiled[c].variable.indexOf('.') == -1) {
+          compiled[c].variable = knotId + '.' + compiled[c].variable
+        }
         // <TODO> can be interesting this link in the future
         // compiled[c].variable = this.findContext(knotSet, knotId, compiled[c].variable);
         if (compiled[c].target) {
@@ -1089,9 +1113,9 @@ class Translator {
   }
 
   async loadTheme (themeName) {
-    const themeObj = await MessageBus.ext.request(
+    const themeObj = await MessageBus.i.request(
       'data/theme/' + Basic.service.currentThemeFamily.toLowerCase() +
-            '.' + themeName.toLowerCase() + '/get')
+            '.' + themeName.toLowerCase() + '/get', null, null, true)
     return themeObj.message
   }
 
@@ -1355,9 +1379,15 @@ class Translator {
       type: 'knot'
     }
 
-    if (matchArray[2] != null) { knot.title = matchArray[2].trim() } else { knot.title = matchArray[5].trim() }
+    knot.unity = (matchArray[2] != null || matchArray[6] != null)
 
-    if (matchArray[3] != null) { knot.categories = matchArray[3].split(',') } else if (matchArray[6] != null) { knot.categories = matchArray[6].split(',') }
+    if (matchArray[3] != null) { knot.title = matchArray[3].trim() } else { knot.title = matchArray[7].trim() }
+
+    if (matchArray[4] != null) {
+      knot.categories = matchArray[4].split(',')
+    } else if (matchArray[8] != null) {
+      knot.categories = matchArray[8].split(',')
+    }
     if (knot.categories) {
       for (const c in knot.categories) { knot.categories[c] = knot.categories[c].trim() }
     }
@@ -1374,11 +1404,11 @@ class Translator {
       }
     }
 
-    if (matchArray[4] != null) { knot.inheritance = matchArray[4].trim() }
-    else if (matchArray[7] != null) { knot.inheritance = matchArray[7].trim() }
+    if (matchArray[5] != null) { knot.inheritance = matchArray[5].trim() }
+    else if (matchArray[9] != null) { knot.inheritance = matchArray[9].trim() }
 
     if (matchArray[1] != null) { knot.level = matchArray[1].trim().length } else
-    if (matchArray[8][0] == '=') { knot.level = 1 } else { knot.level = 2 }
+    if (matchArray[10][0] == '=') { knot.level = 1 } else { knot.level = 2 }
 
     return knot
   }
@@ -1392,6 +1422,7 @@ class Translator {
       categories = obj.categories.filter(c => !obj.categoriesInherited.includes(c))
     return Translator.markdownTemplates.knot
       .replace('[level]', '#'.repeat(obj.level))
+      .replace('[unity]', ((obj.unity) ? '* ' : ''))
       .replace('[title]', obj.title)
       .replace('[categories]',
         (categories)
@@ -1623,13 +1654,11 @@ class Translator {
     const context = {
       type: 'context',
     }
-
-    if (matchArray[1] != null) context.namespace = matchArray[1].trim()
-    if (matchArray[2] != null) context.context = matchArray[2].trim()
-    if (matchArray[3] != null) {
-      context.evaluation = matchArray[3].trim()
-      context.options = matchArray[4]
-    }
+    if (matchArray[1] != null) { context.namespace = matchArray[1].trim() }
+    if (matchArray[2] != null) { context.context = matchArray[2].trim() }
+    if (matchArray[3] != null) { context.id = matchArray[3].trim() }
+    if (matchArray[4] != null) { context.property = matchArray[4].trim() }
+    if (matchArray[5] != null) { context.value = matchArray[5].trim() }
 
     return context
   }
@@ -2238,9 +2267,10 @@ class Translator {
         }
       }
 
+      // <TODO> provisory - removing the context of variable to save
       md = Translator.markdownTemplates.input
         .replace('{statement}', stm)
-        .replace('{variable}', obj.variable)
+        .replace('{variable}', obj.variable.substring(obj.variable.lastIndexOf('.') + 1))
         .replace('{subtype}',
           (obj.subtype) ? this._mdSubField('type', obj.subtype) : '')
         .replace('{extra}', extraAttr)
@@ -2347,7 +2377,9 @@ class Translator {
 
     if (matchArray[1] != null) { context.namespace = matchArray[1].trim() }
     if (matchArray[2] != null) { context.context = matchArray[2].trim() }
-    if (matchArray[3] != null) { context.input = matchArray[3].trim().replace(/ /igm, '_') }
+    if (matchArray[3] != null) { context.id = matchArray[3].trim() }
+    if (matchArray[4] != null) { context.property = matchArray[4].trim() }
+    if (matchArray[5] != null) { context.value = matchArray[5].trim() }
 
     // <TODO> weak strategy -- improve
     // this._currentInputContext = context.context;
@@ -2449,7 +2481,7 @@ class Translator {
 
   Translator.element = {
     knot: {
-      mark: /(?:^[ \t]*(#+)[ \t]*([^\( \t\n\r\f\:][^\(\n\r\f\:]*)(?:\((\w[\w \t,]*)\))?[ \t]*(?:\:[ \t]*([^\(\n\r\f][^\(\n\r\f\t]*))?[ \t]*#*[ \t]*$)|(?:^[ \t]*([^\( \t\n\r\f\:][^\(\n\r\f\:]*)(?:\((\w[\w \t,]*)\))?[ \t]*(?:\:[ \t]*([^\(\n\r\f][^\(\n\r\f\t]*))?[ \t]*[\f\n\r][\n\r]?(==+|--+)$)/im,
+      mark: /(?:^[ \t]*(#+)[ \t]*(\*[ \t]*)?([^\( \t\n\r\f\:][^\(\n\r\f\:]*)(?:\((\w[\w \t,]*)\))?[ \t]*(?:\:[ \t]*([^\(\n\r\f][^\(\n\r\f\t]*))?[ \t]*#*[ \t]*$)|(?:^[ \t]*(\*[ \t]*)?([^\( \t\n\r\f\:][^\(\n\r\f\:]*)(?:\((\w[\w \t,]*)\))?[ \t]*(?:\:[ \t]*([^\(\n\r\f][^\(\n\r\f\t]*))?[ \t]*[\f\n\r][\n\r]?(==+|--+)$)/im,
       subfield: true,
       subimage: true
     },
@@ -2510,7 +2542,7 @@ class Translator {
       // mark: /~[ \t]*(\w+)?[ \t]*([+\-*/=])[ \t]*(\d+(?:\.\d+)?)$/im
     },
     'context-open': {
-      mark: /\{\{(?:([^\:\n\r\f]+)\:)?([\w \t\+\-\*\."=%]+)?(?:\/([\w \t\.\:]+)\/)?$/im
+      mark: /\{\{(?:([^\:\n\r\f]+)\:)?([\w \t\+\-\*\."=%]+)?(?:@(\w+))?(?:\/((?:\w+\:)?\w+)(?:[ \t]+((?:\w+\:)?\w+))?\/)?$/im
     },
     'context-close': { mark: /^[ \t]*\}\}/im },
     select: {

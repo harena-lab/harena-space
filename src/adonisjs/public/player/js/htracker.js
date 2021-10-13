@@ -10,30 +10,30 @@ class Tracker {
     this._caseCompleted = false
 
     this.inputReady = this.inputReady.bind(this)
-    MessageBus.int.subscribe('var/+/input/ready', this.inputReady)
+    MessageBus.i.subscribe('var/+/input/ready', this.inputReady)
     this.inputMandatory = this.inputMandatory.bind(this)
-    MessageBus.int.subscribe('var/+/input/mandatory', this.inputMandatory)
+    MessageBus.i.subscribe('var/+/input/mandatory', this.inputMandatory)
     this.groupinputReady = this.groupinputReady.bind(this)
-    MessageBus.int.subscribe('var/+/group_input/ready', this.groupinputReady)
+    MessageBus.i.subscribe('var/+/group_input/ready', this.groupinputReady)
     this.subinputReady = this.subinputReady.bind(this)
-    MessageBus.int.subscribe('var/+/subinput/ready', this.subinputReady)
+    MessageBus.i.subscribe('var/+/subinput/ready', this.subinputReady)
     this.inputTyped = this.inputTyped.bind(this)
-    MessageBus.ext.subscribe('var/+/typed', this.inputTyped)
+    MessageBus.i.subscribe('var/+/typed', this.inputTyped)
     this.inputChanged = this.inputChanged.bind(this)
-    MessageBus.ext.subscribe('var/+/changed', this.inputChanged)
+    MessageBus.i.subscribe('var/+/changed', this.inputChanged)
     this.stateChanged = this.stateChanged.bind(this)
-    MessageBus.ext.subscribe('var/+/state_changed', this.stateChanged)
+    MessageBus.i.subscribe('var/+/state_changed', this.stateChanged)
     this.allMandatoryFilled = this.allMandatoryFilled.bind(this)
-    MessageBus.int.subscribe('var/*/input/mandatory/get', this.allMandatoryFilled)
+    MessageBus.i.subscribe('var/*/input/mandatory/get', this.allMandatoryFilled)
 
     this.knotStart = this.knotStart.bind(this)
-    MessageBus.ext.subscribe('knot/+/start', this.knotStart)
+    MessageBus.i.subscribe('knot/+/start', this.knotStart)
     this.caseCompleted = this.caseCompleted.bind(this)
-    MessageBus.ext.subscribe('case/completed', this.caseCompleted)
-    MessageBus.ext.subscribe('session/close', this.caseCompleted)
+    MessageBus.i.subscribe('case/completed', this.caseCompleted)
+    MessageBus.i.subscribe('session/close', this.caseCompleted)
 
     this.submitVariables = this.submitVariables.bind(this)
-    MessageBus.ext.subscribe('control/input/submit', this.submitVariables)
+    MessageBus.i.subscribe('control/input/submit', this.submitVariables)
   }
 
   inputMandatory (topic, message) {
@@ -44,11 +44,11 @@ class Tracker {
   }
 
   inputReady (topic, message) {
-    this._updateVariable(topic, '')
+    this._initializeVariable(topic, '')
   }
 
   groupinputReady (topic, message) {
-    this._updateVariable(topic, {})
+    this._initializeVariable(topic, {})
     this._groupInput = MessageBus.extractLevel(topic, 2)
   }
 
@@ -80,7 +80,7 @@ class Tracker {
   submitVariables (topic, message) {
     for (const v in this._variables) {
       if (this._varUpdated[v] == null || this._varUpdated[v]) {
-        MessageBus.ext.publish('var/' + v + '/set', this._variables[v])
+        MessageBus.i.publish('var/' + v + '/set', this._variables[v], true)
         this._varUpdated[v] = false
       }
     }
@@ -110,9 +110,15 @@ class Tracker {
     }
   }
 
-  allMandatoryFilled (topic, message) {
-    MessageBus.int.publish(MessageBus.buildResponseTopic(topic, message),
-      this._mandatoryFilled)
+  _initializeVariable (topic, value) {
+    const v = MessageBus.extractLevel(topic, 2)
+    if (v != null && this._variables[v] == null)
+      this._updateVariable(topic, value)
+  }
+
+  allMandatoryFilled (topic, message, track) {
+    MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
+      this._mandatoryFilled, track)
   }
 
   knotStart (topic, message) {
@@ -133,9 +139,9 @@ class Tracker {
       if (message && message.knotid)
         kt.knotid = message.knotid
       this._knotTrack.push(kt)
-      MessageBus.ext.publish('case/summary',
+      MessageBus.i.publish('case/summary',
         {knotTrack: this._knotTrack,
-         variables: this._variables})
+         variables: this._variables}, true)
     }
   }
 }

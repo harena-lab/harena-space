@@ -9,19 +9,16 @@ class EditDCCMedia extends EditDCC {
 
   async _componentEditor (obj, mtype) {
     // checks if the image is subordinated to another entity
-    if (obj.image)
-      obj.image.path = await this._mediaUploadPanel(
-        mtype, EditDCCMedia.fileExt[mtype])
-    else
-      obj.path = await this._mediaUploadPanel(
-        mtype, EditDCCMedia.fileExt[mtype])
-    console.log('=== media properties')
-    console.log(this._properties)
-    this._properties.applyProperties(true)
-    // MessageBus.ext.publish('properties/apply/details')
+    const path = await this._mediaUploadPanel(
+                          mtype, EditDCCMedia.fileExt[mtype])
+    if (path != null && path.length > 0) {
+      if (obj.image)
+        obj.image.path = path
+      else
+        obj.path = path
+      this._properties.applyProperties(true)
+    }
   }
-
-
 }
 
 (function () {

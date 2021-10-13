@@ -20,6 +20,8 @@
    <script src="../../lib/bootstrap-4.4.1/js/bootstrap.min.js"></script>
    <script src="../../lib/axios-0.21.0/axios.min.js"></script>
 
+   <script src="../../dccs/base/primitive-dcc.js"></script>
+   <script src="../../dccs/base/scope-dcc.js"></script>
    <script src="../../dccs/base/dcc.js"></script>
    <script src="../../dccs/base/dcc-base.js"></script>
    <script src="../../dccs/base/dcc-visual.js"></script>
@@ -53,8 +55,8 @@
    <script>
       function start() {
          document.querySelector("#json-message").value = "";
-         MessageBus.ext.subscribe("control/render/example", render);
-         MessageBus.ext.subscribe("#", showJson);
+         MessageBus.i.subscribe("control/render/example", render);
+         MessageBus.i.subscribe("#", showJson);
 
          let parameters = window.location.search.substr(1);
          if (parameters != null && parameters.length > 0) {
@@ -88,7 +90,7 @@
 </head>
 
   <body>
-  
+
 <dcc-dhtml>
   {{nome}}
  <div>EDIT</div>

@@ -34,7 +34,7 @@ class DCCExpression extends DCCVisual {
     //                    also monitors all messages
     if (this.active) {
       this.stateChanged = this.stateChanged.bind(this)
-      MessageBus.ext.subscribe('var/+/state_changed', this.stateChanged)
+      this._subscribe('var/+/state_changed', this.stateChanged)
       this._stateValues = {}
     }
 
@@ -47,12 +47,10 @@ class DCCExpression extends DCCVisual {
         if (this.active) {
           this.variableUpdated = this.variableUpdated.bind(this)
           const variables = DCCCompute.filterVariables(this._compiled, false)
-          // MessageBus.ext.subscribe(
-          //   'var/' + this._variable + '/set', this.variableUpdated)
-          MessageBus.ext.subscribe('var/*/set', this.variableUpdated)
+          // this._subscribe(//   'var/' + this._variable + '/set', this.variableUpdated)
+          this._subscribe('var/*/set', this.variableUpdated)
           for (let v of variables)
-            MessageBus.ext.subscribe(
-              'var/' + v + '/set', this.variableUpdated)
+            this._subscribe('var/' + v + '/set', this.variableUpdated)
         }
       }
     }
@@ -68,7 +66,7 @@ class DCCExpression extends DCCVisual {
 
   async _showResult () {
     let result = await DCCCompute.computeExpression(this._compiled)
-    // let result = await MessageBus.ext.request('var/' + this._variable + '/get')
+    // let result = await this._request('var/' + this._variable + '/get', null, null, true)
     if (result == null) {
       result = ''
     } else {

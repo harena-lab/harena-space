@@ -95,7 +95,7 @@ Translator.htmlSubTemplates = {
     layer:
 '___ [title] ___',
     knot:
-'[level] [title][categories][inheritance]',
+'[level] [unity][title][categories][inheritance]',
     image:
 '![{alternative}]({path}{resize}{title})',
     media:

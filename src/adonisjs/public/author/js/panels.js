@@ -31,16 +31,16 @@ class Panels {
     this._setupKnotHeight()
 
     this.setupPropertiesExpand = this.setupPropertiesExpand.bind(this)
-    MessageBus.ext.subscribe('control/properties/expand',
+    MessageBus.i.subscribe('control/properties/expand',
       this.setupPropertiesExpand)
     this.setupPropertiesRetract = this.setupPropertiesRetract.bind(this)
-    MessageBus.ext.subscribe('control/properties/retract',
+    MessageBus.i.subscribe('control/properties/retract',
       this.setupPropertiesRetract)
     this.setupCommentsExpand = this.setupCommentsExpand.bind(this)
-    MessageBus.ext.subscribe('control/comments/expand',
+    MessageBus.i.subscribe('control/comments/expand',
       this.setupCommentsExpand)
     this.setupArtifactsExpand = this.setupArtifactsExpand.bind(this)
-    MessageBus.ext.subscribe('control/artifacts/expand',
+    MessageBus.i.subscribe('control/artifacts/expand',
         this.setupArtifactsExpand)
   }
 
@@ -92,6 +92,7 @@ class Panels {
     // this._knotMain.classList.remove('w-' + this._knotPanelSize)
     // this._navigationBlock.classList.remove('w-25')
     // this._navigationBlock.classList.add('w-100')
+    this._navigationBlock.style.width = '100%'
     this._buttonExpandNav.style.display = 'none'
     this._buttonRetractNav.style.display = 'initial'
     document.querySelector('#button-expand-prop').style.display = 'none'
@@ -143,7 +144,7 @@ class Panels {
     this.setupPropertiesPanelExpand()
     this._commentsVisible = true
     document.querySelector('#comments-block').style.display = 'block'
-    MessageBus.int.publish('control/comments/editor')
+    MessageBus.i.publish('control/comments/editor')
   }
 
   setupArtifactsExpand () {

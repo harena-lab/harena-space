@@ -5,20 +5,6 @@
  */
 
 class Properties {
-  /*
-  constructor () {
-    this.applyPropertiesDetails = this.applyPropertiesDetails.bind(this)
-    MessageBus.ext.subscribe('properties/apply/details',
-      this.applyPropertiesDetails)
-    this.applyPropertiesShort = this.applyPropertiesShort.bind(this)
-    MessageBus.ext.subscribe('properties/apply/short',
-      this.applyPropertiesShort)
-    this.closeProperties = this.closeProperties.bind(this)
-    MessageBus.ext.subscribe('properties/cancel/short',
-      this.closeProperties)
-  }
-  */
-
   attachPanelDetails (panel) {
     this._panelDetails = panel
   }
@@ -253,16 +239,6 @@ class Properties {
     }
   }
 
-  /*
-  async applyPropertiesDetails (topic, message) {
-    this._applyProperties(true, topic, message)
-  }
-
-  async applyPropertiesShort (topic, message) {
-    this._applyProperties(false, topic, message)
-  }
-  */
-
   async applyProperties (details) {
     const sufix = (details) ? '_d' : '_s'
     const panel = (details)
@@ -305,16 +281,10 @@ class Properties {
 
       if (this._knotOriginalTitle &&
              this._knotOriginalTitle != this._objProperties.title) {
-        MessageBus.ext.publish('control/knot/rename',
-          this._objProperties.title)
+        MessageBus.i.publish('control/knot/rename',
+          this._objProperties.title, true)
         delete this._knotOriginalTitle
       }
-
-      /*
-      delete this._objProperties
-      MessageBus.ext.publish('control/knot/update')
-      if (!details) { MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message)) }
-      */
     }
     await this.closeProperties(details)
   }
@@ -324,28 +294,39 @@ class Properties {
       this._editor = null;
     if (this._objProperties) {
       delete this._objProperties
-      await MessageBus.ext.request('control/knot/update')
+      await MessageBus.i.request('control/knot/update', null, null, true)
     }
-    // if (!details) {MessageBus.ext.publish(MessageBus.buildResponseTopic(topic, message)) }
+    // if (!details) {MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message), null, true) }
   }
 
   async _applySingleProperty (property, seq, panel, sufix, previous) {
     let objProperty = null
+    console.log('=== property')
+    console.log('#pfield' + seq + sufix)
     const field = (panel != null) ?
          panel.querySelector('#pfield' + seq + sufix) : null
     switch (property.type) {
       case 'shortStr' :
       case 'text':
       case 'textField':
-        const value = field.value.trim()
-        if (value.length > 0) { objProperty = value }
+      case 'variable':
+        if (field == 'variable') {
+          console.log('=== variable')
+          console.log(field.value)
+        }
+        if (field != null) {
+          const value = field.value.trim()
+          if (value.length > 0) { objProperty = value }
+        }
         break
       case 'shortStrArray' :
-        const catStr = field.value.trim()
-        if (catStr.length > 0) {
-          const categories = catStr.split(',')
-          for (const c in categories) { categories[c] = categories[c].trim() }
-          objProperty = categories
+        if (field != null) {
+          const catStr = field.value.trim()
+          if (catStr.length > 0) {
+            const categories = catStr.split(',')
+            for (const c in categories) { categories[c] = categories[c].trim() }
+            objProperty = categories
+          }
         }
         break
       case 'option':
@@ -354,7 +335,6 @@ class Properties {
         for (const item in previous) {
           if (i == this._item) {
             if (this._itemEdit.edit.trim().length > 0) {
-              // <TODO> provisory test (field disabled)
               if (field != null)
                 previous[item].message = field.value.trim()
               objProperty[this._itemEdit.edit] = previous[item]
@@ -377,18 +357,21 @@ class Properties {
         } while (fp != null)
         break
       case 'select':
-        objProperty = field.value
+        if (field != null)
+          objProperty = field.value
         break
       case 'image':
-        // uploads the image
-        if (field.files[0]) {
-          const asset = await
-          MessageBus.ext.request('data/asset//new',
-            {
-              file: field.files[0],
-              caseid: Basic.service.currentCaseId
-            })
-          objProperty = asset.message.filename
+        if (field != null) {
+          // uploads the image
+          if (field.files[0]) {
+            const asset = await
+            MessageBus.i.request('data/asset//new',
+              {
+                file: field.files[0],
+                caseid: Basic.service.currentCaseId
+              }, null, true)
+            objProperty = asset.message.filename
+          }
         }
         break
     }
@@ -511,19 +494,13 @@ class Properties {
     }},
     input: {
       short: {default: {
-      /*
-      subtype: {type: "select",
-                options: Translator.inputSubtype,
-                label: "Type",
-                visual: "panel"},
-      */
         input: {
           type: 'void',
           visual: 'inline',
           role: 'input'
         },
         text: {
-          type: 'text',
+          type: 'textField',
           label: 'Statement',
           visual: 'inline',
           role: 'text'
@@ -547,9 +524,9 @@ class Properties {
           role: 'input'
         },
         text: {
-          type: 'text',
+          type: 'textField',
           label: 'Statement',
-          visual: 'inline',
+          visual: 'inline-panel',
           role: 'text'
         },
         variable: {
@@ -571,7 +548,7 @@ class Properties {
           role: 'slider'
         },
         text: {
-          type: 'shortStr',
+          type: 'textField',
           label: 'Statement',
           visual: 'inline',
           role: 'text'
@@ -640,11 +617,6 @@ class Properties {
             role: 'item'
           }
         }
-      /*
-      options: {type: "propertyValue",
-                label: "options",
-                visual: "panel"}
-      */
       }
     }
   }

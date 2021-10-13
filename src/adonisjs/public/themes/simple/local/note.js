@@ -9,5 +9,5 @@
 </div>
 `
 
-  MessageBus.int.publish('control/theme/note/load/ready', localTheme)
+  MessageBus.i.publish('control/theme/note/load/ready', localTheme)
 })()
