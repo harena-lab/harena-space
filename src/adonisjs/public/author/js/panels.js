@@ -112,8 +112,9 @@ class Panels {
     document.querySelector('#artifacts-block').style.display = 'none'
 
     this._elementsBlock.style.display = 'none'
-    this._elementsMain.style.minWidth = ''
+    this._elementsMain.style.width = ''
     this._knotMain.style.width = '100%'
+    document.querySelector('#button-expand-left').style.display = 'none'
     // this._elementsMain.classList.remove('w-25')
     // this._knotMain.classList.remove('w-' + this._knotPanelSize)
     // this._knotPanelSize += 25
@@ -129,7 +130,7 @@ class Panels {
     document.querySelector('#button-expand-com').style.display = 'none'
     document.querySelector('#button-expand-art').style.display = 'none'
     this._elementsBlock.style.display = 'initial'
-    this._elementsMain.style.minWidth = '25%'
+    this._elementsMain.style.width = '25%'
     this._knotMain.style.width = '75%'
     // this._knotMain.classList.remove('w-' + this._knotPanelSize)
     // this._knotPanelSize -= 25

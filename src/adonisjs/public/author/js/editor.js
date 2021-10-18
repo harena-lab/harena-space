@@ -175,7 +175,7 @@ class Editor {
       }
       if (targetEl < 0 && includeMissing) {
         targetEl = content.length
-        includeMissing = true
+        includeContext = true
       }
       if (targetEl >= 0) {
         const media = {type: 'media',
@@ -185,14 +185,14 @@ class Editor {
         if (replace)
           status = this.elementReplace(knot, targetEl, media)
         else {
-          if (includeMissing) {
+          if (includeContext) {
             this.elementInsert(knot, targetEl,
               {type: 'context-open',
                context: target})
             targetEl++
           }
           status = this.elementInsert(knot, targetEl, media)
-          if (includeMissing)
+          if (includeContext)
             this.elementInsert(knot, targetEl+1,
               {type: 'context-close'})
         }

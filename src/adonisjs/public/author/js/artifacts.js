@@ -15,6 +15,8 @@ class Artifacts {
     document.querySelector("#artifacts-select").onchange = this._uploadArtifacts
     this.activateGenerator = this.activateGenerator.bind(this)
     MessageBus.i.subscribe('generator/activate/artifact-knot', this.activateGenerator)
+    this.deactivateGenerator = this.deactivateGenerator.bind(this)
+    MessageBus.i.subscribe('generator/finished/artifact-knot', this.deactivateGenerator)
   }
 
   async _uploadArtifacts () {
@@ -103,5 +105,9 @@ class Artifacts {
         compiled.artifacts, compiled.generators['artifact-knot'],
           document.querySelector('#case-artifacts'))
     }
+  }
+
+  deactivateGenerator () {
+    document.querySelector('#artifact-controls').style.display = 'initial'
   }
 }

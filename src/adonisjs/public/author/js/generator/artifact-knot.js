@@ -100,5 +100,7 @@ class ArtifactKnotGenerator {
       }
     }
     MessageBus.i.publish('control/case/refresh')
+    MessageBus.i.publish('control/elements/retract')
+    MessageBus.i.publish('generator/finished/artifact-knot')
   }
 }
