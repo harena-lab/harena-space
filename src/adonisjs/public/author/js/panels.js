@@ -33,15 +33,17 @@ class Panels {
     this.setupPropertiesExpand = this.setupPropertiesExpand.bind(this)
     MessageBus.i.subscribe('control/properties/expand',
       this.setupPropertiesExpand)
-    this.setupPropertiesRetract = this.setupPropertiesRetract.bind(this)
-    MessageBus.i.subscribe('control/properties/retract',
-      this.setupPropertiesRetract)
     this.setupCommentsExpand = this.setupCommentsExpand.bind(this)
     MessageBus.i.subscribe('control/comments/expand',
       this.setupCommentsExpand)
     this.setupArtifactsExpand = this.setupArtifactsExpand.bind(this)
     MessageBus.i.subscribe('control/artifacts/expand',
         this.setupArtifactsExpand)
+    this.setupElementsRetract = this.setupElementsRetract.bind(this)
+    MessageBus.i.subscribe('control/elements/retract',
+      this.setupElementsRetract)
+    this.setupElementsPanelWide = this.setupElementsPanelWide.bind(this)
+    MessageBus.i.subscribe('control/elements/wide', this.setupElementsPanelWide)
   }
 
   get commentsVisible () {
@@ -86,7 +88,7 @@ class Panels {
 
   setupWideNavigator () {
     if (this._propertiesVisible) {
-      this.setupPropertiesRetract()
+      this.setupElementsRetract()
       this._propertiesVisible = true
     }
     // this._knotMain.classList.remove('w-' + this._knotPanelSize)
@@ -98,7 +100,7 @@ class Panels {
     document.querySelector('#button-expand-prop').style.display = 'none'
   }
 
-  setupPropertiesRetract () {
+  setupElementsRetract () {
     this._propertiesVisible = false
     document.querySelector('#button-retract-right').style.display = 'none'
     document.querySelector('#button-expand-prop').style.display = 'initial'
@@ -119,9 +121,10 @@ class Panels {
     this._commentsVisible = false
   }
 
-  setupPropertiesPanelExpand () {
+  _setupElementsPanelExpand () {
     this._propertiesVisible = true
     document.querySelector('#button-retract-right').style.display = 'initial'
+    document.querySelector('#button-expand-left').style.display = 'initial'
     document.querySelector('#button-expand-prop').style.display = 'none'
     document.querySelector('#button-expand-com').style.display = 'none'
     document.querySelector('#button-expand-art').style.display = 'none'
@@ -135,20 +138,25 @@ class Panels {
     // this._elementsMain.style.maxWidth = '25% !important'
   }
 
+  setupElementsPanelWide () {
+    this._elementsMain.style.width = '70%'
+    this._knotMain.style.width = '30%'
+  }
+
   setupPropertiesExpand () {
-    this.setupPropertiesPanelExpand()
+    this._setupElementsPanelExpand()
     document.querySelector('#properties-block').style.display = 'initial'
   }
 
   setupCommentsExpand () {
-    this.setupPropertiesPanelExpand()
+    this._setupElementsPanelExpand()
     this._commentsVisible = true
     document.querySelector('#comments-block').style.display = 'block'
     MessageBus.i.publish('control/comments/editor')
   }
 
   setupArtifactsExpand () {
-    this.setupPropertiesPanelExpand()
+    this._setupElementsPanelExpand()
     document.querySelector('#artifacts-block').style.display = 'initial'
   }
 

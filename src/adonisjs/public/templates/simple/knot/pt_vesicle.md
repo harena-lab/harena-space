@@ -1,4 +1,4 @@
-# Vesicle and Portal Triad: Basic
+# * Vesicle and Portal Triad: Basic
 
 **Vesicle and Portal Triad - POCUS Exam Videos and Photos:**
 

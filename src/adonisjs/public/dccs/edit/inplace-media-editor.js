@@ -24,10 +24,10 @@ class EditDCCMedia extends EditDCC {
 (function () {
   EditDCCMedia.fileExt = {
     'image': {
-      select: ['png', 'jpg', 'jpeg', 'png'],
+      select: Translator.extension.image,
       browse: 'image/png, image/jpeg, image/svg' },
     'media': {
-      select: ['mpg', 'mpeg', 'mp4', 'webm', 'mp3'],
+      select: Translator.extension.video.concat(Translator.extension.audio),
       browse: 'audio/mpeg, video/mp4, video/webm'
     }
   }

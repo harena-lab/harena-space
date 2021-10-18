@@ -38,7 +38,7 @@ class AuthorManager {
 
     this.updateSourceField = this.updateSourceField.bind(this)
 
-    this._uploadArtifacts = this._uploadArtifacts.bind(this)
+    // this._uploadArtifacts = this._uploadArtifacts.bind(this)
 
     this._caseModified = false
 
@@ -80,6 +80,16 @@ class AuthorManager {
       ? this._compiledCase.templates.categories : null
   }
 
+  // <TODO> probably provisory - used by Artifacts
+  get compiledCase () {
+    return this._compiledCase
+  }
+
+  set compiledCase (compiled) {
+    this._compiledCase = compiled
+    this._knots = compiled.knots
+  }
+
   /*
     *
     */
@@ -112,7 +122,8 @@ class AuthorManager {
     this._messageSpace = document.querySelector('#message-space')
     this.authorizeCommentSection()
 
-    document.querySelector("#artifacts-select").onchange = this._uploadArtifacts
+    // document.querySelector("#artifacts-select").onchange = this._uploadArtifacts
+    Artifacts.start(this)
 
     if (caseid != null) { this._caseLoad(caseid) }
 
@@ -160,6 +171,8 @@ class AuthorManager {
         case 'control/case/save': this.caseSave()
           break
         case 'control/case/markdown': this.caseMarkdown()
+          break
+        case 'control/case/refresh': this.showCase()
           break
         case 'control/case/play': this.casePlay()
           break
@@ -280,25 +293,29 @@ class AuthorManager {
 
     this._currentCaseTitle = caseObj.message.title
     await this._compile(caseObj.message.source)
-    await this._showCase()
+    await this.showCase()
   }
 
   async _compile (caseSource) {
     this._compiledCase =
          await Translator.instance.compileMarkdown(Basic.service.currentCaseId,
            caseSource)
+    Basic.service.composedThemeFamily(this._compiledCase.theme)
+    this._updateCompiled()
+  }
 
+  _updateCompiled () {
     this._knots = this._compiledCase.knots
 
-    Basic.service.composedThemeFamily(this._compiledCase.theme)
     if (this._compiledCase.title) { this._currentCaseTitle = this._compiledCase.title }
 
     console.log('***** COMPILED CASE *****')
     console.log(this._compiledCase)
   }
 
-  async _showCase (selectKnot) {
-    this._showArtifacts()
+  async showCase (selectKnot) {
+    // this._showArtifacts()
+    Artifacts.i.showArtifacts()
     Properties.s.artifacts = this._compiledCase.artifacts
 
     await this._navigator.mountTreeCase(this, this._compiledCase.knots)
@@ -314,6 +331,7 @@ class AuthorManager {
     MessageBus.i.publish('control/knot/selected', sk, true)
   }
 
+  /*
   _showArtifacts () {
     if (this._compiledCase.artifacts) {
       let artHTML = ''
@@ -324,6 +342,7 @@ class AuthorManager {
       document.querySelector('#case-artifacts').innerHTML = artHTML
     }
   }
+  */
 
   /*
     * ACTION: control-save
@@ -338,8 +357,8 @@ class AuthorManager {
 
     })
     .then(function (rej) {
-      AuthorManager.author._messageSpace.firstElementChild.innerHTML = 'Error ocurred. Trying again...'
-      setTimeout(() => {AuthorManager.author.caseSave()}, 3000)
+      AuthorManager.i._messageSpace.firstElementChild.innerHTML = 'Error ocurred. Trying again...'
+      setTimeout(() => {AuthorManager.i.caseSave()}, 3000)
     })
     await Properties.s.closePreviousProperties()
     await this._updateActiveComments()
@@ -470,7 +489,7 @@ class AuthorManager {
           if (nextState != 3) { delete this._originalMd }
           await this._compile(editorText)
           if (nextState == 3) { this._renderState = 1 }
-          this._showCase()
+          this.showCase()
         }
       }
     }
@@ -555,6 +574,7 @@ class AuthorManager {
     if (template == null)
       template = await this._templateSelect('knot', this._templateNewKnot)
 
+    /*
     if (template != null) {
       let knotTarget =
             (message != null && message.knotid != null)
@@ -611,12 +631,29 @@ class AuthorManager {
         this._compiledCase, true)
       await this._compile(md)
 
+      */
+
+    let knotTarget =
+          (message != null && message.knotid != null)
+            ? message.knotid : this._knotSelected
+
+    let status = await MessageBus.i.request('edit/knot/create',
+      {target: knotTarget,
+       before: false,
+       template: template})
+
+    console.log('=== status knot create')
+    console.log(status)
+
+    if (status.message) {
+      this._knots = this._compiledCase.knots
+
       let newSelected = null
       const kl = Object.keys(this._knots)
       const ki = kl.indexOf(knotTarget)
       if (ki > -1 && ki + 1 < kl.length) { newSelected = kl[ki + 1] }
 
-      await this._showCase(newSelected)
+      await this.showCase(newSelected)
     }
   }
 
@@ -853,7 +890,7 @@ class AuthorManager {
 
     const md = Translator.instance.assembleMarkdown(this._compiledCase, true)
     this._compile(md)
-    this._showCase()
+    this.showCase()
 
     this._knotSelected = newIndex
   }
@@ -954,6 +991,7 @@ class AuthorManager {
     this._themeSVG = themeObj.svg
   }
 
+  /*
   async _uploadArtifacts () {
     let files = document.querySelector('#artifacts-select').files
     let progSpace = document.querySelector('#progress-artifacts')
@@ -1022,11 +1060,12 @@ class AuthorManager {
     console.log('=== updated artifact')
     console.log(artifacts)
   }
+  */
 }
 
 (function () {
   AuthorManager.jsonKnot = '(function() { PlayerManager.player.presentKnot(`{knot}`) })();'
   AuthorManager.jsonNote = '(function() { PlayerManager.player.presentNote(`{knot}`) })();'
 
-  AuthorManager.author = new AuthorManager()
+  AuthorManager.i = new AuthorManager()
 })()

@@ -107,7 +107,12 @@ Translator.htmlSubTemplates = {
     input:
 '{statement}? {variable}{subtype}{extra}',
     choice:
-'+ {label} <-> {target}{message}{state}'
+'+ {label} <-> {target}{message}{state}',
+    'context-open':
+'{{[namespace][context][id][property-value]',
+    'context-close':
+`
+}}`
   }
 
   Translator.objTemplates = {
@@ -120,6 +125,10 @@ Translator.htmlSubTemplates = {
       alternative: 'Image',
       path: '../templates/basic/images/landscape.svg',
       title: 'Image'
+    },
+    media: {
+      type: 'media',
+      subtype: 'video'
     },
     option: {
       type: 'option',

@@ -1316,10 +1316,6 @@ class Translator {
       case 'text': element._source = this._textObjToMd(element)
         break
       case 'text-block':
-        /*
-        console.log('=== update markdown text block')
-        console.log(element)
-        */
         element._source = ''
         for (const sub of element.content) {
           this.updateElementMarkdown(sub)
@@ -1339,6 +1335,10 @@ class Translator {
       case 'entity': element._source = this._entityObjToMd(element)
         break
       case 'input': element._source = this._inputObjToMd(element)
+        break
+      case 'context-open': element._source = this._contextOpenObjToMd(element)
+        break
+      case 'context-close': element._source = this._contextCloseObjToMd(element)
         break
     }
 
@@ -1647,6 +1647,17 @@ class Translator {
       .replace('[source]', obj.path)
   }
 
+  classifyArtifactType (filepath) {
+    let type = ''
+    const extension = filepath.substring(filepath.lastIndexOf('.') + 1)
+    for (let ext in Translator.extension)
+      if (Translator.extension[ext].includes(extension)) {
+        type = ext
+        break
+      }
+    return type
+  }
+
   /*
     * Context Open Md to Obj
     */
@@ -1663,10 +1674,29 @@ class Translator {
     return context
   }
 
+  _contextOpenObjToMd (obj) {
+    let property = ''
+    if (obj.property) {
+      property = '/' + obj.property
+      if (obj.value)
+        property += ' ' + obj.value
+      property += '/'
+    }
+    return Translator.markdownTemplates['context-open']
+      .replace('[namespace]', (obj.namespace) ? obj.namespace + ':' : '')
+      .replace('[context]', obj.context)
+      .replace('[id]', (obj.id) ? '@' + obj.id : '')
+      .replace('[property-value]', property)
+  }
+
   /*
     * Context Close Md to Obj
     */
   _contextCloseMdToObj (matchArray) {
+  }
+
+  _contextCloseObjToMd (obj) {
+    return Translator.markdownTemplates['context-close']
   }
 
   /*
@@ -1845,6 +1875,10 @@ class Translator {
             !!((matchArray[1][0] === '\t' || matchArray[1].length > 1)),
       field: matchArray[2].trim()
     }
+    if (field.field[0] == "'") {
+      field.field = field.field.substring(1, field.field.length-1)
+      field.quotes = true
+    }
     if (matchArray[3] != null) {
       field.value = matchArray[3].trim()
     } else if (matchArray[4] != null) {
@@ -1892,7 +1926,7 @@ class Translator {
     let md = ''
     const spaces = ' '.repeat(level)
     for (let f in fields) {
-      md += spaces + "* " + f + ': '
+      md += spaces + "* " + ((f.quotes) ? "'" : '') + f + ((f.quotes) ? "'" : '') + ': '
       if (typeof fields[f] === 'object')
         md += '\n' + this._visitFields(fields[f], level+2)
       else if (typeof fields[f] === 'string')
@@ -2493,10 +2527,10 @@ class Translator {
       inline: true
     },
     media: {
-      mark: /<(video|audio)(?:[^>]*)?>(?:<source src="([^"]+)">)?<\/(:?video|audio)>/im
+      mark: /<(video|audio)(?:[^>]*)?>(?:<source src="([^"]+)">)?<\/(?:video|audio)>/im
     },
     field: {
-      mark: /^([ \t]*)(?:[\+\*])[ \t]+([\w.\/\?&#\-][\w.\/\?&#\- \t]*):[ \t]*([^&>\n\r\f'][^&>\n\r\f]*)?(?:'([^']*)')?(?:-(?:(?:&gt;)|>)[ \t]*([^\(\n\r\f]+))?$/im,
+      mark: /^([ \t]*)(?:[\+\*])[ \t]+((?:[\w.\/\?&#\-][\w.\/\?&#\- \t]*)|(?:'[^']*')[ \t]*):[ \t]*([^&>\n\r\f'][^&>\n\r\f]*)?(?:'([^']*)')?(?:-(?:(?:&gt;)|>)[ \t]*([^\(\n\r\f]+))?$/im,
       subfield: true,
       subimage: true,
       subtext: 'value'
@@ -2591,7 +2625,7 @@ class Translator {
 
   Translator.inputSubtype = ['short', 'text', 'group select', 'table']
 
-  Translator.globalFields = ['theme', 'title', 'role', 'templates', 'artifacts']
+  Translator.globalFields = ['theme', 'title', 'role', 'templates', 'generators', 'artifacts']
 
   Translator.reservedNavigation = ['case.next', 'knot.start',
     'knot.previous', 'knot.next',
@@ -2615,6 +2649,12 @@ class Translator {
   Translator.defaultVariable = 'points'
 
   Translator.genericFieldType = 'generic'
+
+  Translator.extension = {
+    image: ['png', 'jpg', 'jpeg', 'png'],
+    video: ['mpg', 'mpeg', 'mp4', 'webm'],
+    audio: ['mp3']
+  }
 
   Translator.instance = new Translator()
 })()

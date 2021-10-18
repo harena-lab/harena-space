@@ -231,7 +231,6 @@ class Comments {
   }
 
   close() {
-    console.log('*** unsubscribed')
     MessageBus.i.unsubscribe('control/comments/editor', this.activateComments)
     if (this._activated)
       MessageBus.i.unsubscribe('control/comments/edit/confirm',
