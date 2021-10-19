@@ -4,16 +4,20 @@
 
 class ArtifactKnotGenerator {
   static activate (artifacts, candidates, html) {
-    ArtifactKnotGenerator.i = new ArtifactKnotGenerator(artifacts, candidates, html)
+    if (ArtifactKnotGenerator.i == null)
+      ArtifactKnotGenerator.i = new ArtifactKnotGenerator()
+
+    ArtifactKnotGenerator.i.buildGenerator(artifacts, candidates, html)
   }
 
-  constructor (artifacts, candidates, html) {
+  buildGenerator (artifacts, candidates, html) {
     MessageBus.i.publish('control/elements/wide')
 
     this._prepareSubgroup = this._prepareSubgroup.bind(this)
 
     this._insertArtifacts = this._insertArtifacts.bind(this)
-    MessageBus.i.subscribe('generator/insert/artifact-knot', this._insertArtifacts)
+    MessageBus.i.subscribe('generator/insert/artifact-knot',
+                           this._insertArtifacts)
 
     this._artifacts = artifacts
     this._candidates = candidates
@@ -27,8 +31,8 @@ class ArtifactKnotGenerator {
         artHTML += '<video controls style="max-width:200px;height:auto"><source src="' +
                    Basic.service.imageResolver(a) + '"></video>'
       else
-        artHTML += '<img style="max-width:200px;height:auto" src="' + Basic.service.imageResolver(a) + '>'
-      artHTML += '</td><td><a href="' + Basic.service.imageResolver(a) +
+        artHTML += '<img style="max-width:200px;height:auto" src="' + Basic.service.imageResolver(a) + '">'
+      artHTML += '<br><a href="' + Basic.service.imageResolver(a) +
                  '" target="_blank">' +
                  artifacts[a] + '</a></td>'
       const id = a.replace(/[.-]/g, '_')
@@ -94,11 +98,15 @@ class ArtifactKnotGenerator {
             {knot: knot.value,
              target: sub.value,
              artifact: a,
+             exclusive: true,
              includeMissing: true}
           )
         }
       }
     }
+    MessageBus.i.unsubscribe('generator/insert/artifact-knot',
+                             this._insertArtifacts)
+
     MessageBus.i.publish('control/case/refresh')
     MessageBus.i.publish('control/elements/retract')
     MessageBus.i.publish('generator/finished/artifact-knot')

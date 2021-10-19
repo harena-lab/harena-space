@@ -48,6 +48,7 @@ class Editor {
           case 'edit/artifact/insert':
             status = this.artifactInsert(
               message.knot, message.target, message.artifact,
+              ((message.exclusive) ? message.exclusive : false),
               ((message.includeMissing) ? message.includeMissing : false))
             break
         }
@@ -98,7 +99,8 @@ class Editor {
       let ktitle = templateTitle
 
       let kn =0
-      if (!ktitle.includes('_knot_number_') && knots[ktitle] != null) {
+      if (!ktitle.includes('_knot_number_') &&
+          knots[ktitle.replace(/ /g, '_')] != null) {
         ktitle += ' _knot_number_'
         kn = 1
       }
@@ -106,7 +108,7 @@ class Editor {
       let knotId
       do {
         kn++
-        knotId = ktitle.replace('_knot_number_', kn).replace(/ /, '_')
+        knotId = ktitle.replace('_knot_number_', kn).replace(/ /g, '_')
       } while (knots[knotId] != null)
       const knotMd = ktitle.replace('_knot_number_', kn)
 
@@ -148,7 +150,7 @@ class Editor {
     return status
   }
 
-  artifactInsert (knot, target, artifact, includeMissing) {
+  artifactInsert (knot, target, artifact, exclusive, includeMissing) {
     console.log('=== artifact insert')
     console.log(knot)
     console.log(target)
@@ -160,12 +162,15 @@ class Editor {
       let replace = false
       let includeContext = false
       let c = 0
+      const artifactType = Translator.instance.classifyArtifactType(artifact)
+      const artifactSuperType = (artifactType == 'image') ? 'image' : 'media'
       while (c < content.length && targetEl < 0) {
         if (content[c].type == 'context-open' &&
             content[c].context == target)
           targetEl = -1
         if (targetEl == -1) {
-          if (content[c].type == 'media' && !content[c].path) {
+          if (content[c].type == artifactSuperType &&
+              (!content[c].path || exclusive)) {
             targetEl = c
             replace = true
           } else if (content[c].type == 'context-close')
@@ -178,12 +183,14 @@ class Editor {
         includeContext = true
       }
       if (targetEl >= 0) {
-        const media = {type: 'media',
-                       subtype: Translator.instance.classifyArtifactType(artifact),
-                       path: artifact
-                      }
+        let artifactObj = {type: artifactSuperType,
+                           path: artifact}
+        if (artifactSuperType == 'image')
+          artifactObj.alternative = target
+        else
+          artifactObj.subtype = artifactType
         if (replace)
-          status = this.elementReplace(knot, targetEl, media)
+          status = this.elementReplace(knot, targetEl, artifactObj)
         else {
           if (includeContext) {
             this.elementInsert(knot, targetEl,
@@ -191,7 +198,7 @@ class Editor {
                context: target})
             targetEl++
           }
-          status = this.elementInsert(knot, targetEl, media)
+          status = this.elementInsert(knot, targetEl, artifactObj)
           if (includeContext)
             this.elementInsert(knot, targetEl+1,
               {type: 'context-close'})

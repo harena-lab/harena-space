@@ -123,7 +123,7 @@ Translator.htmlSubTemplates = {
     image: {
       type: 'image',
       alternative: 'Image',
-      path: '../templates/basic/images/landscape.svg',
+      path: 'template/image-stub.svg',
       title: 'Image'
     },
     media: {
