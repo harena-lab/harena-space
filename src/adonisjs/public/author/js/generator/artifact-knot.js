@@ -22,6 +22,8 @@ class ArtifactKnotGenerator {
     this._artifacts = artifacts
     this._candidates = candidates
     this._htmlSpace = html
+    console.log('=== candidates')
+    console.log(this._candidates)
 
     const videoExt = ['']
     let artHTML = '<div style="width:100%;overflow:scrool"><table>'
@@ -59,48 +61,64 @@ class ArtifactKnotGenerator {
     let select = this._htmlSpace
       .querySelector('#s_' + event.target.id.substring(2))
     select.innerHTML = ''
-    const sub = this._candidates[event.target.value]
-    for (let s in sub) {
+    const sub = this._candidates[event.target.value].contexts
+    if (sub != null) {
       let option = document.createElement('option')
-      if (s == 'description') {
-        option.setAttribute('value', '_empty_')
-        option.setAttribute('selected', true)
-        option.innerHTML = ''
-      } else if (s != 'template') {
-        option.setAttribute('value', s)
-        option.innerHTML = sub[s]
-      }
+      option.setAttribute('value', '_empty_')
+      option.setAttribute('selected', true)
+      option.innerHTML = ''
       select.appendChild(option)
+      for (let s in sub) {
+        option = document.createElement('option')
+        if (s != 'template') {
+          option.setAttribute('value', s)
+          option.innerHTML = sub[s]
+        }
+        select.appendChild(option)
+      }
     }
   }
 
   async _insertArtifacts () {
     let templateHistory = {}
+    const knotsU = {}
     for (let a in this._artifacts) {
       const id = a.replace(/[.-]/g, '_')
-      console.log('=== artifact build')
-      console.log(id)
       const knot = this._htmlSpace.querySelector('#g_' + id)
       const sub = this._htmlSpace.querySelector('#s_' + id)
       if (knot.value != '_empty_' && sub.value != '_empty_') {
-        const template = this._candidates[knot.value].template
+        if (!knotsU[knot.value])
+          knotsU[knot.value] = {}
+        knotsU[knot.value][sub.value] = a
+      }
+    }
+    for (const c in this._candidates) {
+      if (knotsU[c]) {
+        const candidate = this._candidates[c]
         let status = true
-        if (!templateHistory[template])
-          status = await MessageBus.i.request('edit/knot/check-create',
+        if (!templateHistory[candidate.template])
+          status = await MessageBus.i.request('modify/knot/update',
             {target: '',
              before: true,
-             template: template,
-             knotId: knot.value}
+             template: candidate.template,
+             knotId: c}
           )
         if (status) {
-          templateHistory[template] = true
-          MessageBus.i.publish('edit/artifact/insert',
-            {knot: knot.value,
-             target: sub.value,
-             artifact: a,
-             exclusive: true,
-             includeMissing: true}
-          )
+          templateHistory[candidate.template] = true
+          for (const s in this._candidates[c].contexts) {
+            if (knotsU[c][s]) {
+              MessageBus.i.publish('modify/artifact/insert',
+                {knot: c,
+                 target: s,
+                 artifact: knotsU[c][s],
+                 exclusive: (candidate.exclusive) ? true : false,
+                 includeMissing: (candidate['include-missing']) ? true : false,
+                 includeTitle:
+                   (candidate['include-title'])
+                     ? candidate.contexts[s] : null}
+              )
+            }
+          }
         }
       }
     }

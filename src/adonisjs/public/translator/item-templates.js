@@ -112,7 +112,11 @@ Translator.htmlSubTemplates = {
 '{{[namespace][context][id][property-value]',
     'context-close':
 `
-}}`
+}}`,
+    'formal-open':
+`(({namespace}{context}{id}`,
+    'formal-close':
+`))`
   }
 
   Translator.objTemplates = {

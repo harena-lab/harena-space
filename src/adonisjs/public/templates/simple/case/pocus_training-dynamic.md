@@ -31,10 +31,6 @@ Write here the **Main Hypothesis**.
 Write here the **POCUS questions**.
 }}
 
-{{comments
-* template: simple/knot/pt_presentation
-}}
-
 # * Conclusion: Final
 
 {{conclusion

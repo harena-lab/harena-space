@@ -2,18 +2,8 @@
 
 **Extra Videos and Images:**
 
-Video
+**Findings**
 
-{{EXTRA
-<video></video>
-}}
-
-Image
-
-{{EXTRA
-![POCUS Image](template/image-stub.svg)
-}}
-
-{{comments
-* template: simple/knot/pt_extra
+{{findings
+Describe here your findings concerning the following videos.
 }}

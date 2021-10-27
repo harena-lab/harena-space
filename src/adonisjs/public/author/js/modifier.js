@@ -1,11 +1,11 @@
 /**
- * Editor: executes sequences of commands related to editing.
+ * Modifier: executes sequences of commands related to case modification.
  */
 
-class Editor {
+class Modifier {
   constructor () {
-    this.editAction = this.editAction.bind(this)
-    MessageBus.i.subscribe('edit/+/+', this.editAction)
+    this.modificationAction = this.modificationAction.bind(this)
+    MessageBus.i.subscribe('modify/+/+', this.modificationAction)
   }
 
   get _compiledCase () {
@@ -16,8 +16,8 @@ class Editor {
     AuthorManager.i.compiledCase = compiled
   }
 
-  async editAction (topic, message) {
-    status = false
+  async modificationAction (topic, message) {
+    let status = false
     this._actionTopic = topic
     this._actionMessage = message
 
@@ -25,8 +25,8 @@ class Editor {
       this._reportError('message.missing')
     else {
       let mfields = true
-      if (Editor.mandatoryFields[topic]) {
-        for (let f of Editor.mandatoryFields[topic])
+      if (Modifier.mandatoryFields[topic]) {
+        for (let f of Modifier.mandatoryFields[topic])
           if (message[f] == null) {
             this._reportError('message.field.' + f + '.missing')
             mfields = false
@@ -35,21 +35,31 @@ class Editor {
 
       if (mfields) {
         switch (topic) {
-          case 'edit/knot/create':
+          case 'modify/knot/create':
             status = await this.knotCreate(
               message.target, ((message.before) ? message.before : false),
               message.template)
             break
-          case 'edit/knot/check-create':
-            status = await this.knotCheckCreate(
+          case 'modify/knot/update':
+            status = await this.knotUpdate(
               message.target, ((message.before) ? message.before : false),
-              message.template, message.knotId)
+              message.template, message.knotId.replace(/ /g, '_'))
             break
-          case 'edit/artifact/insert':
+          case 'modify/artifact/insert':
             status = this.artifactInsert(
-              message.knot, message.target, message.artifact,
+              message.knot.replace(/ /g, '_'), message.target, message.artifact,
               ((message.exclusive) ? message.exclusive : false),
-              ((message.includeMissing) ? message.includeMissing : false))
+              ((message.includeMissing) ? message.includeMissing : false),
+              ((message.includeTitle) ? message.includeTitle : null))
+            break
+          case 'modify/formal/update':
+            status = this.formalUpdate(
+              message.knot.replace(/ /g, '_'), message.context,
+              ((message.contextId) ? message.contextId : null),
+              message.comments,
+              ((message.includeMissing || message.includeAfter)
+                ? message.includeMissing : false),
+              ((message.includeAfter) ? message.includeAfter : null))
             break
         }
       }
@@ -87,8 +97,6 @@ class Editor {
           kt++
         knotTarget = knotIds[kt-1]
       }
-      console.log('==== insert position')
-      console.log(knotTarget)
 
       let markdown = await MessageBus.i.request('data/template/' +
                               template.replace(/\//g, '.') + '/get',
@@ -143,19 +151,23 @@ class Editor {
     return status
   }
 
-  async knotCheckCreate (target, before, template, knotId) {
+  async knotUpdate (target, before, template, knotId) {
     let status = true
     if (this._compiledCase.knots[knotId] == null)
       status = this.knotCreate(target, before, template)
     return status
   }
 
-  artifactInsert (knot, target, artifact, exclusive, includeMissing) {
+  artifactInsert (knot, target, artifact, exclusive,
+                  includeMissing, includeTitle) {
     console.log('=== artifact insert')
     console.log(knot)
     console.log(target)
     console.log(artifact)
-    status = false
+    console.log(exclusive)
+    console.log(includeMissing)
+    console.log(includeTitle)
+    let status = false
     if (this._checkKnotContent(knot)) {
       let content = this._compiledCase.knots[knot].content
       let targetEl = -2
@@ -194,6 +206,19 @@ class Editor {
         else {
           if (includeContext) {
             this.elementInsert(knot, targetEl,
+              {type: 'linefeed',
+               content: '\n\n'})
+            targetEl++
+            if (includeTitle != null) {
+              this.elementInsert(knot, targetEl,
+                {type: 'text',
+                 content: includeTitle})
+              this.elementInsert(knot, targetEl+1,
+                {type: 'linefeed',
+                 content: '\n\n'})
+              targetEl += 2
+            }
+            this.elementInsert(knot, targetEl,
               {type: 'context-open',
                context: target})
             targetEl++
@@ -209,8 +234,123 @@ class Editor {
     return status
   }
 
+  formalUpdate (knot, context, contextId, comments,
+                includeMissing, includeAfter) {
+    console.log('=== starting formal update')
+    console.log(context)
+    console.log(includeAfter)
+    let status = false
+    if (this._checkKnotContent(knot)) {
+      let lastContext = null
+      let lastContextId = null
+      let lastFormal = null
+      let contextPos = -1
+      let contextInclude = -1
+      let hasFormal = false
+      const content = this._compiledCase.knots[knot].content
+      for (let e = 0; e < content.length && !hasFormal; e++) {
+        let el = content[e]
+        if (el.type == 'context-open') {
+          lastContext = el.context
+          lastContextId = el.contextId
+        } else if (el.type == 'context-close') {
+          if (lastContext == context && contextPos == -1 &&
+              (contextId == null ||
+                (lastContextId != null && lastContextId == contextId)))
+            contextPos = e
+          else if (includeAfter != null && lastContext == includeAfter)
+            contextInclude = e
+        } else if (el.type == 'formal-open') {
+          lastFormal = el.context
+          if (el.context == context &&
+              (contextId == null || (el.id != null && el.id == contextId))) {
+            contextPos = e
+            hasFormal = true
+          }
+        } else if (el.type == 'formal-close' && includeAfter != null &&
+                   lastFormal == includeAfter)
+          contextInclude = e
+      }
+      console.log('=== formal positions')
+      console.log(context)
+      console.log(contextId)
+      console.log(contextPos)
+      console.log(contextInclude)
+      console.log(hasFormal)
+      console.log('--- include after')
+      console.log(includeAfter)
+
+      if (!hasFormal) {
+        contextPos =
+          (contextPos > -1) ? contextPos + 1 :
+          (contextInclude > -1) ? contextInclude + 1 : content.length
+
+        this.elementInsert(knot, contextPos,
+          {type: 'linefeed',
+           content: '\n'})
+        let formalOpen = {type: 'formal-open',
+                          context: context}
+        if (contextId != null) formalOpen.contextId = contextId
+        this.elementInsert(knot, contextPos+1, formalOpen)
+        this.elementInsert(knot, contextPos+2,
+          {type: 'linefeed',
+           content: '\n'})
+        this.elementInsert(knot, contextPos+3, {
+          type: 'formal-close'
+        })
+        this.elementInsert(knot, contextPos+4,
+          {type: 'linefeed',
+           content: '\n'})
+      }
+
+      for (const c in comments)
+        this.formalCommentUpdate(knot, contextPos, c, comments[c])
+    }
+
+    return status
+  }
+
+  /*
+   * Updates a comment inside a formal
+   *   position: position of the formal open
+   */
+  formalCommentUpdate (knot, position, property, value) {
+    console.log('=== formal comment update')
+    let status = false
+    if (this._checkKnotContentPosition(knot, position, true)) {
+      if (property == null)
+        this._reportError('formal.comment.property.missing')
+      else if (value == null)
+        this._reportError('formal.comment.value.missing')
+      else {
+        const content = this._compiledCase.knots[knot].content
+        let p = position + 1
+        while (p < content.length &&
+               (content[p].type != 'field' || content[p].field != property) &&
+               (content[p].type != 'formal-close'))
+          p++
+        if (p < content.length) {
+          if (content[p].type != 'formal-close') {
+            if (typeof value === 'object' && !Array.isArray(value) &&
+                Object.keys(value).length == 0)
+              this.elementDelete(knot, p)
+            else {
+              const newField = JSON.parse(JSON.stringify(content[p]))
+              newField.value = value
+              this.elementReplace(knot, p, newField)
+            }
+          } else
+            this.elementInsert(knot, p,
+              {type: 'field',
+               field: property,
+               value: value})
+        }
+      }
+    }
+  }
+
   elementInsert (knot, position, element) {
-    status = false
+    let status = false
     if (this._checkKnotContentPosition(knot, position, true)) {
       if (element == null)
         this._reportError('element.insert.missing')
@@ -256,6 +396,18 @@ class Editor {
         MessageBus.i.publish('control/knot/update', null, true)
         status = true
       }
+    }
+    return status
+  }
+
+  elementDelete (knot, position) {
+    status = false
+    if (this._checkKnotContentPosition(knot, position, true)) {
+      this._compiledCase.knots[knot].content.splice(position, 1)
+      this._recordOperation('element', 'delete',
+        {knot: knot,
+         position: position})
+      MessageBus.i.publish('control/knot/update', null, true)
     }
     return status
   }
@@ -335,11 +487,12 @@ class Editor {
   }
 }
 (function () {
-  Editor.i = new Editor()
+  Modifier.i = new Modifier()
 
-  Editor.mandatoryFields = {
-    'edit/knot/create': ['target', 'template'],
-    'edit/knot/check-create': ['target', 'template', 'knotId'],
-    'edit/artifact/insert': ['knot', 'target', 'artifact']
+  Modifier.mandatoryFields = {
+    'modify/knot/create': ['target', 'template'],
+    'modify/knot/update': ['target', 'template', 'knotId'],
+    'modify/artifact/insert': ['knot', 'target', 'artifact'],
+    'modify/formal/update': ['knot', 'context', 'comments']
   }
 })()

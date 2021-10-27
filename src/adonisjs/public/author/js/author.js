@@ -539,19 +539,23 @@ class AuthorManager {
       this._renderKnot()
       delete this._elementSelected
       await this._updateActiveComments()
-      this._comments = new Comments(this._compiledCase, knotid)
+      Comments.prepare(this._compiledCase, knotid)
       if (Panels.s.commentsVisible)
-        this._comments.activateComments()
+        MessageBus.i.publish('control/comments/editor')
       MessageBus.i.publish('control/case/ready', null, true)
     }
   }
 
   async _updateActiveComments() {
+    if (Comments.i && Comments.i.activated)
+      await MessageBus.i.request('control/comments/submit', null, null, true)
+    /*
     if (this._comments != null) {
       if (this._comments.activated)
         await MessageBus.i.request('control/comments/submit', null, null, true)
       this._comments.close()
     }
+    */
   }
 
   /*
@@ -637,7 +641,7 @@ class AuthorManager {
           (message != null && message.knotid != null)
             ? message.knotid : this._knotSelected
 
-    let status = await MessageBus.i.request('edit/knot/create',
+    let status = await MessageBus.i.request('modify/knot/create',
       {target: knotTarget,
        before: false,
        template: template})

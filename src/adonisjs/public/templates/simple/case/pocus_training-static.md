@@ -29,129 +29,181 @@ ___ Data ___
     * Lungs:
       * template: simple/knot/pt_lungs
       * description: 'Pulmão'
-      * 'PD-DP': 'Deslizamento Pleural D'
-      * 'PE-DP': 'Deslizamento Pleural E'
-      * 'PD-AS': 'Antero-superior D'
-      * 'PD-AI': 'Antero-inferior D'
-      * 'PD-LS': 'Latero-superior D'
-      * 'PD-IP': 'Latero-inferior D (parênquima)'
-      * 'PD-LI': 'Latero-inferior D'
-      * 'PE-AS': 'Antero-superior E'
-      * 'PE-AI': 'Antero-inferior E'
-      * 'PE-LS': 'Latero-superior E'
-      * 'PE-IP': 'Latero-inferior E (parênquima)'
-      * 'PE-LI': 'Latero-inferior E'
-      * 'PD-PS': 'Posteror-superior D'
-      * 'PD-PI': 'Postero-inferior D'
-      * 'PE-PS': 'Postero-superior E'
-      * 'PE-PI': 'Postero-inferior E'
-      * 'PL-EX': 'Extra'
+      * exclusive: true
+      * include-missing: true
+      * include-title: true
+      * contexts:
+        * 'PD-DP': 'Deslizamento Pleural D'
+        * 'PE-DP': 'Deslizamento Pleural E'
+        * 'PD-AS': 'Antero-superior D'
+        * 'PD-AI': 'Antero-inferior D'
+        * 'PD-LS': 'Latero-superior D'
+        * 'PD-IP': 'Latero-inferior D (parênquima)'
+        * 'PD-LI': 'Latero-inferior D'
+        * 'PE-AS': 'Antero-superior E'
+        * 'PE-AI': 'Antero-inferior E'
+        * 'PE-LS': 'Latero-superior E'
+        * 'PE-IP': 'Latero-inferior E (parênquima)'
+        * 'PE-LI': 'Latero-inferior E'
+        * 'PD-PS': 'Posteror-superior D'
+        * 'PD-PI': 'Postero-inferior D'
+        * 'PE-PS': 'Postero-superior E'
+        * 'PE-PI': 'Postero-inferior E'
+        * 'PL-EX': 'Extra'
     * Cava:
       * template: simple/knot/pt_cava
       * description: 'Cava'
-      * 'CV-VI': 'Video'
-      * 'CV-II': 'Imagem Inspiração'
-      * 'CV-IE': 'Imagem Expiração'
-      * 'CV-EX': 'Extra'
+      * exclusive: true
+      * include-missing: true
+      * include-title: true
+      * contexts:
+        * 'CV-VI': 'Video'
+        * 'CV-II': 'Imagem Inspiração'
+        * 'CV-IE': 'Imagem Expiração'
+        * 'CV-EX': 'Extra'
     * Heart:
       * template: simple/knot/pt_heart
       * description: 'Coração'
-      * 'CO-SX': 'Sub-xifóide ou Subcostal'
-      * 'CO-PL': 'Para-esternal Longa'
-      * 'CO-PV': 'Paraesternal curta nível V. aortica'
-      * 'CO-PM': 'Paraesternal curta nível mitral'
-      * 'CO-PP': 'Paraesternal curta nível papilares'
-      * 'CO-A4': 'Apical de 4 câmaras'
-      * 'CO-EX': 'Extra'
-    * Lower Limbs:
+      * exclusive: true
+      * include-missing: true
+      * include-title: true
+      * contexts:
+        * 'CO-SX': 'Sub-xifóide ou Subcostal'
+        * 'CO-PL': 'Para-esternal Longa'
+        * 'CO-PV': 'Paraesternal curta nível V. aortica'
+        * 'CO-PM': 'Paraesternal curta nível mitral'
+        * 'CO-PP': 'Paraesternal curta nível papilares'
+        * 'CO-A4': 'Apical de 4 câmaras'
+        * 'CO-EX': 'Extra'
+    * Lower Limb Veins:
       * template: simple/knot/pt_llv
       * description: 'Veias membros inferiores'
-      * 'FM-D1': 'Femoral D1'
-      * 'FM-D2': 'Femoral D2'
-      * 'FM-D3': 'Femoral D3'
-      * 'PO-D1': 'Poplitea D1'
-      * 'PO-D2': 'Poplitea D2'
-      * 'FM-E1': 'Femoral E1'
-      * 'FM-E2': 'Femoral E2'
-      * 'FM-E3': 'Femoral E3'
-      * 'PO-E1': 'Poplitea E1'
-      * 'PO-E2': 'Poplitea E2'
-      * 'VM-EX': 'Extra'
+      * exclusive: true
+      * include-missing: true
+      * include-title: true
+      * contexts:
+        * 'FM-D1': 'Femoral D1'
+        * 'FM-D2': 'Femoral D2'
+        * 'FM-D3': 'Femoral D3'
+        * 'PO-D1': 'Poplitea D1'
+        * 'PO-D2': 'Poplitea D2'
+        * 'FM-E1': 'Femoral E1'
+        * 'FM-E2': 'Femoral E2'
+        * 'FM-E3': 'Femoral E3'
+        * 'PO-E1': 'Poplitea E1'
+        * 'PO-E2': 'Poplitea E2'
+        * 'VM-EX': 'Extra'
     * Abdomen:
       * template: simple/knot/pt_abdomen
       * description: 'Abdome para detecção de liquido livre'
-      * 'AB-QSD': 'QSD'
-      * 'AB-QSE': 'QSE'
-      * 'AB-PT': 'Pelve transversal'
-      * 'AB-PL': 'Pelve longitudinal'
-      * 'AB-EX': 'Extra'
+      * exclusive: true
+      * include-missing: true
+      * include-title: true
+      * contexts:
+        * 'AB-QSD': 'QSD'
+        * 'AB-QSE': 'QSE'
+        * 'AB-PT': 'Pelve transversal'
+        * 'AB-PL': 'Pelve longitudinal'
+        * 'AB-EX': 'Extra'
     * Aorta:
       * template: simple/knot/pt_aorta
       * description: 'Aorta'
-      * 'AO-P': 'Ao proximal'
-      * 'AO-D': 'Ao distal'
-      * 'AO-I': 'Ilíacas'
-      * 'AO-M': 'Ao medial'
-      * 'AO-L': 'Varredura Ao longitudinal'
-      * 'AO-EX': 'Extra'
+      * exclusive: true
+      * include-missing: true
+      * include-title: true
+      * contexts:
+        * 'AO-P': 'Ao proximal'
+        * 'AO-D': 'Ao distal'
+        * 'AO-I': 'Ilíacas'
+        * 'AO-M': 'Ao medial'
+        * 'AO-L': 'Varredura Ao longitudinal'
+        * 'AO-EX': 'Extra'
     * Urinary:
       * template: simple/knot/pt_urinary
       * description: 'Urinario'
-      * 'RD-VL': 'Rim D (varredura longitudinal)'
-      * 'RD-VT': 'Rim D (varredura transversal)'
-      * 'RD-ML': 'Medida longitudinal rim D'
-      * 'RE-VL': 'Rim E (varredura longitudinal)'
-      * 'RE-VT': 'Rim E (varredura transversal)'
-      * 'RE-ML': 'Medida longitudinal rim E'
-      * 'BX-VL': 'Bexiga (varredura longitudinal)'
-      * 'BX-VT': 'Bexiga (varredura transversal)'
-      * 'BX-ML': 'Medida da bexiga (longitudinal)'
-      * 'BX-MT': 'Medida da bexiga (transveral)'
-      * 'UR-EX': 'Extra'
-    * Vesicle:
+      * exclusive: true
+      * include-missing: true
+      * include-title: true
+      * contexts:
+        * 'RD-VL': 'Rim D (varredura longitudinal)'
+        * 'RD-VT': 'Rim D (varredura transversal)'
+        * 'RD-ML': 'Medida longitudinal rim D'
+        * 'RE-VL': 'Rim E (varredura longitudinal)'
+        * 'RE-VT': 'Rim E (varredura transversal)'
+        * 'RE-ML': 'Medida longitudinal rim E'
+        * 'BX-VL': 'Bexiga (varredura longitudinal)'
+        * 'BX-VT': 'Bexiga (varredura transversal)'
+        * 'BX-ML': 'Medida da bexiga (longitudinal)'
+        * 'BX-MT': 'Medida da bexiga (transveral)'
+        * 'UR-EX': 'Extra'
+    * Vesicle and Portal Triad:
       * template: simple/knot/pt_vesicle
       * description: 'Vesicula e Tríade portal'
-      * 'VS-VL': 'Vesícula (varredura longitudinal)'
-      * 'VS-VT': 'Vesícula (varredura transversal)'
-      * 'VS-ME': 'Medida espessura da parede da vesícula'
-      * 'TRIA': 'Tríade portal'
-      * 'BILI': 'Ducto biliar comum'
-      * 'VT-EX': 'Extra'
+      * exclusive: true
+      * include-missing: true
+      * include-title: true
+      * contexts:
+        * 'VS-VL': 'Vesícula (varredura longitudinal)'
+        * 'VS-VT': 'Vesícula (varredura transversal)'
+        * 'VS-ME': 'Medida espessura da parede da vesícula'
+        * 'TRIA': 'Tríade portal'
+        * 'BILI': 'Ducto biliar comum'
+        * 'VT-EX': 'Extra'
     * E-FAST:
       * template: simple/knot/pt_efast
       * description: 'E-FAST'
-      * 'EF-DD': 'Deslizamento pleural D'
-      * 'EF-DE': 'Deslizamento pleural E'
-      * 'EF-SX': 'Sub-xifóide ou subcostal'
-      * 'EF-QSD': 'QSD'
-      * 'EF-QSE': 'QSE'
-      * 'EF-PT': 'Pelve (plano transversal)'
-      * 'EF-PL': 'Pelve (plano longitudinal)'
-      * 'EF-EX': 'Extra'
+      * exclusive: true
+      * include-missing: true
+      * include-title: true
+      * contexts:
+        * 'EF-DD': 'Deslizamento pleural D'
+        * 'EF-DE': 'Deslizamento pleural E'
+        * 'EF-SX': 'Sub-xifóide ou subcostal'
+        * 'EF-QSD': 'QSD'
+        * 'EF-QSE': 'QSE'
+        * 'EF-PT': 'Pelve (plano transversal)'
+        * 'EF-PL': 'Pelve (plano longitudinal)'
+        * 'EF-EX': 'Extra'
     * Soft Parts:
       * template: simple/knot/pt_soft
       * description: 'Partes moles'
-      * 'ML-VL': 'Varredura longitudinal'
-      * 'ML-VT': 'Varredura transversal'
-      * 'ML-ML': 'Medidas no longitudinal'
-      * 'ML-MT': 'Medidas no transversal'
-      * 'ML-EX': 'Extra'
+      * exclusive: true
+      * include-missing: true
+      * include-title: true
+      * contexts:
+        * 'ML-VL': 'Varredura longitudinal'
+        * 'ML-VT': 'Varredura transversal'
+        * 'ML-ML': 'Medidas no longitudinal'
+        * 'ML-MT': 'Medidas no transversal'
+        * 'ML-EX': 'Extra'
     * Articulate:
       * template: simple/knot/pt_articulate
       * description: 'Articular'
-      * 'AR-VL': 'Varredura longitudinal'
-      * 'AR-VT': 'Varredura transversal'
-      * 'AR-ML': 'Medidas no longitudinal'
-      * 'AR-MT': 'Medidas no transversal'
-      * 'AR-EX': 'Extra'
+      * exclusive: true
+      * include-missing: true
+      * include-title: true
+      * contexts:
+        * 'AR-VL': 'Varredura longitudinal'
+        * 'AR-VT': 'Varredura transversal'
+        * 'AR-ML': 'Medidas no longitudinal'
+        * 'AR-MT': 'Medidas no transversal'
+        * 'AR-EX': 'Extra'
     * Ocular:
       * template: simple/knot/pt_ocular
       * description: 'Ocular'
-      * 'OC-VL': 'Varredura longitudinal'
-      * 'OC-VT': 'Varredura transversal'
-      * 'OC-MD': 'Medida do diâmetro nervo óptico'
-      * 'OC-EX': 'Extra'
+      * exclusive: true
+      * include-missing: true
+      * include-title: true
+      * contexts:
+        * 'OC-VL': 'Varredura longitudinal'
+        * 'OC-VT': 'Varredura transversal'
+        * 'OC-MD': 'Medida do diâmetro nervo óptico'
+        * 'OC-EX': 'Extra'
     * Extra:
       * template: simple/knot/pt_extra
       * description: 'Extra'
-      * 'EX-EX': 'Extra'
+      * exclusive: false
+      * include-missing: true
+      * include-title: false
+      * contexts:
+        * 'EX-EX': 'Extra'
