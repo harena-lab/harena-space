@@ -1,0 +1,236 @@
+{
+"property": "likert",
+"blocks": [
+{
+ "title": "Comentários",
+ "type": "text",
+ "property": "details",
+ "placeholder": "Digite seus comentários"
+},
+{
+ "title": "1. Indication for the examination",
+ "description": "If applicable. Reviewing patient history and knowing why the examination is indicated.",
+ "type": "radio",
+ "comments": [
+   {
+    "title": "1. Displays poor knowledge of the indication for the examination.",
+    "property": "likert_examination",
+    "value": "1"
+   },
+   {
+    "title": "2.",
+    "property": "likert_examination",
+    "value": "2"
+   },
+   {
+    "title": "3. Displays some knowledge of the indication for the examination.",
+    "property": "likert_examination",
+    "value": "3"
+   },
+   {
+    "title": "4.",
+    "property": "likert_examination",
+    "value": "4"
+   },
+   {
+    "title": "5. Displays ample knowledge of the indication for the examination.",
+    "property": "likert_examination",
+    "value": "5"
+   }
+ ]
+},
+{
+ "title": "2. Applied knowledge of ultrasound equipment",
+ "description": "Familiarity with the equipment and its functions, i.e. selecting probe, using buttons and application of gel.",
+ "type": "radio",
+ "comments": [
+   {
+    "title": "1. Unable to operate equipment.",
+    "property": "likert_knowledge_ultrasound_equipment",
+    "value": "1"
+   },
+   {
+    "title": "2.",
+    "property": "likert_knowledge_ultrasound_equipment",
+    "value": "2"
+   },
+   {
+    "title": "3. Operates the equipment with some experience.",
+    "property": "likert_knowledge_ultrasound_equipment",
+    "value": "3"
+   },
+   {
+    "title": "4.",
+    "property": "likert_knowledge_ultrasound_equipment",
+    "value": "4"
+   },
+   {
+    "title": "5. Familiar with operating the equipment.",
+    "property": "likert_knowledge_ultrasound_equipment",
+    "value": "5"
+   }
+ ]
+},
+{
+ "title": "3. Image optimization",
+ "description": "Consistently ensuring optimal image quality by adjusting gain, depth, focus, frequency etc.",
+ "type": "radio",
+ "comments": [
+   {
+    "title": "1. Fails to optimize images.",
+    "property": "likert_image_optimization",
+    "value": "1"
+   },
+   {
+    "title": "2.",
+    "property": "likert_image_optimization",
+    "value": "2"
+   },
+   {
+    "title": "3. Competent image optimization but not done consistently.",
+    "property": "likert_image_optimization",
+    "value": "3"
+   },
+   {
+    "title": "4.",
+    "property": "likert_image_optimization",
+    "value": "4"
+   },
+   {
+    "title": "5. Consistently optimization of images.",
+    "property": "likert_image_optimization",
+    "value": "5"
+   }
+ ]
+},
+{
+ "title": "4. Systematic examination",
+ "description": "Consistently displaying systematic approach to the examination and presentation of relevant structures according to guidelines.",
+ "type": "radio",
+ "comments": [
+   {
+    "title": "1. Unsystematic approach.",
+    "property": "likert_systematic_examination",
+    "value": "1"
+   },
+   {
+    "title": "2.",
+    "property": "likert_systematic_examination",
+    "value": "2"
+   },
+   {
+    "title": "3. Displays some systematic approach.",
+    "property": "likert_systematic_examination",
+    "value": "3"
+   },
+   {
+    "title": "4.",
+    "property": "likert_systematic_examination",
+    "value": "4"
+   },
+   {
+    "title": "5. Consistently dysplays systematic approach.",
+    "property": "likert_systematic_examination",
+    "value": "5"
+   }
+ ]
+},
+{
+ "title": "5. Interpretation of images",
+ "description": "Recognition of image pattern and interpretation of findings.",
+ "type": "radio",
+ "comments": [
+   {
+    "title": "1. Unable to interpret any findings",
+    "property": "likert_interpretation_images",
+    "value": "1"
+   },
+   {
+    "title": "2.",
+    "property": "likert_interpretation_images",
+    "value": "2"
+   },
+   {
+    "title": "3. Does not consistently interpret findings correctly.",
+    "property": "likert_interpretation_images",
+    "value": "3"
+   },
+   {
+    "title": "4.",
+    "property": "likert_interpretation_images",
+    "value": "4"
+   },
+   {
+    "title": "5. Consistently interprets findings correctly.",
+    "property": "likert_interpretation_images",
+    "value": "5"
+   }
+ ]
+},
+{
+ "title": "6. Documentation of examination",
+ "description": "Image recording and focused verbal/written documentation.",
+ "type": "radio",
+ "comments": [
+   {
+    "title": "1. Does not document any images.",
+    "property": "likert_documentation_examination",
+    "value": "1"
+   },
+   {
+    "title": "2.",
+    "property": "likert_documentation_examination",
+    "value": "2"
+   },
+   {
+    "title": "3. Documents most relevant images.",
+    "property": "likert_documentation_examination",
+    "value": "3"
+   },
+   {
+    "title": "4.",
+    "property": "likert_documentation_examination",
+    "value": "4"
+   },
+   {
+    "title": "5. Consistently documents relevant images",
+    "property": "likert_documentation_examination",
+    "value": "5"
+   }
+ ]
+},
+{
+ "title": "7. Medical decision making",
+ "description": "If applicable. Ability to integrate scan results into the care of the patient and medical decision making.",
+ "type": "radio",
+ "comments": [
+   {
+    "title": "1. Unable to integrate findings into medical decision making.",
+    "property": "likert_medical_decision_making",
+    "value": "1"
+   },
+   {
+    "title": "2.",
+    "property": "likert_medical_decision_making",
+    "value": "2"
+   },
+   {
+    "title": "3. Able to integrate findings into a clinical context.",
+    "property": "likert_medical_decision_making",
+    "value": "3"
+   },
+   {
+    "title": "4.",
+    "property": "likert_medical_decision_making",
+    "value": "4"
+   },
+   {
+    "title": "5. Consistent integration of findings into medical decision making.",
+    "property": "likert_medical_decision_making",
+    "value": "5"
+   }
+ ]
+}
+],
+"contexts": {}
+}

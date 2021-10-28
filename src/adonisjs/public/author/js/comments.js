@@ -4,21 +4,26 @@
  * Manages comments for each knot in a case.
  */
 
-/*
-function _harenaCustomUploadAdapterPluginComments( editor ) {
-    editor.plugins.get( 'FileRepository' ).createUploadAdapter = ( loader ) => {
-        return new HarenaUploadAdapter(loader, Basic.service.currentCaseId, DCCCommonServer.token);
-    };
-}
-*/
-
 class Comments {
-  constructor (compiledCase, knotid) {
+  static prepare (compiledCase, knotid) {
+    if (Comments.i == null)
+      Comments.i = new Comments()
+
+    Comments.i.buildComments(compiledCase, knotid)
+  }
+
+  constructor() {
+    this.activateComments = this.activateComments.bind(this)
+    MessageBus.i.subscribe('control/comments/editor', this.activateComments)
+    this.commentsConfirm = this.commentsConfirm.bind(this)
+    MessageBus.i.subscribe('control/comments/edit/confirm',
+                           this.commentsConfirm)
+  }
+
+  buildComments (compiledCase, knotid) {
     this._compiledCase = compiledCase
     this._knotid = knotid
     this._activated = false
-    this.activateComments = this.activateComments.bind(this)
-    MessageBus.i.subscribe('control/comments/editor', this.activateComments)
   }
 
   get activated() {
@@ -27,14 +32,172 @@ class Comments {
 
   async activateComments () {
     console.log('************* activate comments')
+
+    /*
+    if (this._activated)
+      MessageBus.i.unsubscribe('control/comments/edit/confirm',
+                               this.commentsConfirm)
+    */
+
     this._activated = true
 
     let content = this._compiledCase.knots[this._knotid].content
 
-    const comments =
-      content.findIndex(
-        el => el.type == 'context-open' && el.context == 'comments')
+    console.log(this._knotid)
+    console.log(content)
 
+    let template = await this._loadTemplate(content)
+    if (template == null)
+      template = Comments.generalTemplate
+    console.log('=== templated loaded')
+    console.log(template)
+    this._template = template
+    // extract dependencies
+    const dependencies = {}
+    for (const c in template.contexts)
+      if (template.contexts[c].dependency != null)
+        for (const d of template.contexts[c].dependency)
+          dependencies[d] = c
+
+    this._collection = this._collectComments(content, template, dependencies)
+    this._generateForm(template, this._collection)
+  }
+
+  async _loadTemplate (content) {
+    let template = null
+    const commPos =
+      content.findIndex(
+        el => el.type == 'formal-open' && el.context == 'comments')
+    if (commPos != -1) {
+      console.log('=== commPos')
+      console.log(commPos)
+      let tmpl = null
+      for (let t = commPos+1; t < content.length; t++)
+        if (content[t].type == 'field' && content[t].field == 'template') {
+          tmpl = content[t].value
+          break
+        }
+      if (tmpl != null) {
+        template = await MessageBus.i.request(
+          'data/template_comments/' +
+          tmpl.replace(/\//g, '.') + '/get',
+          null, null, true)
+        template = template.message
+        console.log('=== template')
+        console.log(template)
+      }
+    }
+
+    return template
+  }
+
+  _collectComments (content, template, dependencies) {
+    let collection = {
+      comments: {}
+    }
+    let contexts = {}
+    collection.contexts = contexts
+    let insideFormal = null
+    for (let el of content) {
+      if (el.type == 'context-open') {
+        const id = (el.id) ? el.id : el.context
+        contexts[id] = {
+          formal: false,
+          context: el.context,
+          comments: {}}
+        if (el.id) contexts[id].id = el.id
+      } else if (el.type == 'formal-open') {
+        insideFormal = (el.id) ? el.id : el.context
+        contexts[insideFormal] = {
+          formal: true,
+          context: el.context,
+          comments: {}}
+        if (el.id) contexts[insideFormal].id = el.id
+      } else if (el.type == 'formal-close')
+        insideFormal = null
+      else if (insideFormal != null && el.type == 'field') {
+        if (contexts[insideFormal].context == 'comments' &&
+            el.field == template.property)
+          collection.comments = el.value
+        else if (template.contexts[contexts[insideFormal].context] &&
+                 el.field == template.contexts[contexts[insideFormal].context].property)
+          contexts[insideFormal].comments =
+            Object.assign(contexts[insideFormal].comments, el.value)
+      }
+    }
+
+    // add dependencies
+    const lastPos = {}
+    for (const c in collection.contexts) {
+      if (dependencies[c] != null)
+        lastPos[dependencies[c]] = c
+    }
+    for (const l in lastPos) {
+      if (!collection.contexts[l]) {
+        const newContexts = {}
+        for (const c in collection.contexts) {
+          newContexts[c] = collection.contexts[c]
+          if (c == lastPos[l])
+            newContexts[l] = {
+              formal: false,
+              context: l,
+              comments: {},
+              includeAfter: lastPos[l]}
+        }
+        collection.contexts = newContexts
+      }
+    }
+
+    console.log('=== collected fields')
+    console.log(collection)
+    return collection
+  }
+
+  _generateForm (template, collection) {
+    let htmlForm = this._blockToForm('', template, collection.comments)
+    for (const c in collection.contexts) {
+      const tmpl = template.contexts[collection.contexts[c].context]
+      if (tmpl != null)
+        htmlForm += this._blockToForm(c, tmpl, collection.contexts[c].comments)
+    }
+
+    document.querySelector('#comments-display').innerHTML =
+      Comments.html.form.replace(/{form}/gm, htmlForm)
+  }
+
+  _blockToForm (context, blockTemplate, comments) {
+    let htmlBlock = (blockTemplate.title == null) ? ''
+      : Comments.html.section.replace(/{section_title}/gm, blockTemplate.title)
+    for (const b of blockTemplate.blocks) {
+      let count = 1
+      let htmlItems = ''
+      if (b.type == 'text')
+        htmlItems += Comments.html.text
+          .replace(/{item_property}/gm, context + '_._' + b.property)
+          .replace(/{item_placeholder}/gm, (b.placeholder) ? b.placeholder : '')
+          .replace(/{item_value}/gm, (comments[b.property]) ? comments[b.property] : '')
+      else
+        for (const a of b.comments) {
+          htmlItems += Comments.html[b.type]
+            .replace(/{item_title}/gm, a.title)
+            .replace(/{item_property}/gm, context + '_._' + a.property)
+            .replace(/{item_id}/gm, context + '_._' + a.property + count)
+            .replace(/{item_value}/gm, a.value)
+            .replace(/{checked}/gm,
+              ((comments[a.property] && comments[a.property] == a.value)
+                 ? 'checked' : ''))
+          count++
+        }
+      htmlBlock += Comments.html.block
+        .replace(/{block_title}/gm, b.title)
+        .replace(/{block_description}/gm,
+          (b.description) ? '<p>' + b.description + '</p>' : '')
+        .replace(/{items}/gm, htmlItems)
+    }
+    return htmlBlock
+  }
+
+    /*
     if (comments != -1) {
       this._template = -1
       for (let c = comments+1;
@@ -71,69 +234,10 @@ class Comments {
     MessageBus.i.subscribe('control/comments/edit/confirm',
                              this.commentsConfirm)
    this.toggleRadioFindings()
+   */
+  //}
 
-    /*
-    let cKnot = -1
-    if (this._compiledCase != null && this._compiledCase.layers.Comments != null) {
-      const comments = this._compiledCase.layers.Comments.content
-      let cu = 0
-      while (cu < comments.length && cKnot == -1) {
-        if (comments[cu].type == 'context-open' && comments[cu].context == this._knotid)
-          cKnot = cu
-        cu++
-      }
-
-      if (cKnot != -1) {
-        let html = '<hr><h3>Comments</h3>'
-        cKnot++
-        while (cKnot < comments.length && comments[cKnot].type != 'context-close') {
-          html += Translator.instance.objToHTML(comments[cKnot])
-          if (comments[cKnot].type == 'text')
-            html += '<hr>'
-          cKnot++
-        }
-        this._knotPos = cKnot
-        // document.querySelector('#comments-display').innerHTML = html
-      }
-    }
-
-    this.commentsConfirm = this.commentsConfirm.bind(this)
-    MessageBus.i.subscribe('control/comments/edit/confirm', this.commentsConfirm)
-    this.commentsCancel = this.commentsCancel.bind(this)
-    MessageBus.i.subscribe('control/comments/edit/cancel', this.commentsCancel)
-
-    let editorPanel = document.querySelector('#comments-editor')
-
-    DecoupledEditor.create(editorPanel,
-      {
-        extraPlugins: [_harenaCustomUploadAdapterPluginComments],
-        mediaEmbed: {
-          extraProviders: [{
-             name: 'extraProvider',
-             url: / /,
-             html: match => '<iframe src="' + match[1] + 'preview" width="560" height="315"></iframe>'
-           }]
-         },
-         harena: {
-           confirm: 'control/comments/edit/confirm',
-           cancel:  'control/comments/edit/cancel'
-         }
-      } )
-      .then( editor => {
-        document.querySelector('#comments-toolbar').appendChild(editor.ui.view.toolbar.element)
-
-        window.editor = editor;
-        this._editor = editor;
-        editor.model.document.on( 'change:data', () => {
-          this._textChanged = true
-        } );
-      } )
-      .catch( error => {
-        console.error( 'There was a problem initializing the editor.', error );
-    } );
-    */
-  }
-
+  /*
   toggleRadioFindings(){
 
     const radioList = document.querySelectorAll(`input[id*="achados"][id$="1"]`)
@@ -162,10 +266,74 @@ class Comments {
       })
     }
   }
+  */
 
   commentsConfirm(topic, message) {
-    console.log('============')
-    console.log('confirming comments')
+    console.log('=== comments confirm')
+
+    for (const field in message.value) {
+      const pos = field.indexOf('_._')
+      const context = field.substring(0, pos)
+      const property = field.substring(pos + 3)
+
+      if (context.length == 0) {
+        if (!this._collection.newComments)
+          this._collection.newComments = {}
+        this._collection.newComments[property] = message.value[field]
+      } else {
+        if (!this._collection.contexts[context].newComments)
+          this._collection.contexts[context].newComments = {}
+        this._collection.contexts[context].newComments[property] =
+          message.value[field]
+      }
+    }
+
+    console.log('=== new collection')
+    console.log(this._collection)
+
+    if (Object.keys(this._collection.comments).length > 0 ||
+        this._collection.newComments) {
+      let comments =
+        (this._collection.newComments) ? this._collection.newComments : {}
+      if (this._template.property) {
+        const insideComments = comments
+        comments = {}
+        comments[this._template.property] = insideComments
+      }
+      MessageBus.i.publish('modify/formal/update',
+        {knot: this._knotid,
+         context: 'comments',
+         comments: comments})
+    }
+    for (const c in this._collection.contexts) {
+      const context = this._collection.contexts[c]
+      if (this._template.contexts[context.context] &&
+          (Object.keys(context.comments).length > 0 || context.newComments)) {
+        const property =
+          this._template.contexts[context.context].property
+        const update = {
+          knot: this._knotid,
+          context: context.context,
+          comments: (context.newComments) ? context.newComments : {},
+          includeMissing: true }
+        if (property) {
+          const insideComments = update.comments
+          update.comments = {}
+          update.comments[property] = insideComments
+        }
+        if (context.id)
+          update.contextId = context.id
+        if (context.includeAfter)
+          update.includeAfter = context.includeAfter
+        console.log('=== formal/update')
+        console.log(update)
+        console.log(update.includeAfter)
+        MessageBus.i.publish('modify/formal/update', update)
+      }
+    }
+  }
+
+    /*
     let content = this._compiledCase.knots[this._knotid].content
     let commentElement
     for (let v in message.value)
@@ -191,50 +359,72 @@ class Comments {
       this._comments = this._template + 1
     }
     Translator.instance.updateElementMarkdown(commentElement)
+  } */
 
-    /*
-    let comments = this._compiledCase.layers.Comments.content
-    let seq = comments[this._knotPos].seq
-    let linefeed1 = {
-        type: 'linefeed',
-        content: '\n\n',
-        seq: seq
-    }
-    comments.splice(this._knotPos, 0, linefeed1)
-    Translator.instance.updateElementMarkdown(linefeed1)
-
-    const text = {
-      type: 'text',
-      content: this._editor.getData(),
-      seq: seq+1
-    }
-    comments.splice(this._knotPos+1, 0, text)
-    Translator.instance.updateElementMarkdown(text)
-
-    let linefeed2 = {
-        type: 'linefeed',
-        content: '\n\n',
-        seq: seq+2
-    }
-    comments.splice(this._knotPos+2, 0, linefeed2)
-    Translator.instance.updateElementMarkdown(linefeed2)
-
-    seq += 3
-    for (let c = this._knotPos+3; c < comments.length; c++) {
-      comments[c].seq = seq
-      seq++
-    }
-
-    console.log('*** NEW LAYER ***')
-    console.log(this._compiledCase.layers.Comments.content)
-    */
-  }
-
+  /*
   close() {
-    console.log('*** unsubscribed')
     MessageBus.i.unsubscribe('control/comments/editor', this.activateComments)
     if (this._activated)
       MessageBus.i.unsubscribe('control/comments/edit/confirm',
                                  this.commentsConfirm)
   }
+  */
 }
+
+(function () {
+Comments.generalTemplate =
+{
+ property: "general",
+ blocks: [
+  {
+   "title": "Comentários",
+   "type": "text",
+   "property": "comments",
+   "placeholder": "Digite seus comentários"
+  }
+ ],
+ contexts: {}
+}
+Comments.html = {
+form:
+`<form>
+  {form}
+  <dcc-submit label="COMMENT" xstyle="in"  subscribe="control/comments/submit"
+              topic="control/comments/edit/confirm" display="none">
+  </dcc-submit>
+  <hr>
+  <div class="text-center">
+    <dcc-button topic="control/case/save" label="GRAVAR COMENTÁRIOS" xstyle="theme"></dcc-button>
+  </div>
+<hr>
+</form>`,
+section:
+`<hr>
+<h3>{section_title}</h3>
+<hr>`,
+block:
+`<h4 class="mt-1">{block_title}</h4>
+<div class="bg-light border border-secondary rounded pl-2">{block_description}
+{items}</div>`,
+text:
+`<textarea class="form-control" id="{item_property}" name="{item_property}"
+  placeholder="{item_placeholder}">{item_value}</textarea>`,
+radio:
+`<div class="form-check">
+  <input type="radio" id="{item_id}"
+    name="{item_property}" value="{item_value}" class="form-check-input" {checked}>
+  <label for="{item_id}" class="form-check-label">{item_title}</label>
+</div>`,
+'radio-h':
+`<div class="form-check-inline">
+  <input type="radio" id="{item_id}"
+    name="{item_property}" value="{item_value}" class="form-check-input" {checked}>
+  <label for="{item_id}" class="form-check-label">{item_title}</label>
+</div>`,
+checkbox:
+`<div class="form-check">
+  <input type="checkbox" id="{item_property}"
+    name="{item_property}" value="{item_value}" class="form-check-input" {checked}>
+  <label for="{item_property}" class="form-check-label">{item_title}</label>
+</div>`}
+})()

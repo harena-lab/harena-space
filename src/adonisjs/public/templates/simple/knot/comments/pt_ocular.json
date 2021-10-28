@@ -1,0 +1,266 @@
+{
+ "property": "media",
+ "blocks": [
+  {
+   "title": "Comentários",
+   "type": "text",
+   "property": "details",
+   "placeholder": "Digite seus comentários"
+  },
+  {
+   "title": "Nota",
+   "type": "radio-h",
+   "comments": [
+    {
+     "title": "1 |",
+     "property": "grade",
+     "value": "1"
+    },
+    {
+     "title": "2 |",
+     "property": "grade",
+     "value": "2"
+    },
+    {
+     "title": "3 |",
+     "property": "grade",
+     "value": "3"
+    },
+    {
+     "title": "4 |",
+     "property": "grade",
+     "value": "4"
+    },
+    {
+     "title": "5 |",
+     "property": "grade",
+     "value": "5"
+    }
+   ]
+  }
+ ],
+ "contexts": {
+  "OC-VL": {
+   "title": "Vídeo – Varredura plano longitudinal",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Referências anatómicas/qualidade",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Córnea ausente",
+       "property": "cornea",
+       "value": "not_present"
+      },
+      {
+       "title": "Câmara anterior ausente",
+       "property": "anterior_chamber",
+       "value": "not_present"
+      },
+      {
+       "title": "Cristalino ausente",
+       "property": "crystalline_lens",
+       "value": "not_present"
+      },
+      {
+       "title": "Câmara posterior ausente",
+       "property": "posterior_chamber",
+       "value": "not_present"
+      },
+      {
+       "title": "Nervo ótico ausente",
+       "property": "optic_nerve",
+       "value": "not_present"
+      }
+     ]
+    }
+   ]
+  },
+  "OC-VT": {
+   "title": "Vídeo – Varredura plano transversal",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Referências anatómicas/qualidade",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Córnea ausente",
+       "property": "cornea",
+       "value": "not_present"
+      },
+      {
+       "title": "Câmara anterior ausente",
+       "property": "anterior_chamber",
+       "value": "not_present"
+      },
+      {
+       "title": "Cristalino ausente",
+       "property": "crystalline_lens",
+       "value": "not_present"
+      },
+      {
+       "title": "Câmara posterior ausente",
+       "property": "posterior_chamber",
+       "value": "not_present"
+      },
+      {
+       "title": "Nervo ótico ausente",
+       "property": "optic_nerve",
+       "value": "not_present"
+      }
+     ]
+    }
+   ]
+  },
+  "OC-MD": {
+   "title": "Imagem – Medida do diâmetro nervo ótico",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Referências anatómicas/qualidade",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Medida inadequada",
+       "property": "measurement",
+       "value": "inadequate"
+      },
+      {
+       "title": "Nervo fora do eixo longitudinal",
+       "property": "longitudinal_off_axis_acquisition_of_nerve",
+       "value": "yes"
+      }
+     ]
+    }
+   ]
+  }
+ }
+}

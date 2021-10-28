@@ -11,11 +11,22 @@ class EditDCCMedia extends EditDCC {
     // checks if the image is subordinated to another entity
     const path = await this._mediaUploadPanel(
                           mtype, EditDCCMedia.fileExt[mtype])
-    if (path != null && path.length > 0) {
-      if (obj.image)
-        obj.image.path = path
-      else
-        obj.path = path
+    if (path != null) {
+      if (path != '_#clear#_') {
+        if (obj.image)
+          obj.image.path = path
+        else
+          obj.path = path
+      } else {
+        if (obj.image)
+          obj.image.path = Translator.objTemplates.image.path
+        else {
+          if (mtype == 'image')
+            obj.path = Translator.objTemplates.image.path
+          else if (obj.path)
+            delete obj.path
+        }
+      }
       this._properties.applyProperties(true)
     }
   }
@@ -24,10 +35,10 @@ class EditDCCMedia extends EditDCC {
 (function () {
   EditDCCMedia.fileExt = {
     'image': {
-      select: ['png', 'jpg', 'jpeg', 'png'],
+      select: Translator.extension.image,
       browse: 'image/png, image/jpeg, image/svg' },
     'media': {
-      select: ['mpg', 'mpeg', 'mp4', 'webm', 'mp3'],
+      select: Translator.extension.video.concat(Translator.extension.audio),
       browse: 'audio/mpeg, video/mp4, video/webm'
     }
   }

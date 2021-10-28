@@ -1,15 +1,15 @@
-Description Cycle
-=================
+* Description Cycle
+===================
 
-Description (detailed)
-----------------------
+* Description (detailed)
+------------------------
 
 Present the case here.
 
 * -> Generate hypothesis
 
-Generate hypothesis (input)
----------------------------
+* Generate hypothesis (input)
+-----------------------------
 
 ? hypothesis
   What is your main diagnostic hypothesis?
@@ -25,20 +25,20 @@ Generate hypothesis (input)
 
 * Submit hypothesis -> Flow.Next
 
-EKG Cycle
-=========
+* EKG Cycle
+===========
 
-## EKG (exam_zoom)
+## * EKG (exam_zoom)
 
 @EKG
   ![EKG](template/ekg-template.svg)
 
 * -> Generate hypothesis
 
-## Generate hypothesis: Description Cycle.Generate hypothesis
+## * Generate hypothesis: Description Cycle.Generate hypothesis
 
-Final
-=====
+* Final
+=======
 
 Report (detailed,end)
 ---------------------

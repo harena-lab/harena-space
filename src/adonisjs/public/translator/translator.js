@@ -810,7 +810,8 @@ class Translator {
                 type: 'script',
                 content: [compiled[c]]
               }, compiled[c]._source + line)
-            if (compiled[c].subordinate) { script.subordinate = compiled[c].subordinate }
+            if (compiled[c].subordinate) {
+              script.subordinate = compiled[c].subordinate }
             compiled[c] = script
           }
         } else {
@@ -827,15 +828,25 @@ class Translator {
 
     this._compileMergeLinefeeds(compiled)
 
-    // tenth cycle - hide comments
-    let inComment = false
-    for (let c = 1; c < compiled.length; c++) {
-      if (compiled[c].type == 'context-open' &&
-          compiled[c].context == 'comments')
-        inComment = true
-      else if (compiled[c].type == 'context-close' && inComment)
-        inComment = false
-      else if (inComment)
+    // tenth cycle - process and hide formal comments
+    let inFormal = false
+    let lastContext = null
+    let lastId = null
+    for (let c = 0; c < compiled.length; c++) {
+      if (compiled[c].type == 'context-open') {
+        lastContext = compiled[c].context
+        lastId = (compiled[c].id) ? compiled[c].id : null
+      }
+      else if (compiled[c].type == 'formal-open') {
+        inFormal = true
+        if (lastContext != null && !compiled[c].context) {
+          compiled[c].context = lastContext
+          if (lastId != null)
+            compiled[c].id = lastId
+        }
+      } else if (compiled[c].type == 'formal-close')
+        inFormal = false
+      else if (inFormal)
         compiled[c].render = false
     }
   }
@@ -1038,6 +1049,8 @@ class Translator {
       case 'annotation' : obj = this._annotationMdToObj(match); break
       case 'context-open' : obj = this._selctxopenMdToObj(match); break
       case 'context-close' : obj = this._selctxcloseMdToObj(match); break
+      case 'formal-open' : obj = this._formalOpenMdToObj(match); break
+      case 'formal-close' : obj = this._formalCloseMdToObj(match); break
       case 'select' : obj = this._selectMdToObj(match); break
       case 'linefeed': obj = this._linefeedMdToObj(match); break
          // case "text": obj = this._textMdToObj(match); break;
@@ -1316,10 +1329,6 @@ class Translator {
       case 'text': element._source = this._textObjToMd(element)
         break
       case 'text-block':
-        /*
-        console.log('=== update markdown text block')
-        console.log(element)
-        */
         element._source = ''
         for (const sub of element.content) {
           this.updateElementMarkdown(sub)
@@ -1339,6 +1348,14 @@ class Translator {
       case 'entity': element._source = this._entityObjToMd(element)
         break
       case 'input': element._source = this._inputObjToMd(element)
+        break
+      case 'context-open': element._source = this._contextOpenObjToMd(element)
+        break
+      case 'context-close': element._source = this._contextCloseObjToMd(element)
+        break
+      case 'formal-open': element._source = this._formalOpenObjToMd(element)
+        break
+      case 'formal-close': element._source = this._formalCloseObjToMd(element)
         break
     }
 
@@ -1647,6 +1664,17 @@ class Translator {
       .replace('[source]', obj.path)
   }
 
+  classifyArtifactType (filepath) {
+    let type = ''
+    const extension = filepath.substring(filepath.lastIndexOf('.') + 1)
+    for (let ext in Translator.extension)
+      if (Translator.extension[ext].includes(extension)) {
+        type = ext
+        break
+      }
+    return type
+  }
+
   /*
     * Context Open Md to Obj
     */
@@ -1663,10 +1691,29 @@ class Translator {
     return context
   }
 
+  _contextOpenObjToMd (obj) {
+    let property = ''
+    if (obj.property) {
+      property = '/' + obj.property
+      if (obj.value)
+        property += ' ' + obj.value
+      property += '/'
+    }
+    return Translator.markdownTemplates['context-open']
+      .replace('[namespace]', (obj.namespace) ? obj.namespace + ':' : '')
+      .replace('[context]', obj.context)
+      .replace('[id]', (obj.id) ? '@' + obj.id : '')
+      .replace('[property-value]', property)
+  }
+
   /*
     * Context Close Md to Obj
     */
   _contextCloseMdToObj (matchArray) {
+  }
+
+  _contextCloseObjToMd (obj) {
+    return Translator.markdownTemplates['context-close']
   }
 
   /*
@@ -1845,6 +1892,10 @@ class Translator {
             !!((matchArray[1][0] === '\t' || matchArray[1].length > 1)),
       field: matchArray[2].trim()
     }
+    if (field.field[0] == "'") {
+      field.field = field.field.substring(1, field.field.length-1)
+      field.quotes = true
+    }
     if (matchArray[3] != null) {
       field.value = matchArray[3].trim()
     } else if (matchArray[4] != null) {
@@ -1892,7 +1943,7 @@ class Translator {
     let md = ''
     const spaces = ' '.repeat(level)
     for (let f in fields) {
-      md += spaces + "* " + f + ': '
+      md += spaces + "* " + ((f.quotes) ? "'" : '') + f + ((f.quotes) ? "'" : '') + ': '
       if (typeof fields[f] === 'object')
         md += '\n' + this._visitFields(fields[f], level+2)
       else if (typeof fields[f] === 'string')
@@ -2392,17 +2443,11 @@ class Translator {
     */
   _selctxopenObjToHTML (obj) {
     const input = (obj.input != null) ? " input='" + obj.input + "'" : ''
-    // let states = (obj.options != null) ? " states='" + obj.options + "'" : "";
-    // let colors = (obj.colors != null) ? " colors='" + obj.colors + "'" : "";
 
     return Translator.htmlTemplates.selctxopen.replace('[seq]', obj.seq)
       .replace('[author]', this.authorAttr)
       .replace('[context]', obj.context)
       .replace('[input]', input)
-    /*
-                                                .replace("[states]", states)
-                                                .replace("[colors]", colors);
-                                                */
   }
 
   /*
@@ -2419,6 +2464,41 @@ class Translator {
     */
   _selctxcloseObjToHTML (obj) {
     return Translator.htmlTemplates.selctxclose
+  }
+
+  /*
+   * Formal Context Open Md to Obj
+   */
+  _formalOpenMdToObj (matchArray) {
+    let formal = {
+      type: 'formal-open',
+      render: false
+    }
+    if (matchArray[1] != null) { formal.namespace = matchArray[1].trim() }
+    if (matchArray[2] != null) { formal.context = matchArray[2].trim() }
+    if (matchArray[3] != null) { formal.id = matchArray[3].trim() }
+    return formal
+  }
+
+  _formalOpenObjToMd (obj) {
+    return Translator.markdownTemplates['formal-open']
+      .replace(/{namespace}/, (obj.namespace) ? obj.namespace + ':' : '')
+      .replace(/{context}/, (obj.context) ? obj.context : '')
+      .replace(/{id}/, (obj.id) ? '@' + obj.id : '')
+  }
+
+  /*
+   * Formal Context Close Md to Obj
+   */
+  _formalCloseMdToObj (matchArray) {
+    return {
+      type: 'formal-close',
+      render: false
+    }
+  }
+
+  _formalCloseObjToMd (obj) {
+    return Translator.markdownTemplates['formal-close']
   }
 
   /*
@@ -2493,10 +2573,10 @@ class Translator {
       inline: true
     },
     media: {
-      mark: /<(video|audio)(?:[^>]*)?>(?:<source src="([^"]+)">)?<\/(:?video|audio)>/im
+      mark: /<(video|audio)(?:[^>]*)?>(?:<source src="([^"]+)">)?<\/(?:video|audio)>/im
     },
     field: {
-      mark: /^([ \t]*)(?:[\+\*])[ \t]+([\w.\/\?&#\-][\w.\/\?&#\- \t]*):[ \t]*([^&>\n\r\f'][^&>\n\r\f]*)?(?:'([^']*)')?(?:-(?:(?:&gt;)|>)[ \t]*([^\(\n\r\f]+))?$/im,
+      mark: /^([ \t]*)(?:[\+\*])[ \t]+((?:[\w.\/\?&#\-][\w.\/\?&#\- \t]*)|(?:'[^']*')[ \t]*):[ \t]*([^&>\n\r\f'][^&>\n\r\f]*)?(?:'([^']*)')?(?:-(?:(?:&gt;)|>)[ \t]*([^\(\n\r\f]+))?$/im,
       subfield: true,
       subimage: true,
       subtext: 'value'
@@ -2545,6 +2625,10 @@ class Translator {
       mark: /\{\{(?:([^\:\n\r\f]+)\:)?([\w \t\+\-\*\."=%]+)?(?:@(\w+))?(?:\/((?:\w+\:)?\w+)(?:[ \t]+((?:\w+\:)?\w+))?\/)?$/im
     },
     'context-close': { mark: /^[ \t]*\}\}/im },
+    'formal-open': {
+      mark: /\(\((?:([^\:\n\r\f]+)\:)?([\w \t\+\-\*\."=%]+)?(?:@(\w+))?$/im
+    },
+    'formal-close': { mark: /^[ \t]*\)\)/im },
     select: {
       mark: /\{([^\}\n\r\f]+)\}(?:\(([^\)\n\r\f]+)\))?(?:\/([^\/\n\r\f]+)\/)/im,
       inline: true
@@ -2591,7 +2675,7 @@ class Translator {
 
   Translator.inputSubtype = ['short', 'text', 'group select', 'table']
 
-  Translator.globalFields = ['theme', 'title', 'role', 'templates', 'artifacts']
+  Translator.globalFields = ['theme', 'title', 'role', 'templates', 'generators', 'artifacts']
 
   Translator.reservedNavigation = ['case.next', 'knot.start',
     'knot.previous', 'knot.next',
@@ -2615,6 +2699,12 @@ class Translator {
   Translator.defaultVariable = 'points'
 
   Translator.genericFieldType = 'generic'
+
+  Translator.extension = {
+    image: ['png', 'jpg', 'jpeg', 'png'],
+    video: ['mpg', 'mpeg', 'mp4', 'webm'],
+    audio: ['mp3']
+  }
 
   Translator.instance = new Translator()
 })()
