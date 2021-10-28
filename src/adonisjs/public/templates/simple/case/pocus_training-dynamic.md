@@ -39,9 +39,9 @@ Write here the **POCUS questions**.
 Write here about your **conclusion**.
 }}
 
-{{comments
+((comments
 * template: simple/knot/pt_conclusion
-}}
+))
 
 # * Basic (detailed,master_bottom)
 
