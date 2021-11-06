@@ -1,4 +1,4 @@
-# * Quiz _knot_number_ (quiz)
+# Quiz _knot_number_ (quiz) #
 
 Write here the **stem** of your question.
 
@@ -10,20 +10,20 @@ Write here the **stem** of your question.
 
 * Next Question -> Flow.Next ((right))?
 
-## * Answer A: Answer
+## Answer A: Answer ##
 
 Feedback for Answer-key.
 
 * [Enter References](References)
 
-## * Answer B: Answer
+## Answer B: Answer ##
 
 Feedback for Distractor 1.
 
-## * Answer C: Answer
+## Answer C: Answer ##
 
 Feedback for Distractor 2.
 
-## * Answer D: Answer
+## Answer D: Answer ##
 
 Feedback for Distractor 3.

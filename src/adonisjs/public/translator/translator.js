@@ -1396,12 +1396,12 @@ class Translator {
       type: 'knot'
     }
 
-    knot.unity = (matchArray[2] != null || matchArray[6] != null)
+    knot.unity = (matchArray[5] != null || matchArray[6] != null)
 
-    if (matchArray[3] != null) { knot.title = matchArray[3].trim() } else { knot.title = matchArray[7].trim() }
+    if (matchArray[2] != null) { knot.title = matchArray[2].trim() } else { knot.title = matchArray[7].trim() }
 
-    if (matchArray[4] != null) {
-      knot.categories = matchArray[4].split(',')
+    if (matchArray[3] != null) {
+      knot.categories = matchArray[3].split(',')
     } else if (matchArray[8] != null) {
       knot.categories = matchArray[8].split(',')
     }
@@ -1421,7 +1421,7 @@ class Translator {
       }
     }
 
-    if (matchArray[5] != null) { knot.inheritance = matchArray[5].trim() }
+    if (matchArray[4] != null) { knot.inheritance = matchArray[4].trim() }
     else if (matchArray[9] != null) { knot.inheritance = matchArray[9].trim() }
 
     if (matchArray[1] != null) { knot.level = matchArray[1].trim().length } else
@@ -1439,7 +1439,7 @@ class Translator {
       categories = obj.categories.filter(c => !obj.categoriesInherited.includes(c))
     return Translator.markdownTemplates.knot
       .replace('[level]', '#'.repeat(obj.level))
-      .replace('[unity]', ((obj.unity) ? '* ' : ''))
+      .replace('[unity]', ((obj.unity) ? ' ' + '#'.repeat(obj.level) : ''))
       .replace('[title]', obj.title)
       .replace('[categories]',
         (categories)
@@ -2561,7 +2561,7 @@ class Translator {
 
   Translator.element = {
     knot: {
-      mark: /(?:^[ \t]*(#+)[ \t]*(\*[ \t]*)?([^\( \t\n\r\f\:][^\(\n\r\f\:]*)(?:\((\w[\w \t,]*)\))?[ \t]*(?:\:[ \t]*([^\(\n\r\f][^\(\n\r\f\t]*))?[ \t]*#*[ \t]*$)|(?:^[ \t]*(\*[ \t]*)?([^\( \t\n\r\f\:][^\(\n\r\f\:]*)(?:\((\w[\w \t,]*)\))?[ \t]*(?:\:[ \t]*([^\(\n\r\f][^\(\n\r\f\t]*))?[ \t]*[\f\n\r][\n\r]?(==+|--+)$)/im,
+      mark: /(?:^[ \t]*(#+)[ \t]*([^\( \t\n\r\f\:#][^\(\n\r\f\:#]*)(?:\((\w[\w \t,]*)\))?[ \t]*(?:\:[ \t]*([^\(\n\r\f#][^\(\n\r\f\t#]*))?[ \t]*(#+)?[ \t]*$)|^(?:(==+|--+)[\f\n\r][\n\r]?)?(?:[ \t]*([^\( \t\n\r\f\:][^\(\n\r\f\:]*)(?:\((\w[\w \t,]*)\))?[ \t]*(?:\:[ \t]*([^\(\n\r\f][^\(\n\r\f\t]*))?[ \t]*[\f\n\r][\n\r]?(==+|--+)$)/im,
       subfield: true,
       subimage: true
     },

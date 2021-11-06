@@ -1,4 +1,4 @@
-# * Aorta: Basic
+# Aorta: Basic #
 
 **Aorta - POCUS Exam Videos and Photos:**
 

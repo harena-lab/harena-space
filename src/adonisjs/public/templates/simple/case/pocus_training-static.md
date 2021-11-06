@@ -29,7 +29,7 @@ ___ Data ___
     * Lungs:
       * template: simple/knot/pt_lungs
       * description: 'Pulmão'
-      * exclusive: true
+      * include-many: PL-EX
       * include-missing: true
       * include-title: true
       * contexts:
@@ -53,7 +53,7 @@ ___ Data ___
     * Cava:
       * template: simple/knot/pt_cava
       * description: 'Cava'
-      * exclusive: true
+      * include-many: CV-EX
       * include-missing: true
       * include-title: true
       * contexts:
@@ -64,7 +64,7 @@ ___ Data ___
     * Heart:
       * template: simple/knot/pt_heart
       * description: 'Coração'
-      * exclusive: true
+      * include-many: CO-EX
       * include-missing: true
       * include-title: true
       * contexts:
@@ -78,7 +78,7 @@ ___ Data ___
     * Lower Limb Veins:
       * template: simple/knot/pt_llv
       * description: 'Veias membros inferiores'
-      * exclusive: true
+      * include-many: VM-EX
       * include-missing: true
       * include-title: true
       * contexts:
@@ -96,7 +96,7 @@ ___ Data ___
     * Abdomen:
       * template: simple/knot/pt_abdomen
       * description: 'Abdome para detecção de liquido livre'
-      * exclusive: true
+      * include-many: AB-EX
       * include-missing: true
       * include-title: true
       * contexts:
@@ -108,7 +108,7 @@ ___ Data ___
     * Aorta:
       * template: simple/knot/pt_aorta
       * description: 'Aorta'
-      * exclusive: true
+      * include-many: AO-EX
       * include-missing: true
       * include-title: true
       * contexts:
@@ -121,7 +121,7 @@ ___ Data ___
     * Urinary:
       * template: simple/knot/pt_urinary
       * description: 'Urinario'
-      * exclusive: true
+      * include-many: UR-EX
       * include-missing: true
       * include-title: true
       * contexts:
@@ -139,7 +139,7 @@ ___ Data ___
     * Vesicle and Portal Triad:
       * template: simple/knot/pt_vesicle
       * description: 'Vesicula e Tríade portal'
-      * exclusive: true
+      * include-many: VT-EX
       * include-missing: true
       * include-title: true
       * contexts:
@@ -152,7 +152,7 @@ ___ Data ___
     * E-FAST:
       * template: simple/knot/pt_efast
       * description: 'E-FAST'
-      * exclusive: true
+      * include-many: EF-EX
       * include-missing: true
       * include-title: true
       * contexts:
@@ -167,7 +167,7 @@ ___ Data ___
     * Soft Parts:
       * template: simple/knot/pt_soft
       * description: 'Partes moles'
-      * exclusive: true
+      * include-many: ML-EX
       * include-missing: true
       * include-title: true
       * contexts:
@@ -179,7 +179,7 @@ ___ Data ___
     * Articulate:
       * template: simple/knot/pt_articulate
       * description: 'Articular'
-      * exclusive: true
+      * include-many: AR-EX
       * include-missing: true
       * include-title: true
       * contexts:
@@ -191,7 +191,7 @@ ___ Data ___
     * Ocular:
       * template: simple/knot/pt_ocular
       * description: 'Ocular'
-      * exclusive: true
+      * include-many: OC-EX
       * include-missing: true
       * include-title: true
       * contexts:
@@ -202,7 +202,7 @@ ___ Data ___
     * Extra:
       * template: simple/knot/pt_extra
       * description: 'Extra'
-      * exclusive: false
+      * include-many: *
       * include-missing: true
       * include-title: false
       * contexts:

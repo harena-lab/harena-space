@@ -28,14 +28,14 @@ Present the case here.
 * EKG Cycle
 ===========
 
-## * EKG (exam_zoom)
+## EKG (exam_zoom) ##
 
 @EKG
   ![EKG](template/ekg-template.svg)
 
 * -> Generate hypothesis
 
-## * Generate hypothesis: Description Cycle.Generate hypothesis
+## Generate hypothesis: Description Cycle.Generate hypothesis ##
 
 * Final
 =======

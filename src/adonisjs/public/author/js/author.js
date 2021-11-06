@@ -667,7 +667,9 @@ class AuthorManager {
               ? message.knotid : this._knotSelected
     const newKnotSet = {}
     for (const k in this._knots) {
-      if (k != knotTarget) { newKnotSet[k] = this._knots[k] }
+      if (k != knotTarget && !k.startsWith(knotTarget + '.')) {
+        newKnotSet[k] = this._knots[k]
+      }
     }
     this._compiledCase.knots = newKnotSet
     this._knots = newKnotSet

@@ -48,7 +48,7 @@ class Modifier {
           case 'modify/artifact/insert':
             status = this.artifactInsert(
               message.knot.replace(/ /g, '_'), message.target, message.artifact,
-              ((message.exclusive) ? message.exclusive : false),
+              ((message.includeMany) ? message.includeMany : false),
               ((message.includeMissing) ? message.includeMissing : false),
               ((message.includeTitle) ? message.includeTitle : null))
             break
@@ -158,13 +158,13 @@ class Modifier {
     return status
   }
 
-  artifactInsert (knot, target, artifact, exclusive,
+  artifactInsert (knot, target, artifact, includeMany,
                   includeMissing, includeTitle) {
     console.log('=== artifact insert')
     console.log(knot)
     console.log(target)
     console.log(artifact)
-    console.log(exclusive)
+    console.log(includeMany)
     console.log(includeMissing)
     console.log(includeTitle)
     let status = false
@@ -182,7 +182,7 @@ class Modifier {
           targetEl = -1
         if (targetEl == -1) {
           if (content[c].type == artifactSuperType &&
-              (!content[c].path || exclusive)) {
+              (!content[c].path || !includeMany)) {
             targetEl = c
             replace = true
           } else if (content[c].type == 'context-close')
@@ -201,6 +201,8 @@ class Modifier {
           artifactObj.alternative = target
         else
           artifactObj.subtype = artifactType
+        console.log('=== replace?')
+        console.log(replace)
         if (replace)
           status = this.elementReplace(knot, targetEl, artifactObj)
         else {
@@ -289,14 +291,17 @@ class Modifier {
           {type: 'linefeed',
            content: '\n'})
         let formalOpen = {type: 'formal-open',
-                          context: context}
+                          context: context,
+                          render: false}
         if (contextId != null) formalOpen.contextId = contextId
         this.elementInsert(knot, contextPos+1, formalOpen)
         this.elementInsert(knot, contextPos+2,
           {type: 'linefeed',
-           content: '\n'})
+           content: '\n',
+           render: false})
         this.elementInsert(knot, contextPos+3, {
-          type: 'formal-close'
+          type: 'formal-close',
+          render: false
         })
         this.elementInsert(knot, contextPos+4,
           {type: 'linefeed',
@@ -343,7 +348,8 @@ class Modifier {
             this.elementInsert(knot, p,
               {type: 'field',
                field: property,
-               value: value})
+               value: value,
+               render: false})
         }
       }
     }

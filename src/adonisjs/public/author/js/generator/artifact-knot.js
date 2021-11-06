@@ -82,6 +82,7 @@ class ArtifactKnotGenerator {
   async _insertArtifacts () {
     let templateHistory = {}
     const knotsU = {}
+    // sort the answers according to the template
     for (let a in this._artifacts) {
       const id = a.replace(/[.-]/g, '_')
       const knot = this._htmlSpace.querySelector('#g_' + id)
@@ -89,7 +90,9 @@ class ArtifactKnotGenerator {
       if (knot.value != '_empty_' && sub.value != '_empty_') {
         if (!knotsU[knot.value])
           knotsU[knot.value] = {}
-        knotsU[knot.value][sub.value] = a
+        if (!knotsU[knot.value][sub.value])
+          knotsU[knot.value][sub.value] = []
+        knotsU[knot.value][sub.value].push(a)
       }
     }
     for (const c in this._candidates) {
@@ -106,18 +109,24 @@ class ArtifactKnotGenerator {
         if (status) {
           templateHistory[candidate.template] = true
           for (const s in this._candidates[c].contexts) {
-            if (knotsU[c][s]) {
-              MessageBus.i.publish('modify/artifact/insert',
-                {knot: c,
-                 target: s,
-                 artifact: knotsU[c][s],
-                 exclusive: (candidate.exclusive) ? true : false,
-                 includeMissing: (candidate['include-missing']) ? true : false,
-                 includeTitle:
-                   (candidate['include-title'])
-                     ? candidate.contexts[s] : null}
-              )
-            }
+            if (knotsU[c][s])
+              for (const ss of knotsU[c][s])
+              {
+                MessageBus.i.publish('modify/artifact/insert',
+                  {knot: c,
+                   target: s,
+                   artifact: ss,
+                   includeMany:
+                      (candidate['include-many'] != null &&
+                       (candidate['include-many'] == '*' ||
+                        candidate['include-many'] == s))
+                      ? true : false,
+                   includeMissing: (candidate['include-missing']) ? true : false,
+                   includeTitle:
+                     (candidate['include-title'])
+                       ? candidate.contexts[s] : null}
+                )
+              }
           }
         }
       }
