@@ -1,4 +1,4 @@
-# * Articulate: Basic
+# Articulate: Basic #
 
 **Articulate - POCUS Exam Videos and Photos:**
 

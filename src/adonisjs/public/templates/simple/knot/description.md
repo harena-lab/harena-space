@@ -1,4 +1,4 @@
-## * _Knot_Name_ (detailed)
+## _Knot_Name_ (detailed) ##
 
 Descrição aqui.
 

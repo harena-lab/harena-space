@@ -1,4 +1,4 @@
-# * Quiz 1 (quiz)
+# Quiz 1 (quiz) #
 
 Write here the **stem** of your question.
 
@@ -10,25 +10,25 @@ Write here the **stem** of your question.
 
 * Next Question -> Flow.Next ((right))?
 
-## * Answer A: Answer
+## Answer A: Answer ##
 
 Feedback for Answer-key.
 
 * [Enter References](References)
 
-## * Answer B: Answer
+## Answer B: Answer ##
 
 Feedback for Distractor 1.
 
-## * Answer C: Answer
+## Answer C: Answer ##
 
 Feedback for Distractor 2.
 
-## * Answer D: Answer
+## Answer D: Answer ##
 
 Feedback for Distractor 3.
 
-# * Quiz 2 (quiz)
+# Quiz 2 (quiz) #
 
 Write here the **stem** of your question.
 
@@ -40,25 +40,25 @@ Write here the **stem** of your question.
 
 * Next Question -> Flow.Next ((right))?
 
-## * Answer A: Answer
+## Answer A: Answer ##
 
 Feedback for Answer-key.
 
 * [Enter References](References)
 
-## * Answer B: Answer
+## Answer B: Answer ##
 
 Feedback for Distractor 1.
 
-## * Answer C: Answer
+## Answer C: Answer ##
 
 Feedback for Distractor 2.
 
-## * Answer D: Answer
+## Answer D: Answer ##
 
 Feedback for Distractor 3.
 
-# * Feedback (quiz, end)
+# Feedback (quiz, end) #
 
 {{feedback
 Write here the **feedback**.
@@ -70,7 +70,7 @@ Write here the **feedback**.
 
 * Next Case -> Case.Next
 
-# * Answer (note, division)
+# Answer (note, division) #
 
 **You answered:** ^Previous.input1^
 

@@ -1,4 +1,4 @@
-# * Quiz 1 (quiz)
+# Quiz 1 (quiz) #
 
 Write here the **stem** of your question.
 
@@ -10,25 +10,25 @@ Write here the **stem** of your question.
 
 * Next Question -> Flow.Next ((right))?
 
-## * Answer A: Answer
+## Answer A: Answer ##
 
 Feedback for Answer-key.
 
 * [Enter References](References)
 
-## * Answer B: Answer
+## Answer B: Answer ##
 
 Feedback for Distractor 1.
 
-## * Answer C: Answer
+## Answer C: Answer ##
 
 Feedback for Distractor 2.
 
-## * Answer D: Answer
+## Answer D: Answer ##
 
 Feedback for Distractor 3.
 
-# * Quiz 2 (quiz)
+# Quiz 2 (quiz) #
 
 Write here the **stem** of your question.
 
@@ -40,27 +40,27 @@ Write here the **stem** of your question.
 
 * Next Question -> Flow.Next ((right))?
 
-## * Answer A: Answer
+## Answer A: Answer ##
 
 Feedback for Answer-key.
 
 * [Enter References](References)
 
-## * Answer B: Answer
+## Answer B: Answer ##
 
 Feedback for Distractor 1.
 
-## * Answer C: Answer
+## Answer C: Answer ##
 
 Feedback for Distractor 2.
 
-## * Answer D: Answer
+## Answer D: Answer ##
 
 Feedback for Distractor 3.
 
-# * Case1 (tbl_case)
+# Case1 (tbl_case) #
 
-## * History (input)
+## History (input) ##
 
 **Case 1**
 {{stem
@@ -77,7 +77,7 @@ Write here the **stem**.
 
 * Next -> Flow.Next
 
-## * Physical Examination (input)
+## Physical Examination (input) ##
 
 **Physical Examination**
 
@@ -95,7 +95,7 @@ Write here the **stem**.
 
 * Next -> Flow.Next
 
-## * Complementary Exams (quiz)
+## Complementary Exams (quiz) ##
 
 **Complementary Exams**
 
@@ -108,7 +108,7 @@ Write here the **stem**.
 
 * Next -> Conclusion
 
-## * Exam 1 (input)
+## Exam 1 (input) ##
 
 **Exam 1**
 
@@ -122,7 +122,7 @@ Exam.
 
 * Back -> Knot.Previous
 
-## * Exam 2 (input)
+## Exam 2 (input) ##
 
 **Exam 2**
 
@@ -136,7 +136,7 @@ Exam.
 
 * Back -> Knot.Previous
 
-## * Exam 3 (input)
+## Exam 3 (input) ##
 
 **Exam 3**
 
@@ -150,7 +150,7 @@ Exam.
 
 * Back -> Knot.Previous
 
-## * Exam 4 (input)
+## Exam 4 (input) ##
 
 **Exam 4**
 
@@ -164,7 +164,7 @@ Exam.
 
 * Back -> Knot.Previous
 
-## * Exam 5 (input)
+## Exam 5 (input) ##
 
 **Exam 5**
 
@@ -178,7 +178,7 @@ Exam.
 
 * Back -> Knot.Previous
 
-## * Conclusion (input)
+## Conclusion (input) ##
 
 **Conclusion**
 
@@ -192,9 +192,9 @@ Exam.
 
 * Next -> Flow.Next
 
-# * Case 2 (tbl_case)
+# Case 2 (tbl_case) #
 
-## * History (input)
+## History (input) ##
 
 **Case**
 {{stem
@@ -211,7 +211,7 @@ Write here the **stem**.
 
 * Next -> Flow.Next
 
-## * Physical Examination (input)
+## Physical Examination (input) ##
 
 **Physical Examination**
 
@@ -229,7 +229,7 @@ Write here the **stem**.
 
 * Next -> Flow.Next
 
-## * Complementary Exams (quiz)
+## Complementary Exams (quiz) ##
 
 **Complementary Exams**
 
@@ -242,7 +242,7 @@ Write here the **stem**.
 
 * Next -> Conclusion
 
-## * Exam 1 (input)
+## Exam 1 (input) ##
 
 **Exam 1**
 
@@ -256,7 +256,7 @@ Exam.
 
 * Back -> Knot.Previous
 
-## * Exam 2 (input)
+## Exam 2 (input) ##
 
 **Exam 2**
 
@@ -270,7 +270,7 @@ Exam.
 
 * Back -> Knot.Previous
 
-## * Exam 3 (input)
+## Exam 3 (input) ##
 
 **Exam 3**
 
@@ -284,7 +284,7 @@ Exam.
 
 * Back -> Knot.Previous
 
-## * Exam 4 (input)
+## Exam 4 (input) ##
 
 **Exam 4**
 
@@ -298,7 +298,7 @@ Exam.
 
 * Back -> Knot.Previous
 
-## * Exam 5 (input)
+## Exam 5 (input) ##
 
 **Exam 5**
 
@@ -312,7 +312,7 @@ Exam.
 
 * Back -> Knot.Previous
 
-## * Conclusion (input)
+## Conclusion (input) ##
 
 **Conclusion**
 
@@ -326,7 +326,7 @@ Exam.
 
 * Next -> Flow.Next
 
-# * Answer (note, division)
+# Answer (note, division) #
 
 **You answered:** ^Previous.input1^
 

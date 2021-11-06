@@ -1,4 +1,4 @@
-# * E-FAST: Basic
+# E-FAST: Basic #
 
 **E-FAST - POCUS Exam Videos:**
 

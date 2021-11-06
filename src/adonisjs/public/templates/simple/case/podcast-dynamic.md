@@ -1,4 +1,4 @@
-# * Day 1 (input)
+# Day 1 (input) #
 
 <h2>Day 1</h2>
 {{stem
@@ -11,7 +11,7 @@ Write here the **stem**.
 
 * Next -> Flow.Next
 
-# * Day 2 (input)
+# Day 2 (input) #
 
 <h2>Day 2</h2>
 {{feedback
@@ -32,7 +32,7 @@ Write here the **stem**.
 
 * Next -> Flow.Next
 
-# * Last Day (detailed)
+# Last Day (detailed) #
 
 <h2>Last Day</h2>
 {{feedback

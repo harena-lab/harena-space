@@ -1,4 +1,4 @@
-# * Presentation (quiz, end)
+# Presentation (quiz, end) #
 
 Write here the **stem** of your quiz.
 
@@ -10,7 +10,7 @@ Write here the **stem** of your quiz.
 
 * Next Case -> Case.Next ((right))?
 
-# * Note (note)
+# Note (note) #
 
 **You answered:** ^Previous.input1^.
 
@@ -18,7 +18,7 @@ Write here the **stem** of your quiz.
 
 ^parameter^
 
-# * Presentation References (note)
+# Presentation References (note) #
 
 **You answered:** ^Previous.input1^.
 
@@ -28,7 +28,7 @@ Write here the **stem** of your quiz.
 
 References <-> References
 
-# * References (note_references)
+# References (note_references) #
 
 * [Enter References](References)
 

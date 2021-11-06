@@ -1,4 +1,4 @@
-# * Ocular: Basic
+# Ocular: Basic #
 
 **Ocular - POCUS Exam Videos and Photos:**
 
