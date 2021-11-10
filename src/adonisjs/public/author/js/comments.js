@@ -128,15 +128,15 @@ class Comments {
 
     // add dependencies
     const lastPos = {}
-    for (const c in collection.contexts) {
-      if (dependencies[c] != null)
-        lastPos[dependencies[c]] = c
+    for (const c in contexts) {
+      if (dependencies[contexts[c].context] != null)
+        lastPos[dependencies[contexts[c].context]] = c
     }
     for (const l in lastPos) {
-      if (!collection.contexts[l]) {
+      if (!contexts[l]) {
         const newContexts = {}
-        for (const c in collection.contexts) {
-          newContexts[c] = collection.contexts[c]
+        for (const c in contexts) {
+          newContexts[c] = contexts[c]
           if (c == lastPos[l])
             newContexts[l] = {
               formal: false,
