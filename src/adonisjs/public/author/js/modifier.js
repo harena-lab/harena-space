@@ -246,6 +246,7 @@ class Modifier {
       let lastContext = null
       let lastContextId = null
       let lastFormal = null
+      let lastFormalId = null
       let contextPos = -1
       let contextInclude = -1
       let hasFormal = false
@@ -260,17 +261,19 @@ class Modifier {
               (contextId == null ||
                 (lastContextId != null && lastContextId == contextId)))
             contextPos = e
-          else if (includeAfter != null && lastContext == includeAfter)
+          else if (includeAfter != null &&
+            (lastContext == includeAfter || lastContextId == includeAfter))
             contextInclude = e
         } else if (el.type == 'formal-open') {
           lastFormal = el.context
+          lastFormalId = el.id
           if (el.context == context &&
               (contextId == null || (el.id != null && el.id == contextId))) {
             contextPos = e
             hasFormal = true
           }
         } else if (el.type == 'formal-close' && includeAfter != null &&
-                   lastFormal == includeAfter)
+                   (lastFormal == includeAfter || lastFormalId == includeAfter))
           contextInclude = e
       }
       console.log('=== formal positions')
