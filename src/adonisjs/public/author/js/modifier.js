@@ -209,7 +209,7 @@ class Modifier {
           if (includeContext) {
             this.elementInsert(knot, targetEl,
               {type: 'linefeed',
-               content: '\n\n'})
+               content: '\n'})
             targetEl++
             if (includeTitle != null) {
               this.elementInsert(knot, targetEl,
@@ -254,7 +254,7 @@ class Modifier {
         let el = content[e]
         if (el.type == 'context-open') {
           lastContext = el.context
-          lastContextId = el.contextId
+          lastContextId = el.id
         } else if (el.type == 'context-close') {
           if (lastContext == context && contextPos == -1 &&
               (contextId == null ||
@@ -293,7 +293,7 @@ class Modifier {
         let formalOpen = {type: 'formal-open',
                           context: context,
                           render: false}
-        if (contextId != null) formalOpen.contextId = contextId
+        if (contextId != null) formalOpen.id = contextId
         this.elementInsert(knot, contextPos+1, formalOpen)
         this.elementInsert(knot, contextPos+2,
           {type: 'linefeed',

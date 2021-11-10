@@ -1,0 +1,12 @@
+{
+  "property": "media",
+  "blocks": [
+  {
+   "title": "Comentários",
+   "type": "text",
+   "property": "comments",
+   "placeholder": "Digite seus comentários"
+  }
+ ],
+ "contexts": {}
+}
