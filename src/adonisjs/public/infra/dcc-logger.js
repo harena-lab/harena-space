@@ -1,6 +1,5 @@
 /* Logger DCC
   ***********/
-
 class DCCLogger extends DCCLight {
   constructor() {
     super()
@@ -8,55 +7,42 @@ class DCCLogger extends DCCLight {
     this._notifyLogger = this._notifyLogger.bind(this)
     this._subscribe('#', this._notifyLogger)
 
-    this.messages = []
-    this.numberOfMessages = 0
-    this.end_topics = ['knot/end', 'case/summary', 'flow/>/navigate'] // "knot/end" nao existe dessa forma no log, era mais pra representar a ideia do que pode ser um topico que finaliza o empacotamento
   }
 
-  async _send_message() {
-    
-    let request = {
-      "messages": [...this.messages],
-      "version": 0.1
-    };
-    this.numberOfMessages = 0
-    this.messages = []
+  async _send_message(data ,url) {
     
     console.log('request:');
-    console.log(request);
+    console.log(data);
 
     const config = {
       method: 'POST',
-      url: 'http://localhost/api/v1/kafka_messages/',
+      url: url,
       withCredentials: false,
-      data: request
+      data: data
     };
     await axios(config);
-  }
-
-  empacota_mensagem (topic, message){
-
-    let pacote = {
-      "topic": topic,
-      "payload": message
-    };
-
-    this.messages.push(pacote)
-    this.numberOfMessages += 1;
   }
 
   _notifyLogger (topic, message, track) {
     if (track) {
       try{
-        console.log('=== logger DCC: ' + topic);
-        console.log(message);
-        this.empacota_mensagem(topic, message);
-        if(this.numberOfMessages > 15 || this.end_topics.includes(topic)){
-          this._send_message();
+        //console.log('=== logger DCC: ' + topic);
+        //console.log(message);
+        for(var i=0;i<CONFIG_LOGGER.config_json.length;i++){
+          var type_message =  CONFIG_LOGGER.config_json[i]
+          if(type_message.topic_regex.test(topic)){
+            
+            var  schema_message = Object.assign({}, type_message.schema)
+            schema_message.payload_body = JSON.stringify(message)
+            schema_message.topic = topic
+            //this._send_message(schema_message, type_message.endpoint)
+            console.log(schema_message)
+            break;
+          }
         }
-      }catch (e) {
-        console.log('ERROR!');
-        console.log(e);
+        }catch (e) {
+          console.log('ERROR!');
+          console.log(e);
       }
     }
   }
