@@ -1,4 +1,4 @@
-# Presentation (input)
+# Presentation (input) #
 
 {{stem
 Write here the **stem**.
@@ -10,7 +10,7 @@ Write here the **stem**.
 
 * Submit -> Flow.Next
 
-# Feedback (detailed, end)
+# Presentation (input) #
 
 {{feedback
 Enter Feedback.

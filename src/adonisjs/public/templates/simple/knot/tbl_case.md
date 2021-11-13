@@ -1,6 +1,6 @@
-# * Case _knot_number_ (tbl_case)
+# Case _knot_number_ (tbl_case) #
 
-## * History (input)
+## History (input) ##
 
 **Case**
 {{stem
@@ -17,7 +17,7 @@ Write here the **stem**.
 
 * Next -> Flow.Next
 
-## * Physical Examination (input)
+## Physical Examination (input) ##
 
 **Physical Examination**
 
@@ -35,7 +35,7 @@ Write here the **stem**.
 
 * Next -> Flow.Next
 
-## * Complementary Exams (quiz)
+## Complementary Exams (quiz) ##
 
 **Complementary Exams**
 
@@ -48,7 +48,7 @@ Write here the **stem**.
 
 * Next -> Conclusion
 
-## * Exam 1 (input)
+## Exam 1 (input) ##
 
 **Exam 1**
 
@@ -62,7 +62,7 @@ Exam.
 
 * Back -> Knot.Previous
 
-## * Exam 2 (input)
+## Exam 2 (input) ##
 
 **Exam 2**
 
@@ -76,7 +76,7 @@ Exam.
 
 * Back -> Knot.Previous
 
-## * Exam 3 (input)
+## Exam 3 (input) ##
 
 **Exam 3**
 
@@ -90,7 +90,7 @@ Exam.
 
 * Back -> Knot.Previous
 
-## * Exam 4 (input)
+## Exam 4 (input) ##
 
 **Exam 4**
 
@@ -104,7 +104,7 @@ Exam.
 
 * Back -> Knot.Previous
 
-## * Exam 5 (input)
+## Exam 5 (input) ##
 
 **Exam 5**
 
@@ -118,7 +118,7 @@ Exam.
 
 * Back -> Knot.Previous
 
-## * Conclusion (input)
+## Conclusion (input) ##
 
 **Conclusion**
 

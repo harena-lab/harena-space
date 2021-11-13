@@ -1,4 +1,4 @@
-# * Presentation (quiz, end)
+# Presentation (quiz, end) #
 
 Write here the **stem** of your quiz.
 
@@ -10,25 +10,25 @@ Write here the **stem** of your quiz.
 
 * Next Case -> Case.Next ((right))?
 
-## * Answer A: Answer
+## Answer A: Answer ##
 
 Feedback for Answer-key.
 
 * [Enter References](References)
 
-## * Answer B: Answer
+## Answer B: Answer ##
 
 Feedback for Distractor 1.
 
-## * Answer C: Answer
+## Answer C: Answer ##
 
 Feedback for Distractor 2.
 
-## * Answer D: Answer
+## Answer D: Answer ##
 
 Feedback for Distractor 3.
 
-# * Answer (note, division)
+# Answer (note, division) #
 
 **You answered:** ^Previous.input1^
 

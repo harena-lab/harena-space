@@ -110,10 +110,14 @@
     <script src="/author/js/panels.js"></script>
     <script src="/author/js/navigator.js"></script>
     <script src="/author/js/comments.js"></script>
+    <script src="/author/js/artifacts.js"></script>
+    <script src="/author/js/generator/artifact-knot.js"></script>
+    <script src="/author/js/modifier.js"></script>
+
     <script src="/author/js/author.js"></script>
   </head>
 
-  <body onload="AuthorManager.author.start()">
+  <body onload="AuthorManager.i.start()">
     <!-- message div -->
     <div id="message-space" class="sty-message-space vh-100 vw-100 text-center invisible" style="overflow:hidden; !important">
       <span style="top: 50%;position: absolute;"
@@ -399,7 +403,8 @@
           <div id="properties-expansion" class="sty-navigation-expansion">
             <div id="properties-set" class="sty-navigation-set">
               <dcc-button id="button-expand-prop" topic="control/properties/expand" label="Expand" image="/author/icons/icon-properties.svg"></dcc-button>
-              <dcc-button id="button-retract-right" topic="control/properties/retract" label="Retract" image="/author/icons/icon-expansion-right.svg" style="display:none"></dcc-button>
+              <dcc-button id="button-retract-right" topic="control/elements/retract" label="Retract" image="/author/icons/icon-expansion-right.svg" style="display:none"></dcc-button>
+              <dcc-button id="button-expand-left" topic="control/elements/wide" label="Expand" image="/author/icons/icon-expansion-left.svg" style="display:none"></dcc-button>
               <dcc-button id="button-expand-com" topic="control/comments/expand" label="Comment" image="/author/icons/icon-comment.svg"></dcc-button>
               <dcc-button id="button-expand-art" topic="control/artifacts/expand" label="Artifacts" image="/author/icons/icon-media.svg"></dcc-button>
             </div>
@@ -427,11 +432,14 @@
                  <div id="comments-block" class="sty-properties-block std-border" style="display:none">
                     <div id="comments-display" class="d-flex flex-column sty-knot-panel p-1" style="overflow-y:auto !important; overflow-x:hidden !important;"></div>
                  </div>
-                 <div id="artifacts-block" class="sty-properties-block std-border" style="display:none">
+                 <div id="artifacts-block" class="sty-properties-block" style="display:none">
                     <div id="case-artifacts"></div>
                     <div id="progress-artifacts"></div>
-                    <input type="file" id="artifacts-select" name="artifacts-select" multiple="multiple"
-                           accept="image/png, image/jpeg, image/svg, audio/mpeg, video/mp4, video/webm">
+                    <div id="artifact-controls">
+                       <input type="file" id="artifacts-select" name="artifacts-select" multiple="multiple"
+                              accept="image/png, image/jpeg, image/svg, audio/mpeg, video/mp4, video/webm">
+                       <dcc-button xstyle="in" topic="generator/activate/artifact-knot" label="PLACE IN KNOTS"></dcc-button>
+                    </div>
                  </div>
               </div>
             </div>

@@ -1,0 +1,2334 @@
+{
+ "property": "media",
+ "blocks": [
+  {
+   "title": "Comentários",
+   "type": "text",
+   "property": "details",
+   "placeholder": "Digite seus comentários"
+  },
+  {
+   "title": "Nota",
+   "type": "radio-h",
+   "comments": [
+    {
+     "title": "1 |",
+     "property": "grade",
+     "value": "1"
+    },
+    {
+     "title": "2 |",
+     "property": "grade",
+     "value": "2"
+    },
+    {
+     "title": "3 |",
+     "property": "grade",
+     "value": "3"
+    },
+    {
+     "title": "4 |",
+     "property": "grade",
+     "value": "4"
+    },
+    {
+     "title": "5 |",
+     "property": "grade",
+     "value": "5"
+    }
+   ]
+  }
+ ],
+ "contexts": {
+  "PD-DP": {
+   "title": "Vídeo – Deslizamento pleural D",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Referências anatómicas/qualidade",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Costela superior ausente",
+       "property": "upper_rib",
+       "value": "not_present"
+      },
+      {
+       "title": "Linha pleural ausente",
+       "property": "pleural_line",
+       "value": "not_present"
+      },
+      {
+       "title": "Costela inferior ausente",
+       "property": "lower_rib",
+       "value": "not_present"
+      },
+      {
+       "title": "Aquisição instável",
+       "property": "acquisition",
+       "value": "unstable"
+      }
+     ]
+    },
+    {
+     "title": "Achados",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Aquisição inconclusiva",
+       "property": "acquisition",
+       "value": "inconclusive"
+      },
+      {
+       "title": "Ausência de deslizamento pleural",
+       "property": "pleural_sliding",
+       "value": "absent"
+      }
+     ]
+    }
+   ]
+  },
+  "PE-DP": {
+   "title": "Vídeo – Deslizamento pleural E",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Referências anatómicas/qualidade",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Costela superior ausente",
+       "property": "upper_rib",
+       "value": "not_present"
+      },
+      {
+       "title": "Linha pleural ausente",
+       "property": "pleural_line",
+       "value": "not_present"
+      },
+      {
+       "title": "Costela inferior ausente",
+       "property": "lower_rib",
+       "value": "not_present"
+      },
+      {
+       "title": "Aquisição instável",
+       "property": "acquisition",
+       "value": "unstable"
+      }
+     ]
+    },
+    {
+     "title": "Achados",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Aquisição inconclusiva",
+       "property": "acquisition",
+       "value": "inconclusive"
+      },
+      {
+       "title": "Ausência de deslizamento pleural",
+       "property": "pleural_sliding",
+       "value": "absent"
+      }
+     ]
+    }
+   ]
+  },
+  "PD-AS": {
+   "title": "Vídeo – Antero-superior D",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Referências anatómicas/qualidade",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Costela inferior ausente",
+       "property": "lower_rib",
+       "value": "not_present"
+      },
+      {
+       "title": "Espaço intercostal centralizado ausente",
+       "property": "intercostal_space_",
+       "value": "not_centralized"
+      },
+      {
+       "title": "Costela superior ausente",
+       "property": "upper_rib",
+       "value": "not_present"
+      },
+      {
+       "title": "Aquisição instável",
+       "property": "acquisition",
+       "value": "unstable"
+      }
+     ]
+    },
+    {
+     "title": "Achados",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Aquisição inconclusiva",
+       "property": "acquisition",
+       "value": "inconclusive"
+      },
+      {
+       "title": "Linhas A apenas",
+       "property": "a_lines_only",
+       "value": "yes"
+      },
+      {
+       "title": "Ausência de deslizamento pleural",
+       "property": "pleural_sliding",
+       "value": "absent"
+      },
+      {
+       "title": "Entre 3 e 5 linhas B",
+       "property": "between_3_and_5_b_lines",
+       "value": "yes"
+      },
+      {
+       "title": "Linhas B coalescentes",
+       "property": "coalescent_b_lines",
+       "value": "yes"
+      },
+      {
+       "title": "Ponto pulmonar presente",
+       "property": "lung_point",
+       "value": "present"
+      },
+      {
+       "title": "Pulso pulmonar presente",
+       "property": "lung_pulse",
+       "value": "present"
+      },
+      {
+       "title": "Irregularidade pleural presente",
+       "property": "pleural_irregularity",
+       "value": "present"
+      },
+      {
+       "title": "Consolidação subpleural presente",
+       "property": "subpleural_consolidation",
+       "value": "present"
+      },
+      {
+       "title": "Consolidação/hepatização presente",
+       "property": "consolidation_hepatisation",
+       "value": "present"
+      },
+      {
+       "title": "Derrame pleural laminar",
+       "property": "laminar_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pleural moderado",
+       "property": "moderate_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pleural volumoso",
+       "property": "massive_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Atelectasia presente",
+       "property": "atelectasis",
+       "value": "present"
+      }
+     ]
+    }
+   ]
+  },
+  "PD-AI": {
+   "title": "Vídeo – Antero-inferior D",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Referências anatómicas/qualidade",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Costela inferior ausente",
+       "property": "lower_rib",
+       "value": "not_present"
+      },
+      {
+       "title": "Espaço intercostal centralizado ausente",
+       "property": "intercostal_space_",
+       "value": "not_centralized"
+      },
+      {
+       "title": "Costela superior ausente",
+       "property": "upper_rib",
+       "value": "not_present"
+      },
+      {
+       "title": "Aquisição instável",
+       "property": "acquisition",
+       "value": "unstable"
+      }
+     ]
+    },
+    {
+     "title": "Achados",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Aquisição inconclusiva",
+       "property": "acquisition",
+       "value": "inconclusive"
+      },
+      {
+       "title": "Linhas A apenas",
+       "property": "a_lines_only",
+       "value": "yes"
+      },
+      {
+       "title": "Ausência de deslizamento pleural",
+       "property": "pleural_sliding",
+       "value": "absent"
+      },
+      {
+       "title": "Entre 3 e 5 linhas B",
+       "property": "between_3_and_5_b_lines",
+       "value": "yes"
+      },
+      {
+       "title": "Linhas B coalescentes",
+       "property": "coalescent_b_lines",
+       "value": "yes"
+      },
+      {
+       "title": "Ponto pulmonar presente",
+       "property": "lung_point",
+       "value": "present"
+      },
+      {
+       "title": "Pulso pulmonar presente",
+       "property": "lung_pulse",
+       "value": "present"
+      },
+      {
+       "title": "Irregularidade pleural presente",
+       "property": "pleural_irregularity",
+       "value": "present"
+      },
+      {
+       "title": "Consolidação subpleural presente",
+       "property": "subpleural_consolidation",
+       "value": "present"
+      },
+      {
+       "title": "Consolidação/hepatização presente",
+       "property": "consolidation_hepatisation",
+       "value": "present"
+      },
+      {
+       "title": "Derrame pleural laminar",
+       "property": "laminar_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pleural moderado",
+       "property": "moderate_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pleural volumoso",
+       "property": "massive_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Atelectasia presente",
+       "property": "atelectasis",
+       "value": "present"
+      }
+     ]
+    }
+   ]
+  },
+  "PD-LS": {
+   "title": "Vídeo – Latero-superior D",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Referências anatómicas/qualidade",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Costela inferior ausente",
+       "property": "lower_rib",
+       "value": "not_present"
+      },
+      {
+       "title": "Espaço intercostal centralizado ausente",
+       "property": "intercostal_space_",
+       "value": "not_centralized"
+      },
+      {
+       "title": "Costela superior ausente",
+       "property": "upper_rib",
+       "value": "not_present"
+      },
+      {
+       "title": "Aquisição instável",
+       "property": "acquisition",
+       "value": "unstable"
+      }
+     ]
+    },
+    {
+     "title": "Achados",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Aquisição inconclusiva",
+       "property": "acquisition",
+       "value": "inconclusive"
+      },
+      {
+       "title": "Linhas A apenas",
+       "property": "a_lines_only",
+       "value": "yes"
+      },
+      {
+       "title": "Ausência de deslizamento pleural",
+       "property": "pleural_sliding",
+       "value": "absent"
+      },
+      {
+       "title": "Entre 3 e 5 linhas B",
+       "property": "between_3_and_5_b_lines",
+       "value": "yes"
+      },
+      {
+       "title": "Linhas B coalescentes",
+       "property": "coalescent_b_lines",
+       "value": "yes"
+      },
+      {
+       "title": "Ponto pulmonar presente",
+       "property": "lung_point",
+       "value": "present"
+      },
+      {
+       "title": "Pulso pulmonar presente",
+       "property": "lung_pulse",
+       "value": "present"
+      },
+      {
+       "title": "Irregularidade pleural presente",
+       "property": "pleural_irregularity",
+       "value": "present"
+      },
+      {
+       "title": "Consolidação subpleural presente",
+       "property": "subpleural_consolidation",
+       "value": "present"
+      },
+      {
+       "title": "Consolidação/hepatização presente",
+       "property": "consolidation_hepatisation",
+       "value": "present"
+      },
+      {
+       "title": "Derrame pleural laminar",
+       "property": "laminar_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pleural moderado",
+       "property": "moderate_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pleural volumoso",
+       "property": "massive_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Atelectasia presente",
+       "property": "atelectasis",
+       "value": "present"
+      }
+     ]
+    }
+   ]
+  },
+  "PD-IP": {
+   "title": "Vídeo – Latero-inferior D (parênquima)",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Referências anatómicas/qualidade",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Costela inferior ausente",
+       "property": "lower_rib",
+       "value": "not_present"
+      },
+      {
+       "title": "Espaço intercostal centralizado ausente",
+       "property": "intercostal_space_",
+       "value": "not_centralized"
+      },
+      {
+       "title": "Costela superior ausente",
+       "property": "upper_rib",
+       "value": "not_present"
+      },
+      {
+       "title": "Aquisição instável",
+       "property": "acquisition",
+       "value": "unstable"
+      }
+     ]
+    },
+    {
+     "title": "Achados",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Aquisição inconclusiva",
+       "property": "acquisition",
+       "value": "inconclusive"
+      },
+      {
+       "title": "Linhas A apenas",
+       "property": "a_lines_only",
+       "value": "yes"
+      },
+      {
+       "title": "Ausência de deslizamento pleural",
+       "property": "pleural_sliding",
+       "value": "absent"
+      },
+      {
+       "title": "Entre 3 e 5 linhas B",
+       "property": "between_3_and_5_b_lines",
+       "value": "yes"
+      },
+      {
+       "title": "Linhas B coalescentes",
+       "property": "coalescent_b_lines",
+       "value": "yes"
+      },
+      {
+       "title": "Ponto pulmonar presente",
+       "property": "lung_point",
+       "value": "present"
+      },
+      {
+       "title": "Pulso pulmonar presente",
+       "property": "lung_pulse",
+       "value": "present"
+      },
+      {
+       "title": "Irregularidade pleural presente",
+       "property": "pleural_irregularity",
+       "value": "present"
+      },
+      {
+       "title": "Consolidação subpleural presente",
+       "property": "subpleural_consolidation",
+       "value": "present"
+      },
+      {
+       "title": "Consolidação/hepatização presente",
+       "property": "consolidation_hepatisation",
+       "value": "present"
+      },
+      {
+       "title": "Derrame pleural laminar",
+       "property": "laminar_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pleural moderado",
+       "property": "moderate_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pleural volumoso",
+       "property": "massive_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Atelectasia presente",
+       "property": "atelectasis",
+       "value": "present"
+      }
+     ]
+    }
+   ]
+  },
+  "PD-LI": {
+   "title": "Vídeo – Latero-inferior D",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Referências anatómicas/qualidade",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Inserção do diafragma ausente",
+       "property": "diaphragm_insertion",
+       "value": "not_present"
+      },
+      {
+       "title": "Coluna ausente",
+       "property": "spine",
+       "value": "not_present"
+      },
+      {
+       "title": "Fígado ausente",
+       "property": "liver",
+       "value": "not_present"
+      },
+      {
+       "title": "Cortina ausente",
+       "property": "curtain_sign",
+       "value": "not_present"
+      },
+      {
+       "title": "Aquisição instável",
+       "property": "acquisition",
+       "value": "unstable"
+      }
+     ]
+    },
+    {
+     "title": "Achados",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Aquisição inconclusiva",
+       "property": "acquisition",
+       "value": "inconclusive"
+      },
+      {
+       "title": "Linhas A apenas",
+       "property": "a_lines_only",
+       "value": "yes"
+      },
+      {
+       "title": "Ausência de deslizamento pleural",
+       "property": "pleural_sliding",
+       "value": "absent"
+      },
+      {
+       "title": "Entre 3 e 5 linhas B",
+       "property": "between_3_and_5_b_lines",
+       "value": "yes"
+      },
+      {
+       "title": "Linhas B coalescentes",
+       "property": "coalescent_b_lines",
+       "value": "yes"
+      },
+      {
+       "title": "Ponto pulmonar presente",
+       "property": "lung_point",
+       "value": "present"
+      },
+      {
+       "title": "Pulso pulmonar presente",
+       "property": "lung_pulse",
+       "value": "present"
+      },
+      {
+       "title": "Irregularidade pleural presente",
+       "property": "pleural_irregularity",
+       "value": "present"
+      },
+      {
+       "title": "Consolidação subpleural presente",
+       "property": "subpleural_consolidation",
+       "value": "present"
+      },
+      {
+       "title": "Consolidação/hepatização presente",
+       "property": "consolidation_hepatisation",
+       "value": "present"
+      },
+      {
+       "title": "Derrame pleural laminar",
+       "property": "laminar_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pleural moderado",
+       "property": "moderate_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pleural volumoso",
+       "property": "massive_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Atelectasia presente",
+       "property": "atelectasis",
+       "value": "present"
+      }
+     ]
+    }
+   ]
+  },
+  "PE-AS": {
+   "title": "Vídeo – Antero-superior E",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Referências anatómicas/qualidade",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Costela inferior ausente",
+       "property": "lower_rib",
+       "value": "not_present"
+      },
+      {
+       "title": "Espaço intercostal centralizado ausente",
+       "property": "intercostal_space_",
+       "value": "not_centralized"
+      },
+      {
+       "title": "Costela superior ausente",
+       "property": "upper_rib",
+       "value": "not_present"
+      },
+      {
+       "title": "Aquisição instável",
+       "property": "acquisition",
+       "value": "unstable"
+      }
+     ]
+    },
+    {
+     "title": "Achados",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Aquisição inconclusiva",
+       "property": "acquisition",
+       "value": "inconclusive"
+      },
+      {
+       "title": "Linhas A apenas",
+       "property": "a_lines_only",
+       "value": "yes"
+      },
+      {
+       "title": "Ausência de deslizamento pleural",
+       "property": "pleural_sliding",
+       "value": "absent"
+      },
+      {
+       "title": "Entre 3 e 5 linhas B",
+       "property": "between_3_and_5_b_lines",
+       "value": "yes"
+      },
+      {
+       "title": "Linhas B coalescentes",
+       "property": "coalescent_b_lines",
+       "value": "yes"
+      },
+      {
+       "title": "Ponto pulmonar presente",
+       "property": "lung_point",
+       "value": "present"
+      },
+      {
+       "title": "Pulso pulmonar presente",
+       "property": "lung_pulse",
+       "value": "present"
+      },
+      {
+       "title": "Irregularidade pleural presente",
+       "property": "pleural_irregularity",
+       "value": "present"
+      },
+      {
+       "title": "Consolidação subpleural presente",
+       "property": "subpleural_consolidation",
+       "value": "present"
+      },
+      {
+       "title": "Consolidação/hepatização presente",
+       "property": "consolidation_hepatisation",
+       "value": "present"
+      },
+      {
+       "title": "Derrame pleural laminar",
+       "property": "laminar_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pleural moderado",
+       "property": "moderate_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pleural volumoso",
+       "property": "massive_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Atelectasia presente",
+       "property": "atelectasis",
+       "value": "present"
+      }
+     ]
+    }
+   ]
+  },
+  "PE-AI": {
+   "title": "Vídeo – Antero-inferior E",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Referências anatómicas/qualidade",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Costela inferior ausente",
+       "property": "lower_rib",
+       "value": "not_present"
+      },
+      {
+       "title": "Espaço intercostal centralizado ausente",
+       "property": "intercostal_space_",
+       "value": "not_centralized"
+      },
+      {
+       "title": "Costela superior ausente",
+       "property": "upper_rib",
+       "value": "not_present"
+      },
+      {
+       "title": "Aquisição instável",
+       "property": "acquisition",
+       "value": "unstable"
+      }
+     ]
+    },
+    {
+     "title": "Achados",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Aquisição inconclusiva",
+       "property": "acquisition",
+       "value": "inconclusive"
+      },
+      {
+       "title": "Linhas A apenas",
+       "property": "a_lines_only",
+       "value": "yes"
+      },
+      {
+       "title": "Ausência de deslizamento pleural",
+       "property": "pleural_sliding",
+       "value": "absent"
+      },
+      {
+       "title": "Entre 3 e 5 linhas B",
+       "property": "between_3_and_5_b_lines",
+       "value": "yes"
+      },
+      {
+       "title": "Linhas B coalescentes",
+       "property": "coalescent_b_lines",
+       "value": "yes"
+      },
+      {
+       "title": "Ponto pulmonar presente",
+       "property": "lung_point",
+       "value": "present"
+      },
+      {
+       "title": "Pulso pulmonar presente",
+       "property": "lung_pulse",
+       "value": "present"
+      },
+      {
+       "title": "Irregularidade pleural presente",
+       "property": "pleural_irregularity",
+       "value": "present"
+      },
+      {
+       "title": "Consolidação subpleural presente",
+       "property": "subpleural_consolidation",
+       "value": "present"
+      },
+      {
+       "title": "Consolidação/hepatização presente",
+       "property": "consolidation_hepatisation",
+       "value": "present"
+      },
+      {
+       "title": "Derrame pleural laminar",
+       "property": "laminar_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pleural moderado",
+       "property": "moderate_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pleural volumoso",
+       "property": "massive_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Atelectasia presente",
+       "property": "atelectasis",
+       "value": "present"
+      }
+     ]
+    }
+   ]
+  },
+  "PE-LS": {
+   "title": "Vídeo – Latero-superior E",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Referências anatómicas/qualidade",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Costela inferior ausente",
+       "property": "lower_rib",
+       "value": "not_present"
+      },
+      {
+       "title": "Espaço intercostal centralizado ausente",
+       "property": "intercostal_space_",
+       "value": "not_centralized"
+      },
+      {
+       "title": "Costela superior ausente",
+       "property": "upper_rib",
+       "value": "not_present"
+      },
+      {
+       "title": "Aquisição instável",
+       "property": "acquisition",
+       "value": "unstable"
+      }
+     ]
+    },
+    {
+     "title": "Achados",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Aquisição inconclusiva",
+       "property": "acquisition",
+       "value": "inconclusive"
+      },
+      {
+       "title": "Linhas A apenas",
+       "property": "a_lines_only",
+       "value": "yes"
+      },
+      {
+       "title": "Ausência de deslizamento pleural",
+       "property": "pleural_sliding",
+       "value": "absent"
+      },
+      {
+       "title": "Entre 3 e 5 linhas B",
+       "property": "between_3_and_5_b_lines",
+       "value": "yes"
+      },
+      {
+       "title": "Linhas B coalescentes",
+       "property": "coalescent_b_lines",
+       "value": "yes"
+      },
+      {
+       "title": "Ponto pulmonar presente",
+       "property": "lung_point",
+       "value": "present"
+      },
+      {
+       "title": "Pulso pulmonar presente",
+       "property": "lung_pulse",
+       "value": "present"
+      },
+      {
+       "title": "Irregularidade pleural presente",
+       "property": "pleural_irregularity",
+       "value": "present"
+      },
+      {
+       "title": "Consolidação subpleural presente",
+       "property": "subpleural_consolidation",
+       "value": "present"
+      },
+      {
+       "title": "Consolidação/hepatização presente",
+       "property": "consolidation_hepatisation",
+       "value": "present"
+      },
+      {
+       "title": "Derrame pleural laminar",
+       "property": "laminar_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pleural moderado",
+       "property": "moderate_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pleural volumoso",
+       "property": "massive_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Atelectasia presente",
+       "property": "atelectasis",
+       "value": "present"
+      }
+     ]
+    }
+   ]
+  },
+  "PE-IP": {
+   "title": "Vídeo – Latero-inferior E (parênquima)",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Referências anatómicas/qualidade",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Costela inferior ausente",
+       "property": "lower_rib",
+       "value": "not_present"
+      },
+      {
+       "title": "Espaço intercostal centralizado ausente",
+       "property": "intercostal_space_",
+       "value": "not_centralized"
+      },
+      {
+       "title": "Costela superior ausente",
+       "property": "upper_rib",
+       "value": "not_present"
+      },
+      {
+       "title": "Aquisição instável",
+       "property": "acquisition",
+       "value": "unstable"
+      }
+     ]
+    },
+    {
+     "title": "Achados",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Aquisição inconclusiva",
+       "property": "acquisition",
+       "value": "inconclusive"
+      },
+      {
+       "title": "Linhas A apenas",
+       "property": "a_lines_only",
+       "value": "yes"
+      },
+      {
+       "title": "Ausência de deslizamento pleural",
+       "property": "pleural_sliding",
+       "value": "absent"
+      },
+      {
+       "title": "Entre 3 e 5 linhas B",
+       "property": "between_3_and_5_b_lines",
+       "value": "yes"
+      },
+      {
+       "title": "Linhas B coalescentes",
+       "property": "coalescent_b_lines",
+       "value": "yes"
+      },
+      {
+       "title": "Ponto pulmonar presente",
+       "property": "lung_point",
+       "value": "present"
+      },
+      {
+       "title": "Pulso pulmonar presente",
+       "property": "lung_pulse",
+       "value": "present"
+      },
+      {
+       "title": "Irregularidade pleural presente",
+       "property": "pleural_irregularity",
+       "value": "present"
+      },
+      {
+       "title": "Consolidação subpleural presente",
+       "property": "subpleural_consolidation",
+       "value": "present"
+      },
+      {
+       "title": "Consolidação/hepatização presente",
+       "property": "consolidation_hepatisation",
+       "value": "present"
+      },
+      {
+       "title": "Derrame pleural laminar",
+       "property": "laminar_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pleural moderado",
+       "property": "moderate_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pleural volumoso",
+       "property": "massive_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Atelectasia presente",
+       "property": "atelectasis",
+       "value": "present"
+      }
+     ]
+    }
+   ]
+  },
+  "PE-LI": {
+   "title": "Vídeo – Latero-inferior E",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Referências anatómicas/qualidade",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Inserção do diafragma ausente",
+       "property": "diaphragm_insertion",
+       "value": "not_present"
+      },
+      {
+       "title": "Coluna ausente",
+       "property": "spine",
+       "value": "not_present"
+      },
+      {
+       "title": "Fígado ausente",
+       "property": "liver",
+       "value": "not_present"
+      },
+      {
+       "title": "Cortina ausente",
+       "property": "curtain_sign",
+       "value": "not_present"
+      },
+      {
+       "title": "Aquisição instável",
+       "property": "acquisition",
+       "value": "unstable"
+      }
+     ]
+    },
+    {
+     "title": "Achados",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Aquisição inconclusiva",
+       "property": "acquisition",
+       "value": "inconclusive"
+      },
+      {
+       "title": "Linhas A apenas",
+       "property": "a_lines_only",
+       "value": "yes"
+      },
+      {
+       "title": "Ausência de deslizamento pleural",
+       "property": "pleural_sliding",
+       "value": "absent"
+      },
+      {
+       "title": "Entre 3 e 5 linhas B",
+       "property": "between_3_and_5_b_lines",
+       "value": "yes"
+      },
+      {
+       "title": "Linhas B coalescentes",
+       "property": "coalescent_b_lines",
+       "value": "yes"
+      },
+      {
+       "title": "Ponto pulmonar presente",
+       "property": "lung_point",
+       "value": "present"
+      },
+      {
+       "title": "Pulso pulmonar presente",
+       "property": "lung_pulse",
+       "value": "present"
+      },
+      {
+       "title": "Irregularidade pleural presente",
+       "property": "pleural_irregularity",
+       "value": "present"
+      },
+      {
+       "title": "Consolidação subpleural presente",
+       "property": "subpleural_consolidation",
+       "value": "present"
+      },
+      {
+       "title": "Consolidação/hepatização presente",
+       "property": "consolidation_hepatisation",
+       "value": "present"
+      },
+      {
+       "title": "Derrame pleural laminar",
+       "property": "laminar_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pleural moderado",
+       "property": "moderate_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pleural volumoso",
+       "property": "massive_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Atelectasia presente",
+       "property": "atelectasis",
+       "value": "present"
+      }
+     ]
+    }
+   ]
+  },
+  "PD-PS": {
+   "title": "Vídeo – Postero-superior D",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Referências anatómicas/qualidade",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Costela inferior ausente",
+       "property": "lower_rib",
+       "value": "not_present"
+      },
+      {
+       "title": "Espaço intercostal centralizado ausente",
+       "property": "intercostal_space_",
+       "value": "not_centralized"
+      },
+      {
+       "title": "Costela superior ausente",
+       "property": "upper_rib",
+       "value": "not_present"
+      },
+      {
+       "title": "Aquisição instável",
+       "property": "acquisition",
+       "value": "unstable"
+      }
+     ]
+    },
+    {
+     "title": "Achados",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Aquisição inconclusiva",
+       "property": "acquisition",
+       "value": "inconclusive"
+      },
+      {
+       "title": "Linhas A apenas",
+       "property": "a_lines_only",
+       "value": "yes"
+      },
+      {
+       "title": "Ausência de deslizamento pleural",
+       "property": "pleural_sliding",
+       "value": "absent"
+      },
+      {
+       "title": "Entre 3 e 5 linhas B",
+       "property": "between_3_and_5_b_lines",
+       "value": "yes"
+      },
+      {
+       "title": "Linhas B coalescentes",
+       "property": "coalescent_b_lines",
+       "value": "yes"
+      },
+      {
+       "title": "Ponto pulmonar presente",
+       "property": "lung_point",
+       "value": "present"
+      },
+      {
+       "title": "Pulso pulmonar presente",
+       "property": "lung_pulse",
+       "value": "present"
+      },
+      {
+       "title": "Irregularidade pleural presente",
+       "property": "pleural_irregularity",
+       "value": "present"
+      },
+      {
+       "title": "Consolidação subpleural presente",
+       "property": "subpleural_consolidation",
+       "value": "present"
+      },
+      {
+       "title": "Consolidação/hepatização presente",
+       "property": "consolidation_hepatisation",
+       "value": "present"
+      },
+      {
+       "title": "Derrame pleural laminar",
+       "property": "laminar_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pleural moderado",
+       "property": "moderate_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pleural volumoso",
+       "property": "massive_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Atelectasia presente",
+       "property": "atelectasis",
+       "value": "present"
+      }
+     ]
+    }
+   ]
+  },
+  "PD-PI": {
+   "title": "Vídeo – Postero-inferior D",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Referências anatómicas/qualidade",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Costela inferior ausente",
+       "property": "lower_rib",
+       "value": "not_present"
+      },
+      {
+       "title": "Espaço intercostal centralizado ausente",
+       "property": "intercostal_space_",
+       "value": "not_centralized"
+      },
+      {
+       "title": "Costela superior ausente",
+       "property": "upper_rib",
+       "value": "not_present"
+      },
+      {
+       "title": "Aquisição instável",
+       "property": "acquisition",
+       "value": "unstable"
+      }
+     ]
+    },
+    {
+     "title": "Achados",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Aquisição inconclusiva",
+       "property": "acquisition",
+       "value": "inconclusive"
+      },
+      {
+       "title": "Linhas A apenas",
+       "property": "a_lines_only",
+       "value": "yes"
+      },
+      {
+       "title": "Ausência de deslizamento pleural",
+       "property": "pleural_sliding",
+       "value": "absent"
+      },
+      {
+       "title": "Entre 3 e 5 linhas B",
+       "property": "between_3_and_5_b_lines",
+       "value": "yes"
+      },
+      {
+       "title": "Linhas B coalescentes",
+       "property": "coalescent_b_lines",
+       "value": "yes"
+      },
+      {
+       "title": "Ponto pulmonar presente",
+       "property": "lung_point",
+       "value": "present"
+      },
+      {
+       "title": "Pulso pulmonar presente",
+       "property": "lung_pulse",
+       "value": "present"
+      },
+      {
+       "title": "Irregularidade pleural presente",
+       "property": "pleural_irregularity",
+       "value": "present"
+      },
+      {
+       "title": "Consolidação subpleural presente",
+       "property": "subpleural_consolidation",
+       "value": "present"
+      },
+      {
+       "title": "Consolidação/hepatização presente",
+       "property": "consolidation_hepatisation",
+       "value": "present"
+      },
+      {
+       "title": "Derrame pleural laminar",
+       "property": "laminar_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pleural moderado",
+       "property": "moderate_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pleural volumoso",
+       "property": "massive_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Atelectasia presente",
+       "property": "atelectasis",
+       "value": "present"
+      }
+     ]
+    }
+   ]
+  },
+  "PE-PS": {
+   "title": "Vídeo – Postero-superior E",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Referências anatómicas/qualidade",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Costela inferior ausente",
+       "property": "lower_rib",
+       "value": "not_present"
+      },
+      {
+       "title": "Espaço intercostal centralizado ausente",
+       "property": "intercostal_space_",
+       "value": "not_centralized"
+      },
+      {
+       "title": "Costela superior ausente",
+       "property": "upper_rib",
+       "value": "not_present"
+      },
+      {
+       "title": "Aquisição instável",
+       "property": "acquisition",
+       "value": "unstable"
+      }
+     ]
+    },
+    {
+     "title": "Achados",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Aquisição inconclusiva",
+       "property": "acquisition",
+       "value": "inconclusive"
+      },
+      {
+       "title": "Linhas A apenas",
+       "property": "a_lines_only",
+       "value": "yes"
+      },
+      {
+       "title": "Ausência de deslizamento pleural",
+       "property": "pleural_sliding",
+       "value": "absent"
+      },
+      {
+       "title": "Entre 3 e 5 linhas B",
+       "property": "between_3_and_5_b_lines",
+       "value": "yes"
+      },
+      {
+       "title": "Linhas B coalescentes",
+       "property": "coalescent_b_lines",
+       "value": "yes"
+      },
+      {
+       "title": "Ponto pulmonar presente",
+       "property": "lung_point",
+       "value": "present"
+      },
+      {
+       "title": "Pulso pulmonar presente",
+       "property": "lung_pulse",
+       "value": "present"
+      },
+      {
+       "title": "Irregularidade pleural presente",
+       "property": "pleural_irregularity",
+       "value": "present"
+      },
+      {
+       "title": "Consolidação subpleural presente",
+       "property": "subpleural_consolidation",
+       "value": "present"
+      },
+      {
+       "title": "Consolidação/hepatização presente",
+       "property": "consolidation_hepatisation",
+       "value": "present"
+      },
+      {
+       "title": "Derrame pleural laminar",
+       "property": "laminar_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pleural moderado",
+       "property": "moderate_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pleural volumoso",
+       "property": "massive_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Atelectasia presente",
+       "property": "atelectasis",
+       "value": "present"
+      }
+     ]
+    }
+   ]
+  },
+  "PE-PI": {
+   "title": "Vídeo – Postero-inferior E",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Referências anatómicas/qualidade",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Costela inferior ausente",
+       "property": "lower_rib",
+       "value": "not_present"
+      },
+      {
+       "title": "Espaço intercostal centralizado ausente",
+       "property": "intercostal_space_",
+       "value": "not_centralized"
+      },
+      {
+       "title": "Costela superior ausente",
+       "property": "upper_rib",
+       "value": "not_present"
+      },
+      {
+       "title": "Aquisição instável",
+       "property": "acquisition",
+       "value": "unstable"
+      }
+     ]
+    },
+    {
+     "title": "Achados",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Aquisição inconclusiva",
+       "property": "acquisition",
+       "value": "inconclusive"
+      },
+      {
+       "title": "Linhas A apenas",
+       "property": "a_lines_only",
+       "value": "yes"
+      },
+      {
+       "title": "Ausência de deslizamento pleural",
+       "property": "pleural_sliding",
+       "value": "absent"
+      },
+      {
+       "title": "Entre 3 e 5 linhas B",
+       "property": "between_3_and_5_b_lines",
+       "value": "yes"
+      },
+      {
+       "title": "Linhas B coalescentes",
+       "property": "coalescent_b_lines",
+       "value": "yes"
+      },
+      {
+       "title": "Ponto pulmonar presente",
+       "property": "lung_point",
+       "value": "present"
+      },
+      {
+       "title": "Pulso pulmonar presente",
+       "property": "lung_pulse",
+       "value": "present"
+      },
+      {
+       "title": "Irregularidade pleural presente",
+       "property": "pleural_irregularity",
+       "value": "present"
+      },
+      {
+       "title": "Consolidação subpleural presente",
+       "property": "subpleural_consolidation",
+       "value": "present"
+      },
+      {
+       "title": "Consolidação/hepatização presente",
+       "property": "consolidation_hepatisation",
+       "value": "present"
+      },
+      {
+       "title": "Derrame pleural laminar",
+       "property": "laminar_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pleural moderado",
+       "property": "moderate_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pleural volumoso",
+       "property": "massive_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Atelectasia presente",
+       "property": "atelectasis",
+       "value": "present"
+      }
+     ]
+    }
+   ]
+  }
+ }
+}
