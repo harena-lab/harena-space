@@ -4,12 +4,36 @@
 class DCCDHTML extends DCCBase {
   constructor() {
     super()
+    this._originalHTML = ''
     this.recordUpdate = this.recordUpdate.bind(this)
     this.checkStatus = this.checkStatus.bind(this)
+    this._contentUpdated = this._contentUpdated.bind(this)
   }
 
   async connectedCallback () {
     super.connectedCallback()
+
+    const template = document.createElement('template')
+    template.innerHTML =
+      '<div style="display:none"><slot></slot></div>'
+    if (!this.shadowRoot) {
+      const shadow = this.attachShadow({ mode: 'open' })
+      shadow.appendChild(template.content.cloneNode(true))
+      const div = document.createElement('div')
+      div.setAttribute('display', 'inline-block')
+      if (this.hasAttribute('class'))
+        div.setAttribute('class', this.getAttribute('class'))
+      if (this.hasAttribute('style'))
+        div.setAttribute('style', this.getAttribute('style'))
+      this._dhtmlRender = div
+      this.parentNode.insertBefore(this._dhtmlRender, this.nextSibling)
+    }
+
+    this._renderHTML()
+
+    this._observer = new MutationObserver(this._contentUpdated)
+    this._observer.observe(this,
+                           {attributes: true, childList: true, subtree: true})
 
     if (this.hasAttribute('autoupdate')) {
       let record = await this._request('var/*/get', null, null, true)
@@ -20,6 +44,7 @@ class DCCDHTML extends DCCBase {
     }
 
     this._ready = false
+
     this._subscribe('control/dhtml/status/request', this.checkStatus)
   }
 
@@ -39,9 +64,15 @@ class DCCDHTML extends DCCBase {
     this.setAttribute('autoupdate', newValue)
   }
 
-  endReached() {
-    this._originalHTML = this.innerHTML.replace(
-      /<end-dcc[^>]*>[^<]*<\/end-dcc>/igm, '')
+  _contentUpdated(mutationsList, observer) {
+    console.log('=== content updated')
+    console.log(this.innerHTML)
+    if (this.innerHTML.length > 0) {
+      this._originalHTML += this.innerHTML
+      this.innerHTML = ''
+    }
+    console.log('-----------------------------')
+    console.log(this._originalHTML)
     this._renderHTML()
   }
 
@@ -52,9 +83,9 @@ class DCCDHTML extends DCCBase {
         if (typeof this._record === 'object')
           html = this._replaceEach(html, this._record)
         else
-          html = this._originalHTML.replace(/\{\{[ \t]*value[ \t]*\}\}/igm, this._record)
+          html = html.replace(/\{\{[ \t]*value[ \t]*\}\}/igm, this._record)
       }
-      this.innerHTML = html.replace(/\{\{[^}]*\}\}/igm, '')
+      this._dhtmlRender.innerHTML = html.replace(/\{\{[^}]*\}\}/igm, '')
     }
     if (!this.hasAttribute('connect')) {
       this._ready = true
@@ -64,7 +95,7 @@ class DCCDHTML extends DCCBase {
 
   _replaceEach (html, record) {
     const eachBlocks = html.split(
-      /\{\{[ \t]*@foreach[ \t]+([^ \t]+)[ \t]+([^ \t}]+)[ \t]*\}\}/im)
+      /(?:<!--[ \t]*)?\{\{[ \t]*@foreach[ \t]+([^ \t]+)[ \t]+([^ \t}]+)[ \t]*\}\}(?:[ \t]*-->)?/im)
     let part = 0
     html = ''
     while (part < eachBlocks.length) {
@@ -74,17 +105,13 @@ class DCCDHTML extends DCCBase {
       if (part < eachBlocks.length) {
         let field = eachBlocks[part]
         let item = eachBlocks[part+1]
-        const vhtml = eachBlocks[part+2].split(/\{\{[ \t]*@endfor[ \t]*\}\}/im)
-        let phtml = vhtml[0]
+        const vhtml = eachBlocks[part+2].split(/(?:<!--[ \t]*)?\{\{[ \t]*@endfor[ \t]*\}\}(?:[ \t]*-->)?/im)
+        const phtml = this._replaceFields(vhtml[0], '', record)
         const it = (field == '.') ? record : record[field]
-        for (let i of it) {
-          let shtml = phtml
-          shtml = this._replaceFields(shtml, '', record)
-          shtml = this._replaceFields(
-            shtml, (field == '.') ? item : item + '.' + field, i)
-          html += shtml
-        }
-        if (vhtml.length > 0)
+        for (let i of it)
+          html += this._replaceFields(
+            phtml, (field == '.') ? item : item + '.' + field, i)
+        if (vhtml.length > 1)
           html += this._replaceFields(vhtml[1], '', record)
         part += 3
       }
@@ -171,8 +198,6 @@ class DCCDHTML extends DCCBase {
     this._ready = true
     this._publish('control/dhtml/ready',
       (this.hasAttribute('id')) ? {id: this.id} : null)
-      // console.log('============ dhtml')
-      // console.log(this.id)
   }
 
   checkStatus (topic, message) {
@@ -182,8 +207,6 @@ class DCCDHTML extends DCCBase {
       this._publish('control/dhtml/' +
         ((this._ready) ? "ready" : "not-ready"),
         (this.hasAttribute('id')) ? {id: this.id} : null)
-        // console.log('============ dhtml check')
-        // console.log(this.id)
   }
 }
 

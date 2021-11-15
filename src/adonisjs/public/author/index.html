@@ -81,7 +81,7 @@
     <script src="/dccs/base/trigger-dcc.js"></script>
     <script src="/dccs/base/property-dcc.js"></script>
     <script src="/dccs/base/connect-dcc.js"></script>
-    <script src="/dccs/base/end-dcc.js"></script>
+
 
     <script src="/dccs/components/data/dcc-model.js"></script>
     <script src="/dccs/components/data/dcc-submit.js"></script>
@@ -208,7 +208,7 @@
           </div>
         </div>
       </div>
-      <end-dcc></end-dcc>
+
     </dcc-dhtml>
     <!-- End of settings modal -->
 
@@ -249,7 +249,7 @@
                       <option value="{{institution.id}}">{{institution.title}}</option>
                       {{@endfor}}
                     </select>
-                    <end-dcc></end-dcc>
+
                   </dcc-dhtml>
                 </div>
               </div>
@@ -265,7 +265,7 @@
               </div>
               <dcc-dhtml id="dhtml-case-id" connect="retrieve:harena-case:service/request/get">
                 <input type="hidden" id="table_id" name="table_id" value="{{id}}">
-                <end-dcc></end-dcc>
+
               </dcc-dhtml>
               <dcc-submit label="Share" xstyle="btn btn-success" bind="submit-share" data-dismiss="modal" connect="submit:harena-share-cases:service/request/post"></dcc-submit>
               <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
@@ -318,7 +318,7 @@
           <dcc-dhtml subscribe="service/response/get/harena-case:update">
             <h1>Edit case - {{title}}</h1>
             <h6 style="color:#808080;">Created by {{author_grade}}: {{username}} ({{institution_acronym}}). </h6>
-            <end-dcc></end-dcc>
+
           </dcc-dhtml>
         </div>
         <!-- End of page title and description -->
