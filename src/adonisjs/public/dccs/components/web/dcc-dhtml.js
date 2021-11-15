@@ -65,14 +65,10 @@ class DCCDHTML extends DCCBase {
   }
 
   _contentUpdated(mutationsList, observer) {
-    console.log('=== content updated')
-    console.log(this.innerHTML)
     if (this.innerHTML.length > 0) {
       this._originalHTML += this.innerHTML
       this.innerHTML = ''
     }
-    console.log('-----------------------------')
-    console.log(this._originalHTML)
     this._renderHTML()
   }
 
@@ -107,10 +103,12 @@ class DCCDHTML extends DCCBase {
         let item = eachBlocks[part+1]
         const vhtml = eachBlocks[part+2].split(/(?:<!--[ \t]*)?\{\{[ \t]*@endfor[ \t]*\}\}(?:[ \t]*-->)?/im)
         const phtml = this._replaceFields(vhtml[0], '', record)
-        const it = (field == '.') ? record : record[field]
-        for (let i of it)
-          html += this._replaceFields(
-            phtml, (field == '.') ? item : item + '.' + field, i)
+        if (phtml.includes('{{')) {
+          const it = (field == '.') ? record : record[field]
+          for (let i of it)
+            html += this._replaceFields(
+              phtml, (field == '.') ? item : item + '.' + field, i)
+        }
         if (vhtml.length > 1)
           html += this._replaceFields(vhtml[1], '', record)
         part += 3
@@ -120,35 +118,38 @@ class DCCDHTML extends DCCBase {
   }
 
   _replaceFields (html, prefix, record) {
-    if (prefix != '') prefix += '.'
-    for (let r in record) {
-      let pr = prefix + r
-      if (record[r] != null && typeof record[r] === 'object')
-        html = this._replaceFields(html, pr, record[r])
-      else {
-        if (typeof record[r] === 'number') record[r] = record[r].toString()
-        const content = (record[r] == null) ? '' :
-                          record[r].replace(/&/gm, '&amp;')
-                                   .replace(/"/gm, '&quot;')
-                                   .replace(/'/gm, '&#39;')
-                                   .replace(/</gm, '&lt;')
-                                   .replace(/>/gm, '&gt;')
-        html = html.replace(
-          new RegExp('\{\{[ \\t]*' + pr + '[ \\t]*\}\}', 'igm'), content)
+    if (html.includes('{{')) {
+      if (prefix != '') prefix += '.'
+      for (let r in record) {
+        if (!html.includes('{{')) break;
+        let pr = prefix + r
+        if (record[r] != null && typeof record[r] === 'object')
+          html = this._replaceFields(html, pr, record[r])
+        else {
+          if (typeof record[r] === 'number') record[r] = record[r].toString()
+          const content = (record[r] == null) ? '' :
+                            record[r].replace(/&/gm, '&amp;')
+                                     .replace(/"/gm, '&quot;')
+                                     .replace(/'/gm, '&#39;')
+                                     .replace(/</gm, '&lt;')
+                                     .replace(/>/gm, '&gt;')
+          html = html.replace(
+            new RegExp('\{\{[ \\t]*' + pr + '[ \\t]*\}\}', 'igm'), content)
 
-        let condExp = '\{\{[ \\t]*([^?\}]+)[ \\t]*\\?[ \\t]*' + pr +
-                      '[ \\t]*:[ \\t]*([^\}]+)[ \\t]*\}\}(?:="")?'
-        let conditions = html.match(new RegExp(condExp, 'igm'))
-        if (conditions != null)
-          for (let c of conditions) {
-            let inside = c.match(new RegExp(condExp, 'im'))
-            html = html.replace(
-              new RegExp('\{\{[ \\t]*' + inside[1] + '[ \\t]*\\?[ \\t]*' + pr +
-                         '[ \\t]*:[ \\t]*' + inside[2] + '[ \\t]*\}\}(?:="")?',
-                         'igm'),
-              ((inside[2] == '' + content) ? inside[1] : '')
-            )
-          }
+          let condExp = '\{\{[ \\t]*([^?\}]+)[ \\t]*\\?[ \\t]*' + pr +
+                        '[ \\t]*:[ \\t]*([^\}]+)[ \\t]*\}\}(?:="")?'
+          let conditions = html.match(new RegExp(condExp, 'igm'))
+          if (conditions != null)
+            for (let c of conditions) {
+              let inside = c.match(new RegExp(condExp, 'im'))
+              html = html.replace(
+                new RegExp('\{\{[ \\t]*' + inside[1] + '[ \\t]*\\?[ \\t]*' + pr +
+                           '[ \\t]*:[ \\t]*' + inside[2] + '[ \\t]*\}\}(?:="")?',
+                           'igm'),
+                ((inside[2] == '' + content) ? inside[1] : '')
+              )
+            }
+        }
       }
     }
     return html
