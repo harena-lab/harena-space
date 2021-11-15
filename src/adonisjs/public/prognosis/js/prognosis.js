@@ -36,6 +36,9 @@ class Prognosis {
     }
     if (new URL(document.location).pathname == '/prognosis/learn/player/') {
       Prognosis.i.getPacientOptions()
+      // console.log('============')
+      // console.log(document.querySelector('dcc-submit[connect="submit:harena-user-property:service/request/put"][bind="submit-prognosis-lvl"]'))
+      document.querySelector('dcc-submit[connect="submit:harena-user-property:service/request/put"][bind="submit-prognosis-lvl"]')._computeTrigger()
 
       const nextStep =  document.querySelector('#btn-next-step')
       const fnNextStep = function (){
@@ -47,7 +50,7 @@ class Prognosis {
       }
       nextStep.addEventListener('click', fnNextStep)
 
-      const createPacientBtn =  document.querySelector('#btn-create-challenge')
+      const createPacientBtn =  document.querySelector('#btn-create-pacient')
       const fnCreatePacientBtn = function (){
         if(this.form.checkValidity())
         Saps.i.calcSaps3Score(this.form)
@@ -64,6 +67,7 @@ class Prognosis {
 
     }
     if (new URL(document.location).pathname.includes('/prognosis/challenge')) {
+      document.querySelector('dcc-submit[connect="submit:harena-user-property:service/request/put"][bind="submit-prognosis-lvl"]')._computeTrigger()
       if (new URL(document.location).pathname.includes('/prognosis/challenge/1/')){
         Prognosis.i.getPacientOptions('challengeOne')
 
@@ -146,7 +150,6 @@ class Prognosis {
     if(document.querySelector('#db-highest')){
       this.syncProgression()
     }
-
   }
 
   async syncProgression(){
@@ -418,13 +421,13 @@ class Prognosis {
         break;
       case 'challengeOne':
         pacientInfo = Prognosis.challengeOneLvls
-        strLocalStorageCurrentLvl = 'challenge1-current-lvl'
-        strLocalStorageHighestLvl = 'challenge1-highest-lvl'
+        strLocalStorageCurrentLvl = 'prognosis-challenge1-current-lvl'
+        strLocalStorageHighestLvl = 'prognosis-challenge1-highest-lvl'
         break;
       case 'challengeTwo':
         pacientInfo = Prognosis.challengeTwoLvls
-        strLocalStorageCurrentLvl = 'challenge2-current-lvl'
-        strLocalStorageHighestLvl = 'challenge2-highest-lvl'
+        strLocalStorageCurrentLvl = 'prognosis-challenge2-current-lvl'
+        strLocalStorageHighestLvl = 'prognosis-challenge2-highest-lvl'
         break;
       default:
       pacientInfo = Prognosis.learningPrognosisLvls
@@ -475,39 +478,41 @@ class Prognosis {
           localStorage.setItem(strLocalStorageCurrentLvl, pacientInfo.pacients[0].dificuldade)
           localStorage.setItem(strLocalStorageHighestLvl, pacientInfo.pacients[0].dificuldade)
     }
-    if(document.querySelector('#welcome-lvl-modal') && (localStorage.getItem(strLocalStorageCurrentLvl) == 1
+    if (new URL(document.location).pathname.includes('learn/player')) {
+
+      if(document.querySelector('#welcome-lvl-modal') && (localStorage.getItem(strLocalStorageCurrentLvl) == 1
       || localStorage.getItem(strLocalStorageCurrentLvl)==null) && (!localStorage.getItem('hide-intro-1'))){
-      let welcomeModal = document.querySelector('#welcome-lvl-modal')
-      welcomeModal.querySelector('.modal-title').textContent = 'Seu primeiro paciente'
-      welcomeModal.querySelector('.modal-body > p').innerHTML = `Hoje é seu primeiro dia no estágio.
-      As moiras não acham que você está preparado para ser mandado direto pro trabalho em campo,
-      então elas querem te testar. Qual o perfil do paciente que Aisa raramente cortaria o fio da vida?
-      <br><br>Escolha as variáveis que aumentam a chance de sobrevivência do paciente à chegada na UTI.`
+        let welcomeModal = document.querySelector('#welcome-lvl-modal')
+        welcomeModal.querySelector('.modal-title').textContent = 'Seu primeiro paciente'
+        welcomeModal.querySelector('.modal-body > p').innerHTML = `Hoje é seu primeiro dia no estágio.
+        As moiras não acham que você está preparado para ser mandado direto pro trabalho em campo,
+        então elas querem te testar. Qual o perfil do paciente que Aisa raramente cortaria o fio da vida?
+        <br><br>Escolha as variáveis que aumentam a chance de sobrevivência do paciente à chegada na UTI.`
 
-      $('#welcome-lvl-modal').modal('show')
-      localStorage.setItem('hide-intro-1', true)
-    }else if(document.querySelector('#welcome-lvl-modal') && (localStorage.getItem(strLocalStorageCurrentLvl) == 2)
-    && (!localStorage.getItem('hide-intro-2'))){
-      let welcomeModal = document.querySelector('#welcome-lvl-modal')
-      welcomeModal.querySelector('.modal-title').textContent = 'Nem mesmo os deuses'
-      welcomeModal.querySelector('.modal-body > p').innerHTML = `Continuando seu treinamento,
-      as moiras querem te mostrar que nem os deuses escolhem tudo... Quem dirá você! Nas próximas fases,
-      alguns parâmetros já estarão pré-definidos, demarcados com esse símbolo: <i class="fas fa-lock"></i>.
-      <br><br> Com os demais, continue escolhendo opções que aumentem
-      a chance de sobrevivência do seu paciente.`
+        $('#welcome-lvl-modal').modal('show')
+        localStorage.setItem('hide-intro-1', true)
+      }else if(document.querySelector('#welcome-lvl-modal') && (localStorage.getItem(strLocalStorageCurrentLvl) == 2)
+      && (!localStorage.getItem('hide-intro-2'))){
+        let welcomeModal = document.querySelector('#welcome-lvl-modal')
+        welcomeModal.querySelector('.modal-title').textContent = 'Nem mesmo os deuses'
+        welcomeModal.querySelector('.modal-body > p').innerHTML = `Continuando seu treinamento,
+        as moiras querem te mostrar que nem os deuses escolhem tudo... Quem dirá você! Nas próximas fases,
+        alguns parâmetros já estarão pré-definidos, demarcados com esse símbolo: <i class="fas fa-lock"></i>.
+        <br><br> Com os demais, continue escolhendo opções que aumentem
+        a chance de sobrevivência do seu paciente.`
 
-      $('#welcome-lvl-modal').modal('show')
-      localStorage.setItem('hide-intro-2', true)
+        $('#welcome-lvl-modal').modal('show')
+        localStorage.setItem('hide-intro-2', true)
+      }
     }
-
     if(new URL(document.location).pathname.includes('calculator') || new URL(document.location).pathname.includes('creation'))
       selectedPacient = pacientInfo.pacients[0]
-    if(document.querySelector('h1.pacient-title')){
-      let title = document.querySelector('h1.pacient-title')
+    if(document.querySelector('.pacient-title')){
+      let title = document.querySelector('.pacient-title')
       title.innerHTML = title.innerHTML
       .replace('dificuldade 1',`dificuldade ${selectedPacient.dificuldade}`)
     }
-    MessageBus.int.publish('prognosis/current/pacient', selectedPacient, false)
+    MessageBus.i.publish('prognosis/current/pacient', selectedPacient, false)
 
     ////////////////////////////////////////////////////////////////////////////////////////////
     function objectfyPlayerOptions(fnVariable, fnWrapper, fnPrependTxt){
@@ -4456,6 +4461,177 @@ class Prognosis {
                 "selectList":"true",
                 "values":[
                   "<40 anos",
+                ]
+              }
+            }
+          ],
+          "open": []
+        },
+        "Origem":{
+          "locked": [
+            {
+              "Origem":{
+                "selectList":"true",
+                "values":[
+                  "Pronto Socorro",
+                ]
+              },
+            }
+          ],
+          "open": [],
+        },
+        "Comorbidade":{
+          "locked": [
+            {
+              "IC NYHA IV": {
+                "values": [
+                  "Sim",
+                ],
+              },
+            },
+          ],
+          "open": [],
+        },
+        "Contexto da admissão": {
+          "locked": [
+            {
+              "Admissão planejada": {
+                "values":[
+                  "Sim",
+                ]
+              },
+            },
+            {
+              "Submetido à cirurgia": {
+                "cascade": "true",
+                "radioYN": "true",
+                "uniqueValues": "true",
+                "values": [
+                  "Cirurgia eletiva",
+                ],
+                "child": [
+                  "Transplante",
+                ],
+              },
+            },
+            {
+              "Motivo de admissão na UTI": {
+                "values": [
+                  "Arritmia",
+                ],
+              },
+            },
+          ],
+          "open": []
+        },
+        "Status clínico": {
+          "locked": [
+            {
+              "Escala de Coma de Glasgow": {
+                "uniqueValues":"true",
+                "values": [
+                  ">=13",
+                ],
+              },
+            },
+            {
+              "Temperatura": {
+                "uniqueValues":"true",
+                "values": [
+                  ">=35 °C",
+                ],
+              },
+            },
+            {
+              "Frequência cardíaca": {
+                "uniqueValues":"true",
+                "values": [
+                  "<120 bpm",
+                ],
+              },
+            },
+            {
+              "Pressão sistólica": {
+                "uniqueValues":"true",
+                "values": [
+                  ">=120 mmHg",
+                ],
+              },
+            },
+            {
+              "Droga vasoativa": {
+                "uniqueValues":"true",
+                "values": [
+                  "Não",
+                ]
+              },
+            },
+          ],
+          "open": [],
+        },
+        "Alterações laboratoriais": {
+          "locked": [
+            {
+              "Bilirrubina": {
+                "uniqueValues":"true",
+                "values": [
+                  ">=6 mg/dl",
+                ],
+              },
+            },
+            {
+              "Creatinina": {
+                "uniqueValues":"true",
+                "values": [
+                  "<1.2 mg/dl",
+                ],
+              },
+            },
+            {
+              "pH": {
+                "uniqueValues":"true",
+                "values": [
+                  ">7.25"
+                ],
+              },
+            },
+            {
+              "Leucócitos": {
+                "uniqueValues":"true",
+                "values": [
+                  ">=15mil /mm³",
+                ],
+              },
+            },
+            {
+              "Plaquetas": {
+                "uniqueValues":"true",
+                "values": [
+                  ">=100mil /mm³",
+                ],
+              },
+            },
+            {
+              "Oxigenação": {
+                "uniqueValues":"true",
+                "values": [
+                  "paO2 >=60 sem VM",
+                ],
+              },
+            },
+          ],
+          "open": [],
+        },
+      },
+      {
+        "dificuldade": "2",
+        "Idade":{
+          "locked": [
+            {
+              "Idade":{
+                "selectList":"true",
+                "values":[
+                  "40-59 anos",
                 ]
               }
             }

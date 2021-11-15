@@ -111,6 +111,8 @@
   <script src="/author/js/panels.js"></script>
   <script src="/prognosis/js/prognosis.js"></script>
   <script src="/prognosis/js/saps.js"></script>
+  <script src="/prognosis/js/avatar.js"></script>
+
 </head>
 <body>
   <dcc-rest id="harena-user-property" bind="harena-user-property"></dcc-rest>
@@ -177,7 +179,7 @@
   <div id="main-panel" class="d-flex flex-column vh-100 vw-100 hidden-overflow index-boot-padding bg-secondary">
     <div class="d-flex flex-column w-lg-75 h-100 w-100 px-2 pb-4 bg-dark mx-auto main-scroll scroll-y">
       <div class="row border-bottom border-top rounded txt-light mt-5 py-1 px-3">
-        <img class="pacient-mini" src="/prognosis/img/satyr-04.svg" alt="pacient miniature">
+        <!-- <img class="pacient-mini" src="/prognosis/img/satyr-04.svg" alt="pacient miniature"> -->
         <h2 class="txt-light ml-2 mb-0 mt-auto pacient-title">Roda da Fortuna - dificuldade 1</h2>
       </div>
       <form id="form-pacient-info" action="javascript:void(0);">
@@ -204,6 +206,8 @@
         </div>
 
         <button type="submit" id="btn-create-pacient" class="btn btn-success w-100"> Revisar as escolhas</button>
+        <dcc-submit xstyle="d-none" bind="submit-prognosis-lvl"
+         connect="submit:harena-user-property:service/request/put"></dcc-submit>
         <dcc-submit label="Revisar as escolhas" xstyle="out" location="btn-create-pacient" bind="submit-prognosis-lvl"
          connect="submit:harena-user-property:service/request/post"></dcc-submit>
 

@@ -49,6 +49,8 @@
   <script src="/lib/quill-1-3-7/quill.min.js"></script>
   <script src="/lib/d3.min.js"></script>
 
+  <script src="/dccs/base/primitive-dcc.js"></script>
+  <script src="/dccs/base/scope-dcc.js"></script>
   <script src="/dccs/base/dcc.js"></script>
   <script src="/dccs/base/dcc-base.js"></script>
   <script src="/dccs/base/dcc-visual.js"></script>
@@ -110,11 +112,12 @@
   <script src="/prognosis/js/prognosis.js"></script>
   <script src="/prognosis/js/challenge.js"></script>
   <script src="/prognosis/js/saps.js"></script>
+  <script src="/prognosis/js/avatar.js"></script>
 </head>
 <body>
   <dcc-rest id="harena-user-property" bind="harena-user-property"></dcc-rest>
-  <dcc-rest id="harena-prognosis-lvl" bind="harena-prognosis-lvl"></dcc-rest>
-  <dcc-rest id="harena-prognosis-highest-lvl" bind="harena-prognosis-highest-lvl"></dcc-rest>
+  <dcc-rest id="harena-prognosis-challenge1-lvl" bind="harena-prognosis-challenge1-lvl"></dcc-rest>
+  <dcc-rest id="harena-prognosis-challenge1-highest-lvl" bind="harena-prognosis-challenge1-highest-lvl"></dcc-rest>
 
   <!-- Welcome modal start -->
   <div class="modal fade" id="welcome-lvl-modal" tabindex="-1" role="dialog">
@@ -151,7 +154,7 @@
 
             </div>
             <div class="form-group mt-5">
-              <label for="exampleInputEmail1">Na sua opinião, qual a chance (0 a 100) desse paciente sobreviver a essa internação?</label>
+              <label for="txtGeneral">Na sua opinião, qual a chance (0 a 100) desse paciente sobreviver a essa internação?</label>
               <input type="range" value="0" min="0" max="100" step="5" class="form-control" id="player-survival-rate" required>
               <h4 id="player-survival-rate-txt"></h4>
 
@@ -216,7 +219,7 @@
     <div class="d-flex flex-column w-lg-75 h-100 w-100 px-2 pb-4 bg-dark mx-auto main-scroll scroll-y">
       <div class="row border-bottom border-top rounded txt-light mt-5 py-1 px-3">
         <!-- <img class="pacient-mini" src="/prognosis/img/satyr-04.svg" alt="pacient miniature"> -->
-        <h2 class="txt-light ml-2 mb-0 mt-auto pacient-title">Desafio 1 - dificuldade</h2>
+        <h2 class="txt-light ml-2 mb-0 mt-auto pacient-title">Desafio 1 - dificuldade 1</h2>
       </div>
       <form id="form-pacient-info" action="javascript:void(0);">
         <div class="bg-light border rounded m-1 p-2" id="idade-wrapper">
@@ -242,15 +245,17 @@
         </div>
 
         <button type="submit" id="btn-create-challenge-one" class="btn btn-success w-100"> Dar prognóstico</button>
-        <!-- <dcc-submit label="Revisar as escolhas" xstyle="out" location="btn-create-pacient" bind="submit-prognosis-lvl"
+        <dcc-submit xstyle="d-none" bind="submit-prognosis-lvl"
+         connect="submit:harena-user-property:service/request/put"></dcc-submit>
+        <dcc-submit label="Revisar as escolhas" xstyle="out" location="btn-create-challenge-one" bind="submit-prognosis-lvl"
          connect="submit:harena-user-property:service/request/post"></dcc-submit>
 
-        <dcc-submit label="Revisar as escolhas" xstyle="out" location="btn-create-pacient" bind="submit-prognosis-highest-lvl"
+        <dcc-submit label="Revisar as escolhas" xstyle="out" location="btn-create-challenge-one" bind="submit-prognosis-highest-lvl"
          connect="submit:harena-user-property:service/request/post"></dcc-submit>
         <dcc-submit xstyle="d-none" bind="submit-prognosis-highest-lvl"
          connect="submit:harena-user-property:service/request/put"></dcc-submit>
 
-         <dcc-submit label="Revisar as escolhas" xstyle="out" location="btn-create-pacient" bind="submit-prognosis-perfect-lvl"
+         <!-- <dcc-submit label="Revisar as escolhas" xstyle="out" location="btn-create-pacient" bind="submit-prognosis-perfect-lvl"
           connect="submit:harena-user-property:service/request/post"></dcc-submit>
          <dcc-submit xstyle="d-none" bind="submit-prognosis-perfect-lvl"
           connect="submit:harena-user-property:service/request/put"></dcc-submit> -->
@@ -264,13 +269,13 @@
   </div>
   </main>
 
-  <dcc-dhtml id="harena-dhtml-prognosis-current-lvl" connect="retrieve:harena-prognosis-lvl:service/request/get">
-    <input type="hidden" name="{{userProperty.0.title}}" id="current-lvl" value="">
+  <dcc-dhtml id="harena-dhtml-prognosis-current-lvl" connect="retrieve:harena-prognosis-challenge1-lvl:service/request/get">
+    <input type="hidden" name="{{userProperty.0.title}}" id="current-lvl" value="{{userProperty.0.value}}">
     <end-dcc></end-dcc>
   </dcc-dhtml>
 
-  <dcc-dhtml id="harena-dhtml-prognosis-heighest-lvl" connect="retrieve:harena-prognosis-highest-lvl:service/request/get">
-    <input type="hidden" name="{{userProperty.0.title}}" id="highest-lvl" value="">
+  <dcc-dhtml id="harena-dhtml-prognosis-heighest-lvl" connect="retrieve:harena-prognosis-challenge1-highest-lvl:service/request/get">
+    <input type="hidden" name="{{userProperty.0.title}}" id="highest-lvl" value="{{userProperty.0.value}}">
     <end-dcc></end-dcc>
   </dcc-dhtml>
 

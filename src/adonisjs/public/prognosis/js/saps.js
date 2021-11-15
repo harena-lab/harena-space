@@ -1187,7 +1187,7 @@ class Saps {
     }
     if(document.querySelector('#saps-survival')){
       document.querySelector('#saps-survival').value = round((100 - mortalityPercentage),1)
-      MessageBus.int.publish('var/sapsCalc/set', round((100 - mortalityPercentage),1), false)
+      MessageBus.i.publish('var/sapsCalc/set', round((100 - mortalityPercentage),1), false)
     }
 
     $('#saps-result-modal').modal('show')

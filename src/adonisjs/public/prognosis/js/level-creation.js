@@ -65,11 +65,11 @@ class LevelCreationTool {
 
   async deconstructObj(elemToRetrieve){
     const sapsList = Prognosis.sapsScoreValues
-    console.log('============ starting deconstruction...')
-    console.log('============ elem type')
-    console.log(elemToRetrieve)
+    // console.log('============ starting deconstruction...')
+    // console.log('============ elem type')
+    // console.log(elemToRetrieve)
     let createdObj = elemToRetrieve.target.parentElement
-    console.log(createdObj)
+    // console.log(createdObj)
     let mainWrapper = createdObj.querySelector(`[id^="options-"][id$="-wrapper"]`)
     let dElem = mainWrapper.querySelectorAll(`[data-deconstructible="true"]`)
     let uParent
@@ -327,9 +327,26 @@ class LevelCreationTool {
       }
       download("prognLvl.json",JSON.stringify(LevelCreationTool.i.pacient))
     }
+    const fnProngTargetChallenge = function(){
+      if(this.value == 'challenge-two'){
+        const targetInputWrapper = document.querySelector('#progn-target-wrapper')
+        const targetInputs = document.querySelectorAll('#progn-target-wrapper input')
+        targetInputWrapper.removeAttribute('hidden')
+        for (let i of targetInputs) {
+          i.setAttribute('required', '')
+        }
+      }else{
+        const targetInputWrapper = document.querySelector('#progn-target-wrapper')
+        const targetInputs = document.querySelectorAll('#progn-target-wrapper input')
+        targetInputWrapper.setAttribute('hidden', '')
+        for (let i of targetInputs) {
+          i.removeAttribute('required')
+        }
+      }
+    }
     document.querySelector(`#chck-cascade-option`).addEventListener('click', fnCascadeListener)
     document.querySelector(`#input-number-bundle`).addEventListener('change', fnBundleListener)
-
+    document.querySelector('#level-mode-selection').addEventListener('change', fnProngTargetChallenge)
     // document.querySelector('#btn-build-lvl').addEventListener('click', fnBuildLvlListener)
     for (let nav of navSelection) {
       nav.addEventListener('click', fnCascadeListener)
@@ -361,72 +378,81 @@ class LevelCreationTool {
   }
 
   async buildPacient (){
-    let rootOption = document.querySelectorAll('.pacient-info-wrapper')
-    function download(filename, text) {
-      let element = document.createElement('a');
-      element.setAttribute('href', 'data:text/json;charset=utf-8,' + encodeURIComponent(text));
-      element.setAttribute('download', filename);
+    const buildForm = document.querySelector('#form-lvl-setting')
+    if (buildForm.checkValidity()) {
+      let rootOption = document.querySelectorAll('.pacient-info-wrapper')
+      let gameMode = document.querySelector('#level-mode-selection').value
 
-      element.style.display = 'none';
-      document.body.appendChild(element);
+      function download(filename, text) {
+        let element = document.createElement('a');
+        element.setAttribute('href', 'data:text/json;charset=utf-8,' + encodeURIComponent(text));
+        element.setAttribute('download', filename);
 
-      element.click();
+        element.style.display = 'none';
+        document.body.appendChild(element);
 
-      document.body.removeChild(element);
-    }
+        element.click();
 
-    for (let i = 0; i < rootOption.length; i++) {
-      let optionsWrapperLocked = rootOption[i].querySelector('.pacient-info-values[data-progn="locked"]')
-      let optionsWrapperOpen = rootOption[i].querySelector('.pacient-info-values[data-progn="open"]')
-      let optionsLocked = optionsWrapperLocked.querySelectorAll('[id^="option-group-"]')
-      let optionsOpen = optionsWrapperOpen.querySelectorAll('[id^="option-group-"]')
-      let groupName = optionsWrapperOpen.dataset.optionName
+        document.body.removeChild(element);
+      }
+      if(gameMode == 'challenge-two'){
+        let minTarget = document.querySelector('#progn-target-min').value
+        let maxTarget = document.querySelector('#progn-target-max').value
+        LevelCreationTool.i.pacient['prognTarget'] = `${minTarget}-${maxTarget}`
+      }
+      for (let i = 0; i < rootOption.length; i++) {
+        let optionsWrapperLocked = rootOption[i].querySelector('.pacient-info-values[data-progn="locked"]')
+        let optionsWrapperOpen = rootOption[i].querySelector('.pacient-info-values[data-progn="open"]')
+        let optionsLocked = optionsWrapperLocked.querySelectorAll('[id^="option-group-"]')
+        let optionsOpen = optionsWrapperOpen.querySelectorAll('[id^="option-group-"]')
+        let groupName = optionsWrapperOpen.dataset.optionName
 
-      optionsWrapperLocked.prognObj = {'locked':[]}
-      optionsWrapperOpen.prognObj = {'open':[]}
-      for (let k = 0; k < optionsOpen.length; k++) {
-        // console.log('============ open option '+k)
-        if (optionsOpen[k].prognObj.bundleCreator) {
-          console.log('============ bundle found')
-          console.log(optionsOpen[k].prognObj.bundleCreator)
-          let bundle = optionsOpen[k].prognObj.bundleCreator
-          for (let z = 0; z < Object.keys(bundle).length; z++) {
-            console.log('============ keys')
-            console.log(Object.keys(bundle)[z])
-            let capsule = {}
-            capsule[Object.keys(bundle)[z]] = bundle[Object.keys(bundle)[z]]
-            optionsWrapperOpen.prognObj['open'].push(capsule)
-            console.log('============ opening..')
-            console.log(optionsWrapperOpen.prognObj['open'])
+        optionsWrapperLocked.prognObj = {'locked':[]}
+        optionsWrapperOpen.prognObj = {'open':[]}
+        for (let k = 0; k < optionsOpen.length; k++) {
+          // console.log('============ open option '+k)
+          if (optionsOpen[k].prognObj.bundleCreator) {
+            console.log('============ bundle found')
+            console.log(optionsOpen[k].prognObj.bundleCreator)
+            let bundle = optionsOpen[k].prognObj.bundleCreator
+            for (let z = 0; z < Object.keys(bundle).length; z++) {
+              console.log('============ keys')
+              console.log(Object.keys(bundle)[z])
+              let capsule = {}
+              capsule[Object.keys(bundle)[z]] = bundle[Object.keys(bundle)[z]]
+              optionsWrapperOpen.prognObj['open'].push(capsule)
+              console.log('============ opening..')
+              console.log(optionsWrapperOpen.prognObj['open'])
+            }
+          }else{
+            // console.log(optionsOpen[k].prognObj)
+            optionsWrapperOpen.prognObj['open'].push(optionsOpen[k].prognObj)
           }
-        }else{
-          // console.log(optionsOpen[k].prognObj)
-          optionsWrapperOpen.prognObj['open'].push(optionsOpen[k].prognObj)
         }
+        for (let k = 0; k < optionsLocked.length; k++) {
+          // console.log('============ locked option '+k)
+          // console.log(optionsLocked[k].prognObj)
+          optionsWrapperLocked.prognObj['locked'].push(optionsLocked[k].prognObj)
+        }
+        // console.log('============ open obj')
+        // console.log(optionsWrapperOpen.prognObj['open'])
+        // console.log('============ locked obj')
+        // console.log(optionsWrapperLocked.prognObj['locked'])
+        optionsWrapperOpen.parentElement.prognObj = {}
+        optionsWrapperOpen.parentElement.prognObj[groupName] = {
+          "open": optionsWrapperOpen.prognObj['open'],
+          "closed": optionsWrapperLocked.prognObj['locked']
+        }
+        let currentGroupOptions = optionsWrapperOpen.parentElement.prognObj[groupName]
+        // console.log('============ current group')
+        // console.log(groupName)
+        // console.log(currentGroupOptions)
+        LevelCreationTool.i.pacient[groupName] = currentGroupOptions
+        // console.log('============ pacient')
+        // console.log(LevelCreationTool.i.pacient)
       }
-      for (let k = 0; k < optionsLocked.length; k++) {
-        // console.log('============ locked option '+k)
-        // console.log(optionsLocked[k].prognObj)
-        optionsWrapperLocked.prognObj['locked'].push(optionsLocked[k].prognObj)
-      }
-      // console.log('============ open obj')
-      // console.log(optionsWrapperOpen.prognObj['open'])
-      // console.log('============ locked obj')
-      // console.log(optionsWrapperLocked.prognObj['locked'])
-      optionsWrapperOpen.parentElement.prognObj = {}
-      optionsWrapperOpen.parentElement.prognObj[groupName] = {
-        "open": optionsWrapperOpen.prognObj['open'],
-        "closed": optionsWrapperLocked.prognObj['locked']
-      }
-      let currentGroupOptions = optionsWrapperOpen.parentElement.prognObj[groupName]
-      // console.log('============ current group')
-      // console.log(groupName)
-      // console.log(currentGroupOptions)
-      LevelCreationTool.i.pacient[groupName] = currentGroupOptions
-      // console.log('============ pacient')
-      // console.log(LevelCreationTool.i.pacient)
+      download("prognLvl.json",JSON.stringify(LevelCreationTool.i.pacient))
     }
-    download("prognLvl.json",JSON.stringify(LevelCreationTool.i.pacient))
   }
 
   addPadding (obj, padding, isClass){

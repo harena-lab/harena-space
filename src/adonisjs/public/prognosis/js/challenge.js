@@ -6,12 +6,12 @@ class Challenge {
     this.challengePacient = this.challengePacient.bind(this)
     this.getSapsCalc = this.getSapsCalc.bind(this)
     this._prognTarget = false
-    MessageBus.int.subscribe('var/sapsCalc/set', this.getSapsCalc)
-    MessageBus.int.subscribe('prognosis/current/pacient', this.challengePacient)
+    MessageBus.i.subscribe('var/sapsCalc/set', this.getSapsCalc)
+    MessageBus.i.subscribe('prognosis/current/pacient', this.challengePacient)
 
-    MessageBus.int.subscribe('control/dhtml/ready', this.preStart)
-    MessageBus.int.subscribe('control/html/ready', this.preStart)
-    MessageBus.int.publish('control/dhtml/status/request')
+    MessageBus.i.subscribe('control/dhtml/ready', this.preStart)
+    MessageBus.i.subscribe('control/html/ready', this.preStart)
+    MessageBus.i.publish('control/dhtml/status/request')
   }
   async preStart () {
     const dhtmlList = document.querySelectorAll('dcc-dhtml')
@@ -20,14 +20,14 @@ class Challenge {
         this._totalReady++
       }
       if(this._totalReady == dhtmlList.length){
-        MessageBus.int.unsubscribe('control/dhtml/ready', this.preStart)
-        MessageBus.int.unsubscribe('control/html/ready', this.preStart)
+        MessageBus.i.unsubscribe('control/dhtml/ready', this.preStart)
+        MessageBus.i.unsubscribe('control/html/ready', this.preStart)
         this.start()
       }
     }
     if(dhtmlList.length == 0){
-      MessageBus.int.unsubscribe('control/dhtml/ready', this.preStart)
-      MessageBus.int.unsubscribe('control/html/ready', this.preStart)
+      MessageBus.i.unsubscribe('control/dhtml/ready', this.preStart)
+      MessageBus.i.unsubscribe('control/html/ready', this.preStart)
       this.start()
     }
   }
@@ -58,6 +58,11 @@ class Challenge {
          prognSapsCalc.textContent = `${Challenge.i._sapsCalc}%`
          prognAcc.textContent = Prognosis.i.calcPrognAcc(playerGuess, Challenge.i._sapsCalc, 10)
          prognPlayerGuess.textContent = `${playerGuess}%`
+
+         var currentLvl = localStorage.getItem(`prognosis-challenge1-current-lvl`)
+         var heighestLvl = localStorage.getItem(`prognosis-challenge1-highest-lvl`)
+         localStorage.setItem(`prognosis-challenge1-highest-lvl`, parseInt(currentLvl)+1)
+         document.querySelector('dcc-submit[bind="submit-prognosis-highest-lvl"][connect="submit:harena-user-property:service/request/put"]')._computeTrigger()
        }
      }
      nextStep.addEventListener('click', fnNextStep)
@@ -71,12 +76,17 @@ class Challenge {
 
      const nextLvl = document.querySelector('#btn-ch1-next-lvl')
      const fnNextLvl = function (){
-       let challenge
+       var challenge
        new URL(document.location).pathname.includes('/prognosis/challenge/1')?challenge = 'challenge1':challenge = 'challenge2'
-       const currentLvl = localStorage.getItem(`${challenge}-current-lvl`)
-       const heighestLvl = localStorage.getItem(`${challenge}-highest-lvl`)
-       console.log(currentLvl)
-       console.log(heighestLvl)
+       const currentLvl = localStorage.getItem(`prognosis-${challenge}-current-lvl`)
+       const heighestLvl = localStorage.getItem(`prognosis-${challenge}-highest-lvl`)
+       var nextLvl = parseInt(localStorage.getItem(`prognosis-${challenge}-current-lvl`))+1
+       if(nextLvl>10)
+       nextLvl = 10
+       if(nextLvl<10)
+        document.location.href = `/prognosis/challenge/${challenge.substring(9)}/?diffic=` + nextLvl
+       else
+         document.location.href = `/prognosis/challenge/${challenge.substring(9)}/progress`
      }
      nextLvl.addEventListener('click', fnNextLvl)
 
@@ -101,10 +111,10 @@ class Challenge {
 
      const nextLvl = document.querySelector('#btn-ch2-next-lvl')
      const fnNextLvl = function (){
-       let challenge
+       var challenge
        new URL(document.location).pathname.includes('/prognosis/challenge/1')?challenge = 'challenge1':challenge = 'challenge2'
-       const currentLvl = localStorage.getItem(`${challenge}-current-lvl`)
-       const heighestLvl = localStorage.getItem(`${challenge}-highest-lvl`)
+       const currentLvl = localStorage.getItem(`prognosis-${challenge}-current-lvl`)
+       const heighestLvl = localStorage.getItem(`prognosis-${challenge}-highest-lvl`)
        console.log(currentLvl)
        console.log(heighestLvl)
      }

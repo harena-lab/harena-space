@@ -231,6 +231,9 @@ color: #c1434f !important;
   border-radius: 15pt;
   width: 70pt;
 }
+.avatar-mini{
+  width: 40pt;
+}
 .character-selection{
   cursor: pointer;
 }
@@ -247,4 +250,13 @@ color: #c1434f !important;
   border: 2pt solid black;
   border-radius: 15pt;
   padding: 2pt;
+}
+
+.img-disabled{
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.txt-progn-light{
+  color: #bbb;
 }

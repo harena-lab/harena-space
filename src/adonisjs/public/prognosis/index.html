@@ -98,6 +98,8 @@
   <script src="/translator/item-templates.js"></script>
 
   <script src="/prognosis/js/prognosis.js"></script>
+  <script src="/prognosis/js/avatar.js"></script>
+  <script src="/prognosis/js/challenge-progress.js"></script>
 
 </head>
 
@@ -106,6 +108,26 @@
   <dcc-rest id="harena-prognosis-lvl" bind="harena-prognosis-lvl"></dcc-rest>
   <dcc-rest id="harena-prognosis-highest-lvl" bind="harena-prognosis-highest-lvl"></dcc-rest>
   <dcc-include src="/author/partials/header.html"></dcc-include>
+  <!--Tooltip general info start-->
+  <div class="modal fade" id="modal-tooltip-general" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p class="text-justify" id="txt-tooltip"></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Ok</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--Tooltip general info end-->
   <main role="">
     <div id="main-panel" class="d-flex flex-column vh-100 vw-100 scroll-y index-boot-padding">
       <div class=" d-flex flex-column w-lg-75 h-100 w-100 bg-dark mx-auto align-items-center">

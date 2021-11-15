@@ -49,9 +49,9 @@ class PageController {
       if (prevScrollpos > currentScrollPos) {
         document.querySelector('.up-scroll').style.top = "0"
       } else {
-        document.querySelector('.up-scroll').style.top = "-50px"
+        document.querySelector('.up-scroll').style.top = "-75px"
       }
-      prevScrollpos = currentScrollPos;
+      prevScrollpos = currentScrollPos
     })
     }
 

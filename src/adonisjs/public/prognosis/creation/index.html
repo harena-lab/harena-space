@@ -115,6 +115,58 @@
 
 <body>
   <dcc-include src="/author/partials/header.html"></dcc-include>
+  <!-- Confirm level creation start -->
+  <div class="modal fade" id="lvl-creation-modal" tabindex="-1" role="dialog" aria-labelledby="level-creation-confirm" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Construir nível</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="form-lvl-setting" action="javascript:void(0);">
+            <div class="border rounded pl-2 py-1 mb-1" id="pacient-result-wrapper">
+              <div class="form-row align-items-center">
+                <div class="col-auto">
+                  <label class="mr-sm-2" for="level-mode-selection">Modo de jogo:</label>
+                  <select class="custom-select mr-sm-2 mb-3" id="level-mode-selection" required>
+                    <option value="" selected>Escolha...</option>
+                    <option value="learning-prognosis">Aprendendo prognóstico</option>
+                    <option value="challenge-one">Desafio 1</option>
+                    <option value="challenge-two">Desafio 2</option>
+                  </select>
+                </div>
+              <div class="w-100"></div>
+              <div class="col-auto" id="progn-target-wrapper" hidden>
+                  <label for="progn-target-input">Intervalo de prognóstico: </label>
+                  <div class="input-group mb-1">
+                    <div class="input-group-prepend">
+                      <label class="input-group-text" >min</label>
+                    </div>
+                    <input type="number" id="progn-target-min" min="0" max="100" placeholder="min" name="progn-target-min" class="ml-1 mb-1" value="">
+                  </div>
+                  <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                      <label class="input-group-text" >max</label>
+                    </div>
+                    <input type="number" id="progn-target-max" min="0" max="100" placeholder="max" name="progn-target-max" class="ml-1 mb-1" value="">
+                  </div>
+
+
+
+              </div>
+            </div>
+            <button type="button" class="btn btn-secondary" id="btn-cancel" data-dismiss="modal"> Cancelar</button>
+            <button type="submit" class="btn btn-success" id="btn-download-lvl" onclick="LevelCreationTool.i.buildPacient()">Confirmar e baixar</button>
+          </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Confirm level creation end -->
   <main role="">
     <div id="main-panel" class="d-flex flex-column vh-100 vw-100 scroll-y index-boot-padding bg-secondary">
 
@@ -219,7 +271,7 @@
               </div>
             </div>
             <div class="p-2">
-              <button type="button" class="w-50 btn btn-success" id="btn-build-lvl" onclick="LevelCreationTool.i.buildPacient()"> Construir nível</button>
+              <button type="button" class="w-50 btn btn-success" id="btn-build-lvl" onclick="$('#lvl-creation-modal').modal('show')"> Construir nível</button>
             </div>
           </div>
           <div class="col-4 my-5 h-75">
