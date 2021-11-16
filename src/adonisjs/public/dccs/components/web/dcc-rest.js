@@ -84,7 +84,9 @@ class DCCRest extends DCCBase {
             console.log('===== error in request')
             console.log(error.message)
             console.log('=====')
-            result = error.message
+            result = {
+              error: error.message
+            }
           })
 
       }
