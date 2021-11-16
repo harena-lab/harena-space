@@ -84,7 +84,7 @@
   <script src="/dccs/base/trigger-dcc.js"></script>
   <script src="/dccs/base/property-dcc.js"></script>
   <script src="/dccs/base/connect-dcc.js"></script>
-  <script src="/dccs/base/end-dcc.js"></script>
+
 
   <script src="/dccs/components/data/dcc-model.js"></script>
   <script src="/dccs/components/data/dcc-submit.js"></script>
@@ -180,11 +180,11 @@
   </main>
   <dcc-dhtml id="harena-dhtml-prognosis" connect="retrieve:harena-prognosis-highest-lvl:service/request/get">
     <input type="hidden" name="{{userProperty.0.title}}" id="next-lvl" value="{{userProperty.0.value}}">
-    <end-dcc></end-dcc>
+
   </dcc-dhtml>
   <dcc-dhtml id="harena-dhtml-prognosis-perfect" connect="retrieve:harena-prognosis-perfect-lvl:service/request/get">
     <input type="hidden" name="{{userProperty.0.title}}" id="prognosis-lvl-perfect" value="{{userProperty.0.value}}">
-    <end-dcc></end-dcc>
+
   </dcc-dhtml>
 
 </body>
