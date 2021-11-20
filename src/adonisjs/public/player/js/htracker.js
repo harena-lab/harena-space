@@ -27,7 +27,7 @@ class Tracker {
     MessageBus.i.subscribe('var/*/input/mandatory/get', this.allMandatoryFilled)
 
     this.knotStart = this.knotStart.bind(this)
-    MessageBus.i.subscribe('knot/+/start', this.knotStart)
+    MessageBus.i.subscribe('knot/start/+', this.knotStart)
     this.caseCompleted = this.caseCompleted.bind(this)
     MessageBus.i.subscribe('case/completed', this.caseCompleted)
     MessageBus.i.subscribe('session/close', this.caseCompleted)
@@ -122,7 +122,7 @@ class Tracker {
   }
 
   knotStart (topic, message) {
-    const k = MessageBus.extractLevel(topic, 2)
+    const k = MessageBus.extractLevel(topic, 3)
     const currentDateTime = new Date()
     this._knotTrack.push(
       {knotid: k,

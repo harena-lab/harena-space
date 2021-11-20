@@ -355,7 +355,7 @@ class PlayerManager {
         if (note) { this.presentNote(knot) } else { this.presentKnot(knot) }
       }
     }
-    MessageBus.i.publish('knot/' + knotName + '/start', null, true)
+    MessageBus.i.publish('knot/start/' + knotName, null, true)
 
     if (this._knots[knotName].categories &&
         this._knots[knotName].categories.includes('end'))
