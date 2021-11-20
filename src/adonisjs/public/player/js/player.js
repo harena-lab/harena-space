@@ -64,7 +64,7 @@ class PlayerManager {
         'message', 'Ok')
     } else {
       if (this._currentKnot != null) {
-        MessageBus.i.publish('control/input/submit', null, true) // <TODO> provisory
+        MessageBus.i.publish('input/submit/*', null, true) // <TODO> provisory
         MessageBus.i.publish('knot/' + this._currentKnot + '/end', null, true)
       }
 

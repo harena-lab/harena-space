@@ -153,7 +153,7 @@ class DCCButton extends DCCBlock {
         const v = (this.variable.includes(':'))
           ? this.variable.substring(0, this.variable.indexOf(':')) : this.variable
         message.value = (this.variable.endsWith(':label')) ? this.label : this.message
-        this._publish('var/' + v + '/changed', message, true)
+        this._publish('input/changed/' + v.replace(/\./g, '/'), message, true)
       }
       if (this.hasAttribute('label') || this.hasAttribute('topic')) {
         if (this.hasAttribute('topic') && this.topic.endsWith('/navigate')) { this._active = false }

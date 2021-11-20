@@ -10,17 +10,17 @@ class Tracker {
     this._caseCompleted = false
 
     this.inputReady = this.inputReady.bind(this)
-    MessageBus.i.subscribe('var/+/input/ready', this.inputReady)
+    MessageBus.i.subscribe('/input/ready/#', this.inputReady)
     this.inputMandatory = this.inputMandatory.bind(this)
     MessageBus.i.subscribe('var/+/input/mandatory', this.inputMandatory)
     this.groupinputReady = this.groupinputReady.bind(this)
-    MessageBus.i.subscribe('var/+/group_input/ready', this.groupinputReady)
+    MessageBus.i.subscribe('group_input/ready/#', this.groupinputReady)
     this.subinputReady = this.subinputReady.bind(this)
-    MessageBus.i.subscribe('var/+/subinput/ready', this.subinputReady)
+    MessageBus.i.subscribe('subinput/ready/#', this.subinputReady)
     this.inputTyped = this.inputTyped.bind(this)
-    MessageBus.i.subscribe('var/+/typed', this.inputTyped)
+    MessageBus.i.subscribe('input/typed/#', this.inputTyped)
     this.inputChanged = this.inputChanged.bind(this)
-    MessageBus.i.subscribe('var/+/changed', this.inputChanged)
+    MessageBus.i.subscribe('input/changed/#', this.inputChanged)
     this.stateChanged = this.stateChanged.bind(this)
     MessageBus.i.subscribe('var/+/state_changed', this.stateChanged)
     this.allMandatoryFilled = this.allMandatoryFilled.bind(this)
@@ -33,7 +33,7 @@ class Tracker {
     MessageBus.i.subscribe('session/close', this.caseCompleted)
 
     this.submitVariables = this.submitVariables.bind(this)
-    MessageBus.i.subscribe('control/input/submit', this.submitVariables)
+    MessageBus.i.subscribe('input/submit/*', this.submitVariables)
   }
 
   inputMandatory (topic, message) {
@@ -49,12 +49,13 @@ class Tracker {
 
   groupinputReady (topic, message) {
     this._initializeVariable(topic, {})
-    this._groupInput = MessageBus.extractLevel(topic, 2)
+    this._groupInput =
+      MessageBus.extractLevelsFrom(topic, 3).replace(/\//g, '.')
   }
 
   subinputReady (topic, message) {
     if (this._groupInput != null) {
-      const id = MessageBus.extractLevel(topic, 2)
+      const id = MessageBus.extractLevelsFrom(topic, 3).replace(/\//g, '.')
       this._variables[this._groupInput][id] =
             { content: message.content, state: ' ' }
     }
@@ -101,7 +102,9 @@ class Tracker {
   */
 
   _updateVariable (topic, value) {
-    const v = MessageBus.extractLevel(topic, 2)
+    const v = MessageBus.extractLevelsFrom(topic, 3).replace(/\//g, '.')
+    console.log('=== variable levels')
+    console.log(v)
     if (v != null) {
       this._variables[v] = value
       this._varUpdated[v] = true

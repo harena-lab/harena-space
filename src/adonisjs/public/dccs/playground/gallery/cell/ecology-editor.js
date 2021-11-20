@@ -178,16 +178,16 @@ Selecione abaixo a chance de cada um dos eventos:
 </dcc-timer>
 
 <subscribe-dcc target="cellular-space" topic="state/next" map="next"></subscribe-dcc>
-<subscribe-dcc target="plant-replicates" topic="var/plant_replicates/changed" map="probability">
+<subscribe-dcc target="plant-replicates" topic="input/changed/plant_replicates" map="probability">
 </subscribe-dcc>
-<subscribe-dcc target="plant-dies" topic="var/plant_dies/changed" map="probability"></subscribe-dcc>
-<subscribe-dcc target="herbivore-replicates" topic="var/herbivore_replicates/changed" map="probability">
+<subscribe-dcc target="plant-dies" topic="input/changed/plant_dies" map="probability"></subscribe-dcc>
+<subscribe-dcc target="herbivore-replicates" topic="input/changed/herbivore_replicates" map="probability">
 </subscribe-dcc>
-<subscribe-dcc target="herbivore-dies" topic="var/herbivore_dies/changed" map="probability">
+<subscribe-dcc target="herbivore-dies" topic="input/changed/herbivore_dies" map="probability">
 </subscribe-dcc>
-<subscribe-dcc target="carnivore-replicates" topic="var/carnivore_replicates/changed" map="probability">
+<subscribe-dcc target="carnivore-replicates" topic="input/changed/carnivore_replicates" map="probability">
 </subscribe-dcc>
-<subscribe-dcc target="carnivore-dies" topic="var/carnivore_dies/changed" map="probability">
+<subscribe-dcc target="carnivore-dies" topic="input/changed/carnivore_dies" map="probability">
 </subscribe-dcc>
 <subscribe-dcc target="cellular-space" topic="type/#"></subscribe-dcc>
 <subscribe-dcc target="cellular-space" topic="state/save" map="save"></subscribe-dcc>

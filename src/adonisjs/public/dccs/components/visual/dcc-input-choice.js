@@ -27,7 +27,7 @@ class DCCInputOption extends DCCInput {
 
     // <TODO> align with dcc-state-select
     if (this._parent == null) {
-      this._publish('var/' + this._variable + '/input/ready',
+      this._publish('input/ready/' + this._variable.replace(/\./g, '/'),
         {
           sourceType: DCCInputOption.elementTag,
           content: this.value
@@ -100,7 +100,7 @@ class DCCInputOption extends DCCInput {
 
   inputChanged () {
     this.changed = true
-    this._publish('var/' + this._variable + '/changed',
+    this._publish('input/changed/' + this._variable.replace(/\./g, '/'),
       {
         sourceType: DCCInputOption.elementTag,
         value: this.value
@@ -233,7 +233,7 @@ class DCCInputChoice extends DCCInput {
     }
 
     this.changed = true
-    this._publish('var/' + this._variable + '/changed',
+    this._publish('input/changed/' + this._variable.replace(/\./g, '/'),
       {
         sourceType: DCCInputChoice.elementTag,
         value: this._value
@@ -400,7 +400,7 @@ class DCCInputChoice extends DCCInput {
     this._presentationIsReady()
 
     // <TODO> align with dcc-state-select
-    this._publish('var/' + this._variable + '/group_input/ready',
+    this._publish('group_input/ready/' + this._variable.replace(/\./g, '/'),
       DCCInputChoice.elementTag)
   }
 

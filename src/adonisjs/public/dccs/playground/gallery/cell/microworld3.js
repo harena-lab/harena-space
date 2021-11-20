@@ -164,16 +164,16 @@ Selecione abaixo a chance de cada um dos eventos:
 </dcc-timer>
 
 <subscribe-dcc target="cellular-space" topic="state/next" map="next"></subscribe-dcc>
-<subscribe-dcc target="alga-replicates" topic="var/alga_replicates/changed" map="probability">
+<subscribe-dcc target="alga-replicates" topic="input/changed/alga_replicates" map="probability">
 </subscribe-dcc>
-<subscribe-dcc target="alga-dies" topic="var/alga_dies/changed" map="probability"></subscribe-dcc>
-<subscribe-dcc target="nematode-replicates" topic="var/nematode_replicates/changed" map="probability">
+<subscribe-dcc target="alga-dies" topic="input/changed/alga_dies" map="probability"></subscribe-dcc>
+<subscribe-dcc target="nematode-replicates" topic="input/changed/nematode_replicates" map="probability">
 </subscribe-dcc>
-<subscribe-dcc target="nematode-dies" topic="var/nematode_dies/changed" map="probability">
+<subscribe-dcc target="nematode-dies" topic="input/changed/nematode_dies" map="probability">
 </subscribe-dcc>
-<subscribe-dcc target="tardigrade-replicates" topic="var/tardigrade_replicates/changed" map="probability">
+<subscribe-dcc target="tardigrade-replicates" topic="input/changed/tardigrade_replicates" map="probability">
 </subscribe-dcc>
-<subscribe-dcc target="tardigrade-dies" topic="var/tardigrade_dies/changed" map="probability">
+<subscribe-dcc target="tardigrade-dies" topic="input/changed/tardigrade_dies" map="probability">
 </subscribe-dcc>
 <subscribe-dcc target="cellular-space" topic="type/#"></subscribe-dcc>
 <subscribe-dcc target="cellular-space" topic="state/save" map="save"></subscribe-dcc>

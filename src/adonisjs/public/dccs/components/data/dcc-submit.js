@@ -41,7 +41,7 @@ class DCCSubmit extends DCCButton {
       const topic = (this.hasAttribute('topic'))
         ? this.topic
         : (this.hasAttribute('variable'))
-          ? 'var/' + this.variable + '/changed'
+          ? 'input/changed/' + this.variable.replace(/\./g, '/')
           : 'button/' + this.label + '/clicked'
       if (this.hasAttribute('message')) { message.value = this.message }
       let form = null

@@ -274,6 +274,22 @@ class MessageBus {
     return label
   }
 
+  /*
+   * Returns the hierarchy starting at a specific level of the message.
+   */
+  static extractLevelsFrom (topic, level) {
+    let hierarchy = null
+    if (topic != null) {
+      const levelSet = topic.split('/')
+      if (level <= levelSet.length) {
+        hierarchy = ''
+        for (let l = level-1; l < levelSet.length; l++)
+          hierarchy += levelSet[l] + ((l < levelSet.length-1) ? '/' : '')
+      }
+    }
+    return hierarchy
+  }
+
   /* Message building services
       *************************/
   static buildResponseTopic (topic, message) {

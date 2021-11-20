@@ -13,7 +13,7 @@ class DCCInputTyped extends DCCInput {
     super.connectedCallback()
     this.innerHTML = ''
 
-    this._publish('var/' + this._variable + '/input/ready',
+    this._publish('input/ready/' + this._variable.replace(/\./g, '/'),
       DCCInputTyped.elementTag)
   }
 
@@ -55,7 +55,7 @@ class DCCInputTyped extends DCCInput {
   inputTyped () {
     this.changed = true
     this.value = this._inputVariable.value
-    this._publish('var/' + this._variable + '/typed',
+    this._publish('input/typed/' + this._variable.replace(/\./g, '/'),
       {
         sourceType: DCCInputTyped.elementTag,
         value: this.value
@@ -65,7 +65,7 @@ class DCCInputTyped extends DCCInput {
   inputChanged () {
     this.changed = true
     this.value = this._inputVariable.value
-    this._publish('var/' + this._variable + '/changed',
+    this._publish('input/changed/' + this._variable.replace(/\./g, '/'),
       {
         sourceType: DCCInputTyped.elementTag,
         value: this.value
