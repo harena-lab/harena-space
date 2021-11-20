@@ -501,7 +501,10 @@ class PlayerManager {
               Basic.service.currentCaseId)
 
       this._state.runningCase = runningCase
-      MessageBus.i.defineRunningCase(runningCase)
+      MessageBus.i.defineRunningCase(runningCase) // <TODO> deprecated
+      MessageBus.i.publish('case/start/' + runningCase.runningId,
+                           {userId: this._state.userid,
+                            caseId: Basic.service.currentCaseId}, true)
     }
   }
 

@@ -28,6 +28,9 @@ class PlayState {
 
     this._metastate = {}
 
+    this.sessionRecord = this.sessionRecord.bind(this)
+    MessageBus.i.subscribe('user/login/+', this.sessionRecord)
+
     this.variableGet = this.variableGet.bind(this)
     MessageBus.i.subscribe('var/+/get', this.variableGet)
     this.variableSet = this.variableSet.bind(this)
@@ -50,9 +53,8 @@ class PlayState {
     return (state == null || state.completed) ? null : state
   }
 
-  sessionRecord (userid, token) {
-    this._state.userid = userid
-    this._state.token = token
+  sessionRecord (topic) {
+    this._state.userid = MessageBus.extractLevel(topic, 3)
     this._stateStore()
   }
 

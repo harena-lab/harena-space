@@ -57,6 +57,16 @@ class MessageBus {
   }
 
   async publish (topic, message, track) {
+    /*
+    console.log('----- message: ' + topic)
+    console.log(message)
+    if (this._runningCase && this._runningCase.track)
+      console.log(this._runningCase.track.userid)
+    else {
+      console.log('[no running case]')
+    }
+    */
+
     if (track != null && this.debugger != null)
       this.debugger(topic, message)
 
