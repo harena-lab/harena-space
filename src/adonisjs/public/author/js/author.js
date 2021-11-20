@@ -542,7 +542,7 @@ class AuthorManager {
       Comments.prepare(this._compiledCase, knotid)
       if (Panels.s.commentsVisible)
         MessageBus.i.publish('control/comments/editor')
-      MessageBus.i.publish('control/case/ready', null, true)
+      MessageBus.i.publish('case/ready/' + Basic.service.currentCaseId, null, true)
     }
   }
 

@@ -299,7 +299,7 @@ class PlayerManager {
     this._knots = this._compiledCase.knots
     // Basic.service.currentThemeFamily = this._compiledCase.theme
     Basic.service.composedThemeFamily(this._compiledCase.theme)
-    MessageBus.i.publish('control/case/ready', null, true)
+    MessageBus.i.publish('case/ready/' + Basic.service.currentCaseId, null, true)
   }
 
   _caseFlow () {
