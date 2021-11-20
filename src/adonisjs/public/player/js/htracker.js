@@ -27,7 +27,7 @@ class Tracker {
     MessageBus.i.subscribe('var/*/input/mandatory/get', this.allMandatoryFilled)
 
     this.knotStart = this.knotStart.bind(this)
-    MessageBus.i.subscribe('knot/start/+', this.knotStart)
+    MessageBus.i.subscribe('knot/start/#', this.knotStart)
     this.caseCompleted = this.caseCompleted.bind(this)
     MessageBus.i.subscribe('case/completed', this.caseCompleted)
     MessageBus.i.subscribe('session/close', this.caseCompleted)
@@ -50,12 +50,12 @@ class Tracker {
   groupinputReady (topic, message) {
     this._initializeVariable(topic, {})
     this._groupInput =
-      MessageBus.extractLevelsFrom(topic, 3).replace(/\//g, '.')
+      MessageBus.extractLevelsSegment(topic, 3).replace(/\//g, '.')
   }
 
   subinputReady (topic, message) {
     if (this._groupInput != null) {
-      const id = MessageBus.extractLevelsFrom(topic, 3).replace(/\//g, '.')
+      const id = MessageBus.extractLevelsSegment(topic, 3).replace(/\//g, '.')
       this._variables[this._groupInput][id] =
             { content: message.content, state: ' ' }
     }
@@ -102,7 +102,7 @@ class Tracker {
   */
 
   _updateVariable (topic, value) {
-    const v = MessageBus.extractLevelsFrom(topic, 3).replace(/\//g, '.')
+    const v = MessageBus.extractLevelsSegment(topic, 3).replace(/\//g, '.')
     console.log('=== variable levels')
     console.log(v)
     if (v != null) {
@@ -125,7 +125,7 @@ class Tracker {
   }
 
   knotStart (topic, message) {
-    const k = MessageBus.extractLevel(topic, 3)
+    const k = MessageBus.extractLevelsSegment(topic, 3).replace(/\//g, '.')
     const currentDateTime = new Date()
     this._knotTrack.push(
       {knotid: k,

@@ -103,7 +103,7 @@ class DCCCompute extends DCCBase {
         if (expression.target.startsWith('Case.'))
           { message = 'case/navigate/' + expression.target.substring(5) }
         else
-          { message = 'knot/navigate/' + expression.target }
+          { message = 'knot/navigate/' + expression.target.replace(/\./g, '/') }
         let cBus = (bus != null) ? bus : MessageBus.i
         if (expression.parameter) {
           bus.publish(message, expression.parameter, true)

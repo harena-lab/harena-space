@@ -1867,9 +1867,9 @@ class Translator {
     if (Translator.reservedNavigation.includes(lower)) {
       message = Translator.navigationMap[lower] }
     else if (lower.startsWith('variable.'))
-      message = 'knot/navigate/=/' + target.substring(9)
+      message = 'knot/navigate/=/' + target.substring(9).replace(/\./g, '/')
     else
-      message = 'knot/navigate/' + target
+      message = 'knot/navigate/' + target.replace(/\./g, '/')
     return message
   }
 

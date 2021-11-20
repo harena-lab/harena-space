@@ -266,28 +266,38 @@ class MessageBus {
    * Returns the label at a specific level of the message.
    */
   static extractLevel (topic, level) {
-    let label = null
-    if (topic != null) {
-      const levelSet = topic.split('/')
-      if (level <= levelSet.length) { label = levelSet[level - 1] }
-    }
-    return label
+    const levelSet = MessageBus._splitLevels(topic, level)
+    return (levelSet == null) ? null : levelSet[level - 1]
   }
 
   /*
-   * Returns the hierarchy starting at a specific level of the message.
+   * Returns the hierarchy from a level to a level of the message.
    */
-  static extractLevelsFrom (topic, level) {
+  static extractLevelsSegment (topic, levelFrom, levelTo) {
     let hierarchy = null
-    if (topic != null) {
-      const levelSet = topic.split('/')
-      if (level <= levelSet.length) {
-        hierarchy = ''
-        for (let l = level-1; l < levelSet.length; l++)
-          hierarchy += levelSet[l] + ((l < levelSet.length-1) ? '/' : '')
+    const levelSet = MessageBus._splitLevels(topic)
+    if (levelSet != null) {
+      if (levelTo == null)
+        levelTo = levelSet.length
+      if (levelTo >= levelFrom) {
+        if (levelSet != null) {
+          hierarchy = ''
+          for (let l = levelFrom-1; l < levelTo; l++)
+            hierarchy += levelSet[l] + ((l < levelTo-1) ? '/' : '')
+        }
       }
     }
     return hierarchy
+  }
+
+  static _splitLevels (topic, level) {
+    let split = null
+    if (topic != null) {
+      const levelSet = topic.split('/')
+      if (level == null || level <= levelSet.length)
+        split = levelSet
+    }
+    return split
   }
 
   /* Message building services

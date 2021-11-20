@@ -16,9 +16,11 @@ class DCCButton extends DCCBlock {
   connectedCallback () {
     super.connectedCallback()
 
-    if (this.hasAttribute('topic') && this.topic.endsWith('/navigate')) {
+    if (this.hasAttribute('topic') &&
+        MessageBus.extractLevel(this.topic, 2) == 'navigate') {
       this.navigationBlocked = this.navigationBlocked.bind(this)
-      this._subscribe('+/+/navigate/blocked', this.navigationBlocked)
+      this._subscribe(MessageBus.extractLevelsSegment(this.topic, 1, 2) + '/!',
+                      this.navigationBlocked)
     }
 
     this._publish('control/button/' +
@@ -156,7 +158,9 @@ class DCCButton extends DCCBlock {
         this._publish('input/changed/' + v.replace(/\./g, '/'), message, true)
       }
       if (this.hasAttribute('label') || this.hasAttribute('topic')) {
-        if (this.hasAttribute('topic') && this.topic.endsWith('/navigate')) { this._active = false }
+        if (this.hasAttribute('topic') &&
+            MessageBus.extractLevel(this.topic, 2) == 'navigate')
+          this._active = false
         const topic = (this.hasAttribute('topic'))
           ? this.topic : 'button/' + this.label + '/clicked'
         if (this.hasAttribute('message')) { message.value = this.message }
