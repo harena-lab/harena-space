@@ -101,9 +101,9 @@ class DCCCompute extends DCCBase {
       case 'divert-script':
         let message
         if (expression.target.startsWith('Case.'))
-          { message = 'case/' + expression.target.substring(5) + '/navigate' }
+          { message = 'case/navigate/' + expression.target.substring(5) }
         else
-          { message = 'knot/' + expression.target + '/navigate' }
+          { message = 'knot/navigate/' + expression.target }
         let cBus = (bus != null) ? bus : MessageBus.i
         if (expression.parameter) {
           bus.publish(message, expression.parameter, true)

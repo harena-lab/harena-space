@@ -11,10 +11,9 @@ class PlayerManager {
     this.controlEvent = this.controlEvent.bind(this)
     MessageBus.i.subscribe('control/#', this.controlEvent)
     this.navigateEvent = this.navigateEvent.bind(this)
-    MessageBus.i.subscribe('knot/+/navigate', this.navigateEvent)
-    MessageBus.i.subscribe('flow/+/navigate', this.navigateEvent)
-    MessageBus.i.subscribe('case/+/navigate', this.navigateEvent)
-    MessageBus.i.subscribe('variable/+/navigate', this.navigateEvent)
+    MessageBus.i.subscribe('knot/navigate/#', this.navigateEvent)
+    MessageBus.i.subscribe('flow/navigate/+', this.navigateEvent)
+    MessageBus.i.subscribe('case/navigate/+', this.navigateEvent)
     MessageBus.i.subscribe('session/close', this.navigateEvent)
 
     this._notesStack = []
@@ -47,7 +46,8 @@ class PlayerManager {
   }
 
   async navigateEvent (topic, message) {
-    let target = MessageBus.extractLevel(topic, 2)
+    let target = MessageBus.extractLevel(topic, 3)
+    if (target == '=') target = MessageBus.extractLevel(topic, 4)
     this.trackTrigger(target)
 
     let mandatoryEmpty = null
@@ -69,7 +69,7 @@ class PlayerManager {
       }
 
       switch (topic) {
-        case 'knot/</navigate':
+        case 'knot/navigate/<':
           if (this._notesStack.length > 0) {
             const panel = this._notesStack.pop()
             this._mainPanel.removeChild(panel)
@@ -83,7 +83,7 @@ class PlayerManager {
             this.knotLoad(this._state.historyPrevious())
           }
           break
-        case 'knot/<</navigate': this.startCase()
+        case 'knot/navigate/<<': this.startCase()
           const flowStart = this._nextFlowKnot()
           const startKnot = (flowStart != null)
                                ? flowStart.target
@@ -95,11 +95,11 @@ class PlayerManager {
           this._state.historyRecord(startKnot)
           this.knotLoad(startKnot)
           break
-        case 'knot/>/navigate': const nextKnot = this._state.nextKnot()
+        case 'knot/navigate/>': const nextKnot = this._state.nextKnot()
           this._state.historyRecord(nextKnot)
           this.knotLoad(nextKnot)
           break
-        case 'flow/>/navigate': const flowNext = this._nextFlowKnot()
+        case 'flow/navigate/>': const flowNext = this._nextFlowKnot()
           if (flowNext != null) {
             // console.log('=== flow next')
             // console.log(flowNext)
@@ -107,7 +107,7 @@ class PlayerManager {
             this.knotLoad(flowNext.target)
           }
           break
-        case 'case/>/navigate':
+        case 'case/navigate/>':
           // <TODO> jumping other instructions - improve it
           // console.log('=== next case')
           let instruction
@@ -131,21 +131,12 @@ class PlayerManager {
         case 'session/close':
           this.sessionClose()
           break
-        default: if (MessageBus.matchFilter(topic, 'knot/+/navigate') ||
-                         MessageBus.matchFilter(topic, 'variable/+/navigate')) {
-          /*
-                        console.log("=== variable navigate");
-                        console.log(target);
-                        */
-          if (MessageBus.matchFilter(topic, 'variable/+/navigate')) {
+        default: if (MessageBus.matchFilter(topic, 'knot/navigate/#')) {
+          if (MessageBus.matchFilter(topic, 'knot/navigate/=/+')) {
             const result = await MessageBus.i.request('var/' + target + '/get', null, null, true)
             target = Translator.instance.findContext(
               this._compiledCase.knots, this._currentKnot,
               result.message)
-            /*
-                           console.log("=== variable resolved");
-                           console.log(target);
-                           */
           }
           this._state.historyRecord(target)
           if (message.value) {
@@ -155,10 +146,8 @@ class PlayerManager {
             this._state.parameter = null
             this.knotLoad(target)
           }
-        } else if (MessageBus.matchFilter(topic, 'case/+/navigate')) {
+        } else if (MessageBus.matchFilter(topic, 'case/navigate/+')) {
           if (message) {
-            // console.log("=== metaparameter");
-            // console.log(message.parameter);
             this._state.metaexecParameterSet(message.parameter)
           }
           window.open('index.html?case=' + target +
@@ -226,7 +215,7 @@ class PlayerManager {
         await this._caseLoad(this._state.currentCase)
 
         this._caseFlow()
-        MessageBus.i.publish('knot/<</navigate', null, true)
+        MessageBus.i.publish('knot/navigate/<<', null, true)
       } else { this._state.sessionCompleted() }
     }
 
@@ -275,7 +264,7 @@ class PlayerManager {
           this._caseFlow()
         }
       }
-      MessageBus.i.publish('knot/<</navigate', null, true)
+      MessageBus.i.publish('knot/navigate/<<', null, true)
       // this.knotLoad("entry");
     }
   }

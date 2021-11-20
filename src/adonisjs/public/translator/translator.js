@@ -1864,7 +1864,12 @@ class Translator {
   _transformNavigationMessage (target) {
     let message
     const lower = target.toLowerCase()
-    if (Translator.reservedNavigation.includes(lower)) { message = Translator.navigationMap[lower] } else if (lower.startsWith('variable.')) { message = 'variable/' + target.substring(9) + '/navigate' } else { message = 'knot/' + target + '/navigate' }
+    if (Translator.reservedNavigation.includes(lower)) {
+      message = Translator.navigationMap[lower] }
+    else if (lower.startsWith('variable.'))
+      message = 'knot/navigate/=/' + target.substring(9)
+    else
+      message = 'knot/navigate/' + target
     return message
   }
 
@@ -2681,11 +2686,11 @@ class Translator {
     'knot.previous', 'knot.next',
     'flow.next', 'session.close']
   Translator.navigationMap = {
-    'case.next': 'case/>/navigate',
-    'knot.start': 'knot/<</navigate',
-    'knot.previous': 'knot/</navigate',
-    'knot.next': 'knot/>/navigate',
-    'flow.next': 'flow/>/navigate',
+    'case.next': 'case/navigate/>',
+    'knot.start': 'knot/navigate/<<',
+    'knot.previous': 'knot/navigate/<',
+    'knot.next': 'knot/navigate/>',
+    'flow.next': 'flow/navigate/>',
     'session.close': 'session/close'
   }
 
