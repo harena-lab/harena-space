@@ -287,7 +287,7 @@ class PlayerManager {
     const caseObj = await MessageBus.i.request(
       'service/request/get', {caseId: Basic.service.currentCaseId}, null, true)
     */
-    const caseObj = await MessageBus.i.request('data/case/' + Basic.service.currentCaseId + '/get', null, null, true)
+    const caseObj = await MessageBus.i.request('case/get/' + Basic.service.currentCaseId, null, null, true)
 
     this._currentCaseTitle = caseObj.message.title
 
@@ -501,7 +501,7 @@ class PlayerManager {
               Basic.service.currentCaseId)
 
       this._state.runningCase = runningCase
-      MessageBus.i.defineRunningCase(runningCase) // <TODO> deprecated
+      MessageBus.i.defineRunningCase(runningCase)
       MessageBus.i.publish('case/start/' + runningCase.runningId,
                            {userId: this._state.userid,
                             caseId: Basic.service.currentCaseId}, true)
@@ -511,7 +511,9 @@ class PlayerManager {
   resumeCase () {
     if (!PlayerManager.isCapsule) {
       // <TODO> this._runningCase is provisory
-      MessageBus.i.publish('case/' + this._state.currentCase + '/resume', this._state.runningCase, true)
+      MessageBus.i.publish('case/resume/' + this._state.runningCase,
+                           {userId: this._state.userid,
+                            caseId: this._state.currentCase}, true)
 
       MessageBus.i.defineRunningCase(this._state.runningCase)
     }

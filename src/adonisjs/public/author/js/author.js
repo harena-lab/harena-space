@@ -289,7 +289,7 @@ class AuthorManager {
   async _caseLoad (caseId) {
     Basic.service.currentCaseId = caseId
 
-    const caseObj = await MessageBus.i.request('data/case/' + caseId + '/get', null, null, true)
+    const caseObj = await MessageBus.i.request('case/get/' + caseId, null, null, true)
 
     this._currentCaseTitle = caseObj.message.title
     await this._compile(caseObj.message.source)
