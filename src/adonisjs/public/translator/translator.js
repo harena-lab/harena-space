@@ -2237,7 +2237,10 @@ class Translator {
     // <TODO> provisory - weak strategy (only one per case)
     let answer = ''
     if (this._playerInputShow || this.authoringRender) {
-      if (this._playerInputShow == '#answer' || this.authoringRender) { answer = " answer='" + obj.value + "'" } else { answer = " player='" + this._playerInputShow + "'" }
+      if (this._playerInputShow == '#answer' || this.authoringRender)
+        { answer = " answer='" + obj.value + "'" }
+      else
+        { answer = " player='" + this._playerInputShow + "'" }
     }
 
     let extraAttr = ''
@@ -2271,7 +2274,10 @@ class Translator {
       // indicates how related selects will behave
       this._playerInputShow = null
       if (obj.show) {
-        if (obj.show == 'answer') { this._playerInputShow = '#answer' } else { this._playerInputShow = obj.variable }
+        if (obj.show == 'answer')
+          this._playerInputShow = '#answer'
+        else
+          this._playerInputShow = obj.variable
       }
     }
 

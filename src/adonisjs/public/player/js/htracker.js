@@ -18,7 +18,7 @@ class Tracker {
     this.inputChanged = this.inputChanged.bind(this)
     MessageBus.i.subscribe('input/changed/#', this.inputChanged)
     this.stateChanged = this.stateChanged.bind(this)
-    MessageBus.i.subscribe('var/+/state_changed', this.stateChanged)
+    MessageBus.i.subscribe('input/state/#', this.stateChanged)
 
     this.knotStart = this.knotStart.bind(this)
     MessageBus.i.subscribe('knot/start/#', this.knotStart)
@@ -77,10 +77,9 @@ class Tracker {
   }
 
   stateChanged (topic, message) {
-    if (this._groupInput != null) {
-      const id = MessageBus.extractLevel(topic, 2)
-      this._variables[this._groupInput][id].state = message.state
-    }
+    if (this._groupInput != null)
+      this._variables[this._groupInput][this._extractEntityId(topic, 3)].state =
+        message.state
   }
 
   submitVariables (topic, message) {

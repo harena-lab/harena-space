@@ -134,7 +134,8 @@ class DCCStateSelect extends DCCVisual {
   }
 
   set selection (newValue) {
-    if (this._statesArr && this._statesArr.includes(newValue)) { this._selectionIndex = this._statesArr.indexOf(newValue) }
+    if (this._statesArr && this._statesArr.includes(newValue))
+      this._selectionIndex = this._statesArr.indexOf(newValue)
     this.setAttribute('selection', newValue)
   }
 
@@ -143,14 +144,19 @@ class DCCStateSelect extends DCCVisual {
   }
 
   set selectionIndex (newValue) {
-    if (this._statesArr && this._statesArr[newValue]) { this.selection = this._statesArr[newValue] } else { this._selectionIndex = newValue }
+    if (this._statesArr && this._statesArr[newValue])
+      this.selection = this._statesArr[newValue]
+    else
+      this._selectionIndex = newValue
   }
 
   /* Rendering */
 
   async _render () {
     if (this.states != null) {
-      if (this.hasAttribute('answer') || this.author) { this.selection = this.answer } else if (this.hasAttribute('player')) {
+      if (this.hasAttribute('answer') || this.author)
+        this.selection = this.answer
+      else if (this.hasAttribute('player')) {
         const value = await this._request(
           'var/' + this.player + '/get/sub', this.innerHTML, null, true)
         this.selection = value.message
@@ -196,7 +202,7 @@ class DCCStateSelect extends DCCVisual {
   _changeState () {
     if (this.states != null) {
       this.selectionIndex = (this.selectionIndex + 1) % this._statesArr.length
-      this._publish('var/' + this.completeId + '/state_changed',
+      this._publish('input/state/' + this.completeId.replace(/\./g, '/'),
         {
           sourceType: DCCStateSelect.elementTag,
           state: this.selection,
@@ -241,7 +247,7 @@ class DCCGroupSelect extends DCCBlock {
     this._answerRequests()
 
     this._publish('input/ready/</' + this.variable.replace(/\./g, '/'),
-      DCCGroupSelect.elementTag)
+                  DCCGroupSelect.elementTag)
   }
 
   disconnectedCallback () {

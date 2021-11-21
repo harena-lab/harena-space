@@ -161,10 +161,12 @@ class PlayState {
     if (completeId != null) {
       let result = null
       let id = completeId
-      while (this._state.variables[id] === undefined && id.indexOf('.') > -1) { id = id.substring(id.indexOf('.') + 1) }
+      while (this._state.variables[id] === undefined && id.indexOf('.') > -1)
+        id = id.substring(id.indexOf('.') + 1)
       if (this._state.variables[id]) {
         for (const v in this._state.variables[id]) {
-          if (this._state.variables[id][v].content == message.body) { result = this._state.variables[id][v].state }
+          if (this._state.variables[id][v].content == message.body)
+            result = this._state.variables[id][v].state
         }
       }
       MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
