@@ -189,8 +189,8 @@ class PlayState {
       status = true
     }
     this._stateStore()
-    MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
-      status, track)
+
+    MessageBus.i.publishHasResponse(topic, message, status, track)
  }
 
   /*

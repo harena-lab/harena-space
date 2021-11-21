@@ -146,7 +146,7 @@ class MessageBus {
     if (responseTopic) { rt = responseTopic } else {
       if (rm == null) { rm = {} } else if (typeof rm !== 'object') { rm = { body: rm } }
       rm.responseStamp = MessageBus._stamp
-      rt = requestTopic + '/response/' + MessageBus._stamp
+      rt = 'response/' + MessageBus._stamp + '/' + requestTopic
       MessageBus._stamp++
     }
 
@@ -165,6 +165,13 @@ class MessageBus {
       topic: returnMessage.topic,
       message: returnMessage.message
     }
+  }
+
+  publishHasResponse (topic, requestMessage, responseMessage, track) {
+    if (requestMessage.responseStamp)
+      this.publish(
+        MessageBus.buildResponseTopic(topic, requestMessage),
+        responseMessage, track)
   }
 
   async waitMessage (topic) {
@@ -303,7 +310,7 @@ class MessageBus {
   /* Message building services
       *************************/
   static buildResponseTopic (topic, message) {
-    return topic + '/response/' + message.responseStamp
+    return 'response/' + message.responseStamp + '/' + topic
   }
 }
 

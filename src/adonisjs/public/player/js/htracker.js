@@ -13,7 +13,7 @@ class Tracker {
     MessageBus.i.subscribe('input/ready/#', this.inputReady)
     this.inputMandatory = this.inputMandatory.bind(this)
     MessageBus.i.subscribe('var/+/input/mandatory', this.inputMandatory)
-    this.groupinputReady = this.groupinputReady.bind(this)
+    this.inputTyped = this.inputTyped.bind(this)
     MessageBus.i.subscribe('input/typed/#', this.inputTyped)
     this.inputChanged = this.inputChanged.bind(this)
     MessageBus.i.subscribe('input/changed/#', this.inputChanged)
@@ -53,12 +53,12 @@ class Tracker {
     const v = this._extractEntityId(topic, position)
     if (v != null && this._variables[v] == null)
       switch (type) {
-        '<' : this._updateVariable(v, {})
-              this._groupInput = v
-              break
-        '>' : if (this._groupInput != null)
-                this._variables[this._groupInput][v] =
-                  { content: message.content, state: ' ' }
+        case '<' : this._updateVariable(v, {})
+                   this._groupInput = v
+                   break
+        case '>' : if (this._groupInput != null)
+                     this._variables[this._groupInput][v] =
+                       { content: message.content, state: ' ' }
               break
         default: this._updateVariable(v, '')
       }
@@ -122,7 +122,7 @@ class Tracker {
   knotStart (topic, message) {
     const currentDateTime = new Date()
     this._knotTrack.push(
-      {knotid: this._extractEntityId(topic),
+      {knotid: this._extractEntityId(topic, 3),
        timeStart: currentDateTime.toJSON()})
   }
 
