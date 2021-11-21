@@ -23,7 +23,7 @@ class PlayerManager {
     MessageBus.i.subscribe('/report/get', this.produceReport)
 
     this.caseCompleted = this.caseCompleted.bind(this)
-    MessageBus.i.subscribe('case/completed', this.caseCompleted)
+    MessageBus.i.subscribe('case/completed/+', this.caseCompleted)
 
     // tracking
     this.trackTyping = this.trackTyping.bind(this)
@@ -367,7 +367,10 @@ class PlayerManager {
 
     if (this._knots[knotName].categories &&
         this._knots[knotName].categories.includes('end'))
-    { MessageBus.i.publish('case/completed', {knotid: knotName}, true) }
+      MessageBus.i.publish('case/completed/' + this._state.runningCase.runningId,
+                           {userId: this._state.userid,
+                            caseId: Basic.service.currentCaseId,
+                            knotid: knotName}, true)
   }
 
   caseCompleted (topic, message) {

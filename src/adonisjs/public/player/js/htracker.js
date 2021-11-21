@@ -23,7 +23,7 @@ class Tracker {
     this.knotStart = this.knotStart.bind(this)
     MessageBus.i.subscribe('knot/start/#', this.knotStart)
     this.caseCompleted = this.caseCompleted.bind(this)
-    MessageBus.i.subscribe('case/completed', this.caseCompleted)
+    MessageBus.i.subscribe('case/completed/+', this.caseCompleted)
     MessageBus.i.subscribe('session/close', this.caseCompleted)
 
     this.submitVariables = this.submitVariables.bind(this)
@@ -132,8 +132,10 @@ class Tracker {
       if (message && message.knotid)
         kt.knotid = message.knotid
       this._knotTrack.push(kt)
-      MessageBus.i.publish('case/summary',
-        {knotTrack: this._knotTrack,
+      MessageBus.i.publish('case/summary/' + MessageBus.extractLevel(topic, 3),
+        {userId: message.userId,
+         caseId: message.caseId,
+         knotTrack: this._knotTrack,
          variables: this._variables}, true)
     }
   }
