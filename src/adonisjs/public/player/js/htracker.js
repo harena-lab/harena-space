@@ -14,10 +14,6 @@ class Tracker {
     this.inputMandatory = this.inputMandatory.bind(this)
     MessageBus.i.subscribe('var/+/input/mandatory', this.inputMandatory)
     this.groupinputReady = this.groupinputReady.bind(this)
-    MessageBus.i.subscribe('group_input/ready/#', this.groupinputReady)
-    this.subinputReady = this.subinputReady.bind(this)
-    MessageBus.i.subscribe('subinput/ready/#', this.subinputReady)
-    this.inputTyped = this.inputTyped.bind(this)
     MessageBus.i.subscribe('input/typed/#', this.inputTyped)
     this.inputChanged = this.inputChanged.bind(this)
     MessageBus.i.subscribe('input/changed/#', this.inputChanged)
@@ -36,8 +32,8 @@ class Tracker {
     MessageBus.i.subscribe('input/submit/*', this.submitVariables)
   }
 
-  _extractEntityId (topic) {
-    return MessageBus.extractLevelsSegment(topic, 3).replace(/\//g, '.')
+  _extractEntityId (topic, position) {
+    return MessageBus.extractLevelsSegment(topic, position).replace(/\//g, '.')
   }
 
   _exportEntityId (entity) {
@@ -52,27 +48,29 @@ class Tracker {
   }
 
   inputReady (topic, message) {
-    this._initializeVariable(topic, '')
-  }
-
-  groupinputReady (topic, message) {
-    this._initializeVariable(topic, {})
-    this._groupInput = this._extractEntityId(topic)
-  }
-
-  subinputReady (topic, message) {
-    if (this._groupInput != null)
-      this._variables[this._groupInput][this._extractEntityId(topic)] =
-            { content: message.content, state: ' ' }
+    const type = MessageBus.extractLevel(topic, 3)
+    const position = (type == '<' || type == '>') ? 4 : 3
+    const v = this._extractEntityId(topic, position)
+    if (v != null && this._variables[v] == null)
+      switch (type) {
+        '<' : this._updateVariable(v, {})
+              this._groupInput = v
+              break
+        '>' : if (this._groupInput != null)
+                this._variables[this._groupInput][v] =
+                  { content: message.content, state: ' ' }
+              break
+        default: this._updateVariable(v, '')
+      }
   }
 
   inputTyped (topic, message) {
-    this._updateVariable(topic, message.value)
+    this._updateVariable(this._extractEntityId(topic, 3), message.value)
     // this._changedVariable(topic, message.value) <FUTURE>
   }
 
   inputChanged (topic, message) {
-    this._updateVariable(topic, message.value)
+    this._updateVariable(this._extractEntityId(topic, 3), message.value)
     // this._changedVariable(topic, message.value) <FUTURE>
   }
 
@@ -107,20 +105,13 @@ class Tracker {
   }
   */
 
-  _updateVariable (topic, value) {
-    const v = this._extractEntityId(topic)
-    if (v != null) {
-      this._variables[v] = value
-      this._varUpdated[v] = true
-      if (this._mandatoryFilled[v] !== undefined) {
-        this._mandatoryFilled[v].filled = (value.length > 0) }
+  _updateVariable (variable, value) {
+    if (variable != null) {
+      this._variables[variable] = value
+      this._varUpdated[variable] = true
+      if (this._mandatoryFilled[variable] !== undefined) {
+        this._mandatoryFilled[variable].filled = (value.length > 0) }
     }
-  }
-
-  _initializeVariable (topic, value) {
-    const v = MessageBus.extractLevel(topic, 2)
-    if (v != null && this._variables[v] == null)
-      this._updateVariable(topic, value)
   }
 
   allMandatoryFilled (topic, message, track) {

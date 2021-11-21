@@ -57,7 +57,7 @@ class DCCStateSelect extends DCCVisual {
 
     this._render()
 
-    this._publish('subinput/ready/' + this.completeId.replace(/\./g, '/'),
+    this._publish('input/ready/>/' + this.completeId.replace(/\./g, '/'),
       {
         sourceType: DCCStateSelect.elementTag,
         content: this.innerHTML
@@ -240,7 +240,7 @@ class DCCGroupSelect extends DCCBlock {
     this._groupReady = true
     this._answerRequests()
 
-    this._publish('group_input/ready/' + this.variable.replace(/\./g, '/'),
+    this._publish('input/ready/</' + this.variable.replace(/\./g, '/'),
       DCCGroupSelect.elementTag)
   }
 

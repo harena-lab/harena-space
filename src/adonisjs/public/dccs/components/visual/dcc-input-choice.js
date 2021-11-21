@@ -400,7 +400,7 @@ class DCCInputChoice extends DCCInput {
     this._presentationIsReady()
 
     // <TODO> align with dcc-state-select
-    this._publish('group_input/ready/' + this._variable.replace(/\./g, '/'),
+    this._publish('input/ready/</' + this._variable.replace(/\./g, '/'),
       DCCInputChoice.elementTag)
   }
 

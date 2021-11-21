@@ -123,7 +123,7 @@ class DCCGroupMarker extends DCCBase {
     this._subscribe('dcc/marker-spot/set', this.setMarkerSpot)
     this._subscribe('dcc/marker-spot/selected', this.spotSelected)
 
-    this._publish('group_input/ready/' + this.context.replace(/\./g, '/'),
+    this._publish('input/ready/</' + this.context.replace(/\./g, '/'),
       DCCGroupMarker.elementTag)
 
     if (this.hasAttribute('editor')) {
