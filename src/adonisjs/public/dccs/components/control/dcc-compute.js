@@ -270,7 +270,7 @@ class DCCCompute extends DCCBase {
     for (let c of compiled)
       if (c[0] == DCCCompute.role.variable) {
         let cBus = (bus != null) ? bus : MessageBus.i
-        if (cBus.hasSubscriber('var/get/' + c[1].replace(/\./g, '/'))) {
+        if (cBus.hasSubscriber('var/get/' + c[1].replace(/\./g, '/'), true)) {
           const mess = await cBus.request('var/get/' + c[1].replace(/\./g, '/'),
                                           null, null, true)
           if (mess.message != null) {
