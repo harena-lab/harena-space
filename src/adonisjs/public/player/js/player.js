@@ -137,7 +137,8 @@ class PlayerManager {
             break
           default: if (MessageBus.matchFilter(topic, 'knot/navigate/#')) {
             if (MessageBus.matchFilter(topic, 'knot/navigate/=/#')) {
-              const result = await MessageBus.i.request('var/' + target + '/get', null, null, true)
+              const result = await MessageBus.i.request(
+                'var/get/' + target.replace(/\./g, '/'), null, null, true)
               target = Translator.instance.findContext(
                 this._compiledCase.knots, this._currentKnot,
                 result.message)

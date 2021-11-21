@@ -158,7 +158,8 @@ class DCCStateSelect extends DCCVisual {
         this.selection = this.answer
       else if (this.hasAttribute('player')) {
         const value = await this._request(
-          'var/' + this.player + '/get/sub', this.innerHTML, null, true)
+          'var/get/>/' + this.player.replace(/\./g, '/'),
+          this.innerHTML, null, true)
         this.selection = value.message
       } else {
         this._presentation.addEventListener('mouseover', this._showState)

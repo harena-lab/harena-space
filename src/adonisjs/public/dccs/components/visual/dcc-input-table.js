@@ -129,7 +129,8 @@ class DCCInputTable extends DCCInput {
 
     if (this.hasAttribute('player')) {
       const value = await this._request(
-        'var/' + this.player + '/get/sub', this.innerHTML, null, true)
+        'var/get/>/' + this.player.replace(/\./g, '/'),
+        this.innerHTML, null, true)
       console.log('=== return value')
       console.log(value)
       const input = value.message
