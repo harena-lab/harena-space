@@ -53,7 +53,7 @@ class PlayerManager {
       this.trackTrigger(target)
 
       let mandatoryEmpty = null
-      const mandatoryM = await MessageBus.i.request('var/*/input/mandatory/get')
+      const mandatoryM = await MessageBus.i.request('input/mandatory/*')
       for (const m in mandatoryM.message) {
         if (mandatoryM.message[m].filled == false && mandatoryEmpty == null) {
           mandatoryEmpty = mandatoryM.message[m].message }

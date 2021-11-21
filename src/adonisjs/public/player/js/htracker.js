@@ -12,15 +12,13 @@ class Tracker {
     this.inputReady = this.inputReady.bind(this)
     MessageBus.i.subscribe('input/ready/#', this.inputReady)
     this.inputMandatory = this.inputMandatory.bind(this)
-    MessageBus.i.subscribe('var/+/input/mandatory', this.inputMandatory)
+    MessageBus.i.subscribe('input/mandatory/#', this.inputMandatory)
     this.inputTyped = this.inputTyped.bind(this)
     MessageBus.i.subscribe('input/typed/#', this.inputTyped)
     this.inputChanged = this.inputChanged.bind(this)
     MessageBus.i.subscribe('input/changed/#', this.inputChanged)
     this.stateChanged = this.stateChanged.bind(this)
     MessageBus.i.subscribe('var/+/state_changed', this.stateChanged)
-    this.allMandatoryFilled = this.allMandatoryFilled.bind(this)
-    MessageBus.i.subscribe('var/*/input/mandatory/get', this.allMandatoryFilled)
 
     this.knotStart = this.knotStart.bind(this)
     MessageBus.i.subscribe('knot/start/#', this.knotStart)
@@ -40,10 +38,14 @@ class Tracker {
     return entity.replace(/\./g, '/')
   }
 
-  inputMandatory (topic, message) {
-    const v = MessageBus.extractLevel(topic, 2)
-    if (v != null) {
-      this._mandatoryFilled[v] = { message: message, filled: false }
+  inputMandatory (topic, message, track) {
+    if (MessageBus.extractLevel(topic, 3) == '*')
+      MessageBus.i.publishHasResponse(
+        topic, message, this._mandatoryFilled, track)
+    else {
+      const v = this._extractEntityId(topic, 3)
+      if (v != null)
+        this._mandatoryFilled[v] = { message: message, filled: false }
     }
   }
 
@@ -112,11 +114,6 @@ class Tracker {
       if (this._mandatoryFilled[variable] !== undefined) {
         this._mandatoryFilled[variable].filled = (value.length > 0) }
     }
-  }
-
-  allMandatoryFilled (topic, message, track) {
-    MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
-      this._mandatoryFilled, track)
   }
 
   knotStart (topic, message) {

@@ -167,6 +167,9 @@ class MessageBus {
     }
   }
 
+  /*
+   Publishes the response only if a request exists
+   */
   publishHasResponse (topic, requestMessage, responseMessage, track) {
     if (requestMessage.responseStamp)
       this.publish(
