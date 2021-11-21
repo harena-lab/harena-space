@@ -10,7 +10,7 @@ class Tracker {
     this._caseCompleted = false
 
     this.inputReady = this.inputReady.bind(this)
-    MessageBus.i.subscribe('/input/ready/#', this.inputReady)
+    MessageBus.i.subscribe('input/ready/#', this.inputReady)
     this.inputMandatory = this.inputMandatory.bind(this)
     MessageBus.i.subscribe('var/+/input/mandatory', this.inputMandatory)
     this.groupinputReady = this.groupinputReady.bind(this)
@@ -36,6 +36,14 @@ class Tracker {
     MessageBus.i.subscribe('input/submit/*', this.submitVariables)
   }
 
+  _extractEntityId (topic) {
+    return MessageBus.extractLevelsSegment(topic, 3).replace(/\//g, '.')
+  }
+
+  _exportEntityId (entity) {
+    return entity.replace(/\./g, '/')
+  }
+
   inputMandatory (topic, message) {
     const v = MessageBus.extractLevel(topic, 2)
     if (v != null) {
@@ -49,16 +57,13 @@ class Tracker {
 
   groupinputReady (topic, message) {
     this._initializeVariable(topic, {})
-    this._groupInput =
-      MessageBus.extractLevelsSegment(topic, 3).replace(/\//g, '.')
+    this._groupInput = this._extractEntityId(topic)
   }
 
   subinputReady (topic, message) {
-    if (this._groupInput != null) {
-      const id = MessageBus.extractLevelsSegment(topic, 3).replace(/\//g, '.')
-      this._variables[this._groupInput][id] =
+    if (this._groupInput != null)
+      this._variables[this._groupInput][this._extractEntityId(topic)] =
             { content: message.content, state: ' ' }
-    }
   }
 
   inputTyped (topic, message) {
@@ -81,7 +86,8 @@ class Tracker {
   submitVariables (topic, message) {
     for (const v in this._variables) {
       if (this._varUpdated[v] == null || this._varUpdated[v]) {
-        MessageBus.i.publish('var/' + v + '/set', this._variables[v], true)
+        MessageBus.i.publish('var/set/' + this._exportEntityId(v),
+                             this._variables[v], true)
         this._varUpdated[v] = false
       }
     }
@@ -102,9 +108,7 @@ class Tracker {
   */
 
   _updateVariable (topic, value) {
-    const v = MessageBus.extractLevelsSegment(topic, 3).replace(/\//g, '.')
-    console.log('=== variable levels')
-    console.log(v)
+    const v = this._extractEntityId(topic)
     if (v != null) {
       this._variables[v] = value
       this._varUpdated[v] = true
@@ -125,10 +129,9 @@ class Tracker {
   }
 
   knotStart (topic, message) {
-    const k = MessageBus.extractLevelsSegment(topic, 3).replace(/\//g, '.')
     const currentDateTime = new Date()
     this._knotTrack.push(
-      {knotid: k,
+      {knotid: this._extractEntityId(topic),
        timeStart: currentDateTime.toJSON()})
   }
 

@@ -34,7 +34,7 @@ class PlayState {
     this.variableGet = this.variableGet.bind(this)
     MessageBus.i.subscribe('var/+/get', this.variableGet)
     this.variableSet = this.variableSet.bind(this)
-    MessageBus.i.subscribe('var/+/set', this.variableSet)
+    MessageBus.i.subscribe('var/set/#', this.variableSet)
     this.variableSubGet = this.variableSubGet.bind(this)
     MessageBus.i.subscribe('var/+/get/sub', this.variableSubGet)
   }
@@ -123,6 +123,10 @@ class PlayState {
     * Scenario Variables
     */
 
+  _extractEntityId (topic) {
+    return MessageBus.extractLevelsSegment(topic, 3).replace(/\//g, '.')
+  }
+
   variableGet (topic, message, track) {
     let id = MessageBus.extractLevel(topic, 2)
 
@@ -169,7 +173,7 @@ class PlayState {
   }
 
   variableSet (topic, message, track) {
-    const id = MessageBus.extractLevel(topic, 2)
+    const id = this._extractEntityId(topic)
     let status = false
     const content =
       (message.responseStamp != null && message.body != null) ?

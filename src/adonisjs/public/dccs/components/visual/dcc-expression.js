@@ -47,10 +47,10 @@ class DCCExpression extends DCCVisual {
         if (this.active) {
           this.variableUpdated = this.variableUpdated.bind(this)
           const variables = DCCCompute.filterVariables(this._compiled, false)
-          // this._subscribe(//   'var/' + this._variable + '/set', this.variableUpdated)
-          this._subscribe('var/*/set', this.variableUpdated)
+          this._subscribe('var/set/*', this.variableUpdated)
           for (let v of variables)
-            this._subscribe('var/' + v + '/set', this.variableUpdated)
+            this._subscribe('var/set/' + v.replace(/\./g, '/'),
+                            this.variableUpdated)
         }
       }
     }
@@ -66,7 +66,6 @@ class DCCExpression extends DCCVisual {
 
   async _showResult () {
     let result = await DCCCompute.computeExpression(this._compiled)
-    // let result = await this._request('var/' + this._variable + '/get', null, null, true)
     if (result == null) {
       result = ''
     } else {

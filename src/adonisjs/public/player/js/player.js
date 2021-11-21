@@ -344,7 +344,8 @@ class PlayerManager {
       */
     if (!DCCPlayerServer.localEnv) {
       if (parameter) {
-        MessageBus.i.publish('var/' + knotName + '.parameter/set', parameter, true)
+        MessageBus.i.publish(
+          'var/set/' + knotName.replace(/\./g, '/') + '/parameter', parameter, true)
       }
       if (this._compiledCase.role && this._compiledCase.role == 'metacase' &&
              this._knots[knotName].categories &&
