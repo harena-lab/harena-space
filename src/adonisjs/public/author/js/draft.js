@@ -231,7 +231,7 @@ class DraftManager {
   }
 
   async downloadCase (topic, message) {
-    const caseObj = await MessageBus.i.request('data/case/' + message + '/get', null, null, true)
+    const caseObj = await MessageBus.i.request('case/get/' + message, null, null, true)
     Basic.service.downloadFile(
       caseObj.message.source, caseObj.message.title + '.md')
   }

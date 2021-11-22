@@ -1,4 +1,4 @@
-# Day _knot_number_ (input)
+# Day _knot_number_ (input) #
 
 <h2>Day X</h2>
 

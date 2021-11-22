@@ -95,7 +95,7 @@ Translator.htmlSubTemplates = {
     layer:
 '___ [title] ___',
     knot:
-'[level] [title][categories][inheritance]',
+'[level] [title][categories][inheritance][unity]',
     image:
 '![{alternative}]({path}{resize}{title})',
     media:
@@ -107,7 +107,16 @@ Translator.htmlSubTemplates = {
     input:
 '{statement}? {variable}{subtype}{extra}',
     choice:
-'+ {label} <-> {target}{message}{state}'
+'+ {label} <-> {target}{message}{state}',
+    'context-open':
+'{{[namespace][context][id][property-value]',
+    'context-close':
+`
+}}`,
+    'formal-open':
+`(({namespace}{context}{id}`,
+    'formal-close':
+`))`
   }
 
   Translator.objTemplates = {
@@ -118,8 +127,12 @@ Translator.htmlSubTemplates = {
     image: {
       type: 'image',
       alternative: 'Image',
-      path: '../templates/basic/images/landscape.svg',
+      path: 'template/image-stub.svg',
       title: 'Image'
+    },
+    media: {
+      type: 'media',
+      subtype: 'video'
     },
     option: {
       type: 'option',

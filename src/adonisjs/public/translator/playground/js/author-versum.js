@@ -16,7 +16,7 @@ class AuthorVersumManager {
     this.updateVisibility = this.updateVisibility.bind(this)
 
     MessageBus.i.subscribe('control/translate/example', this.translate)
-    MessageBus.i.subscribe('var/output/changed', this.updateVisibility)
+    MessageBus.i.subscribe('input/changed/output', this.updateVisibility)
   }
 
   async translate (topic, message) {

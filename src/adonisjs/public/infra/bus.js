@@ -57,6 +57,16 @@ class MessageBus {
   }
 
   async publish (topic, message, track) {
+    /*
+    console.log('----- message: ' + topic)
+    console.log(message)
+    if (this._runningCase && this._runningCase.track)
+      console.log(this._runningCase.track.userid)
+    else {
+      console.log('[no running case]')
+    }
+    */
+
     if (track != null && this.debugger != null)
       this.debugger(topic, message)
 
@@ -136,7 +146,7 @@ class MessageBus {
     if (responseTopic) { rt = responseTopic } else {
       if (rm == null) { rm = {} } else if (typeof rm !== 'object') { rm = { body: rm } }
       rm.responseStamp = MessageBus._stamp
-      rt = requestTopic + '/response/' + MessageBus._stamp
+      rt = 'response/' + MessageBus._stamp + '/' + requestTopic
       MessageBus._stamp++
     }
 
@@ -155,6 +165,16 @@ class MessageBus {
       topic: returnMessage.topic,
       message: returnMessage.message
     }
+  }
+
+  /*
+   Publishes the response only if a request exists
+   */
+  publishHasResponse (topic, requestMessage, responseMessage, track) {
+    if (requestMessage.responseStamp)
+      this.publish(
+        MessageBus.buildResponseTopic(topic, requestMessage),
+        responseMessage, track)
   }
 
   async waitMessage (topic) {
@@ -256,18 +276,44 @@ class MessageBus {
    * Returns the label at a specific level of the message.
    */
   static extractLevel (topic, level) {
-    let label = null
+    const levelSet = MessageBus._splitLevels(topic, level)
+    return (levelSet == null) ? null : levelSet[level - 1]
+  }
+
+  /*
+   * Returns the hierarchy from a level to a level of the message.
+   */
+  static extractLevelsSegment (topic, levelFrom, levelTo) {
+    let hierarchy = null
+    const levelSet = MessageBus._splitLevels(topic)
+    if (levelSet != null) {
+      if (levelTo == null)
+        levelTo = levelSet.length
+      if (levelTo >= levelFrom) {
+        if (levelSet != null) {
+          hierarchy = ''
+          for (let l = levelFrom-1; l < levelTo; l++)
+            hierarchy += levelSet[l] + ((l < levelTo-1) ? '/' : '')
+        }
+      }
+    }
+    return hierarchy
+  }
+
+  static _splitLevels (topic, level) {
+    let split = null
     if (topic != null) {
       const levelSet = topic.split('/')
-      if (level <= levelSet.length) { label = levelSet[level - 1] }
+      if (level == null || level <= levelSet.length)
+        split = levelSet
     }
-    return label
+    return split
   }
 
   /* Message building services
       *************************/
   static buildResponseTopic (topic, message) {
-    return topic + '/response/' + message.responseStamp
+    return 'response/' + message.responseStamp + '/' + topic
   }
 }
 

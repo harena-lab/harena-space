@@ -104,7 +104,7 @@ Configure a transparência do teto:
       <dcc-slider variable="cover_opacity" value="0" index></dcc-slider>
    </div>
 </div>
-<subscribe-dcc target="cellular-space" topic="var/cover_opacity/changed" map="cover-opacity">
+<subscribe-dcc target="cellular-space" topic="input/changed/cover_opacity" map="cover-opacity">
 </subscribe-dcc>`
   )
 })()

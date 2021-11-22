@@ -146,15 +146,6 @@ class DCCState extends DCCBlock {
         : ((n < allStates.length) ? n
           : ((this.rotate) ? 0 : s))
       this.changeState(allStates[n])
-      /*
-         this._stateDCCs[this.value].hide();
-         this.value = allStates[n];
-         this._stateDCCs[this.value].show();
-         if (this.hasAttribute("variable"))
-            this._publish("var/" + this.variable + "/changed",
-                                 {sourceType: DCCState.elementTag,
-                                  value: this.value}, true);
-         */
     }
   }
 
@@ -164,7 +155,7 @@ class DCCState extends DCCBlock {
       this.value = newState
       this._stateDCCs[this.value].show()
       if (this.hasAttribute('variable')) {
-        this._publish('var/' + this.variable + '/changed',
+        this._publish('input/changed/' + this.variable.replace(/\./g, '/'),
           {
             sourceType: DCCState.elementTag,
             value: this.value

@@ -35,7 +35,8 @@ class TokenController {
             // localStorage.setItem('harena-user-grade', endpointResponse.data.grade)
             // localStorage.setItem('harena-user-institution', endpointResponse.data.institution)
             // localStorage.setItem('harena-user-institution-id', endpointResponse.data.institutionId)
-            MessageBus.i.publish('data/user/info', endpointResponse.data)
+            MessageBus.i.publish('user/login/' + endpointResponse.data.userId,
+                                 endpointResponse.data, true)
             TokenController.instance.changeHeaderButtons(endpointResponse.data)
           })
           .catch(function (error) {
@@ -111,7 +112,8 @@ class TokenController {
           // localStorage.setItem('harena-user-grade', endpointResponse.data.grade)
           // localStorage.setItem('harena-user-institution', endpointResponse.data.institution)
           // localStorage.setItem('harena-user-institution-id', endpointResponse.data.institutionId)
-          MessageBus.i.publish('data/user/info', endpointResponse.data)
+          MessageBus.i.publish('user/login/' + endpointResponse.data.userId,
+                               endpointResponse.data, true)
 
           TokenController.instance.changeHeaderButtons(endpointResponse.data)
         } else{

@@ -10,5 +10,7 @@ ___ Data ___
   * evidence: http://purl.org/versum/evidence/
 * templates:
   * categories:
-    * input:
-      * Visit Day: simple/knot/visit_day
+    * quiz:
+      * Quiz: simple/knot/quiz
+    * tbl_case:
+      * TBL Case: simple/knot/tbl_case

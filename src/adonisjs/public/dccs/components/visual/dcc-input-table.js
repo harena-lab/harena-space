@@ -21,8 +21,8 @@ class DCCInputTable extends DCCInput {
     super.connectedCallback()
     this.innerHTML = ''
 
-    this._publish('var/' + this._variable + '/input/ready',
-      DCCInputTable.elementTag)
+    this._publish('input/ready/' + this._variable.replace(/\./g, '/'),
+                  DCCInputTable.elementTag)
   }
 
   disconnectedCallback () {
@@ -87,7 +87,7 @@ class DCCInputTable extends DCCInput {
     const row = parseInt(id.substring(p + 1)) - 1
     this._value[row][col] = event.target.value
 
-    this._publish('var/' + this._variable + '/changed',
+    this._publish('input/changed/' + this._variable.replace(/\./g, '/'),
       {
         sourceType: DCCInputTable.elementTag,
         value: this._value
@@ -129,7 +129,8 @@ class DCCInputTable extends DCCInput {
 
     if (this.hasAttribute('player')) {
       const value = await this._request(
-        'var/' + this.player + '/get/sub', this.innerHTML, null, true)
+        'var/get/>/' + this.player.replace(/\./g, '/'),
+        this.innerHTML, null, true)
       console.log('=== return value')
       console.log(value)
       const input = value.message

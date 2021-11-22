@@ -35,7 +35,7 @@
 <subscribe-dcc target="cellular-space" topic="state/next" map="next"></subscribe-dcc>
 <subscribe-dcc target="cellular-space" topic="state/save" map="save"></subscribe-dcc>
 <subscribe-dcc target="cellular-space" topic="state/reset" map="reset"></subscribe-dcc>
-<subscribe-dcc target="cellular-space" topic="var/space_scale/changed" map="scale"></subscribe-dcc>`,
+<subscribe-dcc target="cellular-space" topic="input/changed/space_scale" map="scale"></subscribe-dcc>`,
 `Selecione um dos ícones abaixo para editar o ambiente:
 <div style="flex:48px; max-height:48px; display:flex; flex-direction:row; border:2px">
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">

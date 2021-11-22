@@ -41,7 +41,7 @@ class DCCSubmit extends DCCButton {
       const topic = (this.hasAttribute('topic'))
         ? this.topic
         : (this.hasAttribute('variable'))
-          ? 'var/' + this.variable + '/changed'
+          ? 'input/changed/' + this.variable.replace(/\./g, '/')
           : 'button/' + this.label + '/clicked'
       if (this.hasAttribute('message')) { message.value = this.message }
       let form = null
@@ -60,8 +60,12 @@ class DCCSubmit extends DCCButton {
         if (form != null)
           for (let f of form) {
             if (f.type == 'radio' || f.type == 'checkbox') {
-              if (f.checked)
-                message.value[f.id] = f.value
+              if (f.checked) {
+                if (f.type == 'checkbox' || !f.hasAttribute('name'))
+                  message.value[f.id] = f.value
+                else
+                  message.value[f.name] = f.value
+              }
             } else
               message.value[f.id] = f.value
           }

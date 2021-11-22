@@ -80,7 +80,7 @@
 <subscribe-dcc target="cellular-space" topic="state/next" map="next"></subscribe-dcc>
 <subscribe-dcc target="cellular-space" topic="state/save" map="save"></subscribe-dcc>
 <subscribe-dcc target="cellular-space" topic="state/reset" map="reset"></subscribe-dcc>
-<subscribe-dcc target="cellular-space" topic="var/space_scale/changed" map="scale"></subscribe-dcc>`,
+<subscribe-dcc target="cellular-space" topic="input/changed/space_scale" map="scale"></subscribe-dcc>`,
 `Selecione um dos ícones abaixo para editar o ambiente:
 <div style="flex:48px; max-height:48px; display:flex; flex-direction:row; border:2px">
    <div style="flex:10%; max-width:48px; max-height:48px; margin-right:10px">
@@ -159,16 +159,16 @@ Selecione abaixo a chance de cada um dos eventos:
    </div>
 </div>
 
-<subscribe-dcc target="alga-replicates" topic="var/alga_replicates/changed" map="probability">
+<subscribe-dcc target="alga-replicates" topic="input/changed/alga_replicates" map="probability">
 </subscribe-dcc>
-<subscribe-dcc target="alga-dies" topic="var/alga_dies/changed" map="probability"></subscribe-dcc>
-<subscribe-dcc target="nematode-replicates" topic="var/herbivor_replicates/changed" map="probability">
+<subscribe-dcc target="alga-dies" topic="input/changed/alga_dies" map="probability"></subscribe-dcc>
+<subscribe-dcc target="nematode-replicates" topic="input/changed/herbivor_replicates" map="probability">
 </subscribe-dcc>
-<subscribe-dcc target="nematode-dies" topic="var/herbivor_dies/changed" map="probability">
+<subscribe-dcc target="nematode-dies" topic="input/changed/herbivor_dies" map="probability">
 </subscribe-dcc>
-<subscribe-dcc target="tardigrade-replicates" topic="var/carnivor_replicates/changed" map="probability">
+<subscribe-dcc target="tardigrade-replicates" topic="input/changed/carnivor_replicates" map="probability">
 </subscribe-dcc>
-<subscribe-dcc target="tardigrade-dies" topic="var/carnivor_dies/changed" map="probability">
+<subscribe-dcc target="tardigrade-dies" topic="input/changed/carnivor_dies" map="probability">
 </subscribe-dcc>`
   )
 })()

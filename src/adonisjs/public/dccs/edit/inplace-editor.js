@@ -212,7 +212,8 @@ class EditDCC {
           '<option disabled selected value> -- select an artifact -- </option>'
         for (let a in artList)
           html += '<option value="' + a + '">' + artList[a] + '</option>'
-        html += '<option value="">New...</option></select>'
+        html += '<option value="_#clear#_">== clear ==</option>'
+        html += '<option value="">== return ==</option></select>'
         artifactDiv.innerHTML = html
         this._extendedSub.select = artifactDiv.querySelector('#artifact-select')
       } else {
@@ -227,8 +228,12 @@ class EditDCC {
     const ep = await this._extendedPanel(
       EditDCC.imageBrowseTemplate, mtype, ftypes)
     let path = null
-    if (ep.select != null)
+    console.log('=== selected')
+    console.log(ep.select.options[ep.select.selectedIndex].value)
+    if (ep.select != null &&
+        ep.select.options[ep.select.selectedIndex].value.length > 0)
       path = ep.select.options[ep.select.selectedIndex].value
+    /*
     else {
       console.log('===== files selected')
       for (let f of ep.browse.files)
@@ -243,6 +248,7 @@ class EditDCC {
         path = asset.message.filename
       }
     }
+    */
     this._removeExtendedPanel()
     return path
   }

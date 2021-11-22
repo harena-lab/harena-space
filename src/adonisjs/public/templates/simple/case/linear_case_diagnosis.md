@@ -1,13 +1,13 @@
-Description Cycle
-=================
+* Description Cycle
+===================
 
-## Descrição (detailed)
+## Descrição (detailed) ##
 
 Apresente a descrição do caso aqui.
 
 * Próximo -> Flow.Next
 
-## Diagnóstico (input)
+## Diagnóstico (input) ##
 
 > Qual a sua principal hipótese de diagnóstico?
 ? hypothesis
@@ -26,7 +26,7 @@ Apresente a descrição do caso aqui.
 Final
 =====
 
-## Relatório (detailed,end)
+## Relatório (detailed,end) ##
 
 Escreva aqui o feedback.
 

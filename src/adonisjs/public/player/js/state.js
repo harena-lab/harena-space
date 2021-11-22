@@ -28,12 +28,13 @@ class PlayState {
 
     this._metastate = {}
 
+    this.sessionRecord = this.sessionRecord.bind(this)
+    MessageBus.i.subscribe('user/login/+', this.sessionRecord)
+
     this.variableGet = this.variableGet.bind(this)
-    MessageBus.i.subscribe('var/+/get', this.variableGet)
+    MessageBus.i.subscribe('var/get/#', this.variableGet)
     this.variableSet = this.variableSet.bind(this)
-    MessageBus.i.subscribe('var/+/set', this.variableSet)
-    this.variableSubGet = this.variableSubGet.bind(this)
-    MessageBus.i.subscribe('var/+/get/sub', this.variableSubGet)
+    MessageBus.i.subscribe('var/set/#', this.variableSet)
   }
 
   /*
@@ -50,9 +51,8 @@ class PlayState {
     return (state == null || state.completed) ? null : state
   }
 
-  sessionRecord (userid, token) {
-    this._state.userid = userid
-    this._state.token = token
+  sessionRecord (topic) {
+    this._state.userid = MessageBus.extractLevel(topic, 3)
     this._stateStore()
   }
 
@@ -121,53 +121,55 @@ class PlayState {
     * Scenario Variables
     */
 
-  variableGet (topic, message, track) {
-    let id = MessageBus.extractLevel(topic, 2)
-
-    if (id != null)
-      id = id.toLowerCase()
-
-    if (id != null && id.startsWith('previous.')) {
-      const previousKnot = this.historyPreviousId().toLowerCase()
-      if (previousKnot != null) { id = previousKnot + '.' + id.substring(9) }
-    }
-
-    if (id == '*')
-      MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
-                           this._state.variables, track)
-    else {
-      // tries to give a scope to the variable
-      if (id != null && this._state.variables[id] == null) {
-        const currentKnot = this.historyCurrent()
-        if (currentKnot != null &&
-            this._state.variables[currentKnot + '.' + id] != null) { id = currentKnot + '.' + id }
-      }
-
-      if (id != null) {
-        MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
-          this._state.variables[id], track)
-      }
-    }
+  _extractEntityId (topic) {
+    return MessageBus.extractLevelsSegment(topic, 3).replace(/\//g, '.')
   }
 
-  variableSubGet (topic, message, track) {
-    const completeId = MessageBus.extractLevel(topic, 2)
-    if (completeId != null) {
-      let result = null
-      let id = completeId
-      while (this._state.variables[id] === undefined && id.indexOf('.') > -1) { id = id.substring(id.indexOf('.') + 1) }
-      if (this._state.variables[id]) {
-        for (const v in this._state.variables[id]) {
-          if (this._state.variables[id][v].content == message.body) { result = this._state.variables[id][v].state }
-        }
+  variableGet (topic, message, track) {
+    const type = MessageBus.extractLevel(topic, 3)
+    let id = this._extractEntityId(topic, (type == '>') ? 4 : 3)
+
+    if (id != null) {
+      id = id.toLowerCase()
+
+      if (id.startsWith('previous.')) {
+        const previousKnot = this.historyPreviousId().toLowerCase()
+        if (previousKnot != null) { id = previousKnot + '.' + id.substring(9) }
       }
-      MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
-        result, track)
+
+      switch (type) {
+        case '*':
+          MessageBus.i.publishHasResponse (
+            topic, message, this._state.variables, track)
+          break
+        case '>':
+          let result = null
+          while (this._state.variables[id] === undefined && id.indexOf('.') > -1)
+            id = id.substring(id.indexOf('.') + 1)
+          if (this._state.variables[id]) {
+            for (const v in this._state.variables[id]) {
+              if (this._state.variables[id][v].content == message.body)
+                result = this._state.variables[id][v].state
+            }
+          }
+          MessageBus.i.publishHasResponse (topic, message, result, track)
+          break
+        default:
+          // tries to give a scope to the variable
+          if (this._state.variables[id] == null) {
+            const currentKnot = this.historyCurrent()
+            if (currentKnot != null &&
+                this._state.variables[currentKnot + '.' + id] != null)
+              id = currentKnot + '.' + id
+          }
+          MessageBus.i.publishHasResponse (
+            topic, message, this._state.variables[id], track)
+      }
     }
   }
 
   variableSet (topic, message, track) {
-    const id = MessageBus.extractLevel(topic, 2)
+    const id = this._extractEntityId(topic, 3)
     let status = false
     const content =
       (message.responseStamp != null && message.body != null) ?
@@ -183,8 +185,8 @@ class PlayState {
       status = true
     }
     this._stateStore()
-    MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
-      status, track)
+
+    MessageBus.i.publishHasResponse(topic, message, status, track)
  }
 
   /*
