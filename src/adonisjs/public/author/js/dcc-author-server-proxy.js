@@ -194,10 +194,6 @@ class DCCAuthorServer {
       console.log(DCCCommonServer.managerAddressAPI + 'case/' + caseId)
       await axios(config)
         .then(function (response) {
-          // return response.redirect('/')
-          console.log('=== save response')
-          console.log(message)
-
           if(!response.data.error){
             MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
               response.data.source, track)
@@ -330,7 +326,7 @@ class DCCAuthorServer {
 
     const serviceRequest = {
       method: 'GET',
-      url: '/templates/' + path + '.html'
+      url: '/templates/' + path + '.json'
     }
     let serviceResponse = null
     await axios(serviceRequest)
@@ -343,9 +339,10 @@ class DCCAuthorServer {
         console.log(error.code)
     })
 
-    if (serviceResponse != null)
+    if (serviceResponse != null) {
       MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
         serviceResponse, track)
+    }
   }
 
   b64toBlob (imageURL) {

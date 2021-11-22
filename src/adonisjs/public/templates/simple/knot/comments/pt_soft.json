@@ -1,0 +1,310 @@
+{
+ "property": "media",
+ "blocks": [
+  {
+   "title": "Comentários",
+   "type": "text",
+   "property": "details",
+   "placeholder": "Digite seus comentários"
+  },
+  {
+   "title": "Nota",
+   "type": "radio-h",
+   "comments": [
+    {
+     "title": "1 |",
+     "property": "grade",
+     "value": "1"
+    },
+    {
+     "title": "2 |",
+     "property": "grade",
+     "value": "2"
+    },
+    {
+     "title": "3 |",
+     "property": "grade",
+     "value": "3"
+    },
+    {
+     "title": "4 |",
+     "property": "grade",
+     "value": "4"
+    },
+    {
+     "title": "5 |",
+     "property": "grade",
+     "value": "5"
+    }
+   ]
+  }
+ ],
+ "contexts": {
+  "ML-VL": {
+   "title": "Vídeo – Varredura longitudinal",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Referências anatómicas/qualidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "Ausentes",
+       "property": "references",
+       "value": "not_present"
+      },
+      {
+       "title": "Parcialmente presentes",
+       "property": "references",
+       "value": "partially_present"
+      },
+      {
+       "title": "Presentes",
+       "property": "references",
+       "value": "present"
+      }
+     ]
+    }
+   ]
+  },
+  "ML-VT": {
+   "title": "Vídeo – Varredura transversal",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Referências anatómicas/qualidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "Ausentes",
+       "property": "references",
+       "value": "not_present"
+      },
+      {
+       "title": "Parcialmente presentes",
+       "property": "references",
+       "value": "partially_present"
+      },
+      {
+       "title": "Presentes",
+       "property": "references",
+       "value": "present"
+      }
+     ]
+    }
+   ]
+  },
+  "ML-ML": {
+   "title": "Imagem – Medidas no longitudinal",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Medidas",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "Adequadas",
+       "property": "are",
+       "value": "adequate"
+      },
+      {
+       "title": "Inadequadas",
+       "property": "are",
+       "value": "inadequate"
+      }
+     ]
+    }
+   ]
+  },
+  "ML-MT": {
+   "title": "Imagem – Medidas no transversal",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Medidas",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "Adequadas",
+       "property": "are",
+       "value": "adequate"
+      },
+      {
+       "title": "Inadequadas",
+       "property": "are",
+       "value": "inadequate"
+      }
+     ]
+    }
+   ]
+  }
+ }
+}

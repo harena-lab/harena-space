@@ -26,6 +26,12 @@
   <script>
     Basic.service.rootPath = '../../../'
   </script>
+  
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="shortcut icon" href="/icons/favicon.ico">
+  <link rel="manifest" href="/site.webmanifest">
 
   <link rel="stylesheet" href="/lib/fontawesome-5-10-1/css/all.min.css">
   <link rel="stylesheet" href="/lib/bootstrap-4.4.1/css/bootstrap.min.css">
@@ -78,7 +84,7 @@
   <script src="/dccs/base/trigger-dcc.js"></script>
   <script src="/dccs/base/property-dcc.js"></script>
   <script src="/dccs/base/connect-dcc.js"></script>
-  <script src="/dccs/base/end-dcc.js"></script>
+
 
   <script src="/dccs/components/data/dcc-model.js"></script>
   <script src="/dccs/components/data/dcc-submit.js"></script>
@@ -117,7 +123,7 @@
   </main>
   <dcc-dhtml id="harena-dhtml-prognosis" connect="retrieve:harena-prognosis-highest-lvl:service/request/get">
     <input type="hidden" name="{{userProperty.0.title}}" id="highest-lvl" value="{{userProperty.0.value}}">
-    <end-dcc></end-dcc>
+
   </dcc-dhtml>
 </body>
 </html>

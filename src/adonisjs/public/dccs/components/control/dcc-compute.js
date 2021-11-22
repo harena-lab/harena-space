@@ -19,7 +19,7 @@ class DCCCompute extends DCCBase {
         if (this.active) {
           const variables = DCCCompute.filterVariables(this._compiled, false)
           for (let v of variables)
-            this._subscribe('var/' + v + '/set', this.update)
+            this._subscribe('var/set/' + v.replace(/\./g, '/'), this.update)
         }
       }
     }
@@ -70,7 +70,7 @@ class DCCCompute extends DCCBase {
       this.update()
   }
 
-  async update() {
+  async update () {
     const result = await DCCCompute.computeExpression(this._compiled, this._bus)
     if (result)
       await this.multiRequest('true', null)
@@ -101,9 +101,9 @@ class DCCCompute extends DCCBase {
       case 'divert-script':
         let message
         if (expression.target.startsWith('Case.'))
-          { message = 'case/' + expression.target.substring(5) + '/navigate' }
+          { message = 'case/navigate/' + expression.target.substring(5) }
         else
-          { message = 'knot/' + expression.target + '/navigate' }
+          { message = 'knot/navigate/' + expression.target.replace(/\./g, '/') }
         let cBus = (bus != null) ? bus : MessageBus.i
         if (expression.parameter) {
           bus.publish(message, expression.parameter, true)
@@ -227,7 +227,8 @@ class DCCCompute extends DCCBase {
       if (s[0] != null) {
         result = DCCCompute.computeCompiled(s[1])
         let cBus = (bus != null) ? bus : MessageBus.i
-        await cBus.request('var/' + s[0] + '/set', result, null, true)
+        await cBus.request('var/set/' + s[0].replace(/\./g, '/'),
+                           result, null, true)
       } else if (compiledSet.length == 1) {
         result = DCCCompute.computeCompiled(s[1])
         // looks for a variable inside the expression
@@ -235,7 +236,7 @@ class DCCCompute extends DCCBase {
         if (autoAssign) {
           let variable = s[1].find(el => el[0] == 3)
           if (variable)
-            await this._request('var/' + variable[1] + '/set', result, null, true)
+            await this._request('var/set/' + variable[1].replace(/\./g, '/'), result, null, true)
         }
         */
       }
@@ -269,8 +270,9 @@ class DCCCompute extends DCCBase {
     for (let c of compiled)
       if (c[0] == DCCCompute.role.variable) {
         let cBus = (bus != null) ? bus : MessageBus.i
-        if (cBus.hasSubscriber('var/' + c[1] + '/get')) {
-          const mess = await cBus.request('var/' + c[1] + '/get', null, null, true)
+        if (cBus.hasSubscriber('var/get/' + c[1].replace(/\./g, '/'), true)) {
+          const mess = await cBus.request('var/get/' + c[1].replace(/\./g, '/'),
+                                          null, null, true)
           if (mess.message != null) {
             const value = (mess.message.body != null)
               ? mess.message.body : mess.message

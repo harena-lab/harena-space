@@ -81,6 +81,19 @@ class DCCLogger extends DCCLight {
         }catch (e) {
           console.log('ERROR!');
           console.log(e);
+      // console.log('=== logger DCC: ' + topic)
+      // console.log(message)
+
+      if (MessageBus.matchFilter(topic, 'user/login/+')) {
+        console.log('=== user logged')
+        console.log(MessageBus.extractLevel(topic, 3))
+      }
+
+      if (MessageBus.matchFilter(topic, 'case/start/+')) {
+        console.log('=== case started')
+        console.log('user id: ' + message.userId)
+        console.log('case id: ' + message.caseId)
+        console.log('instance id: ' + MessageBus.extractLevel(topic, 3))
       }
     }
   }

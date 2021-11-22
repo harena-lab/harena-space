@@ -200,6 +200,9 @@ class EditDCCText extends EditDCC {
 
     mdTranslate = mdTranslate.replace(/<br>/igm, '\n')
 
+    // removing non printable special characters
+    mdTranslate = mdTranslate.replace(/\u200B/gm, '')
+
     console.log('=== markdown translate')
     console.log(htmlTranslate)
 

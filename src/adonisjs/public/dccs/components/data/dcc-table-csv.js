@@ -40,7 +40,7 @@ class DCCTableCSV extends DCCVisual {
   }
 
   static get observedAttributes () {
-    return DCCVisual.observedAttributes.concat(['drop', 'view'])
+    return DCCVisual.observedAttributes.concat(['drop', 'view', 'separator'])
   }
 
   get drop () {
@@ -59,6 +59,14 @@ class DCCTableCSV extends DCCVisual {
   set messages (hasView) {
     if (hasView) { this.setAttribute('view', '') }
     else { this.removeAttribute('view') }
+  }
+
+  get separator () {
+    return this.getAttribute('separator')
+  }
+
+  set separator (newValue) {
+    this.setAttribute('separator', newValue)
   }
 
   _tableDrag (event) {
@@ -93,10 +101,15 @@ class DCCTableCSV extends DCCVisual {
   }
 
   _processTable (csv) {
+    const sep = (this.hasAttribute('separator')) ? this.separator : ','
+    const lineRE =
+      new RegExp('(?:^|' + sep + ')[ \\t]*(?:(?:"([^"]*)")|([^' + sep + ']*))',
+      'g')
+
     let lines = csv.split(/\r\n|\r|\n/)
     this._table = []
     for (let l of lines) {
-      let cells = l.matchAll(/(?:^|,)[ \t]*(?:(?:"([^"]*)")|([^,]*))/g)
+      let cells = l.matchAll(lineRE)
       let ln = []
       for (const c of cells)
         ln.push((c[1] != null) ? c[1] : c[2])

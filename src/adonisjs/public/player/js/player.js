@@ -11,10 +11,9 @@ class PlayerManager {
     this.controlEvent = this.controlEvent.bind(this)
     MessageBus.i.subscribe('control/#', this.controlEvent)
     this.navigateEvent = this.navigateEvent.bind(this)
-    MessageBus.i.subscribe('knot/+/navigate', this.navigateEvent)
-    MessageBus.i.subscribe('flow/+/navigate', this.navigateEvent)
-    MessageBus.i.subscribe('case/+/navigate', this.navigateEvent)
-    MessageBus.i.subscribe('variable/+/navigate', this.navigateEvent)
+    MessageBus.i.subscribe('knot/navigate/#', this.navigateEvent)
+    MessageBus.i.subscribe('flow/navigate/+', this.navigateEvent)
+    MessageBus.i.subscribe('case/navigate/+', this.navigateEvent)
     MessageBus.i.subscribe('session/close', this.navigateEvent)
 
     this._notesStack = []
@@ -24,7 +23,7 @@ class PlayerManager {
     MessageBus.i.subscribe('/report/get', this.produceReport)
 
     this.caseCompleted = this.caseCompleted.bind(this)
-    MessageBus.i.subscribe('case/completed', this.caseCompleted)
+    MessageBus.i.subscribe('case/completed/+', this.caseCompleted)
 
     // tracking
     this.trackTyping = this.trackTyping.bind(this)
@@ -47,124 +46,120 @@ class PlayerManager {
   }
 
   async navigateEvent (topic, message) {
-    let target = MessageBus.extractLevel(topic, 2)
-    this.trackTrigger(target)
+    if (MessageBus.extractLevel(topic, 3) != '!') { // navigation blocked
+      let target =
+        MessageBus.extractLevelsSegment(topic,
+          (MessageBus.extractLevel(topic, 3) == '=') ? 4 : 3).replace(/\//g, '.')
+      this.trackTrigger(target)
 
-    let mandatoryEmpty = null
-    const mandatoryM = await MessageBus.i.request('var/*/input/mandatory/get')
-    for (const m in mandatoryM.message) {
-      if (mandatoryM.message[m].filled == false && mandatoryEmpty == null) {
-        mandatoryEmpty = mandatoryM.message[m].message }
-    }
-
-    if (mandatoryEmpty != null) {
-      MessageBus.i.publish(topic + '/blocked', 'Input missing: ' + mandatoryEmpty, true)
-      await DCCNoticeInput.displayNotice(
-        'You must answer the question: ' + mandatoryEmpty,
-        'message', 'Ok')
-    } else {
-      if (this._currentKnot != null) {
-        MessageBus.i.publish('control/input/submit', null, true) // <TODO> provisory
-        MessageBus.i.publish('knot/' + this._currentKnot + '/end', null, true)
+      let mandatoryEmpty = null
+      const mandatoryM = await MessageBus.i.request('input/mandatory/*')
+      for (const m in mandatoryM.message) {
+        if (mandatoryM.message[m].filled == false && mandatoryEmpty == null) {
+          mandatoryEmpty = mandatoryM.message[m].message }
       }
 
-      switch (topic) {
-        case 'knot/</navigate':
-          if (this._notesStack.length > 0) {
-            const panel = this._notesStack.pop()
-            this._mainPanel.removeChild(panel)
-          }
-          if (this._state.historyHasPrevious()) {
-            // removes the panel to rebuild it
+      if (mandatoryEmpty != null) {
+        MessageBus.i.publish(MessageBus.extractLevelsSegment(topic, 1, 2) + '/!',
+                             'Input missing: ' + mandatoryEmpty, true)
+        await DCCNoticeInput.displayNotice(
+          'You must answer the question: ' + mandatoryEmpty,
+          'message', 'Ok')
+      } else {
+        if (this._currentKnot != null) {
+          MessageBus.i.publish('input/submit/*', null, true) // <TODO> provisory
+          MessageBus.i.publish('knot/end/' + this._currentKnot.replace(/\./g, '/'),
+                               null, true)
+        }
+
+        switch (topic) {
+          case 'knot/navigate/<':
             if (this._notesStack.length > 0) {
               const panel = this._notesStack.pop()
               this._mainPanel.removeChild(panel)
             }
-            this.knotLoad(this._state.historyPrevious())
-          }
-          break
-        case 'knot/<</navigate': this.startCase()
-          const flowStart = this._nextFlowKnot()
-          const startKnot = (flowStart != null)
-                               ? flowStart.target
-                               : (DCCPlayerServer.localEnv)
-                                 ? DCCPlayerServer.playerObj.start
-                                 : this._compiledCase.start
-          // console.log("=== start");
-          // console.log(startKnot);
-          this._state.historyRecord(startKnot)
-          this.knotLoad(startKnot)
-          break
-        case 'knot/>/navigate': const nextKnot = this._state.nextKnot()
-          this._state.historyRecord(nextKnot)
-          this.knotLoad(nextKnot)
-          break
-        case 'flow/>/navigate': const flowNext = this._nextFlowKnot()
-          if (flowNext != null) {
-            // console.log('=== flow next')
-            // console.log(flowNext)
-            this._state.historyRecord(flowNext.target)
-            this.knotLoad(flowNext.target)
-          }
-          break
-        case 'case/>/navigate':
-          // <TODO> jumping other instructions - improve it
-          // console.log('=== next case')
-          let instruction
-          do {
-            instruction = this._state.metascriptNextInstruction()
-          } while (instruction != null && instruction.type != 'divert-script' &&
-                        instruction.target.substring(0, 5).toLowerCase() != 'case.')
-
-          // console.log(instruction)
-          if (instruction != null) {
-            if (instruction.parameter) {
-              // console.log("=== metaparameter");
-              // console.log(instruction.parameter.parameter);
-              this._state.metaexecParameterSet(instruction.parameter.parameter)
+            if (this._state.historyHasPrevious()) {
+              // removes the panel to rebuild it
+              if (this._notesStack.length > 0) {
+                const panel = this._notesStack.pop()
+                this._mainPanel.removeChild(panel)
+              }
+              this.knotLoad(this._state.historyPrevious())
             }
-            window.open('index.html?case=' +
-                     instruction.target.substring(5) +
-                     (this._previewCase ? '&preview' : ''), '_self')
+            break
+          case 'knot/navigate/<<': this.startCase()
+            const flowStart = this._nextFlowKnot()
+            const startKnot = (flowStart != null)
+                                 ? flowStart.target
+                                 : (DCCPlayerServer.localEnv)
+                                   ? DCCPlayerServer.playerObj.start
+                                   : this._compiledCase.start
+            // console.log("=== start");
+            // console.log(startKnot);
+            this._state.historyRecord(startKnot)
+            this.knotLoad(startKnot)
+            break
+          case 'knot/navigate/>': const nextKnot = this._state.nextKnot()
+            this._state.historyRecord(nextKnot)
+            this.knotLoad(nextKnot)
+            break
+          case 'flow/navigate/>': const flowNext = this._nextFlowKnot()
+            if (flowNext != null) {
+              // console.log('=== flow next')
+              // console.log(flowNext)
+              this._state.historyRecord(flowNext.target)
+              this.knotLoad(flowNext.target)
+            }
+            break
+          case 'case/navigate/>':
+            // <TODO> jumping other instructions - improve it
+            // console.log('=== next case')
+            let instruction
+            do {
+              instruction = this._state.metascriptNextInstruction()
+            } while (instruction != null && instruction.type != 'divert-script' &&
+                          instruction.target.substring(0, 5).toLowerCase() != 'case.')
+
+            // console.log(instruction)
+            if (instruction != null) {
+              if (instruction.parameter) {
+                // console.log("=== metaparameter");
+                // console.log(instruction.parameter.parameter);
+                this._state.metaexecParameterSet(instruction.parameter.parameter)
+              }
+              window.open('index.html?case=' +
+                       instruction.target.substring(5) +
+                       (this._previewCase ? '&preview' : ''), '_self')
+            }
+            break
+          case 'session/close':
+            this.sessionClose()
+            break
+          default: if (MessageBus.matchFilter(topic, 'knot/navigate/#')) {
+            if (MessageBus.matchFilter(topic, 'knot/navigate/=/#')) {
+              const result = await MessageBus.i.request(
+                'var/get/' + target.replace(/\./g, '/'), null, null, true)
+              target = Translator.instance.findContext(
+                this._compiledCase.knots, this._currentKnot,
+                result.message)
+            }
+            this._state.historyRecord(target)
+            if (message.value) {
+              this._state.parameter = message.value
+              this.knotLoad(target, message.value)
+            } else {
+              this._state.parameter = null
+              this.knotLoad(target)
+            }
+          } else if (MessageBus.matchFilter(topic, 'case/navigate/+')) {
+            if (message) {
+              this._state.metaexecParameterSet(message.parameter)
+            }
+            window.open('index.html?case=' + target +
+                             (this._previewCase ? '&preview' : ''), '_self')
           }
           break
-        case 'session/close':
-          this.sessionClose()
-          break
-        default: if (MessageBus.matchFilter(topic, 'knot/+/navigate') ||
-                         MessageBus.matchFilter(topic, 'variable/+/navigate')) {
-          /*
-                        console.log("=== variable navigate");
-                        console.log(target);
-                        */
-          if (MessageBus.matchFilter(topic, 'variable/+/navigate')) {
-            const result = await MessageBus.i.request('var/' + target + '/get', null, null, true)
-            target = Translator.instance.findContext(
-              this._compiledCase.knots, this._currentKnot,
-              result.message)
-            /*
-                           console.log("=== variable resolved");
-                           console.log(target);
-                           */
-          }
-          this._state.historyRecord(target)
-          if (message.value) {
-            this._state.parameter = message.value
-            this.knotLoad(target, message.value)
-          } else {
-            this._state.parameter = null
-            this.knotLoad(target)
-          }
-        } else if (MessageBus.matchFilter(topic, 'case/+/navigate')) {
-          if (message) {
-            // console.log("=== metaparameter");
-            // console.log(message.parameter);
-            this._state.metaexecParameterSet(message.parameter)
-          }
-          window.open('index.html?case=' + target +
-                           (this._previewCase ? '&preview' : ''), '_self')
         }
-        break
       }
     }
   }
@@ -226,7 +221,7 @@ class PlayerManager {
         await this._caseLoad(this._state.currentCase)
 
         this._caseFlow()
-        MessageBus.i.publish('knot/<</navigate', null, true)
+        MessageBus.i.publish('knot/navigate/<<', null, true)
       } else { this._state.sessionCompleted() }
     }
 
@@ -275,7 +270,7 @@ class PlayerManager {
           this._caseFlow()
         }
       }
-      MessageBus.i.publish('knot/<</navigate', null, true)
+      MessageBus.i.publish('knot/navigate/<<', null, true)
       // this.knotLoad("entry");
     }
   }
@@ -287,7 +282,7 @@ class PlayerManager {
     const caseObj = await MessageBus.i.request(
       'service/request/get', {caseId: Basic.service.currentCaseId}, null, true)
     */
-    const caseObj = await MessageBus.i.request('data/case/' + Basic.service.currentCaseId + '/get', null, null, true)
+    const caseObj = await MessageBus.i.request('case/get/' + Basic.service.currentCaseId, null, null, true)
 
     this._currentCaseTitle = caseObj.message.title
 
@@ -299,7 +294,7 @@ class PlayerManager {
     this._knots = this._compiledCase.knots
     // Basic.service.currentThemeFamily = this._compiledCase.theme
     Basic.service.composedThemeFamily(this._compiledCase.theme)
-    MessageBus.i.publish('control/case/ready', null, true)
+    MessageBus.i.publish('case/ready/' + Basic.service.currentCaseId, null, true)
   }
 
   _caseFlow () {
@@ -350,7 +345,8 @@ class PlayerManager {
       */
     if (!DCCPlayerServer.localEnv) {
       if (parameter) {
-        MessageBus.i.publish('var/' + knotName + '.parameter/set', parameter, true)
+        MessageBus.i.publish(
+          'var/set/' + knotName.replace(/\./g, '/') + '/parameter', parameter, true)
       }
       if (this._compiledCase.role && this._compiledCase.role == 'metacase' &&
              this._knots[knotName].categories &&
@@ -366,11 +362,15 @@ class PlayerManager {
         if (note) { this.presentNote(knot) } else { this.presentKnot(knot) }
       }
     }
-    MessageBus.i.publish('knot/' + knotName + '/start', null, true)
+    MessageBus.i.publish('knot/start/' + knotName.replace(/\./g, '/'),
+                         null, true)
 
     if (this._knots[knotName].categories &&
         this._knots[knotName].categories.includes('end'))
-    { MessageBus.i.publish('case/completed', {knotid: knotName}, true) }
+      MessageBus.i.publish('case/completed/' + this._state.runningCase.runningId,
+                           {userId: this._state.userid,
+                            caseId: Basic.service.currentCaseId,
+                            knotid: knotName}, true)
   }
 
   caseCompleted (topic, message) {
@@ -502,13 +502,18 @@ class PlayerManager {
 
       this._state.runningCase = runningCase
       MessageBus.i.defineRunningCase(runningCase)
+      MessageBus.i.publish('case/start/' + runningCase.runningId,
+                           {userId: this._state.userid,
+                            caseId: Basic.service.currentCaseId}, true)
     }
   }
 
   resumeCase () {
     if (!PlayerManager.isCapsule) {
       // <TODO> this._runningCase is provisory
-      MessageBus.i.publish('case/' + this._state.currentCase + '/resume', this._state.runningCase, true)
+      MessageBus.i.publish('case/resume/' + this._state.runningCase,
+                           {userId: this._state.userid,
+                            caseId: this._state.currentCase}, true)
 
       MessageBus.i.defineRunningCase(this._state.runningCase)
     }

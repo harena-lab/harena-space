@@ -23,8 +23,8 @@ class DCCInput extends DCCBlock {
         ? this._statement
         : this._variable.substring(this._variable.lastIndexOf('.') + 1)
 
-      this._publish('var/' + this._variable + '/input/mandatory',
-        inputIndication)
+      this._publish('input/mandatory/' + this._variable.replace(/\./g, '/'),
+                    inputIndication)
     }
   }
 

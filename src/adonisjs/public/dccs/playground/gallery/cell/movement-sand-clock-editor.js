@@ -141,9 +141,9 @@ Selecione abaixo a chance de cada um dos eventos:
 <subscribe-dcc target="cellular-space" topic="state/save" map="save"></subscribe-dcc>
 <subscribe-dcc target="cellular-space" topic="state/load" map="load"></subscribe-dcc>
 <subscribe-dcc target="cellular-space" topic="state/download" map="download"></subscribe-dcc>
-<subscribe-dcc target="fall-vertical" topic="var/fall_vertical/changed" map="probability"></subscribe-dcc>
-<subscribe-dcc target="fall-oblique" topic="var/fall_oblique/changed" map="probability"></subscribe-dcc>
-<subscribe-dcc target="roll" topic="var/roll/changed" map="probability"></subscribe-dcc>
+<subscribe-dcc target="fall-vertical" topic="input/changed/fall_vertical" map="probability"></subscribe-dcc>
+<subscribe-dcc target="fall-oblique" topic="input/changed/fall_oblique" map="probability"></subscribe-dcc>
+<subscribe-dcc target="roll" topic="input/changed/roll" map="probability"></subscribe-dcc>
 
 </div>
 </div>`
