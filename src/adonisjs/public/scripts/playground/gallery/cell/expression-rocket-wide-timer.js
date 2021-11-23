@@ -29,14 +29,14 @@
 <dcc-timer cycles="100000" interval="1000" publish="state/next">
    <subscribe-dcc topic="timer/start" map="start"></subscribe-dcc>
    <subscribe-dcc topic="timer/stop" map="stop"></subscribe-dcc>
-   <subscribe-dcc topic="var/timer_interval/changed" map="interval"></subscribe-dcc>
+   <subscribe-dcc topic="input/changed/timer_interval" map="interval"></subscribe-dcc>
 </dcc-timer>
 
 <subscribe-dcc target="cellular-space" topic="type/#"></subscribe-dcc>
 <subscribe-dcc target="cellular-space" topic="state/next" map="next"></subscribe-dcc>
 <subscribe-dcc target="cellular-space" topic="state/save" map="save"></subscribe-dcc>
 <subscribe-dcc target="cellular-space" topic="state/reset" map="reset"></subscribe-dcc>
-<subscribe-dcc target="cellular-space" topic="var/space_scale/changed" map="scale"></subscribe-dcc>
+<subscribe-dcc target="cellular-space" topic="input/changed/space_scale" map="scale"></subscribe-dcc>
 <div style="flex:48px; max-height:48px; display:flex; flex-direction:row">
    <div style="flex:20%; max-width:96px; max-height:48px">
       <img style="max-width:48px; max-height:48px; margin-left:24px; margin-right:24px"

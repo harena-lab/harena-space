@@ -59,7 +59,7 @@ class LayoutController {
 
   async busMessages(){
     // console.log('======= starting conditional-layout')
-    LayoutController.user = await MessageBus.i.waitMessage('data/user/info')
+    LayoutController.user = await MessageBus.i.waitMessage('user/login/+')
     if(new URL(document.location).pathname == '/author/'){
       LayoutController.case = await MessageBus.i.waitMessage('service/response/get/harena-case')
     }

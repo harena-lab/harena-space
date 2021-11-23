@@ -10,77 +10,83 @@ class Tracker {
     this._caseCompleted = false
 
     this.inputReady = this.inputReady.bind(this)
-    MessageBus.i.subscribe('var/+/input/ready', this.inputReady)
+    MessageBus.i.subscribe('input/ready/#', this.inputReady)
     this.inputMandatory = this.inputMandatory.bind(this)
-    MessageBus.i.subscribe('var/+/input/mandatory', this.inputMandatory)
-    this.groupinputReady = this.groupinputReady.bind(this)
-    MessageBus.i.subscribe('var/+/group_input/ready', this.groupinputReady)
-    this.subinputReady = this.subinputReady.bind(this)
-    MessageBus.i.subscribe('var/+/subinput/ready', this.subinputReady)
+    MessageBus.i.subscribe('input/mandatory/#', this.inputMandatory)
     this.inputTyped = this.inputTyped.bind(this)
-    MessageBus.i.subscribe('var/+/typed', this.inputTyped)
+    MessageBus.i.subscribe('input/typed/#', this.inputTyped)
     this.inputChanged = this.inputChanged.bind(this)
-    MessageBus.i.subscribe('var/+/changed', this.inputChanged)
+    MessageBus.i.subscribe('input/changed/#', this.inputChanged)
     this.stateChanged = this.stateChanged.bind(this)
-    MessageBus.i.subscribe('var/+/state_changed', this.stateChanged)
-    this.allMandatoryFilled = this.allMandatoryFilled.bind(this)
-    MessageBus.i.subscribe('var/*/input/mandatory/get', this.allMandatoryFilled)
+    MessageBus.i.subscribe('input/state/#', this.stateChanged)
 
     this.knotStart = this.knotStart.bind(this)
-    MessageBus.i.subscribe('knot/+/start', this.knotStart)
+    MessageBus.i.subscribe('knot/start/#', this.knotStart)
     this.caseCompleted = this.caseCompleted.bind(this)
-    MessageBus.i.subscribe('case/completed', this.caseCompleted)
+    MessageBus.i.subscribe('case/completed/+', this.caseCompleted)
     MessageBus.i.subscribe('session/close', this.caseCompleted)
 
     this.submitVariables = this.submitVariables.bind(this)
-    MessageBus.i.subscribe('control/input/submit', this.submitVariables)
+    MessageBus.i.subscribe('input/submit/*', this.submitVariables)
   }
 
-  inputMandatory (topic, message) {
-    const v = MessageBus.extractLevel(topic, 2)
-    if (v != null) {
-      this._mandatoryFilled[v] = { message: message, filled: false }
+  _extractEntityId (topic, position) {
+    return MessageBus.extractLevelsSegment(topic, position).replace(/\//g, '.')
+  }
+
+  _exportEntityId (entity) {
+    return entity.replace(/\./g, '/')
+  }
+
+  inputMandatory (topic, message, track) {
+    if (MessageBus.extractLevel(topic, 3) == '*')
+      MessageBus.i.publishHasResponse(
+        topic, message, this._mandatoryFilled, track)
+    else {
+      const v = this._extractEntityId(topic, 3)
+      if (v != null)
+        this._mandatoryFilled[v] = { message: message, filled: false }
     }
   }
 
   inputReady (topic, message) {
-    this._initializeVariable(topic, '')
-  }
-
-  groupinputReady (topic, message) {
-    this._initializeVariable(topic, {})
-    this._groupInput = MessageBus.extractLevel(topic, 2)
-  }
-
-  subinputReady (topic, message) {
-    if (this._groupInput != null) {
-      const id = MessageBus.extractLevel(topic, 2)
-      this._variables[this._groupInput][id] =
-            { content: message.content, state: ' ' }
-    }
+    const type = MessageBus.extractLevel(topic, 3)
+    const position = (type == '<' || type == '>') ? 4 : 3
+    const v = this._extractEntityId(topic, position)
+    if (v != null && this._variables[v] == null)
+      switch (type) {
+        case '<' : this._updateVariable(v, {})
+                   this._groupInput = v
+                   break
+        case '>' : if (this._groupInput != null)
+                     this._variables[this._groupInput][v] =
+                       { content: message.content, state: ' ' }
+              break
+        default: this._updateVariable(v, '')
+      }
   }
 
   inputTyped (topic, message) {
-    this._updateVariable(topic, message.value)
+    this._updateVariable(this._extractEntityId(topic, 3), message.value)
     // this._changedVariable(topic, message.value) <FUTURE>
   }
 
   inputChanged (topic, message) {
-    this._updateVariable(topic, message.value)
+    this._updateVariable(this._extractEntityId(topic, 3), message.value)
     // this._changedVariable(topic, message.value) <FUTURE>
   }
 
   stateChanged (topic, message) {
-    if (this._groupInput != null) {
-      const id = MessageBus.extractLevel(topic, 2)
-      this._variables[this._groupInput][id].state = message.state
-    }
+    if (this._groupInput != null)
+      this._variables[this._groupInput][this._extractEntityId(topic, 3)].state =
+        message.state
   }
 
   submitVariables (topic, message) {
     for (const v in this._variables) {
       if (this._varUpdated[v] == null || this._varUpdated[v]) {
-        MessageBus.i.publish('var/' + v + '/set', this._variables[v], true)
+        MessageBus.i.publish('var/set/' + this._exportEntityId(v),
+                             this._variables[v], true)
         this._varUpdated[v] = false
       }
     }
@@ -100,32 +106,19 @@ class Tracker {
   }
   */
 
-  _updateVariable (topic, value) {
-    const v = MessageBus.extractLevel(topic, 2)
-    if (v != null) {
-      this._variables[v] = value
-      this._varUpdated[v] = true
-      if (this._mandatoryFilled[v] !== undefined) {
-        this._mandatoryFilled[v].filled = (value.length > 0) }
+  _updateVariable (variable, value) {
+    if (variable != null) {
+      this._variables[variable] = value
+      this._varUpdated[variable] = true
+      if (this._mandatoryFilled[variable] !== undefined) {
+        this._mandatoryFilled[variable].filled = (value.length > 0) }
     }
   }
 
-  _initializeVariable (topic, value) {
-    const v = MessageBus.extractLevel(topic, 2)
-    if (v != null && this._variables[v] == null)
-      this._updateVariable(topic, value)
-  }
-
-  allMandatoryFilled (topic, message, track) {
-    MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
-      this._mandatoryFilled, track)
-  }
-
   knotStart (topic, message) {
-    const k = MessageBus.extractLevel(topic, 2)
     const currentDateTime = new Date()
     this._knotTrack.push(
-      {knotid: k,
+      {knotid: this._extractEntityId(topic, 3),
        timeStart: currentDateTime.toJSON()})
   }
 
@@ -139,8 +132,10 @@ class Tracker {
       if (message && message.knotid)
         kt.knotid = message.knotid
       this._knotTrack.push(kt)
-      MessageBus.i.publish('case/summary',
-        {knotTrack: this._knotTrack,
+      MessageBus.i.publish('case/summary/' + MessageBus.extractLevel(topic, 3),
+        {userId: message.userId,
+         caseId: message.caseId,
+         knotTrack: this._knotTrack,
          variables: this._variables}, true)
     }
   }

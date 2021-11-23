@@ -18,7 +18,7 @@ class PageController {
       // console.log(PageController.scriptsComplete)
     })
     MessageBus.i.subscribe('control/dhtml/ready', this.removeLoadingIcon)
-    MessageBus.i.subscribe('control/case/ready', this.removeLoadingIcon)
+    MessageBus.i.subscribe('case/ready/+', this.removeLoadingIcon)
     MessageBus.i.subscribe('control/validate/ready', this.removeLoadingIcon)
     MessageBus.i.subscribe('control/html/ready', this.pageReady)
   }

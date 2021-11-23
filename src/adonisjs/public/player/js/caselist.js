@@ -4,7 +4,7 @@ class CaseQueueManager {
 
     this._nextCase = this._nextCase.bind(this)
 
-    MessageBus.i.subscribe('case/+/navigate', this._nextCase)
+    MessageBus.i.subscribe('case/navigate/+', this._nextCase)
     this.start()
   }
 

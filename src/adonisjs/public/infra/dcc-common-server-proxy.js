@@ -7,7 +7,7 @@ class DCCCommonServer {
     this.casesList = this.casesList.bind(this)
     MessageBus.i.subscribe('data/case/*/list', this.casesList)
     this.loadCase = this.loadCase.bind(this)
-    MessageBus.i.subscribe('data/case/+/get', this.loadCase)
+    MessageBus.i.subscribe('case/get/+', this.loadCase)
     this.loadTheme = this.loadTheme.bind(this)
     this.themeFamilySettings = this.themeFamilySettings.bind(this)
     MessageBus.i.subscribe('data/theme_family/+/settings',
