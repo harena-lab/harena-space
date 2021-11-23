@@ -84,7 +84,6 @@
   <script src="/dccs/base/trigger-dcc.js"></script>
   <script src="/dccs/base/property-dcc.js"></script>
   <script src="/dccs/base/connect-dcc.js"></script>
-  <script src="/dccs/base/end-dcc.js"></script>
 
   <script src="/dccs/components/data/dcc-model.js"></script>
   <script src="/dccs/components/data/dcc-submit.js"></script>
@@ -110,14 +109,16 @@
 
   <script src="/author/js/panels.js"></script>
   <script src="/prognosis/js/prognosis.js"></script>
+  <script src="/prognosis/js/progress.js"></script>
+  <script src="/prognosis/js/challenge-progress.js"></script>
   <script src="/prognosis/js/saps.js"></script>
   <script src="/prognosis/js/challenge.js"></script>
   <script src="/prognosis/js/avatar.js"></script>
 </head>
 <body>
   <dcc-rest id="harena-user-property" bind="harena-user-property"></dcc-rest>
-  <dcc-rest id="harena-prognosis-lvl" bind="harena-prognosis-lvl"></dcc-rest>
-  <dcc-rest id="harena-prognosis-highest-lvl" bind="harena-prognosis-highest-lvl"></dcc-rest>
+  <dcc-rest id="harena-prognosis-challenge2-lvl" bind="harena-prognosis-challenge2-lvl"></dcc-rest>
+  <dcc-rest id="harena-prognosis-challenge2-highest-lvl" bind="harena-prognosis-challenge2-highest-lvl"></dcc-rest>
 
   <!-- Welcome modal start -->
   <div class="modal fade" id="welcome-lvl-modal" tabindex="-1" role="dialog">
@@ -205,9 +206,19 @@
             <button type="submit" class="btn btn-success" id="btn-next-step">Confirmar</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
             <dcc-submit xstyle="d-none" bind="submit-prognosis-lvl-txt"
-             connect="submit:harena-user-property:service/request/post"></dcc-submit>
-           <dcc-submit xstyle="d-none" bind="submit-prognosis-lvl-txt"
-             connect="submit:harena-user-property:service/request/put"></dcc-submit>
+            connect="submit:harena-user-property:service/request/post"></dcc-submit>
+            <dcc-submit xstyle="d-none" bind="submit-prognosis-lvl-txt"
+            connect="submit:harena-user-property:service/request/put"></dcc-submit>
+
+            <dcc-submit xstyle="d-none" bind="submit-prognosis-lvl-progn"
+            connect="submit:harena-user-property:service/request/post"></dcc-submit>
+            <dcc-submit xstyle="d-none" bind="submit-prognosis-lvl-progn"
+            connect="submit:harena-user-property:service/request/put"></dcc-submit>
+
+            <dcc-submit xstyle="d-none" bind="submit-prognosis-lvl-range"
+            connect="submit:harena-user-property:service/request/post"></dcc-submit>
+            <dcc-submit xstyle="d-none" bind="submit-prognosis-lvl-range"
+            connect="submit:harena-user-property:service/request/put"></dcc-submit>
 
           </form>
         </div>
@@ -220,8 +231,9 @@
     <div class="d-flex flex-column w-lg-75 h-100 w-100 px-2 pb-4 bg-dark mx-auto main-scroll scroll-y">
       <div class="row border-bottom border-top rounded txt-light mt-5 py-1 px-3">
         <!-- <img class="pacient-mini" src="/prognosis/img/satyr-04.svg" alt="pacient miniature"> -->
-        <h2 class="txt-light ml-2 mb-0 mt-auto pacient-title">Desafio 2 - dificuldade</h2>
+        <h2 class="txt-light ml-2 mb-0 mt-auto pacient-title">Desafio 2 - dificuldade 1</h2>
       </div>
+      <h4 class="txt-light ml-2 mb-0 mt-auto" id="txt-objective"></h4>
       <form id="form-pacient-info" action="javascript:void(0);">
         <div class="bg-light border rounded m-1 p-2" id="idade-wrapper">
           <h2 class="border-bottom txt-light text-center">Idade</h2>
@@ -246,18 +258,15 @@
         </div>
 
         <button type="submit" id="btn-create-challenge-two" class="btn btn-success w-100"> Revisar as escolhas</button>
-        <dcc-submit label="Revisar as escolhas" xstyle="out" location="btn-create-pacient" bind="submit-prognosis-lvl"
-         connect="submit:harena-user-property:service/request/post"></dcc-submit>
+          <dcc-submit xstyle="d-none" bind="submit-prognosis-lvl"
+           connect="submit:harena-user-property:service/request/put"></dcc-submit>
+          <dcc-submit label="Revisar as escolhas" xstyle="out" location="btn-create-challenge-two" bind="submit-prognosis-lvl"
+           connect="submit:harena-user-property:service/request/post"></dcc-submit>
 
-        <dcc-submit label="Revisar as escolhas" xstyle="out" location="btn-create-pacient" bind="submit-prognosis-highest-lvl"
-         connect="submit:harena-user-property:service/request/post"></dcc-submit>
-        <dcc-submit xstyle="d-none" bind="submit-prognosis-highest-lvl"
-         connect="submit:harena-user-property:service/request/put"></dcc-submit>
-
-         <dcc-submit label="Revisar as escolhas" xstyle="out" location="btn-create-pacient" bind="submit-prognosis-perfect-lvl"
-          connect="submit:harena-user-property:service/request/post"></dcc-submit>
-         <dcc-submit xstyle="d-none" bind="submit-prognosis-perfect-lvl"
-          connect="submit:harena-user-property:service/request/put"></dcc-submit>
+          <dcc-submit label="Revisar as escolhas" xstyle="out" location="btn-create-challenge-two" bind="submit-prognosis-highest-lvl"
+           connect="submit:harena-user-property:service/request/post"></dcc-submit>
+          <dcc-submit xstyle="d-none" bind="submit-prognosis-highest-lvl"
+           connect="submit:harena-user-property:service/request/put"></dcc-submit>
 
       </form>
       <div class="p-2">
@@ -268,14 +277,12 @@
   </div>
   </main>
 
-  <dcc-dhtml id="harena-dhtml-prognosis-current-lvl" connect="retrieve:harena-prognosis-lvl:service/request/get">
-    <input type="hidden" name="{{userProperty.0.title}}" id="current-lvl" value="">
-    <end-dcc></end-dcc>
+  <dcc-dhtml id="harena-dhtml-prognosis-current-lvl" connect="retrieve:harena-prognosis-challenge2-lvl:service/request/get">
+    <input type="hidden" name="{{userProperty.0.title}}" id="current-lvl" value="{{userProperty.0.value}}">
   </dcc-dhtml>
 
-  <dcc-dhtml id="harena-dhtml-prognosis-heighest-lvl" connect="retrieve:harena-prognosis-highest-lvl:service/request/get">
-    <input type="hidden" name="{{userProperty.0.title}}" id="highest-lvl" value="">
-    <end-dcc></end-dcc>
+  <dcc-dhtml id="harena-dhtml-prognosis-heighest-lvl" connect="retrieve:harena-prognosis-challenge2-highest-lvl:service/request/get">
+    <input type="hidden" name="{{userProperty.0.title}}" id="highest-lvl" value="{{userProperty.0.value}}">
   </dcc-dhtml>
 
 </body>

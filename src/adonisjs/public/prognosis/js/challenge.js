@@ -37,8 +37,10 @@ class Challenge {
    if (new URL(document.location).pathname.includes('/prognosis/challenge')) {
      const btnRetryLvl = document.querySelector('#btn-retry')
      const fnRetrylvl = function(){
-       document.querySelector('#player-survival-rate').value = 0
-       document.querySelector('#player-survival-rate-txt').textContent = '0%'
+       if(document.querySelector('#player-survival-rate')){
+         document.querySelector('#player-survival-rate').value = 0
+         document.querySelector('#player-survival-rate-txt').textContent = '0%'
+       }
        $('#lvl-result-modal').modal('hide')
      }
      btnRetryLvl.addEventListener('click', fnRetrylvl)
@@ -59,9 +61,13 @@ class Challenge {
          prognAcc.textContent = Prognosis.i.calcPrognAcc(playerGuess, Challenge.i._sapsCalc, 10)
          prognPlayerGuess.textContent = `${playerGuess}%`
 
-         var currentLvl = localStorage.getItem(`prognosis-challenge1-current-lvl`)
-         var heighestLvl = localStorage.getItem(`prognosis-challenge1-highest-lvl`)
+         prognSapsCalc.dataset.value = Challenge.i._sapsCalc
+         prognPlayerGuess.dataset.value = playerGuess
+
+         let currentLvl = localStorage.getItem(`prognosis-challenge1-current-lvl`)
+         let heighestLvl = localStorage.getItem(`prognosis-challenge1-highest-lvl`)
          localStorage.setItem(`prognosis-challenge1-highest-lvl`, parseInt(currentLvl)+1)
+         document.querySelector('dcc-submit[bind="submit-prognosis-lvl-guess"][connect="submit:harena-user-property:service/request/post"]')._computeTrigger()
          document.querySelector('dcc-submit[bind="submit-prognosis-highest-lvl"][connect="submit:harena-user-property:service/request/put"]')._computeTrigger()
        }
      }
@@ -76,19 +82,30 @@ class Challenge {
 
      const nextLvl = document.querySelector('#btn-ch1-next-lvl')
      const fnNextLvl = function (){
-       var challenge
+       let challenge
        new URL(document.location).pathname.includes('/prognosis/challenge/1')?challenge = 'challenge1':challenge = 'challenge2'
        const currentLvl = localStorage.getItem(`prognosis-${challenge}-current-lvl`)
        const heighestLvl = localStorage.getItem(`prognosis-${challenge}-highest-lvl`)
-       var nextLvl = parseInt(localStorage.getItem(`prognosis-${challenge}-current-lvl`))+1
+       let nextLvl = parseInt(localStorage.getItem(`prognosis-${challenge}-current-lvl`))+1
        if(nextLvl>10)
        nextLvl = 10
        if(nextLvl<10)
         document.location.href = `/prognosis/challenge/${challenge.substring(9)}/?diffic=` + nextLvl
        else
-         document.location.href = `/prognosis/challenge/${challenge.substring(9)}/progress`
+        document.location.href = `/prognosis/learn/progress`
      }
      nextLvl.addEventListener('click', fnNextLvl)
+
+     if(document.querySelector('#welcome-lvl-modal') && (localStorage.getItem('prognosis-challenge1-current-lvl') == 1
+     || localStorage.getItem('prognosis-challenge1-current-lvl')==null) && (!localStorage.getItem('hide-intro-ch1-1'))){
+       let welcomeModal = document.querySelector('#welcome-lvl-modal')
+       welcomeModal.querySelector('.modal-title').textContent = 'Desafio 1'
+       welcomeModal.querySelector('.modal-body > p').innerHTML = `Decidimos deixar as coisas mais interessantes e mudar sua
+       rotina, nesse desafio você observará pacientes e precisará acertar a chance de sobrevivência. Bem fácil né?`
+
+       $('#welcome-lvl-modal').modal('show')
+       localStorage.setItem('hide-intro-ch1-1', true)
+     }
 
    }
 
@@ -104,21 +121,48 @@ class Challenge {
          const prognRange = Challenge.i._prognTarget.split('-')
          prognResultAcc.textContent = Prognosis.i.calcPrognRange(prognRange[0],prognRange[1],Challenge.i._sapsCalc)
          prognSurvivalPacient.textContent = `${Challenge.i._sapsCalc}%`
+         prognSurvivalPacient.dataset.value = Challenge.i._sapsCalc
          prognSurvivalRange.textContent = `${Challenge.i._prognTarget}%`
+         prognSurvivalRange.dataset.value = Challenge.i._prognTarget
+
+         let currentLvl = localStorage.getItem(`prognosis-challenge2-current-lvl`)
+         let heighestLvl = localStorage.getItem(`prognosis-challenge2-highest-lvl`)
+         localStorage.setItem(`prognosis-challenge2-highest-lvl`, parseInt(currentLvl)+1)
+         document.querySelector('dcc-submit[bind="submit-prognosis-lvl-range"][connect="submit:harena-user-property:service/request/post"]')._computeTrigger()
+         document.querySelector('dcc-submit[bind="submit-prognosis-lvl-progn"][connect="submit:harena-user-property:service/request/post"]')._computeTrigger()
+         document.querySelector('dcc-submit[bind="submit-prognosis-highest-lvl"][connect="submit:harena-user-property:service/request/put"]')._computeTrigger()
        }
      }
      nextStep.addEventListener('click', fnNextStep)
 
      const nextLvl = document.querySelector('#btn-ch2-next-lvl')
      const fnNextLvl = function (){
-       var challenge
+       let challenge
        new URL(document.location).pathname.includes('/prognosis/challenge/1')?challenge = 'challenge1':challenge = 'challenge2'
        const currentLvl = localStorage.getItem(`prognosis-${challenge}-current-lvl`)
        const heighestLvl = localStorage.getItem(`prognosis-${challenge}-highest-lvl`)
-       console.log(currentLvl)
-       console.log(heighestLvl)
+       let nextLvl = parseInt(localStorage.getItem(`prognosis-${challenge}-current-lvl`))+1
+       if(nextLvl>10)
+       nextLvl = 10
+       if(nextLvl<10)
+        document.location.href = `/prognosis/challenge/${challenge.substring(9)}/?diffic=` + nextLvl
+       else
+        document.location.href = `/prognosis/learn/progress`
+
      }
      nextLvl.addEventListener('click', fnNextLvl)
+
+     if(document.querySelector('#welcome-lvl-modal') && (localStorage.getItem('prognosis-challenge2-current-lvl') == 1
+     || localStorage.getItem('prognosis-challenge2-current-lvl')==null) && (!localStorage.getItem('hide-intro-ch2-1'))){
+       let welcomeModal = document.querySelector('#welcome-lvl-modal')
+       welcomeModal.querySelector('.modal-title').textContent = 'Desafio 2'
+       welcomeModal.querySelector('.modal-body > p').innerHTML = `Será que você consegue criar um paciente dentro do
+       intervalo de sobrevivência desejado? Cada dificuldade diferente dirá o intervalo logo no começo da página e também no resumo do paciente.
+       Por enquanto você terá toda liberdade de criação, mas não vá se acostumando.`
+
+       $('#welcome-lvl-modal').modal('show')
+       localStorage.setItem('hide-intro-ch2-1', true)
+     }
    }
  }
 
@@ -132,7 +176,9 @@ class Challenge {
      Challenge.i._prognTarget = message['prognTarget']
 
      const survivalRateOutputTxt = document.querySelector('#player-survival-rate-txt')
+     const survivalRateObj = document.querySelector('#txt-objective')
      survivalRateOutputTxt.innerHTML = `${message['prognTarget']}%`
+     survivalRateObj.textContent = `Intervalo de sobrevivência desejado: ${message['prognTarget']}%`
    }
  }
 

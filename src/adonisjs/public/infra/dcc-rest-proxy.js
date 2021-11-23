@@ -691,4 +691,57 @@
     }
   )
 
+  //Prognosis challenge 2
+  DCC.component(
+    'harena-prognosis-challenge2-highest-lvl',
+    'dcc-rest',
+    {
+      environment: {
+        'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api,
+        'propertyTitle':'prognosis-challenge2-highest-lvl',
+      },
+      oas: {
+        paths: {
+          '{url-manager}/user/property': {
+            'get': {
+              operationId: 'user-property',
+              parameters: [
+                {name: 'url-manager',
+                  in: 'path'},
+                {name: 'propertyTitle',
+                  in: 'query'},
+              ]
+            }
+          }
+        }
+      }
+    }
+  )
+
+  DCC.component(
+    'harena-prognosis-challenge2-lvl',
+    'dcc-rest',
+    {
+      environment: {
+        'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api,
+        'propertyTitle':'prognosis-challenge2-current-lvl',
+      },
+      oas: {
+        paths: {
+          '{url-manager}/user/property': {
+            'get': {
+              operationId: 'user-property',
+              parameters: [
+                {name: 'url-manager',
+                  in: 'path'},
+                {name: 'propertyTitle',
+                  in: 'query'},
+              ]
+            }
+          }
+        }
+      }
+    }
+  )
+
 })()

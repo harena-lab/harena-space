@@ -84,7 +84,6 @@
   <script src="/dccs/base/trigger-dcc.js"></script>
   <script src="/dccs/base/property-dcc.js"></script>
   <script src="/dccs/base/connect-dcc.js"></script>
-  <script src="/dccs/base/end-dcc.js"></script>
 
   <script src="/dccs/components/data/dcc-model.js"></script>
   <script src="/dccs/components/data/dcc-submit.js"></script>
@@ -110,6 +109,8 @@
 
   <script src="/author/js/panels.js"></script>
   <script src="/prognosis/js/prognosis.js"></script>
+  <script src="/prognosis/js/progress.js"></script>
+  <script src="/prognosis/js/challenge-progress.js"></script>
   <script src="/prognosis/js/challenge.js"></script>
   <script src="/prognosis/js/saps.js"></script>
   <script src="/prognosis/js/avatar.js"></script>
@@ -255,6 +256,11 @@
         <dcc-submit xstyle="d-none" bind="submit-prognosis-highest-lvl"
          connect="submit:harena-user-property:service/request/put"></dcc-submit>
 
+         <dcc-submit xstyle="d-none" bind="submit-prognosis-lvl-guess"
+          connect="submit:harena-user-property:service/request/post"></dcc-submit>
+         <dcc-submit xstyle="d-none" bind="submit-prognosis-lvl-guess"
+          connect="submit:harena-user-property:service/request/put"></dcc-submit>
+
          <!-- <dcc-submit label="Revisar as escolhas" xstyle="out" location="btn-create-pacient" bind="submit-prognosis-perfect-lvl"
           connect="submit:harena-user-property:service/request/post"></dcc-submit>
          <dcc-submit xstyle="d-none" bind="submit-prognosis-perfect-lvl"
@@ -269,14 +275,12 @@
   </div>
   </main>
 
-  <dcc-dhtml id="harena-dhtml-prognosis-current-lvl" connect="retrieve:harena-prognosis-challenge1-lvl:service/request/get">
+  <dcc-dhtml id="harena-dhtml-prognosis-current-lvl" connect="retrieve:harena-prognosis-challenge2-lvl:service/request/get">
     <input type="hidden" name="{{userProperty.0.title}}" id="current-lvl" value="{{userProperty.0.value}}">
-    <end-dcc></end-dcc>
   </dcc-dhtml>
 
-  <dcc-dhtml id="harena-dhtml-prognosis-heighest-lvl" connect="retrieve:harena-prognosis-challenge1-highest-lvl:service/request/get">
+  <dcc-dhtml id="harena-dhtml-prognosis-heighest-lvl" connect="retrieve:harena-prognosis-challenge2-highest-lvl:service/request/get">
     <input type="hidden" name="{{userProperty.0.title}}" id="highest-lvl" value="{{userProperty.0.value}}">
-    <end-dcc></end-dcc>
   </dcc-dhtml>
 
 </body>
