@@ -36,11 +36,11 @@ class DCCDHTML extends DCCBase {
                            {attributes: true, childList: true, subtree: true})
 
     if (this.hasAttribute('autoupdate')) {
-      let record = await this._request('var/*/get', null, null, true)
+      let record = await this._request('var/get/*', null, null, true)
       record = (record == null || record.message == null) ? {} : record.message
-      this.recordUpdate('var/*/get', record)
+      this.recordUpdate('var/get/*', record)
       this.fieldUpdate = this.fieldUpdate.bind(this)
-      this._subscribe('var/+/set', this.fieldUpdate)
+      this._subscribe('var/set/#', this.fieldUpdate)
     }
 
     this._ready = false
@@ -168,7 +168,7 @@ class DCCDHTML extends DCCBase {
   }
 
   fieldUpdate (topic, message) {
-    const id = MessageBus.extractLevel(topic, 2)
+    const id = MessageBus.extractLevelsSegment(topic, 3).replace(/\//g, '.')
     const value = this._extractValue(message)
     if (id == '*')
       this._record = value

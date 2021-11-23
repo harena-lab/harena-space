@@ -123,7 +123,7 @@ class DCCGroupMarker extends DCCBase {
     this._subscribe('dcc/marker-spot/set', this.setMarkerSpot)
     this._subscribe('dcc/marker-spot/selected', this.spotSelected)
 
-    this._publish('var/' + this.context + '/group_input/ready',
+    this._publish('input/ready/</' + this.context.replace(/\./g, '/'),
       DCCGroupMarker.elementTag)
 
     if (this.hasAttribute('editor')) {
@@ -349,7 +349,7 @@ class DCCGroupMarker extends DCCBase {
             width="1000"
             height="1000"
             preserveAspectRatio="xMinYMin meet"
-            xlink:href="[image]"/>      
+            xlink:href="[image]"/>
       </g>
    </g>
   </svg>`

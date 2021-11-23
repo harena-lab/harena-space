@@ -61,7 +61,7 @@ class EditDCCText extends EditDCC {
              },
              {
                name: 'harenaProvider',
-               url: /(^https?:\/\/(?:localhost|0\.0\.0\.0|(?:dev\.)?jacinto\.harena\.org)(?::10020)?\/.*)/,
+               url: /(^https?:\/\/(?:localhost|0\.0\.0\.0|(?:dev\.)?jacinto(?:-.)?\.harena\.org)(?::10020)?\/.*)/,
                html: match => '<video controls><source src="' + match[1] + '"></video>'
              }
            ]
