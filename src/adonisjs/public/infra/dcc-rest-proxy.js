@@ -639,4 +639,33 @@
     }
   )
 
+  DCC.component(
+    'harena-create-logger',
+    'dcc-rest',
+    {
+      environment: {
+        'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api
+      },
+      oas: {
+        paths: {
+          '{url-manager}/logger': {
+            'post': {
+              operationId: 'create-logger',
+              parameters: [
+                {name: 'url-manager',
+                 in: 'path'},
+                {name: 'caseId',
+                 in: 'query'},
+                {name: 'instanceId',
+                 in: 'query'},
+                {name: 'log',
+                 in: 'query'}
+              ]
+            }
+          }
+        }
+      }
+    }
+  )
+
 })()

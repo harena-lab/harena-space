@@ -726,8 +726,6 @@ class Translator {
     for (let c = 1; c < compiled.length; c++) {
       const pr = (c > 1 && compiled[c - 1].type == 'linefeed') ? c - 2 : c - 1
       if (compiled[c].type == 'option') {
-        console.log('=== previous')
-        console.log(compiled[pr])
         let stype = compiled[c].subtype
         if  (compiled[pr].type == 'input' && compiled[pr].subtype &&
              compiled[pr].subtype == 'choice' && compiled[pr].options == null) {
