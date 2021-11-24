@@ -99,14 +99,14 @@ class PlayerManager {
             this._state.historyRecord(startKnot)
             this.knotLoad(startKnot)
             break
-          case 'knot/navigate/>': const nextKnot = this._state.nextKnot()
+          case 'knot/navigate/>':
+            const nextKnot = this._state.nextKnot()
             this._state.historyRecord(nextKnot)
             this.knotLoad(nextKnot)
             break
-          case 'flow/navigate/>': const flowNext = this._nextFlowKnot()
+          case 'flow/navigate/>':
+            const flowNext = this._nextFlowKnot()
             if (flowNext != null) {
-              // console.log('=== flow next')
-              // console.log(flowNext)
               this._state.historyRecord(flowNext.target)
               this.knotLoad(flowNext.target)
             }
@@ -144,6 +144,7 @@ class PlayerManager {
                 result.message)
             }
             this._state.historyRecord(target)
+            this._updateFlowKnot(target)
             if (message.value) {
               this._state.parameter = message.value
               this.knotLoad(target, message.value)
@@ -171,6 +172,20 @@ class PlayerManager {
       if (this._state.flow.length == 0) { delete this._state.flow }
     }
     return next
+  }
+
+  _updateFlowKnot (knot) {
+    console.log('=== knot & flow')
+    console.log(knot)
+    console.log(this._state.flow.slice())
+    if (this._state.flow) {
+      let next
+      do {
+        next = this._state.flow.shift()
+      } while (this._state.flow.length > 0 && next.target != knot)
+      if (this._state.flow.length == 0) { delete this._state.flow }
+    }
+    console.log(this._state.flow.slice())
   }
 
   async startPlayer (caseid) {
@@ -330,7 +345,8 @@ class PlayerManager {
         }
         c++
       }
-      if (flow != null && flow.length > 0) { this._state.flow = flow }
+      if (flow != null && flow.length > 0)
+        this._state.flow = flow
     }
   }
 
