@@ -144,7 +144,7 @@ class PlayerManager {
                 result.message)
             }
             this._state.historyRecord(target)
-            this._updateFlowKnot(target)
+            // this._updateFlowKnot(target)
             if (message.value) {
               this._state.parameter = message.value
               this.knotLoad(target, message.value)
@@ -175,9 +175,9 @@ class PlayerManager {
   }
 
   _updateFlowKnot (knot) {
-    console.log('=== knot & flow')
-    console.log(knot)
-    console.log(this._state.flow.slice())
+    // console.log('=== knot & flow')
+    // console.log(knot)
+    // console.log(this._state.flow.slice())
     if (this._state.flow) {
       let next
       do {
@@ -185,7 +185,7 @@ class PlayerManager {
       } while (this._state.flow.length > 0 && next.target != knot)
       if (this._state.flow.length == 0) { delete this._state.flow }
     }
-    console.log(this._state.flow.slice())
+    // console.log(this._state.flow.slice())
   }
 
   async startPlayer (caseid) {

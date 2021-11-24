@@ -54,6 +54,7 @@
   <script src="/infra/dcc-rest-proxy.js"></script>
   <script src="/infra/dcc-basic.js"></script>
   <script src="/infra/dcc-logger.js"></script>
+  <script src="/infra/dcc-logger-manager.js"></script>
 
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -112,6 +113,7 @@
   <body onload="PlayerManager.player.startPlayer()">
   <!-- <div class="d-flex flex-column vh-100 vw-100 hidden-overflow"> -->
 
+    <dcc-rest id="harena-create-logger" bind="harena-create-logger" subscribe="logger/create/post"></dcc-rest>
     <main role="main">
       <div id="main-panel" class="d-flex flex-column vh-100 vw-100 scroll-y index-boot-padding">
         <dcc-rest id="harena-case" bind="harena-case" subscribe="service/request/get"></dcc-rest>
