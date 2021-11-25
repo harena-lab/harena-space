@@ -40,11 +40,14 @@ Write here the **stem**.
 **Complementary Exams**
 
 > Choose the 3 most relevant complementary exams to solve this case:
-+ Exam 1 <-> Exam 1
-+ Exam 2 <-> Exam 2
-+ Exam 3 <-> Exam 3
-+ Exam 4 <-> Exam 4
-+ Exam 5 <-> Exam 5
+? exams
+  * type: choice
+  * reveal: partial
+* Exam 1 <-> Exam 1
+* Exam 2 <-> Exam 2
+* Exam 3 <-> Exam 3
+* Exam 4 <-> Exam 4
+* Exam 5 <-> Exam 5
 
 * Next -> Conclusion
 

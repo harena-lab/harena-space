@@ -425,7 +425,7 @@ class Translator {
       // <TODO> can be interesting this link in the future
       // compiled[c].input = this.findContext(knotSet, knotId, compiled[c].input);
       else if (compiled[c].type == 'option' ||
-                  compiled[c].type == 'divert') {
+               compiled[c].type == 'divert') {
         compiled[c].contextTarget =
                this._findTarget(knotSet, knotId, compiled[c].target)
       } else if (compiled[c].type == 'text-block')
@@ -654,41 +654,7 @@ class Translator {
      }
     }
 
-    // seventh cycle - aggregates options
-    let optionGroup = null
-    let subtype = null
-    for (let c = 1; c < compiled.length; c++) {
-      const pr = (c > 1 && compiled[c - 1].type == 'linefeed') ? c - 2 : c - 1
-      if (compiled[c].type == 'option') {
-        let stype = compiled[c].subtype
-        if (compiled[pr].type == 'option' && compiled[c].subtype == subtype) {
-          optionGroup = this._initializeObject(
-            {
-              type: 'input',
-              subtype: 'choice',
-              exclusive: true,
-              shuffle: (subtype == '+'),
-              options: {}
-            }, compiled[pr]._source)
-          this._transferOption(optionGroup.options, compiled[pr])
-          compiled[pr] = optionGroup
-        }
-        if (optionGroup != null && compiled[c].subtype == subtype) {
-          this._transferOption(optionGroup.options, compiled[c])
-          optionGroup._source += '\n' + compiled[c]._source
-          const shift = c - pr
-          compiled.splice(c - shift + 1, shift)
-          c -= shift
-        } else
-          optionGroup = null
-        subtype = stype
-      } else if (compiled[c].type != 'linefeed') {
-        optionGroup = null
-      }
-      compiled[c].seq = c + 1
-    }
-
-    // eighth cycle - computes subordinate elements
+    // seventh cycle - computes subordinate elements
     for (let c = 0; c < compiled.length; c++) {
       const pr = (c > 1 && compiled[c - 1].type == 'linefeed') ? c - 2 : c - 1
       // later blockquotes and subordinates (excluding knot subordinates)
@@ -727,14 +693,6 @@ class Translator {
                        (compiled[c].subordinate || compiled[c].blockquote)) {
           compiled[pr][Translator.element[compiled[pr].type].subtext] =
                      compiled[c].content
-          /*
-               if (compiled[pr][Translator.element[compiled[pr].type].subtext] == null)
-                  compiled[pr][Translator.element[compiled[pr].type].subtext] =
-                     compiled[c].content;
-               else
-                  compiled[pr][Translator.element[compiled[pr].type].subtext] += "\n" +
-                     compiled[c].content;
-               */
           merge = true
         }
         if (merge) {
@@ -743,19 +701,69 @@ class Translator {
           compiled[pr].mergeLine =
                   Translator.element[compiled[c].type] &&
                   Translator.isLine.includes(compiled[c].type)
-          /*
-               compiled[pr].mergeLine =
-                  (Translator.element[compiled[c].type] &&
-                   Translator.element[compiled[c].type].line !== undefined)
-                     ? Translator.element[compiled[c].type].line : false;
-               */
           const shift = c - pr
           compiled.splice(c - shift + 1, shift)
           c -= shift
         }
       }
-      // previous blockquotes for inputs
-      else if (compiled[c].type == 'input' && compiled[pr].blockquote) {
+      // manages elements subordinated to the knot
+      else if ((c == 0 || (c == 1 && compiled[c - 1].type == 'linefeed')) &&
+                  compiled[c].subordinate && compiled[c].type == 'image') {
+        // console.log('=== image back')
+        unity.background = {
+          alternative: compiled[c].alternative,
+          path: compiled[c].path
+        }
+        if (compiled[c].title) { unity.background.title = compiled[c].title }
+        compiled[c].render = false
+      }
+      if (c >= 0) { compiled[c].seq = c + 1 }
+    }
+
+    // eighth cycle - aggregates options
+    let optionGroup = null
+    let subtype = null
+    for (let c = 1; c < compiled.length; c++) {
+      const pr = (c > 1 && compiled[c - 1].type == 'linefeed') ? c - 2 : c - 1
+      if (compiled[c].type == 'option') {
+        let stype = compiled[c].subtype
+        if  (compiled[pr].type == 'input' && compiled[pr].subtype &&
+             compiled[pr].subtype == 'choice' && compiled[pr].options == null) {
+          subtype = stype
+          optionGroup = compiled[pr]
+          optionGroup.options = {}
+        } else if (compiled[pr].type == 'option' &&
+                   compiled[c].subtype == subtype) {
+          optionGroup = this._initializeObject(
+            {
+              type: 'input',
+              subtype: 'choice',
+              exclusive: true,
+              shuffle: (subtype == '+'),
+              options: {}
+            }, compiled[pr]._source)
+          this._transferOption(optionGroup.options, compiled[pr])
+          compiled[pr] = optionGroup
+        }
+        if (optionGroup != null && compiled[c].subtype == subtype) {
+          this._transferOption(optionGroup.options, compiled[c])
+          optionGroup._source += '\n' + compiled[c]._source
+          const shift = c - pr
+          compiled.splice(c - shift + 1, shift)
+          c -= shift
+        } else
+          optionGroup = null
+        subtype = stype
+      } else if (compiled[c].type != 'linefeed' ||
+                 compiled[c].content.length > 1)
+        optionGroup = null
+      compiled[c].seq = c + 1
+    }
+
+    // ninth cycle - previous blockquotes for inputs
+    for (let c = 0; c < compiled.length; c++) {
+      const pr = (c > 1 && compiled[c - 1].type == 'linefeed') ? c - 2 : c - 1
+      if (compiled[c].type == 'input' && compiled[pr].blockquote) {
         let content = compiled[pr].content
         let source = compiled[pr]._source
 
@@ -773,21 +781,10 @@ class Translator {
         compiled.splice(pr, shift)
         c -= shift
       }
-      // manages elements subordinated to the knot
-      else if ((c == 0 || (c == 1 && compiled[c - 1].type == 'linefeed')) &&
-                  compiled[c].subordinate && compiled[c].type == 'image') {
-        // console.log('=== image back')
-        unity.background = {
-          alternative: compiled[c].alternative,
-          path: compiled[c].path
-        }
-        if (compiled[c].title) { unity.background.title = compiled[c].title }
-        compiled[c].render = false
-      }
       if (c >= 0) { compiled[c].seq = c + 1 }
     }
 
-    // ninth cycle - joins script sentences
+    // tenth cycle - joins script sentences
     // <TODO> quite similar to text-block (join?)
     let script
     let scriptSeq
@@ -828,7 +825,7 @@ class Translator {
 
     this._compileMergeLinefeeds(compiled)
 
-    // tenth cycle - process and hide formal comments
+    // eleventh cycle - process and hide formal comments
     let inFormal = false
     let lastContext = null
     let lastId = null
