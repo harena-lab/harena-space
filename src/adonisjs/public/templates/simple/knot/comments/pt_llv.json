@@ -263,7 +263,7 @@
    ]
   },
   "PO-D1": {
-   "title": "Vídeo - Left Lower Limb - Poplítea E1",
+   "title": "Vídeo - Right Lower Limb – Poplítea D1",
    "property": "media",
    "blocks": [
     {
@@ -337,7 +337,7 @@
    ]
   },
   "PO-D2": {
-   "title": "Vídeo - Left Lower Limb - Poplítea E2",
+   "title": "Vídeo - Right Lower Limb – Poplítea D2",
    "property": "media",
    "blocks": [
     {
@@ -616,6 +616,149 @@
       {
        "title": "Veia femoral ausente",
        "property": "femoral_vein",
+       "value": "not_present"
+      },
+      {
+       "title": "Compressão insuficiente",
+       "property": "compression",
+       "value": "insufficient"
+      }
+     ]
+    }
+   ]
+  },
+  "PO-E1": {
+   "title": "Vídeo - Left Lower Limb - Poplítea E1",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Referências anatómicas/qualidade",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Veia poplítea ausente",
+       "property": "popliteal_vein",
+       "value": "not_present"
+      },
+      {
+       "title": "Artéria poplítea ausente",
+       "property": "popliteal_artery",
+       "value": "not_present"
+      },
+      {
+       "title": "Tíbia/fémur ausente durante a compressão",
+       "property": "tibia_femur",
+       "value": "not_present_during_compression"
+      },
+      {
+       "title": "Compressão insuficiente",
+       "property": "compression",
+       "value": "insufficient"
+      }
+     ]
+    }
+   ]
+  },
+  "PO-E2": {
+   "title": "Vídeo - Left Lower Limb - Poplítea E2",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Referências anatómicas/qualidade",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Veia poplítea ausente",
+       "property": "popliteal_vein",
+       "value": "not_present"
+      },
+      {
+       "title": "Confluências das tíbias/fibulares ausentes",
+       "property": "tibia_fibularis_confluence",
        "value": "not_present"
       },
       {
