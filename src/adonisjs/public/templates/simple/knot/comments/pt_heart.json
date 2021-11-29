@@ -550,7 +550,7 @@
   "CO-PC": {
    "title": "Vídeos sobre Para-esternal curta",
    "property": "media",
-   "dependency": [],
+   "dependency": ["CO-PV", "CO-PM", "CO-PP"],
    "blocks": [
     {
      "title": "Achados",
