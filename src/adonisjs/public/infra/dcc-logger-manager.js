@@ -19,7 +19,7 @@ class DCCLoggerManager extends DCCLight {
         {
           caseId: message.caseId,
           instanceId: MessageBus.extractLevel(topic, 3),
-          log: JSON.stringify(message.knotTrack)
+          log: JSON.stringify(message)
         }
       )
       if (logger.message.error) {

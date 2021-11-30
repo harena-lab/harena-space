@@ -157,6 +157,11 @@
        "value": "yes"
       },
       {
+       "title": "Disfunção ventricular esquerda leve",
+       "property": "mild_left_ventricular_dysfunction",
+       "value": "yes"
+      },
+      {
        "title": "Disfunção ventricular esquerda moderada",
        "property": "moderate_left_ventricular_dysfunction",
        "value": "yes"
@@ -169,11 +174,6 @@
       {
        "title": "Dilatação de ventrículo direito",
        "property": "right_ventricule_dilation",
-       "value": "yes"
-      },
-      {
-       "title": "Normal",
-       "property": "normal",
        "value": "yes"
       },
       {
@@ -289,6 +289,11 @@
        "title": "Átrio esquerdo ausente",
        "property": "left_atrium",
        "value": "not_present"
+      },
+      {
+       "title": "Janela fora do eixo longo",
+       "property": "window_off_long_axis",
+       "value": "yes"
       }
      ]
     },
@@ -312,6 +317,11 @@
        "value": "yes"
       },
       {
+       "title": "Disfunção ventricular esquerda leve",
+       "property": "mild_left_ventricular_dysfunction",
+       "value": "yes"
+      },
+      {
        "title": "Disfunção ventricular esquerda moderada",
        "property": "moderate_left_ventricular_dysfunction",
        "value": "yes"
@@ -319,11 +329,6 @@
       {
        "title": "Disfunção ventricular esquerda acentuada",
        "property": "severe_left_ventricular_dysfunction",
-       "value": "yes"
-      },
-      {
-       "title": "Normal",
-       "property": "normal",
        "value": "yes"
       },
       {
@@ -567,6 +572,11 @@
        "value": "yes"
       },
       {
+       "title": "Disfunção ventricular esquerda leve",
+       "property": "mild_left_ventricular_dysfunction",
+       "value": "yes"
+      },
+      {
        "title": "Disfunção ventricular esquerda moderada",
        "property": "moderate_left_ventricular_dysfunction",
        "value": "yes"
@@ -577,8 +587,8 @@
        "value": "yes"
       },
       {
-       "title": "Normal",
-       "property": "normal",
+       "title": "Sobrecarga de Ventrículo Direito",
+       "property": "right_ventricular_overload",
        "value": "yes"
       }
      ]
@@ -697,6 +707,11 @@
        "value": "yes"
       },
       {
+       "title": "Disfunção ventricular esquerda leve",
+       "property": "mild_left_ventricular_dysfunction",
+       "value": "yes"
+      },
+      {
        "title": "Disfunção ventricular esquerda moderada",
        "property": "moderate_left_ventricular_dysfunction",
        "value": "yes"
@@ -709,11 +724,6 @@
       {
        "title": "Dilatação de ventrículo direito",
        "property": "right_ventricle_dilation",
-       "value": "yes"
-      },
-      {
-       "title": "Normal",
-       "property": "normal",
        "value": "yes"
       },
       {
