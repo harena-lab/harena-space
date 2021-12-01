@@ -333,6 +333,9 @@ class DCCCompute extends DCCBase {
           case 'sqrt':
             stack.push(Math.sqrt(stack.pop()))
             break
+          case 'random':
+            stack.push(Math.floor(Math.random() * (stack.pop()+1)))
+            break
         }
       }
     }
