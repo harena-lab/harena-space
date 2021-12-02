@@ -11,420 +11,344 @@ class CONFIG_LOGGER {
     static config_json=[
                         {
                             component : "Analytics proxy",
-                            accumulator: false,
+                            accumulator: "accumulate",
                             endpoint : "http://localhost/api/v1/kafka_messages/",
-                            topic_regex : /^data\/case\/.*\/get$/g,
-                                            
+                            topic_format : "user/login/+",
+                            schema : {
+                                        version : this.version,
+                                        topic : "string",
+                                        message_class : "user_action",
+                                        message_subclass : "user_login",
+                                        payload_body : "string_json"
+                                    }
+                        },
+                        {
+                            component : "Analytics proxy",
+                            accumulator: "accumulate",
+                            endpoint : "http://localhost/api/v1/kafka_messages/",
+                            topic_format : "case/get/+",
                             schema : {
                                         version : this.version,
                                         topic : "string",
                                         message_class : "user_action",
                                         message_subclass : "case_request",
-                            
-                                        payload_metada : {
-                                            message_class : "user_action",
-                                            message_subclass : "case_request"
-                                                            },
                                         payload_body : "string_json"
                                     }
                         },
                         {
                             component : "Analytics proxy",
-                            accumulator: false,
+                            accumulator: "accumulate",
                             endpoint : "http://localhost/api/v1/kafka_messages/",
-                            topic_regex : /^service\/request\/get$/g,
-                                            
+                            topic_format : "service/request/get",
+                            schema : {
+                                        version : this.version,
+                                        topic : "string",
+                                        message_class : "system_message",
+                                        message_subclass : "request_get",
+                                        payload_body : "string_json"
+                                    }
+                        },
+                        {
+                            component : "Analytics proxy",
+                            accumulator: "accumulate",
+                            endpoint : "http://localhost/api/v1/kafka_messages/",
+                            topic_format : "data/template/+/get",
                             schema : {
                                         version : this.version,
                                         topic : "string",
                                         message_class : "system_message",
                                         message_subclass : "template_request",
-                            
-                                        payload_metada : {
-                                            message_class : "system_message",
-                                            message_subclass : "template_request"
-                                                            },
                                         payload_body : "string_json"
                                     }
                         },
-                        
                         {
                             component : "Analytics proxy",
-                            accumulator: false,
+                            accumulator: "accumulate",
                             endpoint : "http://localhost/api/v1/kafka_messages/",
-                            topic_regex : /^data\/template\/.*\/get$/g,
-                                            
+                            topic_format : "response/#/data/template/+/get",
                             schema : {
                                         version : this.version,
                                         topic : "string",
                                         message_class : "system_message",
                                         message_subclass : "template_request",
-                            
-                                        payload_metada : {
-                                            message_class : "system_message",
-                                            message_subclass : "template_request"
-                                                            },
                                         payload_body : "string_json"
                                     }
                         },
                         {
                             component : "Analytics proxy",
-                            accumulator: false,
+                            accumulator: "accumulate",
                             endpoint : "http://localhost/api/v1/kafka_messages/",
-                            topic_regex : /^data\/template\/.*\/get\/response\/.*$/g,
-                                            
-                            schema : {
-                                        version : this.version,
-                                        topic : "string",
-                                        message_class : "system_message",
-                                        message_subclass : "template_request",
-                            
-                                        payload_metada : {
-                                            message_class : "system_message",
-                                            message_subclass : "template_request"
-                                                            },
-                                        payload_body : "string_json"
-                                    }
-                        },
-                        {
-                            component : "Analytics proxy",
-                            accumulator: false,
-                            endpoint : "http://localhost/api/v1/kafka_messages/",
-                            topic_regex : /^data\/case\/.*\/get\/response\/.*$/g,
-                                            
+                            topic_format : "response/#/case/get/+",
                             schema : {
                                         version : this.version,
                                         topic : "string",
                                         message_class : "system_message",
                                         message_subclass : "case_response",
-                            
-                                        payload_metada : {
-                                            message_class : "system_message",
-                                            message_subclass : "case_response"
-                                                            },
                                         payload_body : "string_json"
                                     }
                         },
                         {
                             component : "Analytics proxy",
-                            accumulator: false,
+                            accumulator: "accumulate",
                             endpoint : "http://localhost/api/v1/kafka_messages/",
-                            topic_regex : /^control\/case\/ready$/g,
-                                            
+                            topic_format : "case/ready/+",
                             schema : {
                                         version : this.version,
                                         topic : "string",
                                         message_class : "system_message",
-                                        message_subclass : "case_compiled",
-                            
-                                        payload_metada : {
-                                            message_class : "system_message",
-                                            message_subclass : "case_compiled"
-                                                            },
+                                        message_subclass : "case_ready",
                                         payload_body : "string_json"
                                     }
                         },
                         {
                             component : "Analytics proxy",
-                            accumulator: false,
+                            accumulator: "accumulate",
                             endpoint : "http://localhost/api/v1/kafka_messages/",
-                            topic_regex : /^knot\/<<\/navigate$/g,
-                                            
+                            topic_format :"knot/navigate/<<",
                             schema : {
                                         version : this.version,
                                         topic : "string",
                                         message_class : "system_message",
                                         message_subclass : "first_knot_navigation",
-                            
-                                        payload_metada : {
-                                            message_class : "system_message",
-                                            message_subclass : "first_knot_navigation"
-                                                            },
                                         payload_body : "string_json"
                                     }
                         },
                         {
                             component : "Analytics proxy",
-                            accumulator: false,
+                            accumulator: "accumulate",
                             endpoint : "http://localhost/api/v1/kafka_messages/",
-                            topic_regex : /^data\/theme\/.*\/get$/g,
-                                            
+                            topic_format : "case/start/+",
                             schema : {
                                         version : this.version,
                                         topic : "string",
-                                        message_class : "system_message",
-                                        message_subclass : "theme_tequest",
-                            
-                                        payload_metada : {
-                                            message_class : "system_message",
-                                            message_subclass : "theme_tequest"
-                                                            },
+                                        message_class : "user_action",
+                                        message_subclass : "case_start",
                                         payload_body : "string_json"
                                     }
                         },
                         {
                             component : "Analytics proxy",
-                            accumulator: false,
+                            accumulator: "accumulate",
                             endpoint : "http://localhost/api/v1/kafka_messages/",
-                            topic_regex : /^data\/theme\/.*\/get\/response\/.*$/g,             
+                            topic_format : "data/theme/+/get",             
                             schema : {
                                         version : this.version,
                                         topic : "string",
                                         message_class : "system_message",
                                         message_subclass : "theme_tequest",
-                            
-                                        payload_metada : {
-                                            message_class : "system_message",
-                                            message_subclass : "theme_tequest"
-                                                            },
+                                        payload_body : "string_json"
+                                    }
+                        },
+                        {
+                            component : "Analytics proxy",
+                            accumulator: "accumulate",
+                            endpoint : "http://localhost/api/v1/kafka_messages/",
+                            topic_format : "response/#/data/theme/+/get",             
+                            schema : {
+                                        version : this.version,
+                                        topic : "string",
+                                        message_class : "system_message",
+                                        message_subclass : "theme_tequest",
                                         payload_body : "string_json"
                                     }
                         },
                         {
                             component :"Analytics proxy",
                             endpoint : "http://localhost/api/v1/kafka_messages/",
-                            topic_regex : /^knot\/.*\/start$/g,
+                            topic_format : "knot/start/+",
                             schema : {  
                                         version : this.version,
                                         topic : "string",
                                         message_class : "system_message",
                                         message_subclass : "knot_start",
-                                        payload_metada : {
-                                            message_class : "system_message",
-                                            message_subclass : "knot_start"
-                                                            },
                                         payload_body : "string_json"
                                     }
                         },
                         {
                             component :"Analytics proxy",
-                            accumulator: true,
+                            accumulator: "accumulate",
                             endpoint : "http://localhost/api/v1/kafka_messages/",
-                            topic_regex : /^var\/.*\/typed$/g,
+                            topic_format : "input/typed/+/hypothesis",
                             schema : {
                                         version : this.version,
                                         topic : "string",
                                         message_class : "user_action",
                                         message_subclass : "var_typed",
-                                        payload_metada : {
-                                            message_class : "user_action",
-                                            message_subclass : "var_typed"
-                                                            },
                                         payload_body : "string_json"
                                     }
                         },
                         {
                             component : "Analytics proxy",
-                            accumulator: false,
+                            accumulator: "accumulate",
                             endpoint : "http://localhost/api/v1/kafka_messages/",
-                            topic_regex : /^var\/.*\/changed$/g,
+                            topic_format : "input/changed/+/hypothesis",
                             schema : {  
                                         version : this.version,
                                         topic : "string",
                                         message_class : "user_action",
                                         message_subclass : "var_changed",
-                                        payload_metada : {
-                                            message_class : "user_action",
-                                            message_subclass : "var_changed"
-                                                            },
                                         payload_body : "string_json"
                                     }
                         },
                         {
                             component : "Analytics proxy",
-                            accumulator: false,
+                            accumulator: "accumulate",
                             endpoint : "http://localhost/api/v1/kafka_messages/",
-                            topic_regex : /^flow\/>\/navigate$/g,
-                            schema : {  
-                                        version : this.version,
-                                        topic : "string",
-                                        message_class : "user_action",
-                                        message_subclass : "knot_navigation",
-                                        payload_metada : {
-                                            message_class : "user_action",
-                                            message_subclass : "knot_navigation"
-                                                            },
-                                        payload_body : "string_json"
-                                    }
-                        },
-
-                        {
-                            component : "Analytics proxy",
-                            accumulator: false,
-                            endpoint : "http://localhost/api/v1/kafka_messages/",
-                            topic_regex : /^flow\/<\/navigate$/g,
-                            schema : {  
-                                        version : this.version,
-                                        topic : "string",
-                                        message_class : "user_action",
-                                        message_subclass : "knot_navigation",
-                                        payload_metada : {
-                                            message_class : "user_action",
-                                            message_subclass : "knot_navigation"
-                                                            },
-                                        payload_body : "string_json"
-                                    }
-                        },
-                        {
-                            component : "Analytics proxy",
-                            accumulator: false,
-                            endpoint : "http://localhost/api/v1/kafka_messages/",
-                            topic_regex : /^knot\/>\/navigate$/g,
-                            schema : {  
-                                        version : this.version,
-                                        topic : "string",
-                                        message_class : "user_action",
-                                        message_subclass : "knot_navigation",
-                                        payload_metada : {
-                                            message_class : "user_action",
-                                            message_subclass : "knot_navigation"
-                                                            },
-                                        payload_body : "string_json"
-                                    }
-                        },
-                        {
-                            component : "Analytics proxy",
-                            accumulator: false,
-                            endpoint : "http://localhost/api/v1/kafka_messages/",
-                            topic_regex : /^knot\/<\/navigate$/g,
-                            schema : {  
-                                        version : this.version,
-                                        topic : "string",
-                                        message_class : "user_action",
-                                        message_subclass : "knot_navigation",
-                                        payload_metada : {
-                                            message_class : "user_action",
-                                            message_subclass : "knot_navigation"
-                                                            },
-                                        payload_body : "string_json"
-                                    }
-                        },
-                        {
-                            component : "Analytics proxy",
-                            accumulator: false,
-                            endpoint : "http://localhost/api/v1/kafka_messages/",
-                            
-                            topic_regex : /^knot\/.*\/navigate$/g,
-                            schema : {  
-                                        version : this.version,
-                                        topic : "string",
-                                        message_class : "user_action",
-                                        message_subclass : "knot_navigation",
-                                        payload_metada : {
-                                            message_class : "user_action",
-                                            message_subclass : "knot_navigation"
-                                                            },
-                                        payload_body : "string_json"
-                                    }
-                        },
-                        {
-                            component : "Analytics proxy",
-                            accumulator: false,
-                            endpoint : "http://localhost/api/v1/kafka_messages/",
-                            topic_regex : /^control\/input\/submit$/g,
+                            topic_format : "input/submit/+",
                             schema : {  
                                         version : this.version,
                                         topic : "string",
                                         message_class : "system_message",
                                         message_subclass : "submit_knot_inputs",
-                                        payload_metada : {
-                                            message_class : "system_message",
-                                            message_subclass : "submit_knot_inputs"
-                                                            },
                                         payload_body : "string_json"
                                     }
                         },
+
                         {
                             component : "Analytics proxy",
-                            accumulator: false,
+                            accumulator: "accumulate",
                             endpoint : "http://localhost/api/v1/kafka_messages/",
-                            topic_regex : /^var\/.*\/set$/g,
+                            topic_format : "var/set/+/+",
                             schema : {  
                                         version : this.version,
                                         topic : "string",
                                         message_class : "system_message",
                                         message_subclass : "store_var_value",
-                                        payload_metada : {
-                                            message_class : "system_message",
-                                            message_subclass : "store_var_value"
-                                                            },
-                                        payload_body : "string_json"
-                                    }
-                        },
-
-                        {
-                            component : "Analytics proxy",
-                            accumulator: false,
-                            endpoint : "http://localhost/api/v1/kafka_messages/",
-                            topic_regex : /^var\/.*\/set\/response\/.*$/g,
-                            schema : {  
-                                        version : this.version,
-                                        topic : "string",
-                                        message_class : "system_message",
-                                        message_subclass : "var_stored",
-                                        payload_metada : {
-                                            message_class : "system_message",
-                                            message_subclass : "var_stored"
-                                                            },
                                         payload_body : "string_json"
                                     }
                         },
                         {
                             component : "Analytics proxy",
-                            accumulator: false,
+                            accumulator: "accumulate",
                             endpoint : "http://localhost/api/v1/kafka_messages/",
-                            topic_regex : /^case\/summary$/g,
+                            topic_format : "knot/end/+",
                             schema : {  
                                         version : this.version,
                                         topic : "string",
-                                        message_class : "system_message",
-                                        message_subclass : "case_summary",
-
-                                        payload_metada : {
-                                            message_class: "system_message",
-                                            message_subclass : "case_summary"
-                                                            },
-                                                            
-                                        payload_body : "string_json"
-                                    }
-                        },
-
-                        {
-                            component : "Analytics proxy",
-                            accumulator: false,
-                            endpoint : "http://localhost/api/v1/kafka_messages/",
-                            topic_regex : /^knot\/.*\/end$/g,
-                            schema : {  
-                                        version : this.version,
-                                        topic : "string",
-                                        message_class : "system_message",
+                                        message_class : "user_action",
                                         message_subclass : "knot_end",
-
-                                        payload_metada : {
-                                            message_class : "system_message",
-                                            message_subclass : "knot_end"
-                                                            },
                                         payload_body : "string_json"
                                     }
                         },
                         {
                             component : "Analytics proxy",
-                            accumulator: false,
+                            accumulator: "accumulate",
                             endpoint : "http://localhost/api/v1/kafka_messages/",
-                            topic_regex : /^case\/completed$/g,
+                            topic_format : "case/completed/+",
+                            schema : {  
+                                        version : this.version,
+                                        topic : "string",
+                                        message_class : "user_action",
+                                        message_subclass : "case_completed",
+                                        
+                                        payload_body : "string_json"
+                                    }
+                        },
+                        {
+                            component : "Analytics proxy",
+                            accumulator: "send",
+                            endpoint : "http://localhost/api/v1/kafka_messages/",
+                            
+                            topic_format : "case/summary/+",
+                            schema : {  
+                                        version : this.version,
+                                        topic : "string",
+                                        message_class : "user_action",
+                                        message_subclass : "case_summary",
+                                        payload_body : "string_json"
+                                    }
+                        },
+                        {
+                            component : "Analytics proxy",
+                            accumulator: "accumulate",
+                            endpoint : "http://localhost/api/v1/kafka_messages/",
+                            topic_format : "knot/navigate/+",
+                            schema : {  
+                                        version : this.version,
+                                        topic : "string",
+                                        message_class : "user_action",
+                                        message_subclass : "knot_navigation",
+                                        payload_body : "string_json"
+                                    }
+                        },
+                        {
+                            component : "Analytics proxy",
+                            accumulator: "accumulate",
+                            endpoint : "http://localhost/api/v1/kafka_messages/",
+                            topic_format : "knot/navigate/>",
+                            schema : {  
+                                        version : this.version,
+                                        topic : "string",
+                                        message_class : "user_action",
+                                        message_subclass : "knot_navigation",
+                                        payload_body : "string_json"
+                                    }
+                        },
+                        {
+                            component : "Analytics proxy",
+                            accumulator: "accumulate",
+                            endpoint : "http://localhost/api/v1/kafka_messages/",
+                            topic_format : "knot/navigate/<",
+                            schema : {  
+                                        version : this.version,
+                                        topic : "string",
+                                        message_class : "user_action",
+                                        message_subclass : "knot_navigation",
+                                        payload_body : "string_json"
+                                    }
+                        },
+                        {
+                            component : "Analytics proxy",
+                            accumulator: "accumulate",
+                            endpoint : "http://localhost/api/v1/kafka_messages/",
+                            topic_format : "flow/navigate/>",
+                            schema : {  
+                                        version : this.version,
+                                        topic : "string",
+                                        message_class : "user_action",
+                                        message_subclass : "knot_navigation",
+                                        payload_body : "string_json"
+                                    }
+                        },
+                        {
+                            component : "Analytics proxy",
+                            accumulator: "accumulate",
+                            endpoint : "http://localhost/api/v1/kafka_messages/",
+                            topic_format : "case/navigate/>",
+                            schema : {  
+                                        version : this.version,
+                                        topic : "string",
+                                        message_class : "user_action",
+                                        message_subclass : "case_navigation",
+                                        payload_body : "string_json"
+                                    }
+                        },
+                        {
+                            component : "Analytics proxy",
+                            accumulator: "accumulate",
+                            endpoint : "http://localhost/api/v1/kafka_messages/",
+                            topic_format : "knot/navigate/=/+",
                             schema : {  
                                         version : this.version,
                                         topic : "string",
                                         message_class : "system_message",
-                                        message_subclass : "case_end",
-
-                                        payload_metada : {
-                                            message_class : "system_message",
-                                            message_subclass : "case_end"
-                                                            },
+                                        message_subclass : "knot_navigation",
                                         payload_body : "string_json"
                                     }
                         },
+                        {
+                            component : "Analytics proxy",
+                            accumulator: "accumulate",
+                            endpoint : "http://localhost/api/v1/kafka_messages/",
+                            topic_format : "'=+/navigate/!",
+                            schema : {  
+                                        version : this.version,
+                                        topic : "string",
+                                        message_class : "system_message",
+                                        message_subclass : "knot_navigation",
+                                        payload_body : "string_json"
+                                    }
+                        }
                         
 
                     ]
