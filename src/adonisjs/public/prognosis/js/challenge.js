@@ -52,6 +52,7 @@ class Challenge {
        if(this.form.checkValidity()){
          $('#pacient-overview-modal').modal('hide')
          $('#lvl-result-modal').modal('show')
+         MessageBus.progn.publish('knot/navigate/>')
          const playerGuess = document.querySelector('#player-survival-rate').value
          const prognSapsCalc = document.querySelector('#prognosis-survival-pacient')
          const prognAcc = document.querySelector('#prognosis-result-accuracy')
@@ -80,21 +81,47 @@ class Challenge {
      // }
      // createPacientBtn.addEventListener('click', fnCreatePacientBtn)
 
-     const nextLvl = document.querySelector('#btn-ch1-next-lvl')
-     const fnNextLvl = function (){
-       let challenge
-       new URL(document.location).pathname.includes('/prognosis/challenge/1')?challenge = 'challenge1':challenge = 'challenge2'
-       const currentLvl = localStorage.getItem(`prognosis-${challenge}-current-lvl`)
-       const heighestLvl = localStorage.getItem(`prognosis-${challenge}-highest-lvl`)
-       let nextLvl = parseInt(localStorage.getItem(`prognosis-${challenge}-current-lvl`))+1
-       if(nextLvl>10)
-       nextLvl = 10
-       if(nextLvl<10)
-        document.location.href = `/prognosis/challenge/${challenge.substring(9)}/?diffic=` + nextLvl
-       else
-        document.location.href = `/prognosis/learn/progress`
-     }
-     nextLvl.addEventListener('click', fnNextLvl)
+     let btnNextLvl = document.querySelector('#btn-ch1-next-lvl')
+     let challenge
+     new URL(document.location).pathname.includes('/prognosis/challenge/1')?challenge = 'challenge1':challenge = 'challenge2'
+     let currentLvl = localStorage.getItem(`prognosis-${challenge}-current-lvl`)
+     let heighestLvl = localStorage.getItem(`prognosis-${challenge}-highest-lvl`)
+     let nextLvl = parseInt(localStorage.getItem(`prognosis-${challenge}-current-lvl`))+1
+     if(nextLvl>10)
+     nextLvl = 10
+     if(nextLvl<10){
+     btnNextLvl.dataset.busEntity = 'case/navigate'
+     btnNextLvl.dataset.busId = '/>'
+     btnNextLvl.dataset.action = `/prognosis/challenge/${challenge.substring(9)}/?diffic=${nextLvl}`
+   }else{
+     btnNextLvl.dataset.busEntity = 'section/navigate'
+     btnNextLvl.dataset.busId = '/prognosis/learn/progress/'
+     btnNextLvl.dataset.action = '/prognosis/learn/progress/#ch1'
+   }
+     // const fnNextLvl = function (){
+     //   let challenge
+     //   new URL(document.location).pathname.includes('/prognosis/challenge/1')?challenge = 'challenge1':challenge = 'challenge2'
+     //   const currentLvl = localStorage.getItem(`prognosis-${challenge}-current-lvl`)
+     //   const heighestLvl = localStorage.getItem(`prognosis-${challenge}-highest-lvl`)
+     //   let nextLvl = parseInt(localStorage.getItem(`prognosis-${challenge}-current-lvl`))+1
+     //   if(nextLvl>10)
+     //   nextLvl = 10
+     //   if(nextLvl<10){
+     //   this.dataset.busEntity = 'case/navigate'
+     //   this.dataset.busId = '/>'
+     //   this.dataset.action = `/prognosis/challenge/${challenge.substring(9)}/?diffic=${nextLvl}`
+     // }else{
+     //   this.dataset.busEntity = 'section/navigate'
+     //   this.dataset.busId = '/prognosis/learn/progress/'
+     //   this.dataset.action = '/prognosis/learn/progress/#ch1'
+     //
+     // }
+     // let btn = this
+     // setTimeout(function(){
+     //   btn.click()
+     // }, 100)
+     // }
+     // nextLvl.addEventListener('click', fnNextLvl)
 
      if(document.querySelector('#welcome-lvl-modal') && (localStorage.getItem('prognosis-challenge1-current-lvl') == 1
      || localStorage.getItem('prognosis-challenge1-current-lvl')==null) && (!localStorage.getItem('hide-intro-ch1-1'))){
@@ -115,6 +142,7 @@ class Challenge {
        if(this.form.checkValidity()){
          $('#pacient-overview-modal').modal('hide')
          $('#lvl-result-modal').modal('show')
+         MessageBus.progn.publish('knot/navigate/>')
          const prognResultAcc = document.querySelector('#prognosis-result-accuracy')
          const prognSurvivalPacient = document.querySelector('#prognosis-survival-pacient')
          const prognSurvivalRange = document.querySelector('#prognosis-range')
@@ -135,22 +163,48 @@ class Challenge {
      }
      nextStep.addEventListener('click', fnNextStep)
 
-     const nextLvl = document.querySelector('#btn-ch2-next-lvl')
-     const fnNextLvl = function (){
-       let challenge
-       new URL(document.location).pathname.includes('/prognosis/challenge/1')?challenge = 'challenge1':challenge = 'challenge2'
-       const currentLvl = localStorage.getItem(`prognosis-${challenge}-current-lvl`)
-       const heighestLvl = localStorage.getItem(`prognosis-${challenge}-highest-lvl`)
-       let nextLvl = parseInt(localStorage.getItem(`prognosis-${challenge}-current-lvl`))+1
-       if(nextLvl>10)
-       nextLvl = 10
-       if(nextLvl<10)
-        document.location.href = `/prognosis/challenge/${challenge.substring(9)}/?diffic=` + nextLvl
-       else
-        document.location.href = `/prognosis/learn/progress`
-
-     }
-     nextLvl.addEventListener('click', fnNextLvl)
+     let btnNextLvl = document.querySelector('#btn-ch2-next-lvl')
+     let challenge
+     new URL(document.location).pathname.includes('/prognosis/challenge/1')?challenge = 'challenge1':challenge = 'challenge2'
+     let currentLvl = localStorage.getItem(`prognosis-${challenge}-current-lvl`)
+     let heighestLvl = localStorage.getItem(`prognosis-${challenge}-highest-lvl`)
+     let nextLvl = parseInt(localStorage.getItem(`prognosis-${challenge}-current-lvl`))+1
+     if(nextLvl>10)
+      nextLvl = 10
+     if(nextLvl<10){
+       btnNextLvl.dataset.busEntity = 'case/navigate'
+       btnNextLvl.dataset.busId = '/>'
+       btnNextLvl.dataset.action = `/prognosis/challenge/${challenge.substring(9)}/?diffic=${nextLvl}`
+     }else{
+       btnNextLvl.dataset.busEntity = 'section/navigate'
+       btnNextLvl.dataset.busId = '/prognosis/learn/progress/'
+       btnNextLvl.dataset.action = '/prognosis/learn/progress/#ch2'
+    }
+     // const fnNextLvl = function (){
+     //   console.log('============ check click btn')
+     //   let challenge
+     //   new URL(document.location).pathname.includes('/prognosis/challenge/1')?challenge = 'challenge1':challenge = 'challenge2'
+     //   const currentLvl = localStorage.getItem(`prognosis-${challenge}-current-lvl`)
+     //   const heighestLvl = localStorage.getItem(`prognosis-${challenge}-highest-lvl`)
+     //   let nextLvl = parseInt(localStorage.getItem(`prognosis-${challenge}-current-lvl`))+1
+     //   if(nextLvl>10)
+     //   nextLvl = 10
+     //   if(nextLvl<10){
+     //     this.dataset.busEntity = 'case/navigate'
+     //     this.dataset.busId = '/>'
+     //     this.dataset.action = `/prognosis/challenge/${challenge.substring(9)}/?diffic=${nextLvl}`
+     //   }else{
+     //     this.dataset.busEntity = 'section/navigate'
+     //     this.dataset.busId = '/prognosis/learn/progress/'
+     //     this.dataset.action = '/prognosis/learn/progress/#ch2'
+     //  }
+     //  let btn = this
+     //  setTimeout(function(){
+     //    btn.click()
+     //  }, 100)
+     //
+     // }
+     // nextLvl.addEventListener('click', fnNextLvl)
 
      if(document.querySelector('#welcome-lvl-modal') && (localStorage.getItem('prognosis-challenge2-current-lvl') == 1
      || localStorage.getItem('prognosis-challenge2-current-lvl')==null) && (!localStorage.getItem('hide-intro-ch2-1'))){
@@ -174,7 +228,7 @@ class Challenge {
 
    if (new URL(document.location).pathname.includes('challenge/2')) {
      Challenge.i._prognTarget = message['prognTarget']
-
+     document.querySelector('#progn-target-range').value = message['prognTarget']
      const survivalRateOutputTxt = document.querySelector('#player-survival-rate-txt')
      const survivalRateObj = document.querySelector('#txt-objective')
      survivalRateOutputTxt.innerHTML = `${message['prognTarget']}%`

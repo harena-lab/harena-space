@@ -9,6 +9,9 @@
     await this.getPrognosisUserInfo()
     if(document.querySelector('#progn-lvl-progress-wrapper')){
       let selectList = document.querySelector('#select-wrapper select')
+      console.log('============ hash')
+      console.log(location.hash.substring(1))
+      selectList.value = location.hash.substring(1) || 'learning'
       switch (selectList.value) {
         case 'learning':
           this.listLvlProgress()
@@ -25,12 +28,15 @@
       const fnSelectList = function(){
         switch (this.value) {
           case 'learning':
+            location.hash = '#learning'
             PrognosisProgress.i.listLvlProgress()
             break
           case 'ch1':
+            location.hash = '#ch1'
             PrognosisProgress.i.listChOneProgress()
             break
           case 'ch2':
+            location.hash = '#ch2'
             PrognosisProgress.i.listChTwoProgress()
             break
           default:
@@ -204,7 +210,8 @@
           .replace(/\[starPoints\]/ig, PrognosisProgress.i.stars(lvlSuccess, 3, 2))
           .replace(/\[overviewPart\]/ig, PrognosisProgress.overviewTxt
                                           .replace(/\[currentLvl\]/ig, '10')
-                                          .replace(/\[pacientOverviewTxt\]/ig, overviewTxt))
+                                          .replace(/\[pacientOverviewTxt\]/ig, overviewTxt)
+                                          .replace(/\[gameMode\]/ig, 'progn'))
       }else {
         template.innerHTML = PrognosisProgress.lvlContainer
           .replace(/\[containerColor\]/ig, 'bg-light')
@@ -274,7 +281,8 @@
         .replace(/\[starPoints\]/ig, this.stars(lvlSuccess, 3, 2))
         .replace(/\[overviewPart\]/ig, PrognosisProgress.overviewTxt
                                         .replace(/\[currentLvl\]/ig, i)
-                                        .replace(/\[pacientOverviewTxt\]/ig, overviewTxt))
+                                        .replace(/\[pacientOverviewTxt\]/ig, overviewTxt)
+                                        .replace(/\[gameMode\]/ig, 'progn'))
       progressWrapper.appendChild(template.content.cloneNode(true))
 
     }
@@ -382,7 +390,8 @@
         .replace(/\[starPoints\]/ig, this.stars(lvlSuccess, 2, 1))
         .replace(/\[overviewPart\]/ig, PrognosisProgress.overviewTxt
                                         .replace(/\[currentLvl\]/ig, i)
-                                        .replace(/\[pacientOverviewTxt\]/ig, overviewTxt))
+                                        .replace(/\[pacientOverviewTxt\]/ig, overviewTxt)
+                                        .replace(/\[gameMode\]/ig, 'ch1'))
       progressWrapper.appendChild(template.content.cloneNode(true))
     }
     this.lockedLvls(progressWrapper, highestLvl, limitLvl)
@@ -442,7 +451,8 @@
         .replace(/\[starPoints\]/ig, this.stars(lvlSuccess, 2, 1))
         .replace(/\[overviewPart\]/ig, PrognosisProgress.overviewTxt
                                         .replace(/\[currentLvl\]/ig, i)
-                                        .replace(/\[pacientOverviewTxt\]/ig, overviewTxt))
+                                        .replace(/\[pacientOverviewTxt\]/ig, overviewTxt)
+                                        .replace(/\[gameMode\]/ig, 'ch2'))
       progressWrapper.appendChild(template.content.cloneNode(true))
     }
     this.lockedLvls(progressWrapper, highestLvl, limitLvl)
@@ -452,9 +462,9 @@
 (function() {
   PrognosisProgress.i = new PrognosisProgress()
   PrognosisProgress.overviewTxt = `
-  <button type="button" class="col-3 btn btn-warning w-100 mb-2" data-bus-entity="trigger/run" data-bus-id="/prognOverviewLvl[currentLvl]"
-   data-toggle="modal" data-target="#pacient-overview-modal-[currentLvl]"><i class="far fa-address-card"></i></button>
-  <div class="modal fade" id="pacient-overview-modal-[currentLvl]" tabindex="-1" role="dialog" aria-labelledby="pacient-overview" aria-hidden="true">
+  <button type="button" class="col-3 btn btn-warning w-100 mb-2" data-bus-entity="trigger/run" data-bus-id="/[gameMode]OverviewLvl[currentLvl]"
+   data-toggle="modal" data-target="#pacient-overview-modal-[gameMode][currentLvl]"><i class="far fa-address-card"></i></button>
+  <div class="modal fade" id="pacient-overview-modal-[gameMode][currentLvl]" tabindex="-1" role="dialog" aria-labelledby="pacient-overview" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -491,7 +501,8 @@
     <h5 class="mb-1 [correctPrognosisColor] rounded">Acertou prognóstico?<br> [correctPrognosis]</h5>
     <h5 class="mb-1 text-center text-dark rounded bg-secondary">[starPoints]</h5>
     <div class="row">
-      <button type="button" class="col btn btn-info w-100 mb-2" onclick="document.location.href='/prognosis/[gameMode]?diffic=[currentLvl]'"><i class="fas fa-play"></i></button>
+      <button type="button" class="col btn btn-info w-100 mb-2" data-bus-entity="case/navigate"
+      data-bus-id="/progn/[currentLvl]" data-action="/prognosis/[gameMode]?diffic=[currentLvl]"><i class="fas fa-play"></i></button>
       [overviewPart]
     </div>
 

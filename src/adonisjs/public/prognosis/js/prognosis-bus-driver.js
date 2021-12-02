@@ -1,6 +1,7 @@
 class PrognosisBusDriver {
   //Controls and verifies message integrity. Ensures URL changes doesn't damage bus messages
   constructor() {
+    this._instanceId = null
     this._lugagge = null
     this._lane = null
     this._storageKey = 'prognosis-bus-storage'
@@ -22,6 +23,7 @@ class PrognosisBusDriver {
   }
 
   async start (){
+    this._instanceId = await this.getInstanceId()
     this._lane = await this.busLaneCheck()
     this._lugagge = await this.verifyLocalStorage(this._storageKey)
     if(this._lugagge != null){
@@ -37,18 +39,48 @@ class PrognosisBusDriver {
         else
           this._currentKnot = this._lugagge.openKnot
         if ((this._currentKnot != this._knotSequence[0])
-        && new URL(document.location).pathname == '/prognosis/learn/player/') {
+        && new URL(document.location).pathname == '/prognosis/learn/player/'
+        || new URL(document.location).pathname.includes('/prognosis/challenge')) {
           MessageBus.progn.publish('knot/navigate/presentation')
         }
       }
     }
   }
+
   async currentCase (){
     if(this._caseId!= null)
       return this._caseId
     else
       return await this.getCaseId()
   }
+
+  generateInstanceID () {
+    function s4 () {
+      return Math.floor((1 + Math.random()) * 0x10000)
+        .toString(16)
+        .substring(1)
+    }
+    const currentDateTime = new Date()
+    return currentDateTime.toJSON() + '-' +
+             s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4()
+  }
+
+  async getInstanceId(){
+    if(sessionStorage.getItem('prognosis-bus-instance-id')
+    && (sessionStorage.getItem('prognosis-bus-instance-id') != null
+    || sessionStorage.getItem('prognosis-bus-instance-id') != '')){
+      return sessionStorage.getItem('prognosis-bus-instance-id')
+    }else{
+      const instance = await this.generateInstanceID()
+      sessionStorage.setItem('prognosis-bus-instance-id', instance)
+      return instance
+    }
+
+  }
+  async delInstanceId(){
+    return sessionStorage.removeItem('prognosis-bus-instance-id')
+  }
+
   async verifyLocalStorage (){
     console.log('============ verifying bus lugagge')
     if(localStorage.getItem(this._storageKey)){
@@ -72,23 +104,40 @@ class PrognosisBusDriver {
     console.log('======================================================================')
     console.log('============ Dispatching...')
     console.log('======================================================================')
-    MessageBus.progn.publish(`progn/summary/${MessageBus.extractLevelsSegment(storedData.openLane, 3)}`,
-      {userId: storedData.userId,
-       laneId: storedData.openLane,
-       trail: storedData.trail})
-    console.log(`========= progn/summary/${MessageBus.extractLevelsSegment(storedData.openLane, 3)}`)
-    console.log(JSON.stringify({userId: storedData.userId,
-     laneId: storedData.openLane,
-     trail: storedData.trail}))
+    // MessageBus.progn.publish(`progn/summary/${MessageBus.extractLevelsSegment(storedData.openLane, 3)}`,
+    //   {userId: storedData.userId,
+    //    laneId: storedData.openLane,
+    //    trail: storedData.trail
+    //  })
+    // console.log(`========= progn/summary/${MessageBus.extractLevelsSegment(storedData.openLane, 3)}`)
+    // console.log(JSON.stringify({userId: storedData.userId,
+    //  laneId: storedData.openLane,
+    //  trail: storedData.trail}))
      console.log('============ deleting localStorage...')
      localStorage.removeItem(this._storageKey)
-     // let logger = await MessageBus.i.request('logger/create/post',
-     //   {
-     //     caseId: MessageBus.extractLevel(storedData.openLane, 3),
-     //     instanceId: MessageBus.extractLevel(topic, 3),
-     //     log: JSON.stringify(message)
-     //   }
-     // )
+     console.log('========== creating logger ==========')
+     let loggerBody = {}
+     if(storedData.lane == 'case'){
+       loggerBody = {
+         caseId: MessageBus.extractLevelsSegment(storedData.openLane,3),
+         instanceId: this._instanceId,
+         log: JSON.stringify(storedData)
+       }
+     }else{
+       loggerBody = {
+         caseId: null,
+         instanceId: this._instanceId,
+         log: JSON.stringify(storedData)
+       }
+     }
+     let logger = await MessageBus.i.request('logger/create/post', loggerBody)
+     if (logger.message.error) {
+       console.log('--- error')
+       console.log(logger.message.error)
+     } else {
+       console.log('=== success ===')
+       console.log(logger.message)
+     }
   }
 
   /*
@@ -153,11 +202,12 @@ class PrognosisBusDriver {
     const storedData = await this.verifyLocalStorage()
     const currentDateTime = new Date()
     if(!storedData.knotTrack){
+      this._knotTrack = []
       this._knotTrack.push({
         knotId: MessageBus.extractLevel(message.topic, 3),
         timeStamp: currentDateTime.toJSON()
        })
-      await this.storeLocalStorage(message)
+      // await this.storeLocalStorage(message)
       let newLuggage = await this.verifyLocalStorage()
       newLuggage.knotTrack = this._knotTrack
       newLuggage.openKnot = this._currentKnot
@@ -171,7 +221,7 @@ class PrognosisBusDriver {
           knotId: MessageBus.extractLevel(message.topic, 3),
           timeStamp: currentDateTime.toJSON()
         })
-        await this.storeLocalStorage(message)
+        // await this.storeLocalStorage(message)
         let newLuggage = await this.verifyLocalStorage()
         newLuggage.knotTrack = this._knotTrack
         newLuggage.openKnot = this._currentKnot
@@ -252,7 +302,8 @@ class PrognosisBusDriver {
     }
 
     const knotManager = await this.knotAcrossURL(this._currentKnot, storedData.openKnot)
-
+    // console.log('============ knot manager')
+    // console.log(knotManager)
 
     this._storedData.push(dump)
     let newLuggage = storedData
@@ -271,19 +322,21 @@ class PrognosisBusDriver {
       lane: 'case',
       timeStamp: newTime.toJSON()
     })
-    if(knotManager.changeURL == true && knotManager.url)
-      document.location.href = knotManager.url
+    if(knotManager.changeURL == true && (knotManager.url || message.url))
+      document.location.href = knotManager.url || message.url
   }
 
   knotAcrossURL(targetKnot, currentKnot){
 
     if((targetKnot == 'presentation' && currentKnot == 'overview')
-    || (targetKnot == 'overview' && currentKnot == 'presentation')){
+    || (targetKnot == 'overview' && currentKnot == 'presentation')
+    || (targetKnot == 'overview' && currentKnot == 'result')
+    || (targetKnot == 'result' && currentKnot == 'overview')){
       return{changeURL:false}
     }else if((targetKnot == 'overview' && currentKnot == 'roulette')){
       return{changeURL:true, changeKnot:true, url:'/prognosis/learn/player/'}
     }else{
-      return{changeURL:true, changeKnot:false}
+      return{changeURL:true, changeKnot:true}
     }
   }
 
@@ -465,6 +518,7 @@ class PrognosisBusDriver {
   async logoutUser (){
     await PrognosisBusDriver.i.storeLocalStorage(await PrognosisBusDriver.i.closeCurrentEntity())
     await PrognosisBusDriver.i.dispatchLuggage()
+    localStorage.removeItem('progn-bus-instance-id')
     console.log('============ luggage sent to manager')
     console.log('============ user ready for logout')
     MessageBus.progn.publish('system/logout/ready')

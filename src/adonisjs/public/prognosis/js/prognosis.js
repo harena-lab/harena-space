@@ -1770,7 +1770,7 @@ class Prognosis {
           this.dataset.action = '/prognosis/learn/progress/'
         }
       }
-      btnNextLvl.addEventListener('click', )
+      btnNextLvl.addEventListener('click', fnBtnNextLvl)
       btnSpin.disabled = false
 
       rouletteAngle = rouletteSVG.transform.animVal[0].angle

@@ -1326,9 +1326,9 @@ class Saps {
     document.querySelector('#pacient-abstract').value = pacientAbstract
     document.querySelector('dcc-submit[bind="submit-prognosis-lvl-txt"]')._computeTrigger()
     $('#pacient-overview-modal').modal('show')
-    console.log('===========================')
-    console.log('============ publishing ===================')
-    console.log('=============================')
+    // console.log('===========================')
+    // console.log('============ publishing ===================')
+    // console.log('=============================')
     MessageBus.progn.publish('knot/navigate/>', {url:'/prognosis/learn/player/'})
 
   }

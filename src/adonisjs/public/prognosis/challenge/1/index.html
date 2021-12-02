@@ -121,6 +121,7 @@
   <dcc-rest id="harena-user-property" bind="harena-user-property"></dcc-rest>
   <dcc-rest id="harena-prognosis-challenge1-lvl" bind="harena-prognosis-challenge1-lvl"></dcc-rest>
   <dcc-rest id="harena-prognosis-challenge1-highest-lvl" bind="harena-prognosis-challenge1-highest-lvl"></dcc-rest>
+  <dcc-rest id="harena-create-logger" bind="harena-create-logger" subscribe="logger/create/post"></dcc-rest>
 
   <!-- Welcome modal start -->
   <div class="modal fade" id="welcome-lvl-modal" tabindex="-1" role="dialog">
@@ -181,12 +182,13 @@
     </div>
   </div>
   <!-- Level result modal start -->
-  <div class="modal fade" id="lvl-result-modal" tabindex="-1" role="dialog" aria-labelledby="pacient-overview" aria-hidden="true">
+  <div class="modal fade" id="lvl-result-modal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="pacient-overview" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">Resultado</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+          data-bus-entity="knot/navigate" data-bus-id="/presentation">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
@@ -209,7 +211,8 @@
                   <h5 id="prognosis-result-accuracy" class="ml-1"></h5>
               </div>
             </div>
-            <button type="button" class="btn btn-info" id="btn-retry">Tentar novamente <i class="fas fa-redo"></i></button>
+            <button type="button" class="btn btn-info" id="btn-retry" data-bus-entity="case/navigate"
+            data-bus-id="/retry" data-action="/prognosis/challenge/1/">Tentar novamente <i class="fas fa-redo"></i></button>
             <button type="button" class="btn btn-success" id="btn-ch1-next-lvl">Próximo nível</button>
 
           </form>
