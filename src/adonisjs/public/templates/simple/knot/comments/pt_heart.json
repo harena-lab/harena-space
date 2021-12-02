@@ -134,6 +134,11 @@
        "title": "Ápex cardíaco ausente",
        "property": "cardiac_apex",
        "value": "not_present"
+      },
+      {
+       "title": "Câmaras desalinhadas",
+       "property": "misaligned_chambers",
+       "value": "yes"
       }
      ]
     },
@@ -192,7 +197,7 @@
        "value": "yes"
       },
       {
-       "title": "Doença valvar grave",
+       "title": "Doença valvar",
        "property": "severe_valvular_disease",
        "value": "yes"
       }
@@ -347,7 +352,7 @@
        "value": "yes"
       },
       {
-       "title": "Doença valvar grave",
+       "title": "Doença valvar",
        "property": "severe_valvular_disease",
        "value": "yes"
       }
@@ -590,6 +595,11 @@
        "title": "Sobrecarga de Ventrículo Direito",
        "property": "right_ventricular_overload",
        "value": "yes"
+      },
+      {
+       "title": "Doença valvar",
+       "property": "severe_valvular_disease",
+       "value": "yes"
       }
      ]
     }
@@ -684,6 +694,11 @@
        "title": "Aorta descendente ausente",
        "property": "descending_aorta",
        "value": "not_present"
+      },
+      {
+       "title": "Câmaras desalinhadas",
+       "property": "misaligned_chambers",
+       "value": "yes"
       }
      ]
     },
@@ -742,7 +757,7 @@
        "value": "yes"
       },
       {
-       "title": "Doença valvar grave",
+       "title": "Doença valvar",
        "property": "severe_valvular_disease",
        "value": "yes"
       }
