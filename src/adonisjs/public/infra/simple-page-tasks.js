@@ -57,7 +57,7 @@ class PageController {
 
     if(new URL(document.location).pathname.includes('/prognosis')){
       this.prognosisGameDropdownMenu()
-      ChallengeProgress.i.prognosisDropdown(document.querySelector('#progn-dropdown-menu > a[href*="prognosis/learn"]'))
+      ChallengeProgress.i.prognosisDropdown(document.querySelector('#progn-dropdown-menu > a[data-action*="/prognosis/learn/"]'))
     }
     this.isPageReady = true
   }
@@ -239,6 +239,11 @@ class PageController {
     let template = document.createElement('template')
     template.innerHTML = PageController.prognosisGameDropdownMenu
     header.insertBefore(template.content.cloneNode(true), header.firstElementChild)
+    let dropdown = document.querySelectorAll('#progn-dropdown-menu a')
+    for (let el of dropdown) {
+      //TEMPORARY FIX (Activate MutationObserver)
+      el.href = '#'
+    }
   }
 }
 (function () {
@@ -256,11 +261,11 @@ class PageController {
       <i class="fas fa-bars"></i>
     </button>
     <div class="dropdown-menu bg-plaster" aria-labelledby="progn-dropdown-menu" id="progn-dropdown-menu">
-      <a class="dropdown-item" href="/prognosis/">Página inicial</a>
+      <a class="dropdown-item" data-bus-entity="section/navigate" data-bus-id="/prognosis/" data-action="/prognosis/">Página inicial</a>
       <div class="dropdown-divider"></div>
-      <a class="dropdown-item" href="/prognosis/learn">Aprendendo Prognóstico</a>
+      <a class="dropdown-item" data-bus-entity="section/navigate" data-bus-id="/prognosis/learn/" data-action="/prognosis/learn/">Aprendendo Prognóstico</a>
       <div class="dropdown-divider"></div>
-      <a class="dropdown-item" href="/prognosis/learn/progress">Lista de fases</a>
+      <a class="dropdown-item" data-bus-entity="section/navigate" data-bus-id="/prognosis/learn/progress/" data-action="/prognosis/learn/progress">Lista de fases</a>
     </div>
   </div>`
 })()

@@ -82,26 +82,34 @@ class ChallengeProgress {
     let ch2 = document.createElement('a')
 
     ch1.classList.add('dropdown-item')
-    ch1.href = '/prognosis/challenge/1'
+    ch1.href = '#'
     ch1.textContent = `Desafio 1`
     dropdownMenu.insertBefore(ch1, childEl.nextElementSibling)
     if (sessionStorage.getItem('ch-one-unlocked') != 'true') {
       let lock = `<i class="fas fa-lock"></i>`
       ch1.classList.add('disabled')
       ch1.innerHTML = `${ch1.textContent} ${lock}`
-    }else
+    }else{
       ch1.innerHTML = `${ch1.textContent} <i class="text-success">(Novo!)</i>`
+      ch1.dataset.busEntity = 'case/navigate'
+      ch1.dataset.busId = '/ch1/current'
+      ch1.dataset.action = '/prognosis/challenge/1/'
+    }
     ch2.classList.add('dropdown-item')
-    ch2.href = '/prognosis/challenge/2'
     ch2.textContent = `Desafio 2`
     dropdownMenu.insertBefore(ch2, ch1.nextElementSibling)
     if (sessionStorage.getItem('ch-two-unlocked') != 'true') {
 
       let lock = `<i class="fas fa-lock"></i>`
       ch2.classList.add('disabled')
+      ch2.href = '#'
       ch2.innerHTML = `${ch2.textContent} ${lock}`
-    }else
+    }else{
       ch2.innerHTML = `${ch2.textContent} <i class="text-success">(Novo!)</i>`
+      ch2.dataset.busEntity = 'case/navigate'
+      ch2.dataset.busId = '/ch2/current'
+      ch2.dataset.action = '/prognosis/challenge/2/'
+    }
   }
 
   async enableChallengeBtn() {

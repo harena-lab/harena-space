@@ -120,25 +120,25 @@ class Saps {
         txtGen['Admissão planejada'] = ' não submetido à cirurgia'
 
       txtReady = Saps.overviewText
-      .replace(/\[_idade\]/ig, txtGen['Idade'])
-      .replace(/\[_origem\]/ig, txtGen['Origem'])
-      .replace(/\[_comorbidade\]/ig, txtGen['Comorbidade'])
-      .replace(/\[_internadoDias\]/ig, txtGen['Internado antes da admissão'])
-      .replace(/\[_ifeccao\]/ig, txtGen['Infectado antes da admissão'])
-      .replace(/\[_admissao\]/ig, txtGen['Admissão planejada'])
-      .replace(/\[_submetidoCirurgia\]/ig, txtGen['Submetido à cirurgia'])
+      .replace(/\[_idade\]/ig, txtGen['Idade'] || '')
+      .replace(/\[_origem\]/ig, txtGen['Origem'] || '')
+      .replace(/\[_comorbidade\]/ig, txtGen['Comorbidade'] || '')
+      .replace(/\[_internadoDias\]/ig, txtGen['Internado antes da admissão'] || '')
+      .replace(/\[_ifeccao\]/ig, txtGen['Infectado antes da admissão'] || '')
+      .replace(/\[_admissao\]/ig, txtGen['Admissão planejada'] || '')
+      .replace(/\[_submetidoCirurgia\]/ig, txtGen['Submetido à cirurgia'] || '')
       .replace(/\[_submetidoUti\]/ig, txtGen['Motivo de admissão na UTI'] ||'')
-      .replace(/\[_gcs\]/ig, txtGen['Escala de Coma de Glasgow'])
-      .replace(/\[_temperatura\]/ig, txtGen['Temperatura'])
-      .replace(/\[_freqCardiaca\]/ig, txtGen['Frequência cardíaca'])
-      .replace(/\[_pressaoSistolica\]/ig, txtGen['Pressão sistólica'])
-      .replace(/\[_drogaVasoativa\]/ig, txtGen['Droga vasoativa'])
-      .replace(/\[_bilirrubina\]/ig, txtGen['Bilirrubina'])
-      .replace(/\[_creatinina\]/ig, txtGen['Creatinina'])
-      .replace(/\[_ph\]/ig, txtGen['pH'])
-      .replace(/\[_leucocitos\]/ig, txtGen['Leucócitos'])
-      .replace(/\[_plaquetas\]/ig, txtGen['Plaquetas'])
-      .replace(/\[_oxigenacao\]/ig, txtGen['Oxigenação'])
+      .replace(/\[_gcs\]/ig, txtGen['Escala de Coma de Glasgow'] || '')
+      .replace(/\[_temperatura\]/ig, txtGen['Temperatura'] || '')
+      .replace(/\[_freqCardiaca\]/ig, txtGen['Frequência cardíaca'] || '')
+      .replace(/\[_pressaoSistolica\]/ig, txtGen['Pressão sistólica'] || '')
+      .replace(/\[_drogaVasoativa\]/ig, txtGen['Droga vasoativa'] || '')
+      .replace(/\[_bilirrubina\]/ig, txtGen['Bilirrubina'] || '')
+      .replace(/\[_creatinina\]/ig, txtGen['Creatinina'] || '')
+      .replace(/\[_ph\]/ig, txtGen['pH'] || '')
+      .replace(/\[_leucocitos\]/ig, txtGen['Leucócitos'] || '')
+      .replace(/\[_plaquetas\]/ig, txtGen['Plaquetas'] || '')
+      .replace(/\[_oxigenacao\]/ig, txtGen['Oxigenação'] || '')
     }
     else if(type == 'abstract') {
       for (let i = 0; i < keys.length; i++) {
@@ -1187,7 +1187,7 @@ class Saps {
     }
     if(document.querySelector('#saps-survival')){
       document.querySelector('#saps-survival').value = round((100 - mortalityPercentage),1)
-      MessageBus.i.publish('var/sapsCalc/set', round((100 - mortalityPercentage),1), false)
+      MessageBus.i.publish('var/set/sapsCalc', round((100 - mortalityPercentage),1), false)
     }
 
     $('#saps-result-modal').modal('show')
@@ -1326,6 +1326,10 @@ class Saps {
     document.querySelector('#pacient-abstract').value = pacientAbstract
     document.querySelector('dcc-submit[bind="submit-prognosis-lvl-txt"]')._computeTrigger()
     $('#pacient-overview-modal').modal('show')
+    console.log('===========================')
+    console.log('============ publishing ===================')
+    console.log('=============================')
+    MessageBus.progn.publish('knot/navigate/>', {url:'/prognosis/learn/player/'})
 
   }
 

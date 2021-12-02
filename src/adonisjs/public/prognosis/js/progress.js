@@ -276,6 +276,12 @@
                                         .replace(/\[currentLvl\]/ig, i)
                                         .replace(/\[pacientOverviewTxt\]/ig, overviewTxt))
       progressWrapper.appendChild(template.content.cloneNode(true))
+
+    }
+    const prognBusList = document.querySelectorAll('#progn-lvl-progress-wrapper [data-bus-entity]')
+    for (let el of prognBusList) {
+      //TEMPORARY FIX - Generate change for MutationObserver
+      el.classList.add('bus')
     }
 
     // lastAvailable(progressWrapper, highestLvl)
@@ -446,7 +452,8 @@
 (function() {
   PrognosisProgress.i = new PrognosisProgress()
   PrognosisProgress.overviewTxt = `
-  <button type="button" class="col-3 btn btn-warning w-100 mb-2" data-toggle="modal" data-target="#pacient-overview-modal-[currentLvl]"><i class="far fa-address-card"></i></button>
+  <button type="button" class="col-3 btn btn-warning w-100 mb-2" data-bus-entity="trigger/run" data-bus-id="/prognOverviewLvl[currentLvl]"
+   data-toggle="modal" data-target="#pacient-overview-modal-[currentLvl]"><i class="far fa-address-card"></i></button>
   <div class="modal fade" id="pacient-overview-modal-[currentLvl]" tabindex="-1" role="dialog" aria-labelledby="pacient-overview" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
@@ -470,7 +477,8 @@
     <h5 class="mb-1 [bestPacientColor] rounded">Criou o melhor cenário possível?<br> [bestPacient]</h5>
     <h5 class="mb-1 text-center text-dark rounded bg-secondary">[starPoints]</h5>
     <div class="row">
-      <button type="button" class="col btn btn-info w-100 mb-2" onclick="document.location.href='/prognosis/learn/player?diffic=[currentLvl]'"><i class="fas fa-play"></i></button>
+      <button type="button" class="col btn btn-info w-100 mb-2" data-bus-entity="case/navigate"
+      data-bus-id="/progn/[currentLvl]" data-action="/prognosis/learn/player?diffic=[currentLvl]"><i class="fas fa-play"></i></button>
       [overviewPart]
     </div>
 

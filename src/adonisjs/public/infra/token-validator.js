@@ -32,6 +32,7 @@ class TokenController {
             sessionStorage.setItem('harena-user-grade', endpointResponse.data.grade)
             sessionStorage.setItem('harena-user-institution', endpointResponse.data.institution)
             sessionStorage.setItem('harena-user-institution-id', endpointResponse.data.institutionId)
+            sessionStorage.setItem('harena-user-id', endpointResponse.data.userId)
             // localStorage.setItem('harena-user-grade', endpointResponse.data.grade)
             // localStorage.setItem('harena-user-institution', endpointResponse.data.institution)
             // localStorage.setItem('harena-user-institution-id', endpointResponse.data.institutionId)

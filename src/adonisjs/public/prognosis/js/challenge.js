@@ -6,7 +6,7 @@ class Challenge {
     this.challengePacient = this.challengePacient.bind(this)
     this.getSapsCalc = this.getSapsCalc.bind(this)
     this._prognTarget = false
-    MessageBus.i.subscribe('var/sapsCalc/set', this.getSapsCalc)
+    MessageBus.i.subscribe('var/set/sapsCalc', this.getSapsCalc)
     MessageBus.i.subscribe('prognosis/current/pacient', this.challengePacient)
 
     MessageBus.i.subscribe('control/dhtml/ready', this.preStart)
@@ -73,12 +73,12 @@ class Challenge {
      }
      nextStep.addEventListener('click', fnNextStep)
 
-     const createPacientBtn =  document.querySelector('#btn-create-challenge-one')
-     const fnCreatePacientBtn = function (){
-       if(this.form.checkValidity())
-       Saps.i.calcSaps3Score(this.form)
-     }
-     createPacientBtn.addEventListener('click', fnCreatePacientBtn)
+     // const createPacientBtn =  document.querySelector('#btn-create-challenge-one')
+     // const fnCreatePacientBtn = function (){
+     //   if(this.form.checkValidity())
+     //   Saps.i.calcSaps3Score(this.form)
+     // }
+     // createPacientBtn.addEventListener('click', fnCreatePacientBtn)
 
      const nextLvl = document.querySelector('#btn-ch1-next-lvl')
      const fnNextLvl = function (){

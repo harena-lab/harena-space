@@ -70,6 +70,17 @@
     'submit-logout',
     'dcc-submit',
     {
+      pre: async function (message, form, schema) {
+        if(MessageBus.progn && MessageBus.progn.hasSubscriber('user/#')){
+          // console.log('============ if logout')
+          MessageBus.progn.publish(`user/logout/${sessionStorage.getItem('harena-user-id')}`)
+          await MessageBus.progn.waitMessage('system/logout/ready')
+          return true
+        }else{
+          // console.log('============ esle logout')
+          return true
+        }
+      },
       pos: function (response) {
         // console.log(response)
         window.location.href = '/'
@@ -405,7 +416,11 @@
         }
       },
       pos: async function (response) {
-        const sapsCalc = document.querySelector('#prognosis-survival-pacient').dataset.value
+        let sapsCalc
+        if(new URL(document.location).searchParams.get('calc'))
+          sapsCalc = new URL(document.location).searchParams.get('calc')
+        else
+         sapsCalc = document.querySelector('#prognosis-survival-pacient').dataset.value
         if(document.querySelector(`dcc-submit[bind="submit-prognosis-lvl-progn"][connect$="/post"]`)){
           document.querySelector(`dcc-submit[bind="submit-prognosis-lvl-progn"][connect$="/post"]`).remove()
           if(response['harena-user-property'].userProperty.value < parseFloat(sapsCalc)){

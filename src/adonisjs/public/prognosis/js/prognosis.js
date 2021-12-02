@@ -43,7 +43,8 @@ class Prognosis {
       const nextStep =  document.querySelector('#btn-next-step')
       const fnNextStep = function (){
         if(this.form.checkValidity()){
-          window.location.href = `/prognosis/learn/player/result?calc=${this.form.querySelector('#saps-survival').value}&playerCalc=${this.form.querySelector('#player-survival-rate').value}`
+          MessageBus.progn.publish('knot/navigate/>', {url: `/prognosis/learn/player/result?calc=${this.form.querySelector('#saps-survival').value}&playerCalc=${this.form.querySelector('#player-survival-rate').value}`})
+          // window.location.href = `/prognosis/learn/player/result?calc=${this.form.querySelector('#saps-survival').value}&playerCalc=${this.form.querySelector('#player-survival-rate').value}`
         }
         // console.log(this.form.querySelector('#saps-survival').value)
         // console.log(this.form.querySelector('#player-survival-rate').value)
@@ -82,7 +83,7 @@ class Prognosis {
         const createPacientBtn =  document.querySelector('#btn-create-challenge-one')
         const fnCreatePacientBtn = function (){
           if(this.form.checkValidity())
-          Saps.i.calcSaps3Score(this.form)
+            Saps.i.calcSaps3Score(this.form)
         }
         createPacientBtn.addEventListener('click', fnCreatePacientBtn)
 
@@ -127,9 +128,9 @@ class Prognosis {
     // }
     if (new URL(document.location).pathname.includes('/learn/player/result')){
       const retryLvl = document.querySelector('#btn-retry')
-      retryLvl.addEventListener('click', function(){
-        window.location.href = `/prognosis/learn/player/?diffic=${localStorage.getItem('prognosis-current-lvl')}`
-      })
+      // retryLvl.addEventListener('click', function(){
+      //   window.location.href = `/prognosis/learn/player/?diffic=${localStorage.getItem('prognosis-current-lvl')}`
+      // })
       for (var elem of document.querySelectorAll('input')) {
         elem.checked = false
       }
@@ -143,7 +144,10 @@ class Prognosis {
       if(currentLvl.value != '' || (localStorage.getItem('prognosis-current-lvl')
       && localStorage.getItem('prognosis-current-lvl') > 0)){
         btnProgress.classList.remove('d-none')
-        btnContinue.setAttribute('onclick', 'location.href="/prognosis/learn/player"')
+        // btnContinue.setAttribute('onclick', 'location.href="/prognosis/learn/player"')
+        btnContinue.dataset.busEntity = 'case/navigate'
+        btnContinue.dataset.busId = '/continue'
+        btnContinue.dataset.action = '/prognosis/learn/player/'
         btnContinue.textContent = 'Continuar'
       }
     }
@@ -478,6 +482,7 @@ class Prognosis {
           localStorage.setItem(strLocalStorageCurrentLvl, pacientInfo.pacients[0].dificuldade)
           localStorage.setItem(strLocalStorageHighestLvl, pacientInfo.pacients[0].dificuldade)
     }
+    MessageBus.progn.publish('case/get/currentLvl', localStorage.getItem(strLocalStorageCurrentLvl))
     if (new URL(document.location).pathname.includes('learn/player')) {
 
       if(document.querySelector('#welcome-lvl-modal') && (localStorage.getItem(strLocalStorageCurrentLvl) == 1
@@ -1662,6 +1667,7 @@ class Prognosis {
 
     var numbers = document.querySelectorAll('.roulette-number')
     const availableN = Math.round(sapsCalc/10)
+    //Selected numbers roulette array
     var selectedN = []
     if (numbers) {
       var fnSelectNum = function (){
@@ -1697,6 +1703,7 @@ class Prognosis {
       const fnBtnSpin = function (){
         const sapsCalc = new URL(document.location).searchParams.get('calc')
         if(availableN == selectedN.length){
+          MessageBus.progn.publish('trigger/run/roulette/spinRoulette')
           this.disabled = true
           Prognosis.i.spinRoulette(selectedN)
           document.querySelector('#roulette-invalid').classList.add('d-none')
@@ -1739,25 +1746,31 @@ class Prognosis {
     rouletteSVG.parentElement.classList.add('no-pointer')
 
     function getRandomInt(min, max) {
-      min = Math.ceil(min);
-      max = Math.floor(max);
-      return Math.floor(Math.random() * (max - min)) + min;
+      min = Math.ceil(min)
+      max = Math.floor(max)
+      MessageBus.progn.publish('compute/random/roulette/angle', (Math.floor(Math.random() * (max - min)) + min))
+      return Math.floor(Math.random() * (max - min)) + min
     }
     const fnEndSpin = function(){
       const btnNextLvl = document.querySelector('#btn-next-lvl')
       btnNextLvl.classList.remove('d-none')
       if(parseInt(localStorage.getItem('prognosis-current-lvl')) == 10)
         btnNextLvl.innerHTML = 'Voltar para lista'
-      btnNextLvl.addEventListener('click', function (){
+      const fnBtnNextLvl = function (){
         let nextLvl = parseInt(localStorage.getItem('prognosis-current-lvl'))+1
         if(nextLvl>10)
           nextLvl = 10
-        if(nextLvl<10)
-          document.location.href = '/prognosis/learn/player/?diffic=' + nextLvl
-        else{
-          document.location.href = '/prognosis/learn/progress'
+        if(nextLvl<10){
+          this.dataset.busEntity = 'case/navigate'
+          this.dataset.busId = '/>'
+          this.dataset.action = `/prognosis/learn/player/?diffic=${nextLvl}`
+        }else{
+          this.dataset.busEntity = 'section/navigate'
+          this.dataset.busId = '/prognosis/learn/progress/'
+          this.dataset.action = '/prognosis/learn/progress/'
         }
-      })
+      }
+      btnNextLvl.addEventListener('click', )
       btnSpin.disabled = false
 
       rouletteAngle = rouletteSVG.transform.animVal[0].angle
@@ -1804,7 +1817,8 @@ class Prognosis {
         selectedEl.querySelector('path').setAttribute('fill','#9f0202')
         if(!document.querySelector('#roulette-result'))
           wrapper.insertBefore(resultTxt, document.querySelector('#svg-wrapper').nextSibling)
-
+        MessageBus.progn.publish('var/set/roulette/spinNumber', angleToNum)
+        MessageBus.progn.publish('var/set/roulette/rouletteNSelected', selectedN)
       }
     }
     if(!btnSpin.dataset.roulette == false){

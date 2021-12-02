@@ -22,6 +22,8 @@
   <script src="/infra/simple-page-tasks.js"></script>
   <script src="/infra/token-validator.js"></script>
   <script src="/infra/conditional-layout.js"></script>
+  <script src="/prognosis/js/prognosis-bus.js"></script>
+  <script src="/prognosis/js/prognosis-bus-driver.js"></script>
 
   <script>
     Basic.service.rootPath = '../../../'
@@ -145,7 +147,8 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">Resumo do paciente</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" data-bus-entity="knot/navigate"
+          data-bus-id="/<">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
@@ -156,15 +159,17 @@
             </div>
             <div class="form-group mt-5">
               <label for="txtGeneral">Na sua opinião, qual a chance (0 a 100) desse paciente sobreviver a essa internação?</label>
-              <input type="range" value="0" min="0" max="100" step="5" class="form-control" id="player-survival-rate" required>
+              <input type="range" value="0" min="0" max="100" step="5" class="form-control" id="player-survival-rate"
+              data-bus-entity="var/set" data-bus-id="overview/playerPrognGuess" required>
               <h4 id="player-survival-rate-txt"></h4>
 
             </div>
-            <input type="hidden" name="saps-survival" id="saps-survival" value="">
-            <input type="hidden" id="pacient-abstract" value="">
+            <input type="hidden" name="saps-survival" id="saps-survival" data-bus-entity="var/set" data-bus-id="presentation/sapsCalc" value="">
+            <input type="hidden" id="pacient-abstract" data-bus-entity="var/set" data-bus-id="presentation/pacientAbstract" value="" >
             <input type="hidden" id="pacient-perfect" value="">
             <button type="submit" class="btn btn-success" id="btn-next-step">Próximo passo</button>
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" data-bus-entity="knot/navigate"
+            data-bus-id="/<">Cancelar</button>
             <dcc-submit xstyle="d-none" bind="submit-prognosis-lvl-txt"
              connect="submit:harena-user-property:service/request/post"></dcc-submit>
            <dcc-submit xstyle="d-none" bind="submit-prognosis-lvl-txt"
@@ -275,11 +280,11 @@
   </div>
   </main>
 
-  <dcc-dhtml id="harena-dhtml-prognosis-current-lvl" connect="retrieve:harena-prognosis-challenge2-lvl:service/request/get">
+  <dcc-dhtml id="harena-dhtml-prognosis-current-lvl" connect="retrieve:harena-prognosis-challenge1-lvl:service/request/get">
     <input type="hidden" name="{{userProperty.0.title}}" id="current-lvl" value="{{userProperty.0.value}}">
   </dcc-dhtml>
 
-  <dcc-dhtml id="harena-dhtml-prognosis-heighest-lvl" connect="retrieve:harena-prognosis-challenge2-highest-lvl:service/request/get">
+  <dcc-dhtml id="harena-dhtml-prognosis-heighest-lvl" connect="retrieve:harena-prognosis-challenge1-highest-lvl:service/request/get">
     <input type="hidden" name="{{userProperty.0.title}}" id="highest-lvl" value="{{userProperty.0.value}}">
   </dcc-dhtml>
 
