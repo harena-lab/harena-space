@@ -2215,9 +2215,11 @@ class Translator {
         if (typeof obj.options[op] === 'string') {
           choice = choice.replace('[target]', '')
                          .replace('[value]', 'value="' + obj.options[op] + '"')
+                         .replace('[compute]', '')
         } else if (typeof obj.options[op] === 'boolean') {
           choice = choice.replace('[target]', '')
                          .replace('[value]', 'value="' + op + '"')
+                         .replace('[compute]', '')
         } else {
           choice = choice.replace('[target]',
             ((obj.options[op].contextTarget == null) ? '' :

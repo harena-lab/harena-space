@@ -138,8 +138,8 @@
       },
       {
        "title": "Aquisição instável",
-       "property": "acquisition",
-       "value": "unstable"
+       "property": "acquisition_unstable",
+       "value": "yes"
       }
      ]
     },
@@ -149,8 +149,8 @@
      "comments": [
       {
        "title": "Aquisição inconclusiva",
-       "property": "acquisition",
-       "value": "inconclusive"
+       "property": "acquisition_inconclusive",
+       "value": "yes"
       },
       {
        "title": "Ausência de deslizamento pleural",
@@ -259,8 +259,8 @@
       },
       {
        "title": "Aquisição instável",
-       "property": "acquisition",
-       "value": "unstable"
+       "property": "acquisition_unstable",
+       "value": "yes"
       }
      ]
     },
@@ -270,8 +270,8 @@
      "comments": [
       {
        "title": "Aquisição inconclusiva",
-       "property": "acquisition",
-       "value": "inconclusive"
+       "property": "acquisition_inconclusive",
+       "value": "yes"
       },
       {
        "title": "Ausência de deslizamento pleural",
@@ -380,8 +380,8 @@
       },
       {
        "title": "Aquisição instável",
-       "property": "acquisition",
-       "value": "unstable"
+       "property": "acquisition_unstable",
+       "value": "yes"
       }
      ]
     },
@@ -391,8 +391,8 @@
      "comments": [
       {
        "title": "Aquisição inconclusiva",
-       "property": "acquisition",
-       "value": "inconclusive"
+       "property": "acquisition_inconclusive",
+       "value": "yes"
       },
       {
        "title": "Apenas artefato de espalhamento",
@@ -576,8 +576,8 @@
       },
       {
        "title": "Aquisição instável",
-       "property": "acquisition",
-       "value": "unstable"
+       "property": "acquisition_unstable",
+       "value": "yes"
       }
      ]
     },
@@ -587,8 +587,8 @@
      "comments": [
       {
        "title": "Aquisição inconclusiva",
-       "property": "acquisition",
-       "value": "inconclusive"
+       "property": "acquisition_inconclusive",
+       "value": "yes"
       },
       {
        "title": "Apenas artefato de espalhamento",
@@ -772,8 +772,8 @@
       },
       {
        "title": "Aquisição instável",
-       "property": "acquisition",
-       "value": "unstable"
+       "property": "acquisition_unstable",
+       "value": "yes"
       }
      ]
     },
@@ -783,8 +783,8 @@
      "comments": [
       {
        "title": "Aquisição inconclusiva",
-       "property": "acquisition",
-       "value": "inconclusive"
+       "property": "acquisition_inconclusive",
+       "value": "yes"
       },
       {
        "title": "Apenas artefato de espalhamento",
@@ -968,8 +968,8 @@
       },
       {
        "title": "Aquisição instável",
-       "property": "acquisition",
-       "value": "unstable"
+       "property": "acquisition_unstable",
+       "value": "yes"
       }
      ]
     },
@@ -979,8 +979,8 @@
      "comments": [
       {
        "title": "Aquisição inconclusiva",
-       "property": "acquisition",
-       "value": "inconclusive"
+       "property": "acquisition_inconclusive",
+       "value": "yes"
       },
       {
        "title": "Apenas artefato de espalhamento",
@@ -1169,8 +1169,8 @@
       },
       {
        "title": "Aquisição instável",
-       "property": "acquisition",
-       "value": "unstable"
+       "property": "acquisition_unstable",
+       "value": "yes"
       }
      ]
     },
@@ -1180,17 +1180,7 @@
      "comments": [
       {
        "title": "Aquisição inconclusiva",
-       "property": "acquisition",
-       "value": "inconclusive"
-      },
-      {
-       "title": "Apenas artefato de espalhamento",
-       "property": "scattering_artifact_only",
-       "value": "yes"
-      },
-      {
-       "title": "Linhas A apenas",
-       "property": "a_lines_only",
+       "property": "acquisition_inconclusive",
        "value": "yes"
       },
       {
@@ -1365,8 +1355,8 @@
       },
       {
        "title": "Aquisição instável",
-       "property": "acquisition",
-       "value": "unstable"
+       "property": "acquisition_unstable",
+       "value": "yes"
       }
      ]
     },
@@ -1376,8 +1366,8 @@
      "comments": [
       {
        "title": "Aquisição inconclusiva",
-       "property": "acquisition",
-       "value": "inconclusive"
+       "property": "acquisition_inconclusive",
+       "value": "yes"
       },
       {
        "title": "Apenas artefato de espalhamento",
@@ -1561,8 +1551,8 @@
       },
       {
        "title": "Aquisição instável",
-       "property": "acquisition",
-       "value": "unstable"
+       "property": "acquisition_unstable",
+       "value": "yes"
       }
      ]
     },
@@ -1572,8 +1562,8 @@
      "comments": [
       {
        "title": "Aquisição inconclusiva",
-       "property": "acquisition",
-       "value": "inconclusive"
+       "property": "acquisition_inconclusive",
+       "value": "yes"
       },
       {
        "title": "Apenas artefato de espalhamento",
@@ -1757,8 +1747,8 @@
       },
       {
        "title": "Aquisição instável",
-       "property": "acquisition",
-       "value": "unstable"
+       "property": "acquisition_unstable",
+       "value": "yes"
       }
      ]
     },
@@ -1768,8 +1758,8 @@
      "comments": [
       {
        "title": "Aquisição inconclusiva",
-       "property": "acquisition",
-       "value": "inconclusive"
+       "property": "acquisition_inconclusive",
+       "value": "yes"
       },
       {
        "title": "Apenas artefato de espalhamento",
@@ -1953,8 +1943,8 @@
       },
       {
        "title": "Aquisição instável",
-       "property": "acquisition",
-       "value": "unstable"
+       "property": "acquisition_unstable",
+       "value": "yes"
       }
      ]
     },
@@ -1964,8 +1954,8 @@
      "comments": [
       {
        "title": "Aquisição inconclusiva",
-       "property": "acquisition",
-       "value": "inconclusive"
+       "property": "acquisition_inconclusive",
+       "value": "yes"
       },
       {
        "title": "Apenas artefato de espalhamento",
@@ -2154,8 +2144,8 @@
       },
       {
        "title": "Aquisição instável",
-       "property": "acquisition",
-       "value": "unstable"
+       "property": "acquisition_unstable",
+       "value": "yes"
       }
      ]
     },
@@ -2165,17 +2155,7 @@
      "comments": [
       {
        "title": "Aquisição inconclusiva",
-       "property": "acquisition",
-       "value": "inconclusive"
-      },
-      {
-       "title": "Apenas artefato de espalhamento",
-       "property": "scattering_artifact_only",
-       "value": "yes"
-      },
-      {
-       "title": "Linhas A apenas",
-       "property": "a_lines_only",
+       "property": "acquisition_inconclusive",
        "value": "yes"
       },
       {
@@ -2350,8 +2330,8 @@
       },
       {
        "title": "Aquisição instável",
-       "property": "acquisition",
-       "value": "unstable"
+       "property": "acquisition_unstable",
+       "value": "yes"
       }
      ]
     },
@@ -2361,8 +2341,8 @@
      "comments": [
       {
        "title": "Aquisição inconclusiva",
-       "property": "acquisition",
-       "value": "inconclusive"
+       "property": "acquisition_inconclusive",
+       "value": "yes"
       },
       {
        "title": "Apenas artefato de espalhamento",
@@ -2546,8 +2526,8 @@
       },
       {
        "title": "Aquisição instável",
-       "property": "acquisition",
-       "value": "unstable"
+       "property": "acquisition_unstable",
+       "value": "yes"
       }
      ]
     },
@@ -2557,8 +2537,8 @@
      "comments": [
       {
        "title": "Aquisição inconclusiva",
-       "property": "acquisition",
-       "value": "inconclusive"
+       "property": "acquisition_inconclusive",
+       "value": "yes"
       },
       {
        "title": "Apenas artefato de espalhamento",
@@ -2742,8 +2722,8 @@
       },
       {
        "title": "Aquisição instável",
-       "property": "acquisition",
-       "value": "unstable"
+       "property": "acquisition_unstable",
+       "value": "yes"
       }
      ]
     },
@@ -2753,8 +2733,8 @@
      "comments": [
       {
        "title": "Aquisição inconclusiva",
-       "property": "acquisition",
-       "value": "inconclusive"
+       "property": "acquisition_inconclusive",
+       "value": "yes"
       },
       {
        "title": "Apenas artefato de espalhamento",
@@ -2938,8 +2918,8 @@
       },
       {
        "title": "Aquisição instável",
-       "property": "acquisition",
-       "value": "unstable"
+       "property": "acquisition_unstable",
+       "value": "yes"
       }
      ]
     },
@@ -2949,8 +2929,8 @@
      "comments": [
       {
        "title": "Aquisição inconclusiva",
-       "property": "acquisition",
-       "value": "inconclusive"
+       "property": "acquisition_inconclusive",
+       "value": "yes"
       },
       {
        "title": "Apenas artefato de espalhamento",
