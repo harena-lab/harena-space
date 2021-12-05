@@ -382,6 +382,7 @@
         .replace(/\[gameMode\]/ig, 'challenge/1')
         .replace(/\[containerColor\]/ig, 'bg-dark')
         .replace(/\[currentLvl\]/ig, i)
+        .replace(/\[gameModeAbbr\]/ig, 'ch1')
         .replace(/\[progress\]/ig, lvlCompleted?'Completo':'Em aberto')
         .replace(/\[progressColor\]/ig, lvlCompleted?successColor:'bg-warning text-dark')
         .replace(/\[pacientOverviewTxt\]/ig, overviewTxt)
@@ -443,6 +444,7 @@
         .replace(/\[gameMode\]/ig, 'challenge/2')
         .replace(/\[containerColor\]/ig, 'bg-dark')
         .replace(/\[currentLvl\]/ig, i)
+        .replace(/\[gameModeAbbr\]/ig, 'ch2')
         .replace(/\[progress\]/ig, lvlCompleted?'Completo':'Em aberto')
         .replace(/\[progressColor\]/ig, lvlCompleted?successColor:'bg-warning text-dark')
         .replace(/\[pacientOverviewTxt\]/ig, overviewTxt)
@@ -481,12 +483,12 @@
   </div>`
   PrognosisProgress.lvlContainer = `
   <div class="progn-lvl-progress col-lg-3 col-md-5 col-12 m-1 pt-2 [containerColor] border border-light rounded">
-    <h5 class="mb-1 text-secondary" style="color:#808080; font-weight: bold;">Dificuldade: [currentLvl]</h5>
+    <h5 class="mb-1 text-light" style="color:#808080; font-weight: bold;">Dificuldade: [currentLvl]</h5>
     <h5 class="mb-1 [progressColor] rounded">Progresso: [progress]</h5>
     <h5 class="mb-1 [correctPrognosisColor] rounded">Acertou prognóstico?<br> [correctPrognosis]</h5>
     <h5 class="mb-1 [bestPacientColor] rounded">Criou o melhor cenário possível?<br> [bestPacient]</h5>
     <h5 class="mb-1 text-center text-dark rounded bg-secondary">[starPoints]</h5>
-    <div class="row">
+    <div class="row px-3">
       <button type="button" class="col btn btn-info w-100 mb-2" data-bus-entity="case/navigate"
       data-bus-id="/progn/[currentLvl]" data-action="/prognosis/learn/player?diffic=[currentLvl]"><i class="fas fa-play"></i></button>
       [overviewPart]
@@ -496,13 +498,13 @@
   `
   PrognosisProgress.chLvlContainer = `
   <div class="progn-lvl-progress col-lg-3 col-md-5 col-12 m-1 pt-2 [containerColor] border border-light rounded">
-    <h5 class="mb-1 text-secondary" style="color:#808080; font-weight: bold;">Dificuldade: [currentLvl]</h5>
+    <h5 class="mb-1 text-light" style="color:#808080; font-weight: bold;">Dificuldade: [currentLvl]</h5>
     <h5 class="mb-1 [progressColor] rounded">Progresso: [progress]</h5>
     <h5 class="mb-1 [correctPrognosisColor] rounded">Acertou prognóstico?<br> [correctPrognosis]</h5>
     <h5 class="mb-1 text-center text-dark rounded bg-secondary">[starPoints]</h5>
-    <div class="row">
+    <div class="row px-3">
       <button type="button" class="col btn btn-info w-100 mb-2" data-bus-entity="case/navigate"
-      data-bus-id="/progn/[currentLvl]" data-action="/prognosis/[gameMode]?diffic=[currentLvl]"><i class="fas fa-play"></i></button>
+      data-bus-id="/[gameModeAbbr]/[currentLvl]" data-action="/prognosis/[gameMode]?diffic=[currentLvl]"><i class="fas fa-play"></i></button>
       [overviewPart]
     </div>
 

@@ -68,7 +68,8 @@ class LayoutController {
 
   }
   async prognosisAvatar (){
-    if(new URL(document.location).pathname.includes('/prognosis')){
+    if(new URL(document.location).pathname.includes('/prognosis')
+    && !new URL(document.location).pathname.includes('/prognosis/creation')){
       if(!PrognosisAvatar.i._avatarSet)
        PrognosisAvatar.i._avatarSet = await PrognosisAvatar.i.avatarSet()
       if (PrognosisAvatar.i._avatarSet != false) {

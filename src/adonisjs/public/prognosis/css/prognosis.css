@@ -260,3 +260,10 @@ color: #c1434f !important;
 .txt-progn-light{
   color: #bbb;
 }
+.disable-children-events *{
+  pointer-events: none;
+}
+
+.bg-progn-blue{
+  background-color: #6588a8 !important;
+}

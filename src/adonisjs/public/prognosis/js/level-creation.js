@@ -6,6 +6,7 @@ class LevelCreationTool {
   }
 
   async preStart(){
+
     MessageBus.i.unsubscribe('control/html/ready', this.preStart)
     this.start()
   }
@@ -197,7 +198,7 @@ class LevelCreationTool {
   }
 
   async start(){
-
+    $('#btn-popover').popover()
     const navSelection = document.querySelector('#creation-selection-tab').querySelectorAll('.nav-link')
     const fnCascadeListener = function(event){
       const cascadeCheck = document.querySelector(`#chck-cascade-option`)
@@ -576,21 +577,111 @@ class LevelCreationTool {
 }*/
 
   async dragStartHandler (ev){
-    console.log("dragStart: dropEffect = " + ev.dataTransfer.dropEffect + " ; effectAllowed = " + ev.dataTransfer.effectAllowed);
-    ev.dataTransfer.setData("text", ev.target.id);
-    ev.dataTransfer.effectAllowed = "move";
+    // console.log("dragStart: dropEffect = " + ev.dataTransfer.dropEffect + " ; effectAllowed = " + ev.dataTransfer.effectAllowed);
+    // console.log('============ currentTarget')
+    // console.log(ev)
+    ev.dataTransfer.clearData()
+    ev.dataTransfer.setData("text", ev.target.id)
+    ev.dataTransfer.effectAllowed = "move"
+    ev.target.style.opacity = .5
+  }
+
+  async dragOverHandler(ev) {
+    // console.log("dragOver: dropEffect = " + ev.dataTransfer.dropEffect + " ; effectAllowed = " + ev.dataTransfer.effectAllowed)
+    ev.preventDefault()
+    // Set the dropEffect to move
+    ev.dataTransfer.dropEffect = "move"
+  }
+
+  async dragEndHandler (ev) {
+    ev.preventDefault()
+    // console.log("dragEnd: dropEffect = " + ev.dataTransfer.dropEffect + " ; effectAllowed = " + ev.dataTransfer.effectAllowed)
+    // console.log('============ target')
+    // console.log(ev.target)
+    // console.log('============ currentTarget')
+    // console.log(ev.currentTarget)
+    // console.log(ev)
+    // let objData = document.querySelector(`#${data}`)
+    ev.target.style.opacity = ''
+    ev.currentTarget.classList.remove('disable-children-events')
+    if(ev.currentTarget.querySelector('#phantom-div'))
+      ev.currentTarget.querySelector('#phantom-div').remove()
+  }
+
+  async dragEnterHandler (ev) {
+    ev.preventDefault()
+    // console.log("dragEnter: dropEffect = " + ev.dataTransfer.dropEffect + " ; effectAllowed = " + ev.dataTransfer.effectAllowed)
+    // console.log('============ target')
+    // console.log(ev.target)
+    // console.log('============ current target')
+    // console.log(ev.currentTarget)
+    // console.log('============ original target')
+    // console.log(ev.originalTarget)
+    let data = ev.dataTransfer.getData("text")
+    let objData = document.querySelector(`#${data}`)
+    if ((ev.target.id == 'creation-container' || ev.currentTarget.id == 'creation-container')
+    && !ev.currentTarget.querySelector('#phantom-div')) {
+      if(!objData.classList.contains('drag-option-built')){
+        ev.currentTarget.classList.add('disable-children-events')
+        let phantomDiv = document.createElement('div')
+        phantomDiv.classList.add('bg-success','rounded', 'py-3')
+        phantomDiv.id = 'phantom-div'
+        phantomDiv.style.opacity='0.7'
+        ev.currentTarget.appendChild(phantomDiv)
+      }
+    }
+    if(ev.currentTarget.classList.contains('pacient-info-values')){
+      // console.log('============ dropping options')
+      let data = ev.dataTransfer.getData("text")
+      let objData = document.querySelector(`#${data}`)
+      if(objData.classList.contains('drag-option-built') && !ev.currentTarget.querySelector('#phantom-div')){
+        // console.log('============ options were built: can drop')
+        ev.currentTarget.classList.add('disable-children-events')
+        let phantomDiv = document.createElement('div')
+        phantomDiv.classList.add('bg-success','rounded', 'py-3')
+        phantomDiv.id = 'phantom-div'
+        phantomDiv.style.opacity='0.7'
+        ev.currentTarget.appendChild(phantomDiv)
+      }
+    }
+  }
+
+  async dragLeaveHandler (ev) {
+    ev.preventDefault()
+    // console.log("dragLeave: dropEffect = " + ev.dataTransfer.dropEffect + " ; effectAllowed = " + ev.dataTransfer.effectAllowed)
+    // console.log('============ target')
+    // console.log(ev.target)
+    // console.log('============ currentTarget')
+    // console.log(ev.currentTarget)
+    // console.log('============ original target')
+    // console.log(ev.originalTarget)
+    if (ev.currentTarget.id == 'creation-container' && ev.currentTarget.querySelector('#phantom-div')) {
+      if(ev.originalTarget.id != '#phantom-div')
+        ev.currentTarget.querySelector('#phantom-div').remove()
+    }
+    if(ev.currentTarget.classList.contains('pacient-info-values')){
+      if(ev.currentTarget.querySelector('#phantom-div'))
+        ev.currentTarget.querySelector('#phantom-div').remove()
+    }
+    // if(ev.target.id == 'phantom-div')
+    //   ev.target.remove()
   }
 
   async dropHandler(ev) {
     console.log("drop: dropEffect = " + ev.dataTransfer.dropEffect + " ; effectAllowed = " + ev.dataTransfer.effectAllowed);
-    ev.preventDefault();
-
+    ev.preventDefault()
     // Get the id of the target and add the moved element to the target's DOM
     let data = ev.dataTransfer.getData("text")
     let target = ev.target
     let currentTarget = ev.currentTarget
     let objData = document.querySelector(`#${data}`)
-    console.log('============ data '+ data)
+    // console.log('============ data '+ data)
+    // console.log('============ obj data')
+    // console.log(objData)
+    currentTarget.classList.remove('disable-children-events')
+    objData.style.opacity = ''
+    if(ev.currentTarget.querySelector('#phantom-div'))
+      ev.currentTarget.querySelector('#phantom-div').remove()
     if(currentTarget.classList.contains('drop-container')){
       if(objData.parentElement.childElementCount == 1 && objData.parentElement.id!= 'creation-dump')
         this.addPadding(objData.parentElement, 'pb-5',true)
@@ -605,9 +696,18 @@ class LevelCreationTool {
           ev.currentTarget.appendChild(objData.children[0])
         }
 
-      }else{
-        currentTarget.appendChild(objData)
-        currentTarget.classList.remove('pb-5')
+      }else if(objData.classList.contains('drag-option-built')){
+        if(ev.currentTarget.classList.contains('pacient-info-values')){
+          currentTarget.appendChild(objData)
+          currentTarget.classList.remove('pb-5')
+        }
+      }else if (objData.classList.contains('option-child') || objData.classList.contains('option-list')){
+        if(!ev.currentTarget.classList.contains('pacient-info-values')){
+          currentTarget.appendChild(objData)
+          currentTarget.classList.remove('pb-5')
+        }else{
+          $('#raw-modal-alert-modal').modal('show')
+        }
       }
     }else if (ev.currentTarget.id == 'option-list-wrapper' && !objData.classList.contains('option-list')) {
       if(objData.parentElement.childElementCount == 1 && objData.parentElement.id!= 'creation-dump')
@@ -636,13 +736,6 @@ class LevelCreationTool {
     }*/
   }
 
-  async dragOverHandler(ev) {
-    console.log("dragOver: dropEffect = " + ev.dataTransfer.dropEffect + " ; effectAllowed = " + ev.dataTransfer.effectAllowed);
-    ev.preventDefault();
-    // Set the dropEffect to move
-    ev.dataTransfer.dropEffect = "move"
-  }
-
   async createOption (wrapper, isOpen, prependTxt, id){
     let template = document.createElement('template')
     if(isOpen){
@@ -662,6 +755,7 @@ class LevelCreationTool {
     optionContainer.classList.add('drag-option-built')
     optionContainer.setAttribute('draggable', 'true')
     optionContainer.setAttribute('ondragstart', 'LevelCreationTool.i.dragStartHandler(event)')
+    // optionContainer.setAttribute('ondragend', 'LevelCreationTool.i.dragStartHandler(event)')
     optionContainer.setAttribute('id', `option-group-${id}`)
 
     template.innerHTML = LevelCreationTool.deleteOptBtn

@@ -75,6 +75,56 @@ class ChallengeProgress {
     }else {
       sessionStorage.setItem('ch-two-unlocked', false)
     }
+    let latestChallenge
+    let busEntity = 'case/navigate'
+    let busId
+    let busAction
+    let alertDiv = document.createElement('div')
+
+    if(challengeOneUnlocked) {
+       latestChallenge = 'Desafio 1'
+       busId = '/ch1/first'
+       busAction = '/prognosis/challenge/1/?diffic=1'
+    }
+    if (challengeTwoUnlocked) {
+      latestChallenge = 'Desafio 2'
+      busId = '/ch2/first'
+      busAction = '/prognosis/challenge/2/?diffic=1'
+    }
+
+    if (sessionStorage.getItem('ch-one-unlocked') == 'true' && !sessionStorage.getItem('ch-one-alert')) {
+      alertDiv.classList.add('alert', 'alert-success', 'alert-dismissible', 'fade', 'show')
+      alertDiv.setAttribute('role','alert')
+      alertDiv.style.zIndex = '2000'
+      alertDiv.innerHTML = `
+      Você acabou de liberar o Desafio 1, <a href="#" class="alert-link">clique aqui</a> para navegar até lá.
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+      </button>`
+      document.querySelector('#main-wrapper').insertBefore(alertDiv, document.querySelector('#main-wrapper').firstElementChild)
+      let linkA = alertDiv.querySelector('a')
+      linkA.dataset.busEntity = 'case/navigate'
+      linkA.dataset.busId = '/ch1/first'
+      linkA.dataset.action = '/prognosis/challenge/1/?diffic=1'
+      sessionStorage.setItem('ch-one-alert', true)
+    }
+    if (sessionStorage.getItem('ch-two-unlocked') == 'true' && !sessionStorage.getItem('ch-two-alert')) {
+      alertDiv.classList.add('alert', 'alert-success', 'alert-dismissible', 'fade', 'show')
+      alertDiv.setAttribute('role','alert')
+      alertDiv.style.zIndex = '2000'
+      alertDiv.innerHTML = `
+      Você acabou de liberar o Desafio 2, <a href="#" class="alert-link">clique aqui</a> para navegar até lá.
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+      </button>`
+      document.querySelector('#main-wrapper').insertBefore(alertDiv, document.querySelector('#main-wrapper').firstElementChild)
+      let linkA = alertDiv.querySelector('a')
+      linkA.dataset.busEntity = 'case/navigate'
+      linkA.dataset.busId = '/ch2/first'
+      linkA.dataset.action = '/prognosis/challenge/2/?diffic=1'
+      sessionStorage.setItem('ch-two-alert', true)
+    }
+
   }
   async prognosisDropdown (childEl){
     const dropdownMenu = document.querySelector('#progn-dropdown-menu')
@@ -109,6 +159,13 @@ class ChallengeProgress {
       ch2.dataset.busEntity = 'case/navigate'
       ch2.dataset.busId = '/ch2/current'
       ch2.dataset.action = '/prognosis/challenge/2/'
+    }
+
+    if(new URL(document.location).pathname.includes('/prognosis/creation')){
+        let child = dropdownMenu.querySelectorAll('a')
+        for (let el of child) {
+          el.href = el.dataset.action
+        }
     }
   }
 

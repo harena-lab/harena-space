@@ -203,7 +203,7 @@
             <div class="form-group mt-5">
               <label for="exampleInputEmail1">Na sua opinião, o paciente descrito possui a chance de sobrevivência dentro do intervalo abaixo?</label>
               <!-- <input type="range" value="0" min="0" max="100" step="5" class="form-control" id="player-survival-rate" required> -->
-              <h4 id="player-survival-rate-txt"></h4>
+              <h4 class="text-dark" id="player-survival-rate-txt"></h4>
 
             </div>
             <input type="hidden" name="saps-survival" id="saps-survival" data-bus-entity="var/set" data-bus-id="presentation/sapsCalc" value="">
@@ -235,8 +235,8 @@
   </div>
   <dcc-include src="/author/partials/header.html"></dcc-include>
   <main role="">
-  <div id="main-panel" class="d-flex flex-column vh-100 vw-100 hidden-overflow index-boot-padding bg-secondary">
-    <div class="d-flex flex-column w-lg-75 h-100 w-100 px-2 pb-4 bg-dark mx-auto main-scroll scroll-y">
+  <div id="main-panel" class="d-flex flex-column vh-100 vw-100 hidden-overflow index-boot-padding bg-light">
+    <div id="main-wrapper" class="d-flex flex-column w-lg-75 h-100 w-100 px-2 pb-4 bg-dark mx-auto main-scroll scroll-y">
       <div class="row border-bottom border-top rounded txt-light mt-5 py-1 px-3">
         <!-- <img class="pacient-mini" src="/prognosis/img/satyr-04.svg" alt="pacient miniature"> -->
         <h2 class="txt-light ml-2 mb-0 mt-auto pacient-title">Desafio 2 - dificuldade 1</h2>

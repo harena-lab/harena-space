@@ -163,7 +163,7 @@
               <label for="exampleInputEmail1">Na sua opinião, qual a chance (0 a 100) desse paciente sobreviver a essa internação?</label>
               <input type="range" value="0" min="0" max="100" step="5" class="form-control" id="player-survival-rate"
                data-bus-entity="var/set" data-bus-id="overview/playerPrognGuess" required>
-              <h4 id="player-survival-rate-txt"></h4>
+              <h4 class="text-dark" id="player-survival-rate-txt"></h4>
 
             </div>
             <input type="hidden" name="saps-survival" id="saps-survival" data-bus-entity="var/set" data-bus-id="presentation/sapsCalc" value="">
@@ -185,33 +185,33 @@
   <dcc-include src="/author/partials/header.html"></dcc-include>
   <dcc-rest id="harena-create-logger" bind="harena-create-logger" subscribe="logger/create/post"></dcc-rest>
   <main role="">
-  <div id="main-panel" class="d-flex flex-column vh-100 vw-100 hidden-overflow index-boot-padding bg-secondary">
-    <div class="d-flex flex-column w-lg-75 h-100 w-100 px-2 pb-4 bg-dark mx-auto main-scroll scroll-y">
+  <div id="main-panel" class="d-flex flex-column vh-100 vw-100 hidden-overflow index-boot-padding bg-light">
+    <div id="main-wrapper" class="d-flex flex-column w-lg-75 h-100 w-100 px-2 pb-4 bg-progn-blue mx-auto main-scroll scroll-y">
       <div class="row border-bottom border-top rounded txt-light mt-5 py-1 px-3">
         <!-- <img class="pacient-mini" src="/prognosis/img/satyr-04.svg" alt="pacient miniature"> -->
-        <h2 class="txt-light ml-2 mb-0 mt-auto pacient-title">Roda da Fortuna - dificuldade 1</h2>
+        <h2 class="text-light ml-2 mb-0 mt-auto pacient-title">Roda da Fortuna - dificuldade 1</h2>
       </div>
       <form id="form-pacient-info" action="javascript:void(0);">
         <div class="bg-light border rounded m-1 p-2" id="idade-wrapper">
-          <h2 class="border-bottom txt-light text-center">Idade</h2>
+          <h2 class="border-bottom text-secondary text-center">Idade</h2>
         </div>
         <div class="bg-light border rounded m-1 p-2" id="origem-wrapper">
-          <h2 class="border-bottom txt-light text-center">Origem</h2>
+          <h2 class="border-bottom text-secondary text-center">Origem</h2>
         </div>
         <div class="bg-light border rounded m-1 p-2" id="comorbidade-wrapper">
-          <h2 class="border-bottom txt-light text-center">Comorbidade</h2>
+          <h2 class="border-bottom text-secondary text-center">Comorbidade</h2>
 
         </div>
         <div class="bg-light border rounded m-1 p-2" id="motivo-admissao-wrapper">
-          <h2 class="border-bottom txt-light text-center">Contexto da admissão</h2>
+          <h2 class="border-bottom text-secondary text-center">Contexto da admissão</h2>
 
         </div>
         <div class="bg-light border rounded m-1 p-2" id="status-clinico-wrapper">
-          <h2 class="border-bottom txt-light text-center">Status clínico</h2>
+          <h2 class="border-bottom text-secondary text-center">Status clínico</h2>
 
         </div>
         <div class="bg-light border rounded m-1 p-2" id="alt-lab-wrapper">
-          <h2 class="border-bottom txt-light text-center">Alterações laboratoriais</h2>
+          <h2 class="border-bottom text-secondary text-center">Alterações laboratoriais</h2>
         </div>
 
         <button type="submit" id="btn-create-pacient" class="btn btn-success w-100"> Revisar as escolhas</button>

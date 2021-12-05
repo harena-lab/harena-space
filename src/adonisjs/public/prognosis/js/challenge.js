@@ -232,7 +232,7 @@ class Challenge {
      const survivalRateOutputTxt = document.querySelector('#player-survival-rate-txt')
      const survivalRateObj = document.querySelector('#txt-objective')
      survivalRateOutputTxt.innerHTML = `${message['prognTarget']}%`
-     survivalRateObj.textContent = `Intervalo de sobrevivência desejado: ${message['prognTarget']}%`
+     survivalRateObj.innerHTML = `Intervalo de sobrevivência desejado: <i class="text-warning">${message['prognTarget']}%</i>`
    }
  }
 
