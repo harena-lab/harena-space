@@ -29,6 +29,21 @@ class DCCRest extends DCCBase {
     */
   }
 
+  /* Properties
+      **********/
+
+  static get observedAttributes () {
+    return DCCBase.observedAttributes.concat(['parameters'])
+  }
+
+  get parameters () {
+    return this.getAttribute('parameters')
+  }
+
+  set parameters (newValue) {
+    this.setAttribute('parameters', newValue)
+  }
+
   async connectTo (trigger, id, topic) {
     super.connectTo(trigger, id, topic)
     if (trigger == 'schema')
@@ -41,6 +56,16 @@ class DCCRest extends DCCBase {
     if (this._setup.environment)
       for (let e in this._setup.environment)
         parameters[e] = this._setup.environment[e]
+
+    if (this.hasAttribute('parameters')) {
+      const par = this.parameters.split(';')
+      for (const p of par) {
+        const atr = p.split(':')
+        parameters[atr[0]] = atr[1]
+      }
+      console.log('=== parameters')
+      console.log(parameters)
+    }
 
     if (this._setup != null && this._setup.oas != null &&
         this._setup.oas.paths != null) {
