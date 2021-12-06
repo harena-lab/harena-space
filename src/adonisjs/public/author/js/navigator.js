@@ -125,7 +125,8 @@ class Navigator {
             this._insertEdge(current, k, c.contextTarget)
           else if (c.type == 'input' && c.subtype == 'choice' && c.options)
             for (const o in c.options)
-              this._insertEdge(current, k, c.options[o].contextTarget)
+              if (c.options[o].contextTarget)
+                this._insertEdge(current, k, c.options[o].contextTarget)
         }
 
         previousKnot = newKnot

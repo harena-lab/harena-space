@@ -107,6 +107,7 @@ class DCCDHTML extends DCCBase {
           const it = (field == '.') ? record : record[field]
           for (let i of it)
             html += this._replaceFields(
+              // phtml, item, i)
               phtml, (field == '.') ? item : item + '.' + field, i)
         }
         if (vhtml.length > 1)

@@ -103,7 +103,7 @@ class DCCVisual extends DCCBase {
   }
 
   editButtons () {
-    return []
+    return {default: []}
   }
 
   hide () {
@@ -248,7 +248,10 @@ class PresentationDCC {
       if (presentation.style.border) { originalBorder = presentation.style.border }
       presentation.style.border = DCCVisual.selectedBorderStyle
 
-      const edButtons = this._owner.editButtons()
+      const edMap = this._owner.editButtons()
+      const edButtons =
+        (this._param != null && this._param.role && edMap[this._param.role]) ?
+          edMap[this._param.role] : edMap.default
       let panel = null
       if (edButtons.length > 0) {
         const abPosition = this.absolutePosition(presentation)

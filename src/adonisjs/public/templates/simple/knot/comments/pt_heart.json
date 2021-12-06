@@ -87,6 +87,37 @@
      ]
     },
     {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
      "title": "Referências anatómicas/qualidade",
      "type": "checkbox",
      "comments": [
@@ -134,6 +165,11 @@
        "title": "Ápex cardíaco ausente",
        "property": "cardiac_apex",
        "value": "not_present"
+      },
+      {
+       "title": "Câmaras desalinhadas",
+       "property": "misaligned_chambers",
+       "value": "yes"
       }
      ]
     },
@@ -157,6 +193,11 @@
        "value": "yes"
       },
       {
+       "title": "Disfunção ventricular esquerda leve",
+       "property": "mild_left_ventricular_dysfunction",
+       "value": "yes"
+      },
+      {
        "title": "Disfunção ventricular esquerda moderada",
        "property": "moderate_left_ventricular_dysfunction",
        "value": "yes"
@@ -169,11 +210,6 @@
       {
        "title": "Dilatação de ventrículo direito",
        "property": "right_ventricule_dilation",
-       "value": "yes"
-      },
-      {
-       "title": "Normal",
-       "property": "normal",
        "value": "yes"
       },
       {
@@ -192,7 +228,7 @@
        "value": "yes"
       },
       {
-       "title": "Doença valvar grave",
+       "title": "Doença valvar",
        "property": "severe_valvular_disease",
        "value": "yes"
       }
@@ -247,6 +283,37 @@
      ]
     },
     {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
      "title": "Referências anatómicas/qualidade",
      "type": "checkbox",
      "comments": [
@@ -289,6 +356,11 @@
        "title": "Átrio esquerdo ausente",
        "property": "left_atrium",
        "value": "not_present"
+      },
+      {
+       "title": "Janela fora do eixo longo",
+       "property": "window_off_long_axis",
+       "value": "yes"
       }
      ]
     },
@@ -312,6 +384,11 @@
        "value": "yes"
       },
       {
+       "title": "Disfunção ventricular esquerda leve",
+       "property": "mild_left_ventricular_dysfunction",
+       "value": "yes"
+      },
+      {
        "title": "Disfunção ventricular esquerda moderada",
        "property": "moderate_left_ventricular_dysfunction",
        "value": "yes"
@@ -319,11 +396,6 @@
       {
        "title": "Disfunção ventricular esquerda acentuada",
        "property": "severe_left_ventricular_dysfunction",
-       "value": "yes"
-      },
-      {
-       "title": "Normal",
-       "property": "normal",
        "value": "yes"
       },
       {
@@ -342,7 +414,7 @@
        "value": "yes"
       },
       {
-       "title": "Doença valvar grave",
+       "title": "Doença valvar",
        "property": "severe_valvular_disease",
        "value": "yes"
       }
@@ -393,6 +465,37 @@
        "title": "3. excessivo",
        "property": "depth",
        "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
       }
      ]
     },
@@ -461,6 +564,37 @@
      ]
     },
     {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
      "title": "Referências anatómicas/qualidade",
      "type": "checkbox",
      "comments": [
@@ -525,6 +659,37 @@
      ]
     },
     {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
      "title": "Referências anatómicas/qualidade",
      "type": "checkbox",
      "comments": [
@@ -567,6 +732,11 @@
        "value": "yes"
       },
       {
+       "title": "Disfunção ventricular esquerda leve",
+       "property": "mild_left_ventricular_dysfunction",
+       "value": "yes"
+      },
+      {
        "title": "Disfunção ventricular esquerda moderada",
        "property": "moderate_left_ventricular_dysfunction",
        "value": "yes"
@@ -577,8 +747,13 @@
        "value": "yes"
       },
       {
-       "title": "Normal",
-       "property": "normal",
+       "title": "Sobrecarga de Ventrículo Direito",
+       "property": "right_ventricular_overload",
+       "value": "yes"
+      },
+      {
+       "title": "Doença valvar",
+       "property": "severe_valvular_disease",
        "value": "yes"
       }
      ]
@@ -632,6 +807,37 @@
      ]
     },
     {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
      "title": "Referências anatómicas/qualidade",
      "type": "checkbox",
      "comments": [
@@ -674,6 +880,11 @@
        "title": "Aorta descendente ausente",
        "property": "descending_aorta",
        "value": "not_present"
+      },
+      {
+       "title": "Câmaras desalinhadas",
+       "property": "misaligned_chambers",
+       "value": "yes"
       }
      ]
     },
@@ -697,6 +908,11 @@
        "value": "yes"
       },
       {
+       "title": "Disfunção ventricular esquerda leve",
+       "property": "mild_left_ventricular_dysfunction",
+       "value": "yes"
+      },
+      {
        "title": "Disfunção ventricular esquerda moderada",
        "property": "moderate_left_ventricular_dysfunction",
        "value": "yes"
@@ -709,11 +925,6 @@
       {
        "title": "Dilatação de ventrículo direito",
        "property": "right_ventricle_dilation",
-       "value": "yes"
-      },
-      {
-       "title": "Normal",
-       "property": "normal",
        "value": "yes"
       },
       {
@@ -732,7 +943,7 @@
        "value": "yes"
       },
       {
-       "title": "Doença valvar grave",
+       "title": "Doença valvar",
        "property": "severe_valvular_disease",
        "value": "yes"
       }

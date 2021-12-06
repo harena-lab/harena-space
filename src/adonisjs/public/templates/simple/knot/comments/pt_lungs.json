@@ -87,6 +87,37 @@
      ]
     },
     {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
      "title": "Referências anatómicas/qualidade",
      "type": "checkbox",
      "comments": [
@@ -107,8 +138,8 @@
       },
       {
        "title": "Aquisição instável",
-       "property": "acquisition",
-       "value": "unstable"
+       "property": "acquisition_unstable",
+       "value": "yes"
       }
      ]
     },
@@ -118,8 +149,8 @@
      "comments": [
       {
        "title": "Aquisição inconclusiva",
-       "property": "acquisition",
-       "value": "inconclusive"
+       "property": "acquisition_inconclusive",
+       "value": "yes"
       },
       {
        "title": "Ausência de deslizamento pleural",
@@ -177,6 +208,37 @@
      ]
     },
     {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
      "title": "Referências anatómicas/qualidade",
      "type": "checkbox",
      "comments": [
@@ -197,8 +259,8 @@
       },
       {
        "title": "Aquisição instável",
-       "property": "acquisition",
-       "value": "unstable"
+       "property": "acquisition_unstable",
+       "value": "yes"
       }
      ]
     },
@@ -208,8 +270,8 @@
      "comments": [
       {
        "title": "Aquisição inconclusiva",
-       "property": "acquisition",
-       "value": "inconclusive"
+       "property": "acquisition_inconclusive",
+       "value": "yes"
       },
       {
        "title": "Ausência de deslizamento pleural",
@@ -267,6 +329,37 @@
      ]
     },
     {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
      "title": "Referências anatómicas/qualidade",
      "type": "checkbox",
      "comments": [
@@ -287,8 +380,8 @@
       },
       {
        "title": "Aquisição instável",
-       "property": "acquisition",
-       "value": "unstable"
+       "property": "acquisition_unstable",
+       "value": "yes"
       }
      ]
     },
@@ -298,8 +391,13 @@
      "comments": [
       {
        "title": "Aquisição inconclusiva",
-       "property": "acquisition",
-       "value": "inconclusive"
+       "property": "acquisition_inconclusive",
+       "value": "yes"
+      },
+      {
+       "title": "Apenas artefato de espalhamento",
+       "property": "scattering_artifact_only",
+       "value": "yes"
       },
       {
        "title": "Linhas A apenas",
@@ -310,6 +408,11 @@
        "title": "Ausência de deslizamento pleural",
        "property": "pleural_sliding",
        "value": "absent"
+      },
+      {
+       "title": "Até 3 linhas B",
+       "property": "up_to_3_b_lines",
+       "value": "yes"
       },
       {
        "title": "Entre 3 e 5 linhas B",
@@ -349,6 +452,11 @@
       {
        "title": "Derrame pleural laminar",
        "property": "laminar_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pleural pequeno",
+       "property": "small_pleural_effusion",
        "value": "yes"
       },
       {
@@ -417,6 +525,37 @@
      ]
     },
     {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
      "title": "Referências anatómicas/qualidade",
      "type": "checkbox",
      "comments": [
@@ -437,8 +576,8 @@
       },
       {
        "title": "Aquisição instável",
-       "property": "acquisition",
-       "value": "unstable"
+       "property": "acquisition_unstable",
+       "value": "yes"
       }
      ]
     },
@@ -448,8 +587,13 @@
      "comments": [
       {
        "title": "Aquisição inconclusiva",
-       "property": "acquisition",
-       "value": "inconclusive"
+       "property": "acquisition_inconclusive",
+       "value": "yes"
+      },
+      {
+       "title": "Apenas artefato de espalhamento",
+       "property": "scattering_artifact_only",
+       "value": "yes"
       },
       {
        "title": "Linhas A apenas",
@@ -460,6 +604,11 @@
        "title": "Ausência de deslizamento pleural",
        "property": "pleural_sliding",
        "value": "absent"
+      },
+      {
+       "title": "Até 3 linhas B",
+       "property": "up_to_3_b_lines",
+       "value": "yes"
       },
       {
        "title": "Entre 3 e 5 linhas B",
@@ -499,6 +648,11 @@
       {
        "title": "Derrame pleural laminar",
        "property": "laminar_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pleural pequeno",
+       "property": "small_pleural_effusion",
        "value": "yes"
       },
       {
@@ -567,6 +721,37 @@
      ]
     },
     {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
      "title": "Referências anatómicas/qualidade",
      "type": "checkbox",
      "comments": [
@@ -587,8 +772,8 @@
       },
       {
        "title": "Aquisição instável",
-       "property": "acquisition",
-       "value": "unstable"
+       "property": "acquisition_unstable",
+       "value": "yes"
       }
      ]
     },
@@ -598,8 +783,13 @@
      "comments": [
       {
        "title": "Aquisição inconclusiva",
-       "property": "acquisition",
-       "value": "inconclusive"
+       "property": "acquisition_inconclusive",
+       "value": "yes"
+      },
+      {
+       "title": "Apenas artefato de espalhamento",
+       "property": "scattering_artifact_only",
+       "value": "yes"
       },
       {
        "title": "Linhas A apenas",
@@ -610,6 +800,11 @@
        "title": "Ausência de deslizamento pleural",
        "property": "pleural_sliding",
        "value": "absent"
+      },
+      {
+       "title": "Até 3 linhas B",
+       "property": "up_to_3_b_lines",
+       "value": "yes"
       },
       {
        "title": "Entre 3 e 5 linhas B",
@@ -649,6 +844,11 @@
       {
        "title": "Derrame pleural laminar",
        "property": "laminar_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pleural pequeno",
+       "property": "small_pleural_effusion",
        "value": "yes"
       },
       {
@@ -717,6 +917,37 @@
      ]
     },
     {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
      "title": "Referências anatómicas/qualidade",
      "type": "checkbox",
      "comments": [
@@ -737,8 +968,8 @@
       },
       {
        "title": "Aquisição instável",
-       "property": "acquisition",
-       "value": "unstable"
+       "property": "acquisition_unstable",
+       "value": "yes"
       }
      ]
     },
@@ -748,8 +979,13 @@
      "comments": [
       {
        "title": "Aquisição inconclusiva",
-       "property": "acquisition",
-       "value": "inconclusive"
+       "property": "acquisition_inconclusive",
+       "value": "yes"
+      },
+      {
+       "title": "Apenas artefato de espalhamento",
+       "property": "scattering_artifact_only",
+       "value": "yes"
       },
       {
        "title": "Linhas A apenas",
@@ -760,6 +996,11 @@
        "title": "Ausência de deslizamento pleural",
        "property": "pleural_sliding",
        "value": "absent"
+      },
+      {
+       "title": "Até 3 linhas B",
+       "property": "up_to_3_b_lines",
+       "value": "yes"
       },
       {
        "title": "Entre 3 e 5 linhas B",
@@ -799,6 +1040,11 @@
       {
        "title": "Derrame pleural laminar",
        "property": "laminar_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pleural pequeno",
+       "property": "small_pleural_effusion",
        "value": "yes"
       },
       {
@@ -867,6 +1113,37 @@
      ]
     },
     {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
      "title": "Referências anatómicas/qualidade",
      "type": "checkbox",
      "comments": [
@@ -892,8 +1169,8 @@
       },
       {
        "title": "Aquisição instável",
-       "property": "acquisition",
-       "value": "unstable"
+       "property": "acquisition_unstable",
+       "value": "yes"
       }
      ]
     },
@@ -903,18 +1180,18 @@
      "comments": [
       {
        "title": "Aquisição inconclusiva",
-       "property": "acquisition",
-       "value": "inconclusive"
-      },
-      {
-       "title": "Linhas A apenas",
-       "property": "a_lines_only",
+       "property": "acquisition_inconclusive",
        "value": "yes"
       },
       {
        "title": "Ausência de deslizamento pleural",
        "property": "pleural_sliding",
        "value": "absent"
+      },
+      {
+       "title": "Até 3 linhas B",
+       "property": "up_to_3_b_lines",
+       "value": "yes"
       },
       {
        "title": "Entre 3 e 5 linhas B",
@@ -954,6 +1231,11 @@
       {
        "title": "Derrame pleural laminar",
        "property": "laminar_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pleural pequeno",
+       "property": "small_pleural_effusion",
        "value": "yes"
       },
       {
@@ -1022,6 +1304,37 @@
      ]
     },
     {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
      "title": "Referências anatómicas/qualidade",
      "type": "checkbox",
      "comments": [
@@ -1042,8 +1355,8 @@
       },
       {
        "title": "Aquisição instável",
-       "property": "acquisition",
-       "value": "unstable"
+       "property": "acquisition_unstable",
+       "value": "yes"
       }
      ]
     },
@@ -1053,8 +1366,13 @@
      "comments": [
       {
        "title": "Aquisição inconclusiva",
-       "property": "acquisition",
-       "value": "inconclusive"
+       "property": "acquisition_inconclusive",
+       "value": "yes"
+      },
+      {
+       "title": "Apenas artefato de espalhamento",
+       "property": "scattering_artifact_only",
+       "value": "yes"
       },
       {
        "title": "Linhas A apenas",
@@ -1065,6 +1383,11 @@
        "title": "Ausência de deslizamento pleural",
        "property": "pleural_sliding",
        "value": "absent"
+      },
+      {
+       "title": "Até 3 linhas B",
+       "property": "up_to_3_b_lines",
+       "value": "yes"
       },
       {
        "title": "Entre 3 e 5 linhas B",
@@ -1104,6 +1427,11 @@
       {
        "title": "Derrame pleural laminar",
        "property": "laminar_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pleural pequeno",
+       "property": "small_pleural_effusion",
        "value": "yes"
       },
       {
@@ -1172,6 +1500,37 @@
      ]
     },
     {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
      "title": "Referências anatómicas/qualidade",
      "type": "checkbox",
      "comments": [
@@ -1192,8 +1551,8 @@
       },
       {
        "title": "Aquisição instável",
-       "property": "acquisition",
-       "value": "unstable"
+       "property": "acquisition_unstable",
+       "value": "yes"
       }
      ]
     },
@@ -1203,8 +1562,13 @@
      "comments": [
       {
        "title": "Aquisição inconclusiva",
-       "property": "acquisition",
-       "value": "inconclusive"
+       "property": "acquisition_inconclusive",
+       "value": "yes"
+      },
+      {
+       "title": "Apenas artefato de espalhamento",
+       "property": "scattering_artifact_only",
+       "value": "yes"
       },
       {
        "title": "Linhas A apenas",
@@ -1215,6 +1579,11 @@
        "title": "Ausência de deslizamento pleural",
        "property": "pleural_sliding",
        "value": "absent"
+      },
+      {
+       "title": "Até 3 linhas B",
+       "property": "up_to_3_b_lines",
+       "value": "yes"
       },
       {
        "title": "Entre 3 e 5 linhas B",
@@ -1254,6 +1623,11 @@
       {
        "title": "Derrame pleural laminar",
        "property": "laminar_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pleural pequeno",
+       "property": "small_pleural_effusion",
        "value": "yes"
       },
       {
@@ -1322,6 +1696,37 @@
      ]
     },
     {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
      "title": "Referências anatómicas/qualidade",
      "type": "checkbox",
      "comments": [
@@ -1342,8 +1747,8 @@
       },
       {
        "title": "Aquisição instável",
-       "property": "acquisition",
-       "value": "unstable"
+       "property": "acquisition_unstable",
+       "value": "yes"
       }
      ]
     },
@@ -1353,8 +1758,13 @@
      "comments": [
       {
        "title": "Aquisição inconclusiva",
-       "property": "acquisition",
-       "value": "inconclusive"
+       "property": "acquisition_inconclusive",
+       "value": "yes"
+      },
+      {
+       "title": "Apenas artefato de espalhamento",
+       "property": "scattering_artifact_only",
+       "value": "yes"
       },
       {
        "title": "Linhas A apenas",
@@ -1365,6 +1775,11 @@
        "title": "Ausência de deslizamento pleural",
        "property": "pleural_sliding",
        "value": "absent"
+      },
+      {
+       "title": "Até 3 linhas B",
+       "property": "up_to_3_b_lines",
+       "value": "yes"
       },
       {
        "title": "Entre 3 e 5 linhas B",
@@ -1404,6 +1819,11 @@
       {
        "title": "Derrame pleural laminar",
        "property": "laminar_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pleural pequeno",
+       "property": "small_pleural_effusion",
        "value": "yes"
       },
       {
@@ -1472,6 +1892,37 @@
      ]
     },
     {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
      "title": "Referências anatómicas/qualidade",
      "type": "checkbox",
      "comments": [
@@ -1492,8 +1943,8 @@
       },
       {
        "title": "Aquisição instável",
-       "property": "acquisition",
-       "value": "unstable"
+       "property": "acquisition_unstable",
+       "value": "yes"
       }
      ]
     },
@@ -1503,8 +1954,13 @@
      "comments": [
       {
        "title": "Aquisição inconclusiva",
-       "property": "acquisition",
-       "value": "inconclusive"
+       "property": "acquisition_inconclusive",
+       "value": "yes"
+      },
+      {
+       "title": "Apenas artefato de espalhamento",
+       "property": "scattering_artifact_only",
+       "value": "yes"
       },
       {
        "title": "Linhas A apenas",
@@ -1515,6 +1971,11 @@
        "title": "Ausência de deslizamento pleural",
        "property": "pleural_sliding",
        "value": "absent"
+      },
+      {
+       "title": "Até 3 linhas B",
+       "property": "up_to_3_b_lines",
+       "value": "yes"
       },
       {
        "title": "Entre 3 e 5 linhas B",
@@ -1554,6 +2015,11 @@
       {
        "title": "Derrame pleural laminar",
        "property": "laminar_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pleural pequeno",
+       "property": "small_pleural_effusion",
        "value": "yes"
       },
       {
@@ -1622,6 +2088,37 @@
      ]
     },
     {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
      "title": "Referências anatómicas/qualidade",
      "type": "checkbox",
      "comments": [
@@ -1636,8 +2133,8 @@
        "value": "not_present"
       },
       {
-       "title": "Fígado ausente",
-       "property": "liver",
+       "title": "Baço ausente",
+       "property": "spleen",
        "value": "not_present"
       },
       {
@@ -1647,8 +2144,8 @@
       },
       {
        "title": "Aquisição instável",
-       "property": "acquisition",
-       "value": "unstable"
+       "property": "acquisition_unstable",
+       "value": "yes"
       }
      ]
     },
@@ -1658,18 +2155,18 @@
      "comments": [
       {
        "title": "Aquisição inconclusiva",
-       "property": "acquisition",
-       "value": "inconclusive"
-      },
-      {
-       "title": "Linhas A apenas",
-       "property": "a_lines_only",
+       "property": "acquisition_inconclusive",
        "value": "yes"
       },
       {
        "title": "Ausência de deslizamento pleural",
        "property": "pleural_sliding",
        "value": "absent"
+      },
+      {
+       "title": "Até 3 linhas B",
+       "property": "up_to_3_b_lines",
+       "value": "yes"
       },
       {
        "title": "Entre 3 e 5 linhas B",
@@ -1709,6 +2206,11 @@
       {
        "title": "Derrame pleural laminar",
        "property": "laminar_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pleural pequeno",
+       "property": "small_pleural_effusion",
        "value": "yes"
       },
       {
@@ -1777,6 +2279,37 @@
      ]
     },
     {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
      "title": "Referências anatómicas/qualidade",
      "type": "checkbox",
      "comments": [
@@ -1797,8 +2330,8 @@
       },
       {
        "title": "Aquisição instável",
-       "property": "acquisition",
-       "value": "unstable"
+       "property": "acquisition_unstable",
+       "value": "yes"
       }
      ]
     },
@@ -1808,8 +2341,13 @@
      "comments": [
       {
        "title": "Aquisição inconclusiva",
-       "property": "acquisition",
-       "value": "inconclusive"
+       "property": "acquisition_inconclusive",
+       "value": "yes"
+      },
+      {
+       "title": "Apenas artefato de espalhamento",
+       "property": "scattering_artifact_only",
+       "value": "yes"
       },
       {
        "title": "Linhas A apenas",
@@ -1820,6 +2358,11 @@
        "title": "Ausência de deslizamento pleural",
        "property": "pleural_sliding",
        "value": "absent"
+      },
+      {
+       "title": "Até 3 linhas B",
+       "property": "up_to_3_b_lines",
+       "value": "yes"
       },
       {
        "title": "Entre 3 e 5 linhas B",
@@ -1859,6 +2402,11 @@
       {
        "title": "Derrame pleural laminar",
        "property": "laminar_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pleural pequeno",
+       "property": "small_pleural_effusion",
        "value": "yes"
       },
       {
@@ -1927,6 +2475,37 @@
      ]
     },
     {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
      "title": "Referências anatómicas/qualidade",
      "type": "checkbox",
      "comments": [
@@ -1947,8 +2526,8 @@
       },
       {
        "title": "Aquisição instável",
-       "property": "acquisition",
-       "value": "unstable"
+       "property": "acquisition_unstable",
+       "value": "yes"
       }
      ]
     },
@@ -1958,8 +2537,13 @@
      "comments": [
       {
        "title": "Aquisição inconclusiva",
-       "property": "acquisition",
-       "value": "inconclusive"
+       "property": "acquisition_inconclusive",
+       "value": "yes"
+      },
+      {
+       "title": "Apenas artefato de espalhamento",
+       "property": "scattering_artifact_only",
+       "value": "yes"
       },
       {
        "title": "Linhas A apenas",
@@ -1970,6 +2554,11 @@
        "title": "Ausência de deslizamento pleural",
        "property": "pleural_sliding",
        "value": "absent"
+      },
+      {
+       "title": "Até 3 linhas B",
+       "property": "up_to_3_b_lines",
+       "value": "yes"
       },
       {
        "title": "Entre 3 e 5 linhas B",
@@ -2009,6 +2598,11 @@
       {
        "title": "Derrame pleural laminar",
        "property": "laminar_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pleural pequeno",
+       "property": "small_pleural_effusion",
        "value": "yes"
       },
       {
@@ -2077,6 +2671,37 @@
      ]
     },
     {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
      "title": "Referências anatómicas/qualidade",
      "type": "checkbox",
      "comments": [
@@ -2097,8 +2722,8 @@
       },
       {
        "title": "Aquisição instável",
-       "property": "acquisition",
-       "value": "unstable"
+       "property": "acquisition_unstable",
+       "value": "yes"
       }
      ]
     },
@@ -2108,8 +2733,13 @@
      "comments": [
       {
        "title": "Aquisição inconclusiva",
-       "property": "acquisition",
-       "value": "inconclusive"
+       "property": "acquisition_inconclusive",
+       "value": "yes"
+      },
+      {
+       "title": "Apenas artefato de espalhamento",
+       "property": "scattering_artifact_only",
+       "value": "yes"
       },
       {
        "title": "Linhas A apenas",
@@ -2120,6 +2750,11 @@
        "title": "Ausência de deslizamento pleural",
        "property": "pleural_sliding",
        "value": "absent"
+      },
+      {
+       "title": "Até 3 linhas B",
+       "property": "up_to_3_b_lines",
+       "value": "yes"
       },
       {
        "title": "Entre 3 e 5 linhas B",
@@ -2159,6 +2794,11 @@
       {
        "title": "Derrame pleural laminar",
        "property": "laminar_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pleural pequeno",
+       "property": "small_pleural_effusion",
        "value": "yes"
       },
       {
@@ -2227,6 +2867,37 @@
      ]
     },
     {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
      "title": "Referências anatómicas/qualidade",
      "type": "checkbox",
      "comments": [
@@ -2247,8 +2918,8 @@
       },
       {
        "title": "Aquisição instável",
-       "property": "acquisition",
-       "value": "unstable"
+       "property": "acquisition_unstable",
+       "value": "yes"
       }
      ]
     },
@@ -2258,8 +2929,13 @@
      "comments": [
       {
        "title": "Aquisição inconclusiva",
-       "property": "acquisition",
-       "value": "inconclusive"
+       "property": "acquisition_inconclusive",
+       "value": "yes"
+      },
+      {
+       "title": "Apenas artefato de espalhamento",
+       "property": "scattering_artifact_only",
+       "value": "yes"
       },
       {
        "title": "Linhas A apenas",
@@ -2270,6 +2946,11 @@
        "title": "Ausência de deslizamento pleural",
        "property": "pleural_sliding",
        "value": "absent"
+      },
+      {
+       "title": "Até 3 linhas B",
+       "property": "up_to_3_b_lines",
+       "value": "yes"
       },
       {
        "title": "Entre 3 e 5 linhas B",
@@ -2309,6 +2990,11 @@
       {
        "title": "Derrame pleural laminar",
        "property": "laminar_pleural_effusion",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pleural pequeno",
+       "property": "small_pleural_effusion",
        "value": "yes"
       },
       {
