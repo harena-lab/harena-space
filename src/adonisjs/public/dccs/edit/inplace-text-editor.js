@@ -14,7 +14,6 @@ class EditDCCText extends EditDCC {
     this._knotContent = knotContent
     this._element = el
     this._objField = field
-    // this._editDCC = dcc
     this._textChanged = false
     this.handleConfirm = this.handleConfirm.bind(this)
     MessageBus.i.subscribe('control/editor/edit/confirm', this.handleConfirm)
@@ -27,17 +26,11 @@ class EditDCCText extends EditDCC {
       template.innerHTML = EditDCCText.templateFloating
         .replace('[content]',
                  Translator.instance.generateKnotHTML([knotContent[el]], false))
-      // this._shadow = this.attachShadow({ mode: 'open' })
-      // embeds all clone to enable deleting it
       this._editorInstance = document.createElement('div')
       this._editorInstance.appendChild(template.content.cloneNode(true))
       this._editorWrapper.appendChild(this._editorInstance)
-      /*
-      this._editorContainer.appendChild(template.content.cloneNode(true))
-      this._editorInstance =
-        this._editorContainer.querySelector('#presentation-inline-modal')
-      */
-      presentation = this._editorInstance.querySelector('#presentation-inline-editor')
+      presentation =
+        this._editorInstance.querySelector('#presentation-inline-editor')
       this._toolbarContainer =
         this._editorInstance.querySelector('#presentation-inline-toolbar')
     } else {
@@ -96,6 +89,7 @@ class EditDCCText extends EditDCC {
   }
 
   async _updateTranslated () {
+    console.log('=== update translated')
     const mdTranslate = this._translateMarkdown(this._editor.getData())
 
     if (this._objField != null) {
@@ -129,9 +123,15 @@ class EditDCCText extends EditDCC {
     MessageBus.i.unsubscribe('control/editor/edit/cancel', this.handleCancel)
     if (this._editorInstance)
       this._editorWrapper.removeChild(this._editorInstance)
+    else
+      await MessageBus.i.request('control/knot/update', null, null, true)
     this._removeToolbarPanel()
-    if (this._objField == null)
-      await this._properties.closeProperties()
+    this._editor.destroy()
+                .catch( error => {
+                    console.log( error )
+                } )
+    // if (this._objField == null)
+    await this._properties.closeProperties()
     // MessageBus.i.publish('control/knot/update', null, true)
   }
 

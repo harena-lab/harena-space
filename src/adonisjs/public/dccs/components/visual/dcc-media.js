@@ -53,7 +53,9 @@ class DCCMedia extends DCCVisual {
   }
 
   editButtons () {
-    return super.editButtons().concat([DCCVisual.editDCCExpand])
+    return {
+      default: super.editButtons().default.concat([DCCVisual.editDCCExpand])
+    }
   }
 }
 

@@ -108,11 +108,6 @@ class EditDCC {
     this._editorToolbar.classList.add('inplace-editor-floating')
     this._editorToolbar.innerHTML = html
 
-    // this._editorToolbar.style.left = this._transformRelativeX(
-    //   this._elementWrapperRect.left - this._containerRect.left)
-    // this._editorToolbar.style.bottom = this._transformRelativeY(
-    //   this._containerRect.height -
-    //         (this._elementWrapperRect.top - this._containerRect.top))
     this._fetchEditorContainer().appendChild(this._editorToolbar)
   }
 
