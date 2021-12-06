@@ -2288,7 +2288,7 @@ class Translator {
     */
   _inputObjToMd (obj) {
     // core attributes are not straight mapped
-    const coreAttributes = ['seq', 'author', 'variable', 'type', 'subtype',
+    let coreAttributes = ['seq', 'author', 'variable', 'type', 'subtype',
       'text', 'options',
       '_source', '_modified', 'mergeLine']
 
@@ -2299,9 +2299,37 @@ class Translator {
       stm = '> ' + lines.join('\n> ') + '\n'
     }
 
+    let hasTarget = (obj.target) ? true : false
+    if (!hasTarget && obj.subtype == 'choice')
+      for (const op in obj.options)
+        if (obj.options[op].target) {
+          hasTarget = true
+          break
+        }
+
+    /*
     if (obj.subtype == 'choice' && obj.exclusive == true &&
         obj.shuffle == true) {
-      md = stm
+    */
+
+    if (obj.subtype == 'choice' && hasTarget) {
+      // check extra options to explicit input
+      coreAttributes = coreAttributes.concat(['exclusive', 'shuffle'])
+      let extraAttr = ''
+      for (const atr in obj) {
+        if (!coreAttributes.includes(atr))
+          extraAttr += this._mdSubField(atr, obj[atr])
+        }
+      const variable = obj.variable.substring(obj.variable.lastIndexOf('.') + 1)
+      if (extraAttr.length > 0 || !variable.match(/input[\d]+/))
+        md = Translator.markdownTemplates.input
+          .replace('{statement}', stm)
+          .replace('{variable}', variable)
+          .replace('{subtype}',
+            (obj.subtype) ? this._mdSubField('type', obj.subtype) : '')
+          .replace('{extra}', extraAttr) + '\n'
+      else
+        md = stm
       let first = true
       for (const op in obj.options) {
         if (!first) { md += '\n' }
@@ -2311,6 +2339,7 @@ class Translator {
         if (option.state && option.operation)
           state = ' ' + ((option.operation == ">") ? '>' : '') + '((' + option.state + '))' + ((option.operation == "?") ? '?' : '')
         md += Translator.markdownTemplates.choice
+          .replace('{bullet}', (obj.shuffle) ? '+' : '*')
           .replace('{label}', op)
           .replace('{target}',
             (option.target && option.target != '(default)')

@@ -378,7 +378,7 @@ class DCCInputChoice extends DCCInput {
         this._options.push(presentation)
         if (html[oop[o]][2])
           await this._applyRender(
-            html[oop[o]][2], 'innerHTML', 'input',
+            html[oop[o]][2], 'innerHTML', 'item_' + nop,
             'presentation-dcc-' + varid + '_' + presId + '-label', false)
         else
           this._editButtons['item_' + nop] = [DCCVisual.editDCCExpand]
