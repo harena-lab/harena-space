@@ -90,7 +90,7 @@ class Properties {
           }
           break
       }
-    } else { this._editor = new EditDCCProperties(obj, dcc, editp.htmls, this) }
+    } // else { this._editor = new EditDCCProperties(obj, dcc, editp.htmls, this) }
   }
 
   /*
@@ -291,7 +291,7 @@ class Properties {
 
   async closeProperties(details) {
     if (this._editor != null)
-      this._editor = null;
+      this._editor = null
     if (this._objProperties) {
       delete this._objProperties
       await MessageBus.i.request('control/knot/update', null, null, true)
@@ -496,7 +496,6 @@ class Properties {
       short: {default: {
         input: {
           type: 'void',
-          visual: 'inline',
           role: 'input'
         },
         text: {

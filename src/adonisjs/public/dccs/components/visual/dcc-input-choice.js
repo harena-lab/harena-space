@@ -159,6 +159,7 @@ class DCCInputChoice extends DCCInput {
     super()
     this._options = []
     this._variable = ''
+    this._editButtons = super.editButtons()
     this.inputChanged = this.inputChanged.bind(this)
   }
 
@@ -181,7 +182,7 @@ class DCCInputChoice extends DCCInput {
 
   static get observedAttributes () {
     return DCCInput.observedAttributes.concat(
-      ['exclusive', 'shuffle', 'reveal', 'target'])
+      ['exclusive', 'shuffle', 'reveal', 'target', 'stateful'])
   }
 
   get exclusive () {
@@ -216,9 +217,18 @@ class DCCInputChoice extends DCCInput {
     this.setAttribute('target', newValue)
   }
 
+  get stateful () {
+    return this.hasAttribute('stateful')
+  }
+
+  set stateful (isStateful) {
+    if (isStateful) { this.setAttribute('stateful', '') } else { this.removeAttribute('stateful') }
+  }
+
   /* Event handling */
 
   inputChanged (event) {
+    console.log('===== input changed')
     if (this.exclusive)
       this._value = event.target.value
     else if (this._value == null) {
@@ -261,12 +271,6 @@ class DCCInputChoice extends DCCInput {
     // Wait for all the options be ready
     await Promise.all(promises)
 
-    /*
-      let options = this.querySelectorAll(DCCInputOption.elementTag);
-      for (let o of options)
-         this._options.push({value: o.value, statement: o._statement});
-      */
-
     // <TODO> review this sentence (copied from dcc-input-typed but not analysed)
     /*
       const statement =
@@ -285,8 +289,8 @@ class DCCInputChoice extends DCCInput {
           child.tagName.toLowerCase() == DCCInputOption.elementTag) {
         nop++
         let iid = varid + '_' + nop
-        const element = (this.target || child.target)
-          ? "<dcc-button id='presentation-dcc-[id]' location='#in' topic='[target]' label='[statement]' divert='round' message='[value]' variable='[variable]'[connect]></dcc-button>[compute]"
+        if (this.target || child.target) {
+          const element = DCCInputOption.template.button
             .replace('[id]', iid)
             .replace('[target]', (child.target) ? child.target : this.target)
             .replace('[statement]', child._statement)
@@ -296,22 +300,35 @@ class DCCInputChoice extends DCCInput {
               ' connect="click:presentation-dcc-[id]-compute:compute/update"'
                 .replace('[id]', iid))
             .replace('[compute]', (child.compute == null) ? '' :
-              '<dcc-compute id="presentation-dcc-[id]-compute" expression="[expression]"></dcc-compute>'
+              DCCInputOption.template.compute
                 .replace('[id]', iid)
                 .replace('[expression]', child.compute))
-          : "<input id='presentation-dcc-[id]' type='[exclusive]' name='[variable]' value='[value]'[checked]>[statement]</input>"
+          html.push([1, element])
+        } else {
+          const element1 = DCCInputOption.template.choice
             .replace('[id]', iid)
             .replace('[exclusive]',
               (this.hasAttribute('exclusive') ? 'radio' : 'checkbox'))
             .replace('[variable]', this._variable)
-            .replace('[value]', child.value)
+            .replace('[value]',
+              (child.value == 'false' || child.value == 'true')
+                ? child._statement + ':' + child.value : child.value)
+            .replace('[checked]',
+              child.hasAttribute('checked') ? ' checked' : '')
+            .replace('[author]', (this.author) ? ' disabled' : '')
+          const element2 = DCCInputOption.template.label
+            .replace(/\[id\]/g, iid)
             .replace('[statement]', child._statement)
-            .replace('[checked]', child.hasAttribute('checked') ? ' checked' : '')
-        html.push([1, element])
+            html.push([1, element1, element2])
+        }
         inStatement = false
       } else {
-        const element = (child.nodeType == 3) ? child.textContent : child.outerHTML
-        if (inStatement && this._statement == null) { statement += element } else { html.push([0, element]) }
+        const element = (child.nodeType == 3) ?
+          child.textContent : child.outerHTML
+        if (inStatement && this._statement == null)
+          statement += element
+        else
+          html.push([0, element])
       }
       child = child.nextSibling
     }
@@ -341,61 +358,32 @@ class DCCInputChoice extends DCCInput {
     const shuffle = this.shuffle && !this.author
     if (shuffle) oopN = this._shuffle(oopN)
 
-    let presentation
     nop = 0
     for (let o of oopN) {
       if (html[oop[o]][0] == 0) {
         if (reveal && html[oop[o]][1].trim().length > 0) {
-            await this._applyRender('<span id="presentation-dcc">' + html[oop[o]][1] + '</span>',
+            await this._applyRender('<span id="presentation-dcc">' +
+              html[oop[o]][1] + '</span>',
               'innerHTML', 'input', 'presentation-dcc', false)
         }
       }
       else {
         nop++
         let presId = (shuffle) ? o+1 : nop
-        presentation =
-                 await this._applyRender(
-                   html[oop[o]][1], 'innerHTML', 'item_' + nop,
-                   'presentation-dcc-' + varid + '_' + presId, false)
+        let presentation =
+          await this._applyRender(
+            html[oop[o]][1], 'innerHTML', 'item_' + nop,
+            'presentation-dcc-' + varid + '_' + presId, false)
         presentation.addEventListener('change', this.inputChanged)
         this._options.push(presentation)
+        if (html[oop[o]][2])
+          await this._applyRender(
+            html[oop[o]][2], 'innerHTML', 'input',
+            'presentation-dcc-' + varid + '_' + presId + '-label', false)
+        else
+          this._editButtons['item_' + nop] = [DCCVisual.editDCCExpand]
       }
     }
-
-    /*
-    let presentation
-    nop = 0
-    for (const h of html) {
-      // <TODO> temporarily disabled
-      // if (h[0] == 0)
-      //       await this._applyRender(h[1], "innerHTML", "input");
-      // else {
-      if (h[0] == 1) {
-        nop++
-        presentation =
-               await this._applyRender(
-                 h[1], 'innerHTML', 'item_' + nop,
-                 'presentation-dcc-' + varid + '_' + nop, false)
-        presentation.addEventListener('change', this.inputChanged)
-        this._options.push(presentation)
-      }
-    }
-    */
-
-    // === post presentation setup
-    /*
-      if (presentation != null) {
-         // v = 1;
-         // for (let o of this._options) {
-         for (let v = 1; v <= nop; v++) {
-            let op = presentation.querySelector("#" + varid + v);
-            if (op != null) {
-               op.addEventListener("change", this.inputChanged);
-               this._options.push(op);
-            }
-         }
-      }
-      */
 
     this._presentationIsReady()
 
@@ -417,7 +405,7 @@ class DCCInputChoice extends DCCInput {
   }
 
   editButtons () {
-    return super.editButtons().concat([DCCVisual.editDCCExpand])
+    return this._editButtons
   }
 
   editExpandListener() {}
@@ -430,4 +418,21 @@ class DCCInputChoice extends DCCInput {
   DCCInputChoice.elementTag = 'dcc-input-choice'
   DCCInputChoice.editableCode = false
   customElements.define(DCCInputChoice.elementTag, DCCInputChoice)
+
+  DCCInputOption.template = {
+    button:
+      '<dcc-button id="presentation-dcc-[id]" location="#in" ' +
+        'topic="[target]" label="[statement]" divert="round" ' +
+        'message="[value]" variable="[variable]"[connect]>' +
+      '</dcc-button>[compute]',
+    choice:
+      '<input id="presentation-dcc-[id]" type="[exclusive]" ' +
+        'name="[variable]" value="[value]"[checked][author]>',
+    label:
+      '<label id="presentation-dcc-[id]-label" for="presentation-dcc-[id]" ' +
+        'style="margin-left: 10px">[statement]</label>',
+    compute:
+      '<dcc-compute id="presentation-dcc-[id]-compute" ' +
+        'expression="[expression]"></dcc-compute>'
+  }
 })()

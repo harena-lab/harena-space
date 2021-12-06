@@ -2324,7 +2324,7 @@ class Translator {
       for (const atr in obj) {
         if (!coreAttributes.includes(atr)) { extraAttr += this._mdSubField(atr, obj[atr]) } else if (atr == 'options') {
           extraAttr += '\n  * options:'
-          for (const p in obj[atr]) { extraAttr += '\n    * ' + p + ': ' + obj[atr][p] }
+          for (const p in obj[atr]) { extraAttr += "\n    * '" + p + "': " + obj[atr][p] }
         }
       }
 
