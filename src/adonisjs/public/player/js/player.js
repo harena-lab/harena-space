@@ -168,12 +168,25 @@ class PlayerManager {
   _nextFlowKnot () {
     let next = null
     if (this._state.flow) {
-      next = this._state.flow.shift()
-      if (this._state.flow.length == 0) { delete this._state.flow }
+      if (!this._currentKnot)
+        next = this._state.flow[0]
+      else {
+        let curr = -1
+        for (const c in this._state.flow)
+          if (this._state.flow[c].target == this._currentKnot) {
+            curr = c
+            break
+          }
+        if (curr > -1 && curr < this._state.flow.length-1)
+          next = this._state.flow[parseInt(curr)+1]
+      }
+      // next = this._state.flow.shift()
+      // if (this._state.flow.length == 0) { delete this._state.flow }
     }
     return next
   }
 
+  /*
   _updateFlowKnot (knot) {
     // console.log('=== knot & flow')
     // console.log(knot)
@@ -187,6 +200,7 @@ class PlayerManager {
     }
     // console.log(this._state.flow.slice())
   }
+  */
 
   async startPlayer (caseid) {
     const preCaseOff = true

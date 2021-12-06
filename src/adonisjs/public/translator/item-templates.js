@@ -107,7 +107,7 @@ Translator.htmlSubTemplates = {
     input:
 '{statement}? {variable}{subtype}{extra}',
     choice:
-'+ {label} <-> {target}{message}{state}',
+'{bullet} {label} <-> {target}{message}{state}',
     'context-open':
 '{{[namespace][context][id][property-value]',
     'context-close':
