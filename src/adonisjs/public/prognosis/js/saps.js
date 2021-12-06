@@ -229,6 +229,93 @@ class Saps {
       .replace(/\[_plaquetas\]/ig, txtGen['Plaquetas'] ||'não')
       .replace(/\[_oxigenacao\]/ig, txtGen['Oxigenação'] ||'não')
     }
+    else if(type == 'json') {
+      let textJson = {}
+      for(let i = 0; i < keys.length; i++){
+        if (sapsGroups['Comorbidade'].indexOf(keys[i]) > -1) {
+          if (txtGen['Comorbidade'])
+            txtGen['Comorbidade'].push(`${source[keys[i]]}`)
+          else{
+            txtGen['Comorbidade'] = []
+            txtGen['Comorbidade'] = source[keys[i]]
+          }
+        }else {
+          switch (keys[i]) {
+            case 'Motivo de admissão na UTI':
+              txtGen[keys[i]] = []
+              txtGen[keys[i]].push(`${source[keys[i]][0]}`)
+              for (let k = 1; k < source[keys[i]].length; k++) {
+                txtGen[keys[i]].push(`${source[keys[i]][k]}`)
+              }
+              break;
+            case 'Submetido à cirurgia':
+              let firstTxt
+              for (let k = 0; k < source[keys[i]].length; k++) {
+                if (!source[keys[i]][k].includes('submetido à cirurgia')) {
+                  if (txtGen[keys[i]])
+                    txtGen[keys[i]].push(`${source[keys[i]][k]}`)
+                  else{
+                    txtGen[keys[i]] = []
+                    txtGen[keys[i]].push(`${source[keys[i]][k]}`)
+                  }
+                }else {
+                  if (source[keys[i]][k].includes('não submetido à cirurgia')) {
+                    firstTxt = 'não'
+                  }else {
+                    firstTxt = `${source[keys[i]][k].substring(21,(source[keys[i]][k].length))}`
+                  }
+                }
+              }
+              if (txtGen[keys[i]]) {
+                txtGen[keys[i]].push(`${firstTxt}`)
+              }else {
+                txtGen[keys[i]] = []
+                txtGen[keys[i]].push(`${firstTxt}`)
+              }
+              break;
+            case 'Infectado antes da admissão':
+              txtGen[keys[i]] = []
+              txtGen[keys[i]].push(`${source[keys[i]][0]}`)
+              for (var k = 1; k < source[keys[i]].length; k++) {
+                txtGen[keys[i]].push(`${source[keys[i]][k]}`)
+              }
+              break;
+            case 'Admissão planejada':
+              if(source[keys[i]].includes('não')){
+                txtGen[keys[i]] = []
+                txtGen[keys[i]] = 'não'
+              }
+              else{
+                txtGen[keys[i]] = []
+                txtGen[keys[i]] = 'sim'
+              }
+              break;
+            case 'Droga vasoativa':
+              if(source[keys[i]].includes('sem')){
+                txtGen[keys[i]] = []
+                txtGen[keys[i]] = 'não'
+              }
+              else{
+                txtGen[keys[i]] = []
+                txtGen[keys[i]] = 'sim'
+              }
+              break;
+            default:
+              txtGen[keys[i]] = []
+              txtGen[keys[i]] = `${source[keys[i]]}`
+          }
+          // console.log('============ key')
+          // console.log(keys[i])
+          // console.log(source[keys[i]])
+        }
+        // console.log('============ key')
+        // console.log(keys[i])
+        // console.log(source[keys[i]])
+      }
+      txtReady = JSON.stringify(txtGen)
+    }
+    // console.log('============ text')
+    // console.log(txtReady)
     return txtReady
   }
   async calcSaps3Score(pacientData){
@@ -267,7 +354,7 @@ class Saps {
               sapsTextBuild[sapsScoreKeys[i]].push(sapsText)
             }*/
 
-            console.log(sapsValue)
+            // console.log(sapsValue)
             sapsCalcGroup[sapsScoreKeys[i]] = sapsValue
           }else {
             for (let k = 0; k < valueKey.length; k++) {
@@ -1314,6 +1401,9 @@ class Saps {
     let overviewText = this.buildSapsText('complex', sapsTextBuild)
 
     let pacientAbstract = this.buildSapsText('abstract', sapsTextBuild)
+    let pacientJson = this.buildSapsText('json', sapsTextBuild)
+
+
 
     if(!document.querySelector('#pacient-overview-wrapper > h5')){
       var txt = document.createElement('h5')
@@ -1324,6 +1414,7 @@ class Saps {
       txt.innerHTML = overviewText
     }
     document.querySelector('#pacient-abstract').value = pacientAbstract
+    document.querySelector('#pacient-abstract-json').value = pacientJson
     document.querySelector('dcc-submit[bind="submit-prognosis-lvl-txt"]')._computeTrigger()
     $('#pacient-overview-modal').modal('show')
     // console.log('===========================')

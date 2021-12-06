@@ -20,7 +20,7 @@ class TokenController {
   async checkToken () {
     if (document.getElementById('harena-header')) {
 
-      if (!TokenController.instance.tokenChecked) {
+      if (!TokenController.instance.tokenChecked || !sessionStorage.getItem('harena-user-id')) {
         const config = {
           method: 'GET',
           url: DCCCommonServer.managerAddressAPI + 'auth/check',
