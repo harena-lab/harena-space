@@ -98,6 +98,7 @@ class ChallengeProgress {
       alertDiv.style.zIndex = '2000'
       alertDiv.innerHTML = `
       Você acabou de liberar o Desafio 1, <a href="#" class="alert-link">clique aqui</a> para navegar até lá.
+      (Ou acesse pelo menu no canto superior esquerdo ou pela página inicial)
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
       <span aria-hidden="true">&times;</span>
       </button>`
@@ -114,6 +115,7 @@ class ChallengeProgress {
       alertDiv.style.zIndex = '2000'
       alertDiv.innerHTML = `
       Você acabou de liberar o Desafio 2, <a href="#" class="alert-link">clique aqui</a> para navegar até lá.
+      (Ou acesse pelo menu no canto superior esquerdo ou pela página inicial)
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
       <span aria-hidden="true">&times;</span>
       </button>`

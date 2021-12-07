@@ -2,7 +2,7 @@ class PrognosisBusDriver {
   //Controls and verifies message integrity. Ensures URL changes doesn't damage bus messages
   constructor() {
     this._instanceId = null
-    this._lugagge = null
+    this._luggage = null
     this._lane = null
     this._storageKey = 'prognosis-bus-storage'
     this._caseId = null
@@ -11,6 +11,7 @@ class PrognosisBusDriver {
     this._knotTrack = []
     this._variables = {}
     this._storedData = []
+    this._suitcase = []
     this.travelPoint = this.travelPoint.bind(this)
     MessageBus.progn.subscribe('navigate/#', this.travelPoint)
     this.start()
@@ -25,19 +26,19 @@ class PrognosisBusDriver {
   async start (){
     this._instanceId = await this.getInstanceId()
     this._lane = await this.busLaneCheck()
-    this._lugagge = await this.verifyLocalStorage(this._storageKey)
-    if(this._lugagge != null){
-      this._variables = this._lugagge.variables || {}
+    this._luggage = await this.verifyLocalStorage(this._storageKey)
+    if(this._luggage != null){
+      this._variables = this._luggage.variables || {}
       this.storedLaneCheck()
     }
     if(this._lane == 'case'){
-      if(this._lugagge){
+      if(this._luggage){
         await this.verifyKnotTrack()
         this.setKnotSequence()
-        if(!this._lugagge.openKnot)
+        if(!this._luggage.openKnot)
           this._currentKnot = this._knotSequence[0]
         else
-          this._currentKnot = this._lugagge.openKnot
+          this._currentKnot = this._luggage.openKnot
         if ((this._currentKnot != this._knotSequence[0])
         && new URL(document.location).pathname == '/prognosis/learn/player/'
         || new URL(document.location).pathname.includes('/prognosis/challenge')) {
@@ -101,6 +102,7 @@ class PrognosisBusDriver {
 
   async dispatchLuggage (){
     const storedData = await this.verifyLocalStorage()
+    let getlocal = localStorage.getItem(this._storageKey)
     console.log('======================================================================')
     console.log('============ Dispatching...')
     console.log('======================================================================')
@@ -159,6 +161,12 @@ class PrognosisBusDriver {
       }else {
         return false
       }
+    }else if (message.userId != storedData.userId) {
+      await PrognosisBusDriver.i.storeLocalStorage(await PrognosisBusDriver.i.closeCurrentEntity())
+      await PrognosisBusDriver.i.dispatchLuggage()
+      await PrognosisBus.i.start()
+      await PrognosisBusDriver.i.start()
+      return true
     }else{
       console.log('============ failed first integrityCheck')
       console.log(message.lane)
@@ -207,7 +215,7 @@ class PrognosisBusDriver {
         knotId: MessageBus.extractLevel(message.topic, 3),
         timeStamp: currentDateTime.toJSON()
        })
-      // await this.storeLocalStorage(message)
+      await this.storeLocalStorage(message)
       let newLuggage = await this.verifyLocalStorage()
       newLuggage.knotTrack = this._knotTrack
       newLuggage.openKnot = this._currentKnot
@@ -221,7 +229,7 @@ class PrognosisBusDriver {
           knotId: MessageBus.extractLevel(message.topic, 3),
           timeStamp: currentDateTime.toJSON()
         })
-        // await this.storeLocalStorage(message)
+        await this.storeLocalStorage(message)
         let newLuggage = await this.verifyLocalStorage()
         newLuggage.knotTrack = this._knotTrack
         newLuggage.openKnot = this._currentKnot
@@ -231,32 +239,42 @@ class PrognosisBusDriver {
   }
 
   async storeVariables (knot){
-    const storedData = await this.verifyLocalStorage()
     const _vars = document.querySelectorAll(`[data-bus-entity^="var/set"][data-bus-id^="${knot}"]`)
     for (let v of _vars) {
       let id = v.dataset.busId
-      this._variables[id] = v.value
+      try {
+        this._variables[id] = JSON.parse(v.value)
+      } catch (e) {
+        this._variables[id] = v.value
+      }
+
     }
 
   }
 
   async closeCurrentKnot (){
-
+    await this.checkNotStoredVars()
     const currentDateTime = new Date()
     const storedData = await this.verifyLocalStorage()
     this._currentKnot = storedData.openKnot
     await this.storeVariables(this._currentKnot)
     this._storedData = storedData.trail
+    console.log('============----------------------------------------------------------------------------------------------')
+    console.log(this._variables)
     for (const v in this._variables) {
-      console.log('============ logging variables')
-      console.log(`var/set/${v}`)
-      console.log(this._variables[v])
+
+      if(MessageBus.extractLevel(v,1) == this._currentKnot){
+        console.log('============ logging variables')
+        console.log(`var/set/${v}`)
+        console.log(JSON.stringify(this._variables[v]))
+      }
       let dump = {
         'topic': `var/set/${v}`,
         'value': this._variables[v],
         'timeStamp': currentDateTime.toJSON(),
       }
-      this._storedData.push(dump)
+      if(MessageBus.extractLevel(dump.topic,3) == this._currentKnot)
+        this._storedData.push(dump)
       // MessageBus.progn.publish('var/set/' + v, this._variables[v])
 
     }
@@ -340,7 +358,24 @@ class PrognosisBusDriver {
     }
   }
 
+  async checkNotStoredVars () {
+    const storedData = await this.verifyLocalStorage()
+    if(storedData && storedData.trail){
+      console.log('============ _suitcase size')
+      console.log(this._suitcase)
+      console.log(this._suitcase.length)
+      if(this._suitcase.length > 0){
+        let newLuggage
+        newLuggage = storedData
+        newLuggage.trail.push(this._suitcase)
+        this._suitcase = []
+        localStorage.setItem(this._storageKey, JSON.stringify(newLuggage))
+      }
+    }
+  }
+
   async storeLocalStorage (message){
+    await this.checkNotStoredVars()
     const storedData = await this.verifyLocalStorage()
     console.log('============ storing:')
     console.log(message)
@@ -368,9 +403,9 @@ class PrognosisBusDriver {
           'topic': message.topic,
           'timeStamp': message.timeStamp,
         }
-        this._storedData.push(dump)
         let newLuggage = storedData
         newLuggage.trail = this._storedData
+        newLuggage.trail.push(dump)
 
         if(MessageBus.extractLevel(message.topic,2) == 'start' && (MessageBus.extractLevel(message.topic,1) == storedData.lane)){
           newLuggage.openLane = message.topic
@@ -386,22 +421,48 @@ class PrognosisBusDriver {
         // console.log(message.topic)
       }
     }
-    return localStorage.getItem(this._storageKey)
+    return JSON.parse(localStorage.getItem(this._storageKey))
   }
 
   async storeTrigger (message){
-    const storedData = await this.verifyLocalStorage()
+    // console.log('============ before update')
+    // const storedData = await this.verifyLocalStorage()
+    // console.log(storedData)
     let dump = {
       topic: message.topic,
       timeStamp: message.timeStamp
     }
-    console.log('============ storing trigger')
-    console.log(dump)
-    this._storedData = storedData.trail
-    let newLuggage = storedData
-    this._storedData.push(dump)
-    newLuggage.trail = this._storedData
-    localStorage.setItem(this._storageKey, JSON.stringify(newLuggage))
+    this._suitcase.push(dump)
+    // console.log('============ storing var with value')
+    // console.log(dump)
+    // this._storedData = storedData.trail
+    // let newLuggage = storedData
+    // this._storedData.push(dump)
+    // newLuggage.trail = this._storedData
+    // localStorage.setItem(this._storageKey, JSON.stringify(newLuggage))
+    // console.log('============ after update')
+    // console.log(JSON.parse(localStorage.getItem(this._storageKey)))
+  }
+
+  async storeContainsValue (message){
+    // console.log('============ before update')
+    // const storedData = await this.verifyLocalStorage()
+    // console.log(storedData)
+    let dump = {
+      topic: message.topic,
+      value: message.value,
+      timeStamp: message.timeStamp
+    }
+    this._suitcase.push(dump)
+    // console.log('============ storing var with value')
+    // console.log(dump)
+    // this._storedData = storedData.trail
+    // let newLuggage = storedData
+    // this._storedData.push(dump)
+    // newLuggage.trail = this._storedData
+    // localStorage.setItem(this._storageKey, JSON.stringify(newLuggage))
+    // console.log('============ after update')
+    // console.log(JSON.parse(localStorage.getItem(this._storageKey)))
   }
 
   async storeInCodeVars(message, mode){
@@ -439,11 +500,12 @@ class PrognosisBusDriver {
       this._variables[MessageBus.extractLevelsSegment(message.topic,3)] = message.value
       console.log('============ storing in code var (both trail and vars)')
       console.log(dump)
-      this._storedData = storedData.trail
-      newLuggage = storedData
-      this._storedData.push(dump)
-      newLuggage.trail = this._storedData
-      localStorage.setItem(this._storageKey, JSON.stringify(newLuggage))
+      this._suitcase.push(dump)
+      // this._storedData = storedData.trail
+      // newLuggage = storedData
+      // this._storedData.push(dump)
+      // newLuggage.trail = this._storedData
+      // localStorage.setItem(this._storageKey, JSON.stringify(newLuggage))
     }
   }
 
@@ -479,6 +541,7 @@ class PrognosisBusDriver {
   }
 
   async closeCurrentEntity (){
+    await this.checkNotStoredVars()
     // await this.storeVariables()
     const currentTime = new Date()
     const storedData = await this.verifyLocalStorage()

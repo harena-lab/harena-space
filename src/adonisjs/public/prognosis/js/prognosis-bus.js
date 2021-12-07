@@ -15,6 +15,7 @@ class PrognosisBus {
     MessageBus.progn.subscribe('section/#', this.section)
     MessageBus.progn.subscribe('case/#', this.case)
     MessageBus.progn.subscribe('var/#', this.vars)
+    MessageBus.progn.subscribe('compute/#', this.vars)
     MessageBus.progn.subscribe('trigger/#', this.vars)
     MessageBus.progn.subscribe('user/#', this.user)
 
@@ -220,13 +221,26 @@ class PrognosisBus {
   async vars(topic, message){
     const timeStamp = new Date().toJSON()
     if (MessageBus.matchFilter(topic, 'var/set/#')) {
-      PrognosisBusDriver.i.storeInCodeVars({topic:topic, value:message, timeStamp:timeStamp})
+      await PrognosisBusDriver.i.storeInCodeVars({topic:topic, value:message, timeStamp:timeStamp})
       // console.log(MessageBus.extractLevel(topic, 3))
     }
     if (MessageBus.matchFilter(topic, 'trigger/run/#')) {
-      PrognosisBusDriver.i.storeTrigger({topic:topic, timeStamp:timeStamp})
+      await PrognosisBusDriver.i.storeContainsValue({topic:topic, timeStamp:timeStamp})
       // console.log(MessageBus.extractLevel(topic, 3))
     }
+    if (MessageBus.matchFilter(topic, 'compute/#')) {
+      await PrognosisBusDriver.i.storeContainsValue({topic:topic, value:message, timeStamp:timeStamp})
+      // console.log(MessageBus.extractLevel(topic, 3))
+    }
+    if (MessageBus.matchFilter(topic, 'input/#')) {
+      await PrognosisBusDriver.i.storeContainsValue({topic:topic, value:message, timeStamp:timeStamp})
+      // console.log(MessageBus.extractLevel(topic, 3))
+    }
+  }
+
+  async compute(topic, message){
+    const timeStamp = new Date().toJSON()
+    await PrognosisBusDriver.i.storeCompute({topic:topic, value:message, timeStamp:timeStamp})
   }
 
   overwatch(){

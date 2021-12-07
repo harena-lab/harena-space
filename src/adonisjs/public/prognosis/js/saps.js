@@ -313,6 +313,7 @@ class Saps {
         // console.log(source[keys[i]])
       }
       txtReady = JSON.stringify(txtGen)
+
     }
     // console.log('============ text')
     // console.log(txtReady)
@@ -1274,6 +1275,7 @@ class Saps {
     }
     if(document.querySelector('#saps-survival')){
       document.querySelector('#saps-survival').value = round((100 - mortalityPercentage),1)
+      MessageBus.progn.publish('compute/predict/sapsCalc', round((100 - mortalityPercentage),1), false)
       MessageBus.i.publish('var/set/sapsCalc', round((100 - mortalityPercentage),1), false)
     }
 
@@ -1414,6 +1416,8 @@ class Saps {
       txt.innerHTML = overviewText
     }
     document.querySelector('#pacient-abstract').value = pacientAbstract
+    if(MessageBus.progn)
+      MessageBus.progn.publish('input/changed/presentation/pacientAbstract', pacientAbstract)
     document.querySelector('#pacient-abstract-json').value = pacientJson
     document.querySelector('dcc-submit[bind="submit-prognosis-lvl-txt"]')._computeTrigger()
     $('#pacient-overview-modal').modal('show')
