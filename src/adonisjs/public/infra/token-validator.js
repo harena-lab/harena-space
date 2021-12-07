@@ -29,6 +29,15 @@ class TokenController {
 
         await axios(config)
           .then(function (endpointResponse) {
+            if(sessionStorage.getItem('harena-user-id')){
+              if(sessionStorage.getItem('harena-user-id') != endpointResponse.data.userId){
+                sessionStorage.clear()
+                localStorage.clear()
+              }
+            }else{
+              sessionStorage.clear()
+              localStorage.clear()
+            }
             sessionStorage.setItem('harena-user-grade', endpointResponse.data.grade)
             sessionStorage.setItem('harena-user-institution', endpointResponse.data.institution)
             sessionStorage.setItem('harena-user-institution-id', endpointResponse.data.institutionId)

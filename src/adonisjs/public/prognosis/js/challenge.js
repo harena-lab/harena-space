@@ -74,12 +74,13 @@ class Challenge {
      }
      nextStep.addEventListener('click', fnNextStep)
 
-     // const createPacientBtn =  document.querySelector('#btn-create-challenge-one')
-     // const fnCreatePacientBtn = function (){
-     //   if(this.form.checkValidity())
-     //   Saps.i.calcSaps3Score(this.form)
-     // }
-     // createPacientBtn.addEventListener('click', fnCreatePacientBtn)
+     const createPacientBtn =  document.querySelector('#btn-create-challenge-one')
+     const fnCreatePacientBtn = function (){
+       if(this.form.checkValidity())
+        if(MessageBus.progn)
+          MessageBus.progn.publish('input/changed/overview/playerPrognGuess', document.querySelector('#player-survival-rate').value)
+     }
+     createPacientBtn.addEventListener('click', fnCreatePacientBtn)
 
      let btnNextLvl = document.querySelector('#btn-ch1-next-lvl')
      let challenge
