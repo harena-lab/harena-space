@@ -36,16 +36,20 @@ class Prognosis {
     }
     if (new URL(document.location).pathname == '/prognosis/learn/player/') {
       Prognosis.i.getPacientOptions()
+      // console.log('============')
+      // console.log(document.querySelector('dcc-submit[connect="submit:harena-user-property:service/request/put"][bind="submit-prognosis-lvl"]'))
+      document.querySelector('dcc-submit[connect="submit:harena-user-property:service/request/put"][bind="submit-prognosis-lvl"]')._computeTrigger()
 
       const nextStep =  document.querySelector('#btn-next-step')
-      const fnnextStep = function (){
+      const fnNextStep = function (){
         if(this.form.checkValidity()){
-          window.location.href = `/prognosis/learn/player/result?calc=${this.form.querySelector('#saps-survival').value}&playerCalc=${this.form.querySelector('#player-survival-rate').value}`
+          MessageBus.progn.publish('knot/navigate/>', {url: `/prognosis/learn/player/result?calc=${this.form.querySelector('#saps-survival').value}&playerCalc=${this.form.querySelector('#player-survival-rate').value}`})
+          // window.location.href = `/prognosis/learn/player/result?calc=${this.form.querySelector('#saps-survival').value}&playerCalc=${this.form.querySelector('#player-survival-rate').value}`
         }
         // console.log(this.form.querySelector('#saps-survival').value)
         // console.log(this.form.querySelector('#player-survival-rate').value)
       }
-      nextStep.addEventListener('click', fnnextStep)
+      nextStep.addEventListener('click', fnNextStep)
 
       const createPacientBtn =  document.querySelector('#btn-create-pacient')
       const fnCreatePacientBtn = function (){
@@ -63,8 +67,54 @@ class Prognosis {
       })
 
     }
+    if (new URL(document.location).pathname.includes('/prognosis/challenge')) {
+      document.querySelector('dcc-submit[connect="submit:harena-user-property:service/request/put"][bind="submit-prognosis-lvl"]')._computeTrigger()
+      if (new URL(document.location).pathname.includes('/prognosis/challenge/1/')){
+        Prognosis.i.getPacientOptions('challengeOne')
+
+        const nextStep =  document.querySelector('#btn-next-step')
+        const fnNextStep = function (){
+          if(this.form.checkValidity()){
+            //Action button end level
+          }
+        }
+        nextStep.addEventListener('click', fnNextStep)
+
+        const createPacientBtn =  document.querySelector('#btn-create-challenge-one')
+        const fnCreatePacientBtn = function (){
+          if(this.form.checkValidity())
+            Saps.i.calcSaps3Score(this.form)
+        }
+        createPacientBtn.addEventListener('click', fnCreatePacientBtn)
+
+        const playerSurvivalRate = document.querySelector('#player-survival-rate')
+        const survivalRateOutputTxt = document.querySelector('#player-survival-rate-txt')
+        playerSurvivalRate.value = 0
+        survivalRateOutputTxt.innerHTML = playerSurvivalRate.value+'%'
+        playerSurvivalRate.addEventListener('input', function(){
+          survivalRateOutputTxt.innerHTML = playerSurvivalRate.value+'%'
+        })
+      }else{
+        Prognosis.i.getPacientOptions('challengeTwo')
+
+        const nextStep =  document.querySelector('#btn-next-step')
+        const fnNextStep = function (){
+          if(this.form.checkValidity()){
+            //Action button end level
+          }
+        }
+        nextStep.addEventListener('click', fnNextStep)
+
+        const createPacientBtn =  document.querySelector('#btn-create-challenge-two')
+        const fnCreatePacientBtn = function (){
+          if(this.form.checkValidity())
+          Saps.i.calcSaps3Score(this.form)
+        }
+        createPacientBtn.addEventListener('click', fnCreatePacientBtn)
+      }
+    }
     if (new URL(document.location).pathname.includes('/prognosis/calculator')){
-      Prognosis.i.getPacientOptions(true)
+      Prognosis.i.getPacientOptions('calculator')
     }
     // if (new URL(document.location).pathname.includes('/prognosis/creation')){
     //   var btnAddOption = document.querySelectorAll('.btn-add-option')
@@ -78,9 +128,9 @@ class Prognosis {
     // }
     if (new URL(document.location).pathname.includes('/learn/player/result')){
       const retryLvl = document.querySelector('#btn-retry')
-      retryLvl.addEventListener('click', function(){
-        window.location.href = `/prognosis/learn/player/?diffic=${localStorage.getItem('prognosis-current-lvl')}`
-      })
+      // retryLvl.addEventListener('click', function(){
+      //   window.location.href = `/prognosis/learn/player/?diffic=${localStorage.getItem('prognosis-current-lvl')}`
+      // })
       for (var elem of document.querySelectorAll('input')) {
         elem.checked = false
       }
@@ -94,14 +144,16 @@ class Prognosis {
       if(currentLvl.value != '' || (localStorage.getItem('prognosis-current-lvl')
       && localStorage.getItem('prognosis-current-lvl') > 0)){
         btnProgress.classList.remove('d-none')
-        btnContinue.setAttribute('onclick', 'location.href="/prognosis/learn/player"')
+        // btnContinue.setAttribute('onclick', 'location.href="/prognosis/learn/player"')
+        btnContinue.dataset.busEntity = 'case/navigate'
+        btnContinue.dataset.busId = '/continue'
+        btnContinue.dataset.action = '/prognosis/learn/player/'
         btnContinue.textContent = 'Continuar'
       }
     }
     if(document.querySelector('#db-highest')){
       this.syncProgression()
     }
-
   }
 
   async syncProgression(){
@@ -362,89 +414,110 @@ class Prognosis {
     return src
   }
 
-  async getPacientOptions (calculator){
+  async getPacientOptions (mode){
     let pacientInfo
-    if(calculator){
-      pacientInfo = Prognosis.pacientGeneral
-    } else {
+    let strLocalStorageCurrentLvl
+    let strLocalStorageHighestLvl
+    let strLocalStorageHideIntro
+    switch (mode) {
+      case 'calculator':
+        pacientInfo = Prognosis.pacientGeneral
+        break;
+      case 'challengeOne':
+        pacientInfo = Prognosis.challengeOneLvls
+        strLocalStorageCurrentLvl = 'prognosis-challenge1-current-lvl'
+        strLocalStorageHighestLvl = 'prognosis-challenge1-highest-lvl'
+        break;
+      case 'challengeTwo':
+        pacientInfo = Prognosis.challengeTwoLvls
+        strLocalStorageCurrentLvl = 'prognosis-challenge2-current-lvl'
+        strLocalStorageHighestLvl = 'prognosis-challenge2-highest-lvl'
+        break;
+      default:
       pacientInfo = Prognosis.learningPrognosisLvls
-
+      strLocalStorageCurrentLvl = 'prognosis-current-lvl'
+      strLocalStorageHighestLvl = 'prognosis-highest-lvl'
     }
+
     let selectedPacient
     const urlDiffic = new URL(document.location).searchParams.get('diffic')
     const currentLvl = document.querySelector('#current-lvl')
     const highestLvl = document.querySelector('#highest-lvl')
-    const localCurrentLvl = localStorage.getItem('prognosis-current-lvl')
+    const localCurrentLvl = localStorage.getItem(strLocalStorageCurrentLvl)
 
     if((localCurrentLvl && localCurrentLvl != null && localCurrentLvl != '') || currentLvl.value){
       if(currentLvl && currentLvl.value != ''){
-        localStorage.setItem('prognosis-current-lvl', currentLvl.value)
+        localStorage.setItem(strLocalStorageCurrentLvl, currentLvl.value)
         if(highestLvl && highestLvl.value != ''){
-          localStorage.setItem('prognosis-highest-lvl', highestLvl.value)
+          localStorage.setItem(strLocalStorageHighestLvl, highestLvl.value)
         }
-        if((urlDiffic) && (localStorage.getItem('prognosis-current-lvl') != urlDiffic)){
+        if((urlDiffic) && (localStorage.getItem(strLocalStorageCurrentLvl) != urlDiffic)){
           if(highestLvl.value != '' && parseInt(highestLvl.value) >= urlDiffic){
-            localStorage.setItem('prognosis-current-lvl', urlDiffic)
+            localStorage.setItem(strLocalStorageCurrentLvl, urlDiffic)
           }else if (currentLvl.value == ''){
-            localStorage.setItem('prognosis-current-lvl', 1)
+            localStorage.setItem(strLocalStorageCurrentLvl, 1)
           }else if(highestLvl.value != ''){
-            localStorage.setItem('prognosis-highest-lvl', highestLvl.value)
-            localStorage.setItem('prognosis-current-lvl', highestLvl.value)
+            localStorage.setItem(strLocalStorageHighestLvl, highestLvl.value)
+            localStorage.setItem(strLocalStorageCurrentLvl, highestLvl.value)
           }else{
-            localStorage.setItem('prognosis-highest-lvl', localStorage.getItem('prognosis-current-lvl'))
+            localStorage.setItem(strLocalStorageHighestLvl, localStorage.getItem(strLocalStorageCurrentLvl))
           }
         }
-        if(localStorage.getItem('prognosis-highest-lvl') == null || localStorage.getItem('prognosis-highest-lvl') == ''){
-          localStorage.setItem('prognosis-highest-lvl', localStorage.getItem('prognosis-current-lvl'))
+        if(localStorage.getItem(strLocalStorageHighestLvl) == null || localStorage.getItem(strLocalStorageHighestLvl) == ''){
+          localStorage.setItem(strLocalStorageHighestLvl, localStorage.getItem(strLocalStorageCurrentLvl))
         }
       }
 
-      if((highestLvl && highestLvl.value == '') && localStorage.getItem('prognosis-current-lvl') != null){
-        localStorage.setItem('prognosis-highest-lvl', localStorage.getItem('prognosis-current-lvl'))
+      if((highestLvl && highestLvl.value == '') && localStorage.getItem(strLocalStorageCurrentLvl) != null){
+        localStorage.setItem(strLocalStorageHighestLvl, localStorage.getItem(strLocalStorageCurrentLvl))
       }
-      else if ((highestLvl && highestLvl.value == '') && localStorage.getItem('prognosis-current-lvl') == null){
-        localStorage.setItem('prognosis-highest-lvl', 1)
-        localStorage.setItem('prognosis-current-lvl', 1)
+      else if ((highestLvl && highestLvl.value == '') && localStorage.getItem(strLocalStorageCurrentLvl) == null){
+        localStorage.setItem(strLocalStorageHighestLvl, 1)
+        localStorage.setItem(strLocalStorageCurrentLvl, 1)
       }
-      selectedPacient = pacientInfo.pacients[localStorage.getItem('prognosis-current-lvl')-1]
+      selectedPacient = pacientInfo.pacients[localStorage.getItem(strLocalStorageCurrentLvl)-1]
     }else{
         selectedPacient = pacientInfo.pacients[0]
         if(!new URL(document.location).pathname.includes('calculator'))
-          localStorage.setItem('prognosis-current-lvl', pacientInfo.pacients[0].dificuldade)
-          localStorage.setItem('prognosis-highest-lvl', pacientInfo.pacients[0].dificuldade)
+          localStorage.setItem(strLocalStorageCurrentLvl, pacientInfo.pacients[0].dificuldade)
+          localStorage.setItem(strLocalStorageHighestLvl, pacientInfo.pacients[0].dificuldade)
     }
-    if(document.querySelector('#welcome-lvl-modal') && (localStorage.getItem('prognosis-current-lvl') == 1
-      || localStorage.getItem('prognosis-current-lvl')==null) && (!localStorage.getItem('hide-intro-1'))){
-      let welcomeModal = document.querySelector('#welcome-lvl-modal')
-      welcomeModal.querySelector('.modal-title').textContent = 'Seu primeiro paciente'
-      welcomeModal.querySelector('.modal-body > p').innerHTML = `Hoje é seu primeiro dia no estágio.
-      As moiras não acham que você está preparado para ser mandado direto pro trabalho em campo,
-      então elas querem te testar. Qual o perfil do paciente que Aisa raramente cortaria o fio da vida?
-      <br><br>Escolha as variáveis que aumentam a chance de sobrevivência do paciente à chegada na UTI.`
+    MessageBus.progn.publish('case/get/currentLvl', localStorage.getItem(strLocalStorageCurrentLvl))
+    if (new URL(document.location).pathname.includes('learn/player')) {
 
-      $('#welcome-lvl-modal').modal('show')
-      localStorage.setItem('hide-intro-1', true)
-    }else if(document.querySelector('#welcome-lvl-modal') && (localStorage.getItem('prognosis-current-lvl') == 2)
-    && (!localStorage.getItem('hide-intro-2'))){
-      let welcomeModal = document.querySelector('#welcome-lvl-modal')
-      welcomeModal.querySelector('.modal-title').textContent = 'Nem mesmo os deuses'
-      welcomeModal.querySelector('.modal-body > p').innerHTML = `Continuando seu treinamento,
-      as moiras querem te mostrar que nem os deuses escolhem tudo... Quem dirá você! Nas próximas fases,
-      alguns parâmetros já estarão pré-definidos, demarcados com esse símbolo: <i class="fas fa-lock"></i>.
-      <br><br> Com os demais, continue escolhendo opções que aumentem
-      a chance de sobrevivência do seu paciente.`
+      if(document.querySelector('#welcome-lvl-modal') && (localStorage.getItem(strLocalStorageCurrentLvl) == 1
+      || localStorage.getItem(strLocalStorageCurrentLvl)==null) && (!localStorage.getItem('hide-intro-1'))){
+        let welcomeModal = document.querySelector('#welcome-lvl-modal')
+        welcomeModal.querySelector('.modal-title').textContent = 'Seu primeiro paciente'
+        welcomeModal.querySelector('.modal-body > p').innerHTML = `Hoje é seu primeiro dia no estágio.
+        As moiras não acham que você está preparado para ser mandado direto pro trabalho em campo,
+        então elas querem te testar. Qual o perfil do paciente que Aisa raramente cortaria o fio da vida?
+        <br><br>Escolha as variáveis que aumentam a chance de sobrevivência do paciente à chegada na UTI.`
 
-      $('#welcome-lvl-modal').modal('show')
-      localStorage.setItem('hide-intro-2', true)
+        $('#welcome-lvl-modal').modal('show')
+        localStorage.setItem('hide-intro-1', true)
+      }else if(document.querySelector('#welcome-lvl-modal') && (localStorage.getItem(strLocalStorageCurrentLvl) == 2)
+      && (!localStorage.getItem('hide-intro-2'))){
+        let welcomeModal = document.querySelector('#welcome-lvl-modal')
+        welcomeModal.querySelector('.modal-title').textContent = 'Nem mesmo os deuses'
+        welcomeModal.querySelector('.modal-body > p').innerHTML = `Continuando seu treinamento,
+        as moiras querem te mostrar que nem os deuses escolhem tudo... Quem dirá você! Nas próximas fases,
+        alguns parâmetros já estarão pré-definidos, demarcados com esse símbolo: <i class="fas fa-lock"></i>.
+        <br><br> Com os demais, continue escolhendo opções que aumentem
+        a chance de sobrevivência do seu paciente.`
+
+        $('#welcome-lvl-modal').modal('show')
+        localStorage.setItem('hide-intro-2', true)
+      }
     }
-
     if(new URL(document.location).pathname.includes('calculator') || new URL(document.location).pathname.includes('creation'))
       selectedPacient = pacientInfo.pacients[0]
-    if(document.querySelector('h1.pacient-title')){
-      let title = document.querySelector('h1.pacient-title')
+    if(document.querySelector('.pacient-title')){
+      let title = document.querySelector('.pacient-title')
       title.innerHTML = title.innerHTML
       .replace('dificuldade 1',`dificuldade ${selectedPacient.dificuldade}`)
     }
+    MessageBus.i.publish('prognosis/current/pacient', selectedPacient, false)
 
     ////////////////////////////////////////////////////////////////////////////////////////////
     function objectfyPlayerOptions(fnVariable, fnWrapper, fnPrependTxt){
@@ -1377,6 +1450,7 @@ class Prognosis {
     }
 
   }
+
   bestPacientScore(pacient){
     // console.log('============ recieving pacient for best score check')
     // console.log(pacient)
@@ -1454,6 +1528,51 @@ class Prognosis {
 
 
 
+  }
+
+  calcPrognAcc (playerCalc, sapsCalc, prognRange){
+    const diffCalc = parseFloat(playerCalc)-parseFloat(sapsCalc)
+    /////ON PROGRESS
+    if(diffCalc > prognRange){
+      // console.log('============ super estimado')
+      return('Super estimado')
+
+    }else if (diffCalc < -prognRange) {
+      // console.log('============ sub estimado')
+      return('Sub estimado')
+
+    }else if (diffCalc <= prognRange && diffCalc >= -prognRange) {
+      // console.log('============ na mosca')
+      return('Na mosca! :)')
+
+    }
+  }
+
+  calcPrognRange (min, max, sapsCalc) {
+
+    if(sapsCalc > max){
+      return('Super estimado')
+
+    }else if (sapsCalc < min) {
+      return('Sub estimado')
+
+    }else if (sapsCalc <= max && sapsCalc >= min) {
+      return('Na mosca! :)')
+
+    }
+
+  }
+
+  calcPrognPerf (sapsCalc, perfectValue){
+    if(parseInt(perfectValue.value) == parseInt(sapsCalc)){
+      // console.log('============ paciente perfeito')
+
+      return('Sim!')
+    }else{
+      // console.log('============ paciente imperfeito :(')
+      // console.log(perfectValue)
+      return('Não...')
+    }
   }
 
   async playerResult(){
@@ -1548,6 +1667,7 @@ class Prognosis {
 
     var numbers = document.querySelectorAll('.roulette-number')
     const availableN = Math.round(sapsCalc/10)
+    //Selected numbers roulette array
     var selectedN = []
     if (numbers) {
       var fnSelectNum = function (){
@@ -1583,6 +1703,7 @@ class Prognosis {
       const fnBtnSpin = function (){
         const sapsCalc = new URL(document.location).searchParams.get('calc')
         if(availableN == selectedN.length){
+          MessageBus.progn.publish('trigger/run/roulette/spinRoulette')
           this.disabled = true
           Prognosis.i.spinRoulette(selectedN)
           document.querySelector('#roulette-invalid').classList.add('d-none')
@@ -1608,34 +1729,11 @@ class Prognosis {
       if (prognResultAcc){
         const playerGuess = new URL(document.location).searchParams.get('playerCalc')
         const sapsCalc = new URL(document.location).searchParams.get('calc')
-        const diffCalc = parseFloat(playerGuess)-parseFloat(sapsCalc)
-        /////ON PROGRESS
-        if(diffCalc > 10){
-          // console.log('============ super estimado')
-          prognResultAcc.textContent = 'Super estimado'
-
-        }else if (diffCalc < -10) {
-          // console.log('============ sub estimado')
-          prognResultAcc.textContent = 'Sub estimado'
-
-        }else if (diffCalc <= 10 && diffCalc >= -10) {
-          // console.log('============ na mosca')
-          prognResultAcc.textContent = 'Na mosca! :)'
-
-        }
-
+        prognResultAcc.textContent = this.calcPrognAcc(playerGuess, sapsCalc, 10)
       }
       if(prognPerfect){
         const perfectValue = document.querySelector('#prognosis-lvl-perfect')
-        if(parseInt(perfectValue.value) == parseInt(sapsCalc)){
-          // console.log('============ paciente perfeito')
-
-          prognPerfect.textContent = 'Sim!'
-        }else{
-          // console.log('============ paciente imperfeito :(')
-          // console.log(perfectValue)
-          prognPerfect.textContent = 'Não...'
-        }
+        prognPerfect.textContent = this.calcPrognPerf(sapsCalc, perfectValue.value)
       }
   }
 
@@ -1648,25 +1746,31 @@ class Prognosis {
     rouletteSVG.parentElement.classList.add('no-pointer')
 
     function getRandomInt(min, max) {
-      min = Math.ceil(min);
-      max = Math.floor(max);
-      return Math.floor(Math.random() * (max - min)) + min;
+      min = Math.ceil(min)
+      max = Math.floor(max)
+      MessageBus.progn.publish('compute/random/roulette/angle', (Math.floor(Math.random() * (max - min)) + min))
+      return Math.floor(Math.random() * (max - min)) + min
     }
     const fnEndSpin = function(){
       const btnNextLvl = document.querySelector('#btn-next-lvl')
       btnNextLvl.classList.remove('d-none')
       if(parseInt(localStorage.getItem('prognosis-current-lvl')) == 10)
         btnNextLvl.innerHTML = 'Voltar para lista'
-      btnNextLvl.addEventListener('click', function (){
+      const fnBtnNextLvl = function (){
         let nextLvl = parseInt(localStorage.getItem('prognosis-current-lvl'))+1
         if(nextLvl>10)
           nextLvl = 10
-        if(nextLvl<10)
-          document.location.href = '/prognosis/learn/player/?diffic=' + nextLvl
-        else{
-          document.location.href = '/prognosis/learn/progress'
+        if(nextLvl<10){
+          this.dataset.busEntity = 'case/navigate'
+          this.dataset.busId = '/>'
+          this.dataset.action = `/prognosis/learn/player/?diffic=${nextLvl}`
+        }else{
+          this.dataset.busEntity = 'section/navigate'
+          this.dataset.busId = '/prognosis/learn/progress/'
+          this.dataset.action = '/prognosis/learn/progress/'
         }
-      })
+      }
+      btnNextLvl.addEventListener('click', fnBtnNextLvl)
       btnSpin.disabled = false
 
       rouletteAngle = rouletteSVG.transform.animVal[0].angle
@@ -1713,7 +1817,8 @@ class Prognosis {
         selectedEl.querySelector('path').setAttribute('fill','#9f0202')
         if(!document.querySelector('#roulette-result'))
           wrapper.insertBefore(resultTxt, document.querySelector('#svg-wrapper').nextSibling)
-
+        MessageBus.progn.publish('var/set/roulette/spinNumber', angleToNum)
+        MessageBus.progn.publish('var/set/roulette/rouletteNSelected', selectedN)
       }
     }
     if(!btnSpin.dataset.roulette == false){
@@ -4357,6 +4462,934 @@ class Prognosis {
       },
 
     ]
+  }
+
+  Prognosis.challengeOneLvls = {
+    "pacients":[
+      {
+        "dificuldade": "1",
+        "Idade":{
+          "locked": [
+            {
+              "Idade":{
+                "selectList":"true",
+                "values":[
+                  "<40 anos",
+                ]
+              }
+            }
+          ],
+          "open": []
+        },
+        "Origem":{
+          "locked": [
+            {
+              "Origem":{
+                "selectList":"true",
+                "values":[
+                  "Pronto Socorro",
+                ]
+              },
+            }
+          ],
+          "open": [],
+        },
+        "Comorbidade":{
+          "locked": [
+            {
+              "IC NYHA IV": {
+                "values": [
+                  "Sim",
+                ],
+              },
+            },
+          ],
+          "open": [],
+        },
+        "Contexto da admissão": {
+          "locked": [
+            {
+              "Admissão planejada": {
+                "values":[
+                  "Sim",
+                ]
+              },
+            },
+            {
+              "Submetido à cirurgia": {
+                "cascade": "true",
+                "radioYN": "true",
+                "uniqueValues": "true",
+                "values": [
+                  "Cirurgia eletiva",
+                ],
+                "child": [
+                  "Transplante",
+                ],
+              },
+            },
+            {
+              "Motivo de admissão na UTI": {
+                "values": [
+                  "Arritmia",
+                ],
+              },
+            },
+          ],
+          "open": []
+        },
+        "Status clínico": {
+          "locked": [
+            {
+              "Escala de Coma de Glasgow": {
+                "uniqueValues":"true",
+                "values": [
+                  ">=13",
+                ],
+              },
+            },
+            {
+              "Temperatura": {
+                "uniqueValues":"true",
+                "values": [
+                  ">=35 °C",
+                ],
+              },
+            },
+            {
+              "Frequência cardíaca": {
+                "uniqueValues":"true",
+                "values": [
+                  "<120 bpm",
+                ],
+              },
+            },
+            {
+              "Pressão sistólica": {
+                "uniqueValues":"true",
+                "values": [
+                  ">=120 mmHg",
+                ],
+              },
+            },
+            {
+              "Droga vasoativa": {
+                "uniqueValues":"true",
+                "values": [
+                  "Não",
+                ]
+              },
+            },
+          ],
+          "open": [],
+        },
+        "Alterações laboratoriais": {
+          "locked": [
+            {
+              "Bilirrubina": {
+                "uniqueValues":"true",
+                "values": [
+                  ">=6 mg/dl",
+                ],
+              },
+            },
+            {
+              "Creatinina": {
+                "uniqueValues":"true",
+                "values": [
+                  "<1.2 mg/dl",
+                ],
+              },
+            },
+            {
+              "pH": {
+                "uniqueValues":"true",
+                "values": [
+                  ">7.25"
+                ],
+              },
+            },
+            {
+              "Leucócitos": {
+                "uniqueValues":"true",
+                "values": [
+                  ">=15mil /mm³",
+                ],
+              },
+            },
+            {
+              "Plaquetas": {
+                "uniqueValues":"true",
+                "values": [
+                  ">=100mil /mm³",
+                ],
+              },
+            },
+            {
+              "Oxigenação": {
+                "uniqueValues":"true",
+                "values": [
+                  "paO2 >=60 sem VM",
+                ],
+              },
+            },
+          ],
+          "open": [],
+        },
+      },
+      {
+        "dificuldade": "2",
+        "Idade":{
+          "locked": [
+            {
+              "Idade":{
+                "selectList":"true",
+                "values":[
+                  "40-59 anos",
+                ]
+              }
+            }
+          ],
+          "open": []
+        },
+        "Origem":{
+          "locked": [
+            {
+              "Origem":{
+                "selectList":"true",
+                "values":[
+                  "Pronto Socorro",
+                ]
+              },
+            }
+          ],
+          "open": [],
+        },
+        "Comorbidade":{
+          "locked": [
+            {
+              "IC NYHA IV": {
+                "values": [
+                  "Sim",
+                ],
+              },
+            },
+          ],
+          "open": [],
+        },
+        "Contexto da admissão": {
+          "locked": [
+            {
+              "Admissão planejada": {
+                "values":[
+                  "Sim",
+                ]
+              },
+            },
+            {
+              "Submetido à cirurgia": {
+                "cascade": "true",
+                "radioYN": "true",
+                "uniqueValues": "true",
+                "values": [
+                  "Cirurgia eletiva",
+                ],
+                "child": [
+                  "Transplante",
+                ],
+              },
+            },
+            {
+              "Motivo de admissão na UTI": {
+                "values": [
+                  "Arritmia",
+                ],
+              },
+            },
+          ],
+          "open": []
+        },
+        "Status clínico": {
+          "locked": [
+            {
+              "Escala de Coma de Glasgow": {
+                "uniqueValues":"true",
+                "values": [
+                  ">=13",
+                ],
+              },
+            },
+            {
+              "Temperatura": {
+                "uniqueValues":"true",
+                "values": [
+                  ">=35 °C",
+                ],
+              },
+            },
+            {
+              "Frequência cardíaca": {
+                "uniqueValues":"true",
+                "values": [
+                  "<120 bpm",
+                ],
+              },
+            },
+            {
+              "Pressão sistólica": {
+                "uniqueValues":"true",
+                "values": [
+                  ">=120 mmHg",
+                ],
+              },
+            },
+            {
+              "Droga vasoativa": {
+                "uniqueValues":"true",
+                "values": [
+                  "Não",
+                ]
+              },
+            },
+          ],
+          "open": [],
+        },
+        "Alterações laboratoriais": {
+          "locked": [
+            {
+              "Bilirrubina": {
+                "uniqueValues":"true",
+                "values": [
+                  ">=6 mg/dl",
+                ],
+              },
+            },
+            {
+              "Creatinina": {
+                "uniqueValues":"true",
+                "values": [
+                  "<1.2 mg/dl",
+                ],
+              },
+            },
+            {
+              "pH": {
+                "uniqueValues":"true",
+                "values": [
+                  ">7.25"
+                ],
+              },
+            },
+            {
+              "Leucócitos": {
+                "uniqueValues":"true",
+                "values": [
+                  ">=15mil /mm³",
+                ],
+              },
+            },
+            {
+              "Plaquetas": {
+                "uniqueValues":"true",
+                "values": [
+                  ">=100mil /mm³",
+                ],
+              },
+            },
+            {
+              "Oxigenação": {
+                "uniqueValues":"true",
+                "values": [
+                  "paO2 >=60 sem VM",
+                ],
+              },
+            },
+          ],
+          "open": [],
+        },
+      },
+    ]
+  }
+
+  Prognosis.challengeTwoLvls = {
+    "pacients":[
+      {
+        "dificuldade": "1",
+        "prognTarget": "50-100",
+        "Idade":{
+          "locked": [
+
+          ],
+          "open": [
+            {
+              "Idade":{
+                "selectList":"true",
+                "values":[
+                  "<40 anos",
+                  "40-59 anos",
+                  "60-69 anos",
+                  "70-74 anos",
+                  "75-79 anos",
+                  ">=80 anos",
+                ]
+              }
+            }
+
+          ]
+        },
+        "Origem":{
+          "locked": [],
+          "open": [
+            {
+              "Origem":{
+                "selectList":"true",
+                "values":[
+                  "Pronto Socorro",
+                  "Outra UTI",
+                  "Nenhuma das anteriores",
+                ]
+              },
+            }
+          ],
+        },
+        "Comorbidade":{
+          "locked": [
+
+          ],
+          "open": [
+            {
+              "IC NYHA IV": {
+                "values": [
+                  "Não",
+                  "Sim",
+                ],
+              },
+            },
+            {
+              "Câncer metastático": {
+                "values": [
+                  "Não",
+                  "Sim",
+                ],
+              },
+            },
+            {
+              "Terapia oncológica": {
+                "values": [
+                  "Não",
+                  "Sim",
+                ],
+              },
+            },
+            {
+              "Câncer hematológico": {
+                "values": [
+                  "Não",
+                  "Sim",
+                ],
+              },
+            },
+            {
+              "Cirrose": {
+                "values": [
+                  "Não",
+                  "Sim",
+                ],
+              },
+            },
+            {
+              "SIDA": {
+                "values": [
+                  "Não",
+                  "Sim",
+                ],
+              },
+            },
+            {
+              "Internado antes da admissão": {
+                "cascade": "true",
+                "radioYN": "true",
+                "uniqueValues":"true",
+                "values": [
+                  "<14 dias",
+                  "14-27 dias",
+                  ">=28 dias",
+                ],
+              },
+            },
+            {
+              "Infectado antes da admissão": {
+                "cascade": "true",
+                "radioYN": "true",
+                "multipleValues": "true",
+                "values": [
+                  "Nosocomial",
+                  "Respiratória",
+                ],
+              },
+            },
+          ],
+        },
+        "Contexto da admissão": {
+          "locked": [],
+          "open": [
+            {
+              "Admissão planejada": {
+                "values":[
+                  "Não",
+                  "Sim",
+                ]
+              },
+            },
+            {
+              "Submetido à cirurgia": {
+                "cascade": "true",
+                "radioYN": "true",
+                "uniqueValues": "true",
+                "values": [
+                  "Cirurgia eletiva",
+                  "Cirurgia urgência",
+                ],
+                "child": [
+                  "Neurocirurgia por acidente vascular cerebral",
+                  "Revascularização miocárdica",
+                  "Trauma",
+                  "Transplante",
+                  "Outro",
+                ],
+              },
+            },
+            {
+              "Motivo de admissão na UTI": {
+                "values": [
+                  "Arritmia",
+                  "Choque hipovolêmico",
+                  "Outro choque",
+                  "Convulsão",
+                  "Abdome agudo",
+                  "Pancreatite grave",
+                  "Déficit focal",
+                  "Efeito de massa intracraniana",
+                  "Insuficiência hepática",
+                  "Alteração do nível de consciência",
+                  "Nenhum dos anteriores",
+                ],
+              },
+            },
+          ]
+        },
+        "Status clínico": {
+          "locked": [],
+          "open": [
+            {
+              "Escala de Coma de Glasgow": {
+                "uniqueValues":"true",
+                "values": [
+                  "3-4",
+                  "5",
+                  "6",
+                  "7-12",
+                  ">=13",
+                ],
+              },
+            },
+            {
+              "Temperatura": {
+                "uniqueValues":"true",
+                "values": [
+                  "<35 °C",
+                  ">=35 °C",
+                ],
+              },
+            },
+            {
+              "Frequência cardíaca": {
+                "uniqueValues":"true",
+                "values": [
+                  "<120 bpm",
+                  "120-159 bpm",
+                  ">=160 bpm",
+                ],
+              },
+            },
+            {
+              "Pressão sistólica": {
+                "uniqueValues":"true",
+                "values": [
+                  "<40 mmHg",
+                  "40-69 mmHg",
+                  "70-119 mmHg",
+                  ">=120 mmHg",
+                ],
+              },
+            },
+            {
+              "Droga vasoativa": {
+                "uniqueValues":"true",
+                "values": [
+                  "Não",
+                  "Sim",
+                ]
+              },
+            },
+          ],
+        },
+        "Alterações laboratoriais": {
+          "locked": [],
+          "open": [
+            {
+              "Bilirrubina": {
+                "uniqueValues":"true",
+                "values": [
+                  "<2 mg/dl",
+                  "2-6 mg/dl",
+                  ">=6 mg/dl",
+                ],
+              },
+            },
+            {
+              "Creatinina": {
+                "uniqueValues":"true",
+                "values": [
+                  "<1.2 mg/dl",
+                  "1.2-1.9 mg/dl",
+                  "2-3.4 mg/dl",
+                  ">=3.5 mg/dl",
+                ],
+              },
+            },
+            {
+              "pH": {
+                "uniqueValues":"true",
+                "values": [
+                  "<=7.25",
+                  ">7.25"
+                ],
+              },
+            },
+            {
+              "Leucócitos": {
+                "uniqueValues":"true",
+                "values": [
+                  "<15mil /mm³",
+                  ">=15mil /mm³",
+                ],
+              },
+            },
+            {
+              "Plaquetas": {
+                "uniqueValues":"true",
+                "values": [
+                  "<20mil /mm³",
+                  "20-49mil /mm³",
+                  "50-99mil /mm³",
+                  ">=100mil /mm³",
+                ],
+              },
+            },
+            {
+              "Oxigenação": {
+                "uniqueValues":"true",
+                "values": [
+                  "paO2 >=60 sem VM",
+                  "paO2 <60 sem VM",
+                  "paO2/FiO2 <100 em VM",
+                  "paO2/FiO2 >=100 em VM",
+                ],
+              },
+            },
+          ],
+        },
+      },
+      {
+        "dificuldade": "2",
+        "prognTarget": "50-90",
+        "Idade":{
+          "locked": [
+
+          ],
+          "open": [
+            {
+              "Idade":{
+                "selectList":"true",
+                "values":[
+                  "<40 anos",
+                  "40-59 anos",
+                  "60-69 anos",
+                  "70-74 anos",
+                  "75-79 anos",
+                  ">=80 anos",
+                ]
+              }
+            }
+
+          ]
+        },
+        "Origem":{
+          "locked": [],
+          "open": [
+            {
+              "Origem":{
+                "selectList":"true",
+                "values":[
+                  "Pronto Socorro",
+                  "Outra UTI",
+                  "Nenhuma das anteriores",
+                ]
+              },
+            }
+          ],
+        },
+        "Comorbidade":{
+          "locked": [
+
+          ],
+          "open": [
+            {
+              "IC NYHA IV": {
+                "values": [
+                  "Não",
+                  "Sim",
+                ],
+              },
+            },
+            {
+              "Câncer metastático": {
+                "values": [
+                  "Não",
+                  "Sim",
+                ],
+              },
+            },
+            {
+              "Terapia oncológica": {
+                "values": [
+                  "Não",
+                  "Sim",
+                ],
+              },
+            },
+            {
+              "Câncer hematológico": {
+                "values": [
+                  "Não",
+                  "Sim",
+                ],
+              },
+            },
+            {
+              "Cirrose": {
+                "values": [
+                  "Não",
+                  "Sim",
+                ],
+              },
+            },
+            {
+              "SIDA": {
+                "values": [
+                  "Não",
+                  "Sim",
+                ],
+              },
+            },
+            {
+              "Internado antes da admissão": {
+                "cascade": "true",
+                "radioYN": "true",
+                "uniqueValues":"true",
+                "values": [
+                  "<14 dias",
+                  "14-27 dias",
+                  ">=28 dias",
+                ],
+              },
+            },
+            {
+              "Infectado antes da admissão": {
+                "cascade": "true",
+                "radioYN": "true",
+                "multipleValues": "true",
+                "values": [
+                  "Nosocomial",
+                  "Respiratória",
+                ],
+              },
+            },
+          ],
+        },
+        "Contexto da admissão": {
+          "locked": [],
+          "open": [
+            {
+              "Admissão planejada": {
+                "values":[
+                  "Não",
+                  "Sim",
+                ]
+              },
+            },
+            {
+              "Submetido à cirurgia": {
+                "cascade": "true",
+                "radioYN": "true",
+                "uniqueValues": "true",
+                "values": [
+                  "Cirurgia eletiva",
+                  "Cirurgia urgência",
+                ],
+                "child": [
+                  "Neurocirurgia por acidente vascular cerebral",
+                  "Revascularização miocárdica",
+                  "Trauma",
+                  "Transplante",
+                  "Outro",
+                ],
+              },
+            },
+            {
+              "Motivo de admissão na UTI": {
+                "values": [
+                  "Arritmia",
+                  "Choque hipovolêmico",
+                  "Outro choque",
+                  "Convulsão",
+                  "Abdome agudo",
+                  "Pancreatite grave",
+                  "Déficit focal",
+                  "Efeito de massa intracraniana",
+                  "Insuficiência hepática",
+                  "Alteração do nível de consciência",
+                  "Nenhum dos anteriores",
+                ],
+              },
+            },
+          ]
+        },
+        "Status clínico": {
+          "locked": [],
+          "open": [
+            {
+              "Escala de Coma de Glasgow": {
+                "uniqueValues":"true",
+                "values": [
+                  "3-4",
+                  "5",
+                  "6",
+                  "7-12",
+                  ">=13",
+                ],
+              },
+            },
+            {
+              "Temperatura": {
+                "uniqueValues":"true",
+                "values": [
+                  "<35 °C",
+                  ">=35 °C",
+                ],
+              },
+            },
+            {
+              "Frequência cardíaca": {
+                "uniqueValues":"true",
+                "values": [
+                  "<120 bpm",
+                  "120-159 bpm",
+                  ">=160 bpm",
+                ],
+              },
+            },
+            {
+              "Pressão sistólica": {
+                "uniqueValues":"true",
+                "values": [
+                  "<40 mmHg",
+                  "40-69 mmHg",
+                  "70-119 mmHg",
+                  ">=120 mmHg",
+                ],
+              },
+            },
+            {
+              "Droga vasoativa": {
+                "uniqueValues":"true",
+                "values": [
+                  "Não",
+                  "Sim",
+                ]
+              },
+            },
+          ],
+        },
+        "Alterações laboratoriais": {
+          "locked": [],
+          "open": [
+            {
+              "Bilirrubina": {
+                "uniqueValues":"true",
+                "values": [
+                  "<2 mg/dl",
+                  "2-6 mg/dl",
+                  ">=6 mg/dl",
+                ],
+              },
+            },
+            {
+              "Creatinina": {
+                "uniqueValues":"true",
+                "values": [
+                  "<1.2 mg/dl",
+                  "1.2-1.9 mg/dl",
+                  "2-3.4 mg/dl",
+                  ">=3.5 mg/dl",
+                ],
+              },
+            },
+            {
+              "pH": {
+                "uniqueValues":"true",
+                "values": [
+                  "<=7.25",
+                  ">7.25"
+                ],
+              },
+            },
+            {
+              "Leucócitos": {
+                "uniqueValues":"true",
+                "values": [
+                  "<15mil /mm³",
+                  ">=15mil /mm³",
+                ],
+              },
+            },
+            {
+              "Plaquetas": {
+                "uniqueValues":"true",
+                "values": [
+                  "<20mil /mm³",
+                  "20-49mil /mm³",
+                  "50-99mil /mm³",
+                  ">=100mil /mm³",
+                ],
+              },
+            },
+            {
+              "Oxigenação": {
+                "uniqueValues":"true",
+                "values": [
+                  "paO2 >=60 sem VM",
+                  "paO2 <60 sem VM",
+                  "paO2/FiO2 <100 em VM",
+                  "paO2/FiO2 >=100 em VM",
+                ],
+              },
+            },
+          ],
+        },
+      },
+  ]
   }
 
   Prognosis.sapsScoreValues = {

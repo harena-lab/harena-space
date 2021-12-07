@@ -70,6 +70,17 @@
     'submit-logout',
     'dcc-submit',
     {
+      pre: async function (message, form, schema) {
+        if(MessageBus.progn && MessageBus.progn.hasSubscriber('user/#')){
+          // console.log('============ if logout')
+          MessageBus.progn.publish(`user/logout/${sessionStorage.getItem('harena-user-id')}`)
+          await MessageBus.progn.waitMessage('system/logout/ready')
+          return true
+        }else{
+          // console.log('============ esle logout')
+          return true
+        }
+      },
       pos: function (response) {
         // console.log(response)
         window.location.href = '/'
@@ -202,17 +213,27 @@
     'dcc-submit',
     {
       pre: function (message, form, schema) {
-        if(document.querySelector('#current-lvl') && localStorage.getItem('prognosis-current-lvl')!= null){
-          let currentLvl = localStorage.getItem('prognosis-current-lvl')
-          message.value.propertyTitle = 'prognosis-current-lvl'
+        var localStorageItem
+        if(new URL(document.location).pathname.includes('/learn')){
+          localStorageItem = 'prognosis-current-lvl'
+        }else if(new URL(document.location).pathname.includes('/challenge/1')) {
+          localStorageItem = 'prognosis-challenge1-current-lvl'
+        }else if(new URL(document.location).pathname.includes('/challenge/2')) {
+          localStorageItem = 'prognosis-challenge2-current-lvl'
+        }
+        // console.log('============ tak')
+        // console.log(localStorageItem)
+        if(document.querySelector('#current-lvl') && localStorage.getItem(localStorageItem)!= null){
+          let currentLvl = localStorage.getItem(localStorageItem)
+          message.value.propertyTitle = localStorageItem
           message.value.propertyValue = currentLvl
           return true
-        }else if(document.querySelector('#next-lvl') && localStorage.getItem('prognosis-current-lvl')!= null){
-          if(localStorage.getItem('prognosis-current-lvl') == parseInt(document.querySelector('#next-lvl').value)){
+        }else if(document.querySelector('#next-lvl') && localStorage.getItem(localStorageItem)!= null){
+          if(localStorage.getItem(localStorageItem) == parseInt(document.querySelector('#next-lvl').value)){
             let nextLvl = parseInt(document.querySelector('#next-lvl').value) + 1
             if(nextLvl>10)
               nextLvl = 10
-            message.value.propertyTitle = 'prognosis-current-lvl'
+            message.value.propertyTitle = localStorageItem
             message.value.propertyValue = nextLvl
             return true
           }
@@ -220,12 +241,13 @@
 
 
         }else{
-          console.log('============ error in prognosis lvl update in manager')
+          // console.log('============ error in prognosis lvl update in manager')
           return false
         }
 
       },
       pos: async function (response) {
+
         if(document.querySelector('dcc-submit[bind="submit-prognosis-lvl"]'))
           document.querySelector('dcc-submit[bind="submit-prognosis-lvl"]').remove()
       }
@@ -258,16 +280,42 @@
     'dcc-submit',
     {
       pre: function (message, form, schema) {
-        if(document.querySelector('#current-lvl') && localStorage.getItem('prognosis-current-lvl')!= null
-        && document.querySelector('#pacient-overview-wrapper > h5')){
+        if(new URL(document.location).pathname.includes('/learn')){
+          if(document.querySelector('#current-lvl') && localStorage.getItem('prognosis-current-lvl')!= null
+          && document.querySelector('#pacient-overview-wrapper > h5')){
 
-          const currentLvl = localStorage.getItem('prognosis-current-lvl')
-          const pacientOverview = document.querySelector('#pacient-abstract').value
-          message.value.propertyTitle = `prognosis-lvl-${currentLvl}-pacient`
-          message.value.propertyValue = pacientOverview
-          return true
-        }else{
-          return false
+            const currentLvl = localStorage.getItem('prognosis-current-lvl')
+            const pacientOverview = document.querySelector('#pacient-abstract').value
+            message.value.propertyTitle = `prognosis-lvl-${currentLvl}-pacient`
+            message.value.propertyValue = pacientOverview
+            return true
+          }else{
+            return false
+          }
+        }else if(new URL(document.location).pathname.includes('/challenge/1')) {
+          if(document.querySelector('#current-lvl') && localStorage.getItem('prognosis-challenge1-current-lvl')!= null
+          && document.querySelector('#pacient-overview-wrapper > h5')){
+
+            const currentLvl = localStorage.getItem('prognosis-challenge1-current-lvl')
+            const pacientOverview = document.querySelector('#pacient-abstract').value
+            message.value.propertyTitle = `prognosis-challenge1-lvl-${currentLvl}-pacient`
+            message.value.propertyValue = pacientOverview
+            return true
+          }else{
+            return false
+          }
+        }else if(new URL(document.location).pathname.includes('/challenge/2')) {
+          if(document.querySelector('#current-lvl') && localStorage.getItem('prognosis-challenge1-current-lvl')!= null
+          && document.querySelector('#pacient-overview-wrapper > h5')){
+
+            const currentLvl = localStorage.getItem('prognosis-challenge1-current-lvl')
+            const pacientOverview = document.querySelector('#pacient-abstract').value
+            message.value.propertyTitle = `prognosis-challenge2-lvl-${currentLvl}-pacient`
+            message.value.propertyValue = pacientOverview
+            return true
+          }else{
+            return false
+          }
         }
       },
       pos: async function (response) {
@@ -288,22 +336,50 @@
         if(new URL(document.location).searchParams.get('playerCalc')
         && new URL(document.location).searchParams.get('calc')){
 
-          const currentLvl = localStorage.getItem('prognosis-current-lvl')
-          const playerCalc = new URL(document.location).searchParams.get('playerCalc')
-          const sapsCalc = new URL(document.location).searchParams.get('calc')
-          const prognDiff = (parseFloat(playerCalc) - parseFloat(sapsCalc))
+          let currentLvl = localStorage.getItem('prognosis-current-lvl')
+          let playerCalc = new URL(document.location).searchParams.get('playerCalc')
+          let sapsCalc = new URL(document.location).searchParams.get('calc')
+          let prognDiff = (parseFloat(playerCalc) - parseFloat(sapsCalc))
 
           message.value.propertyTitle = `prognosis-lvl-${currentLvl}-best-guess`
           message.value.propertyValue = prognDiff
           return true
-        }else{
+        }else if(new URL(document.location).pathname.includes('challenge/1')){
+          let currentLvl = localStorage.getItem('prognosis-challenge1-current-lvl')
+          let playerCalc = document.querySelector('#player-prognosis-guess').dataset.value
+          let sapsCalc = document.querySelector('#prognosis-survival-pacient').dataset.value
+          let prognDiff = (parseFloat(playerCalc) - parseFloat(sapsCalc))
+
+          message.value.propertyTitle = `prognosis-challenge1-lvl-${currentLvl}-best-guess`
+          message.value.propertyValue = prognDiff
+          return true
+        }/*else if(new URL(document.location).pathname.includes('challenge/2')){
+          let currentLvl = localStorage.getItem('prognosis-challenge1-current-lvl')
+          let playerCalc = document.querySelector('#player-prognosis-guess').dataset.value
+          let sapsCalc = document.querySelector('#prognosis-survival-pacient').dataset.value
+          let prognDiff = (parseFloat(playerCalc) - parseFloat(sapsCalc))
+
+          message.value.propertyTitle = `prognosis-challenge2-lvl-${currentLvl}-best-guess`
+          message.value.propertyValue = prognDiff
+        }*/
+        else{
           return false
         }
       },
       pos: async function (response) {
-        const playerCalc = new URL(document.location).searchParams.get('playerCalc')
-        const sapsCalc = new URL(document.location).searchParams.get('calc')
-        const prognDiff = (parseFloat(playerCalc) - parseFloat(sapsCalc))
+        let playerCalc
+        let sapsCalc
+        let prognDiff
+        if(new URL(document.location).pathname.includes('challenge')){
+          playerCalc = document.querySelector('#player-prognosis-guess').dataset.value
+          sapsCalc = document.querySelector('#prognosis-survival-pacient').dataset.value
+          prognDiff = (parseFloat(playerCalc) - parseFloat(sapsCalc))
+        }else{
+          playerCalc = new URL(document.location).searchParams.get('playerCalc')
+          sapsCalc = new URL(document.location).searchParams.get('calc')
+          prognDiff = (parseFloat(playerCalc) - parseFloat(sapsCalc))
+        }
+
         if(document.querySelector(`dcc-submit[bind="submit-prognosis-lvl-guess"][connect$="/post"]`)){
           document.querySelector(`dcc-submit[bind="submit-prognosis-lvl-guess"][connect$="/post"]`).remove()
           if(Math.abs(response['harena-user-property'].userProperty.value) > Math.abs(prognDiff)){
@@ -328,12 +404,23 @@
           message.value.propertyTitle = `prognosis-lvl-${currentLvl}-best-progn`
           message.value.propertyValue = parseFloat(sapsCalc)
           return true
+        }else if(new URL(document.location).pathname.includes('challenge/2')){
+          const currentLvl = localStorage.getItem('prognosis-challenge2-current-lvl')
+          const sapsCalc = document.querySelector('#prognosis-survival-pacient').dataset.value
+
+          message.value.propertyTitle = `prognosis-challenge2-lvl-${currentLvl}-best-progn`
+          message.value.propertyValue = parseFloat(sapsCalc)
+          return true
         }else{
           return false
         }
       },
       pos: async function (response) {
-        const sapsCalc = new URL(document.location).searchParams.get('calc')
+        let sapsCalc
+        if(new URL(document.location).searchParams.get('calc'))
+          sapsCalc = new URL(document.location).searchParams.get('calc')
+        else
+         sapsCalc = document.querySelector('#prognosis-survival-pacient').dataset.value
         if(document.querySelector(`dcc-submit[bind="submit-prognosis-lvl-progn"][connect$="/post"]`)){
           document.querySelector(`dcc-submit[bind="submit-prognosis-lvl-progn"][connect$="/post"]`).remove()
           if(response['harena-user-property'].userProperty.value < parseFloat(sapsCalc)){
@@ -350,15 +437,27 @@
     'dcc-submit',
     {
       pre: function (message, form, schema) {
-        let currentLvl
-        let highestLvl
-        let nextLvl = document.querySelector('#next-lvl')
-        if(localStorage.getItem('prognosis-current-lvl') && localStorage.getItem('prognosis-highest-lvl')){
+        var localStorageCurrent
+        var localStorageHighest
+        if(new URL(document.location).pathname.includes('/learn')){
+          localStorageCurrent = 'prognosis-current-lvl'
+          localStorageHighest = 'prognosis-highest-lvl'
+        }else if(new URL(document.location).pathname.includes('/challenge/1')) {
+          localStorageCurrent = 'prognosis-challenge1-current-lvl'
+          localStorageHighest = 'prognosis-challenge1-highest-lvl'
+        }else if(new URL(document.location).pathname.includes('/challenge/2')) {
+          localStorageCurrent = 'prognosis-challenge2-current-lvl'
+          localStorageHighest = 'prognosis-challenge2-highest-lvl'
+        }
+        var currentLvl
+        var highestLvl
+        var nextLvl = document.querySelector('#next-lvl')
+        if(localStorage.getItem(localStorageCurrent) && localStorage.getItem(localStorageHighest)){
           if(nextLvl){
             if(nextLvl.value == ''){
-              nextLvl.value = parseInt(localStorage.getItem('prognosis-current-lvl'))+1 || 2
+              nextLvl.value = parseInt(localStorage.getItem(localStorageCurrent))+1 || 2
             }
-            if(nextLvl.value == localStorage.getItem('prognosis-highest-lvl')
+            if(nextLvl.value == localStorage.getItem(localStorageHighest)
             && parseInt(nextLvl.value) != 10){
               if(parseInt(nextLvl.value) < 10){
                 highestLvl = parseInt(nextLvl.value) + 1
@@ -369,32 +468,54 @@
               highestLvl = parseInt(nextLvl.value)
             }
           }else{
-            if(parseInt(localStorage.getItem('prognosis-current-lvl'))
-            >= parseInt(localStorage.getItem('prognosis-highest-lvl'))){
-              if(parseInt(localStorage.getItem('prognosis-current-lvl')) <=10) {
-                currentLvl = parseInt(localStorage.getItem('prognosis-current-lvl'))
+            if(parseInt(localStorage.getItem(localStorageCurrent))
+            >= parseInt(localStorage.getItem(localStorageHighest))){
+              if(parseInt(localStorage.getItem(localStorageCurrent)) <=10) {
+                currentLvl = parseInt(localStorage.getItem(localStorageCurrent))
                 highestLvl = currentLvl
               }else{
-                localStorage.setItem('prognosis-current-lvl', 10)
-                localStorage.setItem('prognosis-highest-lvl', 10)
-                currentLvl = parseInt(localStorage.getItem('prognosis-current-lvl'))
+                localStorage.setItem(localStorageCurrent, 10)
+                localStorage.setItem(localStorageHighest, 10)
+                currentLvl = parseInt(localStorage.getItem(localStorageCurrent))
                 highestLvl = currentLvl
               }
-            }else if (parseInt(localStorage.getItem('prognosis-highest-lvl')) > 10){
+            }else if (parseInt(localStorage.getItem(localStorageHighest)) > 10){
               highestLvl = 10
             }
           }
-
-          message.value.propertyTitle = `prognosis-highest-lvl`
-          message.value.propertyValue = highestLvl
-          return true
+          if(new URL(document.location).pathname.includes('challenge')){
+            if ((parseInt(localStorage.getItem(localStorageHighest)) >= parseInt(localStorage.getItem(localStorageCurrent)))
+                && (parseInt(localStorage.getItem(localStorageHighest))>=document.querySelector('#highest-lvl').value)) {
+              highestLvl = localStorage.getItem(localStorageHighest)
+              message.value.propertyTitle = `${localStorageHighest}`
+              message.value.propertyValue = highestLvl
+              return true
+            }else{
+              return false
+            }
+          }else{
+            message.value.propertyTitle = `${localStorageHighest}`
+            message.value.propertyValue = highestLvl
+            return true
+          }
         }else{
           return false
         }
       },
       pos: async function (response) {
-        const currentLvl = parseInt(localStorage.getItem('prognosis-current-lvl'))
-        localStorage.setItem('prognosis-highest-lvl', parseInt(response[Object.keys(response)[0]].userProperty.value))
+        var currentLvl
+        var highestLvl
+        if(new URL(document.location).pathname.includes('/learn')){
+          currentLvl = 'prognosis-current-lvl'
+          highestLvl = 'prognosis-highest-lvl'
+        }else if(new URL(document.location).pathname.includes('/challenge/1')) {
+          currentLvl = 'prognosis-challenge1-current-lvl'
+          highestLvl = 'prognosis-challenge1-highest-lvl'
+        }else if(new URL(document.location).pathname.includes('/challenge/2')) {
+          currentLvl = 'prognosis-challenge2-current-lvl'
+          highestLvl = 'prognosis-challenge2-highest-lvl'
+        }
+        localStorage.setItem(highestLvl, parseInt(response[Object.keys(response)[0]].userProperty.value))
         if(document.querySelector(`dcc-submit[bind="submit-prognosis-highest-lvl"][connect$="/post"]`)){
           document.querySelector(`dcc-submit[bind="submit-prognosis-highest-lvl"][connect$="/post"]`).remove()
           if(parseInt(response[Object.keys(response)[0]].userProperty.value) < currentLvl
@@ -433,6 +554,54 @@
             submitDcc._computeTrigger()
           }
         }
+      }
+    }
+  )
+
+  DCC.component(
+    'submit-prognosis-lvl-range',
+    'dcc-submit',
+    {
+      pre: function (message, form, schema) {
+        if(new URL(document.location).pathname.includes('challenge/2')){
+          const currentLvl = localStorage.getItem('prognosis-challenge2-current-lvl')
+          const range = document.querySelector('#prognosis-range').dataset.value
+
+          message.value.propertyTitle = `prognosis-challenge2-lvl-${currentLvl}-range`
+          message.value.propertyValue = range
+          return true
+        }else{
+          return false
+        }
+      },
+      pos: async function (response) {
+        const range = document.querySelector('#prognosis-range').dataset.value
+        if(document.querySelector(`dcc-submit[bind="submit-prognosis-lvl-range"][connect$="/post"]`)){
+          document.querySelector(`dcc-submit[bind="submit-prognosis-lvl-range"][connect$="/post"]`).remove()
+          if(response['harena-user-property'].userProperty.value != range){
+            const submitDcc = document.querySelector(`dcc-submit[bind="submit-prognosis-lvl-range"][connect$="/put"]`)
+            submitDcc._computeTrigger()
+          }
+        }
+      }
+    }
+  )
+
+  DCC.component(
+    'submit-prognosis-avatar-player',
+    'dcc-submit',
+    {
+      pre: function (message, form, schema) {
+        if(PrognosisAvatar.i._avatarActive){
+          const avatarId = PrognosisAvatar.i._avatarActive
+          message.value.propertyTitle = `prognosis-avatar-id`
+          message.value.propertyValue = avatarId
+          return true
+        }else{
+          return false
+        }
+      },
+      pos: async function (response) {
       }
     }
   )

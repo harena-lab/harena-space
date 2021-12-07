@@ -22,6 +22,8 @@
   <script src="/infra/simple-page-tasks.js"></script>
   <script src="/infra/token-validator.js"></script>
   <script src="/infra/conditional-layout.js"></script>
+  <script src="/prognosis/js/prognosis-bus.js"></script>
+  <script src="/prognosis/js/prognosis-bus-driver.js"></script>
 
   <script>
     Basic.service.rootPath = '../../'
@@ -32,7 +34,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
   <link rel="shortcut icon" href="/icons/favicon.ico">
   <link rel="manifest" href="/site.webmanifest">
-  
+
   <link rel="stylesheet" href="/lib/fontawesome-5-10-1/css/all.min.css">
   <link rel="stylesheet" href="/lib/bootstrap-4.4.1/css/bootstrap.min.css">
   <link rel="stylesheet" href="/lib/quill-1-3-7/quill.snow.css">
@@ -89,6 +91,9 @@
   <script src="/translator/item-templates.js"></script>
 
   <script src="/prognosis/js/prognosis.js"></script>
+  <script src="/prognosis/js/progress.js"></script>
+  <script src="/prognosis/js/challenge-progress.js"></script>
+  <script src="/prognosis/js/avatar.js"></script>
 
 </head>
 
@@ -96,12 +101,74 @@
   <dcc-rest id="harena-user-property" bind="harena-user-property"></dcc-rest>
   <dcc-rest id="harena-prognosis-highest-lvl" bind="harena-prognosis-highest-lvl"></dcc-rest>
   <dcc-rest id="harena-prognosis-lvl" bind="harena-prognosis-lvl"></dcc-rest>
+  <dcc-rest id="harena-create-logger" bind="harena-create-logger" subscribe="logger/create/post"></dcc-rest>
+
   <dcc-include src="/author/partials/header.html"></dcc-include>
+  <!-- Avatar description start-->
+  <div class="modal fade" id="avatar-description-modal" tabindex="-1" role="dialog" aria-labelledby="avatar-description-modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="txt-avatar-title">Nome do personagem</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="form-lvl-setting" action="javascript:void(0);">
+            <!-- <div class="border rounded pl-2 py-1 mb-1" id="pacient-result-wrapper">
+              <div class="form-row align-items-center">
+                <div class="col-auto">
+                  <label class="mr-sm-2" for="level-mode-selection">Modo de jogo:</label>
+                  <select class="custom-select mr-sm-2 mb-3" id="level-mode-selection" required>
+                    <option value="" selected>Escolha...</option>
+                    <option value="learning-prognosis">Aprendendo prognóstico</option>
+                    <option value="challenge-one">Desafio 1</option>
+                    <option value="challenge-two">Desafio 2</option>
+                  </select>
+                </div>
+              <div class="w-100"></div>
+              <div class="col-auto" id="progn-target-wrapper" hidden>
+                  <label for="progn-target-input">Intervalo de prognóstico: </label>
+                  <div class="input-group mb-1">
+                    <div class="input-group-prepend">
+                      <label class="input-group-text" >min</label>
+                    </div>
+                    <input type="number" id="progn-target-min" min="0" max="100" placeholder="min" name="progn-target-min" class="ml-1 mb-1" value="">
+                  </div>
+                  <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                      <label class="input-group-text" >max</label>
+                    </div>
+                    <input type="number" id="progn-target-max" min="0" max="100" placeholder="max" name="progn-target-max" class="ml-1 mb-1" value="">
+                  </div>
+
+
+
+              </div>
+            </div> -->
+            <div class="row">
+              <div class="col-md-12">
+                <img id="avatar-img" class="character-mini float-left m-2" src="" alt="pacient miniature"/>
+                <p id="desc-txt" class="mt-2">Descrição</p>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-success" id="btn-confirm-avatar">Sou eu!</button>
+            <dcc-submit xstyle='d-none' bind="submit-prognosis-avatar-player"
+             connect="submit:harena-user-property:service/request/post"></dcc-submit>
+            <button type="button" class="btn btn-secondary" id="btn-cancel" data-dismiss="modal"> Voltar</button>
+          </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Avatar description end-->
   <main role="">
     <div id="main-panel" class="d-flex flex-column vh-100 vw-100 index-boot-padding">
-      <div class=" d-flex flex-column w-xl-75 pb-5 h-100 w-100 bg-dark main-scroll scroll-y mx-auto align-items-center">
-        <h1 class="txt-light ml-2 mt-5">Seja bem vindo à Roda da Fortuna!</h1>
-        <h4 class="pt-5 mt-5 mx-2" style="text-align: justify; text-justify:inter-word;">Olá, Dr(a)., seja bem vindo à RODA DA FORTUNA!<br><br>
+      <div id="main-wrapper" class=" d-flex flex-column w-xl-75 pb-5 h-100 w-100 bg-dark main-scroll scroll-y mx-auto align-items-center">
+        <h1 class="txt-light ml-2 mt-5 txt-progn-light">Seja bem vindo à Roda da Fortuna!</h1>
+        <h4 class="pt-5 mt-5 mx-3 txt-progn-light" style="text-align: justify; text-justify:inter-word;">Olá, Dr(a)., seja bem vindo à RODA DA FORTUNA!<br><br>
           Aisa, moira cortadora do fio da vida, e Caronte, barqueiro do submundo, se apaixonaram e estão em lua de mel!<br><br>
           Como o time de Hades, deus grego do submundo, está desfalcado, o balanço das mortes ficou muito
           desorganizado… A única solução que as moiras do nascimento e desenvolvimento tiveram foi contratar um
@@ -111,15 +178,17 @@
           Topa ocupar esse espaço e ganhar umas horas extra-curriculares?
           As tecelãs dos destinos dos deuses e dos mortais te emprestarão o tear milenar, a RODA DA FORTUNA,
           para você determinar parâmetros do seu paciente à admissão.<br><br>
-          Será que você sabe dizer quem tem maior chance de sobreviver?</h4>
+          Será que você sabe dizer quem tem maior chance de sobreviver?
+        </h4>
+        <div class="character-selection-wrapper text-center">
+        </div>
         <div class=" mt-5 d-flex flex-row w-75 justify-content-center" id="btn-home-container">
 
-          <button class="btn btn-info w-50 mr-3 d-none" type="button" id="btn-progress"
-          onclick="window.location.href='/prognosis/learn/progress/'"> Lista das fases</button>
-          <button class="btn btn-success w-50 mx-auto" type="button" id="btn-continue"
-          onclick="window.location.href='/prognosis/learn/player/'"> Aceito esse desafio!</button>
+          <button class="btn btn-info w-50 mr-3 d-none" type="button" id="btn-progress" data-bus-entity="section/navigate"
+          data-bus-id="/prognosis/learn/progress/"data-action="/prognosis/learn/progress/"> Lista das fases</button>
+          <button class="btn btn-success w-50 mx-auto" type="button" id="btn-continue" data-bus-entity="case/navigate"
+          data-bus-id="/first" data-action="/prognosis/learn/player/"> Aceito esse desafio!</button>
         </div>
-
       </div>
     </div>
   </main>

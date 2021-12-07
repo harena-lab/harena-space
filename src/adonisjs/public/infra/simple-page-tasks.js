@@ -49,14 +49,15 @@ class PageController {
       if (prevScrollpos > currentScrollPos) {
         document.querySelector('.up-scroll').style.top = "0"
       } else {
-        document.querySelector('.up-scroll').style.top = "-50px"
+        document.querySelector('.up-scroll').style.top = "-75px"
       }
-      prevScrollpos = currentScrollPos;
+      prevScrollpos = currentScrollPos
     })
     }
 
     if(new URL(document.location).pathname.includes('/prognosis')){
       this.prognosisGameDropdownMenu()
+      ChallengeProgress.i.prognosisDropdown(document.querySelector('#progn-dropdown-menu > a[data-action*="/prognosis/learn/"]'))
     }
     this.isPageReady = true
   }
@@ -168,16 +169,16 @@ class PageController {
   async paginationButtons(p){
 
     if(document.querySelector('#pages') && document.querySelector('#pagination-wrapper')){
-      var state = {
+      let state = {
         'nPages': document.querySelector('#pages').value,
         'page': p,
         'window': 4,
       }
       if(state.nPages > 1){
-        var wrapper = document.querySelector('#pagination-wrapper')
+        let wrapper = document.querySelector('#pagination-wrapper')
         wrapper.innerHTML = (``)
-        var maxLeft = (state.page - Math.floor(state.window / 2))
-        var maxRight = (state.page + Math.floor(state.window / 2))
+        let maxLeft = (state.page - Math.floor(state.window / 2))
+        let maxRight = (state.page + Math.floor(state.window / 2))
 
         if (maxLeft < 1) {
           maxLeft = 1
@@ -194,7 +195,7 @@ class PageController {
         }
 
 
-        for (var page = maxLeft; page <= maxRight; page++) {
+        for (let page = maxLeft; page <= maxRight; page++) {
           if(page === state.page){
             wrapper.innerHTML += `<button value=${page} class="page page-btn btn btn-sm btn-secondary disabled">${page}</button>`
           }else{
@@ -213,7 +214,7 @@ class PageController {
 
         $('.page').on('click', function() {
           if(!$(this).hasClass('disabled')){
-            var url = new URL(document.location)
+            let url = new URL(document.location)
             url.searchParams.set('page', Number($(this).val()))
             document.location = url
           }
@@ -224,10 +225,10 @@ class PageController {
 ////////////////////////////////////////////////////////////////////////////////
 
   async updateValuesFromUrl(parent){
-    var url = new URL(document.location)
-    for (var e in parent){
+    let url = new URL(document.location)
+    for (let e in parent){
       if (url.searchParams.get(parent[e])){
-        var element = document.querySelector('#'+ parent[e])
+        let element = document.querySelector('#'+ parent[e])
         element.value = url.searchParams.get(parent[e])
       }
     }
@@ -238,6 +239,11 @@ class PageController {
     let template = document.createElement('template')
     template.innerHTML = PageController.prognosisGameDropdownMenu
     header.insertBefore(template.content.cloneNode(true), header.firstElementChild)
+    let dropdown = document.querySelectorAll('#progn-dropdown-menu a')
+    for (let el of dropdown) {
+      //TEMPORARY FIX (Activate MutationObserver)
+      el.href = '#'
+    }
   }
 }
 (function () {
@@ -251,14 +257,15 @@ class PageController {
   </div>`
   PageController.prognosisGameDropdownMenu =`
   <div class=" ml-2 harena-menu">
-    <button class="btn btn-secondary" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <button class="btn btn-secondary" type="button" id="btn-progn-dropdown-menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
       <i class="fas fa-bars"></i>
     </button>
-    <div class="dropdown-menu bg-plaster" aria-labelledby="dropdownMenu2">
-      <a class="dropdown-item" href="/prognosis/">Página inicial</a>
+    <div class="dropdown-menu bg-plaster" aria-labelledby="progn-dropdown-menu" id="progn-dropdown-menu">
+      <a class="dropdown-item" data-bus-entity="section/navigate" data-bus-id="/prognosis/" data-action="/prognosis/">Página inicial</a>
       <div class="dropdown-divider"></div>
-      <a class="dropdown-item" href="/prognosis/learn">Aprendendo Prognóstico</a>
-      <a class="dropdown-item" href="/prognosis/learn/progress">Lista de fases</a>
+      <a class="dropdown-item" data-bus-entity="section/navigate" data-bus-id="/prognosis/learn/" data-action="/prognosis/learn/">Aprendendo Prognóstico</a>
+      <div class="dropdown-divider"></div>
+      <a class="dropdown-item" data-bus-entity="section/navigate" data-bus-id="/prognosis/learn/progress/" data-action="/prognosis/learn/progress">Lista de fases</a>
     </div>
   </div>`
 })()

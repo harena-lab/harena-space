@@ -22,11 +22,13 @@
   <script src="/infra/simple-page-tasks.js"></script>
   <script src="/infra/token-validator.js"></script>
   <script src="/infra/conditional-layout.js"></script>
+  <script src="/prognosis/js/prognosis-bus.js"></script>
+  <script src="/prognosis/js/prognosis-bus-driver.js"></script>
 
   <script>
     Basic.service.rootPath = '../../../'
   </script>
-  
+
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -101,20 +103,31 @@
   <script src="/translator/translator.js"></script>
   <script src="/translator/item-templates.js"></script>
 
+  <script src="/prognosis/js/prognosis.js"></script>
   <script src="/prognosis/js/progress.js"></script>
+  <script src="/prognosis/js/challenge-progress.js"></script>
+  <script src="/prognosis/js/avatar.js"></script>
+
 </head>
 
 <body>
   <dcc-rest id="harena-prognosis-lvl" bind="harena-prognosis-lvl"></dcc-rest>
   <dcc-rest id="harena-prognosis-highest-lvl" bind="harena-prognosis-highest-lvl"></dcc-rest>
-
+  <dcc-rest id="harena-create-logger" bind="harena-create-logger" subscribe="logger/create/post"></dcc-rest>
 
   <dcc-include src="/author/partials/header.html"></dcc-include>
   <main role="">
-    <div id="main-panel" class="d-flex flex-column vh-100 vw-100 index-boot-padding">
-      <div class=" d-flex flex-column w-xl-75 h-100 w-100 main-scroll scroll-y bg-dark mx-auto align-items-center">
-        <h1 class="txt-light mt-5">Seu progresso</h1>
-        <div class=" mt-5 d-flex flex-column w-75 w-md-100" id="btn-home-container">
+    <div id="main-panel" class="d-flex bg-light flex-column vh-100 vw-100 index-boot-padding">
+      <div id="main-wrapper" class=" d-flex flex-column w-xl-75 h-100 w-100 main-scroll scroll-y bg-secondary mx-auto align-items-center">
+        <h1 class="text-dark mt-5">Seu progresso</h1>
+        <div class="" id="select-wrapper">
+          <select class="text-dark bg-light custom-select">
+            <option value="learning">Aprendendo Prognóstico </option>
+            <option value="ch1">Desafio 1</option>
+            <option value="ch2">Desafio 2</option>
+          </select>
+        </div>
+        <div class="mt-5 d-flex flex-column w-75 w-md-100" id="btn-home-container">
           <div id="progn-lvl-progress-wrapper" class="progn-lvl-progress-wrapper row row-cols-2 justify-content-center">
           </div>
         </div>
