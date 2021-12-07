@@ -4,6 +4,7 @@
     'dcc-submit',
     {
       pre: function (message, form, schema) {
+        console.log('============ logging')
         if (form.checkValidity() === false) {
           for ( i = 0; i < form.elements.length; i++){
             if(form[i].required && form[i].validity.valid){
@@ -72,12 +73,13 @@
     {
       pre: async function (message, form, schema) {
         if(MessageBus.progn && MessageBus.progn.hasSubscriber('user/#')){
-          // console.log('============ if logout')
+          console.log('============ if logout')
           MessageBus.progn.publish(`user/logout/${sessionStorage.getItem('harena-user-id')}`)
-          await MessageBus.progn.waitMessage('system/logout/ready')
+          console.log(await MessageBus.progn.waitMessage('system/logout/ready'))
+          console.log('============ true')
           return true
         }else{
-          // console.log('============ esle logout')
+          console.log('============ else logout')
           return true
         }
       },

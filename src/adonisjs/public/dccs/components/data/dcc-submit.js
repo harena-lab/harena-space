@@ -70,7 +70,7 @@ class DCCSubmit extends DCCButton {
               message.value[f.id] = f.value
           }
       }
-      if (this._checkPre(message, form)) {
+      if (await this._checkPre(message, form) == true) {
           if (this._connections != null) {
           const response = await this.multiRequest('submit', message)
           if (this._setup != null && this._setup.pos != null)
@@ -78,13 +78,14 @@ class DCCSubmit extends DCCButton {
         } else
           this._publish(topic, message, true)
       }
+
     }
   }
 
-  _checkPre(message, form) {
+  async _checkPre(message, form) {
     let result = true
     if (this._setup != null && this._setup.pre != null)
-      result = this._setup.pre(message, form, this._schema)
+      result = await this._setup.pre(message, form, this._schema)
     return result
   }
 }
