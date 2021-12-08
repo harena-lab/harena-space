@@ -20,7 +20,7 @@ class TokenController {
   async checkToken () {
     if (document.getElementById('harena-header')) {
 
-      if (!TokenController.instance.tokenChecked) {
+      if (!TokenController.instance.tokenChecked || !sessionStorage.getItem('harena-user-id')) {
         const config = {
           method: 'GET',
           url: DCCCommonServer.managerAddressAPI + 'auth/check',
@@ -29,9 +29,19 @@ class TokenController {
 
         await axios(config)
           .then(function (endpointResponse) {
+            if(sessionStorage.getItem('harena-user-id')){
+              if(sessionStorage.getItem('harena-user-id') != endpointResponse.data.userId){
+                sessionStorage.clear()
+                localStorage.clear()
+              }
+            }else{
+              sessionStorage.clear()
+              localStorage.clear()
+            }
             sessionStorage.setItem('harena-user-grade', endpointResponse.data.grade)
             sessionStorage.setItem('harena-user-institution', endpointResponse.data.institution)
             sessionStorage.setItem('harena-user-institution-id', endpointResponse.data.institutionId)
+            sessionStorage.setItem('harena-user-id', endpointResponse.data.userId)
             // localStorage.setItem('harena-user-grade', endpointResponse.data.grade)
             // localStorage.setItem('harena-user-institution', endpointResponse.data.institution)
             // localStorage.setItem('harena-user-institution-id', endpointResponse.data.institutionId)

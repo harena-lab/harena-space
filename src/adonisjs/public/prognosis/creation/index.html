@@ -111,10 +111,89 @@
   <script src="/author/js/panels.js"></script>
   <script src="/prognosis/js/prognosis.js"></script>
   <script src="/prognosis/js/level-creation.js"></script>
+  <script src="/prognosis/js/challenge-progress.js"></script>
+  <script src="/prognosis/js/avatar.js"></script>
 </head>
 
 <body>
   <dcc-include src="/author/partials/header.html"></dcc-include>
+  <!-- Confirm level creation start -->
+  <div class="modal fade" id="lvl-creation-modal" tabindex="-1" role="dialog" aria-labelledby="level-creation-confirm" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Construir nível</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="form-lvl-setting" action="javascript:void(0);">
+            <div class="border rounded pl-2 py-1 mb-1" id="pacient-result-wrapper">
+              <div class="form-row align-items-center">
+                <div class="col-auto">
+                  <label class="mr-sm-2" for="level-mode-selection">Modo de jogo:</label>
+                  <select class="custom-select mr-sm-2 mb-3" id="level-mode-selection" required>
+                    <option value="" selected>Escolha...</option>
+                    <option value="learning-prognosis">Aprendendo prognóstico</option>
+                    <option value="challenge-one">Desafio 1</option>
+                    <option value="challenge-two">Desafio 2</option>
+                  </select>
+                </div>
+              <div class="w-100"></div>
+              <div class="col-auto" id="progn-target-wrapper" hidden>
+                  <label for="progn-target-input">Intervalo de prognóstico: </label>
+                  <div class="input-group mb-1">
+                    <div class="input-group-prepend">
+                      <label class="input-group-text" >min</label>
+                    </div>
+                    <input type="number" id="progn-target-min" min="0" max="100" placeholder="min" name="progn-target-min" class="ml-1 mb-1" value="">
+                  </div>
+                  <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                      <label class="input-group-text" >max</label>
+                    </div>
+                    <input type="number" id="progn-target-max" min="0" max="100" placeholder="max" name="progn-target-max" class="ml-1 mb-1" value="">
+                  </div>
+
+
+
+              </div>
+            </div>
+            <button type="button" class="btn btn-secondary" id="btn-cancel" data-dismiss="modal"> Cancelar</button>
+            <button type="submit" class="btn btn-success" id="btn-download-lvl" onclick="LevelCreationTool.i.buildPacient()">Confirmar e baixar</button>
+          </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Confirm level creation end -->
+  <!-- Modal alert error drag start -->
+  <div class="modal fade" id="raw-modal-alert-modal" tabindex="-1" role="dialog" aria-labelledby="avatar-description-modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-danger">
+          <h5 class="modal-title text-light" id="txt-alert-modal-title">Error!</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action="javascript:void(0);">
+            <div class="row">
+              <div class="col-md-12">
+                <p id="desc-txt" class="mt-2">You were trying to drag a option directly from the option list to the "Pacient Info".
+                  You first need to build the option in the "option builder" (top right corner).<br> Build a select list, bundle or radio/checkbox</p>
+              </div>
+            </div>
+            <button type="button" class="btn btn-secondary" id="btn-cancel" data-dismiss="modal"> Got it.</button>
+          </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- Modal alert error drag end -->
   <main role="">
     <div id="main-panel" class="d-flex flex-column vh-100 vw-100 scroll-y index-boot-padding bg-secondary">
 
@@ -129,13 +208,15 @@
               <h4 style="font-size: 1rem !important;">Opções abertas</h4>
               <div class="pacient-info-values border rounded drop-container mx-1 pb-3 pb-5" style="border-width: 3px !important;"
               data-option-name="Idade" data-progn="open"
-              ondrop="LevelCreationTool.i.dropHandler(event)" ondragover="LevelCreationTool.i.dragOverHandler(event)">
+              ondrop="LevelCreationTool.i.dropHandler(event)" ondragover="LevelCreationTool.i.dragOverHandler(event)"
+              ondragenter="LevelCreationTool.i.dragEnterHandler(event)" ondragleave="LevelCreationTool.i.dragLeaveHandler(event)" ondragend="LevelCreationTool.i.dragEndHandler(event)">
 
               </div>
               <h4 style="font-size: 1rem !important;">Opções predefinidas <i class="fas fa-lock"></i> </h4>
               <div class="pacient-info-values border rounded drop-container mx-1 pb-3 pb-5" style="background-color:#9d9d88; border-width: 3px !important;"
               data-option-name="idade" data-progn="locked"
-              ondrop="LevelCreationTool.i.dropHandler(event)" ondragover="LevelCreationTool.i.dragOverHandler(event)">
+              ondrop="LevelCreationTool.i.dropHandler(event)" ondragover="LevelCreationTool.i.dragOverHandler(event)"
+              ondragenter="LevelCreationTool.i.dragEnterHandler(event)" ondragleave="LevelCreationTool.i.dragLeaveHandler(event)" ondragend="LevelCreationTool.i.dragEndHandler(event)">
 
               </div>
             </div>
@@ -146,12 +227,14 @@
               <h4 style="font-size: 1rem !important;">Opções abertas</h4>
               <div class="pacient-info-values border rounded drop-container mx-1 pb-3 pb-5" style="border-width: 3px !important;"
               data-option-name="Origem" data-progn="open"
-              ondrop="LevelCreationTool.i.dropHandler(event)" ondragover="LevelCreationTool.i.dragOverHandler(event)">
+              ondrop="LevelCreationTool.i.dropHandler(event)" ondragover="LevelCreationTool.i.dragOverHandler(event)"
+              ondragenter="LevelCreationTool.i.dragEnterHandler(event)" ondragleave="LevelCreationTool.i.dragLeaveHandler(event)" ondragend="LevelCreationTool.i.dragEndHandler(event)">
               </div>
               <h4 style="font-size: 1rem !important;">Opções predefinidas <i class="fas fa-lock"></i> </h4>
               <div class="pacient-info-values border rounded drop-container mx-1 pb-3 pb-5" style="background-color:#9d9d88; border-width: 3px !important;"
               data-option-name="Origem" data-progn="locked"
-              ondrop="LevelCreationTool.i.dropHandler(event)" ondragover="LevelCreationTool.i.dragOverHandler(event)">
+              ondrop="LevelCreationTool.i.dropHandler(event)" ondragover="LevelCreationTool.i.dragOverHandler(event)"
+              ondragenter="LevelCreationTool.i.dragEnterHandler(event)" ondragleave="LevelCreationTool.i.dragLeaveHandler(event)" ondragend="LevelCreationTool.i.dragEndHandler(event)">
               </div>
             </div>
             <div class="debug-border m-1 d-flex flex-column pacient-info-wrapper bg-light">
@@ -161,12 +244,14 @@
               <h4 style="font-size: 1rem !important;">Opções abertas</h4>
               <div class="pacient-info-values border rounded drop-container mx-1 pb-3 pb-5" style="border-width: 3px !important;"
               data-option-name="Comorbidade" data-progn="open"
-              ondrop="LevelCreationTool.i.dropHandler(event)" ondragover="LevelCreationTool.i.dragOverHandler(event)">
+              ondrop="LevelCreationTool.i.dropHandler(event)" ondragover="LevelCreationTool.i.dragOverHandler(event)"
+              ondragenter="LevelCreationTool.i.dragEnterHandler(event)" ondragleave="LevelCreationTool.i.dragLeaveHandler(event)" ondragend="LevelCreationTool.i.dragEndHandler(event)">
               </div>
               <h4 style="font-size: 1rem !important;">Opções predefinidas <i class="fas fa-lock"></i> </h4>
               <div class="pacient-info-values border rounded drop-container mx-1 pb-3 pb-5" style="background-color:#9d9d88; border-width: 3px !important;"
               data-option-name="Comorbidade" data-progn="locked"
-              ondrop="LevelCreationTool.i.dropHandler(event)" ondragover="LevelCreationTool.i.dragOverHandler(event)">
+              ondrop="LevelCreationTool.i.dropHandler(event)" ondragover="LevelCreationTool.i.dragOverHandler(event)"
+              ondragenter="LevelCreationTool.i.dragEnterHandler(event)" ondragleave="LevelCreationTool.i.dragLeaveHandler(event)" ondragend="LevelCreationTool.i.dragEndHandler(event)">
               </div>
 
             </div>
@@ -178,12 +263,14 @@
               <h4 style="font-size: 1rem !important;">Opções abertas</h4>
               <div class="pacient-info-values border rounded drop-container mx-1 pb-3 pb-5" style="border-width: 3px !important;"
               data-option-name="Motivo da admissão" data-progn="open"
-              ondrop="LevelCreationTool.i.dropHandler(event)" ondragover="LevelCreationTool.i.dragOverHandler(event)">
+              ondrop="LevelCreationTool.i.dropHandler(event)" ondragover="LevelCreationTool.i.dragOverHandler(event)"
+              ondragenter="LevelCreationTool.i.dragEnterHandler(event)" ondragleave="LevelCreationTool.i.dragLeaveHandler(event)" ondragend="LevelCreationTool.i.dragEndHandler(event)">
               </div>
               <h4 style="font-size: 1rem !important;">Opções predefinidas <i class="fas fa-lock"></i> </h4>
               <div class="pacient-info-values border rounded drop-container mx-1 pb-3 pb-5" style="background-color:#9d9d88; border-width: 3px !important;"
               data-option-name="Motivo da admissão" data-progn="locked"
-              ondrop="LevelCreationTool.i.dropHandler(event)" ondragover="LevelCreationTool.i.dragOverHandler(event)">
+              ondrop="LevelCreationTool.i.dropHandler(event)" ondragover="LevelCreationTool.i.dragOverHandler(event)"
+              ondragenter="LevelCreationTool.i.dragEnterHandler(event)" ondragleave="LevelCreationTool.i.dragLeaveHandler(event)" ondragend="LevelCreationTool.i.dragEndHandler(event)">
               </div>
             </div>
             <div class="debug-border m-1 d-flex flex-column pacient-info-wrapper bg-light">
@@ -194,12 +281,14 @@
               <h4 style="font-size: 1rem !important;">Opções abertas</h4>
               <div class="pacient-info-values border rounded drop-container mx-1 pb-3 pb-5" style="border-width: 3px !important;"
               data-option-name="Status Clínico" data-progn="open"
-              ondrop="LevelCreationTool.i.dropHandler(event)" ondragover="LevelCreationTool.i.dragOverHandler(event)">
+              ondrop="LevelCreationTool.i.dropHandler(event)" ondragover="LevelCreationTool.i.dragOverHandler(event)"
+              ondragenter="LevelCreationTool.i.dragEnterHandler(event)" ondragleave="LevelCreationTool.i.dragLeaveHandler(event)" ondragend="LevelCreationTool.i.dragEndHandler(event)">
               </div>
               <h4 style="font-size: 1rem !important;">Opções predefinidas <i class="fas fa-lock"></i> </h4>
               <div class="pacient-info-values border rounded drop-container mx-1 pb-3 pb-5" style="background-color:#9d9d88; border-width: 3px !important;"
               data-option-name="Status Clínico" data-progn="locked"
-              ondrop="LevelCreationTool.i.dropHandler(event)" ondragover="LevelCreationTool.i.dragOverHandler(event)">
+              ondrop="LevelCreationTool.i.dropHandler(event)" ondragover="LevelCreationTool.i.dragOverHandler(event)"
+              ondragenter="LevelCreationTool.i.dragEnterHandler(event)" ondragleave="LevelCreationTool.i.dragLeaveHandler(event)" ondragend="LevelCreationTool.i.dragEndHandler(event)">
               </div>
             </div>
             <div class="debug-border m-1 d-flex flex-column pacient-info-wrapper bg-light">
@@ -210,16 +299,18 @@
               <h4 style="font-size: 1rem !important;">Opções abertas</h4>
               <div class="pacient-info-values border rounded drop-container mx-1 pb-3 pb-5" style="border-width: 3px !important;"
               data-option-name="Alterações laboratoriais" data-progn="open"
-              ondrop="LevelCreationTool.i.dropHandler(event)" ondragover="LevelCreationTool.i.dragOverHandler(event)">
+              ondrop="LevelCreationTool.i.dropHandler(event)" ondragover="LevelCreationTool.i.dragOverHandler(event)"
+              ondragenter="LevelCreationTool.i.dragEnterHandler(event)" ondragleave="LevelCreationTool.i.dragLeaveHandler(event)" ondragend="LevelCreationTool.i.dragEndHandler(event)">
               </div>
               <h4 style="font-size: 1rem !important;">Opções predefinidas <i class="fas fa-lock"></i> </h4>
               <div class="pacient-info-values border rounded drop-container mx-1 pb-3 pb-5" style="background-color:#9d9d88; border-width: 3px !important;"
               data-option-name="Alterações laboratoriais" data-progn="locked"
-              ondrop="LevelCreationTool.i.dropHandler(event)" ondragover="LevelCreationTool.i.dragOverHandler(event)">
+              ondrop="LevelCreationTool.i.dropHandler(event)" ondragover="LevelCreationTool.i.dragOverHandler(event)"
+              ondragenter="LevelCreationTool.i.dragEnterHandler(event)" ondragleave="LevelCreationTool.i.dragLeaveHandler(event)" ondragend="LevelCreationTool.i.dragEndHandler(event)">
               </div>
             </div>
             <div class="p-2">
-              <button type="button" class="w-50 btn btn-success" id="btn-build-lvl" onclick="LevelCreationTool.i.buildPacient()"> Construir nível</button>
+              <button type="button" class="w-50 btn btn-success" id="btn-build-lvl" onclick="$('#lvl-creation-modal').modal('show')"> Construir nível</button>
             </div>
           </div>
           <div class="col-4 my-5 h-75">
@@ -281,7 +372,9 @@
               Drag items to compose the options
               <div class="row bg-secondary border rounded m-1 py-1" id="creation-container-wrapper">
                 <div class="col h-100 bg-secondary pb-5 drop-container" id="creation-container"
-                ondrop="LevelCreationTool.i.dropHandler(event)" ondragover="LevelCreationTool.i.dragOverHandler(event)">
+                ondrop="LevelCreationTool.i.dropHandler(event)" ondragenter="LevelCreationTool.i.dragEnterHandler(event)"
+                ondragend="LevelCreationTool.i.dragEndHandler(event)" ondragleave="LevelCreationTool.i.dragLeaveHandler(event)"
+                ondragover="LevelCreationTool.i.dragOverHandler(event)">
 
                 </div>
 
@@ -291,9 +384,17 @@
             <div class="bg-white p-0" id="creation-dump">
 
             </div>
-            <div class="flex-column bg-white border rounded h-75 scroll-y" id="option-list-wrapper"
-            ondrop="LevelCreationTool.i.dropHandler(event)" ondragover="LevelCreationTool.i.dragOverHandler(event)">
+            <!-- <div class="connected bg-light text-dark p-3" style="border:black double 10px; position: absolute; left:-100%; width:25rem;">
 
+            </div> -->
+            <div class="flex-column bg-white border rounded h-75 scroll-y" id="option-list-wrapper"
+            ondrop="LevelCreationTool.i.dropHandler(event)" ondragover="LevelCreationTool.i.dragOverHandler(event)"
+            ondragleave="LevelCreationTool.i.dragOverHandler(event)" ondragend="LevelCreationTool.i.dragEndHandler(event)">
+            <!-- <button id="btn-popover" class="float-left btn btn-info rounded-circle" type="button" name="button"
+            data-container="body" data-toggle="popover" style="border-width:0.3rem; border-style:solid; border-color:white;"
+            data-placement="top" data-content="Here is a list of options for you to build your pacient level. You can drag and drop the items. If you drag the parent (painted yellow), you automatically drag its children (blue elements) and set the name of the option as the parent's name.">
+            i
+            </button> -->
             </div>
           </div>
         </div>

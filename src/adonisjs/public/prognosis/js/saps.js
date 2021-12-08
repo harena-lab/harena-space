@@ -64,6 +64,7 @@ class Saps {
             }
             break;
           case 'Escala de Coma de Glasgow':
+
             txtGen[keys[i]] = ` GCS de ${source[keys[i]]},`
             break;
           case 'Temperatura':
@@ -119,25 +120,25 @@ class Saps {
         txtGen['Admissão planejada'] = ' não submetido à cirurgia'
 
       txtReady = Saps.overviewText
-      .replace(/\[_idade\]/ig, txtGen['Idade'])
-      .replace(/\[_origem\]/ig, txtGen['Origem'])
-      .replace(/\[_comorbidade\]/ig, txtGen['Comorbidade'])
-      .replace(/\[_internadoDias\]/ig, txtGen['Internado antes da admissão'])
-      .replace(/\[_ifeccao\]/ig, txtGen['Infectado antes da admissão'])
-      .replace(/\[_admissao\]/ig, txtGen['Admissão planejada'])
-      .replace(/\[_submetidoCirurgia\]/ig, txtGen['Submetido à cirurgia'])
-      .replace(/\[_submetidoUti\]/ig, txtGen['Motivo de admissão na UTI'])
-      .replace(/\[_gcs\]/ig, txtGen['Escala de Coma de Glasgow'])
-      .replace(/\[_temperatura\]/ig, txtGen['Temperatura'])
-      .replace(/\[_freqCardiaca\]/ig, txtGen['Frequência cardíaca'])
-      .replace(/\[_pressaoSistolica\]/ig, txtGen['Pressão sistólica'])
-      .replace(/\[_drogaVasoativa\]/ig, txtGen['Droga vasoativa'])
-      .replace(/\[_bilirrubina\]/ig, txtGen['Bilirrubina'])
-      .replace(/\[_creatinina\]/ig, txtGen['Creatinina'])
-      .replace(/\[_ph\]/ig, txtGen['pH'])
-      .replace(/\[_leucocitos\]/ig, txtGen['Leucócitos'])
-      .replace(/\[_plaquetas\]/ig, txtGen['Plaquetas'])
-      .replace(/\[_oxigenacao\]/ig, txtGen['Oxigenação'])
+      .replace(/\[_idade\]/ig, txtGen['Idade'] || '')
+      .replace(/\[_origem\]/ig, txtGen['Origem'] || '')
+      .replace(/\[_comorbidade\]/ig, txtGen['Comorbidade'] || '')
+      .replace(/\[_internadoDias\]/ig, txtGen['Internado antes da admissão'] || '')
+      .replace(/\[_ifeccao\]/ig, txtGen['Infectado antes da admissão'] || '')
+      .replace(/\[_admissao\]/ig, txtGen['Admissão planejada'] || '')
+      .replace(/\[_submetidoCirurgia\]/ig, txtGen['Submetido à cirurgia'] || '')
+      .replace(/\[_submetidoUti\]/ig, txtGen['Motivo de admissão na UTI'] ||'')
+      .replace(/\[_gcs\]/ig, txtGen['Escala de Coma de Glasgow'] || '')
+      .replace(/\[_temperatura\]/ig, txtGen['Temperatura'] || '')
+      .replace(/\[_freqCardiaca\]/ig, txtGen['Frequência cardíaca'] || '')
+      .replace(/\[_pressaoSistolica\]/ig, txtGen['Pressão sistólica'] || '')
+      .replace(/\[_drogaVasoativa\]/ig, txtGen['Droga vasoativa'] || '')
+      .replace(/\[_bilirrubina\]/ig, txtGen['Bilirrubina'] || '')
+      .replace(/\[_creatinina\]/ig, txtGen['Creatinina'] || '')
+      .replace(/\[_ph\]/ig, txtGen['pH'] || '')
+      .replace(/\[_leucocitos\]/ig, txtGen['Leucócitos'] || '')
+      .replace(/\[_plaquetas\]/ig, txtGen['Plaquetas'] || '')
+      .replace(/\[_oxigenacao\]/ig, txtGen['Oxigenação'] || '')
     }
     else if(type == 'abstract') {
       for (let i = 0; i < keys.length; i++) {
@@ -228,6 +229,94 @@ class Saps {
       .replace(/\[_plaquetas\]/ig, txtGen['Plaquetas'] ||'não')
       .replace(/\[_oxigenacao\]/ig, txtGen['Oxigenação'] ||'não')
     }
+    else if(type == 'json') {
+      let textJson = {}
+      for(let i = 0; i < keys.length; i++){
+        if (sapsGroups['Comorbidade'].indexOf(keys[i]) > -1) {
+          if (txtGen['Comorbidade'])
+            txtGen['Comorbidade'].push(`${source[keys[i]]}`)
+          else{
+            txtGen['Comorbidade'] = []
+            txtGen['Comorbidade'] = source[keys[i]]
+          }
+        }else {
+          switch (keys[i]) {
+            case 'Motivo de admissão na UTI':
+              txtGen[keys[i]] = []
+              txtGen[keys[i]].push(`${source[keys[i]][0]}`)
+              for (let k = 1; k < source[keys[i]].length; k++) {
+                txtGen[keys[i]].push(`${source[keys[i]][k]}`)
+              }
+              break;
+            case 'Submetido à cirurgia':
+              let firstTxt
+              for (let k = 0; k < source[keys[i]].length; k++) {
+                if (!source[keys[i]][k].includes('submetido à cirurgia')) {
+                  if (txtGen[keys[i]])
+                    txtGen[keys[i]].push(`${source[keys[i]][k]}`)
+                  else{
+                    txtGen[keys[i]] = []
+                    txtGen[keys[i]].push(`${source[keys[i]][k]}`)
+                  }
+                }else {
+                  if (source[keys[i]][k].includes('não submetido à cirurgia')) {
+                    firstTxt = 'não'
+                  }else {
+                    firstTxt = `${source[keys[i]][k].substring(21,(source[keys[i]][k].length))}`
+                  }
+                }
+              }
+              if (txtGen[keys[i]]) {
+                txtGen[keys[i]].push(`${firstTxt}`)
+              }else {
+                txtGen[keys[i]] = []
+                txtGen[keys[i]].push(`${firstTxt}`)
+              }
+              break;
+            case 'Infectado antes da admissão':
+              txtGen[keys[i]] = []
+              txtGen[keys[i]].push(`${source[keys[i]][0]}`)
+              for (var k = 1; k < source[keys[i]].length; k++) {
+                txtGen[keys[i]].push(`${source[keys[i]][k]}`)
+              }
+              break;
+            case 'Admissão planejada':
+              if(source[keys[i]].includes('não')){
+                txtGen[keys[i]] = []
+                txtGen[keys[i]] = 'não'
+              }
+              else{
+                txtGen[keys[i]] = []
+                txtGen[keys[i]] = 'sim'
+              }
+              break;
+            case 'Droga vasoativa':
+              if(source[keys[i]].includes('sem')){
+                txtGen[keys[i]] = []
+                txtGen[keys[i]] = 'não'
+              }
+              else{
+                txtGen[keys[i]] = []
+                txtGen[keys[i]] = 'sim'
+              }
+              break;
+            default:
+              txtGen[keys[i]] = []
+              txtGen[keys[i]] = `${source[keys[i]]}`
+          }
+          // console.log('============ key')
+          // console.log(keys[i])
+          // console.log(source[keys[i]])
+        }
+        // console.log('============ key')
+        // console.log(keys[i])
+        // console.log(source[keys[i]])
+      }
+      txtReady = JSON.stringify(txtGen)
+
+    }
+    // console.log('============ text')
+    // console.log(txtReady)
     return txtReady
   }
   async calcSaps3Score(pacientData){
@@ -266,7 +355,7 @@ class Saps {
               sapsTextBuild[sapsScoreKeys[i]].push(sapsText)
             }*/
 
-            console.log(sapsValue)
+            // console.log(sapsValue)
             sapsCalcGroup[sapsScoreKeys[i]] = sapsValue
           }else {
             for (let k = 0; k < valueKey.length; k++) {
@@ -1186,10 +1275,12 @@ class Saps {
     }
     if(document.querySelector('#saps-survival')){
       document.querySelector('#saps-survival').value = round((100 - mortalityPercentage),1)
+      MessageBus.progn.publish('compute/predict/sapsCalc', round((100 - mortalityPercentage),1), false)
+      MessageBus.i.publish('var/set/sapsCalc', round((100 - mortalityPercentage),1), false)
     }
 
     $('#saps-result-modal').modal('show')
-    if (new URL(document.location).pathname == '/prognosis/learn/player/'){
+    if (new URL(document.location).pathname == '/prognosis/learn/player/' || new URL(document.location).pathname.includes('/prognosis/challenge')){
       Saps.i.pacientOverview(pacientData)
     }
 
@@ -1312,6 +1403,9 @@ class Saps {
     let overviewText = this.buildSapsText('complex', sapsTextBuild)
 
     let pacientAbstract = this.buildSapsText('abstract', sapsTextBuild)
+    let pacientJson = this.buildSapsText('json', sapsTextBuild)
+
+
 
     if(!document.querySelector('#pacient-overview-wrapper > h5')){
       var txt = document.createElement('h5')
@@ -1322,8 +1416,15 @@ class Saps {
       txt.innerHTML = overviewText
     }
     document.querySelector('#pacient-abstract').value = pacientAbstract
+    if(MessageBus.progn)
+      MessageBus.progn.publish('input/changed/presentation/pacientAbstract', pacientAbstract)
+    document.querySelector('#pacient-abstract-json').value = pacientJson
     document.querySelector('dcc-submit[bind="submit-prognosis-lvl-txt"]')._computeTrigger()
     $('#pacient-overview-modal').modal('show')
+    // console.log('===========================')
+    // console.log('============ publishing ===================')
+    // console.log('=============================')
+    MessageBus.progn.publish('knot/navigate/>', {url:'/prognosis/learn/player/'})
 
   }
 
@@ -1388,7 +1489,7 @@ class Saps {
   `
   Paciente [_idade], encaminhado [_origem], portador de [_comorbidade]
   [_internadoDias][_ifeccao][_admissao][_submetidoCirurgia][_submetidoUti]. À admissão, apresentava [_gcs][_temperatura]
-  [_freqCardiaca][_pressaoSistolica][_drogaVasoativa] uso de DVA. A seguir, os exames da admissão:
+  [_freqCardiaca][_pressaoSistolica] [_drogaVasoativa] uso de DVA. A seguir, os exames da admissão:
   [_bilirrubina][_creatinina][_ph][_leucocitos][_plaquetas][_oxigenacao]
   `
   Saps.pacientAbstract =
