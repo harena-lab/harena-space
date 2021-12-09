@@ -22,7 +22,7 @@ class PrognosisBus {
     this.overwatch()
   }
   navigation (topic, message) {
-    console.log('============ navigate')
+    // console.log('============ navigate')
   }
   async start(){
     const currentTime = new Date()
@@ -35,7 +35,7 @@ class PrognosisBus {
   async user (topic, message){
     switch (MessageBus.extractLevel(topic, 2)) {
       case 'logout':
-        console.log('============ user logging out')
+        // console.log('============ user logging out')
         await PrognosisBusDriver.i.logoutUser()
         break
       default:
@@ -47,10 +47,10 @@ class PrognosisBus {
 
     const action = MessageBus.extractLevel(topic,2)
     const id = MessageBus.extractLevelsSegment(topic, 3)
-    console.log('============ action')
-    console.log(action)
-    console.log('============ id')
-    console.log(id)
+    // console.log('============ action')
+    // console.log(action)
+    // console.log('============ id')
+    // console.log(id)
     const currentTime = new Date()
     let ms
 
@@ -84,8 +84,8 @@ class PrognosisBus {
           timeStamp: currentTime.toJSON()
         }
         await PrognosisBusDriver.i.storeLocalStorage(ms)
-        console.log('============ local storage state')
-        console.log(localStorage.getItem(PrognosisBusDriver.i._storageKey))
+        // console.log('============ local storage state')
+        // console.log(localStorage.getItem(PrognosisBusDriver.i._storageKey))
         MessageBus.progn.publish('navigate/ready', `/${id}`)
         break
       default:
@@ -100,7 +100,7 @@ class PrognosisBus {
     let ms
     switch (action) {
       case 'start':
-      console.log('============ starting case')
+      // console.log('============ starting case')
         ms = {
           topic: `${MessageBus.extractLevelsSegment(topic, 1,2)}/${await PrognosisBusDriver.i.currentCase()}`,
           userId: sessionStorage.getItem('harena-user-id'),
@@ -126,7 +126,7 @@ class PrognosisBus {
           await PrognosisBusDriver.i.dispatchLuggage()
         }
 
-        console.log('============ navigating case')
+        // console.log('============ navigating case')
         ms = {
           navigate: 'case',
           topic: topic,
@@ -135,8 +135,8 @@ class PrognosisBus {
           timeStamp: currentTime.toJSON()
         }
         await PrognosisBusDriver.i.storeLocalStorage(ms)
-        console.log('============ local storage state')
-        console.log(localStorage.getItem(PrognosisBusDriver.i._storageKey))
+        // console.log('============ local storage state')
+        // console.log(localStorage.getItem(PrognosisBusDriver.i._storageKey))
         MessageBus.progn.publish('navigate/ready', `${message}`)
         break
       case 'end':
@@ -160,7 +160,7 @@ class PrognosisBus {
     let ms
     switch (action) {
       case 'start':
-      console.log('============ starting knot')
+      // console.log('============ starting knot')
       let knot
         ms = {
           topic: `${MessageBus.extractLevelsSegment(topic, 1,2)}/`,
@@ -182,7 +182,7 @@ class PrognosisBus {
       case 'navigate':
         // console.log('============ closing current knot')
         // console.log(await PrognosisBusDriver.i.storeLocalStorage(await PrognosisBusDriver.i.closeCurrentEntity()))
-        console.log('============ navigating knot')
+        // console.log('============ navigating knot')
         let direction = null
         if(message)
           ms = {
@@ -254,16 +254,16 @@ class PrognosisBus {
     // Callback function to execute when mutations are observed
     const callback = function(mutationsList, observer) {
       const fnClickEntity = function(){
-        console.log('============ clicked entity')
-        console.log(this.dataset.busEntity+this.dataset.busId)
+        // console.log('============ clicked entity')
+        // console.log(this.dataset.busEntity+this.dataset.busId)
         MessageBus.progn.publish(`${this.dataset.busEntity}${this.dataset.busId}`
           , this.dataset.action)
       }
 
       const fnVariablesEntity = function(){
-        console.log('============ changed variable')
-        console.log(this.dataset.busEntity+this.dataset.busId)
-        console.log(this.value)
+        // console.log('============ changed variable')
+        // console.log(this.dataset.busEntity+this.dataset.busId)
+        // console.log(this.value)
         MessageBus.progn.publish(`${this.dataset.busEntity}${this.dataset.busId}`
           , this.value)
       }
