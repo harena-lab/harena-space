@@ -182,7 +182,7 @@ class DCCInputChoice extends DCCInput {
 
   static get observedAttributes () {
     return DCCInput.observedAttributes.concat(
-      ['exclusive', 'shuffle', 'reveal', 'target', 'stateful'])
+      ['exclusive', 'shuffle', 'reveal', 'target', 'import', 'max'])
   }
 
   get exclusive () {
@@ -201,6 +201,14 @@ class DCCInputChoice extends DCCInput {
     if (isShuffle) { this.setAttribute('shuffle', '') } else { this.removeAttribute('shuffle') }
   }
 
+  get max () {
+    return parseInt(this.getAttribute('max'))
+  }
+
+  set max (newValue) {
+    this.setAttribute('max', newValue)
+  }
+
   get reveal () {
     return this.getAttribute('reveal')
   }
@@ -217,37 +225,61 @@ class DCCInputChoice extends DCCInput {
     this.setAttribute('target', newValue)
   }
 
-  get stateful () {
-    return this.hasAttribute('stateful')
+  get import () {
+    return this.getAttribute('import')
   }
 
-  set stateful (isStateful) {
-    if (isStateful) { this.setAttribute('stateful', '') } else { this.removeAttribute('stateful') }
+  set import (newValue) {
+    this.setAttribute('import', newValue)
   }
 
   /* Event handling */
 
   inputChanged (event) {
-    console.log('===== input changed')
-    if (this.exclusive)
-      this._value = event.target.value
-    else if (this._value == null) {
-      if (event.target.checked) this._value = [event.target.value]
-    } else {
-      if (event.target.checked)
-        this._value.push(event.target.value)
-      else {
-        const index = this._value.indexOf(event.target.value)
-        if (index > -1) this._value.splice(index, 1)
-      }
+    let label = null
+    const id = event.target.id
+    let htmlLabels = document.getElementsByTagName('label')
+    for (let l in htmlLabels) {
+       if (htmlLabels[l].htmlFor == id) {
+         label = htmlLabels[l].innerHTML
+         break
+       }
     }
 
     this.changed = true
-    this._publish('input/changed/' + this._variable.replace(/\./g, '/'),
-      {
-        sourceType: DCCInputChoice.elementTag,
-        value: this._value
-      }, true)
+    if (this.exclusive) {
+      this._value = event.target.value
+      this._label = label
+    } else if (this._value == null) {
+      if (event.target.checked) {
+        this._value = [event.target.value]
+        this._label = [(label == null) ? '' : label]
+      }
+    } else {
+      if (event.target.checked) {
+        if (this.hasAttribute('max') && this._value.length == this.max) {
+          event.target.checked = false
+          this.changed = false
+        } else {
+          this._value.push(event.target.value)
+          this._label.push((label == null) ? '' : label)
+        }
+      } else {
+        const index = this._value.indexOf(event.target.value)
+        if (index > -1) {
+          this._value.splice(index, 1)
+          this._label.splice(index, 1)
+        }
+      }
+    }
+
+    if (this.changed)
+      this._publish('input/changed/' + this._variable.replace(/\./g, '/'),
+        {
+          sourceType: DCCInputChoice.elementTag,
+          value: this._value,
+          label: this._label
+        }, true)
   }
 
   /* Rendering */
@@ -278,6 +310,16 @@ class DCCInputChoice extends DCCInput {
          ? "" : this._statement;
       */
 
+    let imp = null
+    if (this.hasAttribute('import') &&
+        this._hasSubscriber('var/get/' + this.import.replace(/\./g, '/'), true)) {
+      const mess = await this._request('var/get/' + this.import.replace(/\./g, '/'),
+                                       null, null, true)
+      if (mess.message != null)
+        imp = (mess.message.body != null)
+          ? mess.message.body : mess.message
+    }
+
     let child = this.firstChild
     const html = []
     let nop = 0
@@ -286,7 +328,8 @@ class DCCInputChoice extends DCCInput {
     let statement = ''
     while (child != null) {
       if (child.tagName &&
-          child.tagName.toLowerCase() == DCCInputOption.elementTag) {
+          child.tagName.toLowerCase() == DCCInputOption.elementTag &&
+          (imp == null || imp.includes(child._statement))) {
         nop++
         let iid = varid + '_' + nop
         if (this.target || child.target) {
