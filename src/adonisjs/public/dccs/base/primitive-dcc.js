@@ -37,8 +37,8 @@ class PrimitiveDCC extends HTMLElement {
     return this._bus.hasSubscriber(topic, regexp)
   }
 
-  async _request (requestTopic, requestMessage, responseTopic) {
-    return await this._bus.request(requestTopic, requestMessage, responseTopic)
+  async _request (requestTopic, requestMessage, responseTopic, track) {
+    return await this._bus.request(requestTopic, requestMessage, responseTopic, track)
   }
 
   async _waitMessage (topic) {

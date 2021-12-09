@@ -449,7 +449,7 @@ class Prognosis {
     const highestLvl = document.querySelector('#highest-lvl')
     const localCurrentLvl = localStorage.getItem(strLocalStorageCurrentLvl)
 
-    if((localCurrentLvl && localCurrentLvl != null && localCurrentLvl != '') || currentLvl.value){
+    if(mode != 'calculator' && ((localCurrentLvl && localCurrentLvl != null && localCurrentLvl != '') || currentLvl.value)){
       if(currentLvl && currentLvl.value != ''){
         localStorage.setItem(strLocalStorageCurrentLvl, currentLvl.value)
         if(highestLvl && highestLvl.value != ''){
@@ -482,11 +482,13 @@ class Prognosis {
       selectedPacient = pacientInfo.pacients[localStorage.getItem(strLocalStorageCurrentLvl)-1]
     }else{
         selectedPacient = pacientInfo.pacients[0]
-        if(!new URL(document.location).pathname.includes('calculator'))
+        if(!new URL(document.location).pathname.includes('calculator')){
           localStorage.setItem(strLocalStorageCurrentLvl, pacientInfo.pacients[0].dificuldade)
           localStorage.setItem(strLocalStorageHighestLvl, pacientInfo.pacients[0].dificuldade)
+        }
     }
-    MessageBus.progn.publish('case/get/currentLvl', localStorage.getItem(strLocalStorageCurrentLvl))
+    if(MessageBus.progn)
+      MessageBus.progn.publish('case/get/currentLvl', localStorage.getItem(strLocalStorageCurrentLvl))
     if (new URL(document.location).pathname.includes('learn/player')) {
 
       if(document.querySelector('#welcome-lvl-modal') && (localStorage.getItem(strLocalStorageCurrentLvl) == 1
@@ -1568,7 +1570,7 @@ class Prognosis {
   }
 
   calcPrognPerf (sapsCalc, perfectValue){
-    if(parseInt(perfectValue.value) == parseInt(sapsCalc)){
+    if(parseInt(perfectValue) == parseInt(sapsCalc)){
       // console.log('============ paciente perfeito')
 
       return('Sim!')

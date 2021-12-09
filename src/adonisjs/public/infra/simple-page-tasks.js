@@ -55,7 +55,8 @@ class PageController {
     })
     }
 
-    if(new URL(document.location).pathname.includes('/prognosis')){
+    if(new URL(document.location).pathname.includes('/prognosis')
+    && !new URL(document.location).pathname.includes('/prognosis/calculator')){
       this.prognosisGameDropdownMenu()
       ChallengeProgress.i.prognosisDropdown(document.querySelector('#progn-dropdown-menu > a[data-action*="/prognosis/learn/"]'))
     }
