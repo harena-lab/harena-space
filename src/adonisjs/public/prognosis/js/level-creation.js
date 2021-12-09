@@ -619,7 +619,7 @@ class LevelCreationTool {
     // console.log(ev.originalTarget)
     let data = ev.dataTransfer.getData("text")
     let objData = document.querySelector(`#${data}`)
-    if ((ev.target.id == 'creation-container' || ev.currentTarget.id == 'creation-container')
+    if ((ev.currentTarget.id == 'creation-container' || ev.currentTarget.classList.contains('secondary-creation-container'))
     && !ev.currentTarget.querySelector('#phantom-div')) {
       if(!objData.classList.contains('drag-option-built')){
         ev.currentTarget.classList.add('disable-children-events')
@@ -655,7 +655,9 @@ class LevelCreationTool {
     // console.log(ev.currentTarget)
     // console.log('============ original target')
     // console.log(ev.originalTarget)
-    if (ev.currentTarget.id == 'creation-container' && ev.currentTarget.querySelector('#phantom-div')) {
+    if ((ev.currentTarget.id == 'creation-container'
+    || ev.currentTarget.classList.contains('secondary-creation-container'))
+    && ev.currentTarget.querySelector('#phantom-div')) {
       if(ev.originalTarget.id != '#phantom-div')
         ev.currentTarget.querySelector('#phantom-div').remove()
     }
@@ -668,7 +670,7 @@ class LevelCreationTool {
   }
 
   async dropHandler(ev) {
-    console.log("drop: dropEffect = " + ev.dataTransfer.dropEffect + " ; effectAllowed = " + ev.dataTransfer.effectAllowed);
+    // console.log("drop: dropEffect = " + ev.dataTransfer.dropEffect + " ; effectAllowed = " + ev.dataTransfer.effectAllowed);
     ev.preventDefault()
     // Get the id of the target and add the moved element to the target's DOM
     let data = ev.dataTransfer.getData("text")
@@ -1144,12 +1146,18 @@ class LevelCreationTool {
   LevelCreationTool.cascadeDiv = `
   <div class="col h-100 border rounded pb-5 pt-1 drop-container secondary-creation-container" style="background-color:#cebfbf;"
   id="child-creation-container"
-  ondrop="LevelCreationTool.i.dropHandler(event)" ondragover="LevelCreationTool.i.dragOverHandler(event)">
+  ondrop="LevelCreationTool.i.dropHandler(event)" ondragover="LevelCreationTool.i.dragOverHandler(event)"
+  ondrop="LevelCreationTool.i.dropHandler(event)" ondragenter="LevelCreationTool.i.dragEnterHandler(event)"
+  ondragend="LevelCreationTool.i.dragEndHandler(event)" ondragleave="LevelCreationTool.i.dragLeaveHandler(event)"
+  ondragover="LevelCreationTool.i.dragOverHandler(event)">
   </div>`
   LevelCreationTool.bundleDiv = `
   <div class="col h-100 border rounded pb-5 pt-1 drop-container secondary-creation-container" style="background-color:#cebfbf;"
   id="creation-container-bundle-[id]"
-  ondrop="LevelCreationTool.i.dropHandler(event)" ondragover="LevelCreationTool.i.dragOverHandler(event)">
+  ondrop="LevelCreationTool.i.dropHandler(event)" ondragover="LevelCreationTool.i.dragOverHandler(event)"
+  ondrop="LevelCreationTool.i.dropHandler(event)" ondragenter="LevelCreationTool.i.dragEnterHandler(event)"
+  ondragend="LevelCreationTool.i.dragEndHandler(event)" ondragleave="LevelCreationTool.i.dragLeaveHandler(event)"
+  ondragover="LevelCreationTool.i.dragOverHandler(event)">
   </div>`
 
 })()
