@@ -148,7 +148,7 @@ class PrognosisBusDriver {
   */
   async integrityCheck (message){
     const storedData = await this.verifyLocalStorage()
-    console.log(storedData)
+    // console.log(storedData)
     if((message.lane == storedData.lane || message.navigate) && message.userId == storedData.userId){
       // console.log('============ equal lane')
       if (message.topic != storedData.openLane) {

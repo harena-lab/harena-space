@@ -187,7 +187,7 @@
                   You first need to build the option in the "option builder" (top right corner).<br> Build a select list, bundle or radio/checkbox</p>
               </div>
             </div>
-            <button type="button" class="btn btn-secondary" id="btn-cancel" data-dismiss="modal"> Got it.</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal"> Got it.</button>
           </div>
           </form>
         </div>
@@ -197,7 +197,7 @@
   <main role="">
     <div id="main-panel" class="d-flex flex-column vh-100 vw-100 scroll-y index-boot-padding bg-secondary">
 
-      <div class="d-flex flex-column h-100 px-2 pb-4 debug-border bg-dark text-center main-scroll">
+      <div id="main-wrapper" class="d-flex flex-column h-100 px-2 pb-4 debug-border bg-dark text-center main-scroll">
         <div class="row h-100">
           <div class="col-8 h-100 scroll-y">
             <h1 class="debug-border txt-light my-5">Pacient Info</h1>
@@ -329,14 +329,22 @@
                   <a class="nav-link cascade-nav" id="checkList-tab" data-toggle="tab" href="#checkList" role="tab" aria-selected="false">Checklist</a>
                 </li> -->
               </ul>
-              <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="chck-select-parent-name">
-                <label class="custom-control-label" for="chck-select-parent-name">Inserir nome da familia antes</label>
-              </div>
+
               <input type="text" class="mb-1" id="input-title-option" placeholder="Insira o titulo da lista..." value="">
               <div class="invalid-feedback">Example invalid custom select feedback</div>
               <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="selectList" role="tabpanel">
+                  <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="chck-select-parent-name">
+                    <label class="custom-control-label" for="chck-select-parent-name">Group name before value</label>
+                    <a tabindex="0" class="text-light bg-info rounded px-1 clickable" title="Group name before element" role="button" data-toggle="popover" data-trigger="focus" data-html="true"
+                      data-content="Each element will have the name of its group previous to the value. Example:
+                      <i class='border border-info'><40 anos</i> is an option element from the group
+                      <i class='border border-warning'>Idade</i>.
+                      <br><br> The text will result in: <i class='border border-success'>Idade: <40 anos</i>.
+                        <br><br> This can be useful to build options with elements from different groups.">?
+                    </a>
+                  </div>
                   <button type="button" id="btn-create-select-list" class="btn btn-success" onclick="LevelCreationTool.i.createSelectList()">Create</button>
                 </div>
                 <div class="tab-pane fade" id="checkList" role="tabpanel">
@@ -345,11 +353,11 @@
                 <div class="tab-pane fade" id="radio" role="tabpanel">
                   <div class="custom-control custom-checkbox">
                     <input type="checkbox" class="custom-control-input" id="chck-cascade-option">
-                    <label class="custom-control-label" for="chck-cascade-option">Duas camadas</label>
+                    <label class="custom-control-label" for="chck-cascade-option">Two option layers</label>
                   </div>
                   <div class="custom-control custom-checkbox">
                     <input type="checkbox" class="custom-control-input" id="chck-radioyn-option">
-                    <label class="custom-control-label" for="chck-radioyn-option">Sim/não (antes das opções)</label>
+                    <label class="custom-control-label" for="chck-radioyn-option">Yes/No (before the option)</label>
                   </div>
                   <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="option-type" id="option-radio" value="uniqueValues">
@@ -363,15 +371,15 @@
                 </div>
                 <div class="tab-pane fade" id="bundle" role="tabpanel">
                   <div class="custom-input">
-                    <label class="custom-label" for="input-number-bundle">Nº bundles</label>
-                    <input type="number" min="2" id="input-number-bundle" placeholder="Quantidade de bundles.." value="2">
+                    <label class="custom-label mb-0" for="input-number-bundle">Nº bundles</label>
+                    <input class="w-25" type="number" min="2" id="input-number-bundle" placeholder="Quantidade de bundles.." value="2">
                   </div>
-                  <button type="button" id="btn-create-bundle" class="btn btn-success" onclick="LevelCreationTool.i.createBundle()">Create</button>
+                  <button type="button" id="btn-create-bundle" class="mt-2 btn btn-success" onclick="LevelCreationTool.i.createBundle()">Create</button>
                 </div>
               </div>
-              Drag items to the container below to compose the options.<br> (Bundles can have multiple containers)
+              Drag items to the container below to build the options.
               <div class="row bg-secondary border rounded m-1 py-1" id="creation-container-wrapper">
-                <div class="col h-100 bg-secondary pb-5 drop-container" id="creation-container"
+                <div class="col h-100 bg-info pb-5 mx-1 rounded drop-container creation-container" id="creation-container"
                 ondrop="LevelCreationTool.i.dropHandler(event)" ondragenter="LevelCreationTool.i.dragEnterHandler(event)"
                 ondragend="LevelCreationTool.i.dragEndHandler(event)" ondragleave="LevelCreationTool.i.dragLeaveHandler(event)"
                 ondragover="LevelCreationTool.i.dragOverHandler(event)">
