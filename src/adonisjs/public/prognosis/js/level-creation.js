@@ -431,7 +431,7 @@ class LevelCreationTool {
         optionsWrapperOpen.parentElement.prognObj = {}
         optionsWrapperOpen.parentElement.prognObj[groupName] = {
           "open": optionsWrapperOpen.prognObj['open'],
-          "closed": optionsWrapperLocked.prognObj['locked']
+          "locked": optionsWrapperLocked.prognObj['locked']
         }
         let currentGroupOptions = optionsWrapperOpen.parentElement.prognObj[groupName]
         // console.log('============ current group')
@@ -557,7 +557,7 @@ class LevelCreationTool {
         optionsWrapperOpen.parentElement.prognObj = {}
         optionsWrapperOpen.parentElement.prognObj[groupName] = {
           "open": optionsWrapperOpen.prognObj['open'],
-          "closed": optionsWrapperLocked.prognObj['locked']
+          "locked": optionsWrapperLocked.prognObj['locked']
         }
         let currentGroupOptions = optionsWrapperOpen.parentElement.prognObj[groupName]
         // console.log('============ current group')
