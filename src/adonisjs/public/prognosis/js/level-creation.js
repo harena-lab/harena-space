@@ -580,8 +580,10 @@ class LevelCreationTool {
     // console.log("dragStart: dropEffect = " + ev.dataTransfer.dropEffect + " ; effectAllowed = " + ev.dataTransfer.effectAllowed);
     // console.log('============ currentTarget')
     // console.log(ev)
+
     ev.dataTransfer.clearData()
     ev.dataTransfer.setData("text", ev.target.id)
+    LevelCreationTool.i._currentDragged = ev.target.id
     ev.dataTransfer.effectAllowed = "move"
     ev.target.style.opacity = .5
   }
@@ -615,9 +617,9 @@ class LevelCreationTool {
     // console.log(ev.target)
     // console.log('============ current target')
     // console.log(ev.currentTarget)
-    // console.log('============ original target')
-    // console.log(ev.originalTarget)
-    let data = ev.dataTransfer.getData("text")
+    // console.log('============ data')
+    // console.log(ev.dataTransfer.getData("text"))
+    let data = ev.dataTransfer.getData("text") || LevelCreationTool.i._currentDragged
     let objData = document.querySelector(`#${data}`)
     if ((ev.currentTarget.id == 'creation-container' || ev.currentTarget.classList.contains('secondary-creation-container'))
     && !ev.currentTarget.querySelector('#phantom-div')) {
@@ -632,7 +634,7 @@ class LevelCreationTool {
     }
     if(ev.currentTarget.classList.contains('pacient-info-values')){
       // console.log('============ dropping options')
-      let data = ev.dataTransfer.getData("text")
+      let data = ev.dataTransfer.getData("text") || LevelCreationTool.i._currentDragged
       let objData = document.querySelector(`#${data}`)
       if(objData.classList.contains('drag-option-built') && !ev.currentTarget.querySelector('#phantom-div')){
         // console.log('============ options were built: can drop')
@@ -658,7 +660,7 @@ class LevelCreationTool {
     if ((ev.currentTarget.id == 'creation-container'
     || ev.currentTarget.classList.contains('secondary-creation-container'))
     && ev.currentTarget.querySelector('#phantom-div')) {
-      if(ev.originalTarget.id != '#phantom-div')
+      if(ev.currentTarget.id != '#phantom-div')
         ev.currentTarget.querySelector('#phantom-div').remove()
     }
     if(ev.currentTarget.classList.contains('pacient-info-values')){

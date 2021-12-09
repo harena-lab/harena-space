@@ -156,7 +156,7 @@ class PrognosisAvatar {
     "cavaloTroia":{
       "name":"Cavalo de Tróia",
       "src":"/prognosis/img/cavalo-troia.svg",
-      "desc":"em tudo que reluz é ouro...Seja a maior arma do exército espartano.",
+      "desc":"Nem tudo que reluz é ouro... Seja a maior arma do exército espartano.",
     },
     "gaia":{
       "name":"Gaia",
@@ -166,7 +166,7 @@ class PrognosisAvatar {
     "peon":{
       "name":"Péon",
       "src":"/prognosis/img/peon.svg",
-      "desc":"Morador do Olimpo, seja o médio dos deuses.",
+      "desc":"Morador do Olimpo, seja o médico dos deuses.",
     },
     "morfeu":{
       "name":"Morfeu",
