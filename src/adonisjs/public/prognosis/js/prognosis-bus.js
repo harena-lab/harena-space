@@ -74,8 +74,8 @@ class PrognosisBus {
         PrognosisBusDriver.i.storeLocalStorage(ms)
         break
       case 'navigate':
-        console.log('============ closing current lane')
-        console.log(await PrognosisBusDriver.i.storeLocalStorage(await PrognosisBusDriver.i.closeCurrentEntity()))
+        // console.log('============ closing current lane')
+        // console.log(await PrognosisBusDriver.i.storeLocalStorage(await PrognosisBusDriver.i.closeCurrentEntity()))
         ms = {
           navigate: 'section',
           topic: topic,
@@ -108,7 +108,7 @@ class PrognosisBus {
           timeStamp: currentTime.toJSON()
         }
         await PrognosisBusDriver.i.storeLocalStorage(ms)
-        console.log('============ knot start')
+        // console.log('============ knot start')
         await PrognosisBusDriver.i.setKnotSequence()
         ms = {
           topic: `knot/start/${PrognosisBusDriver.i._currentKnot}`,
@@ -119,11 +119,13 @@ class PrognosisBus {
         await PrognosisBusDriver.i.startKnot(ms)
         break
       case 'navigate':
-        console.log('============ closing current entity to navigate')
-        await PrognosisBusDriver.i.storeLocalStorage(await PrognosisBusDriver.i.closeCurrentEntity())
-        if(await PrognosisBusDriver.i.busLaneCheck() == 'case'){
-          console.log('============ dispatching luggage to logger')
-          await PrognosisBusDriver.i.dispatchLuggage()
+        // console.log('============ closing current entity to navigate')
+        if(await PrognosisBusDriver.i.verifyLocalStorage(this._storageKey) != null){
+          await PrognosisBusDriver.i.storeLocalStorage(await PrognosisBusDriver.i.closeCurrentEntity())
+          if(await PrognosisBusDriver.i.busLaneCheck() == 'case'){
+            // console.log('============ dispatching luggage to logger')
+            await PrognosisBusDriver.i.dispatchLuggage()
+          }
         }
 
         // console.log('============ navigating case')
