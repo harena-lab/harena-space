@@ -5376,7 +5376,7 @@ class Prognosis {
           },
           "Outro local do hospital":{
             "saps":8,
-            "text":"de outra unidade",
+            "text":"de outro local do hospital",
           },
         }
       },

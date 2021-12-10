@@ -189,6 +189,9 @@ class LevelCreationTool {
             if (deconstrElem.type == 'radio') {
               if (deconstrElem.name == Prognosis.i.removeAccent(parentKey))
                 uParent = parentKey
+              else if (deconstrElem.dataset.parentTitle == parentKey) {
+                uParent = parentKey
+              }
             }
           }else{
             if (deconstrElem.id == Prognosis.i.removeAccent(parentKey))
@@ -239,11 +242,11 @@ class LevelCreationTool {
               let objValue = deconstrElem.value
               if(deconstrElem.name == Prognosis.i.removeAccent(parentKey)){
                 if(sapsList['pacient'][parentKey]['values'][objValue]){
-                  console.log('============ building bundle...')
-                  console.log('============ parentKey')
-                  console.log(parentKey)
-                  console.log('============ value')
-                  console.log(objValue)
+                  // console.log('============ building bundle...')
+                  // console.log('============ parentKey')
+                  // console.log(parentKey)
+                  // console.log('============ value')
+                  // console.log(objValue)
                   this.buildSapsObj(sapsList, parentKey, objValue)
                 }
               }
@@ -265,14 +268,14 @@ class LevelCreationTool {
               let childValue = Object.keys(sapsList['pacient'][parentKey]['values'])[x]
               if (childValue == deconstrElem.value){
                 // console.log(childValue)
-                console.log(deconstrElem.value)
+                // console.log(deconstrElem.value)
                 this.buildSapsObj(sapsList, parentKey, childValue)
               }
             }
 
             if(deconstrElem == dElem[dElem.length-1]){
               let dropContainer = deconstrElem.closest('.drag-option-built').parentElement
-              console.log(dropContainer)
+              // console.log(dropContainer)
               if(dropContainer.id != 'creation-dump'
               && dropContainer.childElementCount == 1)
               this.addPadding(dropContainer,'pb-5',true)
@@ -968,10 +971,10 @@ class LevelCreationTool {
     if(properties['radioYN'] == 'true'){
       template = document.createElement('template')
       template.innerHTML = Prognosis.playerOptionRadio
-      .replace(/\[id\]/ig, keyId+'-nao')
-      .replace(/\[name\]/ig, keyId+'-yn')
-      .replace(/\[value\]/ig, 'Não')
-      .replace(/\[valueText\]/ig, 'Não')
+        .replace(/\[id\]/ig, keyId+'-nao')
+        .replace(/\[name\]/ig, keyId+'-yn')
+        .replace(/\[value\]/ig, 'Não')
+        .replace(/\[valueText\]/ig, 'Não')
       obj.appendChild(template.content.cloneNode(true))
 
       let radioTemp = document.querySelector(`#${template.content.firstElementChild.querySelector('input').id}`)
@@ -1005,15 +1008,17 @@ class LevelCreationTool {
         template = document.createElement('template')
         if(properties['uniqueValues'] == 'true'){
           template.innerHTML = Prognosis.playerOptionRadio
-          .replace(/\[name\]/ig, keyId)
-          .replace(/\[id\]/ig, (keyId+'-'+Prognosis.i.removeAccent(value)))
-          .replace(/\[value\]/ig, value)
-          .replace(/\[valueText\]/ig, value)
+            .replace(/\[name\]/ig, keyId)
+            .replace(/\[id\]/ig, (keyId+'-'+Prognosis.i.removeAccent(value)))
+            .replace(/\[value\]/ig, value)
+            .replace(/\[valueText\]/ig, value)
+          template.content.firstElementChild.querySelector('input').dataset.parentTitle = optionsList['parentValues'][z].dataset.parentTitle
         }else if(properties['multipleValues'] == 'true'){
           template.innerHTML = Prognosis.playerOptionCheckbox
-          .replace(/\[id\]/ig, (keyId+'-'+Prognosis.i.removeAccent(value)))
-          .replace(/\[value\]/ig, value)
-          .replace(/\[valueText\]/ig, value)
+            .replace(/\[id\]/ig, (keyId+'-'+Prognosis.i.removeAccent(value)))
+            .replace(/\[value\]/ig, value)
+            .replace(/\[valueText\]/ig, value)
+          template.content.firstElementChild.querySelector('input').dataset.parentTitle = optionsList['parentValues'][z].dataset.parentTitle
         }
         if(properties['cascade'] == 'true' || properties['radioYN'] == 'true'){
           document.querySelector(`#${cascadeDiv.id}`).appendChild(template.content.cloneNode(true))
@@ -1042,19 +1047,21 @@ class LevelCreationTool {
         if(properties['uniqueValues'] == 'true'){
           template = document.createElement('template')
           template.innerHTML = Prognosis.playerOptionRadio
-          .replace(/\[id\]/ig, childId+'-prognRadio-'+z)
-          .replace(/\[name\]/ig, keyId+'-value')
-          .replace(/\[valueText\]/ig, childText)
-          .replace(/\[value\]/ig, childText)
+            .replace(/\[id\]/ig, childId+z)
+            .replace(/\[name\]/ig, keyId+'-value')
+            .replace(/\[valueText\]/ig, childText)
+            .replace(/\[value\]/ig, childText)
+          template.content.firstElementChild.querySelector('input').dataset.parentTitle = optionsList['childValues'][z].dataset.parentTitle
 
           document.querySelector(`#${cascadeDivChild.id}`).appendChild(template.content.cloneNode(true))
 
         }else if(properties['multipleValues'] == 'true'){
           template = document.createElement('template')
           template.innerHTML = Prognosis.playerOptionCheckbox
-          .replace(/\[id\]/ig, childId)
-          .replace(/\[value\]/ig, childText)
-          .replace(/\[valueText\]/ig, childText)
+            .replace(/\[id\]/ig, childId)
+            .replace(/\[value\]/ig, childText)
+            .replace(/\[valueText\]/ig, childText)
+          template.content.firstElementChild.querySelector('input').parentTitle = optionsList['childValues'][z].dataset.parentTitle
 
           document.querySelector(`#${cascadeDivChild.id}`).appendChild(template.content.cloneNode(true))
         }
@@ -1158,7 +1165,7 @@ class LevelCreationTool {
 
     let selectTitle = document.querySelector('#input-title-option').value
     if(document.querySelector(`#option-group-${Prognosis.i.removeAccent(selectTitle)}`)) {
-      let newTitle = prompt("Nome da opção duplicado, digite outro valor")
+      let newTitle = prompt("The option name is duplicated, please type another name")
 
       if (Prognosis.i.removeAccent(newTitle) != Prognosis.i.removeAccent(selectTitle)) {
         selectTitle = newTitle
@@ -1178,6 +1185,26 @@ class LevelCreationTool {
     }else if (selectTitle == null || whiteSpace.test(selectTitle)) {
       let txtAlert = 'You cannot build a option with an empty title.'
       this.createAlert ('alert-danger', true, txtAlert, 20000)
+    }else if (optionsList.length == 1 && optionsList[0].innerText == "Não") {
+      let txtAlert = `You are trying to create a select list with only the value "${optionsList[0].innerText}". Please build a "radio" or "checklist" instead.
+      <br>You can also <a class="alert-link" href="#" onclick="LevelCreationTool.i.autoCreateRadio()">click here</a> and auto build the radio option.`
+      this.createAlert ('alert-danger', true, txtAlert, 20000)
+    }else if (insertParentName) {
+      let firstParentTitle = optionsList[0].dataset.parentTitle
+      let oneFamily = true
+      for (var el of optionsList) {
+        if (el.dataset.parentTitle != firstParentTitle) {
+          oneFamily = false
+        }
+      }
+      if(oneFamily){
+        let txtAlert = `The "group name before the value" is active, but all the values are from the same group. What do you want to do?
+        <br>Build the option without the group name: <a class="alert-link" href="#"
+        onclick="LevelCreationTool.i.autoCreateSelectList('${selectId}', '${selectTitle}', false)">click here</a>
+        <br>Confirm building with the group name: <a class="alert-link" href="#"
+        onclick="LevelCreationTool.i.autoCreateSelectList('${selectId}', '${selectTitle}', true)">click here</a>`
+        this.createAlert ('alert-warning', true, txtAlert, 50000, true)
+      }
     }else{
       validCreation = true
     }
@@ -1193,7 +1220,7 @@ class LevelCreationTool {
     let selectTitle = document.querySelector('#input-title-option').value
 
     if(document.querySelector(`#option-group-${Prognosis.i.removeAccent(selectTitle)}`)) {
-      let newTitle = prompt("Nome da opção duplicado, digite outro valor")
+      let newTitle = prompt("The option name is duplicated, please type another name")
 
       if (Prognosis.i.removeAccent(newTitle) != Prognosis.i.removeAccent(selectTitle)) {
         selectTitle = newTitle
@@ -1248,7 +1275,7 @@ class LevelCreationTool {
 
     let selectTitle = document.querySelector('#input-title-option').value
     if(document.querySelector(`#option-group-${Prognosis.i.removeAccent(selectTitle)}`)) {
-      let newTitle = prompt("Nome da opção duplicado, digite outro valor")
+      let newTitle = prompt("The option name is duplicated, please type another name")
 
       if (Prognosis.i.removeAccent(newTitle) != Prognosis.i.removeAccent(selectTitle)) {
         selectTitle = newTitle
@@ -1290,7 +1317,7 @@ class LevelCreationTool {
   async createCheckList (){
     let selectTitle = document.querySelector('#input-title-option').value
     if(document.querySelector(`#option-group-${Prognosis.i.removeAccent(selectTitle)}`)) {
-      let newTitle = prompt("Nome da opção duplicado, digite outro valor")
+      let newTitle = prompt("The option name is duplicated, please type another name")
 
       if (Prognosis.i.removeAccent(newTitle) != Prognosis.i.removeAccent(selectTitle)) {
         selectTitle = newTitle
@@ -1307,11 +1334,30 @@ class LevelCreationTool {
 
   }
 
-  async createAlert (type, dismissible, content, fadeTime){
+  async autoCreateSelectList (selectId, selectTitle, insertParentName){
+    $(".alert").alert('close')
+    let optionsList = document.querySelectorAll('#creation-container > [id ^= "option-"] ')
+    await this.createOption ((document.querySelector('#creation-dump')), true, selectTitle, selectId)
+    this.selectListCreator((document.querySelector('#creation-dump')), selectId, selectTitle, optionsList, insertParentName)
+
+  }
+
+  async autoCreateRadio (){
+    let radioTab = document.querySelector('#radio-tab')
+    let radioChck = document.querySelector("#option-radio")
+    radioTab.click()
+    radioChck.click()
+    this.createRadio()
+  }
+
+  async createAlert (type, dismissible, content, fadeTime, includesCode){
+    let _html = includesCode || false
     let alertDiv = document.createElement('div')
     let dismissBtn = ''
 
     alertDiv.classList.add('alert', type, 'alert-dismissible', 'fade', 'show')
+    if(_html)
+      alertDiv.setAttribute('html', 'true')
     if(dismissible){
       alertDiv.classList.add('alert-dismissible')
       dismissBtn = `
