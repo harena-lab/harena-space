@@ -416,7 +416,7 @@ class Saps {
             case 'Outra UTI':
             origem = 7
             break;
-            case 'Nenhuma das anteriores':
+            case 'Outro local do hospital':
             origem = 8
             break;
           }
