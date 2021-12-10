@@ -192,10 +192,21 @@ class LevelCreationTool {
               else if (deconstrElem.dataset.parentTitle == parentKey) {
                 uParent = parentKey
               }
+            }else {
+              if(deconstrElem.id == Prognosis.i.removeAccent(parentKey)){
+                uParent = parentKey
+              }else if (deconstrElem.dataset.parentTitle == parentKey) {
+                uParent = parentKey
+              }
             }
           }else{
             if (deconstrElem.id == Prognosis.i.removeAccent(parentKey))
               uParent = parentKey
+            else if (deconstrElem.dataset.parentTitle == parentKey){
+              uParent = parentKey
+            }
+
+
           }
         }
       }
@@ -275,7 +286,7 @@ class LevelCreationTool {
 
             if(deconstrElem == dElem[dElem.length-1]){
               let dropContainer = deconstrElem.closest('.drag-option-built').parentElement
-              // console.log(dropContainer)
+              console.log(dropContainer)
               if(dropContainer.id != 'creation-dump'
               && dropContainer.childElementCount == 1)
               this.addPadding(dropContainer,'pb-5',true)
@@ -284,6 +295,7 @@ class LevelCreationTool {
           }else if (deconstrElem.type == 'checkbox') {
             let parentKey = uParent
             // console.log(deconstrElem)
+            // console.log(parentKey)
             for (let x = 0; x < Object.keys(sapsList['pacient'][parentKey]['values']).length; x++) {
               let childValue = Object.keys(sapsList['pacient'][parentKey]['values'])[x]
               // console.log(childValue)
@@ -1204,6 +1216,9 @@ class LevelCreationTool {
         <br>Confirm building with the group name: <a class="alert-link" href="#"
         onclick="LevelCreationTool.i.autoCreateSelectList('${selectId}', '${selectTitle}', true)">click here</a>`
         this.createAlert ('alert-warning', true, txtAlert, 50000, true)
+      }
+      else {
+        validCreation = true
       }
     }else{
       validCreation = true
