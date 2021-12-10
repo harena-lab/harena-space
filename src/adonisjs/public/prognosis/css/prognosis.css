@@ -286,6 +286,9 @@ color: #c1434f !important;
 .bg-progn-blue{
   background-color: #6588a8 !important;
 }
+.bg-progn-light-blue{
+  background-color: #e3f1ff !important;
+}
 .clickable {
   cursor: pointer;
 }

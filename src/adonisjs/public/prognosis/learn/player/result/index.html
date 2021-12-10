@@ -140,10 +140,12 @@
                   <!-- <h5 class="ml-1 text-success"> (Melhoria!)</h5> -->
               </div>
             </div>
-            <button type="button" class="btn btn-info" id="btn-retry" data-bus-entity="case/navigate"
-            data-bus-id="/retry" data-action="/prognosis/learn/player/"
+            <button type="button" data-dismiss="modal" class="mt-2 btn btn-info btn-retry" id="btn-retry-modal"
+            data-bus-entity="case/navigate" data-bus-id="/retry" data-action="/prognosis/learn/player/" data-dismiss="modal"
             >Refazer o caso <i class="fas fa-redo"></i></button>
-            <button type="button" class="btn btn-success" data-dismiss="modal">Continuar</button>
+            <button type="button" class="mt-2 btn btn-info btn-spin-roulette" data-roulette="false"
+            id="btn-spin-roulette-modal" data-dismiss="modal">Rodar a roleta</button>
+            <button type="button" class="mt-2 btn btn-success d-none btn-next-lvl" id='btn-next-lvl-modal'>Próximo caso</button>
 
           </form>
         </div>
@@ -154,18 +156,30 @@
   <dcc-include src="/author/partials/header.html"></dcc-include>
   <main role="">
   <div id="main-panel" class="d-flex flex-column vh-100 vw-100 index-boot-padding bg-light">
-    <div id="main-wrapper" class="d-flex flex-column w-lg-75 h-100 w-100 px-2 pb-4 bg-dark mx-auto scroll-y main-scroll">
-      <h1 class="txt-light my-5 text-center pacient-title">Resultado - Roleta da Vida</h1>
-      <h4 class="mb-5" id="player-guess"></h4>
+    <div id="main-wrapper" class="d-flex flex-column w-lg-75 h-100 w-100 px-2 pb-4 bg-progn-light-blue mx-auto scroll-y main-scroll">
+      <h1 class="text-dark my-3 text-center pacient-title">Resultado - Roleta da Vida</h1>
+      <h4 class="mb-4 text-dark" id="player-guess"></h4>
 
-      <h4 id="saps-calc"></h4>
+      <h4 class="text-dark" id="saps-calc"></h4>
 
       <div id="svg-wrapper">
       </div>
 
       <div class="text-danger d-none" id="roulette-invalid">Você ainda não selecionou todos os números disponíveis</div>
-      <button type="button" class="mt-3 btn btn-info" data-roulette="false" id="btn-spin-roulette">Rodar a roleta</button>
-      <button type="button" class="mt-2 btn btn-success d-none" id='btn-next-lvl'>Próximo caso</button>
+      <div class="row">
+        <div class="col-12 col-sm-6">
+          <button type="button" class="w-100 mt-1 btn btn-success d-none btn-next-lvl" id='btn-next-lvl'>Próximo caso</button>
+        </div>
+        <div class="col-12 col-sm-6">
+          <button type="button" class="w-100 mt-1 btn btn-info d-none btn-retry" id="btn-retry" data-bus-entity="case/navigate"
+          data-bus-id="/retry" data-action="/prognosis/learn/player/"
+          >Refazer o caso <i class="fas fa-redo"></i></button>
+        </div>
+        <div class="col-12">
+          <button type="button" class="w-100 mt-1 btn btn-info btn-spin-roulette" data-roulette="false" id="btn-spin-roulette">Rodar a roleta</button>
+        </div>
+      </div>
+
       <dcc-submit label="Rodar a roleta" xstyle="out" location="btn-spin-roulette" bind="submit-prognosis-lvl"
        connect="submit:harena-user-property:service/request/put"></dcc-submit>
 

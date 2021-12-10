@@ -1708,16 +1708,20 @@ class Prognosis {
       .replace(/\[sapsSurvival\]/ig, sapsCalc+'%')
       .replace(/\[rouletteN\]/ig, Math.round(sapsCalc/10))
       .replace(/\[plural\]/ig, ((Math.round(sapsCalc/10) > 1)?'s':''))
-      const btnSpin = document.querySelector('#btn-spin-roulette')
+      const btnSpin = document.querySelectorAll('.btn-spin-roulette')
       const fnBtnSpin = function (){
+        let _btnSpin = document.querySelectorAll('.btn-spin-roulette')
         const sapsCalc = new URL(document.location).searchParams.get('calc')
         if(availableN == selectedN.length){
           MessageBus.progn.publish('trigger/run/roulette/spinRoulette')
-          this.disabled = true
+          if(this.id == 'btn-spin-roulette')
+            this.disabled = true
           Prognosis.i.spinRoulette(selectedN)
           document.querySelector('#roulette-invalid').classList.add('d-none')
-          if(!document.querySelector('#btn-spin-roulette').innerHTML.includes('novamente'))
-            document.querySelector('#btn-spin-roulette').innerHTML += ' novamente'
+          for (let btn of _btnSpin) {
+            if(!btn.innerHTML.includes('novamente'))
+              btn.innerHTML += ' novamente'
+          }
         }else{
           document.querySelector('#roulette-invalid').classList.remove('d-none')
         }
@@ -1730,7 +1734,10 @@ class Prognosis {
           $('#lvl-result-modal').modal('show')
         }, 750)
       }
-      btnSpin.addEventListener('click', fnBtnSpin)
+      for (let btn of btnSpin) {
+        btn.addEventListener('click', fnBtnSpin)
+      }
+
       rouletteAnim.addEventListener('endEvent', fnModalEnd)
 
       const prognResultAcc = document.querySelector('#prognosis-result-accuracy')
@@ -1749,7 +1756,7 @@ class Prognosis {
   async spinRoulette(selectedN){
     const rouletteSVG = document.querySelector('#roulette-group')
     const rouletteAnim = document.querySelector('#roulette-anim')
-    const btnSpin = document.querySelector('#btn-spin-roulette')
+    const btnSpin = document.querySelectorAll('.btn-spin-roulette')
     var angleToNum
     var rouletteAngle
     rouletteSVG.parentElement.classList.add('no-pointer')
@@ -1761,28 +1768,39 @@ class Prognosis {
       return Math.floor(Math.random() * (max - min)) + min
     }
     const fnEndSpin = function(){
-      const btnNextLvl = document.querySelector('#btn-next-lvl')
-      btnNextLvl.classList.remove('d-none')
-      if(parseInt(localStorage.getItem('prognosis-current-lvl')) == 10){
-        btnNextLvl.innerHTML = 'Voltar para lista'
+      const btnNextLvl = document.querySelectorAll('.btn-next-lvl')
+      const btnRetry = document.querySelectorAll('.btn-retry')
+
+      for (let btn of btnRetry) {
+        btn.classList.remove('d-none')
       }
-      let nextLvl = parseInt(localStorage.getItem('prognosis-current-lvl'))+1
-      if(nextLvl>10)
-        nextLvl = 10
-      if(nextLvl<=10){
-        btnNextLvl.dataset.busEntity = 'case/navigate'
-        btnNextLvl.dataset.busId = '/>'
-        btnNextLvl.dataset.action = `/prognosis/learn/player/?diffic=${nextLvl}`
-      }else{
-        btnNextLvl.dataset.busEntity = 'section/navigate'
-        btnNextLvl.dataset.busId = '/prognosis/learn/progress/'
-        btnNextLvl.dataset.action = '/prognosis/learn/progress/'
+      for (let btn of btnNextLvl) {
+        btn.classList.remove('d-none')
+        if(parseInt(localStorage.getItem('prognosis-current-lvl')) == 10){
+          btn.innerHTML = 'Voltar para lista'
+        }
+        let nextLvl = parseInt(localStorage.getItem('prognosis-current-lvl'))+1
+        // if(nextLvl>10)
+        //   nextLvl = 10
+        if(nextLvl<=10){
+          btn.dataset.busEntity = 'case/navigate'
+          btn.dataset.busId = '/>'
+          btn.dataset.action = `/prognosis/learn/player/?diffic=${nextLvl}`
+        }else{
+          btn.dataset.busEntity = 'section/navigate'
+          btn.dataset.busId = '/prognosis/learn/progress/'
+          btn.dataset.action = '/prognosis/learn/progress/'
+        }
+        // const fnBtnNextLvl = function (){
+        //
+        // }
+        // btn.addEventListener('click', fnBtnNextLvl)
       }
-      // const fnBtnNextLvl = function (){
-      //
-      // }
-      // btnNextLvl.addEventListener('click', fnBtnNextLvl)
-      btnSpin.disabled = false
+
+      for (let btn of btnSpin) {
+        btn.disabled = false
+      }
+
 
       rouletteAngle = rouletteSVG.transform.animVal[0].angle
       var newFrom = rouletteAnim.getAttribute('to').split(' ')[0]
@@ -1806,7 +1824,7 @@ class Prognosis {
       // console.log(selectedN)
       if(!document.querySelector('#roulette-result')){
         var resultTxt = document.createElement('h5')
-        resultTxt.classList.add('text-light')
+        resultTxt.classList.add('text-dark')
         resultTxt.id = 'roulette-result'
       }else {
         var resultTxt = document.querySelector('#roulette-result')
@@ -1834,9 +1852,11 @@ class Prognosis {
         MessageBus.progn.publish('var/set/roulette/rouletteNSelected', selectedN)
       }
     }
-    if(!btnSpin.dataset.roulette == false){
-      rouletteAnim.addEventListener('endEvent', fnEndSpin)
-      btnSpin.dataset.roulette = true
+    for (let btn of btnSpin) {
+      if(!btn.dataset.roulette == false){
+        rouletteAnim.addEventListener('endEvent', fnEndSpin)
+        btn.dataset.roulette = true
+      }
     }
     var randomRotate = getRandomInt(2000, 2880)
     // console.log(randomRotate)
@@ -5829,10 +5849,10 @@ class Prognosis {
   `
   Prognosis.playerGuessTxt =
   `
-  Você respondeu que a chance do paciente sobreviver era: [playerGuess]
+  Você respondeu que a chance do paciente sobreviver era: <i class="text-info">[playerGuess]</i>
   `
   Prognosis.sapsCalcTxt =
   `
-  A chance calculada é de: [sapsSurvival].<br>Essa porcentagem te dá direito à escolha de [rouletteN] número[plural].
+  A chance calculada é de: <i class="text-info">[sapsSurvival]</i>.<br>Essa porcentagem te dá direito à escolha de <i class="text-info">[rouletteN]</i> número[plural] para a roleta.
   `
 })()
