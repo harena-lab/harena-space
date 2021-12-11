@@ -1,6 +1,8 @@
 class ChallengeProgress {
 
   constructor() {
+    this._unlockCh1 = 4
+    this._unlockCh2 = 24
     this._ready = false
     this._totalReady = 0
     this.preStart = this.preStart.bind(this)
@@ -41,9 +43,9 @@ class ChallengeProgress {
       const fnBtnChallenge = function (){
         if(this.classList.contains('disabled')){
           if(this.id.includes('1')){
-            txtTooltip.textContent = 'Para habilitar o Desafio 1 você precisa completar a dificuldade X de "Aprendendo Prognóstico".'
+            txtTooltip.textContent = 'Em construção...'
           }else{
-            txtTooltip.textContent = 'Para habilitar o Desafio 2 você precisa completar a dificuldade Y de "Aprendendo Prognóstico".'
+            txtTooltip.textContent = 'Em construção...'
           }
           $('#modal-tooltip-general').modal('show')
         }
@@ -51,19 +53,19 @@ class ChallengeProgress {
       }
       if(btnChallengeOne.classList.contains('disabled')){
         btnChallengeOne.addEventListener('click', fnBtnChallenge)
-        ChallengeProgress.i.tooltipChallenge(btnChallengeOne, 'Liberado após terminar dificuldade X em "Aprendendo Prognóstico"')
+        ChallengeProgress.i.tooltipChallenge(btnChallengeOne, 'Em construção...')
       }
       if(btnChallengeTwo.classList.contains('disabled')){
         btnChallengeTwo.addEventListener('click', fnBtnChallenge)
-        ChallengeProgress.i.tooltipChallenge(btnChallengeTwo, 'Liberado após terminar dificuldade Y em "Aprendendo Prognóstico"')
+        ChallengeProgress.i.tooltipChallenge(btnChallengeTwo, 'Em construção...')
       }
     }
   }
 
   async checkChallenge() {
     MessageBus.i.unsubscribe('data/progn.info/ready', this.checkChallenge)
-    const challengeOneUnlocked = parseInt(PrognosisProgress.i.user['prognosis-highest-lvl']) >= 4
-    const challengeTwoUnlocked = await PrognosisProgress.i.getStars(PrognosisProgress.i.user) >= 21
+    const challengeOneUnlocked = parseInt(PrognosisProgress.i.user['prognosis-highest-lvl']) >= 11
+    const challengeTwoUnlocked = await PrognosisProgress.i.getStars(PrognosisProgress.i.user) >= 300
 
     if(challengeOneUnlocked){
       sessionStorage.setItem('ch-one-unlocked', true)

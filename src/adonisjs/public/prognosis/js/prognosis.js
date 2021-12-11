@@ -130,8 +130,11 @@ class Prognosis {
     //   Prognosis.i.getPacientOptions(true)
     // }
     if (new URL(document.location).pathname.includes('/learn/player/result')){
-      const retryLvl = document.querySelector('#btn-retry')
-      retryLvl.dataset.action = `/prognosis/learn/player/?diffic=${localStorage.getItem('prognosis-current-lvl')}`
+      const retryLvl = document.querySelectorAll('.btn-retry')
+      for (let btn of retryLvl) {
+        btn.dataset.action = `/prognosis/learn/player/?diffic=${localStorage.getItem('prognosis-current-lvl')}`
+      }
+
       // retryLvl.addEventListener('click', function(){
       //   window.location.href = `/prognosis/learn/player/?diffic=${localStorage.getItem('prognosis-current-lvl')}`
       // })
@@ -168,8 +171,15 @@ class Prognosis {
       document.querySelector('dcc-submit[connect="submit:harena-user-property:service/request/post"]')._computeTrigger()
     }else {
       localStorage.removeItem('prognosis-highest-lvl')
-      localStorage.removeItem('hide-intro-1')
-      localStorage.removeItem('hide-intro-2')
+      sessionStorage.removeItem('hide-intro-1')
+      sessionStorage.removeItem('hide-intro-2')
+      sessionStorage.removeItem('hide-intro-3')
+      sessionStorage.removeItem('hide-intro-4')
+      sessionStorage.removeItem('hide-intro-5')
+      sessionStorage.removeItem('hide-intro-6')
+      sessionStorage.removeItem('hide-intro-9')
+      sessionStorage.removeItem('hide-intro-10')
+
     }
     if(dbCurrent && dbCurrent.value != ''){
       if (parseInt(localStorage.getItem('prognosis-current-lvl')) != parseInt(dbCurrent.value)) {
@@ -492,28 +502,99 @@ class Prognosis {
     if (new URL(document.location).pathname.includes('learn/player')) {
 
       if(document.querySelector('#welcome-lvl-modal') && (localStorage.getItem(strLocalStorageCurrentLvl) == 1
-      || localStorage.getItem(strLocalStorageCurrentLvl)==null) && (!localStorage.getItem('hide-intro-1'))){
+      || localStorage.getItem(strLocalStorageCurrentLvl)==null) && (!sessionStorage.getItem('hide-intro-1'))){
         let welcomeModal = document.querySelector('#welcome-lvl-modal')
-        welcomeModal.querySelector('.modal-title').textContent = 'Seu primeiro paciente'
+        welcomeModal.querySelector('.modal-title').textContent = 'Seu primeiro paciente!'
         welcomeModal.querySelector('.modal-body > p').innerHTML = `Hoje é seu primeiro dia no estágio.
-        As moiras não acham que você está preparado para ser mandado direto pro trabalho em campo,
-        então elas querem te testar. Qual o perfil do paciente que Aisa raramente cortaria o fio da vida?
+        As moiras não acham que você está preparado para ser mandado direto para os leitos, então elas querem te testar.
+        Qual o perfil do paciente que Aisa raramente cortaria o fio da vida?
         <br><br>Escolha as variáveis que aumentam a chance de sobrevivência do paciente à chegada na UTI.`
 
         $('#welcome-lvl-modal').modal('show')
-        localStorage.setItem('hide-intro-1', true)
+        sessionStorage.setItem('hide-intro-1', true)
       }else if(document.querySelector('#welcome-lvl-modal') && (localStorage.getItem(strLocalStorageCurrentLvl) == 2)
-      && (!localStorage.getItem('hide-intro-2'))){
+      && (!sessionStorage.getItem('hide-intro-2'))){
         let welcomeModal = document.querySelector('#welcome-lvl-modal')
-        welcomeModal.querySelector('.modal-title').textContent = 'Nem mesmo os deuses'
-        welcomeModal.querySelector('.modal-body > p').innerHTML = `Continuando seu treinamento,
-        as moiras querem te mostrar que nem os deuses escolhem tudo... Quem dirá você! Nas próximas fases,
-        alguns parâmetros já estarão pré-definidos, demarcados com esse símbolo: <i class="fas fa-lock"></i>.
+        welcomeModal.querySelector('.modal-title').textContent = 'Nem mesmo os deuses...'
+        welcomeModal.querySelector('.modal-body > p').innerHTML = `Nessa etapa do seu treinamento, as moiras vão te mostrar que os deuses não escolhem tudo...
+        Quem dirá você! Nas próximas fases, alguns parâmetros já estarão pré-definidos,
+        demarcados com esse símbolo: <i class="fas fa-lock"></i>.
         <br><br> Com os demais, continue escolhendo opções que aumentem
         a chance de sobrevivência do seu paciente.`
 
         $('#welcome-lvl-modal').modal('show')
-        localStorage.setItem('hide-intro-2', true)
+        sessionStorage.setItem('hide-intro-2', true)
+      }
+      else if(document.querySelector('#welcome-lvl-modal') && (localStorage.getItem(strLocalStorageCurrentLvl) == 3)
+      && (!sessionStorage.getItem('hide-intro-3'))){
+        let welcomeModal = document.querySelector('#welcome-lvl-modal')
+        welcomeModal.querySelector('.modal-title').textContent = 'Pelo menos, saiba de onde é melhor ele vir...'
+        welcomeModal.querySelector('.modal-body > p').innerHTML = `E aí, tá se ligando?
+        Você já consegue identificar qual origem favorece seu paciente?
+        <br><br>Mostre que você sabe de onde você quer que ele venha...
+        Porque, na vida real, isolar variável não é tão fácil!`
+
+        $('#welcome-lvl-modal').modal('show')
+        sessionStorage.setItem('hide-intro-3', true)
+      }
+      else if(document.querySelector('#welcome-lvl-modal') && (localStorage.getItem(strLocalStorageCurrentLvl) == 4)
+      && (!sessionStorage.getItem('hide-intro-4'))){
+        let welcomeModal = document.querySelector('#welcome-lvl-modal')
+        welcomeModal.querySelector('.modal-title').textContent = 'E precisava estar na UTI?'
+        welcomeModal.querySelector('.modal-body > p').innerHTML = `Elas estão gostando do seu trabalho, viu?
+        E perceberam que você estudou para o estágio! Agora que você caiu na graça das deusas, não perca o ritmo!
+        <br><br>Se de onde vem conta, o que tinha antes também! Dentre as comorbidades, você se ligou qual tem menor impacto?
+        Pacientes podem ter a mesma doença de base e serem admitidos em contextos clínicos diferentes...`
+
+        $('#welcome-lvl-modal').modal('show')
+        sessionStorage.setItem('hide-intro-4', true)
+      }
+      else if(document.querySelector('#welcome-lvl-modal') && (localStorage.getItem(strLocalStorageCurrentLvl) == 5)
+      && (!sessionStorage.getItem('hide-intro-5'))){
+        let welcomeModal = document.querySelector('#welcome-lvl-modal')
+        welcomeModal.querySelector('.modal-title').textContent = 'Intuição vs Evidência'
+        welcomeModal.querySelector('.modal-body > p').innerHTML = `Será que você valoriza as alterações certas? Aisa sim.
+        Talvez quem mais chame atenção de um desatento não seja o mais grave, não é mesmo?
+        <br><br>Mostre para as moiras que você está disposto a aprender!
+        Seu nome é atenção e você sabe o que procurar no seu paciente!`
+
+        $('#welcome-lvl-modal').modal('show')
+        sessionStorage.setItem('hide-intro-5', true)
+      }
+      else if(document.querySelector('#welcome-lvl-modal') && (localStorage.getItem(strLocalStorageCurrentLvl) == 6)
+      && (!sessionStorage.getItem('hide-intro-6'))){
+        let welcomeModal = document.querySelector('#welcome-lvl-modal')
+        welcomeModal.querySelector('.modal-title').textContent = 'Agora tá parecendo de verdade...'
+        welcomeModal.querySelector('.modal-body > p').innerHTML = `Elas estão encantadas com você!
+        Como pode um novato tão entusiasmado?<br><br>Siga avaliando a admissão do seu paciente. O que é melhor para ele?
+        Será que você sempre olhou o sinal clínico certo? O exame mais importante?
+        <br><br>Siga aprendendo, estagiário! Assim você vai longe!`
+
+        $('#welcome-lvl-modal').modal('show')
+        sessionStorage.setItem('hide-intro-6', true)
+      }
+      else if(document.querySelector('#welcome-lvl-modal') && (localStorage.getItem(strLocalStorageCurrentLvl) == 9)
+      && (!sessionStorage.getItem('hide-intro-9'))){
+        let welcomeModal = document.querySelector('#welcome-lvl-modal')
+        welcomeModal.querySelector('.modal-title').textContent = 'Estamos chegando na reta final...'
+        welcomeModal.querySelector('.modal-body > p').innerHTML = `E aí? Como você está se sentindo?
+        Nem tudo que reluz é ouro, não é mesmo?<br><br>Se você está se embolando, não se preocupe!
+        As moiras estão te treinando porque confiam em você!<br><br>Respira fundo e lembre que, se algo não tá claro,
+        sempre dá pra voltar na fase – opa, na referência! – e pensar: o que gerou mais impacto?`
+
+        $('#welcome-lvl-modal').modal('show')
+        sessionStorage.setItem('hide-intro-9', true)
+      }
+      else if(document.querySelector('#welcome-lvl-modal') && (localStorage.getItem(strLocalStorageCurrentLvl) == 10)
+      && (!sessionStorage.getItem('hide-intro-10'))){
+        let welcomeModal = document.querySelector('#welcome-lvl-modal')
+        welcomeModal.querySelector('.modal-title').textContent = 'Parabéns por ter chegado aqui!'
+        welcomeModal.querySelector('.modal-body > p').innerHTML = `Olha, você superou todas as expectativas!
+        O erro é necessário ao aprendizado! Você soube usá-lo a seu favor e seguirá mais atento e confiante.
+        Veja até onde chegou!<br><br>Feche com chave de ouro! Ninguém nasce pronto, mas você mostrou que veio com sede de saber! É disso que se precisa!`
+
+        $('#welcome-lvl-modal').modal('show')
+        sessionStorage.setItem('hide-intro-10', true)
       }
     }
     if(new URL(document.location).pathname.includes('calculator') || new URL(document.location).pathname.includes('creation'))
@@ -3594,27 +3675,9 @@ class Prognosis {
               "Origem": {
                 "selectList": "true",
                 "values": [
-                  {
-                    "Origem": {
-                      "values": [
-                        "Pronto Socorro"
-                      ]
-                    }
-                  },
-                  {
-                    "Origem": {
-                      "values": [
-                        "Outra UTI"
-                      ]
-                    }
-                  },
-                  {
-                    "Origem": {
-                      "values": [
-                        "Outro local do hospital"
-                      ]
-                    }
-                  }
+                  "Pronto Socorro",
+                  "Outra UTI",
+                  "Outro local do hospital"
                 ]
               }
             }
