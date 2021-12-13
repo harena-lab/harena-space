@@ -65,7 +65,7 @@ class UserSignup {
             feed.innerHTML ='Houve algum erro no cadastro.'
         } else if (parameters.agree && parameters.agree.length > 0 && parameters.agree == 'agree') {
           feed.style.color = 'blue'
-          feed.innerHTML = 'Usuário cadastrado com sucesso.'
+          feed.innerHTML = 'Usuário cadastrado com sucesso. Ainda há uma etapa extra a ser cumprida. Você receberá um e-mail para confirmar que é o responsável. Em seguida, o participante também receberá um link para confirmar a sua concordância com a pesquisa.'
           const termJson = {
             userId: user.message.id,
             termId: parameters.term,
@@ -81,6 +81,9 @@ class UserSignup {
           let term = await MessageBus.i.request('user/term/post', termJson)
           console.log('=== term add')
           console.log(term)
+        } else {
+          feed.style.color = 'blue'
+          feed.innerHTML = 'Usuário cadastrado com sucesso.'
         }
       }
         /*
