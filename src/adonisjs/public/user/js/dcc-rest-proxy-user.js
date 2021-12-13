@@ -58,6 +58,8 @@ DCC.component(
                in: 'query'},
               {name: 'nameResponsible',
                in: 'query'},
+              {name: 'emailResponsible',
+                in: 'query'},
               {name: 'nameParticipant',
                in: 'query'},
               {name: 'date',
