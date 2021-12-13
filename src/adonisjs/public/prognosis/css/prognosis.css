@@ -173,6 +173,9 @@ div {
 nav.navbar {
   margin-bottom: 1rem;
 }
+.mt-6{
+  margin-top: 4rem !important;
+}
 
 .creation-container{
   background-color:#b6ccff !important;
@@ -285,6 +288,12 @@ color: #c1434f !important;
 
 .bg-progn-blue{
   background-color: #6588a8 !important;
+}
+.bg-progn-light-blue{
+  background-color: #e3f1ff !important;
+}
+.bg-progn-dark-blue{
+  background-color: #163c53 !important;
 }
 .clickable {
   cursor: pointer;

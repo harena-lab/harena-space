@@ -283,7 +283,7 @@ class Basic {
   }
 
   replaceStyle (targetDocument, oldCSS, newTheme, cssFile) {
-    if (oldCSS) { targetDocument.head.removeChild(oldCSS) }
+    if (oldCSS) { targetDocument.body.removeChild(oldCSS) }
 
     const cssF = (cssFile) || 'theme.css'
 
@@ -291,7 +291,7 @@ class Basic {
     newCSS.setAttribute('rel', 'stylesheet')
     newCSS.setAttribute('type', 'text/css')
     newCSS.setAttribute('href', this.themeStyleResolver(cssF))
-    targetDocument.head.appendChild(newCSS)
+    targetDocument.body.appendChild(newCSS)
 
     return newCSS
   }
