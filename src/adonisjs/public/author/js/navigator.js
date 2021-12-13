@@ -123,10 +123,26 @@ class Navigator {
         for (const c of knots[k].content) {
           if (c.type == 'option' || c.type == 'divert')
             this._insertEdge(current, k, c.contextTarget)
-          else if (c.type == 'input' && c.subtype == 'choice' && c.options)
-            for (const o in c.options)
-              if (c.options[o].contextTarget)
-                this._insertEdge(current, k, c.options[o].contextTarget)
+          else if (c.type == 'input' && c.subtype == 'choice') {
+            if (c.contextTarget) {
+              if (c.contextTarget.includes('#')) {
+                const re = new RegExp(
+                  c.contextTarget
+                    .replace('#', '(?:\\d+)')
+                    .replace(/\./, '\\.')
+                )
+                for (const kt in knots)
+                  if (re.test(kt)) {
+                    this._insertEdge(current, k, kt)
+                  }
+              } else
+                this._insertEdge(current, k, c.contextTarget)
+            }
+            if (c.options)
+              for (const o in c.options)
+                if (c.options[o].contextTarget)
+                  this._insertEdge(current, k, c.options[o].contextTarget)
+          }
         }
 
         previousKnot = newKnot

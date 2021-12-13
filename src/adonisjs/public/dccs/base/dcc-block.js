@@ -173,18 +173,20 @@ class DCCBlock extends DCCVisual {
                    "'>" + html + '</div>'
       }
 
-      if (this._xstyle == 'in') {
-        html = "<style>@import '" +
-                      Basic.service.systemStyleResolver(this.elementTag() + '.css') +
-                   "' </style>" + html
-      } else if (this._xstyle == 'theme') {
-        if (Basic.service.currentCustomTheme != null)
+      if (shadow) {
+        if (this._xstyle == 'in') {
           html = "<style>@import '" +
-                   Basic.service.themeCustomStyleResolver(this.elementTag() + '.css') +
-                 "' </style>" + html
-        html = "<style>@import '" +
-                      Basic.service.themeStyleResolver(this.elementTag() + '.css') +
-               "' </style>\n" + html
+                        Basic.service.systemStyleResolver(this.elementTag() + '.css') +
+                     "' </style>" + html
+        } else if (this._xstyle == 'theme') {
+          if (Basic.service.currentCustomTheme != null)
+            html = "<style>@import '" +
+                     Basic.service.themeCustomStyleResolver(this.elementTag() + '.css') +
+                   "' </style>" + html
+          html = "<style>@import '" +
+                        Basic.service.themeStyleResolver(this.elementTag() + '.css') +
+                 "' </style>\n" + html
+        }
       }
 
       const template = document.createElement('template')

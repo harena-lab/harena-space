@@ -106,7 +106,7 @@
 
 /* Public styles for DCCs - overwritten by shadow ones */
 
-/* Trigger DCC */
+/* Button DCC */
 
 .dcc-button-theme, .dcc-button-theme-inline {
   color: white;
@@ -161,6 +161,16 @@
    margin-left: 3px;
    margin-bottom: .5rem;
 }
+
+/* Input Choice DCC
+ ******************/
+
+.dcc-input-choice-theme-label {
+  margin-left: 6px
+}
+
+/* Input Typed DCC
+ *****************/
 
 .dcc-input-typed-theme input textarea {
    font-size: 1rem;

@@ -468,7 +468,10 @@ class Translator {
       let lastDot = prefix.lastIndexOf('.')
       while (lastDot > -1) {
         prefix = prefix.substring(0, lastDot)
-        if (knotSet[prefix + '.' + target]) { target = prefix + '.' + target }
+        // for generic targets with # (dcc-input-choice), try to find the first
+        if (knotSet[prefix + '.' + target.replace('#', '1')]) {
+          target = prefix + '.' + target
+        }
         lastDot = prefix.lastIndexOf('.')
       }
     }
@@ -742,12 +745,16 @@ class Translator {
               shuffle: (subtype == '+'),
               options: {}
             }, compiled[pr]._source)
+          if (compiled[pr].target)
+            optionGroup.reveal = "button"
           this._transferOption(optionGroup.options, compiled[pr])
           compiled[pr] = optionGroup
         }
         if (optionGroup != null && compiled[c].subtype == subtype) {
           this._transferOption(optionGroup.options, compiled[c])
           optionGroup._source += '\n' + compiled[c]._source
+          if (compiled[c].target && !optionGroup.reveal)
+            optionGroup.reveal = "button"
           const shift = c - pr
           compiled.splice(c - shift + 1, shift)
           c -= shift
@@ -1963,6 +1970,10 @@ class Translator {
             !!((matchArray[1][0] === '\t' || matchArray[1].length > 1)),
       label: matchArray[2].trim()
     }
+    if (item.label[0] == "'") {
+      item.label = item.label.substring(1, item.label.length-1)
+      item.quotes = true
+    }
     if (item.subordinate) { item.level = this._computeLevel(matchArray[1]) }
     return item
   }
@@ -2186,7 +2197,7 @@ class Translator {
   _inputObjToHTML (obj) {
     // core attributes are not straight mapped
     const coreAttributes = ['seq', 'author', 'type', 'subtype', 'text',
-      'show', 'choice', 'target', 'contextTarget',
+      'show', 'options', 'target', 'contextTarget',
       '_source', '_modified', 'mergeLine']
     const subtypeMap = {
       short: 'input-typed',
@@ -2213,17 +2224,17 @@ class Translator {
           .replace('[option]', op)
           .replace('[seq]', obj.seq)
         if (typeof obj.options[op] === 'string') {
-          choice = choice.replace('[target]', '')
+          choice = choice.replace('[topic]', '')
                          .replace('[value]', 'value="' + obj.options[op] + '"')
                          .replace('[compute]', '')
         } else if (typeof obj.options[op] === 'boolean') {
-          choice = choice.replace('[target]', '')
+          choice = choice.replace('[topic]', '')
                          .replace('[value]', 'value="' + op + '"')
                          .replace('[compute]', '')
         } else {
-          choice = choice.replace('[target]',
+          choice = choice.replace('[topic]',
             ((obj.options[op].contextTarget == null) ? '' :
-              "target='" + this._transformNavigationMessage(obj.options[op].contextTarget) + "' "))
+              "topic='" + this._transformNavigationMessage(obj.options[op].contextTarget) + "' "))
             .replace('[value]',
               ((obj.options[op].message) ? 'value="' + obj.options[op].message + '"' : ''))
             .replace('[compute]',
@@ -2250,10 +2261,9 @@ class Translator {
       }
     }
     if (obj.subtype == 'text') { extraAttr += ' rows="5"' }
-    if (obj.contextTarget) {
+    if (obj.contextTarget)
       extraAttr +=
-            " target='" + this._transformNavigationMessage(obj.contextTarget) + "'"
-    }
+        " topic='" + this._transformNavigationMessage(obj.contextTarget) + "'"
 
     const input = Translator.htmlTemplates.input
       .replace(/\[dcc\]/igm, subtype)
@@ -2621,7 +2631,7 @@ class Translator {
       subtext: 'value'
     },
     item: {
-      mark: /^((?:  |\t)[ \t]*)(?:[\+\*])[ \t]+([\w.\/\?&#\-][\w.\/\?&#\- \t]*)$/im,
+      mark: /^((?:  |\t)[ \t]*)(?:[\+\*])[ \t]+((?:[\w.\/\?&#\-][\w.\/\?&#\- \t]*)|(?:'[^']*')[ \t]*)$/im,
       subtext: 'value'
     },
     option: {

@@ -62,40 +62,35 @@
    --dcc-play-background-color: lightgray;
 }
 
-/* Trigger DCC */
+/* Button DCC */
 
 .dcc-button-theme {
-   color: #ffffff;
-   background-color: #a6a6a6;
-   font-weight: bold;
-
+   border: 1px solid lightgray;
+   border-radius: 5px;
+   margin: 5px;
+   color: #1d1d1b;
+   padding: 14px 25px;
    text-align: center;
    text-decoration: none;
-   display: inline-block;
-   vertical-align: middle;
-
-   padding: .25rem .5rem;
-   font-size: .875rem;
-   line-height: 1.5;
-
-   border: 1px solid;
-   border-radius: .2rem;
-   border-color: #707070;
-
-   margin: .5rem;
+   display: block;
+   width: 50%;
 }
-
 .dcc-button-theme:hover {
-   color: #fff;
-   background-color: #5a6268;
-   border-color: #545b62;
+   color: black;
+   font-weight: bold;
    cursor: pointer;
 }
-
 .dcc-button-image-theme {
    max-width: 100%;
    max-height: 100%;
    cursor: pointer;
+}
+
+/* Input Choice DCC
+ ******************/
+
+.dcc-input-choice-theme-label {
+  margin-left: 4px
 }
 
 /*

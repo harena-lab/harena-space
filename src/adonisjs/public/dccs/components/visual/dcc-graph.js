@@ -374,8 +374,6 @@ class Graph {
   }
 
   importGraph (graphObj) {
-    console.log('=== graph obj')
-    console.log(graphObj)
     for (const node of graphObj.nodes) {
       const gnode = new GraphNode(node)
       if (node.graph) {
