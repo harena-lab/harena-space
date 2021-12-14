@@ -435,7 +435,11 @@ class DCCSpaceCellularEditor extends DCCSpaceCellular {
     this._editType = '_'
     this.cellClicked = this.cellClicked.bind(this)
     this.rulesClear = this.rulesClear.bind(this)
+    this.requestState = this.requestState.bind(this)
+    this.updateState = this.updateState.bind(this)
     this._subscribe('dcc/rules/clear', this.rulesClear)
+    this._subscribe('dcc-space-cellular/request/state', this.requestState)
+    this._subscribe('dcc-space-cellular/update/state', this.updateState)
   }
 
   connectedCallback () {
@@ -543,6 +547,15 @@ class DCCSpaceCellularEditor extends DCCSpaceCellular {
 
     window.URL.revokeObjectURL(a.href)
     document.body.removeChild(a)
+  }
+
+  requestState (topic, message) {
+    this._publishHasResponse (topic, message, this.serializeState(), false)
+  }
+
+  updateState (topic, message) {
+    this._stateStr = message
+    this.resetState()
   }
 
   notify (topic, message) {

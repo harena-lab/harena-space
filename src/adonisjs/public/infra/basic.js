@@ -310,6 +310,17 @@ class Basic {
     window.URL.revokeObjectURL(a.href)
     document.body.removeChild(a)
   }
+
+  generateUID () {
+    function s4 () {
+      return Math.floor((1 + Math.random()) * 0x10000)
+        .toString(16)
+        .substring(1)
+    }
+    const currentDateTime = new Date()
+    return currentDateTime.toJSON() + '-' +
+             s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4()
+  }
 }
 
 (function () {

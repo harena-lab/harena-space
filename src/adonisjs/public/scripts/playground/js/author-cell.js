@@ -25,10 +25,12 @@ class AuthorCellManager {
     this.scriptRetract = this.scriptRetract.bind(this)
     this.cellsExpand = this.cellsExpand.bind(this)
     this.cellsRetract = this.cellsRetract.bind(this)
+    this.saveSpace = this.saveSpace.bind(this)
 
     MessageBus.i.subscribe('control/editor/switch', this.switchEditor)
     MessageBus.i.subscribe('control/space/play', this.playSpace)
     MessageBus.i.subscribe('control/space/stop', this.stopSpace)
+    MessageBus.i.subscribe('control/space/save', this.saveSpace)
     MessageBus.i.subscribe('control/space/restart', this.restartSpace)
     MessageBus.i.subscribe('control/script/expand', this.scriptExpand)
     MessageBus.i.subscribe('control/script/retract', this.scriptRetract)
@@ -36,6 +38,7 @@ class AuthorCellManager {
     MessageBus.i.subscribe('control/cells/retract', this.cellsRetract)
 
     this._scriptActive = true
+    this._caseId = null
 
     const parameters = window.location.search.substr(1)
     if (parameters != null && parameters.length > 0) {
@@ -54,6 +57,9 @@ class AuthorCellManager {
         }
         if (scriptMatch[1].includes('no-hide')) { AuthorCellManager.stateVis['types-panel'][1] = 1 }
       }
+      const caseMatch = parameters.match(/case=([\w-]+)/i)
+      if (caseMatch != null)
+        this._caseId = caseMatch[1]
     }
     if (this._scriptActive) {
       document.querySelector('#action-panels').innerHTML =
@@ -219,6 +225,20 @@ class AuthorCellManager {
     toolbox.style.width = toolbox.offsetWidth + 'px'
     toolbox.style.height = toolbox.offsetHeight + 'px'
     Blockly.svgResize(this._playground)
+  }
+
+  async saveSpace () {
+    const space = await MessageBus.i.request('dcc-space-cellular/request/state')
+    console.log('=== space')
+    console.log(this._caseId)
+    console.log(space)
+    if (this._caseId != null)
+      MessageBus.i.publish('case/summary/' + Basic.service.generateUID(),
+        {
+          caseId: this._caseId,
+          participantName: document.querySelector('#participant-name').value,
+          state: space.message
+        }, true)
   }
 }
 
