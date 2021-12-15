@@ -28,32 +28,33 @@ class DCCLogger extends DCCLight {
   _notifyLogger (topic, message, track) {
     if (track) {
       try{
- 
         for(var i=0;i<CONFIG_LOGGER.config_json.length;i++){
           var type_message =  CONFIG_LOGGER.config_json[i]
           if(MessageBus.matchFilter(topic, type_message.topic_format)){
-            var  schema_message = Object.assign({}, type_message.schema)
-                schema_message.topic = topic
-                schema_message.payload_body = JSON.stringify(message)
-                //this._send_message(schema_message, type_message.endpoint)
-                if(type_message.accumulator=="accumulate"){
-                  this.buffer_message.push(schema_message);
-                }
-                else
-                  {
-                    if(type_message.accumulator=="send"){
-                      //this._send_message(this.buffer_message)
-                      console.log(this.buffer_message)
-                      this.buffer_message = [];
-                    }
-                    else{
-                        //this._send_message([schema_message])
-                        console.log(schema_message)
-                    }
-                
-                }
-                
-            
+            var schema_message = Object.assign({}, type_message.schema)
+            schema_message.topic = topic
+            schema_message.payload_body = JSON.stringify(message)
+            //this._send_message(schema_message, type_message.endpoint)
+            if(type_message.accumulator=="accumulate"){
+              this.buffer_message.push(schema_message);
+              if (size(this.buffer_message) == CONFIG_LOGGER.size_buffer){
+                this._send_message([...this.buffer_message], "https://localhost/api/v1/kafka_messages")
+                console.log(this.buffer_message)
+                this.buffer_message = [];
+              }
+            }
+            else
+            {
+              if(type_message.accumulator=="send"){
+                this._send_message([...this.buffer_message], "https://localhost/api/v1/kafka_messages")
+                console.log(this.buffer_message)
+                this.buffer_message = [];
+              }
+              else{
+                  this._send_message([schema_message], "https://localhost/api/v1/kafka_messages")
+                  console.log(schema_message)
+              }
+            }
           }
         }
       }catch (e) {
