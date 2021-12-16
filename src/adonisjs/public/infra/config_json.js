@@ -19,7 +19,10 @@ class CONFIG_LOGGER {
                                         topic : "string",
                                         message_class : "user_action",
                                         message_subclass : "user_login",
-                                        payload_body : "string_json"
+                                        payload_metadata : "string",
+                                        payload_body : "string_json",
+                                        timestamp: "1970-01-01 00:00:01",
+                                        origin_ip:"IP"
                                     }
                         },
                         {
@@ -32,7 +35,10 @@ class CONFIG_LOGGER {
                                         topic : "string",
                                         message_class : "user_action",
                                         message_subclass : "case_request",
-                                        payload_body : "string_json"
+                                        payload_metadata : "string",
+                                        payload_body : "string_json",
+                                        timestamp: "1970-01-01 00:00:01",
+                                        origin_ip:"IP"
                                     }
                         },
                         {
@@ -45,7 +51,10 @@ class CONFIG_LOGGER {
                                         topic : "string",
                                         message_class : "system_message",
                                         message_subclass : "request_get",
-                                        payload_body : "string_json"
+                                        payload_metadata : "string",
+                                        payload_body : "string_json",
+                                        timestamp: "1970-01-01 00:00:01",
+                                        origin_ip:"IP"
                                     }
                         },
                         {
@@ -58,7 +67,10 @@ class CONFIG_LOGGER {
                                         topic : "string",
                                         message_class : "system_message",
                                         message_subclass : "template_request",
-                                        payload_body : "string_json"
+                                        payload_metadata : "string",
+                                        payload_body : "string_json",
+                                        timestamp: "1970-01-01 00:00:01",
+                                        origin_ip:"IP"
                                     }
                         },
                         {
@@ -71,7 +83,10 @@ class CONFIG_LOGGER {
                                         topic : "string",
                                         message_class : "system_message",
                                         message_subclass : "template_request",
-                                        payload_body : "string_json"
+                                        payload_metadata : "string",
+                                        payload_body : "string_json",
+                                        timestamp: "1970-01-01 00:00:01",
+                                        origin_ip:"IP"
                                     }
                         },
                         {
@@ -84,7 +99,10 @@ class CONFIG_LOGGER {
                                         topic : "string",
                                         message_class : "system_message",
                                         message_subclass : "case_response",
-                                        payload_body : "string_json"
+                                        payload_metadata : "string",
+                                        payload_body : "string_json",
+                                        timestamp: "1970-01-01 00:00:01",
+                                        origin_ip:"IP"
                                     }
                         },
                         {
@@ -97,7 +115,10 @@ class CONFIG_LOGGER {
                                         topic : "string",
                                         message_class : "system_message",
                                         message_subclass : "case_ready",
-                                        payload_body : "string_json"
+                                        payload_metadata : "string",
+                                        payload_body : "string_json",
+                                        timestamp: "1970-01-01 00:00:01",
+                                        origin_ip:"IP"
                                     }
                         },
                         {
@@ -110,7 +131,10 @@ class CONFIG_LOGGER {
                                         topic : "string",
                                         message_class : "system_message",
                                         message_subclass : "first_knot_navigation",
-                                        payload_body : "string_json"
+                                        payload_metadata : "string",
+                                        payload_body : "string_json",
+                                        timestamp: "1970-01-01 00:00:01",
+                                        origin_ip:"IP"
                                     }
                         },
                         {
@@ -123,7 +147,10 @@ class CONFIG_LOGGER {
                                         topic : "string",
                                         message_class : "user_action",
                                         message_subclass : "case_start",
-                                        payload_body : "string_json"
+                                        payload_metadata : "string",
+                                        payload_body : "string_json",
+                                        timestamp: "1970-01-01 00:00:01",
+                                        origin_ip:"IP"
                                     }
                         },
                         {
@@ -136,7 +163,10 @@ class CONFIG_LOGGER {
                                         topic : "string",
                                         message_class : "system_message",
                                         message_subclass : "theme_tequest",
-                                        payload_body : "string_json"
+                                        payload_metadata : "string",
+                                        payload_body : "string_json",
+                                        timestamp: "1970-01-01 00:00:01",
+                                        origin_ip:"IP"
                                     }
                         },
                         {
@@ -149,7 +179,10 @@ class CONFIG_LOGGER {
                                         topic : "string",
                                         message_class : "system_message",
                                         message_subclass : "theme_tequest",
-                                        payload_body : "string_json"
+                                        payload_metadata : "string",
+                                        payload_body : "string_json",
+                                        timestamp: "1970-01-01 00:00:01",
+                                        origin_ip:"IP"
                                     }
                         },
                         {
@@ -161,7 +194,10 @@ class CONFIG_LOGGER {
                                         topic : "string",
                                         message_class : "system_message",
                                         message_subclass : "knot_start",
-                                        payload_body : "string_json"
+                                        payload_metadata : "string",
+                                        payload_body : "string_json",
+                                        timestamp: "1970-01-01 00:00:01",
+                                        origin_ip:"IP"
                                     }
                         },
                         {
@@ -174,7 +210,10 @@ class CONFIG_LOGGER {
                                         topic : "string",
                                         message_class : "user_action",
                                         message_subclass : "var_typed",
-                                        payload_body : "string_json"
+                                        payload_metadata : "string",
+                                        payload_body : "string_json",
+                                        timestamp: "1970-01-01 00:00:01",
+                                        origin_ip:"IP"
                                     }
                         },
                         {
@@ -187,7 +226,10 @@ class CONFIG_LOGGER {
                                         topic : "string",
                                         message_class : "user_action",
                                         message_subclass : "var_changed",
-                                        payload_body : "string_json"
+                                        payload_metadata : "string",
+                                        payload_body : "string_json",
+                                        timestamp: "1970-01-01 00:00:01",
+                                        origin_ip:"IP"
                                     }
                         },
                         {
@@ -200,7 +242,10 @@ class CONFIG_LOGGER {
                                         topic : "string",
                                         message_class : "system_message",
                                         message_subclass : "submit_knot_inputs",
-                                        payload_body : "string_json"
+                                        payload_metadata : "string",
+                                        payload_body : "string_json",
+                                        timestamp: "1970-01-01 00:00:01",
+                                        origin_ip:"IP"
                                     }
                         },
 
@@ -214,7 +259,10 @@ class CONFIG_LOGGER {
                                         topic : "string",
                                         message_class : "system_message",
                                         message_subclass : "store_var_value",
-                                        payload_body : "string_json"
+                                        payload_metadata : "string",
+                                        payload_body : "string_json",
+                                        timestamp: "1970-01-01 00:00:01",
+                                        origin_ip:"IP"
                                     }
                         },
                         {
@@ -227,7 +275,10 @@ class CONFIG_LOGGER {
                                         topic : "string",
                                         message_class : "user_action",
                                         message_subclass : "knot_end",
-                                        payload_body : "string_json"
+                                        payload_metadata : "string",
+                                        payload_body : "string_json",
+                                        timestamp: "1970-01-01 00:00:01",
+                                        origin_ip:"IP"
                                     }
                         },
                         {
@@ -240,8 +291,10 @@ class CONFIG_LOGGER {
                                         topic : "string",
                                         message_class : "user_action",
                                         message_subclass : "case_completed",
-                                        
-                                        payload_body : "string_json"
+                                        payload_metadata : "string",
+                                        payload_body : "string_json",
+                                        timestamp: "1970-01-01 00:00:01",
+                                        origin_ip:"IP"
                                     }
                         },
                         {
@@ -255,7 +308,10 @@ class CONFIG_LOGGER {
                                         topic : "string",
                                         message_class : "user_action",
                                         message_subclass : "case_summary",
-                                        payload_body : "string_json"
+                                        payload_metadata : "string",
+                                        payload_body : "string_json",
+                                        timestamp: "1970-01-01 00:00:01",
+                                        origin_ip:"IP"
                                     }
                         },
                         {
@@ -268,7 +324,10 @@ class CONFIG_LOGGER {
                                         topic : "string",
                                         message_class : "user_action",
                                         message_subclass : "knot_navigation",
-                                        payload_body : "string_json"
+                                        payload_metadata : "string",
+                                        payload_body : "string_json",
+                                        timestamp: "1970-01-01 00:00:01",
+                                        origin_ip:"IP"
                                     }
                         },
                         {
@@ -281,7 +340,10 @@ class CONFIG_LOGGER {
                                         topic : "string",
                                         message_class : "user_action",
                                         message_subclass : "knot_navigation",
-                                        payload_body : "string_json"
+                                        payload_metadata : "string",
+                                        payload_body : "string_json",
+                                        timestamp: "1970-01-01 00:00:01",
+                                        origin_ip:"IP"
                                     }
                         },
                         {
@@ -294,7 +356,10 @@ class CONFIG_LOGGER {
                                         topic : "string",
                                         message_class : "user_action",
                                         message_subclass : "knot_navigation",
-                                        payload_body : "string_json"
+                                        payload_metadata : "string",
+                                        payload_body : "string_json",
+                                        timestamp: "1970-01-01 00:00:01",
+                                        origin_ip:"IP"
                                     }
                         },
                         {
@@ -307,7 +372,10 @@ class CONFIG_LOGGER {
                                         topic : "string",
                                         message_class : "user_action",
                                         message_subclass : "knot_navigation",
-                                        payload_body : "string_json"
+                                        payload_metadata : "string",
+                                        payload_body : "string_json",
+                                        timestamp: "1970-01-01 00:00:01",
+                                        origin_ip:"IP"
                                     }
                         },
                         {
@@ -320,7 +388,10 @@ class CONFIG_LOGGER {
                                         topic : "string",
                                         message_class : "user_action",
                                         message_subclass : "case_navigation",
-                                        payload_body : "string_json"
+                                        payload_metadata : "string",
+                                        payload_body : "string_json",
+                                        timestamp: "1970-01-01 00:00:01",
+                                        origin_ip:"IP"
                                     }
                         },
                         {
@@ -333,7 +404,10 @@ class CONFIG_LOGGER {
                                         topic : "string",
                                         message_class : "system_message",
                                         message_subclass : "knot_navigation",
-                                        payload_body : "string_json"
+                                        payload_metadata : "string",
+                                        payload_body : "string_json",
+                                        timestamp: "1970-01-01 00:00:01",
+                                        origin_ip:"IP"
                                     }
                         },
                         {
@@ -346,7 +420,10 @@ class CONFIG_LOGGER {
                                         topic : "string",
                                         message_class : "system_message",
                                         message_subclass : "knot_navigation",
-                                        payload_body : "string_json"
+                                        payload_metadata : "string",
+                                        payload_body : "string_json",
+                                        timestamp: "1970-01-01 00:00:01",
+                                        origin_ip:"IP"
                                     }
                         }
                         
