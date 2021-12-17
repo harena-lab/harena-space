@@ -203,6 +203,9 @@ class PlayerManager {
   */
 
   async startPlayer (caseid) {
+    window.onbeforeunload = function() {
+      return "";
+    }
     const preCaseOff = true
     this._mainPanel = document.querySelector('#player-panel')
 
