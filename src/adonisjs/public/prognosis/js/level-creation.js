@@ -54,13 +54,14 @@ class LevelCreationTool {
       sibling = parent.querySelector(`#${sapsObj.id.substring(0,idL+1)}${parseInt(sapsObj.id.split('-')[3])-1}`).nextSibling
     else
       sibling = parent.firstElementChild
-
+    parent.classList.remove('pb-5')
     parent.insertBefore(sapsObj, sibling)
   }
 
   returnOptionsToList (options){
-    for (let i = 0; i < options.length; i++) {
-      this.returnSapsChildToParent(options[i])
+
+    while (options.length > 0) {
+      this.returnSapsChildToParent(options[0])
     }
   }
 
@@ -323,6 +324,7 @@ class LevelCreationTool {
   }
 
   async start(){
+    this.overwatchCreationDump()
     $(function () {
       $('[data-toggle="popover"]').popover()
     })
@@ -357,7 +359,7 @@ class LevelCreationTool {
       }
 
     }
-    const fnBundleListener = function(){
+    const fnBundleListener = async function(){
 
       if(event.target.getAttribute('href') == '#bundle' || event.target.id == 'input-number-bundle'){
         let bundleQuant = document.querySelector('#input-number-bundle')
@@ -365,7 +367,7 @@ class LevelCreationTool {
         let creationContainer = document.querySelector('#creation-container-wrapper')
         let bundleContainers = document.querySelectorAll('[id^="creation-container-bundle-"]')
 
-        if (bundleQuant.value > bundleContainers.length+1) {
+        if (parseInt(bundleQuant.value) > bundleContainers.length+1) {
           for (let i = 1; i <= (bundleQuant.value - (bundleContainers.length+1)); i++) {
             template = document.createElement('template')
             if(bundleContainers.length > 1){
@@ -383,16 +385,19 @@ class LevelCreationTool {
             .replace(/\[id\]/ig, i)
             creationContainer.appendChild(template.content.cloneNode(true))
           }
-        }else{
+        }
+        else if(parseInt(bundleQuant.value) < bundleContainers.length+1){
           bundleContainers = document.querySelectorAll('[id^="creation-container-bundle-"]')
+
           for (let i = bundleQuant.value; i >= ((bundleContainers.length)); i--) {
             bundleContainers[i-1].remove()
           }
         }
-
       }else{
         let bundleContainers = document.querySelectorAll('[id^="creation-container-bundle-"]')
         for (let i = 0; i < bundleContainers.length; i++) {
+          if(bundleContainers[i].childElementCount > 0)
+            LevelCreationTool.i.returnOptionsToList(bundleContainers[i].children)
           bundleContainers[i].remove()
         }
       }
@@ -710,6 +715,7 @@ class LevelCreationTool {
     // console.log("dragStart: dropEffect = " + ev.dataTransfer.dropEffect + " ; effectAllowed = " + ev.dataTransfer.effectAllowed);
     // console.log('============ currentTarget')
     // console.log(ev)
+    // console.log(ev.target)
 
     ev.dataTransfer.clearData()
     ev.dataTransfer.setData("text", ev.target.id)
@@ -888,11 +894,15 @@ class LevelCreationTool {
     }
     template = document.createElement('template')
     const optionContainer = wrapper.querySelector(`#options-${id}-wrapper`).parentElement
-    optionContainer.classList.add('drag-option-built')
+    optionContainer.classList.add('drag-option-built', 'createdElemAnim')
     optionContainer.setAttribute('draggable', 'true')
     optionContainer.setAttribute('ondragstart', 'LevelCreationTool.i.dragStartHandler(event)')
     // optionContainer.setAttribute('ondragend', 'LevelCreationTool.i.dragStartHandler(event)')
     optionContainer.setAttribute('id', `option-group-${id}`)
+
+    optionContainer.addEventListener('animationend', function() {
+      this.classList.remove('createdElemAnim')
+    })
 
     template.innerHTML = LevelCreationTool.deleteOptBtn
     optionContainer.appendChild(template.content.cloneNode(true))
@@ -1392,6 +1402,35 @@ class LevelCreationTool {
         $(".alert").alert('close')
       }, fadeTime)
     }
+  }
+
+  overwatchCreationDump(){
+    // console.log('============ overwatching')
+    // Select the node that will be observed for mutations
+    const targetNode = document.querySelector('#creation-dump')
+
+    // Options for the observer (which mutations to observe)
+    const config = { childList: true}
+
+    // Callback function to execute when mutations are observed
+    const callback = function(mutationsList, observer) {
+
+      for(const mutation of mutationsList) {
+        if (mutation.target.childElementCount == 0) {
+          LevelCreationTool.i.cleanElementChildren(mutation.target)
+        }
+      }
+    }
+
+    // Create an observer instance linked to the callback function
+    const observer = new MutationObserver(callback)
+
+    // Start observing the target node for configured mutations
+    observer.observe(targetNode, config)
+
+  }
+  async cleanElementChildren (target){
+    target.innerHTML = null
   }
 
 }
