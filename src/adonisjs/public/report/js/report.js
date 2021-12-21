@@ -76,7 +76,7 @@ class ReportManager {
       for (const o in ov)
         html += this._presentValue(ov[o]) + ((o < ov.length-1) ? ',' : '')
       html += ']'
-    } else if (value.includes(':')) {
+    } else if (value.endsWith(':false') || value.endsWith(':true')) {
       const v = value.substring(value.lastIndexOf(':') + 1)
       html = value.substring(0, value.lastIndexOf(':')) +
              '<td style="border: 1px solid darkgray; color:' +
