@@ -197,11 +197,11 @@
   <main role="">
     <div id="main-panel" class="d-flex flex-column vh-100 vw-100 scroll-y index-boot-padding bg-secondary">
 
-      <div id="main-wrapper" class="d-flex flex-column h-100 px-2 pb-4 debug-border bg-dark text-center main-scroll">
+      <div id="main-wrapper" class="d-flex flex-column h-100 px-2 pb-4  bg-dark text-center main-scroll">
         <div class="row h-100">
           <div class="col-8 h-100 scroll-y">
-            <h1 class="debug-border txt-light my-5">Pacient Info</h1>
-            <div class="debug-border mt-5 d-flex flex-column pacient-info-wrapper bg-light">
+            <h1 class=" txt-light my-5">Pacient Info</h1>
+            <div class=" mt-5 mx-1 d-flex flex-column pacient-info-wrapper bg-light">
               <div class="row justify-content-center">
                 <h3>Idade: </h3>
               </div>
@@ -220,7 +220,7 @@
 
               </div>
             </div>
-            <div class="debug-border m-1 d-flex flex-column pacient-info-wrapper bg-light">
+            <div class=" m-1 d-flex flex-column pacient-info-wrapper bg-light">
               <div class="">
                 <h3>Origem: </h3>
               </div>
@@ -237,7 +237,7 @@
               ondragenter="LevelCreationTool.i.dragEnterHandler(event)" ondragleave="LevelCreationTool.i.dragLeaveHandler(event)" ondragend="LevelCreationTool.i.dragEndHandler(event)">
               </div>
             </div>
-            <div class="debug-border m-1 d-flex flex-column pacient-info-wrapper bg-light">
+            <div class=" m-1 d-flex flex-column pacient-info-wrapper bg-light">
               <div class="">
                 <h3>Comorbidade: </h3>
               </div>
@@ -255,7 +255,7 @@
               </div>
 
             </div>
-            <div class="debug-border m-1 d-flex flex-column pacient-info-wrapper bg-light">
+            <div class=" m-1 d-flex flex-column pacient-info-wrapper bg-light">
               <div class="">
                 <h3>Contexto da admissão: </h3>
               </div>
@@ -273,7 +273,7 @@
               ondragenter="LevelCreationTool.i.dragEnterHandler(event)" ondragleave="LevelCreationTool.i.dragLeaveHandler(event)" ondragend="LevelCreationTool.i.dragEndHandler(event)">
               </div>
             </div>
-            <div class="debug-border m-1 d-flex flex-column pacient-info-wrapper bg-light">
+            <div class=" m-1 d-flex flex-column pacient-info-wrapper bg-light">
               <div class="">
                 <h3>Status clínico: </h3>
               </div>
@@ -291,7 +291,7 @@
               ondragenter="LevelCreationTool.i.dragEnterHandler(event)" ondragleave="LevelCreationTool.i.dragLeaveHandler(event)" ondragend="LevelCreationTool.i.dragEndHandler(event)">
               </div>
             </div>
-            <div class="debug-border m-1 d-flex flex-column pacient-info-wrapper bg-light">
+            <div class=" m-1 d-flex flex-column pacient-info-wrapper bg-light">
               <div class="">
                 <h3>Alterações laboratoriais: </h3>
               </div>
@@ -320,7 +320,20 @@
                   <a class="nav-link active" data-toggle="tab" href="#selectList" role="tab" aria-selected="true">Select list</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" data-toggle="tab" href="#bundle" role="tab" aria-selected="false">Bundle</a>
+                  <a class="nav-link" data-toggle="tab" href="#bundle" role="tab" aria-selected="false">Bundle
+                    <i tabindex="0" href="#bundle" class="text-light bg-info rounded px-1 clickable"
+                      title="Bundle" role="button" data-toggle="popover" data-trigger="focus"
+                      data-html="true" data-content="Bundle is used to build clusters of predefined options,
+                      it is possible to create multiple clusters. Example: <br>
+                      <i class='border border-info'>Temperatura: >35 °C</i> <br>
+                      <i class='border border-info'>Frequência cardíaca: <120 bpm</i>
+                      is the first cluster from a bundle and <br>
+                      <i class='border border-warning'>Pressão sistólica: 70-119 mmHg</i> <br>
+                      <i class='border border-warning'>Frequência cardíaca: &#8805;160 bpm</i>
+                      is the second cluster. The user must choose between the first cluster and the second.<br>
+                      After choosing a cluster, all options inside the cluster will be selected.">?
+                    </i>
+                  </a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link cascade-nav" id="radio-tab" data-toggle="tab" href="#radio" role="tab" aria-selected="false">Radio/Checkbox</a>
@@ -354,25 +367,43 @@
                   <div class="custom-control custom-checkbox">
                     <input type="checkbox" class="custom-control-input" id="chck-cascade-option">
                     <label class="custom-control-label" for="chck-cascade-option">Two option layers</label>
+                    <a tabindex="0" class="text-light bg-info rounded px-1 clickable" title="Two option layers"
+                      role="button" data-toggle="popover" data-trigger="focus" data-html="true"
+                      data-content="'Two option layers' requires the user to select an option from the first layer
+                      to be able to see the second layer.">?
+                    </a>
                   </div>
                   <div class="custom-control custom-checkbox">
                     <input type="checkbox" class="custom-control-input" id="chck-radioyn-option">
                     <label class="custom-control-label" for="chck-radioyn-option">Yes/No (before the option)</label>
+                    <a tabindex="0" class="text-light bg-info rounded px-1 clickable" title="Yes/No"
+                      role="button" data-toggle="popover" data-trigger="focus" data-html="true"
+                      data-content="This creates a 'Yes/No' option group. Only after the user selects the 'Yes' option
+                      that the next option group will be displayed. It can be combined with 'two options layers'.">?
+                    </a>
                   </div>
                   <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="option-type" id="option-radio" value="uniqueValues">
-                    <label class="form-check-label" for="option-radio">Radio</label>
+                    <label class="form-check-label" for="option-radio">Radio
+                      <a tabindex="0" class="text-light bg-info rounded px-1 clickable" title="Radio" role="button" data-toggle="popover" data-trigger="focus" data-html="true"
+                        data-content="A radio option means only one option can be selected">?
+                      </a>
+                    </label>
                   </div>
                   <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="option-type" id="option-checklist" value="multipleValues">
-                    <label class="form-check-label" for="option-checklist">Checkbox</label>
+                    <label class="form-check-label" for="option-checklist">Checkbox
+                      <a tabindex="0" class="text-light bg-info rounded px-1 clickable" title="Checkbox" role="button" data-toggle="popover" data-trigger="focus" data-html="true"
+                        data-content="A checkbox option means the user can select multiple options.">?
+                      </a>
+                    </label>
                   </div>
                   <button type="button" id="btn-create-general-options" class="btn btn-success" onclick="LevelCreationTool.i.createRadio()">Create</button>
                 </div>
                 <div class="tab-pane fade" id="bundle" role="tabpanel">
                   <div class="custom-input">
-                    <label class="custom-label mb-0" for="input-number-bundle">Nº bundles</label>
-                    <input class="w-25" type="number" min="2" id="input-number-bundle" placeholder="Quantidade de bundles.." value="2">
+                    <label class="custom-label mb-0" for="input-number-bundle">Total of clusters</label>
+                    <input class="w-25" type="number" min="2" id="input-number-bundle" placeholder="Total number of clusters.." value="2">
                   </div>
                   <button type="button" id="btn-create-bundle" class="mt-2 btn btn-success" onclick="LevelCreationTool.i.createBundle()">Create</button>
                 </div>
@@ -389,9 +420,7 @@
               </div>
 
             </div>
-            <div class="bg-white p-0" id="creation-dump">
-
-            </div>
+            <div class="bg-white mb-1 p-0 rounded" data-placeholder="Built options will apear here..." id="creation-dump"></div>
             <!-- <div class="connected bg-light text-dark p-3" style="border:black double 10px; position: absolute; left:-100%; width:25rem;">
 
             </div> -->

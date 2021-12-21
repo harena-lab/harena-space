@@ -147,6 +147,27 @@
   }
 }
 
+@keyframes animatecreatedElemAnim {
+  0% {
+    transform: scale(100%);
+    border:#18ac03 solid 0.2rem;
+    border-radius: 0.2rem;
+    /* border-color: ;
+    border-style: ;
+    border-width:; */
+  }
+  50% {
+    transform: scale(102%);
+    border:#18ac03 solid 0.2rem;
+    border-radius: 0.2rem;
+  }
+  100% {
+    transform: scale(100%);
+    border:#18ac03 solid 0.2rem;
+    border-radius: 0.2rem;
+  }
+}
+
 body {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 14pt;
@@ -297,4 +318,12 @@ color: #c1434f !important;
 }
 .clickable {
   cursor: pointer;
+}
+[data-placeholder]:empty::before{
+  content: attr(data-placeholder);
+  color: #6c757d !important;
+}
+
+.createdElemAnim {
+  animation: animatecreatedElemAnim 1s 2 ease;
 }
