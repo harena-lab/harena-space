@@ -11,16 +11,14 @@ class DCCLogger extends DCCLight {
 
   }
 
+  //Função que realiza o envio das mensagens. 
+  //  Data é um vetor de jsons. 
+  //  url é uma string com a url da requisição
   async _send_message(data ,url) {
     
-    console.log('request:');
-    console.log(data);
-
     var message = {
       "messages": data
     }
-    console.log('message:');
-    console.log(message);
 
     const config = {
       method: 'POST',
@@ -40,17 +38,10 @@ class DCCLogger extends DCCLight {
             var schema_message = Object.assign({}, type_message.schema)
             schema_message.topic = topic
             schema_message.payload_body = JSON.stringify(message)
-            // if (message != null){
-            //   schema_message.payload_body = message
-            // }else{
-            //   schema_message.payload_body = {}
-            // }
-            //this._send_message(schema_message, type_message.endpoint)
             if(type_message.accumulator=="accumulate"){
               this.buffer_message.push(schema_message);
               if (this.buffer_message.length == CONFIG_LOGGER.size_buffer){
                 this._send_message([...this.buffer_message], type_message.endpoint)
-                // console.log(this.buffer_message)
                 this.buffer_message = [];
               }
             }
@@ -59,12 +50,10 @@ class DCCLogger extends DCCLight {
               if(type_message.accumulator=="send"){
                 this.buffer_message.push(schema_message);
                 this._send_message([...this.buffer_message], type_message.endpoint)
-                // console.log(this.buffer_message)
                 this.buffer_message = [];
               }
               else{
                   this._send_message([schema_message], type_message.endpoint)
-                  // console.log(schema_message)
               }
             }
           }
@@ -72,8 +61,6 @@ class DCCLogger extends DCCLight {
       }catch (e) {
           console.log('ERROR!');
           console.log(e);
-      // console.log('=== logger DCC: ' + topic)
-      // console.log(message)
       }
     }
   }
