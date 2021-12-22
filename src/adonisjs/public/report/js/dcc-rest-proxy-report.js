@@ -93,6 +93,8 @@ DCC.component(
               {name: 'url-manager',
                in: 'path'},
               {name: 'clearance',
+               in: 'query'},
+             {name: 'nItems',
                in: 'query'}
             ]
           }
@@ -118,8 +120,6 @@ DCC.component(
               {name: 'url-manager',
                in: 'path'},
               {name: 'caseId',
-                in: 'query'},
-              {name: 'nItems',
                 in: 'query'}
             ]
           }
