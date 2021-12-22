@@ -8,7 +8,7 @@ class ReportUsersManager {
     const reportArea = document.querySelector('#report-area')
 
     let userCases = await MessageBus.i.request('user/cases/get',
-      {clearance: '4'})
+      {clearance: '4', nItems: '9999'})
 
     console.log('=== user cases')
     console.log(userCases)
@@ -38,11 +38,11 @@ class ReportUsersManager {
       console.log('=== cases')
       for (const c of checked) {
         if (c.checked && cs[c.value]) {
-          countCases++
-          reportArea.innerHTML = 'Computing Case ' + countCases + '...'
           const ki = {}
           let tu = 0
           for (const csu of cs[c.value]) {
+            countCases++
+            reportArea.innerHTML = 'Computing Case ' + countCases + '...'
             let caseMk = await MessageBus.i.request('case/markdown/get',
               {caseId: csu.id})
             console.log(caseMk)
