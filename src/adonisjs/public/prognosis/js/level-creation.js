@@ -461,7 +461,8 @@ class LevelCreationTool {
         // console.log('============ pacient')
         // console.log(LevelCreationTool.i.pacient)
       }
-      download("prognLvl.json",JSON.stringify(LevelCreationTool.i.pacient))
+      let fileName = (`${document.querySelector('#input-lvl-name').value}.json`) || 'prognLvl.json'
+      download(fileName,JSON.stringify(LevelCreationTool.i.pacient))
     }
     const fnProngTargetChallenge = function(){
       if(this.value == 'challenge-two'){
@@ -587,7 +588,8 @@ class LevelCreationTool {
         // console.log('============ pacient')
         // console.log(LevelCreationTool.i.pacient)
       }
-      download("prognLvl.json",JSON.stringify(LevelCreationTool.i.pacient))
+      let fileName = (`${document.querySelector('#input-lvl-name').value}.json`) || 'prognLvl.json'
+      download(fileName,JSON.stringify(LevelCreationTool.i.pacient))
     }
   }
 
