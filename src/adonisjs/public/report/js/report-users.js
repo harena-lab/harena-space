@@ -6,6 +6,7 @@ class ReportUsersManager {
 
   async _report () {
     const reportArea = document.querySelector('#report-area')
+    reportArea.innerHTML = '<h2>Processing...</h2>'
 
     let userCases = await MessageBus.i.request('user/cases/get',
       {clearance: '4', nItems: '9999'})
@@ -26,7 +27,7 @@ class ReportUsersManager {
       }
       console.log(cs)
 
-      let csv = '"user", "case", "evaluation"'
+      // let csv = '"user", "case", "evaluation"'
       let html = '<table style="border: 2px solid darkgray"><tr>' +
                  '<th style="border: 2px solid darkgray">User</th>' +
                  '<th style="border: 2px solid darkgray">Title/hour</th>' +
@@ -42,7 +43,7 @@ class ReportUsersManager {
           let tu = 0
           for (const csu of cs[c.value]) {
             countCases++
-            reportArea.innerHTML = 'Computing Case ' + countCases + '...'
+            reportArea.innerHTML = '<h2>Computing Case ' + countCases + '...</h2>'
             let caseMk = await MessageBus.i.request('case/markdown/get',
               {caseId: csu.id})
             console.log(caseMk)
@@ -50,11 +51,8 @@ class ReportUsersManager {
               await Translator.instance.compileMarkdown(
                 csu.id, caseMk.message.source)
 
-            console.log('*** COMPILED CASE ***')
-            console.log(compiledCase)
-
-            csv += '"' + ((c.value == lastUser) ? '' : csu.username) + '",' +
-                   '"' + csu.title + '",'
+            // csv += '"' + ((c.value == lastUser) ? '' : csu.username) + '",' +
+            //        '"' + csu.title + '",'
             html += '<tr><td style="border: 2px solid darkgray">' +
                     ((c.value == lastUser) ? '' : csu.username) +
                     '</td><td style="border: 2px solid darkgray">' +
@@ -99,16 +97,16 @@ class ReportUsersManager {
           }
           if (Object.keys(ki).length > 0) {
             html += '<tr><td>&nbsp</td></tr>' +
-                    '<tr><td style="border: 2px solid darkgray"><b>Summary</b></td></tr>'
-                    '<tr><td style="border: 2px solid darkgray">Units</td>' +
-                    '<td style="border: 2px solid darkgray">'
+                    '<tr><td style="border: 2px solid darkgray"><b>Summary</b></td></tr>' +
+                    '<tr><td style="border: 2px solid darkgray"><b>units</b></td>' +
+                    '<td style="border: 2px solid darkgray"><b>average</b></td></tr>'
             for (const i in ki) {
               html += '<tr><td style="border: 2px solid darkgray">' +
                       i + '</td><td style="border: 2px solid darkgray">' +
                       (Math.round(ki[i].sum * 10 / ki[i].count) / 10) +
                       '</td></tr>'
             }
-            html += '</td></tr>' +
+            html += '</td></tr><tr><td></td></tr>' +
                     '<tr><td style="border: 2px solid darkgray"><b>' +
                     'Total units</b></td><td style="border: 2px solid darkgray">' +
                     tu + '</td></tr>'
