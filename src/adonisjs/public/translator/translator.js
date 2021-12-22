@@ -182,6 +182,7 @@ class Translator {
     */
   _extractKnotAnnotations (knot) {
     knot.annotations = []
+    knot.contextIndex = {}
     let currentSet = knot.annotations
 
     let mdfocus = knot._source
@@ -190,6 +191,7 @@ class Translator {
     let uidContext = null
     let uidContextN = 0
     let uidWordContext = 1
+    let formalOpen = null
     let insideContext = false
     let matchStart
     do {
@@ -226,19 +228,37 @@ class Translator {
         // hierarchical annotation building inside contexts
         switch (selected) {
           case 'context-open':
-            const transObj = this._contextOpenMdToObj(match)
-            currentSet.push(transObj)
-            currentSet = []
-            transObj.annotations = currentSet
-            uidContext = (transObj.id) ? transObj.id : null
-            uidContextN++
-            uidWordContext = 0
-            insideContext = true
+          case 'formal-open':
+            const transObj = (selected == 'context-open')
+              ? this._contextOpenMdToObj(match) : this._formalOpenMdToObj(match)
+            let index = (transObj.context != null) ? transObj.context : ''
+            if (transObj.namespace != null)
+              index = transObj.namespace + ':' + index
+            if (transObj.id != null)
+              index += '@' + transObj.id
+            if (index.length > 0) {
+              if (!knot.contextIndex[index])
+                knot.contextIndex[index] = transObj
+              if (selected == 'formal-open')
+                formalOpen = knot.contextIndex[index]
+            }
+            if (selected == 'context-open') {
+              currentSet.push(transObj)
+              currentSet = []
+              transObj.annotations = currentSet
+              uidContext = (transObj.id) ? transObj.id : null
+              uidContextN++
+              uidWordContext = 0
+              insideContext = true
+            }
             break
           case 'context-close':
             currentSet = knot.annotations
             uidContext = null
             insideContext = false
+            break
+          case 'formal-close':
+            formalOpen = null
             break
           case 'annotation':
           case 'select':
@@ -852,6 +872,33 @@ class Translator {
         inFormal = false
       else if (inFormal)
         compiled[c].render = false
+    }
+
+    // twelfth cycle - update formal annotations
+    // <TODO> provisory update of formal annotations - both processes will be merged
+    let formalOpen = null
+    for (let c = 0; c < compiled.length; c++) {
+      switch (compiled[c].type) {
+        case 'formal-open':
+          let index = (compiled[c].context != null) ? compiled[c].context : ''
+          if (compiled[c].namespace != null)
+            index = compiled[c].namespace + ':' + index
+          if (compiled[c].id != null)
+            index += '@' + compiled[c].id
+          if (index.length > 0)
+            formalOpen = unity.contextIndex[index]
+          break
+        case 'field':
+          if (formalOpen != null) {
+            if  (!formalOpen.formal)
+              formalOpen.formal = {}
+            formalOpen.formal[compiled[c].field] = compiled[c].value
+          }
+          break
+        case 'formal-close':
+          formalOpen = null
+          break
+      }
     }
   }
 
@@ -2700,6 +2747,8 @@ class Translator {
   Translator.marksAnnotation = {
     'context-open': Translator.element['context-open'].mark,
     'context-close': Translator.element['context-close'].mark,
+    'formal-open': Translator.element['formal-open'].mark,
+    'formal-close': Translator.element['formal-close'].mark,
     select: Translator.element.select.mark,
     annotation: Translator.element.annotation.mark
   }

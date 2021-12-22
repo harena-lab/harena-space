@@ -2229,8 +2229,8 @@ class Prognosis {
                 "values": [
                   "paO2 >=60 sem VM",//0
                   "paO2 <60 sem VM",//5
-                  "paO2/FiO2 <100 em VM",//11
                   "paO2/FiO2 >=100 em VM",//7
+                  "paO2/FiO2 <100 em VM",//11
                 ],
               },
             },
@@ -5841,13 +5841,13 @@ class Prognosis {
             "saps":5,
             "text":"sem VM com paO2 <60",
           },
-          "paO2/FiO2 <100 em VM":{
-            "saps":11,
-            "text":"em VM com paO2/FiO2 <100",
-          },
           "paO2/FiO2 >=100 em VM":{
             "saps":7,
             "text":"em VM com paO2/FiO2 &#8805;100",
+          },
+          "paO2/FiO2 <100 em VM":{
+            "saps":11,
+            "text":"em VM com paO2/FiO2 <100",
           },
         },
       },
