@@ -28,15 +28,18 @@ class ReportUsersManager {
 
       let csv = '"user", "case", "evaluation"'
       let html = '<table style="border: 2px solid darkgray"><tr>' +
-                 '<th style="border: 2px solid darkgray">user</th>' +
-                 '<th style="border: 2px solid darkgray">date/hour</th>' +
-                 '<th style="border: 2px solid darkgray">answers</th>' +
+                 '<th style="border: 2px solid darkgray">User</th>' +
+                 '<th style="border: 2px solid darkgray">Title/hour</th>' +
+                 '<th style="border: 2px solid darkgray">POCUS</th>' +
                  '</tr>'
       const checked = document.getElementsByClassName('form-check-input')
       let lastUser = null
+      let countCases = 0
       console.log('=== cases')
       for (const c of checked) {
         if (c.checked && cs[c.value]) {
+          countCases++
+          reportArea.innerHTML = 'Computing Case ' + countCases + '...'
           const ki = {}
           let tu = 0
           for (const csu of cs[c.value]) {
@@ -47,6 +50,9 @@ class ReportUsersManager {
               await Translator.instance.compileMarkdown(
                 csu.id, caseMk.message.source)
 
+            console.log('*** COMPILED CASE ***')
+            console.log(compiledCase)
+
             csv += '"' + ((c.value == lastUser) ? '' : csu.username) + '",' +
                    '"' + csu.title + '",'
             html += '<tr><td style="border: 2px solid darkgray">' +
@@ -55,6 +61,7 @@ class ReportUsersManager {
                     csu.title + '</td>' +
                     '</td><td style="border: 2px solid darkgray">' +
                     '<table style="border: 2px solid darkgray">'
+            lastUser = c.value
 
             const knots = compiledCase.knots
             for (const k in knots) {
@@ -106,11 +113,10 @@ class ReportUsersManager {
                     'Total units</b></td><td style="border: 2px solid darkgray">' +
                     tu + '</td></tr>'
           }
-          lastUser = c.value
         }
     }
     html += '</table>'
-    document.querySelector('#report-area').innerHTML = html
+    reportArea.innerHTML = html
   }
   }
 }
