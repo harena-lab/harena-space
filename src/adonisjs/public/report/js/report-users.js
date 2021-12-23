@@ -28,11 +28,7 @@ class ReportUsersManager {
       console.log(cs)
 
       // let csv = '"user", "case", "evaluation"'
-      let html = '<table style="border: 2px solid darkgray"><tr>' +
-                 '<th style="border: 2px solid darkgray">User</th>' +
-                 '<th style="border: 2px solid darkgray">Title/hour</th>' +
-                 '<th style="border: 2px solid darkgray">POCUS</th>' +
-                 '</tr>'
+      let html = '<table style="border: 2px solid darkgray">'
       const checked = document.getElementsByClassName('form-check-input')
       let lastUser = null
       let countCases = 0
@@ -62,11 +58,17 @@ class ReportUsersManager {
               await Translator.instance.compileMarkdown(
                 csu.id, caseMk.message.source)
 
+            if (c.value != lastUser)
+              html += '<tr><td style="border: 2px solid darkgray" colspan="2"><h1>' +
+                      csu.username +
+                      '</h1></td></tr><tr>' +
+                      '<th style="border: 2px solid darkgray">Case</th>' +
+                      '<th style="border: 2px solid darkgray">POCUS</th>' +
+                      '</tr>'
+
             // csv += '"' + ((c.value == lastUser) ? '' : csu.username) + '",' +
             //        '"' + csu.title + '",'
             html += '<tr><td style="border: 2px solid darkgray">' +
-                    ((c.value == lastUser) ? '' : csu.username) +
-                    '</td><td style="border: 2px solid darkgray">' +
                     csu.title + '</td>' +
                     '</td><td style="border: 2px solid darkgray">' +
                     '<table style="border: 2px solid darkgray">'
@@ -96,7 +98,10 @@ class ReportUsersManager {
                 }
                 if (htmli.length > 0) {
                   html += '<tr><td style="border: 2px solid darkgray" colspan="2">' +
-                          '<b>' + knots[k].title + '</b></td></tr>' + htmli +
+                          '<b>' + knots[k].title + '</b></td></tr>' +
+                         '<tr><td style="border: 2px solid darkgray"><b>' +
+                         'take</b></td><td style="border: 2px solid darkgray"><b>' +
+                         'grade</b></td></tr>' + htmli +
                           '<tr><td style="border: 2px solid darkgray">' +
                           '<b>average</b></td><td style="border: 2px solid darkgray">' +
                          (Math.round(sum * 10 / count) / 10) + '<td></tr>' +
