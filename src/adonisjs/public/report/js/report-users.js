@@ -42,6 +42,16 @@ class ReportUsersManager {
           const ki = {}
           let tu = {}
           let tua = 0
+          const likert = {
+            'likert_documentation_examination': {count: 0, sum: 0},
+            'likert_examination': {count: 0, sum: 0},
+            'likert_image_optimization': {count: 0, sum: 0},
+            'likert_interpretation_images': {count: 0, sum: 0},
+            'likert_knowledge_ultrasound_equipment': {count: 0, sum: 0},
+            'likert_medical_decision_making': {count: 0, sum: 0},
+            'likert_systematic_examination': {count: 0, sum: 0}
+          }
+          let hasLikert = false
           for (const csu of cs[c.value]) {
             countCases++
             reportArea.innerHTML = '<h2>Computing Case ' + countCases + '...</h2>'
@@ -100,6 +110,26 @@ class ReportUsersManager {
                   html += '<tr><td style="border: 2px solid darkgray" colspan="2">' +
                           '<b>' + knots[k].title + '</b></td></tr>'
               }
+              if (k == 'Conclusion') {
+                console.log('=== conclusion')
+                for (const c of knots[k].content) {
+                  if (c.type == 'field' && c.field == 'conclusion') {
+                    console.log('=== comments')
+                    html += '<tr><td style="border: 2px solid darkgray">' +
+                            '<b>likert</b></td><td style="border: 2px solid darkgray"><b>value</b></tr>'
+                    for (const f in c.value) {
+                      html += '<tr><td style="border: 2px solid darkgray">' +
+                              f + '</td><td style="border: 2px solid darkgray">' +
+                              c.value[f] + '</td></tr>'
+                      if (likert[f]) {
+                        likert[f].count++
+                        likert[f].sum += parseInt(c.value[f])
+                        hasLikert = true
+                      }
+                    }
+                  }
+                }
+              }
             }
             html += '</table></td></tr>'
           }
@@ -135,6 +165,18 @@ class ReportUsersManager {
                     '<tr><td style="border: 2px solid darkgray"><b>' +
                     'Total evaluated</b></td><td style="border: 2px solid darkgray">' +
                     tua + '</td></tr>'
+          }
+          if (hasLikert) {
+            html += '<tr><td>&nbsp</td></tr>' +
+                    '<tr><td style="border: 2px solid darkgray"><b>Likert</b></td></tr>' +
+                    '<tr><td style="border: 2px solid darkgray"><b>item</b></td>' +
+                    '<td style="border: 2px solid darkgray"><b>grade average</b></td></tr>'
+            for (const l in likert) {
+              html += '<tr><td style="border: 2px solid darkgray">' +
+                      l + '</td><td style="border: 2px solid darkgray">' +
+                      (Math.round(likert[l].sum * 10 / likert[l].count) / 10) +
+                      '</td></tr>'
+            }
           }
         }
     }
