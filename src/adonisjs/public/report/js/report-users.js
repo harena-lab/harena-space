@@ -40,7 +40,8 @@ class ReportUsersManager {
       for (const c of checked) {
         if (c.checked && cs[c.value]) {
           const ki = {}
-          let tu = 0
+          let tu = {}
+          let tua = 0
           for (const csu of cs[c.value]) {
             countCases++
             reportArea.innerHTML = '<h2>Computing Case ' + countCases + '...</h2>'
@@ -63,6 +64,11 @@ class ReportUsersManager {
 
             const knots = compiledCase.knots
             for (const k in knots) {
+              if (ReportUsersManager.ktypes.includes(knots[k].title))
+                if (tu[knots[k].title])
+                  tu[knots[k].title]++
+                else
+                  tu[knots[k].title] = 1
               if (knots[k].annotations != null) {
                 let htmli = ''
                 let sum = 0
@@ -85,21 +91,40 @@ class ReportUsersManager {
                           '<b>average</b></td><td style="border: 2px solid darkgray">' +
                          (Math.round(sum * 10 / count) / 10) + '<td></tr>' +
                          '<tr><td></td></tr>'
-                   tu++
+                   tua++
                    if (!ki[knots[k].title])
                      ki[knots[k].title] = {sum: 0, count: 0}
                    ki[knots[k].title].sum += sum
                    ki[knots[k].title].count += count
-                }
+                } else if (ReportUsersManager.ktypes.includes(knots[k].title))
+                  html += '<tr><td style="border: 2px solid darkgray" colspan="2">' +
+                          '<b>' + knots[k].title + '</b></td></tr>'
               }
             }
             html += '</table></td></tr>'
           }
+          if (Object.keys(tu).length > 0) {
+            html += '<tr><td>&nbsp</td></tr>' +
+                    '<tr><td style="border: 2px solid darkgray"><b>Total Exams</b></td></tr>' +
+                    '<tr><td style="border: 2px solid darkgray"><b>exam type</b></td>' +
+                    '<td style="border: 2px solid darkgray"><b>count</b></td></tr>'
+            let tt = 0
+            for (const t in tu) {
+              html += '<tr><td style="border: 2px solid darkgray">' +
+                      t + '</td><td style="border: 2px solid darkgray">' +
+                      tu[t] + '</td></tr>'
+              tt += tu[t]
+            }
+            html += '</td></tr><tr><td></td></tr>' +
+                    '<tr><td style="border: 2px solid darkgray"><b>' +
+                    'Total exams</b></td><td style="border: 2px solid darkgray">' +
+                    tt + '</td></tr>'
+          }
           if (Object.keys(ki).length > 0) {
             html += '<tr><td>&nbsp</td></tr>' +
-                    '<tr><td style="border: 2px solid darkgray"><b>Summary</b></td></tr>' +
-                    '<tr><td style="border: 2px solid darkgray"><b>units</b></td>' +
-                    '<td style="border: 2px solid darkgray"><b>average</b></td></tr>'
+                    '<tr><td style="border: 2px solid darkgray"><b>Grades</b></td></tr>' +
+                    '<tr><td style="border: 2px solid darkgray"><b>exam type</b></td>' +
+                    '<td style="border: 2px solid darkgray"><b>grade average</b></td></tr>'
             for (const i in ki) {
               html += '<tr><td style="border: 2px solid darkgray">' +
                       i + '</td><td style="border: 2px solid darkgray">' +
@@ -108,8 +133,8 @@ class ReportUsersManager {
             }
             html += '</td></tr><tr><td></td></tr>' +
                     '<tr><td style="border: 2px solid darkgray"><b>' +
-                    'Total units</b></td><td style="border: 2px solid darkgray">' +
-                    tu + '</td></tr>'
+                    'Total evaluated</b></td><td style="border: 2px solid darkgray">' +
+                    tua + '</td></tr>'
           }
         }
     }
@@ -121,4 +146,9 @@ class ReportUsersManager {
 
 (function () {
   ReportUsersManager.i = new ReportUsersManager()
+
+  ReportUsersManager.ktypes = [
+    'Lungs', 'Cava', 'Heart', 'Lower Limb Veins', 'Abdomen',
+    'Aorta', 'Urinary', 'Vesicle and Portal Triad', 'E-FAST', 'Soft Parts',
+    'Articulate', 'Ocular']
 })()
