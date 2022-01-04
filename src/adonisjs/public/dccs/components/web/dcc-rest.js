@@ -63,8 +63,6 @@ class DCCRest extends DCCBase {
         const atr = p.split(':')
         parameters[atr[0]] = atr[1]
       }
-      console.log('=== parameters')
-      console.log(parameters)
     }
 
     if (this._setup != null && this._setup.oas != null &&

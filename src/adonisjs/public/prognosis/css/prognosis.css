@@ -1,7 +1,16 @@
 @charset "UTF-8";
 
+@media (min-width: 0px) {
+  .avatar-mini{
+    width: 25pt;
+  }
+}
 /* Small devices (landscape phones, 576px and up)*/
 @media (min-width: 576px) {
+  .avatar-mini{
+    width: 35pt;
+  }
+
   .w-sm-100 {
   width:100%!important;
   }
@@ -36,6 +45,7 @@
 
 /* Medium devices (tablets, 768px and up)*/
 @media (min-width: 768px) {
+
   .w-md-100 {
   width:100%!important;
   }
@@ -70,6 +80,7 @@
 
 /* Large devices (desktops, 992px and up)*/
 @media (min-width: 992px) {
+
   .w-lg-100 {
   width:100%!important;
   }
@@ -136,6 +147,27 @@
   }
 }
 
+@keyframes animatecreatedElemAnim {
+  0% {
+    transform: scale(100%);
+    border:#18ac03 solid 0.2rem;
+    border-radius: 0.2rem;
+    /* border-color: ;
+    border-style: ;
+    border-width:; */
+  }
+  50% {
+    transform: scale(102%);
+    border:#18ac03 solid 0.2rem;
+    border-radius: 0.2rem;
+  }
+  100% {
+    transform: scale(100%);
+    border:#18ac03 solid 0.2rem;
+    border-radius: 0.2rem;
+  }
+}
+
 body {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 14pt;
@@ -161,6 +193,19 @@ div {
 
 nav.navbar {
   margin-bottom: 1rem;
+}
+.mt-6{
+  margin-top: 4rem !important;
+}
+
+.creation-container{
+  background-color:#b6ccff !important;
+  border-style: dashed !important;
+}
+
+.secondary-creation-container {
+  background-color:#cebfbf !important;
+  border-style: dashed !important;
 }
 
 .debug-border {
@@ -231,9 +276,7 @@ color: #c1434f !important;
   border-radius: 15pt;
   width: 70pt;
 }
-.avatar-mini{
-  width: 40pt;
-}
+
 .character-selection{
   cursor: pointer;
 }
@@ -266,4 +309,21 @@ color: #c1434f !important;
 
 .bg-progn-blue{
   background-color: #6588a8 !important;
+}
+.bg-progn-light-blue{
+  background-color: #e3f1ff !important;
+}
+.bg-progn-dark-blue{
+  background-color: #163c53 !important;
+}
+.clickable {
+  cursor: pointer;
+}
+[data-placeholder]:empty::before{
+  content: attr(data-placeholder);
+  color: #6c757d !important;
+}
+
+.createdElemAnim {
+  animation: animatecreatedElemAnim 1s 2 ease;
 }

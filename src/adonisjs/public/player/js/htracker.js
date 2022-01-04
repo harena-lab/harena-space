@@ -19,6 +19,8 @@ class Tracker {
     MessageBus.i.subscribe('input/changed/#', this.inputChanged)
     this.stateChanged = this.stateChanged.bind(this)
     MessageBus.i.subscribe('input/state/#', this.stateChanged)
+    this.inputSummary = this.inputSummary.bind(this)
+    MessageBus.i.subscribe('input/summary', this.inputSummary)
 
     this.knotStart = this.knotStart.bind(this)
     MessageBus.i.subscribe('knot/start/#', this.knotStart)
@@ -120,6 +122,11 @@ class Tracker {
     this._knotTrack.push(
       {knotid: this._extractEntityId(topic, 3),
        timeStart: currentDateTime.toJSON()})
+  }
+
+  inputSummary (topic, message) {
+    MessageBus.i.publishHasResponse (
+      topic, message, this._variables, false)
   }
 
   caseCompleted (topic, message) {

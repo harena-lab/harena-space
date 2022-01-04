@@ -45,7 +45,7 @@ class DCCInputOption extends DCCInput {
 
   static get observedAttributes () {
     return DCCInput.observedAttributes.concat(
-      ['parent', 'exclusive', 'checked', 'target', 'value', 'compute'])
+      ['parent', 'exclusive', 'checked', 'topic', 'value', 'compute'])
   }
 
   get parent () {
@@ -72,12 +72,12 @@ class DCCInputOption extends DCCInput {
     if (isExclusive) { this.setAttribute('checked', '') } else { this.removeAttribute('checked') }
   }
 
-  get target () {
-    return this.getAttribute('target')
+  get topic () {
+    return this.getAttribute('topic')
   }
 
-  set target (newValue) {
-    this.setAttribute('target', newValue)
+  set topic (newValue) {
+    this.setAttribute('topic', newValue)
   }
 
   get value () {
@@ -125,10 +125,10 @@ class DCCInputOption extends DCCInput {
             (this._xstyle.startsWith('out'))
               ? '' : this._statement
 
-      const html = (this.target)
-        ? "<dcc-button id='[id]' xstyle='theme' topic='[target]' label='[statement]' divert='round' message='[value]' variable='[variable]'></dcc-button>"
+      const html = (this.reveal && this.reveal == 'button')
+        ? "<dcc-button id='[id]' xstyle='theme'[topic] label='[statement]' divert='round' message='[value]' variable='[variable]'></dcc-button>"
           .replace('[id]', varid + nop)
-          .replace('[target]', this.target)
+          .replace('[topic]', (this.topic ? ' topic ="' + this.topic + '"' : ''))
           .replace('[statement]', child._statement)
           .replace('[value]', child.value)
           .replace('[variable]', this._variable)
@@ -182,7 +182,7 @@ class DCCInputChoice extends DCCInput {
 
   static get observedAttributes () {
     return DCCInput.observedAttributes.concat(
-      ['exclusive', 'shuffle', 'reveal', 'target', 'stateful'])
+      ['exclusive', 'shuffle', 'reveal', 'topic', 'export', 'import', 'max'])
   }
 
   get exclusive () {
@@ -201,6 +201,14 @@ class DCCInputChoice extends DCCInput {
     if (isShuffle) { this.setAttribute('shuffle', '') } else { this.removeAttribute('shuffle') }
   }
 
+  get max () {
+    return parseInt(this.getAttribute('max'))
+  }
+
+  set max (newValue) {
+    this.setAttribute('max', newValue)
+  }
+
   get reveal () {
     return this.getAttribute('reveal')
   }
@@ -209,45 +217,96 @@ class DCCInputChoice extends DCCInput {
     this.setAttribute('reveal', newValue)
   }
 
-  get target () {
-    return this.getAttribute('target')
+  get topic () {
+    return this.getAttribute('topic')
   }
 
-  set target (newValue) {
-    this.setAttribute('target', newValue)
+  set topic (newValue) {
+    this.setAttribute('topic', newValue)
   }
 
-  get stateful () {
-    return this.hasAttribute('stateful')
+  get export () {
+    return this.getAttribute('export')
   }
 
-  set stateful (isStateful) {
-    if (isStateful) { this.setAttribute('stateful', '') } else { this.removeAttribute('stateful') }
+  set export (newValue) {
+    this.setAttribute('export', newValue)
+  }
+
+  get export () {
+    return this.hasAttribute('export')
+  }
+
+  set export (isExport) {
+    if (isExport) { this.setAttribute('export', '') } else { this.removeAttribute('export') }
+  }
+
+  get import () {
+    return this.getAttribute('import')
+  }
+
+  set import (newValue) {
+    this.setAttribute('import', newValue)
   }
 
   /* Event handling */
 
   inputChanged (event) {
-    console.log('===== input changed')
-    if (this.exclusive)
-      this._value = event.target.value
-    else if (this._value == null) {
-      if (event.target.checked) this._value = [event.target.value]
-    } else {
-      if (event.target.checked)
-        this._value.push(event.target.value)
-      else {
-        const index = this._value.indexOf(event.target.value)
-        if (index > -1) this._value.splice(index, 1)
-      }
+    let label = null
+    const id = event.target.id
+    let htmlLabels = document.getElementsByTagName('label')
+    for (let l in htmlLabels) {
+       if (htmlLabels[l].htmlFor == id) {
+         label = htmlLabels[l].innerHTML
+         break
+       }
     }
 
     this.changed = true
-    this._publish('input/changed/' + this._variable.replace(/\./g, '/'),
-      {
-        sourceType: DCCInputChoice.elementTag,
-        value: this._value
-      }, true)
+    const value = (this.export)
+                    ? {label: label, value: event.target.value}
+                    : event.target.value
+    if (this.exclusive) {
+      this._value = value
+      this._label = label
+    } else if (this._value == null) {
+      if (event.target.checked) {
+        this._value = [value]
+        this._label = [(label == null) ? '' : label]
+      }
+    } else {
+      if (event.target.checked) {
+        if (this.hasAttribute('max') && this._value.length == this.max) {
+          event.target.checked = false
+          this.changed = false
+        } else {
+          this._value.push(value)
+          this._label.push((label == null) ? '' : label)
+        }
+      } else {
+        let index = -1
+        if (this.export) {
+          for (const v in this._value)
+            if (this._value[v].value == value.value) {
+              index = v
+              break
+            }
+        } else
+          index = this._value.indexOf(value)
+        if (index > -1) {
+          this._value.splice(index, 1)
+          this._label.splice(index, 1)
+        }
+      }
+    }
+
+    if (this.changed)
+      this._publish('input/changed/' + this._variable.replace(/\./g, '/'),
+        {
+          sourceType: DCCInputChoice.elementTag,
+          value: this._value,
+          label: this._label
+        }, true)
   }
 
   /* Rendering */
@@ -262,77 +321,109 @@ class DCCInputChoice extends DCCInput {
 
   async _renderInterface () {
     // === pre presentation setup
-    // Fetch all the children that are not defined yet
-    const undefinedOptions = this.querySelectorAll(':not(:defined)')
 
-    const promises = [...undefinedOptions].map(option => {
-      return customElements.whenDefined(option.localName)
-    })
-    // Wait for all the options be ready
-    await Promise.all(promises)
-
-    // <TODO> review this sentence (copied from dcc-input-typed but not analysed)
-    /*
-      const statement =
-         (this.hasAttribute("xstyle") && this.xstyle.startsWith("out"))
-         ? "" : this._statement;
-      */
-
-    let child = this.firstChild
-    const html = []
-    let nop = 0
-    const varid = this._variable.replace(/\./g, '_')
-    let inStatement = true
-    let statement = ''
-    while (child != null) {
-      if (child.tagName &&
-          child.tagName.toLowerCase() == DCCInputOption.elementTag) {
-        nop++
-        let iid = varid + '_' + nop
-        if (this.target || child.target) {
-          const element = DCCInputOption.template.button
-            .replace('[id]', iid)
-            .replace('[target]', (child.target) ? child.target : this.target)
-            .replace('[statement]', child._statement)
-            .replace('[value]', child.value)
-            .replace('[variable]', this._variable)
-            .replace('[connect]', (child.compute == null) ? '' :
-              ' connect="click:presentation-dcc-[id]-compute:compute/update"'
-                .replace('[id]', iid))
-            .replace('[compute]', (child.compute == null) ? '' :
-              DCCInputOption.template.compute
-                .replace('[id]', iid)
-                .replace('[expression]', child.compute))
-          html.push([1, element])
-        } else {
-          const element1 = DCCInputOption.template.choice
-            .replace('[id]', iid)
-            .replace('[exclusive]',
-              (this.hasAttribute('exclusive') ? 'radio' : 'checkbox'))
-            .replace('[variable]', this._variable)
-            .replace('[value]',
-              (child.value == 'false' || child.value == 'true')
-                ? child._statement + ':' + child.value : child.value)
-            .replace('[checked]',
-              child.hasAttribute('checked') ? ' checked' : '')
-            .replace('[author]', (this.author) ? ' disabled' : '')
-          const element2 = DCCInputOption.template.label
-            .replace(/\[id\]/g, iid)
-            .replace('[statement]', child._statement)
-            html.push([1, element1, element2])
-        }
-        inStatement = false
-      } else {
-        const element = (child.nodeType == 3) ?
-          child.textContent : child.outerHTML
-        if (inStatement && this._statement == null)
-          statement += element
-        else
-          html.push([0, element])
-      }
-      child = child.nextSibling
+    // check for imported items
+    let imp = null
+    if (this.hasAttribute('import') &&
+        this._hasSubscriber('var/get/' + this.import.replace(/\./g, '/'), true)) {
+      const mess = await this._request('var/get/' + this.import.replace(/\./g, '/'),
+                                       null, null, true)
+      if (mess.message != null)
+        imp = (mess.message.body != null)
+          ? mess.message.body : mess.message
     }
-    if (statement.length > 0) { this._statement = statement }
+
+    let item = []
+    const varid = this._variable.replace(/\./g, '_')
+    const integral =
+      (!this.hasAttribute('reveal') || this.reveal == 'integral') && !this.shuffle
+    let nop = 0
+
+    if (imp == null) {  // process inner elements
+       // Fetch all the children that are not defined yet
+      const undefinedOptions = this.querySelectorAll(':not(:defined)')
+
+      const promises = [...undefinedOptions].map(option => {
+        return customElements.whenDefined(option.localName)
+      })
+      // Wait for all the options be ready
+      await Promise.all(promises)
+
+      // <TODO> review this sentence (copied from dcc-input-typed but not analysed)
+      /*
+        const statement =
+           (this.hasAttribute("xstyle") && this.xstyle.startsWith("out"))
+           ? "" : this._statement;
+        */
+
+      let child = this.firstChild
+      // const html = []
+      let tgt = 1
+      let inStatement = true
+      let statement = ''
+      while (child != null) {
+        if (child.tagName &&
+            child.tagName.toLowerCase() == DCCInputOption.elementTag &&
+            (imp == null || imp.includes(child._statement))) {
+          nop++
+          item.push({
+            type: 'option',
+            id: nop,
+            topic: (child.topic)
+                    ? child.topic
+                    : ((this.topic) ? this.topic.replace('#', tgt) : null),
+            statement: child._statement,
+            value: (child.value == 'false' || child.value == 'true')
+                     ? child._statement + ':' + child.value
+                     : ((this.export)
+                        ? ((child.value == child._statement)
+                           ? nop
+                           : child.value)
+                        : child.value),
+            checked: child.hasAttribute('checked') ? ' checked' : '',
+            compute: child.compute
+          })
+          tgt++
+          inStatement = false
+        } else {
+          const element = (child.nodeType == 3) ?
+            child.textContent : child.outerHTML
+          if (inStatement && this._statement == null)
+            statement += element
+          else if (integral && element.length > 0)
+            item.push ({
+              type: 'html',
+              html: element
+            })
+        }
+        child = child.nextSibling
+      }
+      if (statement.length > 0) { this._statement = statement }
+    } else {  // process imported elements
+      console.log('=== imported elements')
+      console.log(imp)
+      for (const i in imp) {
+        let tp, st, vl
+        if (typeof imp[i] === 'string' || imp[i] instanceof String) {
+          tp = parseInt(i)+1
+          st = imp[i]
+          vl = imp[i]
+        } else {
+          tp = imp[i].value
+          st = imp[i].label
+          vl = imp[i].value
+        }
+        item.push({
+          type: 'option',
+          id: parseInt(i)+1,
+          topic: ((this.topic) ? this.topic.replace('#', tp) : null),
+          statement: st,
+          value: vl,
+          checked: ''
+        })
+      }
+    }
+
     this.innerHTML = ''
 
     // === presentation setup (DCC Block)
@@ -343,44 +434,55 @@ class DCCInputChoice extends DCCInput {
         'innerHTML', 'text', 'presentation-dcc', false)
     }
 
-    let oop = []   // positions of html items
-    let oopN = []  // positions in oop (to control shuffle)
-    let no = 0
-    const reveal =
-      (!this.hasAttribute('reveal') || this.reveal == 'integral') && !this.shuffle
-    for (let h in html)
-      if ((html[h][0] == 0 && reveal) || html[h][0] == 1) {
-        oop.push(h)
-        oopN.push(no)
-        no++
-      }
-
     const shuffle = this.shuffle && !this.author
-    if (shuffle) oopN = this._shuffle(oopN)
+    if (shuffle) item = this._shuffle(item)
 
+    // transform items in HTML
     nop = 0
-    for (let o of oopN) {
-      if (html[oop[o]][0] == 0) {
-        if (reveal && html[oop[o]][1].trim().length > 0) {
-            await this._applyRender('<span id="presentation-dcc">' +
-              html[oop[o]][1] + '</span>',
-              'innerHTML', 'input', 'presentation-dcc', false)
-        }
+    for (let it of item) {
+      if (it.type == 'html') {
+        await this._applyRender('<span id="presentation-dcc">' +
+          it.html + '</span>', 'innerHTML', 'input', 'presentation-dcc', false)
       }
       else {
+        let template = (this.reveal && this.reveal == 'button')
+          ? DCCInputOption.template.button : DCCInputOption.template.choice
+        let element = template
+          .replace('[id]', varid + '_' + it.id)
+          .replace('[exclusive]',
+            (this.hasAttribute('exclusive') ? 'radio' : 'checkbox'))
+          .replace('[topic]', (it.topic != null) ? ' topic ="' + it.topic + '"' : '')
+          .replace('[variable]', this._variable)
+          .replace('[statement]', it.statement)
+          .replace('[value]', it.value)
+          .replace('[checked]', it.checked)
+          .replace('[connect]', (it.compute == null) ? '' :
+            ' connect="click:presentation-dcc-[id]-compute:compute/update"'
+              .replace('[id]', it.id))
+          .replace('[compute]', (it.compute == null) ? '' :
+            DCCInputOption.template.compute
+              .replace('[id]', it.id)
+              .replace('[expression]', it.compute))
+          .replace('[author]', (this.author) ? ' disabled' : '')
         nop++
-        let presId = (shuffle) ? o+1 : nop
         let presentation =
           await this._applyRender(
-            html[oop[o]][1], 'innerHTML', 'item_' + nop,
-            'presentation-dcc-' + varid + '_' + presId, false)
+            element, 'innerHTML', 'item_' + nop,
+            'presentation-dcc-' + varid + '_' + it.id, false)
         presentation.addEventListener('change', this.inputChanged)
         this._options.push(presentation)
-        if (html[oop[o]][2])
+        if (this.reveal == null || this.reveal != 'button') {
+          element = DCCInputOption.template.label
+            .replace(/\[id\]/g, varid + '_' + it.id)
+            .replace('[statement]', it.statement) +
+            ((this.reveal) ?
+              ((this.reveal == 'vertical') ? '<br>' :
+               (this.reveal == 'horizontal' && nop < item.length)
+                 ? '&nbsp;&nbsp;|&nbsp;&nbsp;' : '') : '')
           await this._applyRender(
-            html[oop[o]][2], 'innerHTML', 'input',
-            'presentation-dcc-' + varid + '_' + presId + '-label', false)
-        else
+            element, 'innerHTML', 'item_' + nop,
+            'presentation-dcc-' + varid + '_' + it.id + '-label', false)
+        } else
           this._editButtons['item_' + nop] = [DCCVisual.editDCCExpand]
       }
     }
@@ -421,8 +523,8 @@ class DCCInputChoice extends DCCInput {
 
   DCCInputOption.template = {
     button:
-      '<dcc-button id="presentation-dcc-[id]" location="#in" ' +
-        'topic="[target]" label="[statement]" divert="round" ' +
+      '<dcc-button id="presentation-dcc-[id]" location="#in"' +
+        '[topic] label="[statement]" divert="round" ' +
         'message="[value]" variable="[variable]"[connect]>' +
       '</dcc-button>[compute]',
     choice:
@@ -430,7 +532,8 @@ class DCCInputChoice extends DCCInput {
         'name="[variable]" value="[value]"[checked][author]>',
     label:
       '<label id="presentation-dcc-[id]-label" for="presentation-dcc-[id]" ' +
-        'style="margin-left: 10px">[statement]</label>',
+        'class="dcc-input-choice-theme-label">' +
+        '[statement]</label>',
     compute:
       '<dcc-compute id="presentation-dcc-[id]-compute" ' +
         'expression="[expression]"></dcc-compute>'

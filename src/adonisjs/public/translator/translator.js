@@ -182,6 +182,7 @@ class Translator {
     */
   _extractKnotAnnotations (knot) {
     knot.annotations = []
+    knot.contextIndex = {}
     let currentSet = knot.annotations
 
     let mdfocus = knot._source
@@ -190,6 +191,7 @@ class Translator {
     let uidContext = null
     let uidContextN = 0
     let uidWordContext = 1
+    let formalOpen = null
     let insideContext = false
     let matchStart
     do {
@@ -226,19 +228,37 @@ class Translator {
         // hierarchical annotation building inside contexts
         switch (selected) {
           case 'context-open':
-            const transObj = this._contextOpenMdToObj(match)
-            currentSet.push(transObj)
-            currentSet = []
-            transObj.annotations = currentSet
-            uidContext = (transObj.id) ? transObj.id : null
-            uidContextN++
-            uidWordContext = 0
-            insideContext = true
+          case 'formal-open':
+            const transObj = (selected == 'context-open')
+              ? this._contextOpenMdToObj(match) : this._formalOpenMdToObj(match)
+            let index = (transObj.context != null) ? transObj.context : ''
+            if (transObj.namespace != null)
+              index = transObj.namespace + ':' + index
+            if (transObj.id != null)
+              index += '@' + transObj.id
+            if (index.length > 0) {
+              if (!knot.contextIndex[index])
+                knot.contextIndex[index] = transObj
+              if (selected == 'formal-open')
+                formalOpen = knot.contextIndex[index]
+            }
+            if (selected == 'context-open') {
+              currentSet.push(transObj)
+              currentSet = []
+              transObj.annotations = currentSet
+              uidContext = (transObj.id) ? transObj.id : null
+              uidContextN++
+              uidWordContext = 0
+              insideContext = true
+            }
             break
           case 'context-close':
             currentSet = knot.annotations
             uidContext = null
             insideContext = false
+            break
+          case 'formal-close':
+            formalOpen = null
             break
           case 'annotation':
           case 'select':
@@ -468,7 +488,10 @@ class Translator {
       let lastDot = prefix.lastIndexOf('.')
       while (lastDot > -1) {
         prefix = prefix.substring(0, lastDot)
-        if (knotSet[prefix + '.' + target]) { target = prefix + '.' + target }
+        // for generic targets with # (dcc-input-choice), try to find the first
+        if (knotSet[prefix + '.' + target.replace('#', '1')]) {
+          target = prefix + '.' + target
+        }
         lastDot = prefix.lastIndexOf('.')
       }
     }
@@ -742,12 +765,16 @@ class Translator {
               shuffle: (subtype == '+'),
               options: {}
             }, compiled[pr]._source)
+          if (compiled[pr].target)
+            optionGroup.reveal = "button"
           this._transferOption(optionGroup.options, compiled[pr])
           compiled[pr] = optionGroup
         }
         if (optionGroup != null && compiled[c].subtype == subtype) {
           this._transferOption(optionGroup.options, compiled[c])
           optionGroup._source += '\n' + compiled[c]._source
+          if (compiled[c].target && !optionGroup.reveal)
+            optionGroup.reveal = "button"
           const shift = c - pr
           compiled.splice(c - shift + 1, shift)
           c -= shift
@@ -845,6 +872,33 @@ class Translator {
         inFormal = false
       else if (inFormal)
         compiled[c].render = false
+    }
+
+    // twelfth cycle - update formal annotations
+    // <TODO> provisory update of formal annotations - both processes will be merged
+    let formalOpen = null
+    for (let c = 0; c < compiled.length; c++) {
+      switch (compiled[c].type) {
+        case 'formal-open':
+          let index = (compiled[c].context != null) ? compiled[c].context : ''
+          if (compiled[c].namespace != null)
+            index = compiled[c].namespace + ':' + index
+          if (compiled[c].id != null)
+            index += '@' + compiled[c].id
+          if (index.length > 0)
+            formalOpen = unity.contextIndex[index]
+          break
+        case 'field':
+          if (formalOpen != null) {
+            if  (!formalOpen.formal)
+              formalOpen.formal = {}
+            formalOpen.formal[compiled[c].field] = compiled[c].value
+          }
+          break
+        case 'formal-close':
+          formalOpen = null
+          break
+      }
     }
   }
 
@@ -1963,6 +2017,10 @@ class Translator {
             !!((matchArray[1][0] === '\t' || matchArray[1].length > 1)),
       label: matchArray[2].trim()
     }
+    if (item.label[0] == "'") {
+      item.label = item.label.substring(1, item.label.length-1)
+      item.quotes = true
+    }
     if (item.subordinate) { item.level = this._computeLevel(matchArray[1]) }
     return item
   }
@@ -2186,7 +2244,7 @@ class Translator {
   _inputObjToHTML (obj) {
     // core attributes are not straight mapped
     const coreAttributes = ['seq', 'author', 'type', 'subtype', 'text',
-      'show', 'choice', 'target', 'contextTarget',
+      'show', 'options', 'target', 'contextTarget',
       '_source', '_modified', 'mergeLine']
     const subtypeMap = {
       short: 'input-typed',
@@ -2213,17 +2271,17 @@ class Translator {
           .replace('[option]', op)
           .replace('[seq]', obj.seq)
         if (typeof obj.options[op] === 'string') {
-          choice = choice.replace('[target]', '')
+          choice = choice.replace('[topic]', '')
                          .replace('[value]', 'value="' + obj.options[op] + '"')
                          .replace('[compute]', '')
         } else if (typeof obj.options[op] === 'boolean') {
-          choice = choice.replace('[target]', '')
+          choice = choice.replace('[topic]', '')
                          .replace('[value]', 'value="' + op + '"')
                          .replace('[compute]', '')
         } else {
-          choice = choice.replace('[target]',
+          choice = choice.replace('[topic]',
             ((obj.options[op].contextTarget == null) ? '' :
-              "target='" + this._transformNavigationMessage(obj.options[op].contextTarget) + "' "))
+              "topic='" + this._transformNavigationMessage(obj.options[op].contextTarget) + "' "))
             .replace('[value]',
               ((obj.options[op].message) ? 'value="' + obj.options[op].message + '"' : ''))
             .replace('[compute]',
@@ -2250,10 +2308,9 @@ class Translator {
       }
     }
     if (obj.subtype == 'text') { extraAttr += ' rows="5"' }
-    if (obj.contextTarget) {
+    if (obj.contextTarget)
       extraAttr +=
-            " target='" + this._transformNavigationMessage(obj.contextTarget) + "'"
-    }
+        " topic='" + this._transformNavigationMessage(obj.contextTarget) + "'"
 
     const input = Translator.htmlTemplates.input
       .replace(/\[dcc\]/igm, subtype)
@@ -2288,7 +2345,7 @@ class Translator {
     */
   _inputObjToMd (obj) {
     // core attributes are not straight mapped
-    const coreAttributes = ['seq', 'author', 'variable', 'type', 'subtype',
+    let coreAttributes = ['seq', 'author', 'variable', 'type', 'subtype',
       'text', 'options',
       '_source', '_modified', 'mergeLine']
 
@@ -2299,9 +2356,37 @@ class Translator {
       stm = '> ' + lines.join('\n> ') + '\n'
     }
 
+    let hasTarget = (obj.target) ? true : false
+    if (!hasTarget && obj.subtype == 'choice')
+      for (const op in obj.options)
+        if (obj.options[op].target) {
+          hasTarget = true
+          break
+        }
+
+    /*
     if (obj.subtype == 'choice' && obj.exclusive == true &&
         obj.shuffle == true) {
-      md = stm
+    */
+
+    if (obj.subtype == 'choice' && hasTarget) {
+      // check extra options to explicit input
+      coreAttributes = coreAttributes.concat(['exclusive', 'shuffle'])
+      let extraAttr = ''
+      for (const atr in obj) {
+        if (!coreAttributes.includes(atr))
+          extraAttr += this._mdSubField(atr, obj[atr])
+        }
+      const variable = obj.variable.substring(obj.variable.lastIndexOf('.') + 1)
+      if (extraAttr.length > 0 || !variable.match(/input[\d]+/))
+        md = Translator.markdownTemplates.input
+          .replace('{statement}', stm)
+          .replace('{variable}', variable)
+          .replace('{subtype}',
+            (obj.subtype) ? this._mdSubField('type', obj.subtype) : '')
+          .replace('{extra}', extraAttr) + '\n'
+      else
+        md = stm
       let first = true
       for (const op in obj.options) {
         if (!first) { md += '\n' }
@@ -2311,6 +2396,7 @@ class Translator {
         if (option.state && option.operation)
           state = ' ' + ((option.operation == ">") ? '>' : '') + '((' + option.state + '))' + ((option.operation == "?") ? '?' : '')
         md += Translator.markdownTemplates.choice
+          .replace('{bullet}', (obj.shuffle) ? '+' : '*')
           .replace('{label}', op)
           .replace('{target}',
             (option.target && option.target != '(default)')
@@ -2592,7 +2678,7 @@ class Translator {
       subtext: 'value'
     },
     item: {
-      mark: /^((?:  |\t)[ \t]*)(?:[\+\*])[ \t]+([\w.\/\?&#\-][\w.\/\?&#\- \t]*)$/im,
+      mark: /^((?:  |\t)[ \t]*)(?:[\+\*])[ \t]+((?:[\w.\/\?&#\-][\w.\/\?&#\- \t]*)|(?:'[^']*')[ \t]*)$/im,
       subtext: 'value'
     },
     option: {
@@ -2661,6 +2747,8 @@ class Translator {
   Translator.marksAnnotation = {
     'context-open': Translator.element['context-open'].mark,
     'context-close': Translator.element['context-close'].mark,
+    'formal-open': Translator.element['formal-open'].mark,
+    'formal-close': Translator.element['formal-close'].mark,
     select: Translator.element.select.mark,
     annotation: Translator.element.annotation.mark
   }

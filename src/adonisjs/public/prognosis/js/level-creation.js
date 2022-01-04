@@ -54,13 +54,14 @@ class LevelCreationTool {
       sibling = parent.querySelector(`#${sapsObj.id.substring(0,idL+1)}${parseInt(sapsObj.id.split('-')[3])-1}`).nextSibling
     else
       sibling = parent.firstElementChild
-
+    parent.classList.remove('pb-5')
     parent.insertBefore(sapsObj, sibling)
   }
 
   returnOptionsToList (options){
-    for (let i = 0; i < options.length; i++) {
-      this.returnSapsChildToParent(options[i])
+
+    while (options.length > 0) {
+      this.returnSapsChildToParent(options[0])
     }
   }
 
@@ -79,29 +80,148 @@ class LevelCreationTool {
         let parentKey = Object.keys(sapsList['pacient'])[i]
         for (let x = 0; x < Object.keys(sapsList['pacient'][parentKey]['values']).length; x++) {
           let childValue = Object.keys(sapsList['pacient'][parentKey]['values'])[x]
+          // console.log(childValue)
+          // console.log(childValue == deconstrElem.value)
           if (deconstrElem.value != 'Sim' && deconstrElem.value != 'Não') {
             if (childValue == deconstrElem.value){
               uParent = parentKey
-              break
+              switch (deconstrElem.nodeName) {
+                case 'SELECT':
+                // console.log(deconstrElem)
+                const options = deconstrElem.querySelectorAll('option')
+                // console.log(options)
+                  for (let elem of options) {
+                    if(elem.value != null && elem.value != ''){
+                      // console.log('============ dissecting...')
+                      // console.log(elem.value)
+                      for (let i = 0; i < Object.keys(sapsList['pacient']).length; i++) {
+                        let parentKey = Object.keys(sapsList['pacient'])[i]
+                        if(elem.value == parentKey){
+                          // console.log(parentKey)
+                          this.buildSapsObj(sapsList, parentKey, 'Sim')
+
+                        }
+                        for (let x = 0; x < Object.keys(sapsList['pacient'][parentKey]['values']).length; x++) {
+                          let childValue = Object.keys(sapsList['pacient'][parentKey]['values'])[x]
+                          if (childValue == elem.value){
+                            this.buildSapsObj(sapsList, parentKey, childValue)
+                          }
+                        }
+                      }
+                    }
+                  }
+                  if(createdObj.parentElement.id != 'creation-dump'
+                  && createdObj.parentElement.childElementCount == 1)
+                    this.addPadding(createdObj.parentElement,'pb-5',true)
+                  createdObj.remove()
+                  break;
+                case 'INPUT':
+                  if(deconstrElem.parentElement.parentElement.id.includes('grouped-')){
+                    for (let i = 0; i < Object.keys(sapsList['pacient']).length; i++) {
+                      let parentKey = Object.keys(sapsList['pacient'])[i]
+                      let objValue = deconstrElem.value
+                      if(deconstrElem.name == Prognosis.i.removeAccent(parentKey)){
+                        if(sapsList['pacient'][parentKey]['values'][objValue]){
+                          // console.log('============ building bundle...')
+                          // console.log('============ parentKey')
+                          // console.log(parentKey)
+                          // console.log('============ value')
+                          // console.log(objValue)
+                          this.buildSapsObj(sapsList, parentKey, objValue)
+                        }
+                      }
+                    }
+                    if(deconstrElem == dElem[dElem.length-1]){
+                      let dropContainer = deconstrElem.closest('.drag-option-built').parentElement
+                      if(dropContainer.id != 'creation-dump'
+                      && dropContainer.childElementCount == 1)
+                        this.addPadding(dropContainer,'pb-5',true)
+                      createdObj.remove()
+                    }
+                  }else if (deconstrElem.type == 'radio') {
+                      let parentKey = uParent
+                      // console.log('============ parent')
+                      // console.log(parentKey)
+                      // console.log('============ elem')
+                      // console.log(deconstrElem)
+                        for (let x = 0; x < Object.keys(sapsList['pacient'][parentKey]['values']).length; x++) {
+                          let childValue = Object.keys(sapsList['pacient'][parentKey]['values'])[x]
+                          if (childValue == deconstrElem.value){
+                            // console.log(childValue)
+                            // console.log(deconstrElem.value)
+                            this.buildSapsObj(sapsList, parentKey, childValue)
+                          }
+                        }
+
+                    if(deconstrElem == dElem[dElem.length-1]){
+                      let dropContainer = deconstrElem.closest('.drag-option-built').parentElement
+                      if(dropContainer.id != 'creation-dump'
+                      && dropContainer.childElementCount == 1)
+                        this.addPadding(dropContainer,'pb-5',true)
+                      createdObj.remove()
+                    }
+                  }else if (deconstrElem.type == 'checkbox') {
+                    let parentKey = uParent
+                    console.log(deconstrElem)
+                    for (let x = 0; x < Object.keys(sapsList['pacient'][parentKey]['values']).length; x++) {
+                      let childValue = Object.keys(sapsList['pacient'][parentKey]['values'])[x]
+                      console.log(childValue)
+                      if (childValue == deconstrElem.value){
+                        console.log(deconstrElem.value)
+                        this.buildSapsObj(sapsList, parentKey, childValue)
+                      }
+                    }
+                    if(deconstrElem == dElem[dElem.length-1]){
+                      let dropContainer = deconstrElem.closest('.drag-option-built').parentElement
+                      if(dropContainer.id != 'creation-dump'
+                      && dropContainer.childElementCount == 1)
+                      this.addPadding(dropContainer,'pb-5',true)
+                      createdObj.remove()
+                    }
+                  }
+                  break;
+                default:
+                  // console.log('============ default switch node')
+                  // console.log(deconstrElem.nodeName)
+              }
+              break;
             }
           }else if(dElem.length <= 2){
             if (deconstrElem.type == 'radio') {
               if (deconstrElem.name == Prognosis.i.removeAccent(parentKey))
-              uParent = parentKey
+                uParent = parentKey
+              else if (deconstrElem.dataset.parentTitle == parentKey) {
+                uParent = parentKey
+              }
+            }else {
+              if(deconstrElem.id == Prognosis.i.removeAccent(parentKey)){
+                uParent = parentKey
+              }else if (deconstrElem.dataset.parentTitle == parentKey) {
+                uParent = parentKey
+              }
             }
           }else{
             if (deconstrElem.id == Prognosis.i.removeAccent(parentKey))
-            uParent = parentKey
+              uParent = parentKey
+            else if (deconstrElem.dataset.parentTitle == parentKey){
+              uParent = parentKey
+            }
+
+
           }
         }
       }
     }
-    for (let deconstrElem of dElem) {
-      switch (deconstrElem.nodeName) {
-        case 'SELECT':
+    if(document.querySelectorAll(`[data-deconstructible="true"]`).length >0){
+      for (let deconstrElem of dElem) {
+        // console.log(dElem)
         // console.log(deconstrElem)
-        const options = deconstrElem.querySelectorAll('option')
-        // console.log(options)
+        // console.log(deconstrElem.nodeName)
+        switch (deconstrElem.nodeName) {
+          case 'SELECT':
+          // console.log(deconstrElem)
+          const options = deconstrElem.querySelectorAll('option')
+          // console.log(options)
           for (let elem of options) {
             if(elem.value != null && elem.value != ''){
               // console.log('============ dissecting...')
@@ -109,7 +229,7 @@ class LevelCreationTool {
               for (let i = 0; i < Object.keys(sapsList['pacient']).length; i++) {
                 let parentKey = Object.keys(sapsList['pacient'])[i]
                 if(elem.value == parentKey){
-                  console.log(parentKey)
+                  // console.log(parentKey)
                   this.buildSapsObj(sapsList, parentKey, 'Sim')
 
                 }
@@ -124,21 +244,21 @@ class LevelCreationTool {
           }
           if(createdObj.parentElement.id != 'creation-dump'
           && createdObj.parentElement.childElementCount == 1)
-            this.addPadding(createdObj.parentElement,'pb-5',true)
+          this.addPadding(createdObj.parentElement,'pb-5',true)
           createdObj.remove()
           break;
-        case 'INPUT':
+          case 'INPUT':
           if(deconstrElem.parentElement.parentElement.id.includes('grouped-')){
             for (let i = 0; i < Object.keys(sapsList['pacient']).length; i++) {
               let parentKey = Object.keys(sapsList['pacient'])[i]
               let objValue = deconstrElem.value
               if(deconstrElem.name == Prognosis.i.removeAccent(parentKey)){
                 if(sapsList['pacient'][parentKey]['values'][objValue]){
-                  console.log('============ building bundle...')
-                  console.log('============ parentKey')
-                  console.log(parentKey)
-                  console.log('============ value')
-                  console.log(objValue)
+                  // console.log('============ building bundle...')
+                  // console.log('============ parentKey')
+                  // console.log(parentKey)
+                  // console.log('============ value')
+                  // console.log(objValue)
                   this.buildSapsObj(sapsList, parentKey, objValue)
                 }
               }
@@ -147,36 +267,41 @@ class LevelCreationTool {
               let dropContainer = deconstrElem.closest('.drag-option-built').parentElement
               if(dropContainer.id != 'creation-dump'
               && dropContainer.childElementCount == 1)
-                this.addPadding(dropContainer,'pb-5',true)
+              this.addPadding(dropContainer,'pb-5',true)
               createdObj.remove()
             }
           }else if (deconstrElem.type == 'radio') {
-              let parentKey = uParent
-                for (let x = 0; x < Object.keys(sapsList['pacient'][parentKey]['values']).length; x++) {
-                  let childValue = Object.keys(sapsList['pacient'][parentKey]['values'])[x]
-                  if (childValue == deconstrElem.value){
-                    // console.log(childValue)
-                    // console.log(deconstrElem.value)
-                    this.buildSapsObj(sapsList, parentKey, childValue)
-                  }
-                }
+            let parentKey = uParent
+            // console.log('============ parent')
+            // console.log(parentKey)
+            // console.log('============ elem')
+            // console.log(deconstrElem)
+            for (let x = 0; x < Object.keys(sapsList['pacient'][parentKey]['values']).length; x++) {
+              let childValue = Object.keys(sapsList['pacient'][parentKey]['values'])[x]
+              if (childValue == deconstrElem.value){
+                // console.log(childValue)
+                // console.log(deconstrElem.value)
+                this.buildSapsObj(sapsList, parentKey, childValue)
+              }
+            }
 
             if(deconstrElem == dElem[dElem.length-1]){
               let dropContainer = deconstrElem.closest('.drag-option-built').parentElement
+              console.log(dropContainer)
               if(dropContainer.id != 'creation-dump'
               && dropContainer.childElementCount == 1)
-                this.addPadding(dropContainer,'pb-5',true)
+              this.addPadding(dropContainer,'pb-5',true)
               createdObj.remove()
             }
           }else if (deconstrElem.type == 'checkbox') {
             let parentKey = uParent
-            console.log(deconstrElem)
+            // console.log(deconstrElem)
+            // console.log(parentKey)
             for (let x = 0; x < Object.keys(sapsList['pacient'][parentKey]['values']).length; x++) {
-
               let childValue = Object.keys(sapsList['pacient'][parentKey]['values'])[x]
+              // console.log(childValue)
               if (childValue == deconstrElem.value){
-                console.log(childValue)
-                console.log(deconstrElem.value)
+                // console.log(deconstrElem.value)
                 this.buildSapsObj(sapsList, parentKey, childValue)
               }
             }
@@ -189,16 +314,23 @@ class LevelCreationTool {
             }
           }
           break;
-        default:
-          console.log('============ default switch node')
-          console.log(deconstrElem.nodeName)
+          default:
+          // console.log('============ default switch node')
+          // console.log(deconstrElem.nodeName)
+        }
       }
     }
 
   }
 
   async start(){
-    $('#btn-popover').popover()
+    this.overwatchCreationDump()
+    $(function () {
+      $('[data-toggle="popover"]').popover()
+    })
+    $('.popover-dismiss').popover({
+      trigger: 'focus'
+    })
     const navSelection = document.querySelector('#creation-selection-tab').querySelectorAll('.nav-link')
     const fnCascadeListener = function(event){
       const cascadeCheck = document.querySelector(`#chck-cascade-option`)
@@ -227,7 +359,7 @@ class LevelCreationTool {
       }
 
     }
-    const fnBundleListener = function(){
+    const fnBundleListener = async function(){
 
       if(event.target.getAttribute('href') == '#bundle' || event.target.id == 'input-number-bundle'){
         let bundleQuant = document.querySelector('#input-number-bundle')
@@ -235,7 +367,7 @@ class LevelCreationTool {
         let creationContainer = document.querySelector('#creation-container-wrapper')
         let bundleContainers = document.querySelectorAll('[id^="creation-container-bundle-"]')
 
-        if (bundleQuant.value > bundleContainers.length+1) {
+        if (parseInt(bundleQuant.value) > bundleContainers.length+1) {
           for (let i = 1; i <= (bundleQuant.value - (bundleContainers.length+1)); i++) {
             template = document.createElement('template')
             if(bundleContainers.length > 1){
@@ -253,16 +385,19 @@ class LevelCreationTool {
             .replace(/\[id\]/ig, i)
             creationContainer.appendChild(template.content.cloneNode(true))
           }
-        }else{
+        }
+        else if(parseInt(bundleQuant.value) < bundleContainers.length+1){
           bundleContainers = document.querySelectorAll('[id^="creation-container-bundle-"]')
+
           for (let i = bundleQuant.value; i >= ((bundleContainers.length)); i--) {
             bundleContainers[i-1].remove()
           }
         }
-
       }else{
         let bundleContainers = document.querySelectorAll('[id^="creation-container-bundle-"]')
         for (let i = 0; i < bundleContainers.length; i++) {
+          if(bundleContainers[i].childElementCount > 0)
+            LevelCreationTool.i.returnOptionsToList(bundleContainers[i].children)
           bundleContainers[i].remove()
         }
       }
@@ -316,7 +451,7 @@ class LevelCreationTool {
         optionsWrapperOpen.parentElement.prognObj = {}
         optionsWrapperOpen.parentElement.prognObj[groupName] = {
           "open": optionsWrapperOpen.prognObj['open'],
-          "closed": optionsWrapperLocked.prognObj['locked']
+          "locked": optionsWrapperLocked.prognObj['locked']
         }
         let currentGroupOptions = optionsWrapperOpen.parentElement.prognObj[groupName]
         // console.log('============ current group')
@@ -326,7 +461,8 @@ class LevelCreationTool {
         // console.log('============ pacient')
         // console.log(LevelCreationTool.i.pacient)
       }
-      download("prognLvl.json",JSON.stringify(LevelCreationTool.i.pacient))
+      let fileName = (`${document.querySelector('#input-lvl-name').value}.json`) || 'prognLvl.json'
+      download(fileName,JSON.stringify(LevelCreationTool.i.pacient))
     }
     const fnProngTargetChallenge = function(){
       if(this.value == 'challenge-two'){
@@ -442,7 +578,7 @@ class LevelCreationTool {
         optionsWrapperOpen.parentElement.prognObj = {}
         optionsWrapperOpen.parentElement.prognObj[groupName] = {
           "open": optionsWrapperOpen.prognObj['open'],
-          "closed": optionsWrapperLocked.prognObj['locked']
+          "locked": optionsWrapperLocked.prognObj['locked']
         }
         let currentGroupOptions = optionsWrapperOpen.parentElement.prognObj[groupName]
         // console.log('============ current group')
@@ -452,7 +588,8 @@ class LevelCreationTool {
         // console.log('============ pacient')
         // console.log(LevelCreationTool.i.pacient)
       }
-      download("prognLvl.json",JSON.stringify(LevelCreationTool.i.pacient))
+      let fileName = (`${document.querySelector('#input-lvl-name').value}.json`) || 'prognLvl.json'
+      download(fileName,JSON.stringify(LevelCreationTool.i.pacient))
     }
   }
 
@@ -580,8 +717,11 @@ class LevelCreationTool {
     // console.log("dragStart: dropEffect = " + ev.dataTransfer.dropEffect + " ; effectAllowed = " + ev.dataTransfer.effectAllowed);
     // console.log('============ currentTarget')
     // console.log(ev)
+    // console.log(ev.target)
+
     ev.dataTransfer.clearData()
     ev.dataTransfer.setData("text", ev.target.id)
+    LevelCreationTool.i._currentDragged = ev.target.id
     ev.dataTransfer.effectAllowed = "move"
     ev.target.style.opacity = .5
   }
@@ -615,11 +755,11 @@ class LevelCreationTool {
     // console.log(ev.target)
     // console.log('============ current target')
     // console.log(ev.currentTarget)
-    // console.log('============ original target')
-    // console.log(ev.originalTarget)
-    let data = ev.dataTransfer.getData("text")
+    // console.log('============ data')
+    // console.log(ev.dataTransfer.getData("text"))
+    let data = ev.dataTransfer.getData("text") || LevelCreationTool.i._currentDragged
     let objData = document.querySelector(`#${data}`)
-    if ((ev.target.id == 'creation-container' || ev.currentTarget.id == 'creation-container')
+    if ((ev.currentTarget.id == 'creation-container' || ev.currentTarget.classList.contains('secondary-creation-container'))
     && !ev.currentTarget.querySelector('#phantom-div')) {
       if(!objData.classList.contains('drag-option-built')){
         ev.currentTarget.classList.add('disable-children-events')
@@ -632,7 +772,7 @@ class LevelCreationTool {
     }
     if(ev.currentTarget.classList.contains('pacient-info-values')){
       // console.log('============ dropping options')
-      let data = ev.dataTransfer.getData("text")
+      let data = ev.dataTransfer.getData("text") || LevelCreationTool.i._currentDragged
       let objData = document.querySelector(`#${data}`)
       if(objData.classList.contains('drag-option-built') && !ev.currentTarget.querySelector('#phantom-div')){
         // console.log('============ options were built: can drop')
@@ -655,8 +795,12 @@ class LevelCreationTool {
     // console.log(ev.currentTarget)
     // console.log('============ original target')
     // console.log(ev.originalTarget)
-    if (ev.currentTarget.id == 'creation-container' && ev.currentTarget.querySelector('#phantom-div')) {
-      if(ev.originalTarget.id != '#phantom-div')
+
+    ev.currentTarget.classList.remove('disable-children-events')
+    if ((ev.currentTarget.id == 'creation-container'
+    || ev.currentTarget.classList.contains('secondary-creation-container'))
+    && ev.currentTarget.querySelector('#phantom-div')) {
+      if(ev.currentTarget.id != '#phantom-div')
         ev.currentTarget.querySelector('#phantom-div').remove()
     }
     if(ev.currentTarget.classList.contains('pacient-info-values')){
@@ -668,7 +812,7 @@ class LevelCreationTool {
   }
 
   async dropHandler(ev) {
-    console.log("drop: dropEffect = " + ev.dataTransfer.dropEffect + " ; effectAllowed = " + ev.dataTransfer.effectAllowed);
+    // console.log("drop: dropEffect = " + ev.dataTransfer.dropEffect + " ; effectAllowed = " + ev.dataTransfer.effectAllowed);
     ev.preventDefault()
     // Get the id of the target and add the moved element to the target's DOM
     let data = ev.dataTransfer.getData("text")
@@ -752,11 +896,15 @@ class LevelCreationTool {
     }
     template = document.createElement('template')
     const optionContainer = wrapper.querySelector(`#options-${id}-wrapper`).parentElement
-    optionContainer.classList.add('drag-option-built')
+    optionContainer.classList.add('drag-option-built', 'createdElemAnim')
     optionContainer.setAttribute('draggable', 'true')
     optionContainer.setAttribute('ondragstart', 'LevelCreationTool.i.dragStartHandler(event)')
     // optionContainer.setAttribute('ondragend', 'LevelCreationTool.i.dragStartHandler(event)')
     optionContainer.setAttribute('id', `option-group-${id}`)
+
+    optionContainer.addEventListener('animationend', function() {
+      this.classList.remove('createdElemAnim')
+    })
 
     template.innerHTML = LevelCreationTool.deleteOptBtn
     optionContainer.appendChild(template.content.cloneNode(true))
@@ -834,9 +982,9 @@ class LevelCreationTool {
   async radioCreator(wrapper, keyId, keyText, optionsList, properties) {
     let template = document.createElement('template')
     let obj = document.querySelector('#options-'+ keyId+'-wrapper')
-    console.log('============ key id ')
-    console.log(keyId)
-    console.log(obj)
+    // console.log('============ key id ')
+    // console.log(keyId)
+    // console.log(obj)
     optionsList['parentValues'][0].parentElement.classList.add('pb-5')
     obj.prependTxt = obj.parentElement.querySelector('.input-group-prepend')
     obj.prependTxt.copy = document.createElement('label')
@@ -847,10 +995,10 @@ class LevelCreationTool {
     if(properties['radioYN'] == 'true'){
       template = document.createElement('template')
       template.innerHTML = Prognosis.playerOptionRadio
-      .replace(/\[id\]/ig, keyId+'-nao')
-      .replace(/\[name\]/ig, keyId)
-      .replace(/\[value\]/ig, 'Não')
-      .replace(/\[valueText\]/ig, 'Não')
+        .replace(/\[id\]/ig, keyId+'-nao')
+        .replace(/\[name\]/ig, keyId+'-yn')
+        .replace(/\[value\]/ig, 'Não')
+        .replace(/\[valueText\]/ig, 'Não')
       obj.appendChild(template.content.cloneNode(true))
 
       let radioTemp = document.querySelector(`#${template.content.firstElementChild.querySelector('input').id}`)
@@ -859,7 +1007,7 @@ class LevelCreationTool {
       template = document.createElement('template')
       template.innerHTML = Prognosis.playerOptionRadio
       .replace(/\[id\]/ig, keyId+'-sim')
-      .replace(/\[name\]/ig, keyId)
+      .replace(/\[name\]/ig, keyId+'-yn')
       .replace(/\[value\]/ig, 'Sim')
       .replace(/\[valueText\]/ig, 'Sim')
       obj.appendChild(template.content.cloneNode(true))
@@ -879,19 +1027,22 @@ class LevelCreationTool {
     ///////////////////////////////////////////////////////////////////////////////
     for (let z = 0; z < optionsList['parentValues'].length; z++) {
       let value = optionsList['parentValues'][z].innerText
+
       if((value != 'Sim' && value != 'Não')|| properties['radioYN'] != 'true'){
         template = document.createElement('template')
         if(properties['uniqueValues'] == 'true'){
           template.innerHTML = Prognosis.playerOptionRadio
-          .replace(/\[name\]/ig, keyId)
-          .replace(/\[id\]/ig, (keyId+'-'+Prognosis.i.removeAccent(value)))
-          .replace(/\[value\]/ig, (value))
-          .replace(/\[valueText\]/ig, value)
+            .replace(/\[name\]/ig, keyId)
+            .replace(/\[id\]/ig, (keyId+'-'+Prognosis.i.removeAccent(value)))
+            .replace(/\[value\]/ig, value)
+            .replace(/\[valueText\]/ig, value)
+          template.content.firstElementChild.querySelector('input').dataset.parentTitle = optionsList['parentValues'][z].dataset.parentTitle
         }else if(properties['multipleValues'] == 'true'){
           template.innerHTML = Prognosis.playerOptionCheckbox
-          .replace(/\[id\]/ig, (keyId+'-'+Prognosis.i.removeAccent(value)))
-          .replace(/\[value\]/ig, value)
-          .replace(/\[valueText\]/ig, value)
+            .replace(/\[id\]/ig, (keyId+'-'+Prognosis.i.removeAccent(value)))
+            .replace(/\[value\]/ig, value)
+            .replace(/\[valueText\]/ig, value)
+          template.content.firstElementChild.querySelector('input').dataset.parentTitle = optionsList['parentValues'][z].dataset.parentTitle
         }
         if(properties['cascade'] == 'true' || properties['radioYN'] == 'true'){
           document.querySelector(`#${cascadeDiv.id}`).appendChild(template.content.cloneNode(true))
@@ -920,22 +1071,27 @@ class LevelCreationTool {
         if(properties['uniqueValues'] == 'true'){
           template = document.createElement('template')
           template.innerHTML = Prognosis.playerOptionRadio
-          .replace(/\[id\]/ig, childId)
-          .replace(/\[name\]/ig, childId+'-value')
-          .replace(/\[valueText\]/ig, childText)
+            .replace(/\[id\]/ig, childId+z)
+            .replace(/\[name\]/ig, keyId+'-value')
+            .replace(/\[valueText\]/ig, childText)
+            .replace(/\[value\]/ig, childText)
+          template.content.firstElementChild.querySelector('input').dataset.parentTitle = optionsList['childValues'][z].dataset.parentTitle
 
           document.querySelector(`#${cascadeDivChild.id}`).appendChild(template.content.cloneNode(true))
 
         }else if(properties['multipleValues'] == 'true'){
           template = document.createElement('template')
           template.innerHTML = Prognosis.playerOptionCheckbox
-          .replace(/\[id\]/ig, childId)
-          .replace(/\[value\]/ig, childText)
-          .replace(/\[valueText\]/ig, childText)
+            .replace(/\[id\]/ig, childId)
+            .replace(/\[value\]/ig, childText)
+            .replace(/\[valueText\]/ig, childText)
+          template.content.firstElementChild.querySelector('input').parentTitle = optionsList['childValues'][z].dataset.parentTitle
 
           document.querySelector(`#${cascadeDivChild.id}`).appendChild(template.content.cloneNode(true))
         }
-        let radioTemp = document.querySelector(`#${template.content.firstElementChild.querySelector('input').id}`)
+        let elemId = template.content.firstElementChild.querySelector('input').id
+
+        let radioTemp = document.getElementById(elemId)
         radioTemp.dataset.deconstructible = 'true'
 
         optionsList['childValues'][z].remove()
@@ -1028,27 +1184,70 @@ class LevelCreationTool {
   }
 
   async createSelectList (){
+    let validCreation = false
+    let whiteSpace = new RegExp(/^\s*$/)
+
     let selectTitle = document.querySelector('#input-title-option').value
     if(document.querySelector(`#option-group-${Prognosis.i.removeAccent(selectTitle)}`)) {
-      let newTitle = prompt("Nome da opção duplicado, digite outro valor")
+      let newTitle = prompt("The option name is duplicated, please type another name")
 
       if (Prognosis.i.removeAccent(newTitle) != Prognosis.i.removeAccent(selectTitle)) {
         selectTitle = newTitle
       }
     }
+
     let selectId = Prognosis.i.removeAccent(selectTitle)
     let optionsList = document.querySelectorAll('#creation-container > [id ^= "option-"] ')
     let insertParentName = document.querySelector('#chck-select-parent-name').checked
-    await this.createOption ((document.querySelector('#creation-dump')), true, selectTitle, selectId)
-    this.selectListCreator((document.querySelector('#creation-dump')), selectId, selectTitle, optionsList, insertParentName)
+    // console.log('============')
+    // console.log(optionsList.length)
+    // console.log(whiteSpace.test(selectTitle))
+    if(optionsList.length <=0){
+      // console.log('============ empty list')
+      let txtAlert = 'The creation container is empty. You need at least one element in the container.'
+      this.createAlert ('alert-danger', true, txtAlert, 20000)
+    }else if (selectTitle == null || whiteSpace.test(selectTitle)) {
+      let txtAlert = 'You cannot build a option with an empty title.'
+      this.createAlert ('alert-danger', true, txtAlert, 20000)
+    }else if (optionsList.length == 1 && optionsList[0].innerText == "Não") {
+      let txtAlert = `You are trying to create a select list with only the value "${optionsList[0].innerText}". Please build a "radio" or "checklist" instead.
+      <br>You can also <a class="alert-link" href="#" onclick="LevelCreationTool.i.autoCreateRadio()">click here</a> and auto build the radio option.`
+      this.createAlert ('alert-danger', true, txtAlert, 20000)
+    }else if (insertParentName) {
+      let firstParentTitle = optionsList[0].dataset.parentTitle
+      let oneFamily = true
+      for (var el of optionsList) {
+        if (el.dataset.parentTitle != firstParentTitle) {
+          oneFamily = false
+        }
+      }
+      if(oneFamily){
+        let txtAlert = `The "group name before the value" is active, but all the values are from the same group. What do you want to do?
+        <br>Build the option without the group name: <a class="alert-link" href="#"
+        onclick="LevelCreationTool.i.autoCreateSelectList('${selectId}', '${selectTitle}', false)">click here</a>
+        <br>Confirm building with the group name: <a class="alert-link" href="#"
+        onclick="LevelCreationTool.i.autoCreateSelectList('${selectId}', '${selectTitle}', true)">click here</a>`
+        this.createAlert ('alert-warning', true, txtAlert, 50000, true)
+      }
+      else {
+        validCreation = true
+      }
+    }else{
+      validCreation = true
+    }
+    if(validCreation){
+      await this.createOption ((document.querySelector('#creation-dump')), true, selectTitle, selectId)
+      this.selectListCreator((document.querySelector('#creation-dump')), selectId, selectTitle, optionsList, insertParentName)
+    }
   }
 
   async createRadio (){
-
+    let validCreation = false
+    let whiteSpace = new RegExp(/^\s*$/)
     let selectTitle = document.querySelector('#input-title-option').value
 
     if(document.querySelector(`#option-group-${Prognosis.i.removeAccent(selectTitle)}`)) {
-      let newTitle = prompt("Nome da opção duplicado, digite outro valor")
+      let newTitle = prompt("The option name is duplicated, please type another name")
 
       if (Prognosis.i.removeAccent(newTitle) != Prognosis.i.removeAccent(selectTitle)) {
         selectTitle = newTitle
@@ -1071,14 +1270,39 @@ class LevelCreationTool {
       "multipleValues":`${isChecklist}`,
       "uniqueValues":`${isRadio}`
     }
-    await this.createOption ((document.querySelector('#creation-dump')), true, selectTitle, selectId)
-    this.radioCreator((document.querySelector('#creation-dump')), selectId, selectTitle, optionsList, properties)
+    // console.log('============')
+    // console.log(optionsList['parentValues'].length)
+    if(optionsList['parentValues'].length <= 0){
+      // console.log('============ empty list')
+      let txtAlert = 'The creation container is empty. You need at least one element in the container.'
+      this.createAlert ('alert-danger', true, txtAlert, 20000)
+    }else if (selectTitle == null || whiteSpace.test(selectTitle)) {
+      let txtAlert = 'You cannot build a option with an empty title.'
+      this.createAlert ('alert-danger', true, txtAlert, 20000)
+    }else if (!isChecklist && !isRadio) {
+      let txtAlert = 'You must select one of the option type to build as "radio" or "checkbox".'
+      this.createAlert ('alert-danger', true, txtAlert, 20000)
+    }else if (cascade && optionsList['childValues'].length <= 0) {
+      let txtAlert = `You selected "Two layers", but forgot to drag an element in the second container.
+        Either uncheck the "Two layers" or insert an element.`
+      this.createAlert ('alert-danger', true, txtAlert, 20000)
+    }else{
+      validCreation = true
+    }
+    if (validCreation) {
+      await this.createOption ((document.querySelector('#creation-dump')), true, selectTitle, selectId)
+      this.radioCreator((document.querySelector('#creation-dump')), selectId, selectTitle, optionsList, properties)
+    }
   }
 
   async createBundle (){
+    let validCreation = false
+    let whiteSpace = new RegExp(/^\s*$/)
+    let emptyBundle = false
+
     let selectTitle = document.querySelector('#input-title-option').value
     if(document.querySelector(`#option-group-${Prognosis.i.removeAccent(selectTitle)}`)) {
-      let newTitle = prompt("Nome da opção duplicado, digite outro valor")
+      let newTitle = prompt("The option name is duplicated, please type another name")
 
       if (Prognosis.i.removeAccent(newTitle) != Prognosis.i.removeAccent(selectTitle)) {
         selectTitle = newTitle
@@ -1092,12 +1316,27 @@ class LevelCreationTool {
         optionsList[`${selectTitle} ${i}`] = document.querySelectorAll(`#creation-container > [id ^= "option-"]`)
       else
         optionsList[`${selectTitle} ${i}`] = document.querySelectorAll(`#creation-container-bundle-${i-1} > [id ^= "option-"]`)
+      if(optionsList[`${selectTitle} ${i}`].length <= 0){
+        emptyBundle = true
+      }
     }
     let insertParentName = document.querySelector('#chck-select-parent-name').checked
 
     let properties = {"parentName":`${insertParentName}`,"groupedChoices":'true'}
-    await this.createOption ((document.querySelector('#creation-dump')), true, selectTitle, selectId)
-    this.bundleCreator((document.querySelector('#creation-dump')), selectId, selectTitle, optionsList, properties)
+
+    if (emptyBundle) {
+      let txtAlert = 'One of the creation containers is empty. You need at least one element in all the containers.'
+      this.createAlert ('alert-danger', true, txtAlert, 20000)
+    }else if (selectTitle == null || whiteSpace.test(selectTitle)) {
+      let txtAlert = 'You cannot build a option with an empty title.'
+      this.createAlert ('alert-danger', true, txtAlert, 20000)
+    }else{
+      validCreation = true
+    }
+    if(validCreation){
+      await this.createOption ((document.querySelector('#creation-dump')), true, selectTitle, selectId)
+      this.bundleCreator((document.querySelector('#creation-dump')), selectId, selectTitle, optionsList, properties)
+    }
 
 
   }
@@ -1105,7 +1344,7 @@ class LevelCreationTool {
   async createCheckList (){
     let selectTitle = document.querySelector('#input-title-option').value
     if(document.querySelector(`#option-group-${Prognosis.i.removeAccent(selectTitle)}`)) {
-      let newTitle = prompt("Nome da opção duplicado, digite outro valor")
+      let newTitle = prompt("The option name is duplicated, please type another name")
 
       if (Prognosis.i.removeAccent(newTitle) != Prognosis.i.removeAccent(selectTitle)) {
         selectTitle = newTitle
@@ -1120,6 +1359,80 @@ class LevelCreationTool {
     this.checkListCreator((document.querySelector('#creation-dump')), selectId, selectTitle, optionsList, properties)
 
 
+  }
+
+  async autoCreateSelectList (selectId, selectTitle, insertParentName){
+    $(".alert").alert('close')
+    let optionsList = document.querySelectorAll('#creation-container > [id ^= "option-"] ')
+    await this.createOption ((document.querySelector('#creation-dump')), true, selectTitle, selectId)
+    this.selectListCreator((document.querySelector('#creation-dump')), selectId, selectTitle, optionsList, insertParentName)
+
+  }
+
+  async autoCreateRadio (){
+    let radioTab = document.querySelector('#radio-tab')
+    let radioChck = document.querySelector("#option-radio")
+    radioTab.click()
+    radioChck.click()
+    this.createRadio()
+  }
+
+  async createAlert (type, dismissible, content, fadeTime, includesCode){
+    let _html = includesCode || false
+    let alertDiv = document.createElement('div')
+    let dismissBtn = ''
+
+    alertDiv.classList.add('alert', type, 'alert-dismissible', 'fade', 'show')
+    if(_html)
+      alertDiv.setAttribute('html', 'true')
+    if(dismissible){
+      alertDiv.classList.add('alert-dismissible')
+      dismissBtn = `
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+      </button>`
+    }
+    alertDiv.setAttribute('role','alert')
+    alertDiv.style.zIndex = '2000'
+    alertDiv.innerHTML = `
+    ${content}
+    ${dismissBtn}`
+    document.querySelector('#main-wrapper').insertBefore(alertDiv, document.querySelector('#main-wrapper').firstElementChild)
+
+    if(fadeTime > 0){
+      setTimeout(function(){
+        $(".alert").alert('close')
+      }, fadeTime)
+    }
+  }
+
+  overwatchCreationDump(){
+    // console.log('============ overwatching')
+    // Select the node that will be observed for mutations
+    const targetNode = document.querySelector('#creation-dump')
+
+    // Options for the observer (which mutations to observe)
+    const config = { childList: true}
+
+    // Callback function to execute when mutations are observed
+    const callback = function(mutationsList, observer) {
+
+      for(const mutation of mutationsList) {
+        if (mutation.target.childElementCount == 0) {
+          LevelCreationTool.i.cleanElementChildren(mutation.target)
+        }
+      }
+    }
+
+    // Create an observer instance linked to the callback function
+    const observer = new MutationObserver(callback)
+
+    // Start observing the target node for configured mutations
+    observer.observe(targetNode, config)
+
+  }
+  async cleanElementChildren (target){
+    target.innerHTML = null
   }
 
 }
@@ -1142,14 +1455,20 @@ class LevelCreationTool {
   LevelCreationTool.deleteOptBtn =`
   <button type="button" name="button" class="btn btn-danger btn-delete-option" onclick="LevelCreationTool.i.deconstructObj(event)">X</button>`
   LevelCreationTool.cascadeDiv = `
-  <div class="col h-100 border rounded pb-5 pt-1 drop-container secondary-creation-container" style="background-color:#cebfbf;"
+  <div class="col h-100 rounded pb-5 mr-1 drop-container secondary-creation-container"
   id="child-creation-container"
-  ondrop="LevelCreationTool.i.dropHandler(event)" ondragover="LevelCreationTool.i.dragOverHandler(event)">
+  ondrop="LevelCreationTool.i.dropHandler(event)" ondragover="LevelCreationTool.i.dragOverHandler(event)"
+  ondrop="LevelCreationTool.i.dropHandler(event)" ondragenter="LevelCreationTool.i.dragEnterHandler(event)"
+  ondragend="LevelCreationTool.i.dragEndHandler(event)" ondragleave="LevelCreationTool.i.dragLeaveHandler(event)"
+  ondragover="LevelCreationTool.i.dragOverHandler(event)">
   </div>`
   LevelCreationTool.bundleDiv = `
-  <div class="col h-100 border rounded pb-5 pt-1 drop-container secondary-creation-container" style="background-color:#cebfbf;"
+  <div class="col h-100 rounded pb-5 mr-1 drop-container secondary-creation-container"
   id="creation-container-bundle-[id]"
-  ondrop="LevelCreationTool.i.dropHandler(event)" ondragover="LevelCreationTool.i.dragOverHandler(event)">
+  ondrop="LevelCreationTool.i.dropHandler(event)" ondragover="LevelCreationTool.i.dragOverHandler(event)"
+  ondrop="LevelCreationTool.i.dropHandler(event)" ondragenter="LevelCreationTool.i.dragEnterHandler(event)"
+  ondragend="LevelCreationTool.i.dragEndHandler(event)" ondragleave="LevelCreationTool.i.dragLeaveHandler(event)"
+  ondragover="LevelCreationTool.i.dragOverHandler(event)">
   </div>`
 
 })()

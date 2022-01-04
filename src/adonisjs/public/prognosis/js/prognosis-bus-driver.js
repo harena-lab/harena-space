@@ -83,12 +83,12 @@ class PrognosisBusDriver {
   }
 
   async verifyLocalStorage (){
-    console.log('============ verifying bus lugagge')
+    // console.log('============ verifying bus lugagge')
     if(localStorage.getItem(this._storageKey)){
-      console.log('============ lugagge in transit')
+      // console.log('============ lugagge in transit')
       return JSON.parse(localStorage.getItem(this._storageKey))
     }else {
-      console.log('============ lugagge empty')
+      // console.log('============ lugagge empty')
       return null
     }
   }
@@ -103,9 +103,9 @@ class PrognosisBusDriver {
   async dispatchLuggage (){
     const storedData = await this.verifyLocalStorage()
     let getlocal = localStorage.getItem(this._storageKey)
-    console.log('======================================================================')
-    console.log('============ Dispatching...')
-    console.log('======================================================================')
+    // console.log('======================================================================')
+    // console.log('============ Dispatching...')
+    // console.log('======================================================================')
     // MessageBus.progn.publish(`progn/summary/${MessageBus.extractLevelsSegment(storedData.openLane, 3)}`,
     //   {userId: storedData.userId,
     //    laneId: storedData.openLane,
@@ -115,9 +115,9 @@ class PrognosisBusDriver {
     // console.log(JSON.stringify({userId: storedData.userId,
     //  laneId: storedData.openLane,
     //  trail: storedData.trail}))
-     console.log('============ deleting localStorage...')
+     // console.log('============ deleting localStorage...')
      localStorage.removeItem(this._storageKey)
-     console.log('========== creating logger ==========')
+     // console.log('========== creating logger ==========')
      let loggerBody = {}
      if(storedData.lane == 'case'){
        loggerBody = {
@@ -134,11 +134,11 @@ class PrognosisBusDriver {
      }
      let logger = await MessageBus.i.request('logger/create/post', loggerBody)
      if (logger.message.error) {
-       console.log('--- error')
-       console.log(logger.message.error)
+       // console.log('--- error')
+       // console.log(logger.message.error)
      } else {
-       console.log('=== success ===')
-       console.log(logger.message)
+       // console.log('=== success ===')
+       // console.log(logger.message)
      }
   }
 
@@ -148,15 +148,15 @@ class PrognosisBusDriver {
   */
   async integrityCheck (message){
     const storedData = await this.verifyLocalStorage()
-    console.log(storedData)
+    // console.log(storedData)
     if((message.lane == storedData.lane || message.navigate) && message.userId == storedData.userId){
-      console.log('============ equal lane')
+      // console.log('============ equal lane')
       if (message.topic != storedData.openLane) {
-        console.log('============ different open lane')
-        console.log('============ topic')
-        console.log(message.topic)
-        console.log('============open lane')
-        console.log(storedData.openLane)
+        // console.log('============ different open lane')
+        // console.log('============ topic')
+        // console.log(message.topic)
+        // console.log('============open lane')
+        // console.log(storedData.openLane)
         return true
       }else {
         return false
@@ -168,11 +168,11 @@ class PrognosisBusDriver {
       await PrognosisBusDriver.i.start()
       return true
     }else{
-      console.log('============ failed first integrityCheck')
-      console.log(message.lane)
-      console.log(storedData.lane)
-      console.log(message.userId)
-      console.log(message.userId)
+      // console.log('============ failed first integrityCheck')
+      // console.log(message.lane)
+      // console.log(storedData.lane)
+      // console.log(message.userId)
+      // console.log(message.userId)
       return false
     }
   }
@@ -200,13 +200,13 @@ class PrognosisBusDriver {
       default:
         currentLane = 'case'
     }
-    console.log('============ current lane')
-    console.log(currentLane)
+    // console.log('============ current lane')
+    // console.log(currentLane)
     return currentLane
   }
 
   async startKnot (message){
-    console.log('============ start knot by driver...')
+    // console.log('============ start knot by driver...')
     const storedData = await this.verifyLocalStorage()
     const currentDateTime = new Date()
     if(!storedData.knotTrack){
@@ -259,14 +259,14 @@ class PrognosisBusDriver {
     this._currentKnot = storedData.openKnot
     await this.storeVariables(this._currentKnot)
     this._storedData = storedData.trail
-    console.log('============----------------------------------------------------------------------------------------------')
-    console.log(this._variables)
+    // console.log('============----------------------------------------------------------------------------------------------')
+    // console.log(this._variables)
     for (const v in this._variables) {
 
       if(MessageBus.extractLevel(v,1) == this._currentKnot){
-        console.log('============ logging variables')
-        console.log(`var/set/${v}`)
-        console.log(JSON.stringify(this._variables[v]))
+        // console.log('============ logging variables')
+        // console.log(`var/set/${v}`)
+        // console.log(JSON.stringify(this._variables[v]))
       }
       let dump = {
         'topic': `var/set/${v}`,
@@ -301,16 +301,16 @@ class PrognosisBusDriver {
       this._currentKnot = this._knotSequence[this._knotSequence.indexOf(this._currentKnot)+1]
     else if(direction == 'back' && this._knotSequence.indexOf(this._currentKnot) > 0)
       this._currentKnot = this._knotSequence[this._knotSequence.indexOf(this._currentKnot)-1]
-    console.log('==============================================================================')
-    console.log('==============================================================================')
-    console.log('==============================================================================')
-    console.log('============ navigating through knot')
-    console.log('============ direction')
-    console.log(direction)
-    console.log('============ open knot')
-    console.log(storedData.openKnot)
-    console.log('============ knot')
-    console.log(this._currentKnot)
+    // console.log('==============================================================================')
+    // console.log('==============================================================================')
+    // console.log('==============================================================================')
+    // console.log('============ navigating through knot')
+    // console.log('============ direction')
+    // console.log(direction)
+    // console.log('============ open knot')
+    // console.log(storedData.openKnot)
+    // console.log('============ knot')
+    // console.log(this._currentKnot)
 
 
     this._storedData = storedData.trail
@@ -361,9 +361,9 @@ class PrognosisBusDriver {
   async checkNotStoredVars () {
     const storedData = await this.verifyLocalStorage()
     if(storedData && storedData.trail){
-      console.log('============ _suitcase size')
-      console.log(this._suitcase)
-      console.log(this._suitcase.length)
+      // console.log('============ _suitcase size')
+      // console.log(this._suitcase)
+      // console.log(this._suitcase.length)
       if(this._suitcase.length > 0){
         let newLuggage
         newLuggage = storedData
@@ -377,12 +377,12 @@ class PrognosisBusDriver {
   async storeLocalStorage (message){
     await this.checkNotStoredVars()
     const storedData = await this.verifyLocalStorage()
-    console.log('============ storing:')
-    console.log(message)
+    // console.log('============ storing:')
+    // console.log(message)
 
 
     if(!storedData){
-      console.log('============ empty storage')
+      // console.log('============ empty storage')
       let dump = {
         userId: message.userId,
         lane: message.lane,
@@ -396,8 +396,8 @@ class PrognosisBusDriver {
       localStorage.setItem(this._storageKey, JSON.stringify(dump))
     }else{
       if(await this.integrityCheck(message)){
-        console.log('============ storing new')
-        console.log(message)
+        // console.log('============ storing new')
+        // console.log(message)
         this._storedData = storedData.trail
         let dump = {
           'topic': message.topic,
@@ -475,8 +475,8 @@ class PrognosisBusDriver {
         value: message.value,
         timeStamp: message.timeStamp,
       }
-      console.log('============ storing in code var (only trails)')
-      console.log(dump)
+      // console.log('============ storing in code var (only trails)')
+      // console.log(dump)
       this._storedData = storedData.trail
       newLuggage = storedData
       this._storedData.push(dump)
@@ -488,8 +488,8 @@ class PrognosisBusDriver {
         value: message.value,
         timeStamp: message.timeStamp,
       }
-      console.log('============ storing in code var (only vars)')
-      console.log(dump)
+      // console.log('============ storing in code var (only vars)')
+      // console.log(dump)
       this._variables[MessageBus.extractLevelsSegment(message.topic,3)] = message.value
     }else{
       dump={
@@ -498,8 +498,8 @@ class PrognosisBusDriver {
         timeStamp: message.timeStamp,
       }
       this._variables[MessageBus.extractLevelsSegment(message.topic,3)] = message.value
-      console.log('============ storing in code var (both trail and vars)')
-      console.log(dump)
+      // console.log('============ storing in code var (both trail and vars)')
+      // console.log(dump)
       this._suitcase.push(dump)
       // this._storedData = storedData.trail
       // newLuggage = storedData
@@ -533,10 +533,10 @@ class PrognosisBusDriver {
 
   async travelPoint (topic, message){
     // console.log(localStorage.getItem(this._storageKey))
-    console.log('============ travelling to')
-    console.log(message)
-    console.log('============ local storage just before departure')
-    console.log(localStorage.getItem(this._storageKey))
+    // console.log('============ travelling to')
+    // console.log(message)
+    // console.log('============ local storage just before departure')
+    // console.log(localStorage.getItem(this._storageKey))
     document.location.href = message
   }
 
@@ -582,8 +582,8 @@ class PrognosisBusDriver {
     await PrognosisBusDriver.i.storeLocalStorage(await PrognosisBusDriver.i.closeCurrentEntity())
     await PrognosisBusDriver.i.dispatchLuggage()
     localStorage.removeItem('progn-bus-instance-id')
-    console.log('============ luggage sent to manager')
-    console.log('============ user ready for logout')
+    // console.log('============ luggage sent to manager')
+    // console.log('============ user ready for logout')
     MessageBus.progn.publish('system/logout/ready')
   }
 }

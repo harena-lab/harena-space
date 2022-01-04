@@ -283,7 +283,7 @@ class Basic {
   }
 
   replaceStyle (targetDocument, oldCSS, newTheme, cssFile) {
-    if (oldCSS) { targetDocument.head.removeChild(oldCSS) }
+    if (oldCSS) { targetDocument.body.removeChild(oldCSS) }
 
     const cssF = (cssFile) || 'theme.css'
 
@@ -291,7 +291,7 @@ class Basic {
     newCSS.setAttribute('rel', 'stylesheet')
     newCSS.setAttribute('type', 'text/css')
     newCSS.setAttribute('href', this.themeStyleResolver(cssF))
-    targetDocument.head.appendChild(newCSS)
+    targetDocument.body.appendChild(newCSS)
 
     return newCSS
   }
@@ -309,6 +309,17 @@ class Basic {
 
     window.URL.revokeObjectURL(a.href)
     document.body.removeChild(a)
+  }
+
+  generateUID () {
+    function s4 () {
+      return Math.floor((1 + Math.random()) * 0x10000)
+        .toString(16)
+        .substring(1)
+    }
+    const currentDateTime = new Date()
+    return currentDateTime.toJSON() + '-' +
+             s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4()
   }
 }
 

@@ -39,7 +39,7 @@ class DCCPlayerServer {
     // const profile = this.getCurrentProfile();
 
     const currentDateTime = new Date()
-    const caseuid = this.generateUID()
+    const caseuid = Basic.service.generateUID()
     // const casekey = profile.id + "#" + caseid + "#" + caseuid;
     // profile.cases.push(casekey);
     // this.setProfile(profile);
@@ -57,6 +57,7 @@ class DCCPlayerServer {
     return { runningId: caseuid, track: casetrack }
   }
 
+  /*
   generateUID () {
     function s4 () {
       return Math.floor((1 + Math.random()) * 0x10000)
@@ -67,6 +68,7 @@ class DCCPlayerServer {
     return currentDateTime.toJSON() + '-' +
              s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4()
   }
+  */
 
   getRunningCasekey () {
     return localStorage.getItem(DCCPlayerServer.storePrefix + 'running-case')

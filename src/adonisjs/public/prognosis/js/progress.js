@@ -1,5 +1,7 @@
  class PrognosisProgress {
   constructor() {
+    this._ch1Locked = true
+    this._ch2Locked = true
     this.start = this.start.bind(this)
     MessageBus.i.subscribe('control/dhtml/ready', this.start)
   }
@@ -8,19 +10,44 @@
     MessageBus.i.unsubscribe('control/dhtml/ready', this.start)
     await this.getPrognosisUserInfo()
     if(document.querySelector('#progn-lvl-progress-wrapper')){
-      let selectList = document.querySelector('#select-wrapper select')
-      console.log('============ hash')
-      console.log(location.hash.substring(1))
+      let selectList = document.querySelector('#progress-select-mode')
+      let _ch1 = selectList.querySelector('option[value="ch1"]')
+      let _ch2 = selectList.querySelector('option[value="ch2"]')
+      if(sessionStorage.getItem('ch-one-unlocked') == 'true'){
+        this._ch2Locked = false
+      }
+      if (sessionStorage.getItem('ch-two-unlocked') == 'true') {
+        this._ch2Locked = false
+      }
+      if(this._ch1Locked){
+        _ch1.setAttribute('disabled', 'true')
+      }
+      if(this._ch2Locked){
+        _ch2.setAttribute('disabled', 'true')
+      }
+
       selectList.value = location.hash.substring(1) || 'learning'
       switch (selectList.value) {
         case 'learning':
           this.listLvlProgress()
           break
         case 'ch1':
-          this.listChOneProgress()
+          if (this._ch1Locked) {
+            location.hash = '#learning'
+            selectList.value = 'learning'
+            this.listLvlProgress()
+          }else {
+            this.listChOneProgress()
+          }
           break
         case 'ch2':
-          this.listChTwoProgress()
+          if (this._ch2Locked) {
+            location.hash = '#learning'
+            selectList.value = 'learning'
+            this.listLvlProgress()
+          }else {
+            this.listChTwoProgress()
+          }
           break
         default:
 

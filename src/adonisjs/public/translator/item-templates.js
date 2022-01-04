@@ -43,7 +43,7 @@
     input:
 '<dcc-[dcc] id="dcc[seq]"[author][extra][show]>[statement]</dcc-[dcc]>',
     choice:
-'<dcc-input-option parent="dcc[seq]" [target][value][compute]>[option]</dcc-input-option><br>',
+'<dcc-input-option parent="dcc[seq]" [topic][value][compute]>[option]</dcc-input-option><br>',
     output:
 '<dcc-expression id=\'dcc[seq]\'[author] expression=\'[variable][index]\'[variant] active></dcc-expression>',
     compute:
@@ -107,7 +107,7 @@ Translator.htmlSubTemplates = {
     input:
 '{statement}? {variable}{subtype}{extra}',
     choice:
-'+ {label} <-> {target}{message}{state}',
+'{bullet} {label} <-> {target}{message}{state}',
     'context-open':
 '{{[namespace][context][id][property-value]',
     'context-close':
