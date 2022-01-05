@@ -171,14 +171,14 @@ class Prognosis {
       document.querySelector('dcc-submit[connect="submit:harena-user-property:service/request/post"]')._computeTrigger()
     }else {
       localStorage.removeItem('prognosis-highest-lvl')
-      sessionStorage.removeItem('hide-intro-1')
-      sessionStorage.removeItem('hide-intro-2')
-      sessionStorage.removeItem('hide-intro-3')
-      sessionStorage.removeItem('hide-intro-4')
-      sessionStorage.removeItem('hide-intro-5')
-      sessionStorage.removeItem('hide-intro-6')
-      sessionStorage.removeItem('hide-intro-9')
-      sessionStorage.removeItem('hide-intro-10')
+      localStorage.removeItem('hide-intro-1')
+      localStorage.removeItem('hide-intro-2')
+      localStorage.removeItem('hide-intro-3')
+      localStorage.removeItem('hide-intro-4')
+      localStorage.removeItem('hide-intro-5')
+      localStorage.removeItem('hide-intro-6')
+      localStorage.removeItem('hide-intro-9')
+      localStorage.removeItem('hide-intro-10')
 
     }
     if(dbCurrent && dbCurrent.value != ''){
@@ -502,7 +502,7 @@ class Prognosis {
     if (new URL(document.location).pathname.includes('learn/player')) {
 
       if(document.querySelector('#welcome-lvl-modal') && (localStorage.getItem(strLocalStorageCurrentLvl) == 1
-      || localStorage.getItem(strLocalStorageCurrentLvl)==null) && (!sessionStorage.getItem('hide-intro-1'))){
+      || localStorage.getItem(strLocalStorageCurrentLvl)==null) && (!localStorage.getItem('hide-intro-1'))){
         let welcomeModal = document.querySelector('#welcome-lvl-modal')
         welcomeModal.querySelector('.modal-title').textContent = 'Seu primeiro paciente!'
         welcomeModal.querySelector('.modal-body > p').innerHTML = `Hoje é seu primeiro dia no estágio.
@@ -511,9 +511,9 @@ class Prognosis {
         <br><br>Escolha as variáveis que aumentam a chance de sobrevivência do paciente à chegada na UTI.`
 
         $('#welcome-lvl-modal').modal('show')
-        sessionStorage.setItem('hide-intro-1', true)
+        localStorage.setItem('hide-intro-1', true)
       }else if(document.querySelector('#welcome-lvl-modal') && (localStorage.getItem(strLocalStorageCurrentLvl) == 2)
-      && (!sessionStorage.getItem('hide-intro-2'))){
+      && (!localStorage.getItem('hide-intro-2'))){
         let welcomeModal = document.querySelector('#welcome-lvl-modal')
         welcomeModal.querySelector('.modal-title').textContent = 'Nem mesmo os deuses...'
         welcomeModal.querySelector('.modal-body > p').innerHTML = `Nessa etapa do seu treinamento, as moiras vão te mostrar que os deuses não escolhem tudo...
@@ -523,10 +523,10 @@ class Prognosis {
         a chance de sobrevivência do seu paciente.`
 
         $('#welcome-lvl-modal').modal('show')
-        sessionStorage.setItem('hide-intro-2', true)
+        localStorage.setItem('hide-intro-2', true)
       }
       else if(document.querySelector('#welcome-lvl-modal') && (localStorage.getItem(strLocalStorageCurrentLvl) == 3)
-      && (!sessionStorage.getItem('hide-intro-3'))){
+      && (!localStorage.getItem('hide-intro-3'))){
         let welcomeModal = document.querySelector('#welcome-lvl-modal')
         welcomeModal.querySelector('.modal-title').textContent = 'Pelo menos, saiba de onde é melhor ele vir...'
         welcomeModal.querySelector('.modal-body > p').innerHTML = `E aí, tá se ligando?
@@ -535,10 +535,10 @@ class Prognosis {
         Porque, na vida real, isolar variável não é tão fácil!`
 
         $('#welcome-lvl-modal').modal('show')
-        sessionStorage.setItem('hide-intro-3', true)
+        localStorage.setItem('hide-intro-3', true)
       }
       else if(document.querySelector('#welcome-lvl-modal') && (localStorage.getItem(strLocalStorageCurrentLvl) == 4)
-      && (!sessionStorage.getItem('hide-intro-4'))){
+      && (!localStorage.getItem('hide-intro-4'))){
         let welcomeModal = document.querySelector('#welcome-lvl-modal')
         welcomeModal.querySelector('.modal-title').textContent = 'E precisava estar na UTI?'
         welcomeModal.querySelector('.modal-body > p').innerHTML = `Elas estão gostando do seu trabalho, viu?
@@ -547,10 +547,10 @@ class Prognosis {
         Pacientes podem ter a mesma doença de base e serem admitidos em contextos clínicos diferentes...`
 
         $('#welcome-lvl-modal').modal('show')
-        sessionStorage.setItem('hide-intro-4', true)
+        localStorage.setItem('hide-intro-4', true)
       }
       else if(document.querySelector('#welcome-lvl-modal') && (localStorage.getItem(strLocalStorageCurrentLvl) == 5)
-      && (!sessionStorage.getItem('hide-intro-5'))){
+      && (!localStorage.getItem('hide-intro-5'))){
         let welcomeModal = document.querySelector('#welcome-lvl-modal')
         welcomeModal.querySelector('.modal-title').textContent = 'Intuição vs Evidência'
         welcomeModal.querySelector('.modal-body > p').innerHTML = `Será que você valoriza as alterações certas? Aisa sim.
@@ -559,10 +559,10 @@ class Prognosis {
         Seu nome é atenção e você sabe o que procurar no seu paciente!`
 
         $('#welcome-lvl-modal').modal('show')
-        sessionStorage.setItem('hide-intro-5', true)
+        localStorage.setItem('hide-intro-5', true)
       }
       else if(document.querySelector('#welcome-lvl-modal') && (localStorage.getItem(strLocalStorageCurrentLvl) == 6)
-      && (!sessionStorage.getItem('hide-intro-6'))){
+      && (!localStorage.getItem('hide-intro-6'))){
         let welcomeModal = document.querySelector('#welcome-lvl-modal')
         welcomeModal.querySelector('.modal-title').textContent = 'Agora tá parecendo de verdade...'
         welcomeModal.querySelector('.modal-body > p').innerHTML = `Elas estão encantadas com você!
@@ -571,10 +571,10 @@ class Prognosis {
         <br><br>Siga aprendendo, estagiário! Assim você vai longe!`
 
         $('#welcome-lvl-modal').modal('show')
-        sessionStorage.setItem('hide-intro-6', true)
+        localStorage.setItem('hide-intro-6', true)
       }
       else if(document.querySelector('#welcome-lvl-modal') && (localStorage.getItem(strLocalStorageCurrentLvl) == 9)
-      && (!sessionStorage.getItem('hide-intro-9'))){
+      && (!localStorage.getItem('hide-intro-9'))){
         let welcomeModal = document.querySelector('#welcome-lvl-modal')
         welcomeModal.querySelector('.modal-title').textContent = 'Estamos chegando na reta final...'
         welcomeModal.querySelector('.modal-body > p').innerHTML = `E aí? Como você está se sentindo?
@@ -583,10 +583,10 @@ class Prognosis {
         sempre dá pra voltar na fase – opa, na referência! – e pensar: o que gerou mais impacto?`
 
         $('#welcome-lvl-modal').modal('show')
-        sessionStorage.setItem('hide-intro-9', true)
+        localStorage.setItem('hide-intro-9', true)
       }
       else if(document.querySelector('#welcome-lvl-modal') && (localStorage.getItem(strLocalStorageCurrentLvl) == 10)
-      && (!sessionStorage.getItem('hide-intro-10'))){
+      && (!localStorage.getItem('hide-intro-10'))){
         let welcomeModal = document.querySelector('#welcome-lvl-modal')
         welcomeModal.querySelector('.modal-title').textContent = 'Parabéns por ter chegado aqui!'
         welcomeModal.querySelector('.modal-body > p').innerHTML = `Olha, você superou todas as expectativas!
@@ -594,7 +594,7 @@ class Prognosis {
         Veja até onde chegou!<br><br>Feche com chave de ouro! Ninguém nasce pronto, mas você mostrou que veio com sede de saber! É disso que se precisa!`
 
         $('#welcome-lvl-modal').modal('show')
-        sessionStorage.setItem('hide-intro-10', true)
+        localStorage.setItem('hide-intro-10', true)
       }
     }
     if(new URL(document.location).pathname.includes('calculator') || new URL(document.location).pathname.includes('creation'))
