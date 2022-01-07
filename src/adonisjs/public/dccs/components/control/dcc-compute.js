@@ -3,6 +3,7 @@
 class DCCCompute extends DCCBase {
   constructor () {
     super()
+    this._completed = false
   }
 
   async connectedCallback () {
@@ -10,22 +11,51 @@ class DCCCompute extends DCCBase {
 
     this.update = this.update.bind(this)
 
+    if (this.hasAttribute('id')) {
+      this.computeStatus = this.computeStatus.bind(this)
+      this._subscribe('compute/status/' + this.id)
+    }
+
+    this._notifyCompleted = this.hasAttribute('id')
+
     this._compiled = null
     if (this.hasAttribute('expression')) {
       this._compiled =
         DCCCompute.compileStatementSet(this.expression.toLowerCase())
-      if (this._compiled != null && this.onload) {
-        await this.update()
-        if (this.active) {
-          const variables = DCCCompute.filterVariables(this._compiled, false)
-          for (let v of variables)
-            this._subscribe('var/set/' + v.replace(/\./g, '/'), this.update)
-        }
-      }
+      if (this.hasAttribute('dependency')) {
+        this.newExpressionUpdate = this.newExpressionUpdate.bind(this)
+        this._subscribe('compute/completed/' + this.dependency,
+                        this.newExpressionUpdate)
+      } else if (this._compiled != null && this.active)
+        await this.newExpressionUpdate()
     }
 
     if (this.hasAttribute('id'))
       this._provides(this.id, 'compute/update', this.update)
+  }
+
+  async disconnectedCallback() {
+    await this._unsubscribeVariables()
+  }
+
+  async _subscribeVariables () {
+    await this._unsubscribeVariables()
+    this._subsVariables = DCCCompute.filterVariables(this._compiled, false)
+    for (let v of this._subsVariables)
+      this._subscribe('var/set/' + v.replace(/\./g, '/'), this.update)
+  }
+
+  async _unsubscribeVariables () {
+    if (this._subsVariables != null) {
+      for (let v of this._subsVariables)
+        this._subscribe('var/set/' + v.replace(/\./g, '/'), this.update)
+      this._subsVariables = null
+    }
+  }
+
+  async newExpressionUpdate () {
+    await this.update()
+    await this._subscribeVariables()
   }
 
   /*
@@ -33,7 +63,8 @@ class DCCCompute extends DCCBase {
     */
 
   static get observedAttributes () {
-    return DCCBase.observedAttributes.concat(['expression', 'onload', 'active'])
+    return DCCBase.observedAttributes.concat(
+      ['expression', 'onload', 'active', 'dependency'])
   }
 
   get expression () {
@@ -42,6 +73,7 @@ class DCCCompute extends DCCBase {
 
   set expression (newValue) {
     this.setAttribute('expression', newValue)
+    this._newExpressionUpdate()
   }
 
   get onload () {
@@ -65,17 +97,36 @@ class DCCCompute extends DCCBase {
     }
   }
 
+  get dependency () {
+    return this.getAttribute('dependency')
+  }
+
+  set dependency (newValue) {
+    this.setAttribute('dependency', newValue)
+  }
+
   notify (topic, message) {
     if (topic.toLowerCase() == 'update')
       this.update()
   }
 
   async update () {
-    const result = await DCCCompute.computeExpression(this._compiled, this._bus)
-    if (result)
+    const result = await DCCCompute.computeExpression(
+      this._compiled, this._bus)
+    if (result) {
+      this._completed = true
       await this.multiRequest('true', null)
-    else
+      if (this._notifyCompleted) {
+        this._notifyCompleted = false
+        await this._publish('compute/completed/' + this.id)
+      }
+    } else
       await this.multiRequest('false', null)
+  }
+
+  computeStatus () {
+    if (this._completed)
+      this.publish('compute/completed/' + this.id)
   }
 
   async connectionReady (id, topic) {
