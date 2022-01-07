@@ -1188,6 +1188,7 @@ class Translator {
     */
   generateKnotHTML (content, superseq) {
     const ss = (superseq) || -1
+    this._lastCompute = null  // last element on the compute dependency chain
     let preDoc = ''
     let html = ''
     const preDocSet = ['text', 'text-block', 'script', 'field',
@@ -2489,6 +2490,8 @@ class Translator {
     */
   _computeObjToHTML (obj) {
     let compute
+    const dependency = (this._lastCompute != null)
+      ? (' dependency="' + this._lastCompute + '"') : ''
     if (obj.conditional) {
       const timer = obj.expression.match(/timer[ \t]*=[ \t]*(\d+)/im)
       if (timer != null && timer[1]) {
@@ -2497,20 +2500,26 @@ class Translator {
           .replace(/\[to\]/igm, (obj.seq+1))
       } else {
         compute = Translator.htmlTemplates.compute
+          .replace('[seq]', obj.seq)
           .replace('[expression]', obj.expression)
+          .replace('[dependency]', dependency)
           .replace('[connect]', ' connect="true:dcc' + (obj.seq+1) +
                    ':style/display/initial"')
         compute += Translator.htmlTemplates.compute
+          .replace('[seq]', obj.seq)
           .replace('[expression]', obj.expression)
+          .replace('[dependency]', dependency)
           .replace('[connect]', ' connect="false:dcc' + (obj.seq+1) +
                    ':style/display/none"')
       }
       this._conditionNext = obj.seq + 1
     } else
       compute = Translator.htmlTemplates.compute
+                  .replace('[seq]', obj.seq)
                   .replace('[expression]', obj.expression)
+                  .replace('[dependency]', dependency)
                   .replace('[connect]', '')
-
+    this._lastCompute = 'dcc' + obj.seq
     return compute
   }
 
