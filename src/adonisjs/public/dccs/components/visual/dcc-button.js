@@ -113,7 +113,8 @@ class DCCButton extends DCCBlock {
     // === presentation setup (DCC Block)
     await this._applyRender(html,
       (this._xstyle == 'out-image') ? 'title' : 'innerHTML', null, null,
-      (this.xstyle && this.xstyle == 'in') ? true : false)
+      true)
+      // (this.xstyle && this.xstyle == 'in') ? true : false)
 
     // === post presentation setup
     // <TODO> provisory

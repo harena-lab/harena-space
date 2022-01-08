@@ -3,6 +3,11 @@
 ## Plugins CDN - jsDelivr
 https://www.jsdelivr.com
 
+## Showdown
+
+* version 1.9.1
+  https://www.jsdelivr.com/package/npm/showdown
+
 ## Blockly
 
 ### Library
