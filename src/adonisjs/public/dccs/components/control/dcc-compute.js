@@ -312,7 +312,7 @@ class DCCCompute extends DCCBase {
   static filterAssignedVariables (compiledSet) {
     let variables = []
     for (let s of compiledSet)
-      if (s[0] != null && !varibles.include(s[0]))
+      if (s[0] != null && !variables.includes(s[0]))
         variables.push(s[0])
     return variables
   }
