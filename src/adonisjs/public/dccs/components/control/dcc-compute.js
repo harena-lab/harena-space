@@ -13,21 +13,25 @@ class DCCCompute extends DCCBase {
 
     if (this.hasAttribute('id')) {
       this.computeStatus = this.computeStatus.bind(this)
-      this._subscribe('compute/status/' + this.id)
+      this._subscribe('compute/status/' + this.id, this.computeStatus)
     }
 
     this._notifyCompleted = this.hasAttribute('id')
+
+    this._condition = (this.hasAttribute('condition'))
+      ? DCCCompute.compileStatementSet(this.condition.toLowerCase()) : null
 
     this._compiled = null
     if (this.hasAttribute('expression')) {
       this._compiled =
         DCCCompute.compileStatementSet(this.expression.toLowerCase())
       if (this.hasAttribute('dependency')) {
-        this.newExpressionUpdate = this.newExpressionUpdate.bind(this)
+        this._dependencyCompleted = this._dependencyCompleted.bind(this)
         this._subscribe('compute/completed/' + this.dependency,
-                        this.newExpressionUpdate)
+                        this._dependencyCompleted)
+        this._publish('compute/status/' + this.dependency)
       } else if (this._compiled != null && this.active)
-        await this.newExpressionUpdate()
+        await this._newExpressionUpdate()
     }
 
     if (this.hasAttribute('id'))
@@ -36,6 +40,7 @@ class DCCCompute extends DCCBase {
 
   async disconnectedCallback() {
     await this._unsubscribeVariables()
+    this._unsubscribe('compute/status/' + this.id, this.computeStatus)
   }
 
   async _subscribeVariables () {
@@ -53,7 +58,13 @@ class DCCCompute extends DCCBase {
     }
   }
 
-  async newExpressionUpdate () {
+  _dependencyCompleted () {
+    this._unsubscribe('compute/completed/' + this.dependency,
+                      this._dependencyCompleted)
+    this._newExpressionUpdate()
+  }
+
+  async _newExpressionUpdate () {
     await this.update()
     await this._subscribeVariables()
   }
@@ -64,7 +75,17 @@ class DCCCompute extends DCCBase {
 
   static get observedAttributes () {
     return DCCBase.observedAttributes.concat(
-      ['expression', 'onload', 'active', 'dependency'])
+      ['condition', 'expression', 'active', 'dependency'])
+  }
+
+  get condition () {
+    return this.getAttribute('condition')
+  }
+
+  set condition (newValue) {
+    this.setAttribute('condition', newValue)
+    this._condition = (newValue != null)
+      ? DCCCompute.compileStatementSet(newValue.toLowerCase()) : null
   }
 
   get expression () {
@@ -73,15 +94,9 @@ class DCCCompute extends DCCBase {
 
   set expression (newValue) {
     this.setAttribute('expression', newValue)
+    this._compiled = (newValue != null)
+      ? DCCCompute.compileStatementSet(newValue.toLowerCase()) : null
     this._newExpressionUpdate()
-  }
-
-  get onload () {
-    return this.hasAttribute('onload')
-  }
-
-  set onload (isOnload) {
-    if (isOnload) { this.setAttribute('onload', '') } else { this.removeAttribute('onload') }
   }
 
   // defines if the display is activelly updated
@@ -111,17 +126,20 @@ class DCCCompute extends DCCBase {
   }
 
   async update () {
-    const result = await DCCCompute.computeExpression(
-      this._compiled, this._bus)
-    if (result) {
-      this._completed = true
-      await this.multiRequest('true', null)
-      if (this._notifyCompleted) {
-        this._notifyCompleted = false
-        await this._publish('compute/completed/' + this.id)
-      }
-    } else
-      await this.multiRequest('false', null)
+    if (this._condition == null ||
+        await DCCCompute.computeExpression(this._condition, this._bus)) {
+      const result = await DCCCompute.computeExpression(
+        this._compiled, this._bus)
+      if (result)
+        await this.multiRequest('true', null)
+      else
+        await this.multiRequest('false', null)
+    }
+    this._completed = true
+    if (this._notifyCompleted) {
+      this._notifyCompleted = false
+      await this._publish('compute/completed/' + this.id)
+    }
   }
 
   computeStatus () {
@@ -359,6 +377,7 @@ class DCCCompute extends DCCBase {
               case '*': stack.push(a * b); break
               case '/': stack.push(a / b); break
               case '^': stack.push(Math.pow(a, b)); break
+              case '=': stack.push(a == b); break;
               case '>': stack.push(a > b); break;
               case '<': stack.push(a < b); break;
               case '>=': stack.push(a >= b); break;
