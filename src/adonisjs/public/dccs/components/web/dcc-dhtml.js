@@ -31,6 +31,10 @@ class DCCDHTML extends DCCBase {
 
     this._renderHTML()
 
+    if (this.innerHTML.length > 0) {
+      this._originalHTML = this.innerHTML
+      this.innerHTML = ''
+    }
     this._observer = new MutationObserver(this._contentUpdated)
     this._observer.observe(this,
                            {attributes: true, childList: true, subtree: true})
@@ -104,11 +108,13 @@ class DCCDHTML extends DCCBase {
         const vhtml = eachBlocks[part+2].split(/(?:<!--[ \t]*)?\{\{[ \t]*@endfor[ \t]*\}\}(?:[ \t]*-->)?/im)
         const phtml = this._replaceFields(vhtml[0], '', record)
         if (phtml.includes('{{')) {
-          const it = (field == '.') ? record : record[field]
-          for (let i of it)
-            html += this._replaceFields(
-              // phtml, item, i)
-              phtml, (field == '.') ? item : item + '.' + field, i)
+          const it = (record != null) ? ((field == '.') ? record : record[field]) : null
+          if (it != null && typeof it[Symbol.iterator] === 'function') { // check if it is iterable
+            for (let i of it)
+              html += this._replaceFields(
+                phtml, item, i)
+                // phtml, (field == '.') ? item : item + '.' + field, i)
+          }
         }
         if (vhtml.length > 1)
           html += this._replaceFields(vhtml[1], '', record)
