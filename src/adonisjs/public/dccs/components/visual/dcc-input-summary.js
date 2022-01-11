@@ -38,8 +38,25 @@ class DCCInputSummary extends DCCVisual {
   _presentValue (value) {
     let html = ''
     if (Array.isArray(value)) {
-      for (const a in value)
-        html += this._presentValue(value[a]) + ((a < value.length-1) ? '; ' : '')
+      if ((typeof value[0] === 'string' || value[0] instanceof String) &&
+          (value[0].endsWith(':false') || value[0].endsWith(':true'))) {
+        let result = ''
+        html += '<table>'
+        for (const a in value) {
+          const v = value[a].substring(value[a].lastIndexOf(':') + 1)
+          html += '<tr><td style="border: 1px solid darkgray">' +
+                  value[a].substring(0, value[a].lastIndexOf(':')) +
+                  '<td style="border: 1px solid darkgray; color:' +
+                  ((v == 'true') ? 'blue' : 'red') + '">' + v + '<td></tr>'
+        }
+        html += '</table>'
+      } else {
+        html += '<table>'
+        for (const a in value)
+          html += '<tr><td style="border: 1px solid darkgray">' +
+                  this._presentValue(value[a]) + '<td></tr>'
+        html += '</table>'
+      }
     } else if (typeof value === 'object') {
       html += '['
       const ov = Object.values(value)
@@ -48,9 +65,11 @@ class DCCInputSummary extends DCCVisual {
       html += ']'
     } else if (value.endsWith(':false') || value.endsWith(':true')) {
       const v = value.substring(value.lastIndexOf(':') + 1)
-      html = value.substring(0, value.lastIndexOf(':')) +
-             '<td style="border: 1px solid darkgray; color:' +
-             ((v == 'true') ? 'blue' : 'red') + '">' + v + '</td>'
+      html = '<table><tr><td style="border: 1px solid darkgray">' +
+             value.substring(0, value.lastIndexOf(':')) +
+             '</td><td style="border: 1px solid darkgray; color:' +
+             ((v == 'true') ? 'blue' : 'red') + '">' + v + '</td>' +
+             '<tr></table>'
     } else
       html = value
     return html
