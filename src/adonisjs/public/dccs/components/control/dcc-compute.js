@@ -34,13 +34,20 @@ class DCCCompute extends DCCBase {
         await this._newExpressionUpdate()
     }
 
-    if (this.hasAttribute('id'))
+    if (this.hasAttribute('id')) {
       this._provides(this.id, 'compute/update', this.update)
+      this.calculate = this.calculate.bind(this)
+      this._provides(this.id, 'compute/calculate', this.calculate)
+    }
   }
 
   async disconnectedCallback() {
     await this._unsubscribeVariables()
     this._unsubscribe('compute/status/' + this.id, this.computeStatus)
+    if (this.hasAttribute('id')) {
+      this._withhold(this.id, 'compute/update')
+      this._withhold(this.id, 'compute/calculate')
+    }
   }
 
   async _subscribeVariables () {
@@ -145,6 +152,10 @@ class DCCCompute extends DCCBase {
   computeStatus () {
     if (this._completed)
       this.publish('compute/completed/' + this.id)
+  }
+
+  async calculate () {
+    return await DCCCompute.computeExpression(this._compiled, this._bus, true)
   }
 
   async connectionReady (id, topic) {
@@ -287,19 +298,27 @@ class DCCCompute extends DCCBase {
 
   /*
    * Computes a set of expressions, updating variables.
-   * It returns the value of the last variable.
+   * It returns the value of the last variable as default.
+   * - allResults: indicates that all results will be returned
    */
-  static async computeExpression (compiledSet, bus) {
-    let result = null
+  static async computeExpression (compiledSet, bus, allResults) {
+    let result = (allResults) ? {} : null
     for (let s of compiledSet) {
       await DCCCompute.updateVariables(s[1], bus)
+      const r = DCCCompute.computeCompiled(s[1])
       if (s[0] != null) {
-        result = DCCCompute.computeCompiled(s[1])
+        if (allResults)
+          result[s[0]] = r
+        else
+          result = r
         let cBus = (bus != null) ? bus : MessageBus.i
         await cBus.request('var/set/' + s[0].replace(/\./g, '/'),
-                           result, null, true)
+                           r, null, true)
       } else if (compiledSet.length == 1) {
-        result = DCCCompute.computeCompiled(s[1])
+        if (allResults)
+          result['value'] = r
+        else
+          result = r
         // looks for a variable inside the expression
         /*
         if (autoAssign) {

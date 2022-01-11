@@ -66,8 +66,6 @@ class ReportManager {
   }
 
   _presentValue (value) {
-    console.log('=== present value')
-    console.log(value)
     let html = ''
     if (Array.isArray(value)) {
       if ((typeof value[0] === 'string' || value[0] instanceof String) &&
