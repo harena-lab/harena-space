@@ -219,6 +219,15 @@ class MessageBus {
   }
 
   /*
+   * Removes a provided service (usually when the component is destroyed)
+   */
+  withhold (id, topic) {
+    const key = id + ':' + topic
+    if (this._providers[key])
+      delete this._providers[key]
+  }
+
+  /*
    * Connects a component to another one based on the id and a topic (service).
    *   id: id of the component that offers the service
    *   topic: topic related to the provided service
