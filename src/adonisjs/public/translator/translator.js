@@ -875,13 +875,30 @@ class Translator {
     }
 
     // twelfth cycle - attach conditions to conditioned
+    let inCondition = false
     for (let c = 0; c < compiled.length; c++) {
-      if (compiled[c].type == 'condition' && c < compiled.length - 1 &&
-          compiled[c+1].type == 'compute') {
-        compiled[c+1].condition = compiled[c].expression
-        compiled[c+1]._source = compiled[c]._source + compiled[c+1]._source
-        compiled.splice(c, 1)
-        c--
+      const nx = (c+2 < compiled.length && compiled[c+1].type == 'linefeed')
+                 ? c + 2 : c + 1
+      if (((compiled[c].type != 'linefeed' && !compiled[c].subordinate) ||
+          c+1 == compiled.length) && inCondition) {
+        const pos = (compiled[c].subordinate) ? c+1 : c
+        compiled.splice(pos, 0,
+                        {type: 'condition-close',
+                         seq: pos+1,
+                         _source: ''})
+        c++
+        inCondition = false
+      }
+      if (compiled[c].type == 'condition') {
+        if (compiled[nx].type == 'compute') {
+          compiled[nx].condition = compiled[c].expression
+          compiled[nx]._source = compiled[c]._source + compiled[c+1]._source +
+            ((nx-c == 2) ? compiled[nx]._source : '')
+          compiled.splice(c, nx-c)
+        } else {
+          compiled[c].type = 'condition-open'
+          inCondition = true
+        }
       }
       if (c >= 0) { compiled[c].seq = c + 1 }
     }
@@ -1283,6 +1300,8 @@ class Translator {
         // case "talk-close": html = this._talkcloseObjToHTML(obj); break;
         case 'input' : html = this._inputObjToHTML(obj); break
         case 'output' : html = this._outputObjToHTML(obj); break
+        case 'condition-open': html = this._conditionOpenObjToHTML(obj); break
+        case 'condition-close': html = this._conditionCloseObjToHTML(obj); break
         case 'compute' :
           html = this._computeObjToHTML(obj, superseq); break
         case 'context-open' : // html = this._selctxopenObjToHTML(obj); break;
@@ -2480,6 +2499,26 @@ class Translator {
     }
 
     return condition
+  }
+
+  /*
+   * Condition Open Obj to HTML
+   */
+  _conditionOpenObjToHTML (obj) {
+    return (this.authoringRender) ? '' :
+      Translator.htmlTemplates.conditionOpen
+        .replace(/\[seq\]/gm, obj.seq)
+        .replace('[condition]', obj.expression)
+        .replace('[dependency]',
+          (this._lastCompute != null)
+            ? (' dependency="' + this._lastCompute + '"') : '')
+  }
+
+  /*
+   * Condition Close Obj to HTML
+   */
+  _conditionCloseObjToHTML (obj) {
+    return (this.authoringRender) ? '' : Translator.htmlTemplates.conditionClose
   }
 
   /*

@@ -105,9 +105,6 @@ class DCCDHTML extends DCCBase {
       if (part < ifBlocks.length) {
         const vhtml = ifBlocks[part+1]
           .split(/(?:<!--[ \t]*)?\{\{[ \t]*@endif[ \t]*\}\}(?:[ \t]*-->)?/im)
-        console.log('=== if')
-        console.log(ifBlocks[part])
-        console.log(record)
         if (record[ifBlocks[part]] && record[ifBlocks[part]] == true)
           html += vhtml[0]
         html += vhtml[1]

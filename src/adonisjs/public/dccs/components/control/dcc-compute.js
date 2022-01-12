@@ -3,7 +3,7 @@
 class DCCCompute extends DCCBase {
   constructor () {
     super()
-    this._completed = false
+    this._updated = false
   }
 
   async connectedCallback () {
@@ -16,8 +16,6 @@ class DCCCompute extends DCCBase {
       this._subscribe('compute/status/' + this.id, this.computeStatus)
     }
 
-    this._notifyCompleted = this.hasAttribute('id')
-
     this._condition = (this.hasAttribute('condition'))
       ? DCCCompute.compileStatementSet(this.condition.toLowerCase()) : null
 
@@ -27,7 +25,7 @@ class DCCCompute extends DCCBase {
         DCCCompute.compileStatementSet(this.expression.toLowerCase())
       if (this.hasAttribute('dependency')) {
         this._dependencyCompleted = this._dependencyCompleted.bind(this)
-        this._subscribe('compute/completed/' + this.dependency,
+        this._subscribe('compute/updated/' + this.dependency,
                         this._dependencyCompleted)
         this._publish('compute/status/' + this.dependency)
       } else if (this._compiled != null && this.active)
@@ -66,7 +64,7 @@ class DCCCompute extends DCCBase {
   }
 
   _dependencyCompleted () {
-    this._unsubscribe('compute/completed/' + this.dependency,
+    this._unsubscribe('compute/updated/' + this.dependency,
                       this._dependencyCompleted)
     this._newExpressionUpdate()
   }
@@ -133,25 +131,23 @@ class DCCCompute extends DCCBase {
   }
 
   async update () {
+    let result = null
     if (this._condition == null ||
         await DCCCompute.computeExpression(this._condition, this._bus)) {
-      const result = await DCCCompute.computeExpression(
-        this._compiled, this._bus)
-      if (result)
+      result = await DCCCompute.computeExpression(
+        this._compiled, this._bus, true)
+      if (result._final)
         await this.multiRequest('true', null)
       else
         await this.multiRequest('false', null)
     }
-    this._completed = true
-    if (this._notifyCompleted) {
-      this._notifyCompleted = false
-      await this._publish('compute/completed/' + this.id)
-    }
+    this._updated = true
+    await this._publish('compute/updated/' + this.id, result)
   }
 
   computeStatus () {
-    if (this._completed)
-      this.publish('compute/completed/' + this.id)
+    if (this._updated)
+      this.publish('compute/updated/' + this.id)
   }
 
   async calculate () {
@@ -262,7 +258,8 @@ class DCCCompute extends DCCBase {
             stack.push([matchContent, DCCCompute.precedence[matchContent]])
             break
           case 'closeParentheses':
-            while (stack.length > 0 && stack[stack.length - 1][0] != '(') { compiled.push([DCCCompute.role.operator, stack.pop()[0]]) }
+            while (stack.length > 0 && stack[stack.length - 1][0] != '(')
+              compiled.push([DCCCompute.role.operator, stack.pop()[0]])
             if (stack.length > 0) {
               stack.pop()
               if (stack.length > 0 && stack[stack.length - 1][1] ==
@@ -302,23 +299,20 @@ class DCCCompute extends DCCBase {
    * - allResults: indicates that all results will be returned
    */
   static async computeExpression (compiledSet, bus, allResults) {
-    let result = (allResults) ? {} : null
+    let result = null
+    let all = {}
     for (let s of compiledSet) {
       await DCCCompute.updateVariables(s[1], bus)
       const r = DCCCompute.computeCompiled(s[1])
       if (s[0] != null) {
-        if (allResults)
-          result[s[0]] = r
-        else
-          result = r
+        all[s[0]] = r
+        result = r
         let cBus = (bus != null) ? bus : MessageBus.i
         await cBus.request('var/set/' + s[0].replace(/\./g, '/'),
                            r, null, true)
       } else if (compiledSet.length == 1) {
-        if (allResults)
-          result['value'] = r
-        else
-          result = r
+        all['value'] = r
+        result = r
         // looks for a variable inside the expression
         /*
         if (autoAssign) {
@@ -328,6 +322,10 @@ class DCCCompute extends DCCBase {
         }
         */
       }
+    }
+    if (allResults) {
+      all._final = result
+      result = all
     }
     return result
   }
@@ -425,6 +423,9 @@ class DCCCompute extends DCCBase {
           case 'random':
             stack.push(Math.floor(Math.random() * (stack.pop()+1)))
             break
+          case 'abs':
+            stack.push(Math.abs(stack.pop()))
+            break
         }
       }
     }
@@ -444,6 +445,7 @@ class DCCCompute extends DCCBase {
   }
 
   DCCCompute.precedence = {
+    '(': 0,
     'or': 1,
     'and': 2,
     '=': 3,
@@ -458,8 +460,7 @@ class DCCCompute extends DCCBase {
     '*': 5,
     '^': 6,
     'not': 7,
-    function: 8,
-    '(': 9
+    function: 8
   }
 
   DCCCompute.element = {
