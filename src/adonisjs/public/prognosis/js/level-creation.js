@@ -923,6 +923,9 @@ class LevelCreationTool {
     let radioTemp = document.querySelector(`#${template.content.firstElementChild.id}`)
     radioTemp.dataset.deconstructible = 'true'
 
+    if(optionsList.length == 1){
+      radioTemp.querySelector('option').remove()
+    }
     obj.prependTxt = obj.parentElement.querySelector('.input-group-prepend')
     obj.prependTxt.copy = document.createElement('label')
     obj.prependTxt.copy.classList.add('input-group-text')
@@ -937,7 +940,7 @@ class LevelCreationTool {
       let value = optionsList[z].innerText
       //Check if select list must include id (because of complex values. e.g.(id'bilirrubina' value'3-4'), instead of just 'bilirrubina')
       if(includeParent && valueText){
-        const selectList = document.querySelector("#" + keyId)
+        let selectList = document.querySelector("#" + keyId)
         let option = document.createElement('option')
         option.value = value
 
@@ -959,7 +962,7 @@ class LevelCreationTool {
         }
 
       }else{
-        const selectList = document.querySelector("#" + keyId)
+        let selectList = document.querySelector("#" + keyId)
         let option = document.createElement('option')
 
         if(value == 'Sim' || value == 'Não'){
