@@ -23,7 +23,8 @@ class PlayState {
       history: [],
       parameter: null,
       nextKnot: 1,
-      completed: false
+      completed: false,
+      flow: null
     }
 
     this._metastate = {}
@@ -35,6 +36,19 @@ class PlayState {
     MessageBus.i.subscribe('var/get/#', this.variableGet)
     this.variableSet = this.variableSet.bind(this)
     MessageBus.i.subscribe('var/set/#', this.variableSet)
+  }
+
+  /*
+   * Properties
+   */
+
+  // <TODO> Provisory - bring all flow dynamics to here
+  get flow() {
+    return this._state.flow
+  }
+
+  set flow(newFlow) {
+    this._state.flow = newFlow
   }
 
   /*
@@ -53,7 +67,7 @@ class PlayState {
 
   sessionRecord (topic) {
     this._state.userid = MessageBus.extractLevel(topic, 3)
-    this._stateStore()
+    // this._stateStore()
   }
 
   sessionCompleted () {
@@ -63,7 +77,7 @@ class PlayState {
 
   pendingPlayCheck () {
     const state = this._stateRetrieve()
-    return (state != null)
+    return (state != null && !state.completed) ? state : null
   }
 
   pendingPlayId () {
@@ -74,7 +88,8 @@ class PlayState {
   pendingPlayRestore () {
     let currentKnot = null
     this._state = this._stateRetrieve()
-    if (this._state.history.length > 0) { currentKnot = this._state.history[this._state.history.length - 1] }
+    if (this._state.history.length > 0) {
+      currentKnot = this._state.history[this._state.history.length - 1] }
     return currentKnot
   }
 
