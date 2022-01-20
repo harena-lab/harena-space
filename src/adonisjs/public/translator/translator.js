@@ -874,7 +874,36 @@ class Translator {
         compiled[c].render = false
     }
 
-    // twelfth cycle - update formal annotations
+    // twelfth cycle - attach conditions to conditioned
+    let inCondition = false
+    for (let c = 0; c < compiled.length; c++) {
+      const nx = (c+2 < compiled.length && compiled[c+1].type == 'linefeed')
+                 ? c + 2 : c + 1
+      if (((compiled[c].type != 'linefeed' && !compiled[c].subordinate) ||
+          c+1 == compiled.length) && inCondition) {
+        const pos = (compiled[c].subordinate) ? c+1 : c
+        compiled.splice(pos, 0,
+                        {type: 'condition-close',
+                         seq: pos+1,
+                         _source: ''})
+        c++
+        inCondition = false
+      }
+      if (compiled[c].type == 'condition') {
+        if (compiled[nx].type == 'compute') {
+          compiled[nx].condition = compiled[c].expression
+          compiled[nx]._source = compiled[c]._source + compiled[c+1]._source +
+            ((nx-c == 2) ? compiled[nx]._source : '')
+          compiled.splice(c, nx-c)
+        } else {
+          compiled[c].type = 'condition-open'
+          inCondition = true
+        }
+      }
+      if (c >= 0) { compiled[c].seq = c + 1 }
+    }
+
+    // thirteenth cycle - update formal annotations
     // <TODO> provisory update of formal annotations - both processes will be merged
     let formalOpen = null
     for (let c = 0; c < compiled.length; c++) {
@@ -1095,6 +1124,7 @@ class Translator {
         // case "talk-close": obj = this._talkcloseMdToObj(match); break;
       case 'input' : obj = this._inputMdToObj(match); break
       case 'output' : obj = this._outputMdToObj(match); break
+      case 'condition' : obj = this._conditionMdToObj(match); break
       case 'compute' : obj = this._computeMdToObj(match); break
         // <TODO> provisory: annotation recognition is duplicated to support code generation
       case 'annotation' : obj = this._annotationMdToObj(match); break
@@ -1270,6 +1300,8 @@ class Translator {
         // case "talk-close": html = this._talkcloseObjToHTML(obj); break;
         case 'input' : html = this._inputObjToHTML(obj); break
         case 'output' : html = this._outputObjToHTML(obj); break
+        case 'condition-open': html = this._conditionOpenObjToHTML(obj); break
+        case 'condition-close': html = this._conditionCloseObjToHTML(obj); break
         case 'compute' :
           html = this._computeObjToHTML(obj, superseq); break
         case 'context-open' : // html = this._selctxopenObjToHTML(obj); break;
@@ -2458,8 +2490,40 @@ class Translator {
   }
 
   /*
-    * Compute Md to Obj
-    */
+   * Condition Md to Obj
+   */
+  _conditionMdToObj (matchArray) {
+    const condition = {
+      type: 'condition',
+      expression: matchArray[1].trim()
+    }
+
+    return condition
+  }
+
+  /*
+   * Condition Open Obj to HTML
+   */
+  _conditionOpenObjToHTML (obj) {
+    return (this.authoringRender) ? '' :
+      Translator.htmlTemplates.conditionOpen
+        .replace(/\[seq\]/gm, obj.seq)
+        .replace('[condition]', obj.expression)
+        .replace('[dependency]',
+          (this._lastCompute != null)
+            ? (' dependency="' + this._lastCompute + '"') : '')
+  }
+
+  /*
+   * Condition Close Obj to HTML
+   */
+  _conditionCloseObjToHTML (obj) {
+    return (this.authoringRender) ? '' : Translator.htmlTemplates.conditionClose
+  }
+
+  /*
+   * Compute Md to Obj
+   */
   _computeMdToObj (matchArray) {
     const compute = {
       type: 'compute',
@@ -2492,6 +2556,8 @@ class Translator {
     let compute
     const dependency = (this._lastCompute != null)
       ? (' dependency="' + this._lastCompute + '"') : ''
+    const condition = (obj.condition != null)
+      ? (' condition="' + obj.condition + '"') : ''
     if (obj.conditional) {
       const timer = obj.expression.match(/timer[ \t]*=[ \t]*(\d+)/im)
       if (timer != null && timer[1]) {
@@ -2502,12 +2568,14 @@ class Translator {
         compute = Translator.htmlTemplates.compute
           .replace('[seq]', obj.seq)
           .replace('[expression]', obj.expression)
+          .replace('[condition]', condition)
           .replace('[dependency]', dependency)
           .replace('[connect]', ' connect="true:dcc' + (obj.seq+1) +
                    ':style/display/initial"')
         compute += Translator.htmlTemplates.compute
           .replace('[seq]', obj.seq)
           .replace('[expression]', obj.expression)
+          .replace('[condition]', condition)
           .replace('[dependency]', dependency)
           .replace('[connect]', ' connect="false:dcc' + (obj.seq+1) +
                    ':style/display/none"')
@@ -2517,6 +2585,7 @@ class Translator {
       compute = Translator.htmlTemplates.compute
                   .replace('[seq]', obj.seq)
                   .replace('[expression]', obj.expression)
+                  .replace('[condition]', condition)
                   .replace('[dependency]', dependency)
                   .replace('[connect]', '')
     this._lastCompute = 'dcc' + obj.seq
@@ -2659,10 +2728,11 @@ class Translator {
   Translator.marksKnotTitle = /((?:^[ \t]*(?:#+)[ \t]*(?:[^\( \t\n\r\f][^\(\n\r\f]*)(?:\((?:\w[\w \t,]*)\))?(?:\:[ \t]*[^\(\n\r\f][^\(\n\r\f\t]*)?[ \t]*#*[ \t]*$)|(?:^[ \t]*(?:[^\( \t\n\r\f][^\(\n\r\f]*)(?:\((?:\w[\w \t,]*)\))?(?:\:[ \t]*[^\(\n\r\f][^\(\n\r\f\t]*)?[ \t]*[\f\n\r][\n\r]?(?:==+|--+)$))/igm
 
   Translator.fragment = {
-    // compute: '~[ \\t]*(\\w+)?[ \\t]*([+\\-*/=])[ \\t]*(\\d+(?:\\.\\d+)?)',
-    compute: '~[ \\t]*([\\w+\\-*/=:<>\\.\\(\\) \\t]+)(\\?)?',
+    expression: '([\\w+\\-*/=:<>\\.\\(\\) \\t]+)(\\?)?',
     option: '^[ \\t]*([\\+\\*])[ \\t]+((?:[^<\\n\\r\\f]|<(?!-))*)?((?:(?:(?:&lt;)|<)?-(?:(?:&gt;)|>))|(?:\\(-\\)))[ \\t]*([^">~\\n\\r\\f(]+)(?:"([^"\\n\\r\\f]*)")?[ \\t]*(?:(\\>)?\\(\\(([^)]*)\\)\\))?(\\?)?[ \\t]*'
   }
+
+  Translator.fragment.compute = '~[ \\t]*' + Translator.fragment.expression
 
   Translator.element = {
     knot: {
@@ -2722,9 +2792,11 @@ class Translator {
       mark: /\^([\w \t\.]+)(?:\[([\w \t]+)\])?(?:\(([\w \t]+)\))?\^/im,
       inline: true
     },
+    condition: {
+      mark: new RegExp('\\$[ \\t]*\\(' + Translator.fragment.expression + '\\)[ \\t]*', 'im')
+    },
     compute: {
       mark: new RegExp(Translator.fragment.compute + '$', 'im')
-      // mark: /~[ \t]*(\w+)?[ \t]*([+\-*/=])[ \t]*(\d+(?:\.\d+)?)$/im
     },
     'context-open': {
       mark: /\{\{(?:([^\:\n\r\f]+)\:)?([\w \t\+\-\*\."=%]+)?(?:@(\w+))?(?:\/((?:\w+\:)?\w+)(?:[ \t]+((?:\w+\:)?\w+))?\/)?$/im

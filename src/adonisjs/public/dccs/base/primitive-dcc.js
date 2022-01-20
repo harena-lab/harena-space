@@ -53,6 +53,10 @@ class PrimitiveDCC extends HTMLElement {
     this._bus.provides(id, topic, service)
   }
 
+  _withhold (id, topic) {
+    this._bus.withhold(id, topic)
+  }
+
   _connect (id, topic, callback) {
     this._bus.connect(id, topic, callback)
   }

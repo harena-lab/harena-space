@@ -11,10 +11,6 @@ class DCCLoggerManager extends DCCLight {
 
   async _notifyLogger (topic, message, track) {
     if (track) {
-      console.log('=== logger DCC: ' + topic)
-      console.log(message)
-
-      console.log('========== creating logger ==========')
       let logger = await MessageBus.i.request('logger/create/post',
         {
           caseId: message.caseId,

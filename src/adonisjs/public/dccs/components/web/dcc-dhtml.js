@@ -31,6 +31,10 @@ class DCCDHTML extends DCCBase {
 
     this._renderHTML()
 
+    if (this.innerHTML.length > 0) {
+      this._originalHTML = this.innerHTML
+      this.innerHTML = ''
+    }
     this._observer = new MutationObserver(this._contentUpdated)
     this._observer.observe(this,
                            {attributes: true, childList: true, subtree: true})
@@ -76,9 +80,10 @@ class DCCDHTML extends DCCBase {
     let html = this._originalHTML
     if (html != null) {
       if (this._record != null) {
-        if (typeof this._record === 'object')
+        if (typeof this._record === 'object') {
+          html = this._replaceIf(html, this._record)
           html = this._replaceEach(html, this._record)
-        else
+        } else
           html = html.replace(/\{\{[ \t]*value[ \t]*\}\}/igm, this._record)
       }
       this._dhtmlRender.innerHTML = html.replace(/\{\{[^}]*\}\}/igm, '')
@@ -87,6 +92,26 @@ class DCCDHTML extends DCCBase {
       this._ready = true
       this._publish('control/dhtml/ready')
     }
+  }
+
+  _replaceIf (html, record) {
+    const ifBlocks = html.split(
+      /(?:<!--[ \t]*)?\{\{[ \t]*@if[ \t]+([^ \t]+)[ \t]*\}\}(?:[ \t]*-->)?/im)
+    let part = 0
+    html = ''
+    while (part < ifBlocks.length) {
+      html += ifBlocks[part]
+      part++
+      if (part < ifBlocks.length) {
+        const vhtml = ifBlocks[part+1]
+          .split(/(?:<!--[ \t]*)?\{\{[ \t]*@endif[ \t]*\}\}(?:[ \t]*-->)?/im)
+        if (record[ifBlocks[part]] && record[ifBlocks[part]] == true)
+          html += vhtml[0]
+        html += vhtml[1]
+        part += 2
+      }
+    }
+    return html
   }
 
   _replaceEach (html, record) {
@@ -104,11 +129,13 @@ class DCCDHTML extends DCCBase {
         const vhtml = eachBlocks[part+2].split(/(?:<!--[ \t]*)?\{\{[ \t]*@endfor[ \t]*\}\}(?:[ \t]*-->)?/im)
         const phtml = this._replaceFields(vhtml[0], '', record)
         if (phtml.includes('{{')) {
-          const it = (field == '.') ? record : record[field]
-          for (let i of it)
-            html += this._replaceFields(
-              // phtml, item, i)
-              phtml, (field == '.') ? item : item + '.' + field, i)
+          const it = (record != null) ? ((field == '.') ? record : record[field]) : null
+          if (it != null && typeof it[Symbol.iterator] === 'function') { // check if it is iterable
+            for (let i of it)
+              html += this._replaceFields(
+                phtml, item, i)
+                // phtml, (field == '.') ? item : item + '.' + field, i)
+          }
         }
         if (vhtml.length > 1)
           html += this._replaceFields(vhtml[1], '', record)
@@ -127,7 +154,8 @@ class DCCDHTML extends DCCBase {
         if (record[r] != null && typeof record[r] === 'object')
           html = this._replaceFields(html, pr, record[r])
         else {
-          if (typeof record[r] === 'number') record[r] = record[r].toString()
+          if (typeof record[r] === 'number' || typeof record[r] === 'boolean')
+            record[r] = record[r].toString()
           const content = (record[r] == null) ? '' :
                             record[r].replace(/&/gm, '&amp;')
                                      .replace(/"/gm, '&quot;')
@@ -192,11 +220,10 @@ class DCCDHTML extends DCCBase {
 
   async connectionReady (id, topic) {
     super.connectionReady (id, topic)
-    if (topic == 'data/record/retrieve' || topic == 'service/request/get') {
-      const response = await this.request('retrieve', null, id)
-      this.recordUpdate(topic, response)
-
-    }
+    // if (topic == 'data/record/retrieve' || topic == 'service/request/get') {
+    const response = await this.request('retrieve', null, id)
+    this.recordUpdate(topic, response)
+    //}
     this._ready = true
     this._publish('control/dhtml/ready',
       (this.hasAttribute('id')) ? {id: this.id} : null)

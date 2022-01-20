@@ -46,8 +46,15 @@
 '<dcc-input-option parent="dcc[seq]" [topic][value][compute]>[option]</dcc-input-option><br>',
     output:
 '<dcc-expression id=\'dcc[seq]\'[author] expression=\'[variable][index]\'[variant] active></dcc-expression>',
+    conditionOpen:
+`<dcc-compute id="dcc[seq]" expression="test:=[condition]"[dependency]></dcc-compute>
+<dcc-dhtml connect="retrieve:dcc[seq]:compute/calculate" subscribe="compute/updated/dcc[seq]:update" autoupdate>
+{{@if test}}`,
+    conditionClose:
+`{{@endif}}
+</dcc-dhtml>`,
     compute:
-'<dcc-compute id=\'dcc[seq]\' expression=\'[expression]\'[connect][dependency] active></dcc-compute>',
+'<dcc-compute id=\'dcc[seq]\' expression=\'[expression]\'[connect][condition][dependency] active></dcc-compute>',
     timer:
 `<dcc-timer cycles="[cycles]" interval="1000" autostart>
   <connect-dcc trigger="begin" to="dcc[to]" topic="style/display/none"></connect-dcc>

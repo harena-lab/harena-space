@@ -132,4 +132,30 @@ DCC.component(
   }
 )
 
+DCC.component(
+  'harena-logger-list',
+  'dcc-rest',
+  {
+    environment: {
+      'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api,
+      'caseId': '1490b6f1-548d-4224-a6b6-060fa3c7410a'
+    },
+    oas: {
+      paths: {
+        '{url-manager}/logger/list': {
+          'get': {
+            operationId: 'loggers',
+            parameters: [
+              {name: 'url-manager',
+               in: 'path'},
+              {name: 'caseId',
+               in: 'query'}
+            ]
+          }
+        }
+      }
+    }
+  }
+)
+
 })()

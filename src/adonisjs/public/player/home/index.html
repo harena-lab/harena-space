@@ -145,15 +145,15 @@
             <dcc-dhtml id="harena-dhtml-cases" connect="retrieve:harena-cases:service/request/get" subscribe="service/response/get/harena-cases-filter:update">
               <input type="hidden" id="pages" value="{{pages}}">
               {{@foreach cases c}}
-              <div id="b{{c.cases.id}}" class="row draft-author-case-container">
+              <div id="b{{c.id}}" class="row draft-author-case-container">
                 <div class="col draft-case-title">
-                  {{c.cases.title}}
+                  {{c.title}}
                   <div class="row">
-                    <h6>Created by {{c.cases.author_grade}}: {{c.cases.username}} ({{c.cases.institution_acronym}})</h6>
+                    <h6>Created by {{c.author_grade}}: {{c.username}} ({{c.institution_acronym}})</h6>
                   </div>
                 </div>
                 <div class="d-flex justify-content-end buttons-container">
-                  <div id="v{{c.cases.id}}" class="col author-panel-button align-self-center pt-2 pb-2">VIEW</div>
+                  <div id="v{{c.id}}" class="col author-panel-button align-self-center pt-2 pb-2">VIEW</div>
                 </div>
               </div>
               {{@endfor}}

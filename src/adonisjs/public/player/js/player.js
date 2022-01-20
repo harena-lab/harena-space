@@ -145,7 +145,7 @@ class PlayerManager {
             }
             this._state.historyRecord(target)
             // this._updateFlowKnot(target)
-            if (message.value) {
+            if (message && message.value) {
               this._state.parameter = message.value
               this.knotLoad(target, message.value)
             } else {
@@ -206,7 +206,7 @@ class PlayerManager {
     window.onbeforeunload = function() {
       return "";
     }
-    const preCaseOff = true
+    const resumeActive = true  // activates and deactivates case resume
     this._mainPanel = document.querySelector('#player-panel')
 
     const parameters = window.location.search.substr(1)
@@ -227,14 +227,18 @@ class PlayerManager {
     } else { precase = null }
 
     let resume = false
-    if (!this._previewCase && this._state.pendingPlayCheck() && !preCaseOff) {
+    const pPlay = this._state.pendingPlayCheck()
+    if (!this._previewCase && pPlay != null && resumeActive) {
+      this._tracker.caseHalt(pPlay.userid, pPlay.caseid, pPlay.running.runningId)
+
       // <TODO> adjust for name: (precase == null || this._state.pendingPlayId() == precase)) {
       const decision = await DCCNoticeInput.displayNotice(
         'You have an unfinished case. Do you want to continue?',
         'message', 'Yes', 'No')
       if (decision == 'Yes') {
         resume = true
-        this._state.pendingPlayRestore()
+        const currKnot = this._state.pendingPlayRestore()
+        this._tracker.pendingTrackRestore()
         DCCCommonServer.instance.token = this._state.token
 
         // <TODO> provisory deactivation
@@ -252,9 +256,9 @@ class PlayerManager {
         this._state.currentCase = this._state.currentCase
         await this._caseLoad(this._state.currentCase)
 
-        this._caseFlow()
-        MessageBus.i.publish('knot/navigate/<<', null, true)
-      } else { this._state.sessionCompleted() }
+        // this._caseFlow()
+        MessageBus.i.publish('knot/navigate/' + currKnot, null, true)
+      } // else { this._state.sessionCompleted() }
     }
 
     if (!resume) {

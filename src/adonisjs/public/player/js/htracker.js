@@ -1,13 +1,6 @@
 class Tracker {
   constructor () {
-    this._variables = {}
-    this._varUpdated = {}
-    // this._varChanged = {} <FUTURE>
-    this._mandatoryFilled = {}
-    this._groupInput = null
-
-    this._knotTrack = []
-    this._caseCompleted = false
+    this.initializeTrack()
 
     this.inputReady = this.inputReady.bind(this)
     MessageBus.i.subscribe('input/ready/#', this.inputReady)
@@ -32,6 +25,17 @@ class Tracker {
     MessageBus.i.subscribe('input/submit/*', this.submitVariables)
   }
 
+  initializeTrack () {
+    this._variables = {}
+    this._varUpdated = {}
+    // this._varChanged = {} <FUTURE>
+    this._mandatoryFilled = {}
+    this._groupInput = null
+
+    this._knotTrack = []
+    this._caseCompleted = false
+  }
+
   _extractEntityId (topic, position) {
     return MessageBus.extractLevelsSegment(topic, position).replace(/\//g, '.')
   }
@@ -48,6 +52,7 @@ class Tracker {
       const v = this._extractEntityId(topic, 3)
       if (v != null)
         this._mandatoryFilled[v] = { message: message, filled: false }
+      this._trackStore()
     }
   }
 
@@ -57,12 +62,14 @@ class Tracker {
     const v = this._extractEntityId(topic, position)
     if (v != null && this._variables[v] == null)
       switch (type) {
-        case '<' : this._updateVariable(v, {})
-                   this._groupInput = v
+        case '<' : this._groupInput = v
+                   this._updateVariable(v, {})
                    break
-        case '>' : if (this._groupInput != null)
+        case '>' : if (this._groupInput != null) {
                      this._variables[this._groupInput][v] =
                        { content: message.content, state: ' ' }
+                     this._trackStore()
+                   }
               break
         default: this._updateVariable(v, '')
       }
@@ -79,9 +86,11 @@ class Tracker {
   }
 
   stateChanged (topic, message) {
-    if (this._groupInput != null)
+    if (this._groupInput != null) {
       this._variables[this._groupInput][this._extractEntityId(topic, 3)].state =
         message.state
+      this._trackStore()
+    }
   }
 
   submitVariables (topic, message) {
@@ -92,6 +101,7 @@ class Tracker {
         this._varUpdated[v] = false
       }
     }
+    this._trackStore()
   }
 
   /* <FUTURE>
@@ -114,6 +124,7 @@ class Tracker {
       this._varUpdated[variable] = true
       if (this._mandatoryFilled[variable] !== undefined) {
         this._mandatoryFilled[variable].filled = (value.length > 0) }
+      this._trackStore()
     }
   }
 
@@ -122,6 +133,7 @@ class Tracker {
     this._knotTrack.push(
       {knotid: this._extractEntityId(topic, 3),
        timeStart: currentDateTime.toJSON()})
+    this._trackStore()
   }
 
   inputSummary (topic, message) {
@@ -131,6 +143,7 @@ class Tracker {
 
   caseCompleted (topic, message) {
     if (!this._caseCompleted) {
+      this._caseCompleted = true
       const currentDateTime = new Date()
       let kt = {
         event: topic,
@@ -139,6 +152,7 @@ class Tracker {
       if (message && message.knotid)
         kt.knotid = message.knotid
       this._knotTrack.push(kt)
+      this._trackStore()
       MessageBus.i.publish('case/summary/' + MessageBus.extractLevel(topic, 3),
         {userId: message.userId,
          caseId: message.caseId,
@@ -146,4 +160,62 @@ class Tracker {
          variables: this._variables}, true)
     }
   }
+
+  caseHalt (userId, caseId, instanceId) {
+    const track = this._trackRetrieve()
+    if (track != null) {
+      const currentDateTime = new Date()
+      track.knotTrack.push(
+        {event: '*** case halted ***',
+         timeResume: currentDateTime.toJSON()}
+      )
+      track.variables['case halted'] = '*** case halted ***'
+      MessageBus.i.publish('case/summary/' + instanceId,
+        {userId: userId,
+         caseId: caseId,
+         knotTrack: track.knotTrack,
+         variables: track.variables}, true)
+    }
+  }
+
+  /*
+    * State Storage
+    */
+  _trackStore () {
+    localStorage.setItem(Tracker.storeId,
+      JSON.stringify(
+        {knotTrack: this._knotTrack,
+         variables: this._variables,
+         varUpdated: this._varUpdated,
+         mandatoryFilled: this._mandatoryFilled,
+         groupInput: this._groupInput,
+         caseCompleted: this._caseCompleted
+       }
+     ))
+  }
+
+  _trackRetrieve () {
+    let track = null
+    const trackS = localStorage.getItem(Tracker.storeId)
+    if (trackS != null)
+      track = JSON.parse(trackS)
+    return track
+  }
+
+  pendingTrackRestore () {
+    const track = this._trackRetrieve()
+    if (track != null) {
+      this._knotTrack = track.knotTrack
+      this._variables = track.variables
+      this._varUpdated = track.varUpdated
+      this._mandatoryFilled = track.mandatoryFilled
+      this._groupInput = track.groupInput
+      this._caseCompleted = track.caseCompleted
+    }
+    return (track != null)
+  }
 }
+
+(function () {
+  Tracker.storeId = 'harena-track'
+})()
