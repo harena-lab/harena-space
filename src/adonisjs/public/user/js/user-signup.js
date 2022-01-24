@@ -1,90 +1,116 @@
 class UserSignup {
   start () {
-    this._showTerm = this._showTerm.bind(this)
-    MessageBus.i.subscribe('/user/term', this._showTerm)
+    this._expandTerm = this._expandTerm.bind(this)
+    MessageBus.i.subscribe('/user/term/expand', this._expandTerm)
+    this._retractTerm = this._retractTerm.bind(this)
+    MessageBus.i.subscribe('/user/term/retract', this._retractTerm)
     this._signup = this._signup.bind(this)
     MessageBus.i.subscribe('/user/signup', this._signup)
+    const now = new Date()
+    document.querySelector('#date_agree').value =
+      now.getDate() + '/' + (now.getMonth()+1) + '/' + now.getFullYear()
   }
 
-  _showTerm () {
-    console.log('=== show term')
+  _expandTerm () {
     document.querySelector('#name_participant').value = document.querySelector('#username').value
-    const now = new Date()
-    document.querySelector('#date_agree').value = now.getDate() + '/' + (now.getMonth()+1) + '/' + now.getFullYear()
-    document.querySelector('#term-form').style.display = 'initial'
+    document.querySelector('#name_responsible').value = document.querySelector('#respname').value
+    document.querySelector('#email_responsible').value = document.querySelector('#email').value
+    document.querySelector('#term-part1').style.display = 'initial'
+    document.querySelector('#term-part2').style.display = 'initial'
+    document.querySelector('#button-expand').style.display = 'none'
+  }
+
+  _retractTerm () {
+    document.querySelector('#term-part1').style.display = 'none'
+    document.querySelector('#term-part2').style.display = 'none'
+    document.querySelector('#button-expand').style.display = 'initial'
+  }
+
+  _showFeedback (message, color) {
+    const feed1 = document.querySelector('#feedback-message-1')
+    const feed2 = document.querySelector('#feedback-message-2')
+    if (color != null) {
+      feed1.style.color = 'blue'
+      feed2.style.color = 'blue'
+    }
+    feed1.innerHTML = message
+    feed2.innerHTML = message
   }
 
   async _signup (topic, message) {
     const parameters = (message && message.value) ? message.value : null
     console.log('===== user parameters')
     console.log(parameters)
-    const feed = document.querySelector('#feedback-message')
-    feed.innerHTML = ''
+
+    this._showFeedback('')
     if (parameters == null)
-      feed.innerHTML = 'Erro de processamento, entre novamente na página a partir do link'
-    else if (parameters.username.length == 0)
-      feed.innerHTML = 'Nome do usuário é obrigatório.'
+      this._showFeedback('Erro de processamento, entre novamente na página a partir do link')
+    else if (parameters.login.length == 0)
+      this._showFeedback('Login do usuário é obrigatório.')
+    else if (parameters.username.trim().length == 0)
+      this._showFeedback('Nome do usuário é obrigatório.')
+    else if (parameters.respname.length == 0)
+      this._showFeedback('Nome do responsável é obrigatório.')
     else if (parameters.email.length == 0)
-      feed.innerHTML = 'O e-mail do usuário ou do responsável do usuário é obrigatório.'
+      this._showFeedback('O e-mail do responsável do usuário é obrigatório.')
     else if (parameters.password.length == 0)
-      feed.innerHTML = 'A senha é obrigatória.'
+      this._showFeedback('A senha é obrigatória.')
     else {
+      /*
       if (parameters.agree && parameters.agree.length > 0 && parameters.agree == 'agree') {
         if (parameters.name_responsible.length == 0)
-          feed.innerHTML = 'Como você concordou com o termo, precisa informar o nome do responsável no termo.'
+          this._showFeedback('Como você concordou com o termo, precisa informar o nome do responsável no termo.')
         else if (parameters.name_participant == 0)
-          feed.innerHTML = 'Como você concordou com o termo, precisa repetir o nome do participante no termo.'
+          this._showFeedback('Como você concordou com o termo, precisa repetir o nome do participante no termo.')
         else if (parameters.date_agree == 0)
-          feed.innerHTML = 'Como você concordou com o termo, precisa informar a data.'
+          this._showFeedback('Como você concordou com o termo, precisa informar a data.')
         else if (parameters.email_responsible == 0)
-          feed.innerHTML = 'Como você concordou com o termo, precisa informar/repetir o email do responsável.'
+          this._showFeedback('Como você concordou com o termo, precisa informar/repetir o email do responsável.')
       }
-      if (feed.innerHTML.length == 0) {
-        console.log('========== creating user ==========')
-        const userJson = {
-          username: parameters.username,
-          email: parameters.email,
-          password: parameters.password,
-          login: parameters.email.replace('@', '_').replace('.', '_'),
-          institution: parameters.institution,
-          grade: parameters.grade,
-          eventId: new URL(document.location).searchParams.get('event')
-        }
-        let user = await MessageBus.i.request('user/create/post', userJson)
+      */
+      // if (feed.innerHTML.length == 0) {
+      console.log('========== creating user ==========')
+      const login = parameters.login.replace(/ /g, '_')
+      const userJson = {
+        username: parameters.username,
+        email: login + '@museu.unicamp.br',
+        password: parameters.password,
+        login: login,
+        institution: parameters.institution,
+        grade: parameters.grade,
+        eventId: new URL(document.location).searchParams.get('event')
+      }
+      let user = await MessageBus.i.request('user/create/post', userJson)
+      console.log(user.message)
+      if (user.message.error) {
+        console.log('--- error')
         console.log(user.message)
-        if (user.message.error) {
-          console.log('--- error')
-          console.log(user.message)
-          if (user.message.error.includes('409'))
-            feed.innerHTML =
-              'O nome ou e-mail no seu cadastro já foi cadastrado anteriormente. ' +
-              'Por enquanto, o sistema não aceita dois cadastros com o mesmo nome ou email. ' +
-              'Se você é responsável por mais de uma criança e está usando o seu e-mail, ' +
-              'coloque um (2) logo após o e-mail. A mesma estratégia pode ser usada no nome.'
-          else
-            feed.innerHTML ='Houve algum erro no cadastro.'
-        } else if (parameters.agree && parameters.agree.length > 0 && parameters.agree == 'agree') {
-          feed.style.color = 'blue'
-          feed.innerHTML = 'Usuário cadastrado com sucesso. Ainda há uma etapa extra a ser cumprida. Você receberá um e-mail para confirmar que é o responsável. Em seguida, o participante também receberá um link para confirmar a sua concordância com a pesquisa.'
-          const termJson = {
-            userId: user.message.id,
-            termId: parameters.term,
-            nameResponsible: parameters.name_responsible,
-            emailResponsible: parameters.email_responsible,
-            nameParticipant: parameters.name_participant,
-            date: parameters.date_agree,
-            role: parameters.role,
-            agree: '1'
-          }
-          console.log('=== term json')
-          console.log(termJson)
-          let term = await MessageBus.i.request('user/term/post', termJson)
-          console.log('=== term add')
-          console.log(term)
-        } else {
-          feed.style.color = 'blue'
-          feed.innerHTML = 'Usuário cadastrado com sucesso.'
+        if (user.message.error.includes('409'))
+          this._showFeedback('Já existe um usuário com este login. Por favor, escolha outro login.')
+        else
+          this._showFeedback('Houve algum erro no cadastro.')
+      } else {
+        const agree = (parameters.agree && parameters.agree.length > 0 && parameters.agree == 'agree')
+        const termJson = {
+          userId: user.message.id,
+          termId: parameters.term,
+          nameResponsible: parameters.respname,
+          emailResponsible: parameters.email,
+          nameParticipant: parameters.username,
+          date: parameters.date_agree,
+          role: parameters.role,
+          agree: (agree) ? '1' : '0'
         }
+        console.log('=== term json')
+        console.log(termJson)
+        let term = await MessageBus.i.request('user/term/post', termJson)
+        console.log('=== term add')
+        console.log(term)
+        if (agree)
+          this._showFeedback('Usuário cadastrado com sucesso. Ainda há uma etapa extra a ser cumprida. Você receberá um e-mail para confirmar que é o responsável. Em seguida, o participante também receberá um link para confirmar a sua concordância com a pesquisa.', 'blue')
+        else
+          this._showFeedback('Usuário cadastrado com sucesso.', 'blue')
+        // }
       }
         /*
         else {
