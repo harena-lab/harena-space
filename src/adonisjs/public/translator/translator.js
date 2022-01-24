@@ -1236,8 +1236,7 @@ class Translator {
     let preDoc = ''
     let html = ''
     const preDocSet = ['text', 'text-block', 'script', 'field',
-      'context-open', 'context-close', 'condition-open', 'condition-close',
-      'linefeed']
+      'context-open', 'context-close', 'linefeed']
     if (content != null) {
       // produces a pretext with object slots to process markdown
       for (const kc in content) {
@@ -1245,9 +1244,6 @@ class Translator {
           ? this.objToHTML(content[kc], ss)
           : '@@' + content[kc].seq + '@@'
       }
-
-      console.log('=== pre-html')
-      console.log(preDoc)
 
       html = this.markdownToHTML(preDoc)
 
@@ -1269,9 +1265,6 @@ class Translator {
         }
         next = html.indexOf('@@')
       }
-
-      console.log('=== html')
-      console.log(html)
 
       html = html.replace(Translator.contextHTML.open,
         this._contextSelectHTMLAdjust)
@@ -1301,8 +1294,6 @@ class Translator {
     let html
     if ((obj.render !== undefined && !obj.render) ||
         (obj.inherited && this.authoringRender)) { html = '' } else {
-      console.log('--- obj type')
-      console.log(obj.type)
       switch (obj.type) {
         case 'literal': html = this._literalObjToHTML(obj); break
         case 'blockquote': html = this._blockquoteObjToHTML(obj); break
