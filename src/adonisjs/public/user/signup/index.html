@@ -66,61 +66,89 @@
 
       <div class="d-flex flex-column vh-100 vw-100 hidden-overflow">
 
-        <!-- Create breadcrumbs -->
-        <!--
-        <div class="mr-auto author-breadcrumb" >
-          <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-             <li class="breadcrumb-item"><a href="/">Welcome</a></li>
-              <li class="breadcrumb-item"><a href="/author/home">Home</a></li>
-              <li class="breadcrumb-item active" aria-current="page">Create</li>
-            </ol>
-          </nav>
-        </div>
-      -->
-        <!-- End of breadcrumbs -->
-
         <div class="h-100 w-100 create-case-padding scroll-y">
           <div class="home-text">
-            <p id="template-title">Cadastro de Usuário</p>
+            <p id="template-title">Cadastro de Usuário na Plataforma (para participação na oficina)</p>
           </div>
 
-          <div class="row" style="padding-bottom: 70px;">
-            <div class="col-md-6">
-              <form id="create-case-form">
+					<hr>
+					<div id="feedback-message-1" style="font-size:24px;color:red"></div>
+					<hr>
 
+          <div id="complete-form" class="row" style="padding-bottom: 70px;">
+
+            <div class="col-md-6">
+							<h4 style="color:black">Este cadastro deve obrigatoriamente ser preenchido pelo responsável da criança ou adolescente que participará da oficina.</h4>
+
+              <form id="create-case-form">
                 <div class="form-group">
-                  <label for="username">Nome Completo</label>
-                  <input type="text" class="form-control" id="username" name="username" placeholder="Digite seu Nome">
+                  <label for="username">Nome Completo do Participante da Oficina (criança ou adolescente)</label>
+                  <input type="text" class="form-control" id="username" name="username" placeholder="Nome completo"
+									       aria-describedby="usernameDesc" onchange="UserSignup.i.update()">
+									<small id="usernameDesc" class="form-text text-muted">
+										Digite o nome da criança ou adolescente que participará da oficina.
+									</small>
                 </div>
-                <div class="form-group">
-                  <label for="email">E-mail</label>
-                  <input type="email" class="form-control" id="email" name="email" placeholder="email@example.com">
+								<div class="form-group">
+                  <label for="login">Login do Participante da Oficina</label>
+                  <input type="text" class="form-control" id="login" name="login" placeholder="Login do usuário"
+									       aria-describedby="loginDesc" onchange="UserSignup.i.update()">
+									<small id="loginDesc" class="form-text text-muted">
+										Escolha um login para o participante (sem espaços em branco). Ele usará para fazer login na plataforma no início da oficina.
+									</small>
                 </div>
-                <div class="form-group">
+								<div class="form-group">
                   <label for="password">Senha</label>
-                  <input type="password" class="form-control" id="password" name="password">
+                  <input type="password" class="form-control" id="password" name="password"
+ 									       aria-describedby="passwordDesc">
+ 								  <small id="loginDesc" class="form-text text-muted">
+ 										Escolha uma senha para o participante.
+ 									</small>
+                </div>
+								<div class="form-group">
+                  <label for="respname">Nome Completo do Responsável</label>
+                  <input type="text" class="form-control" id="respname" name="respname" placeholder="Nome completo"
+									       aria-describedby="respnameDesc" onchange="UserSignup.i.update()">
+									<small id="respnameDesc" class="form-text text-muted">
+										Digite o nome do responsável pelo participante da oficina.
+									</small>
+                </div>
+                <div class="form-group">
+                  <label for="email">E-mail do Responsável</label>
+                  <input type="email" class="form-control" id="email" name="email" placeholder="email@example.com"
+ 												 aria-describedby="emailDesc" onchange="UserSignup.i.update()">
+									<small id="emailDesc" class="form-text text-muted">
+										Digite o e-mail do responsável pelo participante da oficina.
+									</small>
                 </div>
                 <input type="hidden" id="institution" name="institution" value="mcunicamp">
                 <input type="hidden" id="grade" name="grade" value="student">
                 <input type="hidden" id="term" name="term" value="museu_harena_2021">
                 <input type="hidden" id="role" name="role" value="responsible">
 
-                O participante também é convidado a contribuir com a pesquisa do Museu. Se quiser contribuir, clique no botão a seguir para ver mais detalhes e decidir sobre sua participação:
+                O participante também é convidado a contribuir com a pesquisa do Museu. Se concordar, durante a aplicação da oficina, os dados da sua atuação serão coletados de forma anônima sem interferir na experiência da atividade. Se o participante e o responsável concordarem, o responsável deve clicar na opção a seguir concordando. Há um botão que apresenta todos todos os detalhes sobre o Termo de Consentimento relacionados à pesquisa.
 
-                <dcc-button label="Pesquisa no Museu - Detalhes e Participação" topic="/user/term"></dcc-button>
+								<div class="form-inline">
+									<label for="date_agree_1">Data:&nbsp;</label>
+									<input type="text" class="form-control" id="date_agree_1" name="date_agree_1" readonly>
+								</div>
 
-                <!-- TCLE -->
-                <div id="term-form" class="outer" style="display:none">
+								<input type="radio" id="agree_radio" name="agree" value="agree" onchange="UserSignup.i.update()"/> Concordo em participar da pesquisa <br />
+								<input type="radio" id="not_agree_radio" name="agree" value="not_agree" onchange="UserSignup.i.update()" /> Não desejo participar da pesquisa <br />
+
+								<!-- TCLE -->
+                <div id="term-form" class="outer">
                   <hr>
                   <section id="main_content" class="inner">
+										<div id="term-part" style="display:none">
                     <h1 id="termo-de-consentimento-livre-e-esclarecido">TERMO DE CONSENTIMENTO LIVRE E ESCLARECIDO</h1>
 
                     <p align="center">
                     	<b>Responsável pelo Menor</b> <br /> <hr />
-                    	<b>Plataforma de Aprendizagem baseada em Casos</b> <br />
+                    	<b>Plataforma de Aprendizagem Virtual baseada em Simulação e Resolução de
+Problemas</b> <br />
                     	<b>Responsável: André Santanchè</b> <br />
-                    	<b>Número do CAAE:</b>(inserir após aprovação pelo CEP) <br />
+                    	<b>Número do CAAE: 46635421.5.0000.5404</b><br />
                     </p>
                     <p><br /></p>
 
@@ -192,20 +220,18 @@
 
                     <p>Após ter recebido esclarecimentos sobre a natureza da pesquisa, seus objetivos, métodos, benefícios previstos, potenciais riscos e o incômodo que esta possa acarretar, aceito participar:</p>
 
-                    <p><label for="name_participant">Nome do (a) participante da pesquisa:</label><br />
-                     <input type="text" id="name_participant" name="name_participant" /><br />
-                     <label for="date_agree">Data(dd/mm/aaaa)</label><br />
-                     <input type="text" id="date_agree" name="date_agree" /><br /></p>
+                    <p><b>Nome do (a) participante da pesquisa:</b> <span id="name_participant"></span><br />
 
-                    <p><input type="radio" id="agree" name="agree" value="agree" /> Concordo em participar da pesquisa <br />
-                     <input type="radio" id="agree" name="agree" value="not_agree" /> Não desejo participar da pesquisa <br /></p>
+                    <b>Data:</b> <span id="date_agree_2"></span><br /></p>
 
-                    <p>Para garantir a segurança do participante menor, verificamos a identidade do responsável. Se você estiver participando da pesquisa remotamente, pedimos que nos informe seu nome e um e-mail seu. Entraremos em contato apenas solicitando que confirme esta aceitação do TCLE. Uma das condições para que o participante seja autorizado a participar será a sua confirmação em resposta ao nosso e-mail.</p>
+										<p><b>Concordância:</b> <span id="answer_agree"></span></p>
 
-                    <p>Nome do responsável:<br />
-                    <input type="text" id="name_responsible" name="name_responsible" /><br />
-                    E-mail do responsável:<br />
-                    <input type="text" id="email_responsible" name="email_responsible" /><br /></p>
+                    <p>Para garantir a segurança do participante menor, verificamos a identidade do responsável. Entraremos em contato por e-mail solicitando que confirme esta aceitação do TCLE.
+
+										<p>Uma das condições para que o participante seja autorizado a participar será a sua confirmação em resposta ao nosso e-mail.</p>
+
+                    <p><b>Nome do responsável:</b> <span id="name_responsible"></span><br />
+                    <b>E-mail do responsável:</b> <span id="email_responsible"></span><br /></p>
 
                     <h2 id="responsabilidade-do-pesquisador">Responsabilidade do Pesquisador</h2>
 
@@ -215,12 +241,20 @@
                     <a href="terms/tcle-responsible.pdf" target="_blank">Download do Termo de Consentimento Livre e Esclarecido (TCLE)</a><br /><br />
                     </div>
 
+										<dcc-button label="Recolher Detalhes do Termo de Consentimento" topic="/user/term/retract" xstyle="out">
+										</dcc-button>
+
+									  </div>
+
+										<dcc-button id="button-expand" label="Mostrar Detalhes do Termo de Consentimento" topic="/user/term/expand" xstyle="out">
+										</dcc-button>
+
                   </section>
                   </div>
-                  <dcc-submit label="Cadastrar" topic="/user/signup"></dcc-submit>
+									<hr>
+                  <div id="feedback-message-2" style="font-size:24px;color:red"></div>
                   <hr>
-                  <div id="feedback-message" style="font-size:24px;color:red"><div>
-                  <hr>
+                  <dcc-submit label="Cadastrar" topic="/user/signup" xstyle="out"></dcc-submit>
               </form>
 
 

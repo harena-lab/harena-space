@@ -319,14 +319,11 @@ class Translator {
       matchStart = -1
       let selected = ''
       for (const mk in Translator.element) {
-        // if (!((mk == "annotation" || mk == "select") &&
-        //        this.authoringRender)) {
         const pos = mdfocus.search(Translator.element[mk].mark)
         if (pos > -1 && (matchStart == -1 || pos < matchStart)) {
           selected = mk
           matchStart = pos
         }
-        // }
       }
 
       if (matchStart > -1) {
@@ -338,11 +335,22 @@ class Translator {
         }
 
         // translate the expression to an object
-        const matchSize = mdfocus.match(Translator.element[selected].mark)[0].length
+        let matchSize =
+          mdfocus.match(Translator.element[selected].mark)[0].length
+
+        if (selected == 'literal') {
+          const litClose = mdfocus.substr(matchStart + matchSize)
+                                  .search(Translator.literalClose)
+          matchSize = (litClose > -1)
+            ? litClose - matchStart + matchSize + 3
+            : mdfocus.length - matchStart + matchSize + 1
+        }
+
         const toTranslate = mdfocus.substr(matchStart, matchSize)
         const transObj = this._initializeObject(
           this._mdToObj(selected,
-            Translator.element[selected].mark.exec(toTranslate)), toTranslate)
+            Translator.element[selected].mark.exec(toTranslate), toTranslate),
+            toTranslate)
 
         // attach to a knot array (if it is a knot) or an array inside a knot
         if (selected == 'knot') {
@@ -746,17 +754,21 @@ class Translator {
     // eighth cycle - aggregates options
     let optionGroup = null
     let subtype = null
+    let prevsubor = null
     for (let c = 1; c < compiled.length; c++) {
       const pr = (c > 1 && compiled[c - 1].type == 'linefeed') ? c - 2 : c - 1
       if (compiled[c].type == 'option') {
         let stype = compiled[c].subtype
+        let suborop = (compiled[c].subordinate) ? true : false
         if  (compiled[pr].type == 'input' && compiled[pr].subtype &&
              compiled[pr].subtype == 'choice' && compiled[pr].options == null) {
           subtype = stype
+          prevsubor = suborop
           optionGroup = compiled[pr]
           optionGroup.options = {}
         } else if (compiled[pr].type == 'option' &&
-                   compiled[c].subtype == subtype) {
+                   compiled[c].subtype == subtype &&
+                   suborop == prevsubor) {
           optionGroup = this._initializeObject(
             {
               type: 'input',
@@ -770,7 +782,8 @@ class Translator {
           this._transferOption(optionGroup.options, compiled[pr])
           compiled[pr] = optionGroup
         }
-        if (optionGroup != null && compiled[c].subtype == subtype) {
+        if (optionGroup != null && compiled[c].subtype == subtype &&
+            suborop == prevsubor) {
           this._transferOption(optionGroup.options, compiled[c])
           optionGroup._source += '\n' + compiled[c]._source
           if (compiled[c].target && !optionGroup.reveal)
@@ -781,6 +794,7 @@ class Translator {
         } else
           optionGroup = null
         subtype = stype
+        prevsubor = suborop
       } else if (compiled[c].type != 'linefeed' ||
                  compiled[c].content.length > 1)
         optionGroup = null
@@ -886,7 +900,6 @@ class Translator {
                         {type: 'condition-close',
                          seq: pos+1,
                          _source: ''})
-        c++
         inCondition = false
       }
       if (compiled[c].type == 'condition') {
@@ -1106,10 +1119,11 @@ class Translator {
     }
   }
 
-  _mdToObj (mdType, match) {
+  _mdToObj (mdType, match, toTranslate) {
     let obj
     switch (mdType) {
       case 'knot' : obj = this._knotMdToObj(match); break
+      case 'literal': obj = this._literalMdToObj(match, toTranslate); break
       case 'blockquote': obj = this._blockquoteMdToObj(match); break
       case 'image': obj = this._imageMdToObj(match); break
       case 'media': obj = this._mediaMdToObj(match); break
@@ -1246,8 +1260,8 @@ class Translator {
           console.log('Error in finding seq: ' + seq)
         } else {
           html = html.substring(0, next) +
-          this.objToHTML(content[current], ss) +
-          html.substring(end + 2)
+                 this.objToHTML(content[current], ss) +
+                 html.substring(end + 2)
         }
         next = html.indexOf('@@')
       }
@@ -1281,6 +1295,7 @@ class Translator {
     if ((obj.render !== undefined && !obj.render) ||
         (obj.inherited && this.authoringRender)) { html = '' } else {
       switch (obj.type) {
+        case 'literal': html = this._literalObjToHTML(obj); break
         case 'blockquote': html = this._blockquoteObjToHTML(obj); break
         case 'text' : html = this._textObjToHTML(obj, superseq); break
         case 'text-block': html = this._textBlockObjToHTML(obj, superseq)
@@ -1442,19 +1457,6 @@ class Translator {
       case 'formal-close': element._source = this._formalCloseObjToMd(element)
         break
     }
-
-    // linefeed of the merged block (if block), otherwise linefeed of the content
-    /*
-      element._source += (((element.mergeLine === undefined &&
-               Translator.isLine.includes(element.type)) ||
-              (element.mergeLine !== undefined &&
-               element.mergeLine))
-             ? "\n" : "");
-      console.log("=== element");
-      console.log(element);
-      */
-
-    // element._source += "\n\n";
   }
 
   /*
@@ -1531,6 +1533,32 @@ class Translator {
       .replace('[inheritance]',
         (obj.inheritance)
           ? ': ' + obj.inheritance : '')
+  }
+
+  /*
+    * Text Raw to Obj
+    */
+  _literalMdToObj (matchArray, toTranslate) {
+    return {
+      type: 'literal',
+      subtype: matchArray[2],
+      delimiter: matchArray[1],
+      content: toTranslate.substring(matchArray[0].length,
+                                     toTranslate.length - 3)
+    }
+  }
+
+  /*
+    * Text Obj to HTML
+    */
+  _literalObjToHTML (obj) {
+    let result = obj.content
+    if (this.authoringRender)
+      result = Translator.htmlTemplatesEditable.text
+        .replace('[seq]', obj.seq)
+        .replace('[author]', this._authorAttrSub(obj.seq))
+        .replace('[content]', obj.content)
+    return result
   }
 
   /*
@@ -2527,6 +2555,7 @@ class Translator {
   _computeMdToObj (matchArray) {
     const compute = {
       type: 'compute',
+      subordinate: /^\t|^ [\t ]/.test(matchArray[0]),
       expression: matchArray[1].trim()
     }
 
@@ -2724,7 +2753,7 @@ class Translator {
 }
 
 (function () {
-  Translator.marksLayerTitle = /^[ \t]*\_{2,}((?:.(?!\_{2,}))*.)(?:\_{2,})?[ \t]*$/igm
+  Translator.marksLayerTitle = /^[ \t]*\_{3,}((?:.(?!\_{3,}))*.)\_{3,}[ \t]*$/igm
   Translator.marksKnotTitle = /((?:^[ \t]*(?:#+)[ \t]*(?:[^\( \t\n\r\f][^\(\n\r\f]*)(?:\((?:\w[\w \t,]*)\))?(?:\:[ \t]*[^\(\n\r\f][^\(\n\r\f\t]*)?[ \t]*#*[ \t]*$)|(?:^[ \t]*(?:[^\( \t\n\r\f][^\(\n\r\f]*)(?:\((?:\w[\w \t,]*)\))?(?:\:[ \t]*[^\(\n\r\f][^\(\n\r\f\t]*)?[ \t]*[\f\n\r][\n\r]?(?:==+|--+)$))/igm
 
   Translator.fragment = {
@@ -2735,6 +2764,9 @@ class Translator {
   Translator.fragment.compute = '~[ \\t]*' + Translator.fragment.expression
 
   Translator.element = {
+    literal: {
+      mark: /(~~~|```)[ \t]*([^\n]*)$/im
+    },
     knot: {
       mark: /(?:^[ \t]*(#+)[ \t]*([^\( \t\n\r\f\:#][^\(\n\r\f\:#]*)(?:\((\w[\w \t,]*)\))?[ \t]*(?:\:[ \t]*([^\(\n\r\f#][^\(\n\r\f\t#]*))?[ \t]*(#+)?[ \t]*$)|^(?:(==+|--+)[\f\n\r][\n\r]?)?(?:[ \t]*([^\( \t\n\r\f\:][^\(\n\r\f\:]*)(?:\((\w[\w \t,]*)\))?[ \t]*(?:\:[ \t]*([^\(\n\r\f][^\(\n\r\f\t]*))?[ \t]*[\f\n\r][\n\r]?(==+|--+)$)/im,
       subfield: true,
@@ -2796,7 +2828,7 @@ class Translator {
       mark: new RegExp('\\$[ \\t]*\\(' + Translator.fragment.expression + '\\)[ \\t]*', 'im')
     },
     compute: {
-      mark: new RegExp(Translator.fragment.compute + '$', 'im')
+      mark: new RegExp('[ \\t]*' + Translator.fragment.compute + '$', 'im')
     },
     'context-open': {
       mark: /\{\{(?:([^\:\n\r\f]+)\:)?([\w \t\+\-\*\."=%]+)?(?:@(\w+))?(?:\/((?:\w+\:)?\w+)(?:[ \t]+((?:\w+\:)?\w+))?\/)?$/im
@@ -2824,6 +2856,8 @@ class Translator {
          line: true }
       */
   }
+
+  Translator.literalClose = /(~~~|```)/im
 
   Translator.marksAnnotation = {
     'context-open': Translator.element['context-open'].mark,
