@@ -106,6 +106,7 @@ class UserSignup {
         let term = await MessageBus.i.request('user/term/post', termJson)
         console.log('=== term add')
         console.log(term)
+        document.querySelector('#complete-form').style.display = 'none'
         if (agree)
           this._showFeedback('Usuário cadastrado com sucesso. Ainda há uma etapa extra a ser cumprida. Você receberá um e-mail para confirmar que é o responsável. Em seguida, o participante também receberá um link para confirmar a sua concordância com a pesquisa.', 'blue')
         else
