@@ -68,7 +68,7 @@
 
         <div class="h-100 w-100 create-case-padding scroll-y">
           <div class="home-text">
-            <p id="template-title">Cadastro de Usuário</p>
+            <p id="template-title">Cadastro de Usuário na Plataforma (para participação na oficina)</p>
           </div>
 
 					<hr>
@@ -76,22 +76,25 @@
 					<hr>
 
           <div id="complete-form" class="row" style="padding-bottom: 70px;">
+
             <div class="col-md-6">
+							<h4 style="color:black">Este cadastro deve obrigatoriamente ser preenchido pelo responsável da criança ou adolescente que participará da oficina.</h4>
+
               <form id="create-case-form">
                 <div class="form-group">
-                  <label for="username">Nome Completo do Usuário</label>
+                  <label for="username">Nome Completo do Participante da Oficina (criança ou adolescente)</label>
                   <input type="text" class="form-control" id="username" name="username" placeholder="Nome completo"
 									       aria-describedby="usernameDesc" onchange="UserSignup.i.update()">
 									<small id="usernameDesc" class="form-text text-muted">
-										Digite o nome do usuário da plataforma.
+										Digite o nome da criança ou adolescente que participará da oficina.
 									</small>
                 </div>
 								<div class="form-group">
-                  <label for="login">Login do Usuário</label>
+                  <label for="login">Login do Participante da Oficina</label>
                   <input type="text" class="form-control" id="login" name="login" placeholder="Login do usuário"
 									       aria-describedby="loginDesc" onchange="UserSignup.i.update()">
 									<small id="loginDesc" class="form-text text-muted">
-										Escolha um login para o usuário da plataforma (sem espaços em branco).
+										Escolha um login para o participante (sem espaços em branco). Ele usará para fazer login na plataforma no início da oficina.
 									</small>
                 </div>
 								<div class="form-group">
@@ -99,7 +102,7 @@
                   <input type="password" class="form-control" id="password" name="password"
  									       aria-describedby="passwordDesc">
  								  <small id="loginDesc" class="form-text text-muted">
- 										Escolha uma senha para o usuário da plataforma.
+ 										Escolha uma senha para o participante.
  									</small>
                 </div>
 								<div class="form-group">
@@ -107,7 +110,7 @@
                   <input type="text" class="form-control" id="respname" name="respname" placeholder="Nome completo"
 									       aria-describedby="respnameDesc" onchange="UserSignup.i.update()">
 									<small id="respnameDesc" class="form-text text-muted">
-										Digite o nome do responsável pelo usuário da plataforma (se for menor de idade).
+										Digite o nome do responsável pelo participante da oficina.
 									</small>
                 </div>
                 <div class="form-group">
@@ -115,7 +118,7 @@
                   <input type="email" class="form-control" id="email" name="email" placeholder="email@example.com"
  												 aria-describedby="emailDesc" onchange="UserSignup.i.update()">
 									<small id="emailDesc" class="form-text text-muted">
-										Digite o e-mail do responsável pelo usuário da plataforma (se for menor de idade).
+										Digite o e-mail do responsável pelo participante da oficina.
 									</small>
                 </div>
                 <input type="hidden" id="institution" name="institution" value="mcunicamp">
@@ -123,7 +126,7 @@
                 <input type="hidden" id="term" name="term" value="museu_harena_2021">
                 <input type="hidden" id="role" name="role" value="responsible">
 
-                O participante também é convidado a contribuir com a pesquisa do Museu. Se quiser contribuir, clique no botão a seguir para ver mais detalhes e decidir sobre sua participação:
+                O participante também é convidado a contribuir com a pesquisa do Museu. Se o participante e o responsável concordarem, o responsável deve clicar na opção a seguir concordando. Há um botão que apresenta todos todos os detalhes sobre o Termo de Consentimento relacionados à pesquisa.
 
 								<div class="form-inline">
 									<label for="date_agree_1">Data:&nbsp;</label>
@@ -133,7 +136,7 @@
 								<input type="radio" id="agree_radio" name="agree" value="agree" onchange="UserSignup.i.update()"/> Concordo em participar da pesquisa <br />
 								<input type="radio" id="not_agree_radio" name="agree" value="not_agree" onchange="UserSignup.i.update()" /> Não desejo participar da pesquisa <br />
 
-                <!-- TCLE -->
+								<!-- TCLE -->
                 <div id="term-form" class="outer">
                   <hr>
                   <section id="main_content" class="inner">

@@ -6,6 +6,8 @@ class UserSignup {
     MessageBus.i.subscribe('/user/term/retract', this._retractTerm)
     this._signup = this._signup.bind(this)
     MessageBus.i.subscribe('/user/signup', this._signup)
+    this.update = this.update.bind(this)
+
     const now = new Date()
     const sdate = now.getDate() + '/' + (now.getMonth()+1) + '/' + now.getFullYear()
     document.querySelector('#date_agree_1').value = sdate
@@ -117,7 +119,9 @@ class UserSignup {
         console.log(term)
         document.querySelector('#complete-form').style.display = 'none'
         if (agree)
-          this._showFeedback('Usuário cadastrado com sucesso. Ainda há uma etapa extra a ser cumprida. Você receberá um e-mail para confirmar que é o responsável. Em seguida, o participante também receberá um link para confirmar a sua concordância com a pesquisa.', 'blue')
+          this._showFeedback(
+            'Usuário cadastrado com sucesso.<br>' +
+            '<span style="color:purple"><b>Importante: </b>Ainda há duas etapas extras a serem cumpridas. Você receberá um e-mail para confirmar que é o responsável. Em seguida, o participante também receberá um link para confirmar a sua concordância com a pesquisa.</span>', 'blue')
         else
           this._showFeedback('Usuário cadastrado com sucesso.', 'blue')
         // }
