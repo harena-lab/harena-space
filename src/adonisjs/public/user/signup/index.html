@@ -81,7 +81,7 @@
                 <div class="form-group">
                   <label for="username">Nome Completo do Usuário</label>
                   <input type="text" class="form-control" id="username" name="username" placeholder="Nome completo"
-									       aria-describedby="usernameDesc">
+									       aria-describedby="usernameDesc" onchange="UserSignup.i.update()">
 									<small id="usernameDesc" class="form-text text-muted">
 										Digite o nome do usuário da plataforma.
 									</small>
@@ -89,7 +89,7 @@
 								<div class="form-group">
                   <label for="login">Login do Usuário</label>
                   <input type="text" class="form-control" id="login" name="login" placeholder="Login do usuário"
-									       aria-describedby="loginDesc">
+									       aria-describedby="loginDesc" onchange="UserSignup.i.update()">
 									<small id="loginDesc" class="form-text text-muted">
 										Escolha um login para o usuário da plataforma (sem espaços em branco).
 									</small>
@@ -105,7 +105,7 @@
 								<div class="form-group">
                   <label for="respname">Nome Completo do Responsável</label>
                   <input type="text" class="form-control" id="respname" name="respname" placeholder="Nome completo"
-									       aria-describedby="respnameDesc">
+									       aria-describedby="respnameDesc" onchange="UserSignup.i.update()">
 									<small id="respnameDesc" class="form-text text-muted">
 										Digite o nome do responsável pelo usuário da plataforma (se for menor de idade).
 									</small>
@@ -113,7 +113,7 @@
                 <div class="form-group">
                   <label for="email">E-mail do Responsável</label>
                   <input type="email" class="form-control" id="email" name="email" placeholder="email@example.com"
- 												 aria-describedby="emailDesc">
+ 												 aria-describedby="emailDesc" onchange="UserSignup.i.update()">
 									<small id="emailDesc" class="form-text text-muted">
 										Digite o e-mail do responsável pelo usuário da plataforma (se for menor de idade).
 									</small>
@@ -125,11 +125,19 @@
 
                 O participante também é convidado a contribuir com a pesquisa do Museu. Se quiser contribuir, clique no botão a seguir para ver mais detalhes e decidir sobre sua participação:
 
+								<div class="form-inline">
+									<label for="date_agree_1">Data:&nbsp;</label>
+									<input type="text" class="form-control" id="date_agree_1" name="date_agree_1" readonly>
+								</div>
+
+								<input type="radio" id="agree_radio" name="agree" value="agree" onchange="UserSignup.i.update()"/> Concordo em participar da pesquisa <br />
+								<input type="radio" id="not_agree_radio" name="agree" value="not_agree" onchange="UserSignup.i.update()" /> Não desejo participar da pesquisa <br />
+
                 <!-- TCLE -->
                 <div id="term-form" class="outer">
                   <hr>
                   <section id="main_content" class="inner">
-										<div id="term-part1" style="display:none">
+										<div id="term-part" style="display:none">
                     <h1 id="termo-de-consentimento-livre-e-esclarecido">TERMO DE CONSENTIMENTO LIVRE E ESCLARECIDO</h1>
 
                     <p align="center">
@@ -208,25 +216,18 @@
 
                     <p>Após ter recebido esclarecimentos sobre a natureza da pesquisa, seus objetivos, métodos, benefícios previstos, potenciais riscos e o incômodo que esta possa acarretar, aceito participar:</p>
 
-                    <p><label for="name_participant">Nome do (a) participante da pesquisa:</label><br />
-                    <input type="text" id="name_participant" name="name_participant" readonly/><br />
-									 </div>
-                     <label for="date_agree">Data(dd/mm/aaaa)</label><br />
-                     <input type="text" id="date_agree" name="date_agree" readonly/><br /></p>
+                    <p><b>Nome do (a) participante da pesquisa:</b> <span id="name_participant"></span><br />
 
-                    <p><input type="radio" id="agree" name="agree" value="agree" /> Concordo em participar da pesquisa <br />
-                     <input type="radio" id="agree" name="agree" value="not_agree" /> Não desejo participar da pesquisa <br /></p>
+                    <b>Data:</b> <span id="date_agree_2"></span><br /></p>
+
+										<p><b>Concordância:</b> <span id="answer_agree"></span></p>
 
                     <p>Para garantir a segurança do participante menor, verificamos a identidade do responsável. Entraremos em contato por e-mail solicitando que confirme esta aceitação do TCLE.
 
-										<div id="term-part2" style="display:none">
-
 										<p>Uma das condições para que o participante seja autorizado a participar será a sua confirmação em resposta ao nosso e-mail.</p>
 
-                    <p>Nome do responsável:<br />
-                    <input type="text" id="name_responsible" name="name_responsible" readonly/><br />
-                    E-mail do responsável:<br />
-                    <input type="text" id="email_responsible" name="email_responsible" readonly/><br /></p>
+                    <p><b>Nome do responsável:</b> <span id="name_responsible"></span><br />
+                    <b>E-mail do responsável:</b> <span id="email_responsible"></span><br /></p>
 
                     <h2 id="responsabilidade-do-pesquisador">Responsabilidade do Pesquisador</h2>
 

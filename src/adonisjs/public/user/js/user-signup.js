@@ -7,22 +7,31 @@ class UserSignup {
     this._signup = this._signup.bind(this)
     MessageBus.i.subscribe('/user/signup', this._signup)
     const now = new Date()
-    document.querySelector('#date_agree').value =
-      now.getDate() + '/' + (now.getMonth()+1) + '/' + now.getFullYear()
+    const sdate = now.getDate() + '/' + (now.getMonth()+1) + '/' + now.getFullYear()
+    document.querySelector('#date_agree_1').value = sdate
+    document.querySelector('#date_agree_2').innerHTML = sdate
+  }
+
+  update () {
+    document.querySelector('#name_participant').innerHTML = document.querySelector('#username').value
+    document.querySelector('#name_responsible').innerHTML = document.querySelector('#respname').value
+    document.querySelector('#email_responsible').innerHTML = document.querySelector('#email').value
+    document.querySelector('#answer_agree').innerHTML =
+      (document.querySelector('#agree_radio').checked)
+        ? 'Concordo em participar da pesquisa'
+        : (document.querySelector('#not_agree_radio').checked)
+          ? 'Não desejo participar da pesquisa'
+          : ''
   }
 
   _expandTerm () {
-    document.querySelector('#name_participant').value = document.querySelector('#username').value
-    document.querySelector('#name_responsible').value = document.querySelector('#respname').value
-    document.querySelector('#email_responsible').value = document.querySelector('#email').value
-    document.querySelector('#term-part1').style.display = 'initial'
-    document.querySelector('#term-part2').style.display = 'initial'
+    this.update()
+    document.querySelector('#term-part').style.display = 'initial'
     document.querySelector('#button-expand').style.display = 'none'
   }
 
   _retractTerm () {
-    document.querySelector('#term-part1').style.display = 'none'
-    document.querySelector('#term-part2').style.display = 'none'
+    document.querySelector('#term-part').style.display = 'none'
     document.querySelector('#button-expand').style.display = 'initial'
   }
 
@@ -97,7 +106,7 @@ class UserSignup {
           nameResponsible: parameters.respname,
           emailResponsible: parameters.email,
           nameParticipant: parameters.username,
-          date: parameters.date_agree,
+          date: parameters.date_agree_1,
           role: parameters.role,
           agree: (agree) ? '1' : '0'
         }
