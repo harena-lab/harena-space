@@ -67,19 +67,6 @@ class UserSignup {
     else if (parameters.password.length == 0)
       this._showFeedback('A senha é obrigatória.')
     else {
-      /*
-      if (parameters.agree && parameters.agree.length > 0 && parameters.agree == 'agree') {
-        if (parameters.name_responsible.length == 0)
-          this._showFeedback('Como você concordou com o termo, precisa informar o nome do responsável no termo.')
-        else if (parameters.name_participant == 0)
-          this._showFeedback('Como você concordou com o termo, precisa repetir o nome do participante no termo.')
-        else if (parameters.date_agree == 0)
-          this._showFeedback('Como você concordou com o termo, precisa informar a data.')
-        else if (parameters.email_responsible == 0)
-          this._showFeedback('Como você concordou com o termo, precisa informar/repetir o email do responsável.')
-      }
-      */
-      // if (feed.innerHTML.length == 0) {
       console.log('========== creating user ==========')
       const login = parameters.login.replace(/ /g, '_')
       const userJson = {
@@ -124,37 +111,7 @@ class UserSignup {
             '<span style="color:purple"><b>Importante: </b>Ainda há duas etapas extras a serem cumpridas. Você receberá um e-mail para confirmar que é o responsável. Em seguida, o participante também receberá um link para confirmar a sua concordância com a pesquisa.</span>', 'blue')
         else
           this._showFeedback('Usuário cadastrado com sucesso.', 'blue')
-        // }
       }
-        /*
-        else {
-          console.log(user.message.username)
-          console.log(user.message.id)
-          let role = await MessageBus.i.request('link/role/post',
-            {
-              userId: user.message.id,
-              roleId: parameters.role
-            }
-          )
-          if (role.message.error) {
-            console.log('--- error')
-            console.log(role.message.error)
-          } else {
-            console.log('--- link role success')
-            let group = await MessageBus.i.request('link/group/post',
-              {
-                userId: user.message.id,
-                groupId: parameters.group
-              }
-            )
-            if (group.message.error) {
-              console.log('--- error')
-              console.log(group.message.error)
-            } else
-              console.log('--- link group success')
-          }
-        }
-      */
     }
   }
 }
