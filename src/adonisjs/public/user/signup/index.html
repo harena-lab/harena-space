@@ -63,17 +63,22 @@
     <main role="main">
       <dcc-rest id="harena-create-user" bind="harena-create-user" subscribe="user/create/post"></dcc-rest>
       <dcc-rest id="harena-link-term" bind="harena-link-term" subscribe="user/term/post"></dcc-rest>
+			<dcc-rest id="harena-link-user-role" bind="harena-link-user-role" subscribe="link/role/post"></dcc-rest>
+      <dcc-rest id="harena-link-user-group" bind="harena-link-user-group" subscribe="link/group/post"></dcc-rest>
 
       <div class="d-flex flex-column vh-100 vw-100 hidden-overflow">
 
         <div class="h-100 w-100 create-case-padding scroll-y">
-          <div class="home-text">
-            <p id="template-title">Cadastro de Usuário na Plataforma (para participação na oficina)</p>
-          </div>
+					<div class="col-md-6">
+						<img src="images/museum-platform.png" width="927px">
+						<div class="home-text">
+	            <p id="template-title">Cadastro de Usuário na Plataforma (para participação na oficina)</p>
+	          </div>
 
-					<hr>
-					<div id="feedback-message-1" style="font-size:24px;color:red"></div>
-					<hr>
+						<hr>
+						<div id="feedback-message-1" style="font-size:24px;color:red"></div>
+						<hr>
+					</div>
 
           <div id="complete-form" class="row" style="padding-bottom: 70px;">
 
