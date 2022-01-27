@@ -394,7 +394,7 @@ class LayoutController {
   }
 
   async dynamicMainPage(){
-    if(LayoutController.user.message.institution === 'progntrial' && document.querySelector('.home-play-container')){
+    if((LayoutController.user.message.institution === 'progntrial' || LayoutController.user.message.institution === 'progn') && document.querySelector('.home-play-container')){
       const btnContainer = document.querySelector('.home-play-container')
       const btnAuthor = btnContainer.querySelector('#author-btn')
       const btnPlayer = btnContainer.querySelector('#player-btn')
