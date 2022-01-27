@@ -98,7 +98,8 @@ class RuleDCCCellPair extends RuleDCCCellNeighbor {
           nc = (nc < 0) ? spaceState.ncols - 1 : nc % spaceState.ncols
         }
         if (nr >= 0 && nr < spaceState.nrows &&
-                nc >= 0 && nc < spaceState.ncols) { triggered = this._computeTransition(spaceState, row, col, nr, nc) }
+                nc >= 0 && nc < spaceState.ncols)
+          triggered = this._computeTransition(spaceState, row, col, nr, nc)
       }
     }
     return triggered
