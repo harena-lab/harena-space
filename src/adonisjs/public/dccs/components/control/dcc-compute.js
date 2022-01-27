@@ -51,6 +51,12 @@ class DCCCompute extends DCCBase {
   async _subscribeVariables () {
     await this._unsubscribeVariables()
     this._subsVariables = DCCCompute.filterVariables(this._compiled, false)
+    if (this._condition != null) {
+      const condition = DCCCompute.filterVariables(this._condition, false)
+      for (const c of condition)
+        if (!this._subsVariables.includes(c))
+          this._subsVariables.push(c)
+    }
     for (let v of this._subsVariables)
       this._subscribe('var/set/' + v.replace(/\./g, '/'), this.update)
   }
@@ -338,7 +344,7 @@ class DCCCompute extends DCCBase {
     for (let s of compiledSet) {
       for (let c of s[1])
         if (c[0] == DCCCompute.role.variable && !variables.includes(c[1]) &&
-            !assigned.includes[c[1]])
+            !assigned.includes(c[1]))
           variables.push(c[1])
     }
     return variables

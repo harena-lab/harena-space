@@ -228,7 +228,7 @@ class PlayerManager {
 
     let resume = false
     const pPlay = this._state.pendingPlayCheck()
-    if (!this._previewCase && pPlay != null && resumeActive) {
+    if (!this._previewCase && pPlay != null && pPlay.running && resumeActive) {
       this._tracker.caseHalt(pPlay.userid, pPlay.caseid, pPlay.running.runningId)
 
       // <TODO> adjust for name: (precase == null || this._state.pendingPlayId() == precase)) {
