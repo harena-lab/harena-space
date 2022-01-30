@@ -21,6 +21,7 @@ class DCCStateSelect extends DCCVisual {
   }
 
   async connectedCallback () {
+    super.connectedCallback()
     DCCStateSelect.templateElements =
       "<style> @import '" +
          Basic.service.themeStyleResolver('dcc-state-select.css') +
@@ -62,7 +63,6 @@ class DCCStateSelect extends DCCVisual {
         sourceType: DCCStateSelect.elementTag,
         content: this.innerHTML
       })
-    super.connectedCallback()
   }
 
   disconnectedCallback () {

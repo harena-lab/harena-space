@@ -7,7 +7,9 @@ class MessageBus {
     this._listeners = []
     this._providers = {}
     this._connections = {}
+    this._bridge = null
     this._debugger = null
+    this.publish = this.publish.bind(this)
   }
 
   // <TODO> provisory, while it is not possible to debug only tracked messages
@@ -17,6 +19,14 @@ class MessageBus {
 
   set debugger(newDebugger) {
     this._debugger = newDebugger
+  }
+
+  get bridge() {
+    return this._bridge
+  }
+
+  set bridge(newBridge) {
+    this._bridge = newBridge
   }
 
   // <TODO> provisory
@@ -45,6 +55,11 @@ class MessageBus {
     return status
   }
 
+  showListeners () {
+    console.log('=== listeners')
+    console.log(this._listeners)
+  }
+
   unsubscribe (topic, callback) {
     let found = false
     for (let l = 0; l < this._listeners.length && !found; l++) {
@@ -56,7 +71,7 @@ class MessageBus {
     }
   }
 
-  async publish (topic, message, track) {
+  async publish (topic, message, track, byBridge) {
     /*
     console.log('----- message: ' + topic)
     console.log(message)
@@ -67,8 +82,11 @@ class MessageBus {
     }
     */
 
-    if (track != null && this.debugger != null)
-      this.debugger(topic, message)
+    if (this.debugger != null)
+      this.debugger(topic, message, track)
+
+    if (this._bridge != null && !byBridge)
+      this._bridge.publish(topic, message, track, true)
 
     let listeners = this._listeners.slice()
     for (const l in listeners) {
@@ -119,7 +137,7 @@ class MessageBus {
 
   /* Checks if this topic has a subscriber */
   /* default: does not check regular expression */
-  hasSubscriber (topic, regexp) {
+  hasSubscriber (topic, regexp, byBridge) {
     let hasSub = false
     let listeners = this._listeners.slice()
     for (let l = 0; !hasSub && l < listeners.length; l++) {
@@ -128,6 +146,9 @@ class MessageBus {
       else
         hasSub = (topic == listeners[l].topic)
     }
+    if (!hasSub && this._bridge != null && !byBridge)
+      hasSub = this._bridge.hasSubscriber(topic, regexp, true)
+
     return hasSub
   }
 

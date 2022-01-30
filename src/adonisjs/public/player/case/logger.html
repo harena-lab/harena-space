@@ -150,8 +150,9 @@
 
   <script>
      function start() {
-        MessageBus.i.debugger = function(topic, message) {
-           showLogger(topic, message)
+        MessageBus.i.debugger = function(topic, message, track) {
+          if (track != null)
+            showLogger(topic, message)
         }
         document.querySelector('#logger-messages').innerHTML = ''
         PlayerManager.player.startPlayer()
