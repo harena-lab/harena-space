@@ -31,13 +31,10 @@ class DCCDHTML extends DCCBase {
 
     this._renderHTML()
 
-    if (this.innerHTML.length > 0) {
-      this._originalHTML = this.innerHTML
-      this.innerHTML = ''
-    }
     this._observer = new MutationObserver(this._contentUpdated)
     this._observer.observe(this,
                            {attributes: true, childList: true, subtree: true})
+    this._contentUpdated()
 
     if (this.hasAttribute('autoupdate')) {
       let record = await this._request('var/get/*', null, null, true)
@@ -69,10 +66,7 @@ class DCCDHTML extends DCCBase {
   }
 
   _contentUpdated(mutationsList, observer) {
-    if (this.innerHTML.length > 0) {
-      this._originalHTML += this.innerHTML
-      this.innerHTML = ''
-    }
+    this._originalHTML = this.innerHTML
     this._renderHTML()
   }
 

@@ -450,6 +450,9 @@ class DCCCompute extends DCCBase {
           case 'abs':
             stack.push(Math.abs(stack.pop()))
             break
+          case 'round':
+            stack.push(Math.round(stack.pop()))
+            break
         }
       }
     }
