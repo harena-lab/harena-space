@@ -66,7 +66,11 @@ class DCCDHTML extends DCCBase {
   }
 
   _contentUpdated(mutationsList, observer) {
-    this._originalHTML = this.innerHTML
+    let fragment = this.innerHTML
+    while (fragment.length != this.innerHTML.length)
+      fragment = this.innerHTML
+    this.innerHTML = ''
+    this._originalHTML += fragment
     this._renderHTML()
   }
 
