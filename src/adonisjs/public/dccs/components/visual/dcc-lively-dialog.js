@@ -38,7 +38,6 @@ class DCCLivelyTalk extends DCCVisual {
             this.character : 'images/character.png'
     this._speech = (this.speech != null) ? this.speech : ''
     this._buildVisual()
-    super.connectedCallback()
   }
 
   _buildVisual () {

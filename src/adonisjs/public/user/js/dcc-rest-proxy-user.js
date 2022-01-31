@@ -76,4 +76,31 @@ DCC.component(
   }
 )
 
+DCC.component(
+  'harena-term-user',
+  'dcc-rest',
+  {
+    environment: {
+      'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api
+    },
+    oas: {
+      paths: {
+        '{url-manager}/term/user': {
+          'get': {
+            operationId: 'users',
+            parameters: [
+              {name: 'url-manager',
+               in: 'path'},
+              {name: 'userId',
+               in: 'query'},
+              {name: 'termId',
+               in: 'query'}
+            ]
+          }
+        }
+      }
+    }
+  }
+)
+
 })()

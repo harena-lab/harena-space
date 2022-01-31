@@ -6,6 +6,7 @@ class DCCExpression extends DCCVisual {
   }
 
   async connectedCallback () {
+    super.connectedCallback()
     // <TODO> provisory solution due to message ordering
     // this._updated = false
 
@@ -34,6 +35,8 @@ class DCCExpression extends DCCVisual {
     //                    also monitors all messages
     if (this.active) {
       this.stateChanged = this.stateChanged.bind(this)
+      console.log('=== component bus')
+      console.log(this._bus)
       this._subscribe('input/state/#', this.stateChanged)
       this._stateValues = {}
     }
@@ -60,8 +63,6 @@ class DCCExpression extends DCCVisual {
 
     this._setPresentation(this)
     this._presentationIsReady()
-
-    super.connectedCallback()
   }
 
   async _showResult () {
