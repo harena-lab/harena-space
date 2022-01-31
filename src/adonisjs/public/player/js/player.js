@@ -202,10 +202,26 @@ class PlayerManager {
   }
   */
 
+  async tryHalt () {
+    try {
+      const pPlay = this._state.pendingPlayCheck()
+      if (!this._previewCase && pPlay != null && pPlay.running)
+        this._tracker.caseTryHalt(pPlay.userid, pPlay.caseid, pPlay.running.runningId)
+    } catch (e) {
+      console.log('=== error on halt')
+      console.log(e)
+    }
+    return ''
+  }
+
   async startPlayer (caseid) {
+    this.tryHalt = this.tryHalt.bind(this)
+    window.onbeforeunload = this.tryHalt
+    /*
     window.onbeforeunload = function() {
       return "";
     }
+    */
     const resumeActive = true  // activates and deactivates case resume
     this._mainPanel = document.querySelector('#player-panel')
 
