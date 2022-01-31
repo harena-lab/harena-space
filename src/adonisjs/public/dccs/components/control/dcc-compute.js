@@ -148,9 +148,15 @@ class DCCCompute extends DCCBase {
     this.setAttribute('dependency', newValue)
   }
 
-  notify (topic, message) {
-    if (topic.toLowerCase() == 'update')
+  async notify (topic, message) {
+    const tp = topic.toLowerCase()
+    if (tp == 'update')
       this.update()
+    else if (tp.startsWith('var/')) {
+      await this._request('var/set/' + tp.substring(4).replace(/\./g, '/'),
+                          message.value)
+      this.update()
+    }
   }
 
   async update () {
