@@ -61,6 +61,13 @@ body {
   margin-left: 6px
 }
 
+/* Input Typed DCC
+ *****************/
+
+.dcc-input-typed-theme input textarea {
+   font-size: 4vh;
+}
+
 /* Button DCC
  ************/
 

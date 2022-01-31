@@ -35,8 +35,6 @@ class DCCExpression extends DCCVisual {
     //                    also monitors all messages
     if (this.active) {
       this.stateChanged = this.stateChanged.bind(this)
-      console.log('=== component bus')
-      console.log(this._bus)
       this._subscribe('input/state/#', this.stateChanged)
       this._stateValues = {}
     }
