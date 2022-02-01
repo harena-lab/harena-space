@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8"/>
+  <title>Player || Harena Environment</title>
+
+  <link rel="stylesheet" href="/player/css/player.css">
+
+  <link rel="stylesheet" href="/author/css/author.css">
+
+  <script src="/lib/axios-0.21.0/axios.min.js"></script>
+
+  <script src="/lib/jquery-3-4-1/jquery-3.4.1.slim.min.js"></script>
+  <script src="/lib/popper-1-15-0/popper.min.js"></script>
+  <script src="/lib/bootstrap-4.4.1/js/bootstrap.min.js"></script>
+
+  <script src="/config/config.js"></script>
+  <script src="/infra/bus.js"></script>
+  <script src="/infra/basic.js"></script>
+  <script src="/infra/dcc-common-server-proxy.js"></script>
+  <script src="/infra/dcc-common-server-address.js"></script>
+  <script src="/infra/simple-page-tasks.js"></script>
+  <script src="/infra/token-validator.js"></script>
+
+  <script>
+  Basic.service.rootPath = '../../'
+  </script>
+
+  <script src="/dccs/base/primitive-dcc.js"></script>
+  <script src="/dccs/base/scope-dcc.js"></script>
+  <script src="/dccs/base/dcc.js"></script>
+  <script src="/dccs/base/dcc-base.js "></script>
+  <script src="/dccs/base/dcc-visual.js "></script>
+  <script src="/dccs/base/dcc-block.js"></script>
+  <script src="/dccs/base/dcc-light.js "></script>
+
+  <script src="/dccs/components/visual/dcc-button.js"></script>
+  <script src="/dccs/components/visual/dcc-notice-input.js"></script>
+
+  <script src="/dccs/components/web/dcc-rest.js"></script>
+  <script src="/dccs/components/web/dcc-include.js"></script>
+  <script src="/dccs/components/web/dcc-dhtml.js"></script>
+
+  <script src="/dccs/components/data/dcc-submit.js"></script>
+  <script src="/dccs/components/data/dcc-model.js"></script>
+  <script src="/dccs/components/data/dcc-record.js"></script>
+
+  <script src="/dccs/base/subscribe-dcc.js"></script>
+  <script src="/dccs/base/trigger-dcc.js"></script>
+  <script src="/dccs/base/property-dcc.js"></script>
+  <script src="/dccs/base/connect-dcc.js"></script>
+
+
+  <script src="/infra/dcc-rest-proxy.js"></script>
+  <script src="/infra/dcc-basic.js"></script>
+  <script src="/infra/dcc-logger.js"></script>
+  <script src="/infra/dcc-logger-manager.js"></script>
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="shortcut icon" href="/icons/favicon.ico">
+  <link rel="manifest" href="/site.webmanifest">
+
+  <link rel="stylesheet" href="/lib/fontawesome-5-10-1/css/all.min.css">
+  <link rel="stylesheet" href="/lib/bootstrap-4.4.1/css/bootstrap.min.css">
+
+  <link rel="stylesheet" href="/dccs/css/dccs.css">
+  <link rel="stylesheet" href="/dccs/css/properties.css">
+  <link rel="stylesheet" href="/infra/css/common-player.css">
+  <link rel="stylesheet" href="/infra/css/common-author.css">
+
+  <script src="/author/js/dcc-author-server-proxy.js"></script>
+
+  <script src="/author/js/create.js"></script>
+  <script src="/author/js/template-case.js"></script>
+  <script src="/author/js/draft.js"></script>
+
+  <script src="/context/context.js"></script>
+
+  <script src="/dccs/components/control/dcc-timer.js"></script>
+  <script src="/dccs/components/control/dcc-compute.js"></script>
+  <script src="/dccs/components/control/dcc-message.js"></script>
+
+  <script src="/dccs/components/visual/dcc-markdown.js"></script>
+  <script src="/dccs/components/visual/dcc-annotation.js"></script>
+  <script src="/dccs/components/visual/dcc-expression.js"></script>
+  <script src="/dccs/components/visual/dcc-character.js"></script>
+  <script src="/dccs/components/visual/dcc-lively-dialog.js"></script>
+  <script src="/dccs/components/visual/dcc-state-select.js"></script>
+  <script src="/dccs/components/visual/dcc-image-marker.js"></script>
+  <script src="/dccs/base/dcc-styler.js"></script>
+  <script src="/dccs/components/visual/dcc-entity.js"></script>
+  <script src="/dccs/components/visual/dcc-input.js"></script>
+  <script src="/dccs/components/visual/dcc-input-typed.js"></script>
+  <script src="/dccs/components/visual/dcc-input-choice.js"></script>
+  <script src="/dccs/components/visual/dcc-input-table.js"></script>
+  <script src="/dccs/components/visual/dcc-input-summary.js"></script>
+  <script src="/dccs/components/visual/dcc-slider.js"></script>
+  <script src="/dccs/components/visual/dcc-report.js"></script>
+
+  <!-- bundle cellular -->
+  <script src="/dccs/components/cell/dcc-space-cellular.js"></script>
+  <script src="/dccs/components/cell/dcc-cell.js"></script>
+  <script src="/dccs/components/cell/dcc-cell-color.js"></script>
+  <script src="/dccs/components/cell/dcc-cell-image.js"></script>
+  <script src="/dccs/components/cell/dcc-cell-ruler.js"></script>
+  <script src="/dccs/components/cell/rule-dcc-cell.js"></script>
+  <script src="/dccs/components/cell/rule-dcc-cell-transition.js"></script>
+  <script src="/dccs/components/cell/rule-dcc-cell-neighbor.js"></script>
+  <script src="/dccs/components/cell/rule-dcc-cell-expression.js"></script>
+
+  <script src="/lib/showdown/showdown.min.js"></script>
+
+  <script src="/translator/translator.js"></script>
+  <script src="/translator/item-templates.js"></script>
+
+  <script src="/player/js/dcc-player-server-proxy.js"></script>
+  <script src="/player/js/htracker.js"></script>
+  <script src="/player/js/state.js"></script>
+  <script src="/player/js/metaplayer.js"></script>
+  <script src="/player/js/player.js"></script>
+  <script src="/player/js/caselist.js"></script>
+
+  <script>
+    async function toGallery () {
+      console.log("para galeria")
+      const space = await MessageBus.i.request('dcc-space-cellular/request/state')
+      console.log('=== space')
+      const caseId = new URL(document.location).searchParams.get('id')
+      console.log(caseId)
+      console.log(space)
+      if (caseId != null)
+        MessageBus.i.publish('case/summary/' + Basic.service.generateUID(),
+          {
+            caseId: caseId,
+            participantName: document.querySelector('#participant-name').value,
+            state: space.message
+          }, true)
+    }
+  </script>
+</head>
+  <body onload="PlayerManager.player.startPlayer()">
+  <!-- <div class="d-flex flex-column vh-100 vw-100 hidden-overflow"> -->
+
+    <dcc-rest id="harena-create-logger" bind="harena-create-logger" subscribe="logger/create/post"></dcc-rest>
+    <main role="main">
+      <div id="main-panel" class="d-flex flex-column vh-100 vw-100 scroll-y index-boot-padding">
+        <dcc-rest id="harena-case" bind="harena-case" subscribe="service/request/get"></dcc-rest>
+        <div class="mr-auto author-breadcrumb" id="preview-panel">
+        <!-- <div class="sty-preview-panel" id="preview-panel"> -->
+          <nav aria-label="breadcrumb">
+            <ol id="breadcrumb-group" class="breadcrumb">
+              Nome: <input id="participant-name" type="text">
+              <li class="breadcrumb-item" onclick="toGallery()" style="cursor:pointer;font-size:16px">Para Galeria</li>
+            </ol>
+          </nav>
+        </div>
+        <div id="player-panel" style="border-color: #004270; border-radius: 9px;	border-style: solid;	border-width: 13px;	border-bottom-width: 30px">
+        </div>
+      </div>
+    </main>
+  <!-- </div> -->
+</body>
+</html>
