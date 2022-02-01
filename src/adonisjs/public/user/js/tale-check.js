@@ -10,7 +10,8 @@ class UserTale {
     this._userId = null
     const userTerm = await this._retrieveTerm()
     if (!userTerm.message.error) {
-      if (userTerm.message.length > 1 || userTerm.message[0].agree == '0')
+      if (userTerm.message.length == 0 || userTerm.message.length > 1 ||
+          userTerm.message[0].agree == '0')
         document.querySelector('#proceed').style.display = 'initial'
       else {
         document.querySelector('#title-form').style.display = 'initial'
@@ -32,7 +33,7 @@ class UserTale {
       console.log('--- error')
       console.log(userTerm.message)
       this._showFeedback('Houve algum erro na recuperação do seu cadastro.')
-    } else if (this._userId == null)
+    } else if (this._userId == null && userTerm.message.length > 0)
       this._userId = userTerm.message[0].user_id
     return userTerm
   }
