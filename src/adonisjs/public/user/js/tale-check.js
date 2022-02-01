@@ -12,8 +12,10 @@ class UserTale {
     if (!userTerm.message.error) {
       if (userTerm.message.length == 0 || userTerm.message.length > 1 ||
           userTerm.message[0].agree == '0')
-        document.querySelector('#proceed').style.display = 'initial'
+        // document.querySelector('#proceed').style.display = 'initial'
+        window.location.href = "/player/home/?clearance=1"
       else {
+        document.querySelector('#proceed').style.display = 'none'
         document.querySelector('#title-form').style.display = 'initial'
         document.querySelector('#complete-form').style.display = 'initial'
         await this._requestAgree(userTerm.message[0])
@@ -128,6 +130,7 @@ class UserTale {
       this._showFeedback('Termo aceito com sucesso.', 'blue')
     else
       this._showFeedback('O termo não foi aceito pelo participante.', 'blue')
+    window.location.href = "/player/home/?clearance=1"
   }
 }
 
