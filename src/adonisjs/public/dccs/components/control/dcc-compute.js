@@ -390,8 +390,10 @@ class DCCCompute extends DCCBase {
           const mess = await cBus.request('var/get/' + c[1].replace(/\./g, '/'),
                                           null, null, true)
           if (mess.message != null) {
-            const value = (mess.message.body != null)
+            let value = (mess.message.body != null)
               ? mess.message.body : mess.message
+            if (typeof value === 'string')
+              value = value.replace(/,/gm, '.')
             c[2] = Number(value)
             if (isNaN(c[2]))
               c[2] = value

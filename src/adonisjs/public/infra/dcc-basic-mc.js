@@ -4,6 +4,8 @@
     'dcc-submit',
     {
       pre: function (message, form, schema) {
+        if (message.value.login != null)
+          message.value.email = message.value.login + '@museu.unicamp.br'
         // console.log('============ logging')
         if (form.checkValidity() === false) {
           for ( i = 0; i < form.elements.length; i++){
@@ -59,7 +61,7 @@
             document.querySelector('#login-message-alert').classList.add('alert-danger')
             document.querySelector('#login-message-alert').classList.remove('alert-success')
 
-            document.querySelector('#email').classList.add('is-invalid')
+            document.querySelector('#login').classList.add('is-invalid')
             document.querySelector('#password').classList.add('is-invalid')
 
           }
