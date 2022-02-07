@@ -396,7 +396,8 @@ class PlayerManager {
   async knotLoad (knotName, parameter) {
     // MessageBus.i.showListeners()
 
-    if (this._knots[knotName].categories.includes('branch'))
+    if (this._knots[knotName].categories &&
+        this._knots[knotName].categories.includes('branch'))
       this._branchRoot = this._currentKnot
     this._currentKnot = knotName
 
