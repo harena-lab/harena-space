@@ -10,19 +10,10 @@
  ******/
 
 .styt-main-frame {
-   /* position: absolute;
-   left: 0px;
-   right: 0px;
-   top: 0px;
-   bottom: 0px;
-   */
-
-   /* background-color: #004270; */
    width: 100%;
 }
 
 .styt-main {
-   /* position: absolute; */
    left: 15px;
    right: 15px;
    top: 10px;
@@ -53,7 +44,40 @@
 .styt-main-text {
    width: 100%;
    height: 100%;
-   /* overflow: scroll; */
+}
+
+.styt-profile-single p {
+  width: 50%;
+  height: 100%;
+  float: right;
+}
+
+.styt-profile-single figure {
+  width: 40%;
+  object-fit: contain;
+  float: left;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+
+.styt-profile-multiple p {
+  width: 30%;
+  height: 100%;
+  float: right;
+}
+
+.styt-profile-multiple img {
+  width: 30%;
+  object-fit: contain;
+  float: left;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+
+.styt-profile-multiple::after {
+  content: "";
+  clear: both;
+  display: table;
 }
 
 .styt-button-frame {
