@@ -2873,7 +2873,7 @@ class Translator {
 
   // Categories that do not have a correspondent theme
   Translator.markerCategories = ['start', 'end', 'division', 'master',
-                                 'master_top', 'master_bottom']
+                                 'master_top', 'master_bottom', 'branch']
 
   // <TODO> this is a different approach indicating characteristic by type
   // (homogenize?)

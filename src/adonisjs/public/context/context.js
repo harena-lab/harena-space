@@ -16,21 +16,21 @@ class Context {
   // <TODO> filter only select vocabularies of the context
   listSelectVocabularies () {
     const list = []
-    console.log('=== namespaces')
-    console.log(this._namespaces)
     for (const c in this._contextIndex) { list.push([this.toNS(c), this._contextIndex[c].label]) }
-    console.log('=== list')
-    console.log(list)
     return list
   }
 
   async loadResource (id) {
+    let result = ''
     const uri = this.resolveNS(id)
-    const resource =
-         await MessageBus.i.request('data/context/' +
-            this._contextIndex[uri].label + '/get',
-         this._contextIndex[uri].resource)
-    return JSON.parse(resource.message)
+    if (this._contextIndex[uri]) {
+      const resource =
+           await MessageBus.i.request('data/context/' +
+              this._contextIndex[uri].label + '/get',
+           this._contextIndex[uri].resource)
+      result = JSON.parse(resource.message)
+    }
+    return result
   }
 
   resolveNS (id) {

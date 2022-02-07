@@ -166,6 +166,10 @@ class PlayerManager {
   }
 
   _nextFlowKnot () {
+    if (this._branchRoot != null) {
+      this._currentKnot = this._branchRoot
+      this._branchRoot = null
+    }
     let next = null
     if (this._state.flow) {
       if (!this._currentKnot)
@@ -384,12 +388,16 @@ class PlayerManager {
       }
       if (flow != null && flow.length > 0)
         this._state.flow = flow
+      console.log('=== flow')
+      console.log(flow)
     }
   }
 
   async knotLoad (knotName, parameter) {
     // MessageBus.i.showListeners()
 
+    if (this._knots[knotName].categories.includes('branch'))
+      this._branchRoot = this._currentKnot
     this._currentKnot = knotName
 
     // <TODO> Local Environment - Future
@@ -550,6 +558,7 @@ class PlayerManager {
     * Start the tracking record of a case
     */
   startCase () {
+    this._branchRoot = null
     if (!PlayerManager.isCapsule) {
       // <TODO> this._runningCase is provisory
       const runningCase =
