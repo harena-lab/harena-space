@@ -31,4 +31,33 @@ DCC.component(
   }
 )
 
+DCC.component(
+  'harena-withdraw',
+  'dcc-rest',
+  {
+    environment: {
+      'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api
+    },
+    oas: {
+      paths: {
+        '{url-manager}/case/withdraw': {
+          'delete': {
+            operationId: 'case-withdraw',
+            parameters: [
+              {name: 'url-manager',
+               in: 'path'},
+              {name: 'entity',
+               in: 'query'},
+              {name: 'subject',
+               in: 'query'},
+              {name: 'table_id',
+               in: 'query'}
+            ]
+          }
+        }
+      }
+    }
+  }
+)
+
 })()

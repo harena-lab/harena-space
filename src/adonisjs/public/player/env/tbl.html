@@ -82,6 +82,7 @@
 
 	  <main role="main">
 			<dcc-rest id="harena-share" bind="harena-share" subscribe="share/case/post"></dcc-rest>
+      <dcc-rest id="harena-withdraw" bind="harena-withdraw" subscribe="withdraw/case/delete"></dcc-rest>
 
 	    <div class="d-flex flex-column vh-100 vw-100 home-author-padding hidden-overflow">
 				<!-- Create breadcrumbs -->
@@ -105,6 +106,7 @@
 						<div class="d-flex flex-column align-items-center justify-content-center home-author-box-content home-author-case-box">
 							Quiz
 							<dcc-button label="Ativar" topic="tbl/quiz/activate"></dcc-button>
+              <dcc-button label="Desativar" topic="tbl/quiz/deactivate"></dcc-button>
 							<div id="quiz-status" style="color:blue">
 							</div>
 						</div>
@@ -112,6 +114,7 @@
 						<div class="d-flex flex-column align-items-center justify-content-center home-author-box-content home-author-case-box">
 							Casos
 							<dcc-button label="Ativar" topic="tbl/cases/activate"></dcc-button>
+              <dcc-button label="Desativar" topic="tbl/cases/deactivate"></dcc-button>
 							<div id="cases-status" style="color:blue">
 							</div>
 						</div>
