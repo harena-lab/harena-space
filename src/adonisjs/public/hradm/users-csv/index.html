@@ -89,35 +89,8 @@
 
       <div class="home-author-padding align-items-center rounded row sticky-top" style="z-index:3;">
          <div class="h-100 w-100 draft-content-padding scroll-y">
-           <div class="row" style="padding-bottom: 70px;">
-             <div class="col-md-6">
-               <form id="create-user-form">
-
-                 <div class="form-group">
-                   <label for="institution">Institution</label>
-                   <input type="text" class="form-control" id="institution" name="institution" placeholder="Enter the institution">
-                 </div>
-
-                 <div class="form-group">
-                   <label for="role">Role</label>
-                   <input type="text" class="form-control" id="role" name="role" placeholder="Enter the role">
-                 </div>
-
-                 <div class="form-group">
-                   <label for="group">Group</label>
-                   <input type="text" class="form-control" id="group" name="group" placeholder="Enter the group">
-                 </div>
-
-                 <div class="form-group">
-                   <label for="grade">Grade</label>
-                   <input type="text" class="form-control" id="grade" name="grade" placeholder="Enter the grade">
-                 </div>
-
-                 <dcc-submit label="Add Users" topic="/adm/add/users"></dcc-submit>
-              </form>
-           </div>
-           <!-- <dcc-button label="Add Users" topic="/adm/add/users"></dcc-button> -->
-           <dcc-table-csv separator=";"></dcc-table-csv>
+           <dcc-button label="Add Users" topic="/adm/add/users"></dcc-button>
+           <dcc-table-csv separator=","></dcc-table-csv>
          </div>
       </div>
 
