@@ -20,6 +20,8 @@ class Tracker {
     this.caseCompleted = this.caseCompleted.bind(this)
     MessageBus.i.subscribe('case/completed/+', this.caseCompleted)
     MessageBus.i.subscribe('session/close', this.caseCompleted)
+    this.caseTryHalt = this.caseTryHalt.bind(this)
+    MessageBus.i.subscribe('case/tryhalt', this.caseTryHalt)
 
     this.submitVariables = this.submitVariables.bind(this)
     MessageBus.i.subscribe('input/submit/*', this.submitVariables)
@@ -28,6 +30,7 @@ class Tracker {
   initializeTrack () {
     this._variables = {}
     this._varUpdated = {}
+    this._varTrack = []
     // this._varChanged = {} <FUTURE>
     this._mandatoryFilled = {}
     this._groupInput = null
@@ -81,6 +84,11 @@ class Tracker {
   }
 
   inputChanged (topic, message) {
+    const varid = this._extractEntityId(topic, 3)
+    const currentDateTime = new Date()
+    const tr = {changed: currentDateTime.toJSON()}
+    tr[varid] = message.value
+    this._varTrack.push(tr)
     this._updateVariable(this._extractEntityId(topic, 3), message.value)
     // this._changedVariable(topic, message.value) <FUTURE>
   }
@@ -157,8 +165,24 @@ class Tracker {
         {userId: message.userId,
          caseId: message.caseId,
          knotTrack: this._knotTrack,
-         variables: this._variables}, true)
+         variables: this._variables,
+         varTrack: this._varTrack}, true)
     }
+  }
+
+  async caseTryHalt (userId, caseId, instanceId) {
+    const currentDateTime = new Date()
+    this._knotTrack.push(
+      {event: '*** try case halt ***',
+       timeResume: currentDateTime.toJSON()}
+    )
+    this._variables['try case halt'] = '*** try case halt ***'
+    await MessageBus.i.publish('case/summary/' + instanceId,
+      {userId: userId,
+       caseId: caseId,
+       knotTrack: this._knotTrack,
+       variables: this._variables,
+       varTrack: this._varTrack}, true)
   }
 
   caseHalt (userId, caseId, instanceId) {
@@ -174,7 +198,8 @@ class Tracker {
         {userId: userId,
          caseId: caseId,
          knotTrack: track.knotTrack,
-         variables: track.variables}, true)
+         variables: track.variables,
+         varTrack: this._varTrack}, true)
     }
   }
 
@@ -187,6 +212,7 @@ class Tracker {
         {knotTrack: this._knotTrack,
          variables: this._variables,
          varUpdated: this._varUpdated,
+         varTrack: this._varTrack,
          mandatoryFilled: this._mandatoryFilled,
          groupInput: this._groupInput,
          caseCompleted: this._caseCompleted
@@ -207,6 +233,7 @@ class Tracker {
     if (track != null) {
       this._knotTrack = track.knotTrack
       this._variables = track.variables
+      this._varTrack = track.varTrack
       this._varUpdated = track.varUpdated
       this._mandatoryFilled = track.mandatoryFilled
       this._groupInput = track.groupInput

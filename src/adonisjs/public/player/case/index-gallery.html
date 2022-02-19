@@ -54,6 +54,7 @@
   <script src="/infra/dcc-rest-proxy.js"></script>
   <script src="/infra/dcc-basic.js"></script>
   <script src="/infra/dcc-logger.js"></script>
+  <script src="/infra/dcc-logger-manager.js"></script>
 
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -98,6 +99,17 @@
   <script src="/dccs/components/visual/dcc-slider.js"></script>
   <script src="/dccs/components/visual/dcc-report.js"></script>
 
+  <!-- bundle cellular -->
+  <script src="/dccs/components/cell/dcc-space-cellular.js"></script>
+  <script src="/dccs/components/cell/dcc-cell.js"></script>
+  <script src="/dccs/components/cell/dcc-cell-color.js"></script>
+  <script src="/dccs/components/cell/dcc-cell-image.js"></script>
+  <script src="/dccs/components/cell/dcc-cell-ruler.js"></script>
+  <script src="/dccs/components/cell/rule-dcc-cell.js"></script>
+  <script src="/dccs/components/cell/rule-dcc-cell-transition.js"></script>
+  <script src="/dccs/components/cell/rule-dcc-cell-neighbor.js"></script>
+  <script src="/dccs/components/cell/rule-dcc-cell-expression.js"></script>
+
   <script src="/lib/showdown/showdown.min.js"></script>
 
   <script src="/translator/translator.js"></script>
@@ -110,105 +122,44 @@
   <script src="/player/js/player.js"></script>
   <script src="/player/js/caselist.js"></script>
 
-  <style>
-  .collapsible {
-    background-color: #777;
-    color: white;
-    cursor: pointer;
-    padding: 18px;
-    width: 100%;
-    border: none;
-    text-align: left;
-    outline: none;
-    font-size: 15px;
-  }
-
-  .active, .collapsible:hover {
-    background-color: #555;
-  }
-
-  .collapsible:after {
-    content: '\002B';
-    color: white;
-    font-weight: bold;
-    float: right;
-    margin-left: 5px;
-  }
-
-  .active:after {
-    content: "\2212";
-  }
-
-  .content {
-    padding: 0 18px;
-    max-height: 0;
-    overflow: scroll;
-    transition: max-height 0.2s ease-out;
-    background-color: #f1f1f1;
-  }
-  </style>
-
   <script>
-     function start() {
-        MessageBus.i.debugger = function(topic, message, track) {
-          if (track != null)
-            showLogger(topic, message)
-        }
-        document.querySelector('#logger-messages').innerHTML = ''
-        PlayerManager.player.startPlayer()
-     }
-
-     function showLogger(topic, message) {
-       const lm = document.querySelector('#logger-messages')
-       let div = document.createElement('div')
-       const msg = ((message == null) ? '[[empty]]'
-         : JSON.stringify(message, null, '  '))
-       div.innerHTML =
-          '<button class="collapsible">' +
-          topic.replace(/</gm, '&lt;').replace(/>/gm, '&gt;') +
-          '</button>' +
-          '<textarea class="content" style="width:100%" rows="' +
-             + msg.split(/\r\n|\r|\n/).length + '">' + msg +
-          '</textarea>'
-       const coll = div.getElementsByClassName('collapsible')
-       coll[0].addEventListener('click', function() {
-         this.classList.toggle('active')
-         var content = this.nextElementSibling
-         if (content.style.maxHeight)
-           content.style.maxHeight = null
-         else
-           content.style.maxHeight = '100%'
-       })
-       lm.appendChild(div)
-       lm.scrollTop = lm.scrollHeight - lm.clientHeight
-     }
+    async function toGallery () {
+      console.log("para galeria")
+      const space = await MessageBus.i.request('dcc-space-cellular/request/state')
+      console.log('=== space')
+      const caseId = new URL(document.location).searchParams.get('id')
+      console.log(caseId)
+      console.log(space)
+      if (caseId != null)
+        MessageBus.i.publish('case/summary/' + Basic.service.generateUID(),
+          {
+            caseId: caseId,
+            participantName: document.querySelector('#participant-name').value,
+            state: space.message
+          }, true)
+    }
   </script>
-
 </head>
-  <body onload="start()">
-     <div class="d-flex flex-column vh-100 vw-100 hidden-overflow">
-      <dcc-rest id="harena-case" bind="harena-case" subscribe="service/request/get"></dcc-rest>
-      <div class="mr-auto author-breadcrumb" id="preview-panel">
-        <nav aria-label="breadcrumb">
-          <ol id="breadcrumb-group" class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/">Welcome</a></li>
-            <li class="breadcrumb-item"><a href="/player/home/category">Categories</a></li>
-            <li id="case-list-breadcrumb" class="breadcrumb-item">
-              <a href="javascript:history.back()">Case List</a>
-            </li>
-            <li id="current-breadcrumb" class="breadcrumb-item active" aria-current="page">Current Case</li>
-          </ol>
-        </nav>
+  <body onload="PlayerManager.player.startPlayer()">
+  <!-- <div class="d-flex flex-column vh-100 vw-100 hidden-overflow"> -->
+
+    <dcc-rest id="harena-create-logger" bind="harena-create-logger" subscribe="logger/create/post"></dcc-rest>
+    <main role="main">
+      <div id="main-panel" class="d-flex flex-column vh-100 vw-100 scroll-y index-boot-padding">
+        <dcc-rest id="harena-case" bind="harena-case" subscribe="service/request/get"></dcc-rest>
+        <div class="mr-auto author-breadcrumb" id="preview-panel">
+        <!-- <div class="sty-preview-panel" id="preview-panel"> -->
+          <nav aria-label="breadcrumb">
+            <ol id="breadcrumb-group" class="breadcrumb">
+              Nome: <input id="participant-name" type="text">
+              <li class="breadcrumb-item" onclick="toGallery()" style="cursor:pointer;font-size:16px">Para Galeria</li>
+            </ol>
+          </nav>
+        </div>
+        <div id="player-panel" style="border-color: #004270; border-radius: 9px;	border-style: solid;	border-width: 13px;	border-bottom-width: 30px">
+        </div>
       </div>
-      <main role="main" class="d-flex h-100 mb-3">
-        <div id="main-panel" class="d-flex flex-column pt-5 vh-100 col-6 scroll-y index-boot-padding">
-          <div id="player-panel" style="border-color: #004270; border-radius: 9px;	border-style: solid;	border-width: 13px;	border-bottom-width: 100px">
-          </div>
-        </div>
-        <div id="logger-area" class="d-flex w-100" style="height: 90%">
-           <div id="logger-messages" style="overflow-y:scroll" class="w-100 h-100 std-monospace"></div>
-        </div>
-      </main>
-    </div>
+    </main>
+  <!-- </div> -->
 </body>
 </html>

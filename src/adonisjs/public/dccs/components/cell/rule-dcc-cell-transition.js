@@ -11,7 +11,7 @@ class RuleDCCTransition extends RuleDCCCell {
       **********/
 
   static get observedAttributes () {
-    return RuleDCCCell.observedAttributes.concat(['transition'])
+    return RuleDCCCell.observedAttributes.concat(['transition', 'topic'])
   }
 
   get transition () {
@@ -21,6 +21,14 @@ class RuleDCCTransition extends RuleDCCCell {
   set transition (newValue) {
     this.setAttribute('transition', newValue)
     this._decomposeTransition(newValue)
+  }
+
+  get topic () {
+    return this.getAttribute('topic')
+  }
+
+  set topic (newValue) {
+    this.setAttribute('topic', newValue)
   }
 
   _decomposeTransition (transition) {
@@ -120,6 +128,8 @@ class RuleDCCTransition extends RuleDCCCell {
         }
       }
     }
+    if (this.hasAttribute('topic') && triggered)
+      this._publish(this.topic)
     return triggered
   }
 }

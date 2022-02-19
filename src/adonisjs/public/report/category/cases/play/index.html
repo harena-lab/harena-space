@@ -87,7 +87,7 @@
             <div id="case-boxes" class="container-fluid draft-scroll-container">
               <dcc-rest id="harena-logger-list" bind="harena-logger-list" subscribe="logger/list/get"></dcc-rest>
               <dcc-rest id="harena-logger-list-page" bind="harena-logger-list-page"></dcc-rest>
-              <dcc-dhtml id="harena-dhtml-logger"connect="retrieve:harena-logger-list-page:service/request/get">
+              <dcc-dhtml id="harena-dhtml-logger" connect="retrieve:harena-logger-list-page:service/request/get">
                 <input type="hidden" id="pages" value="{{pages}}">
                 {{@foreach logs lg}}
                 <!-- checkbox for selecting instances -->

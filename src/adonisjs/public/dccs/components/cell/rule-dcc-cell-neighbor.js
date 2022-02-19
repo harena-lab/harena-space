@@ -76,7 +76,10 @@ class RuleDCCCellNeighbor extends RuleDCCTransition {
 
   notify (topic, message) {
     switch (topic.toLowerCase()) {
-      case 'probability': this.probability = message.value; break
+      case 'probability':
+        this.probability =
+          (message.value != null) ? message.value : message.body;
+        break
     }
   }
 }
@@ -98,7 +101,8 @@ class RuleDCCCellPair extends RuleDCCCellNeighbor {
           nc = (nc < 0) ? spaceState.ncols - 1 : nc % spaceState.ncols
         }
         if (nr >= 0 && nr < spaceState.nrows &&
-                nc >= 0 && nc < spaceState.ncols) { triggered = this._computeTransition(spaceState, row, col, nr, nc) }
+                nc >= 0 && nc < spaceState.ncols)
+          triggered = this._computeTransition(spaceState, row, col, nr, nc)
       }
     }
     return triggered

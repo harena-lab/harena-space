@@ -28,7 +28,7 @@ class DCCCompute extends DCCBase {
         this._subscribe('compute/updated/' + this.dependency,
                         this._dependencyCompleted)
         this._publish('compute/status/' + this.dependency)
-      } else if (this._compiled != null && this.active)
+      } else if (this._compiled != null && (this.active || this.autorun))
         await this._newExpressionUpdate()
     }
 
@@ -50,7 +50,15 @@ class DCCCompute extends DCCBase {
 
   async _subscribeVariables () {
     await this._unsubscribeVariables()
-    this._subsVariables = DCCCompute.filterVariables(this._compiled, false)
+    this._subsVariables =
+      DCCCompute.filterVariables(this._compiled, false, null)
+    if (this._condition != null) {
+      const condition = DCCCompute.
+        filterVariables(this._condition, false, this._compiled)
+      for (const c of condition)
+        if (!this._subsVariables.includes(c))
+          this._subsVariables.push(c)
+    }
     for (let v of this._subsVariables)
       this._subscribe('var/set/' + v.replace(/\./g, '/'), this.update)
   }
@@ -66,12 +74,14 @@ class DCCCompute extends DCCBase {
   _dependencyCompleted () {
     this._unsubscribe('compute/updated/' + this.dependency,
                       this._dependencyCompleted)
-    this._newExpressionUpdate()
+    if (this.active || this.autorun)
+      this._newExpressionUpdate()
   }
 
   async _newExpressionUpdate () {
     await this.update()
-    await this._subscribeVariables()
+    if (this.active)
+      await this._subscribeVariables()
   }
 
   /*
@@ -80,7 +90,7 @@ class DCCCompute extends DCCBase {
 
   static get observedAttributes () {
     return DCCBase.observedAttributes.concat(
-      ['condition', 'expression', 'active', 'dependency'])
+      ['condition', 'expression', 'active', 'autorun', 'dependency'])
   }
 
   get condition () {
@@ -104,7 +114,7 @@ class DCCCompute extends DCCBase {
     this._newExpressionUpdate()
   }
 
-  // defines if the display is activelly updated
+  // defines if the expression is activelly updated
   get active () {
     return this.hasAttribute('active')
   }
@@ -117,6 +127,19 @@ class DCCCompute extends DCCBase {
     }
   }
 
+  // defines if the expression run at start
+  get autorun () {
+    return this.hasAttribute('autorun')
+  }
+
+  set autorun (isActive) {
+    if (isActive) {
+      this.setAttribute('autorun', '')
+    } else {
+      this.removeAttribute('autorun')
+    }
+  }
+
   get dependency () {
     return this.getAttribute('dependency')
   }
@@ -125,9 +148,15 @@ class DCCCompute extends DCCBase {
     this.setAttribute('dependency', newValue)
   }
 
-  notify (topic, message) {
-    if (topic.toLowerCase() == 'update')
+  async notify (topic, message) {
+    const tp = topic.toLowerCase()
+    if (tp == 'update')
       this.update()
+    else if (tp.startsWith('var/')) {
+      await this._request('var/set/' + tp.substring(4).replace(/\./g, '/'),
+                          message.value)
+      this.update()
+    }
   }
 
   async update () {
@@ -330,15 +359,16 @@ class DCCCompute extends DCCBase {
     return result
   }
 
-  static filterVariables (compiledSet, includeAssigned) {
+  static filterVariables (compiledSet, includeAssigned, compiledAssignment) {
     let assigned = []
     if (!includeAssigned)
-      assigned = DCCCompute.filterAssignedVariables(compiledSet)
+      assigned = DCCCompute.filterAssignedVariables(
+        (compiledAssignment == null) ? compiledSet : compiledAssignment)
     let variables = []
     for (let s of compiledSet) {
       for (let c of s[1])
         if (c[0] == DCCCompute.role.variable && !variables.includes(c[1]) &&
-            !assigned.includes[c[1]])
+            !assigned.includes(c[1]))
           variables.push(c[1])
     }
     return variables
@@ -360,8 +390,10 @@ class DCCCompute extends DCCBase {
           const mess = await cBus.request('var/get/' + c[1].replace(/\./g, '/'),
                                           null, null, true)
           if (mess.message != null) {
-            const value = (mess.message.body != null)
+            let value = (mess.message.body != null)
               ? mess.message.body : mess.message
+            if (typeof value === 'string')
+              value = value.replace(/,/gm, '.')
             c[2] = Number(value)
             if (isNaN(c[2]))
               c[2] = value
@@ -425,6 +457,9 @@ class DCCCompute extends DCCBase {
             break
           case 'abs':
             stack.push(Math.abs(stack.pop()))
+            break
+          case 'round':
+            stack.push(Math.round(stack.pop()))
             break
         }
       }

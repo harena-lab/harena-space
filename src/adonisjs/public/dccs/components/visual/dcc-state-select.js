@@ -21,6 +21,7 @@ class DCCStateSelect extends DCCVisual {
   }
 
   async connectedCallback () {
+    super.connectedCallback()
     DCCStateSelect.templateElements =
       "<style> @import '" +
          Basic.service.themeStyleResolver('dcc-state-select.css') +
@@ -36,7 +37,7 @@ class DCCStateSelect extends DCCVisual {
     this._shadow = this.attachShadow({ mode: 'open' })
     this._shadow.appendChild(template.content.cloneNode(true))
 
-    this._setPresentation(this.querySelector('#presentation-dcc'))
+    this._setPresentation(this._shadow.querySelector('#presentation-dcc'))
     this._presentationState = this._shadow.querySelector('#presentation-state')
 
     this.completeId = this.id
@@ -62,7 +63,6 @@ class DCCStateSelect extends DCCVisual {
         sourceType: DCCStateSelect.elementTag,
         content: this.innerHTML
       })
-    super.connectedCallback()
   }
 
   disconnectedCallback () {
@@ -179,11 +179,13 @@ class DCCStateSelect extends DCCVisual {
                  '[' + ((this.selection == null) ? ' ' : this.selection) + ']'
         } else { this._presentationState.innerHTML = '' }
       }
-      if (this.styles && this.selectionIndex < this.styles.length) { this._presentation.className = this.styles[this.selectionIndex] } else {
-        this._presentation.className =
+      this._presentation.className = 'dcc-state-select-theme '
+      if (this.styles && this.selectionIndex < this.styles.length)
+        this._presentation.className += this.styles[this.selectionIndex]
+      else
+        this._presentation.className +=
               DCCStateSelect.elementTag + '-theme ' +
               DCCStateSelect.elementTag + '-' + this.selectionIndex + '-theme'
-      }
       this._presentationIsReady()
     }
   }

@@ -6,6 +6,7 @@ class DCCExpression extends DCCVisual {
   }
 
   async connectedCallback () {
+    super.connectedCallback()
     // <TODO> provisory solution due to message ordering
     // this._updated = false
 
@@ -60,8 +61,6 @@ class DCCExpression extends DCCVisual {
 
     this._setPresentation(this)
     this._presentationIsReady()
-
-    super.connectedCallback()
   }
 
   async _showResult () {

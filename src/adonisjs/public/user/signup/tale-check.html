@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Concordância do Menor com a Pesquisa</title>
+
+	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
+
+	<link rel="stylesheet" href="../../css/author.css">
+
+	<script src="/lib/axios-0.21.0/axios.min.js"></script>
+
+	<script src="../../lib/jquery-3-4-1/jquery-3.4.1.slim.min.js"></script>
+	<script src="../../lib/popper-1-15-0/popper.min.js"></script>
+	<script src="../../lib/bootstrap-4.4.1/js/bootstrap.min.js"></script>
+
+	<script src="../../config/config.js"></script>
+	<script src="../../infra/bus.js"></script>
+	<script src="../../infra/basic.js"></script>
+	<script src="../../infra/dcc-common-server-proxy.js"></script>
+	<script src="../../infra/dcc-common-server-address.js"></script>
+
+   <script src="../../dccs/base/primitive-dcc.js"></script>
+   <script src="../../dccs/base/scope-dcc.js"></script>
+	<script src="../../dccs/base/dcc.js"></script>
+	<script src="../../dccs/base/dcc-base.js "></script>
+	<script src="../../dccs/base/dcc-visual.js "></script>
+	<script src="../../dccs/base/dcc-block.js"></script>
+	<script src="../../dccs/components/visual/dcc-button.js"></script>
+	<script src="../../dccs/components/visual/dcc-notice-input.js"></script>
+
+	<script src="../../dccs/components/web/dcc-rest.js"></script>
+	<script src="../../dccs/components/web/dcc-include.js"></script>
+	<script src="../../dccs/components/web/dcc-dhtml.js"></script>
+
+	<script src="../../dccs/components/data/dcc-submit.js"></script>
+	<script src="../../dccs/components/data/dcc-model.js"></script>
+	<script src="../../dccs/components/data/dcc-record.js"></script>
+
+	<script src="../../dccs/base/subscribe-dcc.js"></script>
+	<script src="../../dccs/base/trigger-dcc.js"></script>
+	<script src="../../dccs/base/property-dcc.js"></script>
+	<script src="../../dccs/base/connect-dcc.js"></script>
+
+	<script src="../../infra/dcc-rest-proxy.js"></script>
+	<script src="../../infra/dcc-basic.js"></script>
+
+
+	<link rel="stylesheet" href="../../lib/fontawesome-5-10-1/css/all.min.css">
+	<link rel="stylesheet" href="../../lib/bootstrap-4.4.1/css/bootstrap.min.css">
+
+	<link rel="stylesheet" href="../../dccs/css/dccs.css">
+	<link rel="stylesheet" href="../../dccs/css/properties.css">
+	<link rel="stylesheet" href="../../infra/css/common-player.css">
+	<link rel="stylesheet" href="../../infra/css/common-author.css">
+
+	<script src="../js/dcc-rest-proxy-user.js"></script>
+  <script src="../js/tale-check.js"></script>
+</head>
+
+  <body onload="UserTale.i.check()">
+    <!-- Create a section to place page content -->
+    <main role="main">
+      <dcc-rest id="harena-link-term" bind="harena-link-term" subscribe="user/term/post"></dcc-rest>
+			<dcc-rest id="harena-term-user" bind="harena-term-user" subscribe="user/term/get"></dcc-rest>
+
+      <div class="d-flex flex-column vh-100 vw-100 hidden-overflow">
+
+        <div class="h-100 w-100 create-case-padding scroll-y">
+					<div class="col-md-6">
+						<img src="images/museum-platform.png" width="100%">
+
+						<div id="proceed" style="text-align:center">
+							<h1><a href="/player/home/?clearance=1">Prosseguir</a></h1>
+						</div>
+
+						<div id="title-form" style="display:none">
+							<div class="home-text">
+		            <p id="template-title">Termo de Assentimento para Menores</p>
+		          </div>
+
+							<hr>
+							<div id="feedback-message-1" style="font-size:24px;color:red"></div>
+							<hr>
+					  </hr>
+					</div>
+
+          <div id="complete-form" style="display:none" class="row" style="padding-bottom: 70px;">
+
+            <div class="col-md-6">
+							<h4 style="color:black">Esta aceitação do termo deve ser feita pela criança ou adolescente que participará da oficina.</h4>
+
+              <form id="create-case-form">
+                <p><b>Nome do Participante da Oficina (criança ou adolescente): </b>
+								<span id="username_1"></span></p>
+								<p><b>Nome do Responsável: </b>
+								<span id="respname_1"></span></p>
+                <input type="hidden" id="institution" name="institution" value="mcunicamp">
+                <input type="hidden" id="grade" name="grade" value="student">
+                <input type="hidden" id="term" name="term" value="museu_harena_2021">
+                <input type="hidden" id="role" name="role" value="minor">
+
+                Um de seus pais ou responsável concordou com a sua participação na pesquisa. Se você também concorda, clique na opção a seguir concordando.
+
+								<p>ENTENDI QUE POSSO DIZER “SIM” E PARTICIPAR, MAS QUE, A QUALQUER
+								MOMENTO, POSSO DIZER “NÃO” E DESISTIR. ENTENDI QUE NINGUÉM FICARÁ BRAVO
+								SE EU DESISTIR. SEMPRE PODEREI TIRAR MINHAS DÚVIDAS COM OS PESQUISADORES
+								 E CONVERSAR COM OS MEUS PAIS OU RESPONSÁVEIS.</p>
+
+								<div class="form-inline">
+									<label for="date_agree_1">Data:&nbsp;</label>
+									<input type="text" class="form-control" id="date_agree_1" name="date_agree_1" readonly>
+								</div>
+
+								<input type="radio" id="agree_radio" name="agree" value="agree" onchange="UserTale.i.update()"/> <img src="images/agree.png"> Concordo em participar da pesquisa  <br />
+								<input type="radio" id="not_agree_radio" name="agree" value="not_agree" onchange="UserTale.i.update()" /> <img src="images/not-agree.png"> Não desejo participar da pesquisa  <br />
+
+								<dcc-submit label="Registrar" topic="/user/agreement" xstyle="out"></dcc-submit>
+
+								<!-- TALE 7 a 10 -->
+						    <div id="term-form-a" class="outer">
+						      <section id="main_content" class="inner">
+									<div id="term-part-a" style="display:none">
+						        <h1 id="termo-de-assentimento-livre-e-esclarecido">TERMO DE ASSENTIMENTO LIVRE E ESCLARECIDO</h1>
+
+						<p align="center">
+							<b>07 a 10 anos</b> <br> </p><hr>
+							<b>Plataforma de Aprendizagem baseada em Casos</b> <br>
+							<b>Responsável: André Santanchè</b> <br>
+							<b>Número do CAAE: 46635421.5.0000.5404</b><br>
+						<p></p>
+
+						<p>Como usuário da Plataforma Harena, você também está sendo
+						convidado(a) a participar da pesquisa “Plataforma de Aprendizagem
+						Virtual baseada em Simulação e Resolução de Problemas” para a Unicamp.</p>
+
+						<p>Você pode ser usuário da Plataforma Harena sem que seus dados sejam
+						utilizados para pesquisa mas, caso concorde em também fornecê-los para a
+						 pesquisa,  este termo visa assegurar seus direitos e deveres como
+						participante.</p>
+
+						<p>Outros usuários e professores não saberão se você está ou não
+						participando da pesquisa, portanto, para eles, não há como saber a
+						diferença entre um usuário que participa da pesquisa ou não. Você não
+						sofrerá restrições, nem receberá benefícios pela sua participação ou não
+						 na pesquisa.</p>
+
+						<p>Seus pais permitiram que você participe, mas <strong>se você não quiser participar</strong> é um <strong>direito</strong> seu. Não terá nenhum problema se você desistir -  nem para você, nem para seus pais ou responsáveis.</p>
+
+						<p>Vamos explicar como é a participação:</p>
+
+						<ul>
+						  <li>
+						    <p>Você está participando de um ambiente que se parece com um jogo,
+						em que pessoas são convidadas a resolver problemas e com isso aprendem
+						alguma coisa nova. Precisamos de sua ajuda para testá-lo.</p>
+						  </li>
+						  <li>
+						    <p>Esta pesquisa será realizada coletando seus dados do ambiente na Internet da seguinte maneira:</p>
+
+						    <ul>
+						      <li>
+						        <p>Você vai participar de jogos em que deve resolver desafios.</p>
+						      </li>
+						      <li>
+						        <p>Na medida em que você avança nos desafios, o sistema vai
+						registrando suas decisões, quanto tempo você levou em cada etapa e assim
+						 estaremos aprendendo quais atividades são mais difíceis ou estão mal
+						projetadas.</p>
+						      </li>
+						      <li>
+						        <p>Se você escolher não participar da pesquisa, poderá usar todos os recursos, mas seus dados não serão coletados para pesquisa.</p>
+						      </li>
+						    </ul>
+						  </li>
+						  <li>
+						    <p>Caso aconteça algo errado ou você tenha dúvidas, você e seus pais
+						 ou responsáveis podem perguntar aos pesquisadores ou à pessoa
+						responsável:</p>
+
+						    <ul>
+						      <li>
+						        <p>André Santanchè - pesquisador responsável, celular: (19) 98249-2218.</p>
+						      </li>
+						      <li>
+						        <p>Mas há coisas boas que podem acontecer, como: você gostar das
+						 atividades, aprender sobre a tecnologia, descobrir coisas novas com
+						seus colegas e se divertir com eles, ajudando os pesquisadores a propor
+						 atividades como esta para outras crianças.</p>
+						      </li>
+						    </ul>
+						  </li>
+						  <li>
+						    <p>Se você quiser parar no meio ou desistir, não tem nenhum
+						problema, você pode tanto sair do ambiente, quanto apenas parar de
+						participar da pesquisa e continuar no ambiente.</p>
+						  </li>
+						  <li>
+						    <p>Você deve indicar um e-mail para receber uma cópia deste termo
+						acompanhado de um código de acesso. Como a pesquisa não vai guardar quem
+						 você é, a plataforma pedirá apenas o código de acesso para entrar no
+						sistema e não guardará seus dados pessoais.</p>
+						  </li>
+						  <li>
+						    <p>Se você não quiser aceitar logo, você pode conversar com os seus pais ou responsáveis sobre ele e aceitar numa próxima ocasião.</p>
+						  </li>
+						  <li>
+						    <p>Seus pais ou responsáveis também aceitarão um termo parecido com
+						esteele, e eles serão esclarecidos de tudo o que irá acontecer com você.</p>
+						  </li>
+						  <li>
+						    <p>Cabe ressaltar que, caso aceite participar, é importante fazer o
+						download do Termo de Assentimento Livre e Esclarecido (TALE) - ver link
+						no final do termo- e guardar uma cópia em seus arquivos.</p>
+						  </li>
+						</ul>
+
+						<p>ENTENDI QUE POSSO DIZER “SIM” E PARTICIPAR, MAS QUE, A QUALQUER
+						MOMENTO, POSSO DIZER “NÃO” E DESISTIR. ENTENDI QUE NINGUÉM FICARÁ BRAVO
+						SE EU DESISTIR. SEMPRE PODEREI TIRAR MINHAS DÚVIDAS COM OS PESQUISADORES
+						 E CONVERSAR COM OS MEUS PAIS OU RESPONSÁVEIS.</p>
+
+						<a href="terms/tale-07-10-regular.pdf">Download do Termo de Assentimento Livre e Esclarecido (TALE)</a><br /><br />
+
+					</div> <!-- FIM 7 a 10 -->
+
+						<!-- TALE 11 a 14 -->
+						<div id="main_content_wrap" class="outer">
+				      <section id="main_content" class="inner">
+								<div id="term-part-b" style="display:none">
+				        <h1 id="termo-de-assentimento-livre-e-esclarecido">TERMO DE ASSENTIMENTO LIVRE E ESCLARECIDO</h1>
+
+				<p align="center">
+					<b>11 a 14 anos</b> <br> </p><hr>
+					<b>Plataforma de Aprendizagem baseada em Casos</b> <br>
+					<b>Responsável: André Santanchè</b> <br>
+					<b>Número do CAAE: 46635421.5.0000.5404 </b><br>
+				<p></p>
+
+				<p>Como usuário da Plataforma Harena, você também está sendo
+				convidado(a) a participar da pesquisa “Plataforma de Aprendizagem
+				Virtual baseada em Simulação e Resolução de Problemas” para a Unicamp.</p>
+
+				<p>Você pode ser usuário da Plataforma Harena sem que seus dados sejam
+				utilizados para pesquisa mas, caso concorde em também fornecê-los para a
+				 pesquisa,  este termo visa assegurar seus direitos e deveres como
+				participante.</p>
+
+				<p>Outros usuários e professores não saberão se você está ou não
+				participando da pesquisa, portanto, para eles, não há como saber a
+				diferença entre um usuário que participa da pesquisa ou não. Você não
+				sofrerá restrições, nem receberá benefícios pela sua participação ou não
+				 na pesquisa.</p>
+
+				<p>Seus pais permitiram que você participe, mas <strong>se você não quiser participar</strong> é um <strong>direito</strong> seu. Não terá nenhum problema se você desistir -  nem para você, nem para seus pais ou responsáveis.</p>
+
+				<p>Vamos explicar como é a participação:</p>
+
+				<ul>
+				  <li>
+				    <p>Você está participando de um ambiente que se parece com um jogo,
+				em que pessoas são convidadas a resolver problemas e com isso aprendem
+				alguma coisa nova. Precisamos de sua ajuda para testá-lo e ver o que
+				você consegue aprender com ele.</p>
+				  </li>
+				  <li>
+				    <p>Esta pesquisa será realizada coletando seus dados do ambiente na Internet da seguinte maneira:</p>
+				  </li>
+				</ul>
+
+				<table>
+				  <tbody><tr>
+				    <td style="border: 2px solid">ETAPAS</td>
+				    <td style="border: 2px solid">PROCEDIMENTOS</td>
+				  </tr>
+				  <tr>
+				    <td style="border: 2px solid">Etapa 1 Registro no Jogo</td>
+				    <td style="border: 2px solid">Você se registrou para usar o ambiente. Para a pesquisa usaremos
+				 dados sobre você, por exemplo, sua idade, mas não coletaremos dados que
+				 o identifiquem, como o nome.</td>
+				  </tr>
+				  <tr>
+				    <td style="border: 2px solid">Etapa 2a Resolvendo Desafios</td>
+				    <td style="border: 2px solid">Você será apresentados a desafios que envolvem a resolução de casos ou simulações e será convidado a resolvê-los.</td>
+				  </tr>
+				  <tr>
+				    <td style="border: 2px solid">Etapa 2b Desempenho</td>
+				    <td style="border: 2px solid">Na medida em que você avança nos desafios, o sistema vai
+				registrando suas decisões, quanto tempo você levou em cada etapa e assim
+				 estaremos aprendendo quais atividades são mais difíceis ou estão mal
+				projetadas. Essas informações são registradas, mas são vistas apenas por
+				 você e os pesquisadores. Se você escolher não participar da pesquisa,
+				poderá usar todos os recursos, mas seus dados não serão coletados para
+				pesquisa.</td>
+				  </tr>
+				</tbody></table>
+
+				<ul>
+				  <li>
+				    <p>Caso aconteça algo errado ou você tenha dúvidas, você e seus pais
+				 ou responsáveis podem perguntar aos pesquisadores ou à pessoa
+				responsável:</p>
+
+				    <ul>
+				      <li>
+				        <p>André Santanchè - pesquisador responsável, celular: (19) 98249-2218.</p>
+				      </li>
+				      <li>
+				        <p>Mas há coisas boas que podem acontecer, como: você gostar das
+				 atividades, aprender sobre a tecnologia, descobrir coisas novas com
+				seus colegas e se divertir com eles, ajudando os pesquisadores a propor
+				 atividades como esta para outras crianças.</p>
+				      </li>
+				    </ul>
+				  </li>
+				  <li>
+				    <p>Nós garantimos que ninguém saberá que você está participando da
+				pesquisa, não falaremos a outras pessoas, para que você se sinta à
+				vontade e nem daremos a estranhos as informações que você nos der. Tudo
+				será mantido em segredo e só os pesquisadores saberão destas informações
+				 que serão guardadas em um local seguro.</p>
+				  </li>
+				  <li>
+				    <p>Os resultados desta pesquisa serão publicados em revistas e
+				jornais importantes para que outros pesquisadores possam saber o que
+				fizemos, mas sem colocar o seu nome e o nome das crianças que
+				participaram da pesquisa. Podemos até mudar o seu nome, para não saberem
+				 que é você.</p>
+				  </li>
+				  <li>
+				    <p>Se você quiser parar no meio ou desistir, não tem nenhum
+				problema, você pode tanto sair do ambiente, quanto apenas parar de
+				participar da pesquisa e continuar no ambiente.</p>
+				  </li>
+				  <li>
+				    <p>Você deve indicar um e-mail para receber uma cópia deste termo
+				acompanhado de um número de chave. Como a pesquisa não vai guardar quem
+				você é, a plataforma pedirá apenas a chave para entrar no sistema e não
+				guardará seus dados pessoais.</p>
+				  </li>
+				  <li>
+				    <p>Se você não quiser aceitar logo, você pode conversar com os seus pais ou responsáveis sobre ele e aceitar numa próxima ocasião.</p>
+				  </li>
+				  <li>
+				    <p>Seus pais ou responsáveis também aceitarão um termo parecido com
+				esteele, e eles serão esclarecidos de tudo o que irá acontecer com você.</p>
+				  </li>
+				  <li>
+				    <p>Cabe ressaltar que, caso aceite participar, é importante fazer o
+				download do Termo de Assentimento Livre e Esclarecido (TALE) - ver link
+				no final do termo- e guardar uma cópia em seus arquivos.</p>
+				  </li>
+				</ul>
+
+				<a href="terms/tale-11-14-regular.pdf">Download do Termo de Assentimento Livre e Esclarecido (TALE)</a><br /><br />
+     </div> <!-- FIM 11 a 14 -->
+
+		 								<div id="term-part-both" style="display:none">
+										 <p><b>Nome do (a) participante da pesquisa:</b> <span id="username_2"></span><br />
+
+										 <b>Data:</b> <span id="date_agree_2"></span><br /></p>
+
+										 <p><b>Concordância:</b> <span id="answer_agree"></span></p>
+
+											<dcc-button label="Recolher Detalhes do Termo de Consentimento" topic="/user/term/retract" xstyle="out">
+											</dcc-button>
+
+									  </div>
+
+										Os botões abaixo apresentam todos todos os detalhes sobre o Termo de Assentimento, você deve escolher aquele que corresponde a sua idade.
+
+										<dcc-button id="button-expand-a" label="Mostrar Detalhes do Termo 7 a 10 anos" topic="/user/term/expand/a" xstyle="out">
+										</dcc-button>
+
+										<dcc-button id="button-expand-b" label="Mostrar Detalhes do Termo 11 a 14 anos" topic="/user/term/expand/b" xstyle="out">
+										</dcc-button>
+
+                  </section>
+                  </div>
+									<hr>
+                  <div id="feedback-message-2" style="font-size:24px;color:red"></div>
+                  <hr>
+              </form>
+
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <!-- end of div /.container -->
+  </body>
+</html>

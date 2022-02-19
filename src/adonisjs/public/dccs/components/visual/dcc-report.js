@@ -2,11 +2,11 @@
   ***********/
 class DCCReport extends DCCVisual {
   connectedCallback () {
-    this.presentReport = this.presentReport.bind(this)
-    this._subscribe('/report', this.presentReport)
-    this._publish('/report/get')
-    console.log('report solicitado')
     super.connectedCallback()
+    this.presentReport = this.presentReport.bind(this)
+    this._subscribe('report', this.presentReport)
+    this._publish('report/get')
+    console.log('report solicitado')
   }
 
   presentReport (topic, message) {
@@ -62,12 +62,12 @@ class DCCReport extends DCCVisual {
             .dsty-icon-box {
                flex: 64px;
                max-width: 74px;
-            }            
+            }
             .dsty-icon {
                object-fit: contain;
                max-width: 64px;
                max-height: 100%;
-            }            
+            }
             .dsty-details {
                display: flex;
                flex-direction: column;
@@ -89,7 +89,7 @@ class DCCReport extends DCCVisual {
        </style>
        <div id="presentation-dcc" class="dsty-record dsty-border">
           <div id="record-images" class="dsty-images-container">
-             [images]           
+             [images]
           </div>
           <div class="dsty-details" class="dsty-border">
              [entries]
