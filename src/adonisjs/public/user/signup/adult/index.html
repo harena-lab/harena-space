@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Cadastro de Usuário</title>
+
+	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
+
+	<link rel="stylesheet" href="/author/css/author.css">
+
+	<script src="/lib/axios-0.21.0/axios.min.js"></script>
+
+	<script src="/lib/jquery-3-4-1/jquery-3.4.1.slim.min.js"></script>
+	<script src="/lib/popper-1-15-0/popper.min.js"></script>
+	<script src="/lib/bootstrap-4.4.1/js/bootstrap.min.js"></script>
+
+	<script src="/config/config.js"></script>
+	<script src="/infra/bus.js"></script>
+	<script src="/infra/basic.js"></script>
+	<script src="/infra/dcc-common-server-proxy.js"></script>
+	<script src="/infra/dcc-common-server-address.js"></script>
+
+	<script src="/dccs/base/primitive-dcc.js"></script>
+	<script src="/dccs/base/scope-dcc.js"></script>
+	<script src="/dccs/base/dcc.js"></script>
+	<script src="/dccs/base/dcc-base.js "></script>
+	<script src="/dccs/base/dcc-visual.js "></script>
+	<script src="/dccs/base/dcc-block.js"></script>
+	<script src="/dccs/components/visual/dcc-button.js"></script>
+	<script src="/dccs/components/visual/dcc-notice-input.js"></script>
+
+	<script src="/dccs/components/web/dcc-rest.js"></script>
+	<script src="/dccs/components/web/dcc-include.js"></script>
+	<script src="/dccs/components/web/dcc-dhtml.js"></script>
+
+	<script src="/dccs/components/data/dcc-submit.js"></script>
+	<script src="/dccs/components/data/dcc-model.js"></script>
+	<script src="/dccs/components/data/dcc-record.js"></script>
+
+	<script src="/dccs/base/subscribe-dcc.js"></script>
+	<script src="/dccs/base/trigger-dcc.js"></script>
+	<script src="/dccs/base/property-dcc.js"></script>
+	<script src="/dccs/base/connect-dcc.js"></script>
+
+	<script src="/infra/dcc-rest-proxy.js"></script>
+	<script src="/infra/dcc-basic.js"></script>
+
+
+	<link rel="stylesheet" href="/lib/fontawesome-5-10-1/css/all.min.css">
+	<link rel="stylesheet" href="/lib/bootstrap-4.4.1/css/bootstrap.min.css">
+
+	<link rel="stylesheet" href="/dccs/css/dccs.css">
+	<link rel="stylesheet" href="/dccs/css/properties.css">
+	<link rel="stylesheet" href="/infra/css/common-player.css">
+	<link rel="stylesheet" href="/infra/css/common-author.css">
+
+	<script src="/user/js/dcc-rest-proxy-user.js"></script>
+  <script src="/user/js/user-signup.js"></script>
+</head>
+
+  <body onload="UserSignup.i.start()">
+    <!-- Create a section to place page content -->
+    <main role="main">
+      <dcc-rest id="harena-create-user" bind="harena-create-user" subscribe="user/create/post"></dcc-rest>
+      <dcc-rest id="harena-link-term" bind="harena-link-term" subscribe="user/term/post"></dcc-rest>
+			<dcc-rest id="harena-link-user-role" bind="harena-link-user-role" subscribe="link/role/post"></dcc-rest>
+      <dcc-rest id="harena-link-user-group" bind="harena-link-user-group" subscribe="link/group/post"></dcc-rest>
+
+      <div class="d-flex flex-column vh-100 vw-100 hidden-overflow">
+
+        <div class="h-100 w-100 create-case-padding scroll-y">
+					<div class="col-md-6">
+						<!-- <img src="images/museum-platform.png" width="100%"> -->
+						<div class="home-text">
+	            <p id="template-title">Cadastro de Usuário na Plataforma</p>
+	          </div>
+
+						<hr>
+						<div id="feedback-message-1" style="font-size:24px;color:red"></div>
+						<hr>
+					</div>
+
+          <div id="complete-form" class="row" style="padding-bottom: 70px;">
+
+            <div class="col-md-6">
+							<!-- <h4 style="color:black">Este cadastro deve obrigatoriamente ser preenchido pelo responsável da criança ou adolescente que participará da oficina.</h4> -->
+
+              <form id="create-case-form">
+                <div class="form-group">
+                  <label for="username">Nome Completo do Participante</label>
+                  <input type="text" class="form-control" id="username" name="username" placeholder="Nome completo"
+									       aria-describedby="usernameDesc" onchange="UserSignup.i.update()">
+									<small id="usernameDesc" class="form-text text-muted">
+										Digite o seu nome.
+									</small>
+                </div>
+								<div class="form-group">
+                  <label for="login">Login do Participante</label>
+                  <input type="text" class="form-control" id="login" name="login" placeholder="Login do usuário"
+									       aria-describedby="loginDesc" onchange="UserSignup.i.update()">
+									<small id="loginDesc" class="form-text text-muted">
+										Escolha um login (sem espaços em branco). Você usará para fazer login na plataforma no início do experimento.
+									</small>
+                </div>
+								<div class="form-group">
+                  <label for="password">Senha</label>
+                  <input type="password" class="form-control" id="password" name="password"
+ 									       aria-describedby="passwordDesc">
+ 								  <small id="loginDesc" class="form-text text-muted">
+ 										Escolha uma senha para o acesso a plataforma.
+ 									</small>
+                </div>
+                <input type="hidden" id="institution" name="institution" value="progn">
+                <input type="hidden" id="grade" name="grade" value="student">
+                <input type="hidden" id="term" name="term" value="prognosis-game-2022">
+                <input type="hidden" id="role" name="role" value="participant">
+
+                Você também é convidado a contribuir com a pesquisa. Se concordar, durante a aplicação da atividade, os dados da sua atuação serão coletados de forma anônima sem interferir na experiência da atividade. Se você concordar, deve clicar na opção a seguir concordando. Há um botão que apresenta todos todos os detalhes sobre o Termo de Consentimento relacionados à pesquisa.
+
+								<div class="form-inline">
+									<label for="date_agree_1">Data:&nbsp;</label>
+									<input type="text" class="form-control" id="date_agree_1" name="date_agree_1" readonly>
+								</div>
+
+								<input type="radio" id="agree_radio" name="agree" value="agree" onchange="UserSignup.i.update()"/> Concordo em participar da pesquisa <br />
+								<input type="radio" id="not_agree_radio" name="agree" value="not_agree" onchange="UserSignup.i.update()" /> Não desejo participar da pesquisa <br />
+
+								<!-- TCLE -->
+                <div id="term-form" class="outer">
+                  <hr>
+                  <section id="main_content" class="inner">
+										<div id="term-part" style="display:none">
+                    <h1 id="termo-de-consentimento-livre-e-esclarecido">TERMO DE CONSENTIMENTO LIVRE E ESCLARECIDO</h1>
+
+										<p align="center">
+											<b>18 anos ou mais</b> <br /> <hr />
+											<b>Plataforma de Aprendizagem Virtual baseada em Simulação e Resolução de
+Problemas</b> <br />
+											<b>Responsável: André Santanchè</b> <br />
+											<b>Número do CAAE: 46635421.5.0000.5404</b><br />
+										</p>
+										<p><br /></p>
+
+										<p>Você está sendo convidado a participar de uma pesquisa. Este documento, chamado Termo de Consentimento Livre e Esclarecido, visa assegurar seus direitos como participante da pesquisa. Você preencherá um campo com seu nome e clicará em concordo, indicando que concorda participar desta pesquisa. Você deve indicar um e-mail para receber uma cópia deste termo acompanhado de um número de chave. Como a pesquisa é anônima, a plataforma requisitará apenas a chave para lhe dar acesso ao sistema e não guardará seus dados pessoais. Caso em qualquer momento você queira que seus dados sejam excluídos da plataforma, bastará nos informar o número da chave.</p>
+
+										<p>Por favor, leia com atenção e calma, aproveitando para esclarecer suas dúvidas. Se houver perguntas antes ou mesmo depois de aceitá-lo, você poderá esclarecê-las com o pesquisador. Se preferir, pode baixar o termo em seu computador e enviá-lo para seus familiares ou outras pessoas a fim de consultá-los antes de decidir participar. Não haverá nenhum tipo de penalização ou prejuízo se você não aceitar participar ou retirar sua autorização em qualquer momento. Cabe ressaltar que, caso aceite participar, é importante fazer o download deste Termo de Consentimento Livre e Esclarecido (TCLE) e guardar uma cópia em seus arquivos.</p>
+
+										<h2 id="justificativa-e-objetivos">Justificativa e objetivos</h2>
+
+										<p>Este projeto envolve um ambiente na Web para treinar pessoas na resolução de desafios e construção de simulações. Alguns desafios são apresentados na forma de casos que você é convidado a resolver. Queremos testar se ao resolver esses casos você irá adquirir habilidades na resolução de problemas. Também queremos verificar se ao construir simulações você aprenderá algo com elas ou sobre elas.</p>
+
+										<h2 id="procedimentos">Procedimentos</h2>
+
+										<p>Participando do estudo você está sendo convidado a: resolver um conjunto de desafios que lhe serão apresentados no ambiente. Coletaremos dados sobre como você se desempenha no desafio para verificar a efetividade da plataforma na aprendizagem e na capacidade de criação de cenários. A atividade durará no máximo uma hora e meia.</p>
+
+										<p>Os dados coletados serão armazenados de forma anônima. Em qualquer tempo você pode escolher excluir todos os seus dados e dados coletados sobre você do sistema.</p>
+
+										<p>Por ser um ambiente Web, você sempre pode utilizá-lo onde estiver, sem a necessidade de deslocamento. Os dados são armazenados em nosso servidor de forma segura. Os dados serão armazenados por tempo indeterminado ou até que você solicite a sua exclusão. A exclusão pode ser solicitada diretamente no ambiente.</p>
+
+										<h2 id="desconfortos-e-riscos">Desconfortos e riscos</h2>
+
+										<p>Não há riscos previsíveis para esta pesquisa. Todos os equipamentos utilizados neste experimento são seguros e, nas condições de uso previstas, não causam nenhum tipo de dano  à saúde. Para evitar períodos longos sentados e em frente ao computador, cada sessão é projetada para durar entre 30 a 40 minutos, podendo excepcionalmente durar até 1 hora. Em qualquer momento você poderá sinalizar caso sentir algum desconforto e o experimento será interrompido imediatamente.</p>
+
+										<h2 id="benefícios">Benefícios</h2>
+
+										<p>Por ser um ambiente que visa a aprendizagem, a sua participação na pesquisa pode lhe trazer novos conhecimentos e habilidades na resolução de problemas. Você também contribuirá na nossa pesquisa e desenvolvimento do ambiente para a aprendizagem baseada na resolução de problemas. Esse ambiente será usado para o aprimoramento na formação principalmente de crianças, adolescentes e jovens. O ambiente será de acesso livre e gratuito para a comunidade.</p>
+
+										<h2 id="acompanhamento-e-assistência">Acompanhamento e assistência</h2>
+
+										<p>Você tem o direito à assistência integral e gratuita devido a danos diretos e indiretos, imediatos e tardios, pelo tempo que for necessário. Você também tem direito a suporte, por parte da equipe que está realizando esta pesquisa, no uso do ambiente. Você tem acesso através do próprio ambiente a todos os dados que são coletados sobre você, bem como ao seu desempenho auferido pelo ambiente. Você também terá direito a acesso a todos os resultados decorrentes desta pesquisa.</p>
+
+										<p>Não são peparameters.emailrmitidas estratégias para burlar ou modificar o funcionamento normal do sistema. Se forem detectadas estratégias desse tipo, os que estiverem envolvidos serão desligados do ambiente e descontinuados do estudo.</p>
+
+										<h2 id="sigilo-e-privacidade">Sigilo e privacidade</h2>
+
+										<p>Você tem a garantia de que sua identidade será mantida em sigilo e nenhuma informação será dada a outras pessoas que não façam parte da equipe de pesquisadores. Na divulgação dos resultados desse estudo, seu nome não será citado.</p>
+
+										<p>O ambiente permite que você compartilhe, ao seu critério, conteúdo que você produza no ambiente, quando você o estiver usando para criar conteúdo. Você poderá, a qualquer tempo, descontinuar esse compartilhamento.</p>
+
+										<h2 id="ressarcimento-e-indenização">Ressarcimento e Indenização</h2>
+
+										<p>A participação é voluntária e não serão ressarcidas despesas de transporte, alimentação e de nenhum outro tipo, pois a coleta de dados da pesquisa se dará em locais públicos com participantes voluntários que não se deslocaram para o local especificamente para a pesquisa mas que já se encontram presentes no local de coleta.</p>
+
+										<p>As despesas serão ressarcidas ao voluntário em caso de coletas feitas em horários e dias fora da rotina do mesmo.</p>
+
+										<p>Os participantes serão assistidos imediatamente em caso de desconforto e, havendo necessidade, serão acionadas as unidades de emergência públicas disponíveis.</p>
+
+										<p>Nos termos da resolução N° 466 do Conselho Nacional da Saúde (CNS), de 12 de dezembro de 2012, item V.7, os participantes da pesquisa que vierem a sofrer qualquer tipo de dano resultante de sua participação na pesquisa, previsto ou não no Termo de Consentimento Livre e Esclarecido, têm direito à indenização, por parte do pesquisador, do patrocinador e das instituições envolvidas nas diferentes fases da pesquisa.</p>
+
+										<h2 id="contato">Contato</h2>
+
+										<p>Em caso de dúvidas sobre a pesquisa, você poderá entrar em contato com o pesquisador André Santanchè</p>
+
+										<p><strong>endereço:</strong> Instituto de Computação - Av. Albert Einstein, 1251, Cidade Universitária, Campinas/SP - Brasil, CEP 13083-852.</p>
+
+										<p><strong>telefone:</strong> (19) 3521-5854 / (19) 98249-2218</p>
+
+										<p><strong>e-mail:</strong> santanche@ic.unicamp.br</p>
+
+										<p>Em caso de denúncias ou reclamações sobre sua participação e sobre questões éticas do estudo, você poderá entrar em contato com a secretaria do Comitê de Ética em Pesquisa (CEP) da UNICAMP das 08:00hs às 11:30hs e das 13:00hs as 17:30hs na Rua: Tessália Vieira de Camargo, 126; CEP 13083-887 Campinas – SP; telefone (19) 3521-8936 ou (19) 3521-7187; e-mail: <a href="mailto:cep@unicamp.br">cep@unicamp.br</a>.</p>
+
+										<h2 id="o-comitê-de-ética-em-pesquisa-cep">O Comitê de Ética em Pesquisa (CEP)</h2>
+
+										<p>O papel do CEP é avaliar e acompanhar os aspectos éticos de todas as pesquisas envolvendo seres humanos. A Comissão Nacional de Ética em Pesquisa (CONEP), tem por objetivo desenvolver a regulamentação sobre proteção dos seres humanos envolvidos nas pesquisas. Desempenha um papel coordenador da rede de Comitês de Ética em Pesquisa (CEPs) das instituições, além de assumir a função de órgão consultor na área de ética em pesquisas</p>
+
+                    <h2 id="consentimento-livre-e-esclarecido">Consentimento livre e esclarecido</h2>
+
+                    <p>Após ter recebido esclarecimentos sobre a natureza da pesquisa, seus objetivos, métodos, benefícios previstos, potenciais riscos e o incômodo que esta possa acarretar, aceito participar:</p>
+
+                    <p><b>Nome do (a) participante da pesquisa:</b> <span id="name_participant"></span><br />
+
+                    <b>Data:</b> <span id="date_agree_2"></span><br /></p>
+
+										<p><b>Concordância:</b> <span id="answer_agree"></span></p>
+
+                    <h2 id="responsabilidade-do-pesquisador">Responsabilidade do Pesquisador</h2>
+
+                    <p>Asseguro ter cumprido as exigências da resolução 466/2012 CNS/MS e complementares na elaboração do protocolo e na obtenção deste Termo de Consentimento Livre e Esclarecido. Asseguro, também, ter explicado e fornecido uma via deste documento ao participante da pesquisa. Informo que o estudo foi aprovado pelo CEP perante o qual o projeto foi apresentado e pela CONEP, quando pertinente. Comprometo-me a utilizar o material e os dados obtidos nesta pesquisa exclusivamente para as finalidades previstas neste documento ou conforme o consentimento dado pelo participante da pesquisa.</p>
+
+                    <div style="text-align:center;">
+                    <a href="/user/signup/terms/tcle-18-mais-anos-eventual.pdf" target="_blank">Download do Termo de Consentimento Livre e Esclarecido (TCLE)</a><br /><br />
+                    </div>
+
+										<dcc-button label="Recolher Detalhes do Termo de Consentimento" topic="/user/term/retract" xstyle="out">
+										</dcc-button>
+
+									  </div>
+
+										<dcc-button id="button-expand" label="Mostrar Detalhes do Termo de Consentimento" topic="/user/term/expand" xstyle="out">
+										</dcc-button>
+
+                  </section>
+                  </div>
+									<hr>
+                  <div id="feedback-message-2" style="font-size:24px;color:red"></div>
+                  <hr>
+                  <dcc-submit label="Cadastrar" topic="/user/signup" xstyle="out"></dcc-submit>
+              </form>
+
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <!-- end of div /.container -->
+  </body>
+</html>

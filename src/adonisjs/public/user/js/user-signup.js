@@ -15,9 +15,12 @@ class UserSignup {
   }
 
   update () {
-    document.querySelector('#name_participant').innerHTML = document.querySelector('#username').value
-    document.querySelector('#name_responsible').innerHTML = document.querySelector('#respname').value
-    document.querySelector('#email_responsible').innerHTML = document.querySelector('#email').value
+    if(document.querySelector('#username'))
+      document.querySelector('#name_participant').innerHTML = document.querySelector('#username').value
+    if(document.querySelector('#respname'))
+      document.querySelector('#name_responsible').innerHTML = document.querySelector('#respname').value
+    if (document.querySelector('#email'))
+      document.querySelector('#email_responsible').innerHTML = document.querySelector('#email').value
     document.querySelector('#answer_agree').innerHTML =
       (document.querySelector('#agree_radio').checked)
         ? 'Concordo em participar da pesquisa'
@@ -54,6 +57,7 @@ class UserSignup {
     console.log(parameters)
 
     this._showFeedback('')
+    if(parameters.respname){
     if (parameters == null)
       this._showFeedback('Erro de processamento, entre novamente na página a partir do link')
     else if (parameters.login.length == 0)
@@ -113,6 +117,49 @@ class UserSignup {
           this._showFeedback('Usuário cadastrado com sucesso.', 'blue')
       }
     }
+  }else {
+    let login = parameters.login.replace(/ /g, '_')
+    let userJson = {
+      username: parameters.username,
+      email: login + '@email.com',
+      password: parameters.password,
+      login: login,
+      institution: parameters.institution,
+      grade: parameters.grade,
+      eventId: new URL(document.location).searchParams.get('event')
+    }
+    let user = await MessageBus.i.request('user/create/post', userJson)
+    if (user.message.error) {
+      console.log('--- error')
+      console.log(user.message)
+      if (user.message.error.includes('409'))
+        this._showFeedback('Já existe um usuário com este login. Por favor, escolha outro login.')
+      else
+        this._showFeedback('Houve algum erro no cadastro.')
+    }else {
+      const agree = (parameters.agree && parameters.agree.length > 0 && parameters.agree == 'agree')
+      const termJson = {
+        userId: user.message.id,
+        termId: parameters.term,
+        nameParticipant: parameters.username,
+        nameResponsible: null,
+        emailResponsible: null,
+        date: parameters.date_agree_1,
+        role: parameters.role,
+        agree: (agree) ? '1' : '0'
+      }
+      console.log('=== term json')
+      console.log(termJson)
+      let term = await MessageBus.i.request('user/term/post', termJson)
+      console.log('=== term add')
+      console.log(term)
+      document.querySelector('#complete-form').style.display = 'none'
+      if (agree)
+        this._showFeedback('Usuário cadastrado com sucesso.<br>', 'blue')
+      else
+        this._showFeedback('Usuário cadastrado com sucesso.', 'blue')
+    }
+  }
   }
 }
 
