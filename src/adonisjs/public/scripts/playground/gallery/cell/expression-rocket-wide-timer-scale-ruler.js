@@ -34,7 +34,7 @@
    <subscribe-dcc topic="ruler/reset" map="reset"></subscribe-dcc>
 </dcc-cell-ruler>
 
-<dcc-timer cycles="100000" interval="1" publish="state/next">
+<dcc-timer cycles="100000" interval="1" topic="state/next">
    <subscribe-dcc topic="timer/start" map="start"></subscribe-dcc>
    <subscribe-dcc topic="timer/stop" map="stop"></subscribe-dcc>
    <subscribe-dcc topic="input/changed/timer_interval" map="interval"></subscribe-dcc>
