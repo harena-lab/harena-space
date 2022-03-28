@@ -112,4 +112,30 @@ DCC.component(
   }
 )
 
+DCC.component(
+  'harena-group-users',
+  'dcc-rest',
+  {
+    environment: {
+      'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api,
+      'groupId': new URL(document.location).searchParams.get('groupid')
+    },
+    oas: {
+      paths: {
+        '{url-manager}/group/users': {
+          'get': {
+            operationId: 'users',
+            parameters: [
+              {name: 'url-manager',
+               in: 'path'},
+              {name: 'groupId',
+               in: 'query'}
+            ]
+          }
+        }
+      }
+    }
+  }
+)
+
 })()

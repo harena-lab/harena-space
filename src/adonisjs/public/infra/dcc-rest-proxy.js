@@ -51,6 +51,33 @@
   )
 
   DCC.component(
+    'harena-login-event',
+    'dcc-rest',
+    {
+      environment: {
+        'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api
+      },
+      oas: {
+        paths: {
+          '{url-manager}/auth/login_event': {
+            'post': {
+              operationId: 'login',
+              parameters: [
+                {name: 'url-manager',
+                 in: 'path'},
+                {name: 'eventId',
+                 in: 'query'},
+                {name: 'username',
+                 in: 'query'},
+              ]
+            }
+          }
+        }
+      }
+    }
+  )
+
+  DCC.component(
     'harena-change-password',
     'dcc-rest',
     {

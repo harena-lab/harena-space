@@ -1,5 +1,67 @@
 (function () {
   DCC.component(
+    'submit-login-event',
+    'dcc-submit',
+    {
+      pre: function (message, form, schema) {
+        const messageAlert = document.querySelector('#login-message-alert')
+        message.value.eventId = new URL(document.location).searchParams.get('eventid')
+        if (message.value.eventId == null && messageAlert != null) {
+          messageAlert.innerHTML = 'Evento não definido'
+          messageAlert.classList.add('alert-danger')
+          messageAlert.classList.remove('alert-success')
+        }
+        if (form.checkValidity() === false) {
+          for ( i = 0; i < form.elements.length; i++){
+            if(form[i].required && form[i].validity.valid) {
+              form[i].classList.add('is-valid')
+              form[i].classList.remove('is-invalid')
+            } else {
+              form[i].classList.add('is-invalid')
+              form[i].classList.remove('is-valid')
+            }
+          }
+          return false
+        }
+        for ( i = 0; i < form.elements.length; i++)
+            form[i].classList.remove('is-invalid')
+        return true
+      },
+      pos: function (response) {
+        const messageAlert = document.querySelector('#login-message-alert')
+        if(response['harena-login-event']['response'] === 'Login successful') {
+          if (messageAlert != null) {
+            document.querySelector('#btn-submit-login').firstElementChild.innerHTML = 'Logging...'
+            messageAlert.innerHTML = response['harena-login-event']['response']
+            messageAlert.classList.add('alert-success')
+            messageAlert.classList.remove('alert-danger')
+          }
+          setTimeout(function(){
+             if(new URL(document.location).searchParams.get('redirected')){
+               let redirectTo = sessionStorage.getItem('redirectBack')
+               if(redirectTo == null || redirectTo == '')
+                redirectTo = '/index-mc.html'
+               sessionStorage.removeItem('redirectBack')
+               window.location.href = redirectTo
+             }else{
+               sessionStorage.removeItem('redirectBack')
+               window.location.href = '/index-mc.html'
+             }
+
+          }, 2000)
+        } else {
+          if (messageAlert != null) {
+            messageAlert.innerHTML = response['harena-login-event']['response']
+            messageAlert.classList.add('alert-danger')
+            messageAlert.classList.remove('alert-success')
+            document.querySelector('#username').classList.add('is-invalid')
+          }
+        }
+      }
+    }
+  )
+  /*
+  DCC.component(
     'submit-login',
     'dcc-submit',
     {
@@ -69,6 +131,7 @@
       }
     }
   )
+  */
   DCC.component(
     'submit-logout',
     'dcc-submit',
