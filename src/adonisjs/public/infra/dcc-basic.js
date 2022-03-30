@@ -124,8 +124,8 @@
           //
           // }
 
-        }else if (response['harena-token-login']['response'] === 'No token found') {
-          console.error('No token found, request a new one.')
+        }else if (response['harena-token-login']['response'] === 'Token invalid') {
+          console.error('Token invalid, request a new one.')
         }
       }
     }
