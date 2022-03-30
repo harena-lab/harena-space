@@ -67,6 +67,69 @@
       }
     }
   )
+
+  DCC.component(
+    'submit-token-login',
+    'dcc-submit',
+    {
+      pre: function (message, form, schema) {
+        // console.log('============ logging')
+        let token = new URL(document.location).searchParams.get('token')
+        if (!token) {
+          console.log('============ token missing')
+          return false
+        }
+
+        return true
+
+      },
+      pos: function (response) {
+        console.log(response)
+        if(response['harena-token-login']['response'] === 'Login successful'){
+          // console.log('login successful');
+          // if(document.querySelector('#login-message-alert')){
+          //   document.querySelector('#btn-submit-login').firstElementChild.innerHTML = 'Logging...'
+          //   document.querySelector('#login-message-alert').innerHTML = response['harena-login']['response']
+          //   document.querySelector('#login-message-alert').classList.add('alert-success')
+          //   document.querySelector('#login-message-alert').classList.remove('alert-danger')
+          //
+          // }
+
+           setTimeout(function(){
+             const redirectParam = new URL(document.location).searchParams.get('redirected')
+             if(redirectParam){
+               let redirectTo = sessionStorage.getItem('redirectBack')
+               if(redirectTo == null || redirectTo == ''){
+                redirectTo = '/'
+                if(redirectParam != '')
+                  redirectTo = redirectParam
+              }
+               sessionStorage.removeItem('redirectBack')
+               window.location.href = redirectTo
+             }else{
+               sessionStorage.removeItem('redirectBack')
+               window.location.href = '/'
+             }
+
+           }, 2000)
+        }else if (response['harena-token-login']['response'] === 'Token expired'){
+          console.log('Token expired, request a new one.')
+          // if(document.querySelector('#login-message-alert')){
+          //   document.querySelector('#login-message-alert').innerHTML = response['harena-login']['response']
+          //   document.querySelector('#login-message-alert').classList.add('alert-danger')
+          //   document.querySelector('#login-message-alert').classList.remove('alert-success')
+          //
+          //   document.querySelector('#email').classList.add('is-invalid')
+          //   document.querySelector('#password').classList.add('is-invalid')
+          //
+          // }
+
+        }else if (response['harena-token-login']['response'] === 'No token found') {
+          console.error('No token found, request a new one.')
+        }
+      }
+    }
+  )
   DCC.component(
     'submit-logout',
     'dcc-submit',

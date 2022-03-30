@@ -28,6 +28,33 @@
   )
 
   DCC.component(
+    'harena-token-login',
+    'dcc-rest',
+    {
+      environment: {
+        'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api,
+        'token': new URL(document.location).searchParams.get('token'),
+      },
+      oas: {
+        paths: {
+          '{url-manager}/auth/token_login': {
+            'post': {
+              operationId: 'tokenLogin',
+              parameters: [
+                {name: 'url-manager',
+                 in: 'path'},
+                {name: 'token',
+                 in: 'query'},
+              ]
+            }
+          }
+        }
+      }
+    }
+  )
+
+
+  DCC.component(
     'harena-logout',
     'dcc-rest',
     {
