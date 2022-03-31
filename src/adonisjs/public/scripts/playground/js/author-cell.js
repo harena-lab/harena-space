@@ -25,7 +25,10 @@ class AuthorCellManager {
     this.scriptRetract = this.scriptRetract.bind(this)
     this.cellsExpand = this.cellsExpand.bind(this)
     this.cellsRetract = this.cellsRetract.bind(this)
+    this.updateInputTrack = this.updateInputTrack.bind(this)
     this.saveSpace = this.saveSpace.bind(this)
+
+    this._inputTrack = {}
 
     MessageBus.i.subscribe('control/editor/switch', this.switchEditor)
     MessageBus.i.subscribe('control/space/play', this.playSpace)
@@ -36,6 +39,8 @@ class AuthorCellManager {
     MessageBus.i.subscribe('control/script/retract', this.scriptRetract)
     MessageBus.i.subscribe('control/cells/expand', this.cellsExpand)
     MessageBus.i.subscribe('control/cells/retract', this.cellsRetract)
+
+    MessageBus.i.subscribe('input/changed/#', this.updateInputTrack)
 
     this._scriptActive = true
     this._caseId = null
@@ -227,17 +232,20 @@ class AuthorCellManager {
     Blockly.svgResize(this._playground)
   }
 
+  updateInputTrack (topic, message) {
+    const varid = MessageBus.extractLevel(topic, 3)
+    this._inputTrack[varid] = message.value
+  }
+
   async saveSpace () {
     const space = await MessageBus.i.request('dcc-space-cellular/request/state')
-    console.log('=== space')
-    console.log(this._caseId)
-    console.log(space)
     if (this._caseId != null)
       MessageBus.i.publish('case/summary/' + Basic.service.generateUID(),
         {
           caseId: this._caseId,
           participantName: document.querySelector('#participant-name').value,
-          state: space.message
+          state: space.message,
+          inputs: this._inputTrack
         }, true)
   }
 }
