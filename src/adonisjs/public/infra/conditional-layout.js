@@ -42,7 +42,8 @@ class LayoutController {
     }else if(new URL(document.location).pathname == '/author/drafts/feedback/'){
       this.dynamicCaseListFeedback()
     }
-    if(document.querySelector('#share-modal')){
+
+    if(document.querySelector('#share-modal') || document.querySelector('#token-modal')){
       this.dynamicShareCaseElements = this.dynamicShareCaseElements.bind(this)
       this.dynamicShareCaseModal = this.dynamicShareCaseModal.bind(this)
       // this.authorizeCommentSection = this.authorizeCommentSection.bind(this)
@@ -378,7 +379,7 @@ class LayoutController {
     // console.log('============ dynamicShareCaseElements')
     // console.log('============ message from bus')
     // console.log(message)
-    if(message != null && message.id != null && (message.id == "harena-dhtml-cases" || message.id == "dhtml-case" || message.id == "harena-dhtml-cases")){
+    if(message != null && message.id != null && (message.id == "harena-dhtml-cases" || message.id == "dhtml-case" || message.id == "harena-dhtml-users")){
       // console.log('============ im ready')
       // console.log('============ user grade')
       // console.log(userGrade)
