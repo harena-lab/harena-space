@@ -18,9 +18,9 @@ async usersSelect (topic, message) {
     MessageBus.i.unsubscribe('control/dhtml/ready', this.usersSelect)
 
     const cl = document.getElementsByClassName('buttons-container')
-    // const caseListInput = document.querySelector('#table_id')
+    let usernameSelected = document.querySelector('#username_table')
 
-    if(message != null && message.id != null && message.id == 'harena-dhtml-cases'){
+    if(message != null && message.id != null && message.id == 'harena-dhtml-users'){
 
       //CHECKBOX INTERACTIONS
       if(document.querySelector('#select-all-checkbox')){
@@ -32,22 +32,22 @@ async usersSelect (topic, message) {
 
               let editButton = cl[c].children[0]
               const userContainer = document.querySelector('#b'+editButton.id.substring(1))
-              const shareCheckbox = document.querySelector('#c'+editButton.id.substring(1))
+              const selectUserCheckbox = document.querySelector('#c'+editButton.id.substring(1))
               if(selectAllCases.checked){
                 // console.log('============ all checked')
-                shareCheckbox.checked = true
+                selectUserCheckbox.checked = true
                 selectAllCases.nextElementSibling.innerHTML = 'Unselect All'
                 userContainer.style.backgroundColor = '#769fdb'
                 userContainer.firstElementChild.style.color = '#fff'
               } else{
                 // console.log('============all unchecked')
-                shareCheckbox.checked = false
+                selectUserCheckbox.checked = false
                 selectAllCases.nextElementSibling.innerHTML = 'Select All'
                 userContainer.style.backgroundColor = ''
                 userContainer.firstElementChild.style.color = '#808080'
               }
               var changeEv = new Event('change')
-              shareCheckbox.dispatchEvent(changeEv)
+              selectUserCheckbox.dispatchEvent(changeEv)
             } catch (e) {
               break
             }
@@ -58,26 +58,26 @@ async usersSelect (topic, message) {
       }
     }
     let userList = new Array()
+    let usernameList = new Array()
     for (let c in cl) {
       if (cl[c].children) {
-        console.log(cl[c].children[0].id)
         const editButton = cl[c].children[0]
         const previewButton = cl[c].children[1]
         const generateToken = cl[c].children[2]
         const userContainer = document.querySelector('#b'+editButton.id.substring(1))
 
         if(document.querySelector('#c'+editButton.id.substring(1))){
-          const shareCheckbox = document.querySelector('#c'+editButton.id.substring(1))
+          const selectUserCheckbox = document.querySelector('#c'+editButton.id.substring(1))
 
           const listenerFnCaseContainer = function () {
-            console.log('click some case container')
-            let pCheckbox = shareCheckbox.checked
-            shareCheckbox.click()
+            // console.log('click some case container')
+            let pCheckbox = selectUserCheckbox.checked
+            selectUserCheckbox.click()
             // console.log(pCheckbox)
-            // console.log(shareCheckbox.checked)
-            shareCheckbox.disabled = true
+            // console.log(selectUserCheckbox.checked)
+            selectUserCheckbox.disabled = true
             setTimeout(function () {
-              shareCheckbox.disabled = false
+              selectUserCheckbox.disabled = false
             }, 300);
           }
           userContainer.firstElementChild.removeEventListener('click', listenerFnCaseContainer)
@@ -85,22 +85,26 @@ async usersSelect (topic, message) {
 
           const listenerFnShareCheckbox = function () {
             // console.log('============ click checkbox')
-            if(shareCheckbox.checked){
+            if(selectUserCheckbox.checked){
               // console.log('============ checkbox checked')
-              userList.push(shareCheckbox.value)
+              userList.push(selectUserCheckbox.value)
               document.querySelector('#table_id').value = userList
+              usernameList.push(selectUserCheckbox.dataset.username)
+              usernameSelected.textContent = usernameList
               userContainer.style.backgroundColor = '#769fdb'
               userContainer.firstElementChild.style.color = '#fff'
             }else{
               // console.log('============ checkbox unchecked')
-              userList.splice(userList.indexOf(shareCheckbox.value), 1)
+              userList.splice(userList.indexOf(selectUserCheckbox.value), 1)
               document.querySelector('#table_id').value = userList
+              usernameList.splice(usernameList.indexOf(selectUserCheckbox.dataset.username), 1)
+              usernameSelected.textContent = usernameList
               userContainer.style.backgroundColor = ''
               userContainer.firstElementChild.style.color = '#808080'
             }
           }
-          shareCheckbox.removeEventListener('change', listenerFnShareCheckbox)
-          shareCheckbox.addEventListener('change', listenerFnShareCheckbox)
+          selectUserCheckbox.removeEventListener('change', listenerFnShareCheckbox)
+          selectUserCheckbox.addEventListener('change', listenerFnShareCheckbox)
         }
 
         if(editButton){
@@ -113,25 +117,25 @@ async usersSelect (topic, message) {
         if(previewButton){
           const listenerFnPreview = function () {
             //OPEN MODAL TO LIST USER INFO   TODO
+            let userId = this.id.substring(1)
+            document.querySelector('#user-id').value = userId
+            document.querySelector('dcc-submit[bind="submit-admin-user-info"]')._computeTrigger()
           }
           previewButton.removeEventListener('click', listenerFnPreview)
           previewButton.addEventListener('click', listenerFnPreview)
         }
 
         if(generateToken){
-          // console.log('=== adding listener 2')
           const listenerFnToken = function () {
             //Generate token for user (rest). Maybe open modal to generate token an also custom url for redirect
+            let userId = document.querySelector('#user-id')
+            userId.value = this.id.substring(1)
+            document.querySelector('dcc-submit[bind="submit-admin-gen-login-token"]')._computeTrigger()
           }
           generateToken.removeEventListener('click', listenerFnToken)
           generateToken.addEventListener('click', listenerFnToken)
         }
-        // if (advanced) {
-        //   downloadButton.addEventListener('click',
-        //     function () {
-        //       MessageBus.i.publish('control/case/download', this.id.substring(1))
-        //     })
-        // }
+
       }
 
     }

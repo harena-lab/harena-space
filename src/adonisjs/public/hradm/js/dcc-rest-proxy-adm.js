@@ -203,4 +203,57 @@ DCC.component(
   }
 )
 
+DCC.component(
+  'harena-admin-gen-login-token',
+  'dcc-rest',
+  {
+    environment: {
+      'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api,
+    },
+    oas: {
+      paths: {
+        '{url-manager}/admin/user/temp_login': {
+          'put': {
+            operationId: 'admin-gen-login-token',
+            parameters: [
+              {name: 'url-manager',
+                in: 'path'},
+              {name: 'userId',
+                in: 'query'},
+
+            ]
+          }
+        }
+      }
+    }
+  }
+),
+
+DCC.component(
+  'harena-admin-user-info',
+  'dcc-rest',
+  {
+    environment: {
+      'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api,
+    },
+    oas: {
+      paths: {
+        '{url-manager}/user/{userId}': {
+          'get': {
+            operationId: 'admin-user-info',
+            parameters: [
+              {name: 'url-manager',
+                in: 'path'},
+              {name: 'userId',
+                in: 'path'},
+            ]
+          }
+        }
+      }
+    }
+  }
+)
+
+
+
 })()

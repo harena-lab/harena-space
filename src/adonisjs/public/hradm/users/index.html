@@ -50,6 +50,7 @@
     <script src="/infra/dcc-basic.js"></script>
 
     <script src="/hradm/js/dcc-rest-proxy-adm.js"></script>
+    <script src="/hradm/js/dcc-admin-basic.js"></script>
     <script src="/hradm/js/users-adm.js"></script>
 
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -79,59 +80,21 @@
     </div>
 
     <!-- Share casel modal -->
-    <dcc-rest id="harena-share-cases" bind="harena-share-cases"></dcc-rest>
-    <div class="modal fade" id="share-modal" tabindex="-1" role="dialog" aria-labelledby="share-modal" aria-hidden="true">
+    <dcc-rest id="harena-admin-gen-login-token" bind="harena-admin-gen-login-token"></dcc-rest>
+    <dcc-rest id="harena-admin-user-info" bind="harena-admin-user-info" subscribe="service/request/get"></dcc-rest>
+    <div class="modal fade" id="token-modal" tabindex="-1" role="dialog" aria-labelledby="token-modal" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title text-dark">You are about to generate login tokens for the following users:</h5>
+          </div>
           <div class="modal-body">
             <form>
-              <div class="form-row">
-                <div class="form-group col-md-4" id="wrapper-entity">
-                  <label for="entity">Share with:</label>
-                  <select class="custom-select" id="entity" name="entity">
-                    <option value="user">User </option>
-                    <option selected value="institution">Institution</option>
-                    <option value="group" hidden disabled >Group</option>
-                  </select>
-                </div>
-                <div class="form-group col-md-4" id="wrapper-subject_grade">
-                  <label for="subject_grade">User type:</label>
-                  <select class="custom-select" id="subject_grade" name="subject_grade">
-                    <option value="">Everyone </option>
-                    <option value="professor">Professors</option>
-                    <option value="student">Students</option>
-                  </select>
-                </div>
-                <div class="form-group col-md-4" id="wrapper-subject">
-                  <label for="subject">In:</label>
-                  <div id="wrapper-input-subject">
-                    <input class="" type="text" id="input-subject" name="input-subject" value="" hidden disabled>
-                  </div>
-                  <dcc-dhtml connect="retrieve:harena-institutions:service/request/get" id="dhtml-subject">
-                    <select class="custom-select" id="subject" name="subject">
-                      <option selected></option>
-                      {{@foreach . institution}}
-                      <option value="{{institution.id}}">{{institution.title}}</option>
-                      {{@endfor}}
-                    </select>
-
-                  </dcc-dhtml>
-                </div>
-              </div>
-
-              <div class="form-group col-md-6 px-1">
-                <label for="clearance">Permission to: </label>
-                <select class="custom-select" id="clearance" name="clearance">
-                  <option value="1">Play</option>
-                  <option value="3">Share</option>
-                  <option value="4">Edit</option>
-                  <option value="5">Administrate (can share this case with "edit" permission)</option>
-                </select>
-              </div>
-              <input type="hidden" name="table_id" id="table_id" value="">
-              <dcc-submit label="Share" xstyle="btn btn-success" bind="submit-share" data-dismiss="modal" connect="submit:harena-share-cases:service/request/post"></dcc-submit>
+              <h4 id="username_table" style="overflow-wrap: break-word;">Empty</h4>
+              <dcc-submit label="Generate" xstyle="btn btn-success" bind="submit-admin-multi-gen-login-token" data-dismiss="modal" connect="submit:harena-admin-gen-login-token:service/request/put"></dcc-submit>
               <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
             </form>
+            <input type="hidden" name="table_id" id="table_id" value="">
           </div>
         </div>
       </div>
@@ -188,6 +151,33 @@
     </div>
     <!-- End filter options advanced -->
 
+    <!-- User info modal -->
+    <dcc-dhtml id="harena-dhtml-user-info" subscribe="service/response/get/harena-admin-user-info:update">
+    <div class="modal fade" id="user-overview-info" tabindex="-1" role="dialog" aria-labelledby="user-overview-info" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">User info</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+
+              <b>Login:</b> {{login}}<br>
+              <b>Username:</b> {{username}}<br>
+              <b>E-mail:</b> {{email}}<br>
+              <b>Institution id:</b> {{institution_id}}<br>
+              <b>Grade:</b> {{grade}}<br>
+              <b>Token:</b> {{token_login}}<br>
+              <b>Token creation date:</b> {{token_login_created_at}}<br>
+          </div>
+        </div>
+      </div>
+    </div>
+    </dcc-dhtml>
+    <dcc-submit xstyle="d-none" bind="submit-admin-user-info" connect="submit:harena-admin-user-info:service/request/get"></dcc-submit>
+    <!-- END User info modal -->
     <main role="main">
       <div class="home-author-padding align-items-center rounded row sticky-top" style="z-index:3;">
          <div class="h-100 w-100 draft-content-padding scroll-y">
@@ -221,7 +211,7 @@
             </div>
             <div id="user-boxes" class="draft-scroll-container">
               <dcc-rest id="harena-admin-users" bind="harena-admin-users"></dcc-rest>
-              <dcc-dhtml id="harena-dhtml-users"connect="retrieve:harena-admin-users:service/request/get" subscribe="service/response/get/harena-admin-users-filter:update">
+              <dcc-dhtml id="harena-dhtml-users" connect="retrieve:harena-admin-users:service/request/get" subscribe="service/response/get/harena-admin-user-info:update">
                 <input type="hidden" id="pages" value="{{pages}}">
                 {{@foreach users u}}
                 <!-- checkbox for selecting cases -->
@@ -229,7 +219,7 @@
                   <div class="col">
 
                     <div class="form-check share-checkbox">
-                      <input class="form-check-input" type="checkbox" id="c{{u.id}}" value="{{u.id}}">
+                      <input class="form-check-input" type="checkbox" id="c{{u.id}}" value="{{u.id}}" data-username="{{u.username}}">
                     </div>
                   </div>
                 </div>
@@ -253,6 +243,8 @@
                 </div>
                 {{@endfor}}
               </dcc-dhtml>
+              <dcc-submit xstyle="d-none" bind="submit-admin-gen-login-token" connect="submit:harena-admin-gen-login-token:service/request/put"></dcc-submit>
+              <input type="hidden" id="user-id" name="" value="">
             </div>
 
          </div>

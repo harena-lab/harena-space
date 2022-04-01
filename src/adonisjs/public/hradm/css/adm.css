@@ -195,6 +195,12 @@
 
 }
 
+.disabled-look{
+  pointer-events: none;
+  background-color: #e9ecef;
+  opacity: 0.8
+}
+
 /*
 .ql-editor {
    font-family: monospace;

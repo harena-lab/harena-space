@@ -291,7 +291,7 @@ class LayoutController {
   async dynamicShareCaseModal (){
 
     const dhtmlInstitutions = document.querySelector('#dhtml-subject')
-    if(dhtmlInstitutions._ready){
+    if(dhtmlInstitutions && dhtmlInstitutions._ready){
       // console.log('============ entered dynamic modal')
       const selEntity = document.querySelector('#entity')
       const wrapperSelEntity = document.querySelector('#wrapper-entity')
