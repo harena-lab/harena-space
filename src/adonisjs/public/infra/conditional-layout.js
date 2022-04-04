@@ -56,6 +56,10 @@ class LayoutController {
       // MessageBus.i.publish('control/dhtml/status/request', {id: 'dhtml-case-comments'})
     }
 
+    if(new URL(document.location).pathname.includes('/hradm')){
+      this.adminArea()
+    }
+
   }
 
   async busMessages(){
@@ -403,6 +407,14 @@ class LayoutController {
       btnPlayer.textContent = 'Jogar Roda da Fortuna'
       btnPlayer.setAttribute('onclick',`location.href='/prognosis'`)
       btnPlayer.classList.remove('col-4','ml-4')
+    }
+  }
+
+  async adminArea () {
+    if (LayoutController.user.message.roles.includes('admin')) {
+
+    }else {
+      document.location.href='/'
     }
   }
 

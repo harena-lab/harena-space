@@ -76,7 +76,14 @@
         // console.log('============ logging')
         let token = new URL(document.location).searchParams.get('token')
         if (!token) {
+          let feedbackTxt = document.querySelector('#temp-login-fdbk')
+          feedbackTxt.innerHTML = `Token missign...request a proper URL. <br><br>
+          <h4>Being redirected to the Homepage in a few seconds...<h4>`
           console.log('============ token missing')
+          setTimeout(function(){
+            window.location.href = '/'
+
+          }, 13000)
           return false
         }
 
@@ -86,14 +93,6 @@
       pos: function (response) {
         console.log(response)
         if(response['harena-token-login']['response'] === 'Login successful'){
-          // console.log('login successful');
-          // if(document.querySelector('#login-message-alert')){
-          //   document.querySelector('#btn-submit-login').firstElementChild.innerHTML = 'Logging...'
-          //   document.querySelector('#login-message-alert').innerHTML = response['harena-login']['response']
-          //   document.querySelector('#login-message-alert').classList.add('alert-success')
-          //   document.querySelector('#login-message-alert').classList.remove('alert-danger')
-          //
-          // }
 
            setTimeout(function(){
              const redirectParam = new URL(document.location).searchParams.get('redirected')
@@ -101,8 +100,8 @@
                let redirectTo = sessionStorage.getItem('redirectBack')
                if(redirectTo == null || redirectTo == ''){
                 redirectTo = '/'
-                if(redirectParam != '')
-                  redirectTo = redirectParam
+              if(redirectParam != '')
+                redirectTo = redirectParam
               }
                sessionStorage.removeItem('redirectBack')
                window.location.href = redirectTo
@@ -113,18 +112,23 @@
 
            }, 2000)
         }else if (response['harena-token-login']['response'] === 'Token expired'){
+          let feedbackTxt = document.querySelector('#temp-login-fdbk')
+          feedbackTxt.innerHTML = `Token expired, request a new one.<br><br>
+          <h4>Being redirected to the Homepage in a few seconds...<h4>`
+          setTimeout(function(){
+            window.location.href = '/'
+
+          }, 13000)
           console.log('Token expired, request a new one.')
-          // if(document.querySelector('#login-message-alert')){
-          //   document.querySelector('#login-message-alert').innerHTML = response['harena-login']['response']
-          //   document.querySelector('#login-message-alert').classList.add('alert-danger')
-          //   document.querySelector('#login-message-alert').classList.remove('alert-success')
-          //
-          //   document.querySelector('#email').classList.add('is-invalid')
-          //   document.querySelector('#password').classList.add('is-invalid')
-          //
-          // }
 
         }else if (response['harena-token-login']['response'] === 'Token invalid') {
+          let feedbackTxt = document.querySelector('#temp-login-fdbk')
+          feedbackTxt.innerHTML = `Token invalid, request a new one. <br><br>
+          <h4>Being redirected to the Homepage in a few seconds...<h4>`
+          setTimeout(function(){
+            window.location.href = '/'
+
+          }, 13000)
           console.error('Token invalid, request a new one.')
         }
       }

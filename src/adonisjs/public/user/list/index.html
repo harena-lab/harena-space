@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Login - Harena</title>
+
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
+
+    <script src="/lib/axios-0.21.0/axios.min.js"></script>
+
+    <script src="/lib/jquery-3-4-1/jquery-3.4.1.slim.min.js"></script>
+    <script src="/lib/popper-1-15-0/popper.min.js"></script>
+    <script src="/lib/bootstrap-4.4.1/js/bootstrap.min.js"></script>
+
+    <script src="/config/config.js"></script>
+    <script src="/infra/bus.js"></script>
+    <script src="/infra/basic.js"></script>
+    <script src="/infra/dcc-common-server-proxy.js"></script>
+    <script src="/infra/dcc-common-server-address.js"></script>
+    <script src="/infra/simple-page-tasks.js"></script>
+    <script src="/infra/conditional-layout.js"></script>
+
+    <script src="/dccs/base/primitive-dcc.js"></script>
+    <script src="/dccs/base/scope-dcc.js"></script>
+    <script src="/dccs/base/dcc.js"></script>
+    <script src="/dccs/base/dcc-base.js "></script>
+    <script src="/dccs/base/dcc-visual.js "></script>
+    <script src="/dccs/base/dcc-block.js"></script>
+    <script src="/dccs/components/visual/dcc-button.js"></script>
+    <script src="/dccs/components/visual/dcc-notice-input.js"></script>
+
+    <script src="/dccs/components/web/dcc-rest.js"></script>
+    <script src="/dccs/components/web/dcc-include.js"></script>
+    <script src="/dccs/components/web/dcc-dhtml.js"></script>
+
+    <script src="/dccs/components/data/dcc-submit.js"></script>
+    <script src="/dccs/components/data/dcc-model.js"></script>
+    <script src="/dccs/components/data/dcc-record.js"></script>
+
+    <script src="/dccs/base/subscribe-dcc.js"></script>
+    <script src="/dccs/base/trigger-dcc.js"></script>
+    <script src="/dccs/base/property-dcc.js"></script>
+    <script src="/dccs/base/connect-dcc.js"></script>
+
+
+    <script src="/infra/dcc-rest-proxy.js"></script>
+    <script src="/infra/dcc-basic.js"></script>
+
+    <script src="/hradm/js/dcc-rest-proxy-adm.js"></script>
+    <script src="/hradm/js/dcc-admin-basic.js"></script>
+    <script src="/hradm/js/users-adm.js"></script>
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="shortcut icon" href="/icons/favicon.ico">
+    <link rel="manifest" href="/site.webmanifest">
+
+    <link rel="stylesheet" href="/lib/fontawesome-6-1-1/css/all.min.css">
+    <link rel="stylesheet" href="/lib/bootstrap-4.4.1/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="/dccs/css/dccs.css">
+    <link rel="stylesheet" href="/dccs/css/properties.css">
+    <link rel="stylesheet" href="/infra/css/common-player.css">
+    <link rel="stylesheet" href="/infra/css/common-author.css">
+    <link rel="stylesheet" href="/hradm/css/adm.css">
+
+    <script>
+      Basic.service.rootPath = '../../'
+    </script>
+  </head>
+
+  <body onload="AdminManager.i.start()">
+    <!-- Login/logout header -->
+    <dcc-include src="/author/partials/header.html"></dcc-include>
+
+    <div id="alert-feedback" class="alert alert-success ml-2 mt-5" role="alert" style="position:absolute; display:none;">
+    </div>
+
+    <!-- Share casel modal -->
+    <dcc-rest id="harena-admin-gen-login-token" bind="harena-admin-gen-login-token"></dcc-rest>
+    <dcc-rest id="harena-admin-user-info" bind="harena-admin-user-info" subscribe="user/request/get"></dcc-rest>
+    <div class="modal fade" id="token-modal" tabindex="-1" role="dialog" aria-labelledby="token-modal" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title text-dark">You are about to generate login tokens for the following users:</h5>
+          </div>
+          <div class="modal-body">
+            <form>
+              <h4 id="username_table" style="overflow-wrap: break-word;">Empty</h4>
+              <dcc-submit label="Generate" xstyle="btn btn-success" bind="submit-admin-multi-gen-login-token" data-dismiss="modal" connect="submit:harena-admin-gen-login-token:service/request/put"></dcc-submit>
+              <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
+            </form>
+            <input type="hidden" name="table_id" id="table_id" value="">
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Share case modal -->
+
+    <main role="main">
+      <div class="d-flex flex-column vh-100 vw-100 draft-author-padding hidden-overflow">
+        <div class="h-100 w-100 draft-content-padding scroll-y mt-5" style="border-color: #3b83d0;">
+          <div class="home-text" style="height: auto !important;">
+            <p>Lista de usuários.</p>
+          </div>
+          <dcc-rest id="harena-admin-users-filter" bind="harena-admin-users" subscribe="users/request/get"></dcc-rest>
+          <div id="user-boxes" class="draft-scroll-container">
+            <dcc-rest id="harena-admin-users" bind="harena-admin-users"></dcc-rest>
+            <dcc-dhtml id="harena-dhtml-users" connect="retrieve:harena-admin-users:service/request/get">
+              <input type="hidden" id="pages" value="{{pages}}">
+              {{@foreach users u}}
+              <div id="b{{u.id}}" class="row draft-author-case-container ">
+                <div class="col draft-case-title pr-0">
+                  <h4 class="ml-2">Nome: <span class="text-dark">{{u.username}}</span></h4>
+                </div>
+
+                <div class="d-flex w-xl-25 w-md-40 w-50 justify-content-end justify-content-center buttons-container">
+                  <div data-toggle="tooltip" data-placement="top" title="Log in" id="l{{u.id}}" class="col author-panel-button users-log-in-btn align-self-center pt-2 pb-2">
+                    Sou eu. <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                  </div>
+                </div>
+              </div>
+              {{@endfor}}
+            </dcc-dhtml>
+            <input type="hidden" id="user-id" name="" value="">
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

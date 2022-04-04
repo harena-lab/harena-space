@@ -201,6 +201,37 @@
   opacity: 0.8
 }
 
+.admin-padding{
+	border-color: #505050;
+	border-width: 0.5rem;
+	border-style: solid;
+	border-radius: 0.94rem;
+	background-color: #f2f2f2;
+
+	padding-left: 13px;
+	padding-right: 7px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+.users-log-in-btn{
+	width: 33%;
+	background-color: #28a45e;
+	color: #ffffff;
+	font-size: 14px;
+	font-weight: bold;
+	text-align: center;
+	border-radius: 5px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	margin-left: 5px;
+	margin-right: 5px;
+	cursor: pointer;
+}
+.users-log-in-btn:hover{
+	background-color: #247b4a;
+}
+
 /*
 .ql-editor {
    font-family: monospace;

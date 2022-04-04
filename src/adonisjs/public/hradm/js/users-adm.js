@@ -5,12 +5,16 @@ class AdminManager {
   }
 
 async start (){
+
   MessageBus.i.unsubscribe('control/html/ready', this.start)
-  console.log('============starting adminManager')
   this._boxesPanel = document.querySelector('#case-boxes')
   this.usersSelect = this.usersSelect.bind(this)
   MessageBus.i.subscribe('control/dhtml/ready', this.usersSelect)
   MessageBus.i.publish('control/dhtml/status/request', {id: 'harena-dhtml-users'})
+  $('.modal').on('shown.bs.modal', function () {
+    $('[data-toggle="tooltip"]').tooltip()
+  })
+  this.customURLList()
 }
 
 async usersSelect (topic, message) {
@@ -21,6 +25,7 @@ async usersSelect (topic, message) {
     let usernameSelected = document.querySelector('#username_table')
 
     if(message != null && message.id != null && message.id == 'harena-dhtml-users'){
+      //Creates custom URL with the user list Button
 
       //CHECKBOX INTERACTIONS
       if(document.querySelector('#select-all-checkbox')){
@@ -89,6 +94,7 @@ async usersSelect (topic, message) {
               // console.log('============ checkbox checked')
               userList.push(selectUserCheckbox.value)
               document.querySelector('#table_id').value = userList
+              document.querySelector('#table_id').dataset.nUsers = userList.length
               usernameList.push(selectUserCheckbox.dataset.username)
               usernameSelected.textContent = usernameList
               userContainer.style.backgroundColor = '#769fdb'
@@ -97,6 +103,7 @@ async usersSelect (topic, message) {
               // console.log('============ checkbox unchecked')
               userList.splice(userList.indexOf(selectUserCheckbox.value), 1)
               document.querySelector('#table_id').value = userList
+              document.querySelector('#table_id').dataset.nUsers = userList.length
               usernameList.splice(usernameList.indexOf(selectUserCheckbox.dataset.username), 1)
               usernameSelected.textContent = usernameList
               userContainer.style.backgroundColor = ''
@@ -115,11 +122,16 @@ async usersSelect (topic, message) {
           editButton.addEventListener('click', listenerFnEdit)
         }
         if(previewButton){
-          const listenerFnPreview = function () {
-            //OPEN MODAL TO LIST USER INFO   TODO
+          const listenerFnPreview = async function () {
+            //OPEN MODAL TO LIST USER INFO
+
             let userId = this.id.substring(1)
             document.querySelector('#user-id').value = userId
             document.querySelector('dcc-submit[bind="submit-admin-user-info"]')._computeTrigger()
+            if(document.querySelector('#redirect-to-url')){
+              await MessageBus.i.waitMessage('control/dhtml/ready')
+              AdminManager.i.copyClipboardToken()
+            }
           }
           previewButton.removeEventListener('click', listenerFnPreview)
           previewButton.addEventListener('click', listenerFnPreview)
@@ -141,6 +153,81 @@ async usersSelect (topic, message) {
     }
 
   }
+}
+
+async copyClipboardToken () {
+
+  let baseUrl = document.querySelector('#current-harena-env')
+  let btnCopy = document.querySelector('#btn-copy-url')
+  let wrapper = document.querySelector('#redirect-wrapper')
+  let token = document.querySelector('#token-login')
+  let redirecTo = document.querySelector('#redirect-to-url')
+  if(token.dataset.validity=='Expired'){
+    btnCopy.classList.add('disabled-look')
+    redirecTo.classList.add('disabled-look')
+    redirecTo.placeholder = 'No active token. Generate a new one first.'
+    wrapper.dataset.toggle = 'tooltip'
+    wrapper.dataset.placement = 'top'
+    wrapper.dataset.title = 'Area disabled'
+    redirecTo.value = ''
+    $('#redirect-wrapper').tooltip('enable')
+  }else{
+    btnCopy.classList.remove('disabled-look')
+    redirecTo.classList.remove('disabled-look')
+    redirecTo.placeholder = 'Input URL for redirect after login'
+    $('#redirect-wrapper').tooltip('disable')
+  }
+  baseUrl.innerHTML = document.location.host+'/'
+  btnCopy.addEventListener('click', function(){
+    let redirecTo = document.querySelector('#redirect-to-url')
+    let token = document.querySelector('#token-login')
+    navigator.clipboard.writeText(`${document.location.host}/user/temp-login.html?token=${token.value}&redirected=/${redirecTo.value}`).then(function() {
+      $('#notice-modal').modal('show')
+      let txt = document.querySelector('#modal-notice-txt')
+      let modalBody = document.querySelector('#modal-notice-body')
+      txt.innerHTML = 'Url copied to clipboard'
+
+      modalBody.classList.remove('bg-danger')
+      modalBody.classList.remove('bg-white')
+      txt.classList.remove('text-secondary')
+      modalBody.classList.add('bg-success')
+      txt.classList.add('text-white')
+
+      setTimeout(function(){
+        $('#notice-modal').modal('hide')
+      }, 3500)
+    })
+  })
+
+}
+
+async customURLList() {
+  let btnCustomUrl = document.querySelector('#btn-share-url-list-mass')
+  let baseUrl = document.querySelector('#current-harena-env-mass')
+  let btnCopy = document.querySelector('#btn-copy-url-mass')
+  let redirecTo = document.querySelector('#redirect-to-mass')
+  baseUrl.innerHTML = document.location.host+'/'
+  const listenerFnbtnCustomUrl = function (){
+    let redirectTo = document.querySelector('#redirect-to-url-mass')
+    let urlParams = new URL(document.location).search
+    navigator.clipboard.writeText(`${document.location.host}/user/list${urlParams}&limit=300&redirected=/${redirectTo.value}`).then(function() {
+      $('#notice-modal').modal('show')
+      let txt = document.querySelector('#modal-notice-txt')
+      let modalBody = document.querySelector('#modal-notice-body')
+      txt.innerHTML = 'Url copied to clipboard'
+
+      modalBody.classList.remove('bg-danger')
+      modalBody.classList.remove('bg-white')
+      txt.classList.remove('text-secondary')
+      modalBody.classList.add('bg-success')
+      txt.classList.add('text-white')
+
+      setTimeout(function(){
+        $('#notice-modal').modal('hide')
+      }, 3500)
+    })
+  }
+  btnCopy.addEventListener('click', listenerFnbtnCustomUrl)
 }
 }
 

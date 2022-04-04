@@ -50,8 +50,8 @@
 
         <div class="d-flex justify-content-center w-100 registration-padding">
 
-          <div class="w-md-50">
-            <h1 class="text-center">Logging in...</h1>
+          <div class="w-md-100">
+            <h1 class="text-center" id="temp-login-fdbk">Logging in...</h1>
             <dcc-rest id="harena-token-login" bind="harena-token-login"></dcc-rest>
             <dcc-submit xstyle="d-none" bind="submit-token-login"
               connect="submit:harena-token-login:service/request/post"></dcc-submit>

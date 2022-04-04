@@ -2,11 +2,11 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Authoring Environment</title>
+    <title>Admin Environment</title>
 
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
 
-    <link rel="stylesheet" href="../css/adm.css">
+    <link rel="stylesheet" href="/hradm/css/adm.css">
 
     <script src="/lib/axios-0.21.0/axios.min.js"></script>
 
@@ -81,7 +81,7 @@
 
     <!-- Share casel modal -->
     <dcc-rest id="harena-admin-gen-login-token" bind="harena-admin-gen-login-token"></dcc-rest>
-    <dcc-rest id="harena-admin-user-info" bind="harena-admin-user-info" subscribe="service/request/get"></dcc-rest>
+    <dcc-rest id="harena-admin-user-info" bind="harena-admin-user-info" subscribe="user/request/get"></dcc-rest>
     <div class="modal fade" id="token-modal" tabindex="-1" role="dialog" aria-labelledby="token-modal" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -152,9 +152,9 @@
     <!-- End filter options advanced -->
 
     <!-- User info modal -->
-    <dcc-dhtml id="harena-dhtml-user-info" subscribe="service/response/get/harena-admin-user-info:update">
+
     <div class="modal fade" id="user-overview-info" tabindex="-1" role="dialog" aria-labelledby="user-overview-info" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">User info</h5>
@@ -163,24 +163,73 @@
             </button>
           </div>
           <div class="modal-body">
-
+            <dcc-dhtml id="harena-dhtml-user-info" subscribe="service/response/get/harena-admin-user-info:update">
               <b>Login:</b> {{login}}<br>
               <b>Username:</b> {{username}}<br>
               <b>E-mail:</b> {{email}}<br>
               <b>Institution id:</b> {{institution_id}}<br>
               <b>Grade:</b> {{grade}}<br>
-              <b>Token:</b> {{token_login}}<br>
+              <b>Token:</b> {{token_login}} ||{{token_health}}<br>
               <b>Token creation date:</b> {{token_login_created_at}}<br>
+              <input type="hidden" id="token-login" name="" data-validity="{{token_health}}" value="{{token_login}}">
+            </dcc-dhtml>
+            <div class="input-group" id="redirect-wrapper">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="current-harena-env">@</span>
+              </div>
+              <input type="text" id="redirect-to-url" class="form-control" placeholder="Input URL for redirect after login" aria-label="Input URL for redirect after login" aria-describedby="Redirect user to a Url after login">
+              <a id="btn-copy-url" class="btn btn-outline-dark" href="#" role="button"><i class="fa-solid fa-copy"></i> Copy</a>
+            </div><br>
+
           </div>
         </div>
       </div>
     </div>
-    </dcc-dhtml>
-    <dcc-submit xstyle="d-none" bind="submit-admin-user-info" connect="submit:harena-admin-user-info:service/request/get"></dcc-submit>
-    <!-- END User info modal -->
+    <dcc-submit xstyle="d-none" bind="submit-admin-user-info" topic="user/request/get"></dcc-submit>
+    <!-- End User info modal -->
+
+    <!-- Create custom URL modal -->
+    <div class="modal fade" id="url-redirect-mass" tabindex="-1" role="dialog" aria-labelledby="url-redirect-mass" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Share list with users for mass login by token</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>Define the URL that the users are going to get redirected to after login by token:</p>
+            <div class="input-group" id="redirect-wrapper">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="current-harena-env-mass">@</span>
+              </div>
+              <input type="text" id="redirect-to-url-mass" data-toggle="tooltip" data-placement="top"
+              title="Input URL for redirect after login" class="form-control"
+              placeholder="Input URL for redirect after login" aria-label="Input URL for redirect after login"
+              aria-describedby="Redirect user to a Url after login">
+              <a id="btn-copy-url-mass" class="btn btn-outline-dark" href="#" role="button"><i class="fa-solid fa-copy"></i> Copy</a>
+            </div><br>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Create custom URL modal -->
+    <!-- Notice modal (For user action feedback) -->
+    <div class="modal fade" id="notice-modal" tabindex="-1" role="dialog" aria-labelledby="notice-modal" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-body text-center" id="modal-notice-body">
+              <h5 class="" id="modal-notice-txt"></h5>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End notice modal (For user action feedback) -->
     <main role="main">
-      <div class="home-author-padding align-items-center rounded row sticky-top" style="z-index:3;">
-         <div class="h-100 w-100 draft-content-padding scroll-y">
+      <div class="d-flex flex-column vh-100 vw-100 draft-author-padding hidden-overflow">
+         <div class="h-100 w-100 draft-content-padding scroll-y mt-5">
             <div class="home-text" style="height: auto !important;">
               <p>User administration.</p>
             </div>
@@ -195,6 +244,7 @@
               <button type="button" class="share-cases-element btn btn-success mr-4 m-1" data-toggle="modal" data-target="#token-modal" hidden>
                 Generate tokens
               </button>
+              <button id="btn-share-url-list-mass" type="button" name="button" class="btn btn-info mr-4 m-1" data-target="#url-redirect-mass" data-toggle="modal" data-placement="top" title="Creates a custom URL with users in the list for log in">Share list <i class="fa-solid fa-share-nodes"></i></button>
               <div class="ml-auto pr-3">
                 <form id="form-pg-limit">
                   <select id="limit" name="limit" class="custom-select custom-select-sm" onchange="document.querySelector('#submit-filter-limit').computeSubmit()">
@@ -211,7 +261,7 @@
             </div>
             <div id="user-boxes" class="draft-scroll-container">
               <dcc-rest id="harena-admin-users" bind="harena-admin-users"></dcc-rest>
-              <dcc-dhtml id="harena-dhtml-users" connect="retrieve:harena-admin-users:service/request/get" subscribe="service/response/get/harena-admin-user-info:update">
+              <dcc-dhtml id="harena-dhtml-users" connect="retrieve:harena-admin-users:service/request/get">
                 <input type="hidden" id="pages" value="{{pages}}">
                 {{@foreach users u}}
                 <!-- checkbox for selecting cases -->
