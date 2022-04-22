@@ -90,6 +90,11 @@ class Tracker {
     tr[varid] = message.value
     this._varTrack.push(tr)
     this._updateVariable(this._extractEntityId(topic, 3), message.value)
+
+    // <TODO> check for inconsistencies
+    MessageBus.i.publish('var/set/' + MessageBus.extractLevel(topic, 3),
+                         message, true)
+
     // this._changedVariable(topic, message.value) <FUTURE>
   }
 
