@@ -388,11 +388,13 @@ class DCCCompute extends DCCBase {
       if (c[0] == DCCCompute.role.variable) {
         let cBus = (bus != null) ? bus : MessageBus.i
         if (cBus.hasSubscriber('var/get/' + c[1].replace(/\./g, '/'), true)) {
-          const mess = await cBus.request('var/get/' + c[1].replace(/\./g, '/'),
-                                          null, null, true)
+          let mess = await cBus.request('var/get/' + c[1].replace(/\./g, '/'),
+                                        null, null, true)
           if (mess.message != null) {
-            let value = (mess.message.body != null)
-              ? mess.message.body : mess.message
+            mess = mess.message
+            let value = ((mess.body)
+             ? ((mess.body.value) ? mess.body.value : mess.body)
+             : ((mess.value) ? mess.value : mess))
             if (typeof value === 'string')
               value = value.replace(/,/gm, '.')
             c[2] = Number(value)

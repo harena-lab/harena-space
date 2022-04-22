@@ -2999,6 +2999,10 @@ class Translator {
     '^': {
       dcc: 'dcc-expression',
       default: 'expression'
+    },
+    '?': {
+      dcc: 'dcc-input-typed',
+      default: 'variable'
     }
   }
 
