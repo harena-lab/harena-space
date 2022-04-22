@@ -34,6 +34,7 @@ class DCCCompute extends DCCBase {
 
     if (this.hasAttribute('id')) {
       this._provides(this.id, 'compute/update', this.update)
+      this._provides(this.id, 'update', this.update)
       this.calculate = this.calculate.bind(this)
       this._provides(this.id, 'compute/calculate', this.calculate)
     }
