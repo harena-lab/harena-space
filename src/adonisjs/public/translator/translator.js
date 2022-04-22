@@ -1148,7 +1148,8 @@ class Translator {
       case 'formal-close' : obj = this._formalCloseMdToObj(match); break
       case 'select' : obj = this._selectMdToObj(match); break
       case 'linefeed': obj = this._linefeedMdToObj(match); break
-         // case "text": obj = this._textMdToObj(match); break;
+      case 'component': obj = this._componentMdToObj(match); break
+      case 'connection': obj = this._connectionMdToObj(match); break
     };
     return obj
   }
@@ -1206,10 +1207,6 @@ class Translator {
     const backPath = (knot.background !== undefined)
       ? Basic.service.imageResolver(knot.background.path) : ''
     const backAlt = (knot.background !== undefined) ? knot.background.alternative : ''
-    /*
-      console.log("=== before theme");
-      console.log(finalHTML);
-      */
     for (let tp = themes.length - 1; tp >= 0; tp--) {
       if (!Translator.markerCategories.includes(themes[tp]))
         finalHTML = this._themeSet[themes[tp]]
@@ -1324,6 +1321,8 @@ class Translator {
         case 'select' : html = this._selectObjToHTML(obj, superseq); break
         case 'annotation' : html = this._annotationObjToHTML(obj, superseq); break
         case 'linefeed' : html = this._linefeedObjToHTML(obj); break
+        case 'component' : html = this._componentObjToHTML(obj); break
+        case 'connection' : html = this._connectionObjToHTML(obj); break
       }
     }
     return html
@@ -2730,25 +2729,105 @@ class Translator {
     * Select Obj to HTML
     */
   _selectObjToHTML (obj, superseq) {
-    /*
-      const aRender = (authorRender)
-         ? authorRender : this.authoringRender;
-      */
     let answer = ''
     if (this._playerInputShow || this.authoringRender) {
       if (this._playerInputShow == '#answer' || this.authoringRender) { answer = " answer='" + obj.value + "'" } else { answer = " player='" + this._playerInputShow + "'" }
     }
 
-    // let result = obj.expression;
-    // if (!this.authoringRender)
-    // let result = Translator.htmlTemplates.select
     return Translator.htmlTemplates.select
       .replace('[seq]', this._subSeq(superseq, obj.seq))
       .replace('[author]', this._authorAttrSub(superseq))
       .replace('[expression]', obj.expression)
       .replace('[answer]', answer)
+  }
 
-    // return result;
+  _componentMdToObj (matchArray) {
+    const dcc = matchArray[1].trim()
+    const component = {
+      type: 'component',
+      dcc:  'dcc-' + dcc
+    }
+
+    let df = 'content'
+    if (Translator.componentMap[dcc]) {
+      const map = Translator.componentMap[dcc]
+      component.dcc = map.dcc
+      if (map.default) df = map.default
+    }
+
+    if (matchArray[2]) component.id = matchArray[2]
+
+    /* extracts attributes */
+    if (matchArray[3]) {
+      let content = matchArray[3]
+      const vertical = /^\r?\n/.test(content)
+      const regex = (vertical)
+        ? /^[ \t]*[\+\*][ \t]+([\w-]+)[ \t]*(?::[ \t]*([^\n\r\f]+))?$/im
+        : /(?:^|;)[ \t]*([\w-]+)[ \t]*(?::[ \t]*(?:"([^"]*)"|([^"][^;])*))?/i
+      if (regex.test(content)) {
+        component.attributes = {}
+        let field = null
+        do {
+          field = content.match(regex)
+          if (field != null) {
+            component.attributes[field[1]] =
+              (field[3]) ? field[3] : ((field[2]) ? field[2] : true)
+            content = content.substring(0, field.index) +
+                      content.substring(field.index + field[0].length)
+          }
+        } while (field != null)
+      }
+
+      /* the remaining is content */
+      content = content.trim()
+      if (content.length > 0) {
+        if (!vertical && content.startsWith('"'))
+          content = content.substring(1, content.length-1)
+        if (df == 'content')
+          component.content = content.trim()
+        else {
+          if (!component.attributes) component.attributes = {}
+          component.attributes[df] = content.trim()
+            .replace(/^\r?\n/, '')
+            .replace(/\r?\n$/, '')
+            .replace(/\r?\n/g, ';')
+        }
+      }
+    }
+
+    return component
+  }
+
+  _componentObjToHTML (obj) {
+    let at = ''
+    if (obj.attributes) {
+      for (const a in obj.attributes)
+        at += ' ' + a +
+          ((obj.attributes[a] === true) ? '' : '="' + obj.attributes[a] + '"')
+    }
+    return Translator.htmlTemplates.component
+      .replace(/\[dcc\]/g, obj.dcc)
+      .replace('[id]', (obj.id) ? obj.id : 'dcc'+obj.seq)
+      .replace('[content]', (obj.content) ? obj.content : '')
+      .replace('[attr]', at)
+  }
+
+  _connectionMdToObj (matchArray) {
+    return {
+      type: 'connection',
+      from: matchArray[1].trim(),
+      trigger: matchArray[2].trim(),
+      topic: matchArray[3].trim(),
+      to: matchArray[4].trim()
+    }
+  }
+
+  _connectionObjToHTML (obj) {
+    return Translator.htmlTemplates.connection
+      .replace('[from]', obj.from)
+      .replace('[trigger]', obj.trigger)
+      .replace('[to]', obj.to)
+      .replace('[topic]', obj.topic)
   }
 }
 
@@ -2849,6 +2928,12 @@ class Translator {
     linefeed: {
       mark: /[\f\n\r]+/im,
       inline: true
+    },
+    component: {
+      mark: /\[[ \t]*([^|\]]+)(?:(?:\|[ \t]*([^\]]+))?[ \t]*\]\[\[((?:[^\]]*(?:\][^\]]+)*)+)\]\]|\|[ \t]*([^\]]+)[ \t]*\](?:\[\[((?:[^\]]*(?:\][^\]]+)*)+)\]\])?)/im
+    },
+    connection: {
+      mark: /\[([^\]]+)\][ \t]*=([^|]+)\|([^=]+)=>[ \t]*\[([^\]]+)\]/im
     }
     /*
       text: {
@@ -2900,6 +2985,21 @@ class Translator {
     'knot.next': 'knot/navigate/>',
     'flow.next': 'flow/navigate/>',
     'session.close': 'session/close'
+  }
+
+  Translator.componentMap = {
+    '~': {
+      dcc: 'dcc-compute',
+      default: 'expression'
+    },
+    '*': {
+      dcc: 'dcc-button',
+      default: 'label'
+    },
+    '^': {
+      dcc: 'dcc-expression',
+      default: 'expression'
+    }
   }
 
   // Translator.specialCategories = ["start", "note"];
