@@ -2743,9 +2743,10 @@ class Translator {
 
   _componentMdToObj (matchArray) {
     const dcc = matchArray[1].trim()
+
     const component = {
       type: 'component',
-      dcc:  'dcc-' + dcc
+      dcc:  (dcc.includes('dcc-')) ? dcc : 'dcc-' + dcc
     }
 
     let df = 'content'
@@ -2763,7 +2764,7 @@ class Translator {
       const vertical = /^\r?\n/.test(content)
       const regex = (vertical)
         ? /^[ \t]*[\+\*][ \t]+([\w-]+)[ \t]*(?::[ \t]*([^\n\r\f]+))?$/im
-        : /(?:^|;)[ \t]*([\w-]+)[ \t]*(?::[ \t]*(?:"([^"]*)"|([^"][^;])*))?/i
+        : /(?:^|;)[ \t]*([\w-]+)[ \t]*(?::[ \t]*(?:"([^"]*)"|([^"][^;]*)))?/i
       if (regex.test(content)) {
         component.attributes = {}
         let field = null
@@ -2790,7 +2791,7 @@ class Translator {
           component.attributes[df] = content.trim()
             .replace(/^\r?\n/, '')
             .replace(/\r?\n$/, '')
-            .replace(/\r?\n/g, ';')
+            .replace(/\r?\n[ \t]*/g, ';')
         }
       }
     }
@@ -2813,21 +2814,28 @@ class Translator {
   }
 
   _connectionMdToObj (matchArray) {
-    return {
+    const connection = {
       type: 'connection',
-      from: matchArray[1].trim(),
       trigger: matchArray[2].trim(),
-      topic: matchArray[3].trim(),
       to: matchArray[4].trim()
     }
+    if (matchArray[1]) connection.from = matchArray[1].trim()
+    if (matchArray[3]) connection.map = matchArray[3].trim()
+
+    return connection
   }
 
   _connectionObjToHTML (obj) {
-    return Translator.htmlTemplates.connection
-      .replace('[from]', obj.from)
-      .replace('[trigger]', obj.trigger)
-      .replace('[to]', obj.to)
-      .replace('[topic]', obj.topic)
+    return (obj.from)
+      ? Translator.htmlTemplates.connection
+          .replace('[from]', obj.from)
+          .replace('[trigger]', obj.trigger)
+          .replace('[to]', obj.to)
+          .replace('[map]', (obj.map) ? ' topic="' + obj.map + '"' : '')
+      : Translator.htmlTemplates.subscribe
+          .replace('[trigger]', obj.trigger)
+          .replace('[to]', obj.to)
+          .replace('[map]', (obj.map) ? ' map="' + obj.map + '"' : '')
   }
 }
 
@@ -2933,13 +2941,8 @@ class Translator {
       mark: /\[[ \t]*([^|\]]+)(?:(?:\|[ \t]*([^\]]+))?[ \t]*\]\[\[((?:[^\]]*(?:\][^\]]+)*)+)\]\]|\|[ \t]*([^\]]+)[ \t]*\](?:\[\[((?:[^\]]*(?:\][^\]]+)*)+)\]\])?)/im
     },
     connection: {
-      mark: /\[([^\]]+)\][ \t]*=([^|]+)\|([^=]+)=>[ \t]*\[([^\]]+)\]/im
+      mark: /(?:\[([^\]]+)\])?[ \t]*=([^|=]+)(?:\|([^=]+))?=>[ \t]*\[([^\]]+)\]/im
     }
-    /*
-      text: {
-         mark: /([ \t]*)([^\f\n\r]+)$/im,
-         line: true }
-      */
   }
 
   Translator.literalClose = /(~~~|```)/im

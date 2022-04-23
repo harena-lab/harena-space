@@ -68,7 +68,9 @@
     component:
 '<[dcc] id="[id]"[attr]>[content]</[dcc]>',
     connection:
-'<connect-dcc from="[from]" trigger="[trigger]" to="[to]" topic="[topic]"></connect-dcc>'
+'<connect-dcc from="[from]" trigger="[trigger]" to="[to]"[map]></connect-dcc>',
+    subscribe:
+'<subscribe-dcc target="[to]" topic="[trigger]"[map]></subscribe-dcc>'
   }
 
 Translator.htmlSubTemplates = {
