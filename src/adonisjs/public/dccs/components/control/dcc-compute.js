@@ -392,9 +392,9 @@ class DCCCompute extends DCCBase {
                                         null, null, true)
           if (mess.message != null) {
             mess = mess.message
-            let value = ((mess.body)
-             ? ((mess.body.value) ? mess.body.value : mess.body)
-             : ((mess.value) ? mess.value : mess))
+            let value = ((mess.body != null)
+             ? ((mess.body.value != null) ? mess.body.value : mess.body)
+             : ((mess.value != null) ? mess.value : mess))
             if (typeof value === 'string')
               value = value.replace(/,/gm, '.')
             c[2] = Number(value)
