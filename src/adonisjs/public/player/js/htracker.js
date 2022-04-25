@@ -93,7 +93,7 @@ class Tracker {
 
     // <TODO> check for inconsistencies
     MessageBus.i.publish('var/set/' + MessageBus.extractLevel(topic, 3),
-                         message, true)
+                         message.value, true)
 
     // this._changedVariable(topic, message.value) <FUTURE>
   }
