@@ -109,7 +109,7 @@ class LayoutController {
   async dynamicAuthor (){
 
     if(LayoutController.case.message.category_id === 'pocus-training'
-    && LayoutController.user.message.institution === 'hcpa'){
+    && (LayoutController.user.message.institution === 'hcpa' || LayoutController.user.message.institution === 'unisinos')){
       const toolbarDiv = document.querySelector('#div-toolbar-rightside')
       toolbarDiv.innerHTML =
       `<div class="home-author-sub-text align-self-center" style="color:#808080">FEEDBACK:</div>
@@ -179,7 +179,8 @@ class LayoutController {
 
   async dynamicMenu (){
 
-    if(LayoutController.user.message.institution === 'hcpa' && document.querySelector('#home-btn-container')){
+    if((LayoutController.user.message.institution === 'hcpa' || LayoutController.user.message.institution === 'unisinos')
+    && document.querySelector('#home-btn-container')){
       const btnContainer = document.querySelector('#home-btn-container')
       const btnFeedback = document.createElement('template')
       btnFeedback.innerHTML =

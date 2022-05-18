@@ -5,6 +5,12 @@
  */
 
 class Properties {
+  constructor () {
+    this.applyPropertiesDetails = this.applyPropertiesDetails.bind(this)
+    MessageBus.i.subscribe('properties/apply/details',
+      this.applyPropertiesDetails)
+  }
+
   attachPanelDetails (panel) {
     this._panelDetails = panel
   }
@@ -22,11 +28,13 @@ class Properties {
       await this._editor.handleConfirm()
   }
 
-  editKnotProperties (obj, knotId, presentation, extra) {
+  editKnotProperties (obj, knotId) {
     this._knotOriginalTitle = obj.title
-    const editp = this.editProperties(obj, 'default')
+    const editp = this.editProperties(obj, null, 'default')
+    /*
     this._editor = new EditDCCProperties(null, presentation,
       editp.htmls + extra, this)
+    */
   }
 
   editElementProperties (knots, knotid, el, dcc, role, buttonType) {
@@ -239,6 +247,10 @@ class Properties {
     }
   }
 
+  async applyPropertiesDetails (topic, message) {
+    this.applyProperties(true)
+  }
+
   async applyProperties (details) {
     const sufix = (details) ? '_d' : '_s'
     const panel = (details)
@@ -392,11 +404,11 @@ class Properties {
       categories: {
         type: 'shortStrArray',
         label: 'Categories'
-      },
+      }/*,
       level: {
         type: 'shortStr',
         label: 'Level'
-      }
+      }*/
     }},
     text: {default: {
       content: {
