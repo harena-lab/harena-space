@@ -5,6 +5,7 @@ class TokenController {
     this.checkToken = this.checkToken.bind(this)
     MessageBus.i.subscribe('control/button/logout-button/ready', this.checkToken)
     if (window.location.pathname !== '/') {
+    if (window.location.pathname !== '/' && window.location.pathname.includes('/prognosis/calculator') == false) {
       this.redirectUnlogged()
     }
   }

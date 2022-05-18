@@ -539,6 +539,8 @@ class AuthorManager {
       this._renderKnot()
       delete this._elementSelected
       await this._updateActiveComments()
+      Properties.s.editKnotProperties(this._knots[this._knotSelected],
+                                      this._knotSelected)
       Comments.prepare(this._compiledCase, knotid)
       if (Panels.s.commentsVisible)
         MessageBus.i.publish('control/comments/editor')

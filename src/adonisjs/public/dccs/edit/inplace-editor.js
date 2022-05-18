@@ -16,7 +16,7 @@ class EditDCC {
     if (dcc != null) {
       this._elementWrapper = this._fetchElementWrapper()
       this._elementWrapperRect = this._elementWrapper.getBoundingClientRect()
-      this._elementRect = this._editElement.getBoundingClientRect()
+      // this._elementRect = this._editElement.getBoundingClientRect() <NOT USED>
     }
   }
 
@@ -250,6 +250,7 @@ class EditDCC {
   }
 }
 
+/* <NOT USED>
 class EditDCCProperties extends EditDCC {
   constructor (dcc, presentation, htmlProp, properties) {
     super(dcc, presentation, properties)
@@ -261,6 +262,7 @@ class EditDCCProperties extends EditDCC {
     this._handleEditorAction(ep.clicked)
   }
 }
+*/
 
 (function () {
 /* icons from Font Awesome, license: https://fontawesome.com/license */

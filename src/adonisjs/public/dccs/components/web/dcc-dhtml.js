@@ -205,9 +205,9 @@ class DCCDHTML extends DCCBase {
   }
 
   _extractValue (message) {
-     return ((message.body)
-      ? ((message.body.value) ? message.body.value : message.body)
-      : ((message.value) ? message.value : message))
+     return ((message.body != null)
+      ? ((message.body.value != null) ? message.body.value : message.body)
+      : ((message.value != null) ? message.value : message))
   }
 
   _updateRender () {

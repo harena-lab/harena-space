@@ -64,7 +64,13 @@
     domain:
 '[natural]',
     select:
-'<dcc-state-select id=\'dcc[seq]\'[author][answer]>[expression]</dcc-state-select>'
+'<dcc-state-select id=\'dcc[seq]\'[author][answer]>[expression]</dcc-state-select>',
+    component:
+'<[dcc] id="[id]"[attr]>[content]</[dcc]>',
+    connection:
+'<connect-dcc from="[from]" trigger="[trigger]" to="[to]"[map]></connect-dcc>',
+    subscribe:
+'<subscribe-dcc target="[to]" topic="[trigger]"[map]></subscribe-dcc>'
   }
 
 Translator.htmlSubTemplates = {
