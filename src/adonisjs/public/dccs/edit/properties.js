@@ -29,7 +29,9 @@ class Properties {
       editp.htmls + extra, this)
   }
 
-  editElementProperties (knots, knotid, el, dcc, role, buttonType) {
+  editElementProperties (knots, knotid, el, dcc, role, buttonType, commandManager) {
+    console.log("commandManager:")
+    console.log(commandManager)
     this._knots = knots
     const knotContent = knots[knotid].content
     const element = dcc.currentPresentation()
@@ -46,25 +48,25 @@ class Properties {
       if (this._editor != null && this._editor.closeEditor) { this._editor.closeEditor() }
       switch (editp.inlineProfile.type) {
         case 'void':
-          this._editor = new EditDCCPlain(obj, dcc, editp.htmls, this)
+          this._editor = new EditDCCPlain(obj, dcc, editp.htmls, editp.inlineProperty, this, commandManager)
           break
         case 'text':
           this._editor = new EditDCCText(knotContent, el, dcc, svg, false, this,
-                           null)
+                           null, commandManager)
           break
         case 'textField':
           this._editor = new EditDCCText(knotContent, el, dcc, svg, false, this,
-                           editp.inlineProperty)
+                           editp.inlineProperty, commandManager)
           break
         case 'shortStr':
           this._editor = new EditDCCPlain(obj, dcc, editp.htmls,
-            editp.inlineProperty, this)
+            editp.inlineProperty, this, commandManager)
           break
         case 'image':
-          this._editor = new EditDCCMedia(obj, dcc, this, 'image')
+          this._editor = new EditDCCMedia(obj, dcc, this, 'image', commandManager)
           break
         case 'media':
-          this._editor = new EditDCCMedia(obj, dcc, this, 'media')
+          this._editor = new EditDCCMedia(obj, dcc, this, 'media', commandManager)
           break
         case 'option':
           if (this._item > -1) {
@@ -73,7 +75,7 @@ class Properties {
               // <TODO> improve in the future
               this._itemEdit = { edit: keys[this._item] }
               this._editor = new EditDCCPlain(
-                this._itemEdit, dcc, editp.htmls, 'edit', this)
+                this._itemEdit, dcc, editp.htmls, 'edit', this, commandManager)
             } else {
               const op = obj.options[keys[this._item]]
               if (op.contextTarget != null) {
@@ -83,7 +85,7 @@ class Properties {
                   if (knotc[ct].type == "text" || knotc[ct].type == "text-block")
                     elo = parseInt(ct)
                 if (elo > -1)
-                  this._editor = new EditDCCText(knotc, elo, null, svg, true, this)
+                  this._editor = new EditDCCText(knotc, elo, null, svg, true, this, commandManager)
               }
 
             }
@@ -239,53 +241,12 @@ class Properties {
     }
   }
 
-  async applyProperties (details) {
-    const sufix = (details) ? '_d' : '_s'
-    const panel = (details)
-      ? this._panelDetails : this._editor.editorExtended
-    if (this._objProperties) {
-      const profile = this._typeProfile(this._objProperties)[this._buttonType]
-      let seq = 1
-      for (const p in profile) {
-        if (profile[p].type != 'void') {
-          if (!profile[p].composite) {
-            if (details ||
-                (profile[p].visual && profile[p].visual.includes('panel'))) {
-              const objProperty =
-                        await this._applySingleProperty(profile[p],
-                          seq, panel, sufix, this._objProperties[p])
-              if (objProperty != null) { this._objProperties[p] = objProperty }
-            }
-            seq++
-          } else {
-            for (const s in profile[p].composite) {
-              if (details || (profile[p].visual &&
-                         profile[p].visual.includes('panel'))) {
-                const objProperty = await this._applySingleProperty(
-                  profile[p].composite[s], seq, panel, sufix,
-                  this._objProperties[p])
-                if (objProperty != null &&
-                            (typeof objProperty !== 'string' ||
-                              objProperty.trim().length > 0)) {
-                  if (!this._objProperties[p]) { this._objProperties[p] = {} }
-                  this._objProperties[p][s] = objProperty
-                }
-              }
-              seq++
-            }
-          }
-        }
-      }
-
-      Translator.instance.updateElementMarkdown(this._objProperties)
-
-      if (this._knotOriginalTitle &&
-             this._knotOriginalTitle != this._objProperties.title) {
-        MessageBus.i.publish('control/knot/rename',
-          this._objProperties.title, true)
-        delete this._knotOriginalTitle
-      }
-    }
+  async applyProperties (details, commandManager) {
+    let action = new ApplyPropertiesAction
+    (details, this._objProperties, this._panelDetails,
+    this._editor,this._buttonType,this._knotOriginalTitle,
+    this._typeProfile, this._itemEdit, this._item)
+    commandManager.execute(action)
     await this.closeProperties(details)
   }
 
@@ -297,85 +258,6 @@ class Properties {
       await MessageBus.i.request('control/knot/update', null, null, true)
     }
     // if (!details) {MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message), null, true) }
-  }
-
-  async _applySingleProperty (property, seq, panel, sufix, previous) {
-    let objProperty = null
-    console.log('=== property')
-    console.log('#pfield' + seq + sufix)
-    const field = (panel != null) ?
-         panel.querySelector('#pfield' + seq + sufix) : null
-    switch (property.type) {
-      case 'shortStr' :
-      case 'text':
-      case 'textField':
-      case 'variable':
-        if (field == 'variable') {
-          console.log('=== variable')
-          console.log(field.value)
-        }
-        if (field != null) {
-          const value = field.value.trim()
-          if (value.length > 0) { objProperty = value }
-        }
-        break
-      case 'shortStrArray' :
-        if (field != null) {
-          const catStr = field.value.trim()
-          if (catStr.length > 0) {
-            const categories = catStr.split(',')
-            for (const c in categories) { categories[c] = categories[c].trim() }
-            objProperty = categories
-          }
-        }
-        break
-      case 'option':
-        objProperty = {}
-        let i = 0
-        for (const item in previous) {
-          if (i == this._item) {
-            if (this._itemEdit.edit.trim().length > 0) {
-              if (field != null)
-                previous[item].message = field.value.trim()
-              objProperty[this._itemEdit.edit] = previous[item]
-            }
-          } else { objProperty[item] = previous[item] }
-          i++
-        }
-        break
-      case 'propertyValue':
-        objProperty = {}
-        let sub = 1
-        let fp = null
-        do {
-          fp = panel.querySelector('#pfieldprop' + seq + sufix + '_' + sub)
-          if (fp != null) {
-            const fv = panel.querySelector('#pfield' + seq + sufix + '_' + sub)
-            objProperty[fp.value.trim()] = fv.value.trim()
-            sub++
-          }
-        } while (fp != null)
-        break
-      case 'select':
-        if (field != null)
-          objProperty = field.value
-        break
-      case 'image':
-        if (field != null) {
-          // uploads the image
-          if (field.files[0]) {
-            const asset = await
-            MessageBus.i.request('data/asset//new',
-              {
-                file: field.files[0],
-                caseid: Basic.service.currentCaseId
-              }, null, true)
-            objProperty = asset.message.filename
-          }
-        }
-        break
-    }
-    return objProperty
   }
 }
 

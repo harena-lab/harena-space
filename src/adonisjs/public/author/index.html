@@ -100,6 +100,9 @@
     <script src="/translator/item-templates.js"></script>
 
     <script src="/dccs/edit/properties.js"></script>
+    <script src="/dccs/edit/command-manager.js"></script>
+    <script src="/dccs/edit/local-storage-stack.js"></script>
+    <script src="/dccs/edit/action-apply-properties.js"></script>
     <script src="/dccs/edit/upload-adapter.js"></script>
     <script src="/dccs/edit/inplace-editor.js"></script>
     <script src="/dccs/edit/inplace-plain-editor.js"></script>
@@ -421,7 +424,7 @@
                  <div id="properties-block" class="sty-properties-block std-border" style="display:none">
                     <div id="properties-panel" class="styp-properties-panel"></div>
                     <div id="properties-buttons">
-                       <dcc-button xstyle="in" topic="properties/apply/details" label="APPLY"></dcc-button>
+                       <div class="control-button"><dcc-button xstyle="in" topic="properties/apply/details" label="APPLY"></dcc-button></div>
                        <!--
                        <div class="control-button"><dcc-button xstyle="in" topic="control/element/selected/up" label="Element Up" image="icons/icon-move-up.svg"></dcc-button></div>
                        <div class="control-button"><dcc-button xstyle="in" topic="control/element/selected/down" label="Element Down" image="icons/icon-move-down.svg"></dcc-button></div>

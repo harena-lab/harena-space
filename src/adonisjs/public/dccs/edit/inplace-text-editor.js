@@ -9,13 +9,14 @@ function _harenaCustomUploadAdapterPlugin( editor ) {
 }
 
 class EditDCCText extends EditDCC {
-  constructor (knotContent, el, dcc, svg, floating, properties, field) {
+  constructor (knotContent, el, dcc, svg, floating, properties, field, commandManager) {
     super(dcc, (dcc != null) ? dcc.currentPresentation() : null, properties)
     this._knotContent = knotContent
     this._element = el
     this._objField = field
     this._textChanged = false
     this.handleConfirm = this.handleConfirm.bind(this)
+    this.commandManager = commandManager
     MessageBus.i.subscribe('control/editor/edit/confirm', this.handleConfirm)
     this.handleCancel = this.handleCancel.bind(this)
     MessageBus.i.subscribe('control/editor/edit/cancel', this.handleCancel)
@@ -95,7 +96,7 @@ class EditDCCText extends EditDCC {
     if (this._objField != null) {
       this._knotContent[this._element][this._objField] = mdTranslate
         .replace(/[\n\r]+$/igm, '').trim()
-      await this._properties.applyProperties(false)
+      await this._properties.applyProperties(false, this.commandManager)
     } else {
       const objSet = this._translateObject(mdTranslate,
         this._knotContent[this._element].blockquote)

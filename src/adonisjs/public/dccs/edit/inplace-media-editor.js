@@ -2,9 +2,10 @@
   **********************/
 
 class EditDCCMedia extends EditDCC {
-  constructor (obj, dcc, properties, mtype) {
+  constructor (obj, dcc, properties, mtype, commandManager) {
     super(dcc, dcc.currentPresentation(), properties)
     this._componentEditor(obj, mtype)
+    this.commandManager = commandManager
   }
 
   async _componentEditor (obj, mtype) {
@@ -27,7 +28,7 @@ class EditDCCMedia extends EditDCC {
             delete obj.path
         }
       }
-      this._properties.applyProperties(true)
+      this._properties.applyProperties(true, this.commandManager)
     }
   }
 }

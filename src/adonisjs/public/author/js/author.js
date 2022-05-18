@@ -37,7 +37,7 @@ class AuthorManager {
     MessageBus.i.subscribe('control/#', this.controlEvent)
 
     this.updateSourceField = this.updateSourceField.bind(this)
-
+    this._commandManager = new CommandManager('caseEditor')
     // this._uploadArtifacts = this._uploadArtifacts.bind(this)
 
     this._caseModified = false
@@ -786,9 +786,8 @@ class AuthorManager {
          dcc = inDCC
       }
       parentDCC.edit(role)
-
       Properties.s.editElementProperties(
-        this._knots, this._knotSelected, el, dcc, role, message.buttonType)
+        this._knots, this._knotSelected, el, dcc, role, message.buttonType, this._commandManager)
     }
   }
 
