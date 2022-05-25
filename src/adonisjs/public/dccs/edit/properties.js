@@ -5,6 +5,12 @@
  */
 
 class Properties {
+  constructor () {
+    this.applyPropertiesDetails = this.applyPropertiesDetails.bind(this)
+    MessageBus.i.subscribe('properties/apply/details',
+      this.applyPropertiesDetails)
+  }
+
   attachPanelDetails (panel) {
     this._panelDetails = panel
   }
@@ -22,11 +28,13 @@ class Properties {
       await this._editor.handleConfirm()
   }
 
-  editKnotProperties (obj, knotId, presentation, extra) {
+  editKnotProperties (obj, knotId) {
     this._knotOriginalTitle = obj.title
-    const editp = this.editProperties(obj, 'default')
+    const editp = this.editProperties(obj, null, 'default')
+    /*
     this._editor = new EditDCCProperties(null, presentation,
       editp.htmls + extra, this)
+    */
   }
 
   editElementProperties (knots, knotid, el, dcc, role, buttonType) {
@@ -239,18 +247,25 @@ class Properties {
     }
   }
 
+  async applyPropertiesDetails (topic, message) {
+    this.applyProperties(true)
+  }
+
   async applyProperties (details) {
     const sufix = (details) ? '_d' : '_s'
     const panel = (details)
       ? this._panelDetails : this._editor.editorExtended
     if (this._objProperties) {
+      /* clone the object */
       const profile = this._typeProfile(this._objProperties)[this._buttonType]
       let seq = 1
+      /* all changes will be on the clone */
       for (const p in profile) {
         if (profile[p].type != 'void') {
           if (!profile[p].composite) {
             if (details ||
                 (profile[p].visual && profile[p].visual.includes('panel'))) {
+              /* adjust _applySingleProperty to avoid changing the objProperty */
               const objProperty =
                         await this._applySingleProperty(profile[p],
                           seq, panel, sufix, this._objProperties[p])
@@ -277,6 +292,7 @@ class Properties {
         }
       }
 
+      // transfer this operation to command
       Translator.instance.updateElementMarkdown(this._objProperties)
 
       if (this._knotOriginalTitle &&
@@ -336,7 +352,7 @@ class Properties {
           if (i == this._item) {
             if (this._itemEdit.edit.trim().length > 0) {
               if (field != null)
-                previous[item].message = field.value.trim()
+                previous[item].message = field.value.trim()  // correct this sentence
               objProperty[this._itemEdit.edit] = previous[item]
             }
           } else { objProperty[item] = previous[item] }
@@ -392,11 +408,11 @@ class Properties {
       categories: {
         type: 'shortStrArray',
         label: 'Categories'
-      },
+      }/*,
       level: {
         type: 'shortStr',
         label: 'Level'
-      }
+      }*/
     }},
     text: {default: {
       content: {
