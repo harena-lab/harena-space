@@ -256,13 +256,16 @@ class Properties {
     const panel = (details)
       ? this._panelDetails : this._editor.editorExtended
     if (this._objProperties) {
+      /* clone the object */
       const profile = this._typeProfile(this._objProperties)[this._buttonType]
       let seq = 1
+      /* all changes will be on the clone */
       for (const p in profile) {
         if (profile[p].type != 'void') {
           if (!profile[p].composite) {
             if (details ||
                 (profile[p].visual && profile[p].visual.includes('panel'))) {
+              /* adjust _applySingleProperty to avoid changing the objProperty */
               const objProperty =
                         await this._applySingleProperty(profile[p],
                           seq, panel, sufix, this._objProperties[p])
@@ -289,6 +292,7 @@ class Properties {
         }
       }
 
+      // transfer this operation to command
       Translator.instance.updateElementMarkdown(this._objProperties)
 
       if (this._knotOriginalTitle &&
@@ -348,7 +352,7 @@ class Properties {
           if (i == this._item) {
             if (this._itemEdit.edit.trim().length > 0) {
               if (field != null)
-                previous[item].message = field.value.trim()
+                previous[item].message = field.value.trim()  // correct this sentence
               objProperty[this._itemEdit.edit] = previous[item]
             }
           } else { objProperty[item] = previous[item] }

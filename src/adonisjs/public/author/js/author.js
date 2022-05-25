@@ -347,17 +347,36 @@ class AuthorManager {
   /*
     * ACTION: control-save
     */
+  noticeModalContent (txtClass, bodyClass, txt, closeTime){
+    $('#notice-modal').modal('show')
+    let txtModal = document.querySelector(`#modal-notice-txt`)
+    let modalBody = document.querySelector(`#modal-notice-body`)
+    modalBody.className = modalBody.className.replace(/bg-+?/g, '')
+    txtModal.className = txtModal.className.replace(/text-+?/g, '')
+
+    modalBody.classList.add(bodyClass)
+    txtModal.classList.add(txtClass)
+    txtModal.innerHTML = txt
+
+    if(closeTime != null && closeTime > 0){
+      setTimeout(function(){
+        $('#notice-modal').modal('hide')
+      }, closeTime)
+    }
+  }
   async caseSave () {
-    this._messageSpace.classList.remove('invisible')
-    document.getElementById('btn-save-draft').innerHTML = 'SAVING...'
-    this._messageSpace.firstElementChild.innerHTML = 'SAVING...'
+    this.noticeModalContent('text-dark','bg-white','SAVING...', 0)
+    // this._messageSpace.classList.remove('invisible')
+    // document.getElementById('btn-save-draft').innerHTML = 'SAVING...'
+    // this._messageSpace.firstElementChild.innerHTML = 'SAVING...'
     let timeoutExceeded
     new Promise((resolve, reject) => {
       timeoutExceeded = setTimeout(() => {resolve()}, 5000)
 
     })
     .then(function (rej) {
-      AuthorManager.i._messageSpace.firstElementChild.innerHTML = 'Error ocurred. Trying again...'
+      AuthorManager.i.noticeModalContent('text-dark','bg-white','Error ocurred. Trying again...', 5000)
+      // AuthorManager.i._messageSpace.firstElementChild.innerHTML = 'Error ocurred. Trying again...'
       setTimeout(() => {AuthorManager.i.caseSave()}, 3000)
     })
     await Properties.s.closePreviousProperties()
@@ -378,7 +397,8 @@ class AuthorManager {
       if(status.message && !status.message.includes('Error')  ){
         Basic.service.authorPropertyStore('caseId', Basic.service.currentCaseId)
 
-        this._messageSpace.firstElementChild.innerHTML = 'SAVED!'
+        this.noticeModalContent('text-white','bg-success','SAVED!', 900)
+        // this._messageSpace.firstElementChild.innerHTML = 'SAVED!'
         setTimeout(this._clearMessage, 800)
         // let timeoutExceeded
         // new Promise((resolve, reject) => {
@@ -394,10 +414,11 @@ class AuthorManager {
         this._messageSpace.classList.add('invisible')
         document.getElementById('btn-save-draft').innerHTML = 'SAVE'
       }else {
-        this._messageSpace.firstElementChild.innerHTML = status.message
-        this._messageSpace.firstElementChild.style.backgroundColor = '#f21313b5'
-        this._messageSpace.firstElementChild.style.borderRadius = '50px'
-        this._messageSpace.firstElementChild.style.right = 0
+        this.noticeModalContent('text-white','bg-danger',`${status.message}. Please try again. <br> If it persists, contact the support.`, 15000)
+        // this._messageSpace.firstElementChild.innerHTML = status.message
+        // this._messageSpace.firstElementChild.style.backgroundColor = '#f21313b5'
+        // this._messageSpace.firstElementChild.style.borderRadius = '50px'
+        // this._messageSpace.firstElementChild.style.right = 0
         setTimeout(this._clearMessage, 800)
         // let timeoutExceeded
         // new Promise((resolve, reject) => {

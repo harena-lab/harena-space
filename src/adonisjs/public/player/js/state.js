@@ -136,8 +136,8 @@ class PlayState {
     * Scenario Variables
     */
 
-  _extractEntityId (topic) {
-    return MessageBus.extractLevelsSegment(topic, 3).replace(/\//g, '.')
+  _extractEntityId (topic, level) {
+    return MessageBus.extractLevelsSegment(topic, level).replace(/\//g, '.')
   }
 
   variableGet (topic, message, track) {
@@ -170,6 +170,15 @@ class PlayState {
           MessageBus.i.publishHasResponse (topic, message, result, track)
           break
         default:
+          // handles an array index
+          let aidx = -1
+          const brk = id.indexOf('[')
+          if (brk > -1) {
+            // starts from 1 not 0
+            aidx = parseInt(id.substring(brk+1, id.length-1)) - 1
+            id = id.substring(0, brk)
+          }
+
           // tries to give a scope to the variable
           if (this._state.variables[id] == null) {
             const currentKnot = this.historyCurrent()
@@ -177,8 +186,12 @@ class PlayState {
                 this._state.variables[currentKnot + '.' + id] != null)
               id = currentKnot + '.' + id
           }
+
           MessageBus.i.publishHasResponse (
-            topic, message, this._state.variables[id], track)
+            topic, message,
+            (aidx == -1 || this._state.variables[id] == null)
+              ? this._state.variables[id] : this._state.variables[id][aidx],
+            track)
       }
     }
   }

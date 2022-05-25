@@ -203,7 +203,7 @@ class DCCBlock extends DCCVisual {
       presentation = host.querySelector((presentationId != null)
         ? '#' + presentationId
         : '#presentation-dcc' +
-                                             ((role) ? '-' + role : ''))
+            ((role) ? '-' + role : ''))
     }
     this._setPresentation(presentation, role, presentationId)
     this.checkActivateAuthor()
