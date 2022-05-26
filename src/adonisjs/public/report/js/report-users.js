@@ -28,7 +28,8 @@ class ReportUsersManager {
       console.log(cs)
 
       // let csv = '"user", "case", "evaluation"'
-      let html = '<table style="border: 2px solid darkgray">'
+      let html = '<table class="report-table">'
+      let htmls = html
       const checked = document.getElementsByClassName('form-check-input')
       let lastUser = null
       let countCases = 0
@@ -58,38 +59,48 @@ class ReportUsersManager {
               await Translator.instance.compileMarkdown(
                 csu.id, caseMk.message.source)
 
-            if (c.value != lastUser)
-              html += '<tr><td style="border: 2px solid darkgray" colspan="2"><h1>' +
+            if (c.value != lastUser) {
+              html += '<tr><td colspan="2"><h1>' +
                       csu.username +
                       '</h1></td></tr><tr>' +
-                      '<th style="border: 2px solid darkgray">Case</th>' +
-                      '<th style="border: 2px solid darkgray">POCUS</th>' +
+                      '<th>Case</th>' +
+                      '<th>POCUS</th>' +
                       '</tr>'
+              htmls += '<tr><td colspan="6"><h1>' +
+                        csu.username +
+                        '</h1></td></tr>' +
+                        '<tr><th>Exams</th><th>1st Quarter</th>' +
+                        '<th>2nd Quarter</th><th>3rd Quarter</th>' +
+                        '<th>4th Quarter</th><th>Grade Average</th></tr>'
+            }
 
             // csv += '"' + ((c.value == lastUser) ? '' : csu.username) + '",' +
             //        '"' + csu.title + '",'
-            html += '<tr><td style="border: 2px solid darkgray">' +
+            html += '<tr><td>' +
                     csu.title + '</td>' +
-                    '</td><td style="border: 2px solid darkgray">' +
-                    '<table style="border: 2px solid darkgray">'
+                    '</td><td>' +
+                    '<table class="report-table">'
             lastUser = c.value
 
             const knots = compiledCase.knots
             for (const k in knots) {
-              if (ReportUsersManager.ktypes.includes(knots[k].title))
+              if (ReportUsersManager.ktypes.includes(knots[k].title)) {
+                const factor = (ReportUsersManager.factor[knots[k].title])
+                  ? ReportUsersManager.factor[knots[k].title] : 1
                 if (tu[knots[k].title])
-                  tu[knots[k].title]++
+                  tu[knots[k].title] += factor
                 else
-                  tu[knots[k].title] = 1
+                  tu[knots[k].title] = factor
+              }
               if (knots[k].annotations != null) {
                 let htmli = ''
                 let sum = 0
                 let count = 0
                 for (const a of knots[k].annotations) {
                   if (a.context && a.formal && a.formal.media && a.formal.media.grade) {
-                    htmli += '<tr><td style="border: 2px solid darkgray">' +
+                    htmli += '<tr><td>' +
                              a.context +
-                             '</td><td style="border: 2px solid darkgray">' +
+                             '</td><td>' +
                              a.formal.media.grade +
                              '</td></tr>'
                     sum += parseInt(a.formal.media.grade)
@@ -97,13 +108,13 @@ class ReportUsersManager {
                   }
                 }
                 if (htmli.length > 0) {
-                  html += '<tr><td style="border: 2px solid darkgray" colspan="2">' +
+                  html += '<tr><td class="report-table" colspan="2">' +
                           '<b>' + knots[k].title + '</b></td></tr>' +
-                         '<tr><td style="border: 2px solid darkgray"><b>' +
-                         'take</b></td><td style="border: 2px solid darkgray"><b>' +
+                         '<tr><td><b>' +
+                         'take</b></td><td><b>' +
                          'grade</b></td></tr>' + htmli +
-                          '<tr><td style="border: 2px solid darkgray">' +
-                          '<b>average</b></td><td style="border: 2px solid darkgray">' +
+                          '<tr><td>' +
+                          '<b>average</b></td><td>' +
                          (Math.round(sum * 10 / count) / 10) + '<td></tr>' +
                          '<tr><td></td></tr>'
                    tua++
@@ -112,7 +123,7 @@ class ReportUsersManager {
                    ki[knots[k].title].sum += sum
                    ki[knots[k].title].count += count
                 } else if (ReportUsersManager.ktypes.includes(knots[k].title))
-                  html += '<tr><td style="border: 2px solid darkgray" colspan="2">' +
+                  html += '<tr><td class="report-table" colspan="2">' +
                           '<b>' + knots[k].title + '</b></td></tr>'
               }
               if (k == 'Conclusion') {
@@ -120,11 +131,11 @@ class ReportUsersManager {
                 for (const c of knots[k].content) {
                   if (c.type == 'field' && c.field == 'conclusion') {
                     console.log('=== comments')
-                    html += '<tr><td style="border: 2px solid darkgray">' +
-                            '<b>likert</b></td><td style="border: 2px solid darkgray"><b>value</b></tr>'
+                    html += '<tr><td>' +
+                            '<b>likert</b></td><td><b>value</b></tr>'
                     for (const f in c.value) {
-                      html += '<tr><td style="border: 2px solid darkgray">' +
-                              f + '</td><td style="border: 2px solid darkgray">' +
+                      html += '<tr><td>' +
+                              f + '</td><td>' +
                               c.value[f] + '</td></tr>'
                       if (likert[f]) {
                         likert[f].count++
@@ -140,45 +151,68 @@ class ReportUsersManager {
           }
           if (Object.keys(tu).length > 0) {
             html += '<tr><td>&nbsp</td></tr>' +
-                    '<tr><td style="border: 2px solid darkgray"><b>Total Exams</b></td></tr>' +
-                    '<tr><td style="border: 2px solid darkgray"><b>exam type</b></td>' +
-                    '<td style="border: 2px solid darkgray"><b>count</b></td></tr>'
+                    '<tr><td><b>Total Exams</b></td></tr>' +
+                    '<tr><td><b>exam type</b></td>' +
+                    '<td><b>count</b></td></tr>'
             let tt = 0
+            let qt = [0, 0, 0, 0]
             for (const t in tu) {
-              html += '<tr><td style="border: 2px solid darkgray">' +
-                      t + '</td><td style="border: 2px solid darkgray">' +
+              html += '<tr><td>' +
+                      t + '</td><td>' +
                       tu[t] + '</td></tr>'
               tt += tu[t]
+
+              const q = [0, 0, 0, 0]
+              let a = tu[t]
+              for (let f = 4; f >= 1 && a > 0; f--) {
+                let s = Math.trunc(a / f)
+                a -= s * f
+                for (let ff = 0; ff < f; ff++) {
+                  q[ff] += s
+                  qt[ff] += s
+                }
+              }
+              htmls += '<tr><td><b>' + t + '</b></td>'
+              for (let i = 0; i < 4; i++)
+                htmls += '<td>' + ((q[i] == 0) ? '' : q[i]) + '</td>'
+              htmls += '<td>' +
+                       ((ki[t])
+                         ? (Math.round(ki[t].sum * 10 / ki[t].count) / 10) : '') +
+                       '</td></tr>'
             }
             html += '</td></tr><tr><td></td></tr>' +
-                    '<tr><td style="border: 2px solid darkgray"><b>' +
-                    'Total exams</b></td><td style="border: 2px solid darkgray">' +
+                    '<tr><td><b>' +
+                    'Total exams</b></td><td>' +
                     tt + '</td></tr>'
+            htmls += '<tr><td><b>Total of Exams</b></td>'
+            for (let i = 0; i < 4; i++)
+              htmls += '<td><b>' + ((qt[i] == 0) ? '' : qt[i]) + '</b></td>'
+            htmls += '<td></td></tr>'
           }
           if (Object.keys(ki).length > 0) {
             html += '<tr><td>&nbsp</td></tr>' +
-                    '<tr><td style="border: 2px solid darkgray"><b>Grades</b></td></tr>' +
-                    '<tr><td style="border: 2px solid darkgray"><b>exam type</b></td>' +
-                    '<td style="border: 2px solid darkgray"><b>grade average</b></td></tr>'
+                    '<tr><td><b>Grades</b></td></tr>' +
+                    '<tr><td><b>exam type</b></td>' +
+                    '<td><b>grade average</b></td></tr>'
             for (const i in ki) {
-              html += '<tr><td style="border: 2px solid darkgray">' +
-                      i + '</td><td style="border: 2px solid darkgray">' +
+              html += '<tr><td>' +
+                      i + '</td><td>' +
                       (Math.round(ki[i].sum * 10 / ki[i].count) / 10) +
                       '</td></tr>'
             }
             html += '</td></tr><tr><td></td></tr>' +
-                    '<tr><td style="border: 2px solid darkgray"><b>' +
-                    'Total evaluated</b></td><td style="border: 2px solid darkgray">' +
+                    '<tr><td><b>' +
+                    'Total evaluated</b></td><td>' +
                     tua + '</td></tr>'
           }
           if (hasLikert) {
             html += '<tr><td>&nbsp</td></tr>' +
-                    '<tr><td style="border: 2px solid darkgray"><b>Likert</b></td></tr>' +
-                    '<tr><td style="border: 2px solid darkgray"><b>item</b></td>' +
-                    '<td style="border: 2px solid darkgray"><b>grade average</b></td></tr>'
+                    '<tr><td><b>Likert</b></td></tr>' +
+                    '<tr><td><b>item</b></td>' +
+                    '<td><b>grade average</b></td></tr>'
             for (const l in likert) {
-              html += '<tr><td style="border: 2px solid darkgray">' +
-                      l + '</td><td style="border: 2px solid darkgray">' +
+              html += '<tr><td>' +
+                      l + '</td><td>' +
                       (Math.round(likert[l].sum * 10 / likert[l].count) / 10) +
                       '</td></tr>'
             }
@@ -186,7 +220,9 @@ class ReportUsersManager {
         }
     }
     html += '</table>'
+    htmls += '</table><br>'
     reportArea.innerHTML = html
+    document.querySelector('#report-summary').innerHTML = htmls
   }
   }
 }
@@ -198,4 +234,6 @@ class ReportUsersManager {
     'Lungs', 'Cava', 'Heart', 'Lower Limb Veins', 'Abdomen',
     'Aorta', 'Urinary', 'Vesicle and Portal Triad', 'E-FAST', 'Soft Parts',
     'Articulate', 'Ocular']
+
+  ReportUsersManager.factor = {'Lower Limb Veins': 2}
 })()
