@@ -22,10 +22,5 @@
    {"description": "Linear description of the case followed by an EKG.",
     "path": "simple/case/linear_details_ekg",
     "icon": "simple/images/linear_details_ekg.png",
-    "scope": "case"},
- "Jacinto Standard EKG":
-   {"description": "Standard cycle with an EKG.",
-    "path": "jacinto/standard_eletro",
-    "icon": "jacinto/images/standard_eletro.png",
     "scope": "case"}
 }

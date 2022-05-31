@@ -329,8 +329,6 @@ class DCCCompute extends DCCBase {
    * - allResults: indicates that all results will be returned
    */
   static async computeExpression (compiledSet, bus, allResults) {
-    console.log('=== compiled set')
-    console.log(compiledSet)
     let result = null
     let all = {}
     for (let s of compiledSet) {
@@ -370,11 +368,12 @@ class DCCCompute extends DCCBase {
     let variables = []
     for (let s of compiledSet) {
       for (let c of s[1]) {
-        const sub = c[1].indexOf('[')
-        const vname = (sub == -1) ? c[1] : c[1].substring(0, sub)
-        if (c[0] == DCCCompute.role.variable && !variables.includes(vname) &&
-            !assigned.includes(vname))
-          variables.push(vname)
+        if (c[0] == DCCCompute.role.variable) {
+          const sub = c[1].indexOf('[')
+          const vname = (sub == -1) ? c[1] : c[1].substring(0, sub)
+          if (!variables.includes(vname) && !assigned.includes(vname))
+            variables.push(vname)
+        }
       }
     }
     return variables

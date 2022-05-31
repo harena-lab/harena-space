@@ -12,6 +12,11 @@
      "icon": "zombie/case/plain.png",
      "scope": "case",
      "environment": "development"},
+"Jacinto Standard EKG":
+  {"description": "Standard cycle with an EKG.",
+   "path": "jacinto/case/standard_eletro",
+   "icon": "jacinto/images/standard_eletro.png",
+   "scope": "case"},
 "Quiz da Emergência":
    {"questId": "quiz-da-emergencia",
     "description": "Um quiz com quatro alternativas.",
