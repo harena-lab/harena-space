@@ -467,6 +467,43 @@
       }
     }
   )
+  DCC.component(
+    'harena-ask-feedback-unisinos-prof',
+    'dcc-rest',
+    {
+      environment: {
+        'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api,
+        'entity': 'institution',
+        'clearance': '5',
+        'subject_grade':'professor',
+        'subject': 'unisinos',
+        'table_id': new URL(document.location).searchParams.get('id'),
+      },
+      oas: {
+        paths: {
+          '{url-manager}/case/share': {
+            'post': {
+              operationId: 'ask-feedback',
+              parameters: [
+                {name: 'url-manager',
+                  in: 'path'},
+                {name: 'clearance',
+                  in: 'query'},
+                {name: 'entity',
+                  in: 'query'},
+                {name: 'subject',
+                  in: 'query'},
+                {name: 'subject_grade',
+                  in: 'query'},
+                {name: 'table_id',
+                  in: 'query'}
+              ]
+            }
+          }
+        }
+      }
+    }
+  )
 
   DCC.component(
     'harena-case-property',
