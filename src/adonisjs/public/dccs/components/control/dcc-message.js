@@ -3,21 +3,41 @@
 class DCCMessage extends DCCBase {
   connectedCallback () {
     super.connectedCallback()
-    this._publish(this.message, null, true)
+    if (this.autorun)
+      this._publish(this.topic, null, true)
   }
 
   /* Attribute Handling */
 
   static get observedAttributes () {
-    return DCCBase.observedAttributes.concat(['message'])
+    return DCCBase.observedAttributes.concat(['topic', 'autorun'])
   }
 
-  get message () {
-    return this.getAttribute('message')
+  get topic () {
+    return this.getAttribute('topic')
   }
 
-  set message (newValue) {
-    this.setAttribute('message', newValue)
+  set topic (newValue) {
+    this.setAttribute('topic', newValue)
+  }
+
+  // defines if the expression run at start
+  get autorun () {
+    return this.hasAttribute('autorun')
+  }
+
+  set autorun (isActive) {
+    if (isActive) {
+      this.setAttribute('autorun', '')
+    } else {
+      this.removeAttribute('autorun')
+    }
+  }
+
+  async notify (topic, message, track) {
+    const tp = topic.toLowerCase()
+    if (tp == 'publish')
+      this._publish(this.topic, message, track)
   }
 }
 
