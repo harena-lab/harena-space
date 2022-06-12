@@ -1381,33 +1381,33 @@ class Prognosis {
 
     if((pacientOptions.locked && Object.keys(pacientOptions.locked).length > 0)
     || (pacientOptions.open && Object.keys(pacientOptions.open).length > 0)){
-      // console.log('===========================================================')
-      // console.log('============ calculating best options...')
-      // console.log(pacientOptions)
-      // console.log('============ Locked Options')
-      // console.log(Object.entries(pacientOptions.locked))
-      // console.log('============ Open Options')
-      // console.log(Object.entries(pacientOptions.open))
+      console.log('===========================================================')
+      console.log('============ calculating best options...')
+      console.log(pacientOptions)
+      console.log('============ Locked Options')
+      console.log(Object.entries(pacientOptions.locked))
+      console.log('============ Open Options')
+      console.log(Object.entries(pacientOptions.open))
       let pacientScore = {}
       pacientScore['locked'] = {}
       pacientScore['open'] = {}
       for (let i = 0; i < Object.keys(pacientOptions.locked).length; i++) {
         let mainKey = Object.keys(pacientOptions.locked)[i]
 
-        // console.log('============ key')
-        // console.log(mainKey)
+        console.log('============ key')
+        console.log(mainKey)
         let childKey = pacientOptions.locked[mainKey]
-        // console.log(childKey)
+        console.log(childKey)
         if(typeof childKey == 'object'){
           for (let x = 0; x < Object.keys(childKey).length; x++) {
-            // console.log('============ child key')
-            // console.log(Object.keys(childKey)[x])
+            console.log('============ child key')
+            console.log(Object.keys(childKey)[x])
             let childValues = pacientOptions.locked[mainKey][Object.keys(childKey)[x]]
-            // console.log(childValues)
-            // console.log('============ child values')
+            console.log(childValues)
+            console.log('============ child values')
             for (var z = 0; z < childValues.length; z++) {
-              // console.log(childValues[z])
-              // console.log(scoreValues['pacient'][Object.keys(childKey)[x]]['values'][childValues[z]]['saps'])
+              console.log(childValues[z])
+              console.log(scoreValues['pacient'][Object.keys(childKey)[x]]['values'][childValues[z]]['saps'])
               let lockedOptionSaps = scoreValues['pacient'][Object.keys(childKey)[x]]['values'][childValues[z]]['saps']
               if(pacientScore['locked'][Object.keys(childKey)[x]]>0)
                 pacientScore['locked'][Object.keys(childKey)[x]] = pacientScore['locked'][Object.keys(childKey)[x]] + lockedOptionSaps
@@ -1430,70 +1430,70 @@ class Prognosis {
         // pacientOptions.locked[Object.keys(pacientOptions.locked)[i]]
         // pacientInfo
       }
-      // console.log('=========================== starting open')
-      // console.log(pacientOptions.open)
+      console.log('=========================== starting open')
+      console.log(pacientOptions.open)
       for (let i = 0; i < Object.keys(pacientOptions.open).length; i++) {
         let mainKey = Object.keys(pacientOptions.open)[i]
-        // console.log('============ key')
-        // console.log(mainKey)
+        console.log('============ key')
+        console.log(mainKey)
         pacientScore['open'][mainKey] = {}
 
         let childKey = pacientOptions.open[mainKey]
-        // console.log(childKey)
+        console.log(childKey)
         if(typeof childKey == 'object'){
           for (let x = 0; x < Object.keys(childKey).length; x++) {
 
-            // console.log('============ child key')
-            // console.log(Object.keys(childKey)[x])
+            console.log('============ child key')
+            console.log(Object.keys(childKey)[x])
             let sapsKey = Object.keys(childKey)[x]
             let childValues = pacientOptions.open[mainKey][sapsKey]
             if(Array.isArray(childKey)){
               childValues = pacientOptions.open[mainKey]
-              // console.log('============ child values')
+              console.log('============ child values')
               for (var z = 0; z < childValues.length; z++) {
-                // console.log(childValues[z])
-                // console.log(scoreValues['pacient'][childValues[z]])
-                // console.log(pacientOptions.open[mainKey])
+                console.log(childValues[z])
+                console.log(scoreValues['pacient'][childValues[z]])
+                console.log(pacientOptions.open[mainKey])
                 pacientScore['open'][mainKey][childValues[z]] = scoreValues['pacient'][childValues[z]]
               }
             }else{
               pacientScore['open'][sapsKey] = {}
               pacientScore['open'][mainKey][sapsKey] = {}
-              // console.log('============ child values not array')
+              console.log('============ child values not array')
               for (var z = 0; z < childValues.length; z++) {
-                // console.log(childValues[z])
+                console.log(childValues[z])
                 if(scoreValues['pacient'][sapsKey]){
-                  // console.log('============ new SAPS architecture')
-                  // console.log(scoreValues['pacient'][sapsKey]['values'][childValues[z]]['saps'])
-                  // console.log('============')
-                  // console.log(typeof(scoreValues['pacient'][sapsKey][childValues[z]]))
+                  console.log('============ new SAPS architecture')
+                  console.log(scoreValues['pacient'][sapsKey]['values'][childValues[z]]['saps'])
+                  console.log('============')
+                  console.log(typeof(scoreValues['pacient'][sapsKey][childValues[z]]))
                   pacientScore['open'][sapsKey][childValues[z]] = scoreValues['pacient'][sapsKey]['values'][childValues[z]]['saps']
-                  // console.log(pacientScore)
+                  console.log(pacientScore)
                 }else{
 
-                  // console.log(scoreValues['pacient'][childValues[z]])
-                  // console.log(typeof(scoreValues['pacient'][childValues[z]]))
+                  console.log(scoreValues['pacient'][childValues[z]])
+                  console.log(typeof(scoreValues['pacient'][childValues[z]]))
                   if((typeof(scoreValues['pacient'][childValues[z]]) == 'object') && typeof childValues[z] == 'string'){
-                    // console.log('============ evolving...')
-                    // console.log(scoreValues['pacient'][childValues[z]]['values']['Sim']['saps'])
+                    console.log('============ evolving...')
+                    console.log(scoreValues['pacient'][childValues[z]]['values']['Sim']['saps'])
                     pacientScore['open'][sapsKey][childValues[z]] = scoreValues['pacient'][childValues[z]]['values']['Sim']['saps']
-                    // console.log(pacientScore)
+                    console.log(pacientScore)
                   }else if((typeof childValues[z] == 'object')){
-                    // console.log('============ everything is object yey')
-                    // console.log('============ re checking keys \n', childValues[z])
-                    // console.log('============ saps key \n', sapsKey)
-                    // console.log('============ current patient structure \n', pacientScore)
+                    console.log('============ everything is object yey')
+                    console.log('============ re checking keys \n', childValues[z])
+                    console.log('============ saps key \n', sapsKey)
+                    console.log('============ current patient structure \n', pacientScore)
                     let objKey = Object.keys(childValues[z])[0]
                     let objValue = childValues[z][objKey]['values'][0]
-                    // console.log(objKey)
-                    // console.log(objValue)
-                    // console.log(scoreValues['pacient'][objKey][objValue])
+                    console.log(objKey)
+                    console.log(objValue)
+                    console.log(scoreValues['pacient'][objKey][objValue])
                     if(scoreValues['pacient'][childValues[z]] == null){
-                      // console.log('============ cmon legtsdo')
-                      // console.log(pacientScore['open'][mainKey])
-                      // console.log(Object.keys(childValues[z])[0])
-                      // console.log(Object.values(childValues[z])[0][0])
-                      // console.log(scoreValues['pacient'][objKey]['values'][Object.values(childValues[z])[0][0]]['saps'])
+                      console.log('============ cmon legtsdo')
+                      console.log(pacientScore['open'][mainKey])
+                      console.log(Object.keys(childValues[z])[0])
+                      console.log(Object.values(childValues[z])[0][0])
+                      console.log(scoreValues['pacient'][objKey]['values'][Object.values(childValues[z])[0][0]]['saps'])
                       if(childValues['groupedChoices']){
                         pacientScore['open'][mainKey][sapsKey][objKey] = scoreValues['pacient'][objKey]['values'][Object.values(childValues[z])[0][0]]['saps']
                         if (!pacientScore['open'][mainKey][sapsKey][objKey]['groupedChoices']){
@@ -1507,26 +1507,26 @@ class Prognosis {
                       }else if (mainKey != sapsKey) {
                         pacientScore['open'][mainKey][sapsKey][objKey] = scoreValues['pacient'][objKey]['values'][Object.values(childValues[z])[0][0]]['saps']
                       }else{
-                        // console.log('============ main key ', mainKey)
-                        // console.log('============ sapsKey ', sapsKey)
-                        // console.log('============ objKey', objKey)
+                        console.log('============ main key ', mainKey)
+                        console.log('============ sapsKey ', sapsKey)
+                        console.log('============ objKey', objKey)
                         pacientScore['open'][mainKey][objKey] = scoreValues['pacient'][objKey]['values'][Object.values(childValues[z])[0][0]]['saps']
                       }
                     }else {
                       pacientScore['open'][mainKey][sapsKey][objKey] = scoreValues['pacient'][objKey]['values'][objValue]['saps']
                     }
-                    // console.log(pacientScore)
+                    console.log(pacientScore)
                   }else if (Object.keys(scoreValues['pacient']['Idade']['values']).includes(childValues[z])) {
-                    // console.log('============ Its a hidden age')
-                    // console.log(scoreValues['pacient']['Idade']['values'][childValues[z]]['saps'])
+                    console.log('============ Its a hidden age')
+                    console.log(scoreValues['pacient']['Idade']['values'][childValues[z]]['saps'])
                     pacientScore['open'][sapsKey][childValues[z]] = scoreValues['pacient']['Idade']['values'][childValues[z]]['saps']
                   }else if(Object.keys(scoreValues['pacient']['Origem']['values']).includes(childValues[z])){
-                    // console.log('============ Its a hidden Origem value')
-                    // console.log(scoreValues['pacient']['Origem']['values'][childValues[z]]['saps'])
+                    console.log('============ Its a hidden Origem value')
+                    console.log(scoreValues['pacient']['Origem']['values'][childValues[z]]['saps'])
                     pacientScore['open'][sapsKey][childValues[z]] = scoreValues['pacient']['Origem']['values'][childValues[z]]['saps']
                   }else{
-                    // console.log(scoreValues['pacient'][childValues[z]])
-                    // pacientScore['open'][sapsKey][childValues[z]] = scoreValues['pacient'][childValues[z]]
+                    console.log('1528 line ',scoreValues['pacient'][childValues[z]])
+                    pacientScore['open'][sapsKey][childValues[z]] = scoreValues['pacient'][childValues[z]]
                   }
                 }
               }
@@ -1543,8 +1543,8 @@ class Prognosis {
             }
           }
         }else{
-          // console.log('============ single value')
-          // console.log(pacientOptions['open'][mainKey])
+          console.log('============ single value')
+          console.log(pacientOptions['open'][mainKey])
           pacientScore['open'][mainKey] = scoreValues['pacient'][mainKey]['values'][childKey]
         }
         if(Object.entries(pacientScore['open'][mainKey]) == ''){
@@ -1557,22 +1557,22 @@ class Prognosis {
   }
 
   bestPacientScore(pacient){
-    // console.log('============ receiving pacient for best score check')
-    // console.log(pacient)
+    console.log('============ receiving pacient for best score check')
+    console.log(pacient)
     const checkOptions = function(object) {
       let possible = []
       let bestValues = []
       let isOptionSummed = false
-      // console.log('============ object of choices')
-      // console.log(object)
-      // console.log(Object.values(object))
+      console.log('============ object of choices')
+      console.log(object)
+      console.log(Object.values(object))
       let optionKeys = Object.keys(object)
       let currentKey = {}
-      // console.log('============ keys', optionKeys)
+      console.log('============ keys', optionKeys)
       for (let _key of optionKeys) {
         let key = object[_key]
         currentKey[_key] = key
-        // console.log('============ damn', key)
+        console.log('============ damn', key)
         if(typeof key == 'object'){
           let group = Object.values(key)
           let groupValue = 0
@@ -1581,42 +1581,42 @@ class Prognosis {
               // console.log('============ pushing something: ', groupValue)
               possible.push(checkOptions(groupValue))
             }else if(value!=null && key['groupedChoices']){
-              // console.log('============ this is a group')
-              // console.log(value)
+              console.log('============ this is a group')
+              console.log(value)
               groupValue+=value
             }else {
               isOptionSummed = true
-              // console.log('============ current group')
-              // console.log([...group])
-              // console.log('============ looks like a group, but it isnt :)')
-              // console.log(key)
-              // console.log('============ pushing possible choice ',value)
-              // console.log('============ min ')
+              console.log('============ current group')
+              console.log([...group])
+              console.log('============ looks like a group, but it isnt :)')
+              console.log(key)
+              console.log('============ pushing possible choice ',value)
+              console.log('============ min ')
 
-              // console.log(Math.min.apply(null, group))
+              console.log(Math.min.apply(null, group))
               possible.push(value)
             }
           }
           if (isOptionSummed){
-            // console.log('============ getting better result from multipleChoice ===========')
-            // console.log(possible)
-            // console.log(Math.min.apply(null, possible))
+            console.log('============ getting better result from multipleChoice ===========')
+            console.log(possible)
+            console.log(Math.min.apply(null, possible))
             bestValues.push(Math.min.apply(null, possible))
+            console.log('============ current values in bestValues ', bestValues)
             possible = []
-            // console.log('============ current values in bestValues ', bestValues)
 
           }
           if(key['groupedChoices']){
-            // console.log('============ pushing groupValue ', groupValue)
+            console.log('============ pushing groupValue ', groupValue)
             possible.push(groupValue)
           }
         }else if (key!=null){
-          // console.log('============ pushing possible choice')
-          // console.log(key)
+          console.log('============ pushing possible choice')
+          console.log(key)
           possible.push(key)
         }
       }
-      // console.log('============ current possible choices: ',possible)
+      console.log('============ current possible choices: ',possible)
 
       if(possible.length>0 || isOptionSummed){
         let bestOption
@@ -1625,14 +1625,14 @@ class Prognosis {
             bestOption = variable
           }
         }
-        // console.log('============ best option')
-        // console.log(bestOption)
-        // console.log('============ is there options summed? ', isOptionSummed )
+        console.log('============ best option')
+        console.log(bestOption)
+        console.log('============ is there options summed? ', isOptionSummed )
         if(isOptionSummed){
-          // console.log('============ returning sum ', bestValues.reduce((a,b)=>a+b))
+          console.log('============ returning sum ', bestValues.reduce((a,b)=>a+b))
           return bestValues.reduce((a,b)=>a+b)
         }else if(bestOption != null && !isOptionSummed){
-          // console.log('============ returning single value ', bestOption)
+          console.log('============ returning single value ', bestOption)
           return bestOption
         }
 
@@ -1649,24 +1649,24 @@ class Prognosis {
     }
     if(pacient.open && Object.keys(pacient.open).length > 0){
       for (let i = 0; i < Object.keys(pacient.open).length; i++) {
-        // console.log('============ before')
-        // console.log(Object.values(pacient.open)[i])
+        console.log('============ before')
+        console.log(Object.values(pacient.open)[i])
         let object = Object.values(pacient.open)[i]
-        // console.log('============open begins')
+        console.log('============open begins')
         openOptions += checkOptions(object)
-        // console.log(openOptions)
+        console.log(openOptions)
       }
     }
     function round(value, precision) {
       let multiplier = Math.pow(10, precision || 0);
       return Math.round(value * multiplier) / multiplier;
     }
-    // console.log('============ All open option score')
-    // console.log(openOptions)
-    // console.log('============ All locked option score')
-    // console.log(lockedOptions)
-    // console.log('============')
-    // console.log(openOptions + lockedOptions + 16)
+    console.log('============ All open option score')
+    console.log(openOptions)
+    console.log('============ All locked option score')
+    console.log(lockedOptions)
+    console.log('============')
+    console.log(openOptions + lockedOptions + 16)
     let dynamicScore = openOptions + lockedOptions + 16
     let logitDynamic = -32.6659+Math.log(dynamicScore+20.5958)*7.3068
     let mortalityDynamic = Math.exp(logitDynamic)/ (1+ Math.exp(logitDynamic))
@@ -1674,9 +1674,9 @@ class Prognosis {
 
     document.querySelector('#pacient-perfect').value = round((100 - mortalityPercentage),1)
 
-    // console.log('============ dynamic score '+dynamicScore)
-    // console.log('============ mortalityPercentage '+mortalityPercentage)
-    // console.log('============ '+round((100 - mortalityPercentage),1))
+    console.log('============ dynamic score '+dynamicScore)
+    console.log('============ mortalityPercentage '+mortalityPercentage)
+    console.log('============ '+round((100 - mortalityPercentage),1))
   }
 
   calcPrognAcc (playerCalc, sapsCalc, prognRange){
