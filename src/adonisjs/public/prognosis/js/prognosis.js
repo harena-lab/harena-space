@@ -3814,16 +3814,16 @@ class Prognosis {
                 "selectList": "true",
                 "values": [
                   {
-                    "Temperatura": {
+                    "Frequência cardíaca": {
                       "values": [
-                        "<35 °C"
+                        ">=160 bpm"
                       ]
                     }
                   },
                   {
-                    "Frequência cardíaca": {
+                    "Pressão sistólica": {
                       "values": [
-                        ">=160 bpm"
+                        "<40 mmHg"
                       ]
                     }
                   }
@@ -3835,19 +3835,20 @@ class Prognosis {
                 "selectList": "true",
                 "values": [
                   {
+                    "Temperatura": {
+                      "values": [
+                        "<35 °C"
+                      ]
+                    }
+                  },
+                  {
                     "Escala de Coma de Glasgow": {
                       "values": [
                         "3-4"
                       ]
                     }
                   },
-                  {
-                    "Pressão sistólica": {
-                      "values": [
-                        "<40 mmHg"
-                      ]
-                    }
-                  }
+
                 ]
               }
             }
