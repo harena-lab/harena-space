@@ -1020,6 +1020,14 @@ class Prognosis {
                   .replace(/\[valueText\]/ig, childText)
                   document.querySelector('#'+cascadeDivChild.id).appendChild(template.content.cloneNode(true))
 
+                }else if(selectedPacient[fnVariable].open[i][keyText]['uniqueValues'] == 'true'){
+                  template = document.createElement('template')
+                  template.innerHTML = Prognosis.playerOptionRadio
+                  .replace(/\[id\]/ig, childId)
+                  .replace(/\[name\]/ig, keyId+'-value-child')
+                  .replace(/\[value\]/ig, childText)
+                  .replace(/\[valueText\]/ig, childText)
+                  document.querySelector('#'+cascadeDivChild.id).appendChild(template.content.cloneNode(true))
                 }else{
                   template = document.createElement('template')
                   template.innerHTML = Prognosis.playerOptionCheckbox
