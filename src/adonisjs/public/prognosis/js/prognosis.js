@@ -305,8 +305,8 @@ class Prognosis {
   }
 
   async addPacientVariableOption (topic, message){
-    console.log(topic)
-    console.log(message)
+    // console.log(topic)
+    // console.log(message)
     const optionWrapper = document.querySelector('#'+ this.id.substring(4) +'-wrapper')
     const inputValue = this.offsetParent.querySelector('input')
     this.message = this.getAttribute('message')
@@ -1176,7 +1176,7 @@ class Prognosis {
                 // for (var j = 0; j < selectedPacient[fnVariable].open[i][keyText]['child'].length; j++) {
                 //   console.log('============ child values')
                 //   console.log(selectedPacient[fnVariable].open[i][keyText]['child'][j])
-
+                //
                 // }
               }
 
@@ -1457,11 +1457,11 @@ class Prognosis {
             let childValues = pacientOptions.open[mainKey][sapsKey]
             if(Array.isArray(childKey)){
               childValues = pacientOptions.open[mainKey]
-              console.log('============ child values')
+              // console.log('============ child values')
               for (var z = 0; z < childValues.length; z++) {
-                console.log(childValues[z])
-                console.log(scoreValues['pacient'][childValues[z]])
-                console.log(pacientOptions.open[mainKey])
+                // console.log(childValues[z])
+                // console.log(scoreValues['pacient'][childValues[z]])
+                // console.log(pacientOptions.open[mainKey])
                 pacientScore['open'][mainKey][childValues[z]] = scoreValues['pacient'][childValues[z]]
               }
             }else{
@@ -1553,8 +1553,8 @@ class Prognosis {
             //   let keyCheck = []
             //   let i = 1 + (parentI || 0)
             //   console.log('============ keys', keys,'lenght', keys.length)
-            //   // console.log('============ previous i', parentI)
-            //   // console.log('============ current i', i)
+            // console.log('============ previous i', parentI)
+            // console.log('============ current i', i)
             //   if(keys.length>0 || i < 3){
             //     for (let _key of keys) {
             //       console.log('============ current key', _key)
@@ -1607,18 +1607,18 @@ class Prognosis {
   }
 
   bestPacientScore(pacient){
-    console.log('============ receiving pacient for best score check')
-    console.log(pacient)
+    // console.log('============ receiving pacient for best score check')
+    // console.log(pacient)
     const checkOptions = function(object) {
       let possible = []
       let bestValues = []
       let isOptionSummed = false
-      console.log('============ object of choices')
-      console.log(object)
-      console.log(Object.values(object))
+      // console.log('============ object of choices')
+      // console.log(object)
+      // console.log(Object.values(object))
       let optionKeys = Object.keys(object)
       let currentKey = {}
-      console.log('============ keys', optionKeys)
+      // console.log('============ keys', optionKeys)
       for (let _key of optionKeys) {
         let key = object[_key]
         currentKey[_key] = key
@@ -1675,14 +1675,14 @@ class Prognosis {
             bestOption = variable
           }
         }
-        console.log('============ best option')
-        console.log(bestOption)
-        console.log('============ is there options summed? ', isOptionSummed )
+        // console.log('============ best option')
+        // console.log(bestOption)
+        // console.log('============ is there options summed? ', isOptionSummed )
         if(isOptionSummed){
-          console.log('============ returning sum ', bestValues.reduce((a,b)=>a+b))
+          // console.log('============ returning sum ', bestValues.reduce((a,b)=>a+b))
           return bestValues.reduce((a,b)=>a+b)
         }else if(bestOption != null && !isOptionSummed){
-          console.log('============ returning single value ', bestOption)
+          // console.log('============ returning single value ', bestOption)
           return bestOption
         }
 
@@ -1711,12 +1711,12 @@ class Prognosis {
       let multiplier = Math.pow(10, precision || 0);
       return Math.round(value * multiplier) / multiplier;
     }
-    console.log('============ All open option score')
-    console.log(openOptions)
-    console.log('============ All locked option score')
-    console.log(lockedOptions)
-    console.log('============')
-    console.log(openOptions + lockedOptions + 16)
+    // console.log('============ All open option score')
+    // console.log(openOptions)
+    // console.log('============ All locked option score')
+    // console.log(lockedOptions)
+    // console.log('============')
+    // console.log(openOptions + lockedOptions + 16)
     let dynamicScore = openOptions + lockedOptions + 16
     let logitDynamic = -32.6659+Math.log(dynamicScore+20.5958)*7.3068
     let mortalityDynamic = Math.exp(logitDynamic)/ (1+ Math.exp(logitDynamic))
@@ -1724,9 +1724,9 @@ class Prognosis {
 
     document.querySelector('#pacient-perfect').value = round((100 - mortalityPercentage),1)
 
-    console.log('============ dynamic score '+dynamicScore)
-    console.log('============ mortalityPercentage '+mortalityPercentage)
-    console.log('============ '+round((100 - mortalityPercentage),1))
+    // console.log('============ dynamic score '+dynamicScore)
+    // console.log('============ mortalityPercentage '+mortalityPercentage)
+    // console.log('============ '+round((100 - mortalityPercentage),1))
   }
 
   calcPrognAcc (playerCalc, sapsCalc, prognRange){

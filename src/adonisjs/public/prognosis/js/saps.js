@@ -1290,7 +1290,7 @@ class Saps {
   }
 
   async pacientOverview(pacientData){
-    console.log('============ damnit ', pacientData)
+    // console.log('============ damnit ', pacientData)
     let sapsScoreValues = Prognosis.sapsScoreValues['pacient']
     let sapsScoreKeys = Object.keys(sapsScoreValues)
     let sapsTextBuild = {}
@@ -1303,13 +1303,13 @@ class Saps {
           if(Prognosis.i.removeAccent(sapsScoreKeys[i]) == Prognosis.i.removeAccent(elem.value)){
             let sapsValue = sapsScoreValues[sapsScoreKeys[i]]['values']['Sim']['saps']
             let sapsText = sapsScoreValues[sapsScoreKeys[i]]['values']['Sim']['text']
-            console.log('==============================================')
-            console.log('============ selected')
-            console.log(sapsScoreKeys[i])
-
-            console.log(sapsValue)
-            console.log('============ text')
-            console.log(sapsText)
+            // console.log('==============================================')
+            // console.log('============ selected')
+            // console.log(sapsScoreKeys[i])
+            //
+            // console.log(sapsValue)
+            // console.log('============ text')
+            // console.log(sapsText)
             if (sapsText != ''){
               if (!sapsTextBuild[sapsScoreKeys[i]]) {
                 sapsTextBuild[sapsScoreKeys[i]] = []
@@ -1358,12 +1358,12 @@ class Saps {
                 let selectedOpt = sapsScoreValues[sapsScoreKeys[i]]['values'][valueKeys[k]]
                 let sapsValue = selectedOpt['saps']
                 let sapsText = selectedOpt['text']
-                console.log('============ Selected radio')
-                console.log(elem.name)
-                console.log(elem.value)
-                console.log('============ SAPS translated info')
-                console.log(sapsValue)
-                console.log(sapsText)
+                // console.log('============ Selected radio')
+                // console.log(elem.name)
+                // console.log(elem.value)
+                // console.log('============ SAPS translated info')
+                // console.log(sapsValue)
+                // console.log(sapsText)
                 if (sapsText != ''){
                   // console.log('============')
                   if (!sapsTextBuild[sapsScoreKeys[i]]) {
@@ -1388,12 +1388,12 @@ class Saps {
               if (Prognosis.i.removeAccent(valueKeys[k]) == Prognosis.i.removeAccent(elem.id)) {
                 let sapsValue = selectedOpt['saps']
                 let sapsText = selectedOpt['text']
-                console.log('============ Selected checkbox')
-                console.log(elem.value)
-                console.log(elem.id)
-                console.log('============ SAPS translated info')
-                console.log(sapsValue)
-                console.log(sapsText)
+                // console.log('============ Selected checkbox')
+                // console.log(elem.value)
+                // console.log(elem.id)
+                // console.log('============ SAPS translated info')
+                // console.log(sapsValue)
+                // console.log(sapsText)
                 if (sapsText != ''){
                   if (!sapsTextBuild[sapsScoreKeys[i]]) {
                     sapsTextBuild[sapsScoreKeys[i]] = []
