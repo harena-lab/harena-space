@@ -305,8 +305,8 @@ class Prognosis {
   }
 
   async addPacientVariableOption (topic, message){
-    console.log(topic)
-    console.log(message)
+    // console.log(topic)
+    // console.log(message)
     const optionWrapper = document.querySelector('#'+ this.id.substring(4) +'-wrapper')
     const inputValue = this.offsetParent.querySelector('input')
     this.message = this.getAttribute('message')
@@ -1020,6 +1020,14 @@ class Prognosis {
                   .replace(/\[valueText\]/ig, childText)
                   document.querySelector('#'+cascadeDivChild.id).appendChild(template.content.cloneNode(true))
 
+                }else if(selectedPacient[fnVariable].open[i][keyText]['uniqueValues'] == 'true'){
+                  template = document.createElement('template')
+                  template.innerHTML = Prognosis.playerOptionRadio
+                  .replace(/\[id\]/ig, childId)
+                  .replace(/\[name\]/ig, keyId+'-child')
+                  .replace(/\[value\]/ig, childText)
+                  .replace(/\[valueText\]/ig, childText)
+                  document.querySelector('#'+cascadeDivChild.id).appendChild(template.content.cloneNode(true))
                 }else{
                   template = document.createElement('template')
                   template.innerHTML = Prognosis.playerOptionCheckbox
@@ -1168,7 +1176,7 @@ class Prognosis {
                 // for (var j = 0; j < selectedPacient[fnVariable].open[i][keyText]['child'].length; j++) {
                 //   console.log('============ child values')
                 //   console.log(selectedPacient[fnVariable].open[i][keyText]['child'][j])
-
+                //
                 // }
               }
 
@@ -1477,6 +1485,8 @@ class Prognosis {
                     // console.log('============ evolving...')
                     // console.log(scoreValues['pacient'][childValues[z]]['values']['Sim']['saps'])
                     pacientScore['open'][sapsKey][childValues[z]] = scoreValues['pacient'][childValues[z]]['values']['Sim']['saps']
+                    // console.log('============ inserting (evolving...) score ', childValues[z],'/values/sim/saps')
+                    // console.log(sapsKey,childValues[z])
                     // console.log(pacientScore)
                   }else if((typeof childValues[z] == 'object')){
                     // console.log('============ everything is object yey')
@@ -1506,13 +1516,20 @@ class Prognosis {
 
                       }else if (mainKey != sapsKey) {
                         pacientScore['open'][mainKey][sapsKey][objKey] = scoreValues['pacient'][objKey]['values'][Object.values(childValues[z])[0][0]]['saps']
+                        // console.log('============ inserting patient score (if mainKey != sapsKey)', objKey,'/values/',Object.values(childValues[z])[0][0],'saps')
+                        // console.log(mainKey, sapsKey, objKey)
+                        // console.log(pacientScore['open'][mainKey][sapsKey][objKey])
                       }else{
                         // console.log('============ main key ', mainKey)
                         // console.log('============ sapsKey ', sapsKey)
                         // console.log('============ objKey', objKey)
                         pacientScore['open'][mainKey][objKey] = scoreValues['pacient'][objKey]['values'][Object.values(childValues[z])[0][0]]['saps']
+                        // console.log('============ inserting patient score (if)', objKey,'/values/',Object.values(childValues[z])[0][0],'saps')
+                        // console.log(mainKey,' ',objKey)
+                        // console.log(scoreValues['pacient'][objKey]['values'][Object.values(childValues[z])[0][0]]['saps'])
                       }
                     }else {
+                      // console.log('============ inserting patient score (else)')
                       pacientScore['open'][mainKey][sapsKey][objKey] = scoreValues['pacient'][objKey]['values'][objValue]['saps']
                     }
                     // console.log(pacientScore)
@@ -1525,20 +1542,53 @@ class Prognosis {
                     // console.log(scoreValues['pacient']['Origem']['values'][childValues[z]]['saps'])
                     pacientScore['open'][sapsKey][childValues[z]] = scoreValues['pacient']['Origem']['values'][childValues[z]]['saps']
                   }else{
-                    // console.log(scoreValues['pacient'][childValues[z]])
-                    // pacientScore['open'][sapsKey][childValues[z]] = scoreValues['pacient'][childValues[z]]
+
+                    pacientScore['open'][sapsKey][childValues[z]] = scoreValues['pacient'][childValues[z]]
                   }
                 }
               }
             }
+            // const checkJhonDoe = function (object, parentI){
+            //   let keys = Object.keys(object)
+            //   let keyCheck = []
+            //   let i = 1 + (parentI || 0)
+            //   console.log('============ keys', keys,'lenght', keys.length)
+            // console.log('============ previous i', parentI)
+            // console.log('============ current i', i)
+            //   if(keys.length>0 || i < 3){
+            //     for (let _key of keys) {
+            //       console.log('============ current key', _key)
+            //       console.log('============ values', object[_key])
+            //       console.log('============ typeof', typeof object[_key])
+            //       if(typeof object[_key] != 'object'){
+            //         keyCheck[i].push(_key)
+            //         try {
+            //           let abacadabra = checkJhonDoe(object[_key],i)
+            //           keyCheck[i].push(abacadabra)
+            //           console.log('============ recursive testing ', abacadabra)
+            //         } catch (e) {
+            //           console.log('============ error ir key search', e)
+            //         }
+            //       }
+            //     }
+            //     console.log('============ returning end of CheckJhonDoe', keyCheck)
+            //   }
+            //   return keyCheck
+            // }
+            // console.log('============AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA===========================================================')
+            // console.log(checkJhonDoe(pacientScore['open'], 0))
+
             if (pacientScore['open'][sapsKey]
             && (pacientScore['open'][sapsKey].length == undefined && Object.entries(pacientScore['open'][sapsKey]).length == 0)) {
+              // console.log('============ deleting empty key', pacientScore['open'][sapsKey])
               delete pacientScore['open'][sapsKey]
             }else if (pacientScore['open'][mainKey][sapsKey]
             && pacientScore['open'][mainKey][sapsKey].length == undefined) {
+              // console.log('============ deleting empty key', pacientScore['open'][mainKey][sapsKey])
               delete pacientScore['open'][mainKey][sapsKey]
             }
             if(pacientScore['open'][mainKey][sapsKey] && Object.entries(pacientScore['open'][mainKey][sapsKey]).length == 0){
+              // console.log('============ deleting empty key', pacientScore['open'][mainKey][sapsKey])
               delete pacientScore['open'][mainKey][sapsKey]
             }
           }
@@ -1602,8 +1652,8 @@ class Prognosis {
             // console.log(possible)
             // console.log(Math.min.apply(null, possible))
             bestValues.push(Math.min.apply(null, possible))
-            possible = []
             // console.log('============ current values in bestValues ', bestValues)
+            possible = []
 
           }
           if(key['groupedChoices']){
@@ -2302,7 +2352,7 @@ class Prognosis {
   Prognosis.learningPrognosisLvls = {
     "pacients":[
       {
-        "dificuldade": "1",
+        "dificuldade": "1/10",
         "Idade":{
           "locked": [
 
@@ -2580,8 +2630,8 @@ class Prognosis {
                 "values": [
                   "paO2 >=60 sem VM",
                   "paO2 <60 sem VM",
-                  "paO2/FiO2 <100 em VM",
                   "paO2/FiO2 >=100 em VM",
+                  "paO2/FiO2 <100 em VM",
                 ],
               },
             },
@@ -2589,7 +2639,7 @@ class Prognosis {
         },
       },
       {
-        "dificuldade": "2",
+        "dificuldade": "2/10",
         "Idade":{
           "locked": [
             {
@@ -2844,8 +2894,8 @@ class Prognosis {
                 "values": [
                   "paO2 >=60 sem VM",
                   "paO2 <60 sem VM",
-                  "paO2/FiO2 <100 em VM",
                   "paO2/FiO2 >=100 em VM",
+                  "paO2/FiO2 <100 em VM",
                 ],
               },
             },
@@ -2853,7 +2903,7 @@ class Prognosis {
         },
       },
       {
-        "dificuldade": "3",
+        "dificuldade": "3/10",
         "Idade": {
           "open": [],
           "locked": [
@@ -3058,8 +3108,8 @@ class Prognosis {
                 "values": [
                   "paO2 >=60 sem VM",
                   "paO2 <60 sem VM",
+                  "paO2/FiO2 >=100 em VM",
                   "paO2/FiO2 <100 em VM",
-                  "paO2/FiO2 >=100 em VM"
                 ]
               }
             }
@@ -3068,7 +3118,7 @@ class Prognosis {
         }
       },
       {
-        "dificuldade": "4",
+        "dificuldade": "4/10",
         "Idade": {
           "open": [],
           "locked": [
@@ -3281,8 +3331,9 @@ class Prognosis {
                 "values": [
                   "paO2 >=60 sem VM",
                   "paO2 <60 sem VM",
+                  "paO2/FiO2 >=100 em VM",
                   "paO2/FiO2 <100 em VM",
-                  "paO2/FiO2 >=100 em VM"
+
                 ]
               }
             }
@@ -3291,7 +3342,7 @@ class Prognosis {
         }
       },
       {
-        "dificuldade": "5",
+        "dificuldade": "5/10",
         "Idade": {
           "open": [],
           "locked": [
@@ -3507,8 +3558,8 @@ class Prognosis {
                 "values": [
                   "paO2 >=60 sem VM",
                   "paO2 <60 sem VM",
+                  "paO2/FiO2 >=100 em VM",
                   "paO2/FiO2 <100 em VM",
-                  "paO2/FiO2 >=100 em VM"
                 ]
               }
             }
@@ -3517,7 +3568,7 @@ class Prognosis {
         }
       },
       {
-        "dificuldade": "6",
+        "dificuldade": "6/10",
         "Idade": {
           "open": [],
           "locked": [
@@ -3714,7 +3765,7 @@ class Prognosis {
         }
       },
       {
-        "dificuldade": "7",
+        "dificuldade": "7/10",
         "Idade": {
           "open": [],
           "locked": [
@@ -3814,16 +3865,16 @@ class Prognosis {
                 "selectList": "true",
                 "values": [
                   {
-                    "Temperatura": {
+                    "Frequência cardíaca": {
                       "values": [
-                        "<35 °C"
+                        ">=160 bpm"
                       ]
                     }
                   },
                   {
-                    "Frequência cardíaca": {
+                    "Pressão sistólica": {
                       "values": [
-                        ">=160 bpm"
+                        "<40 mmHg"
                       ]
                     }
                   }
@@ -3835,19 +3886,20 @@ class Prognosis {
                 "selectList": "true",
                 "values": [
                   {
+                    "Temperatura": {
+                      "values": [
+                        "<35 °C"
+                      ]
+                    }
+                  },
+                  {
                     "Escala de Coma de Glasgow": {
                       "values": [
                         "3-4"
                       ]
                     }
                   },
-                  {
-                    "Pressão sistólica": {
-                      "values": [
-                        "<40 mmHg"
-                      ]
-                    }
-                  }
+
                 ]
               }
             }
@@ -3926,7 +3978,7 @@ class Prognosis {
         }
       },
       {
-        "dificuldade": "8",
+        "dificuldade": "8/10",
         "Idade": {
           "open": [],
           "locked": [
@@ -4129,7 +4181,7 @@ class Prognosis {
         }
       },
       {
-        "dificuldade": "9",
+        "dificuldade": "9/10",
         "Idade": {
           "open": [],
           "locked": [
@@ -4332,7 +4384,7 @@ class Prognosis {
         }
       },
       {
-        "dificuldade": "10",
+        "dificuldade": "10/10",
         "Idade": {
           "open": [],
           "locked": [
@@ -4433,17 +4485,18 @@ class Prognosis {
               "Status clínico 1": {
                 "selectList": "true",
                 "values": [
-                  {
-                    "Escala de Coma de Glasgow": {
-                      "values": [
-                        "5"
-                      ]
-                    }
-                  },
+
                   {
                     "Temperatura": {
                       "values": [
                         "<35 °C"
+                      ]
+                    }
+                  },
+                  {
+                    "Escala de Coma de Glasgow": {
+                      "values": [
+                        "5"
                       ]
                     }
                   },
@@ -4453,7 +4506,7 @@ class Prognosis {
                         ">=160 bpm"
                       ]
                     }
-                  }
+                  },
                 ]
               }
             },
@@ -4470,12 +4523,12 @@ class Prognosis {
                   },
                   "Droga vasoativa",
                   {
-                    "Frequência cardíaca": {
+                    "Escala de Coma de Glasgow": {
                       "values": [
-                        "120-159 bpm"
+                        "5"
                       ]
                     }
-                  }
+                  },
                 ]
               }
             }
