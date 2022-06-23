@@ -209,25 +209,27 @@ class Saps {
         txtGen['Comorbidade'] += ';'
 
       txtReady = Saps.pacientAbstract
-      .replace(/\[_idade\]/ig, txtGen['Idade'] ||'não')
-      .replace(/\[_origem\]/ig, txtGen['Origem'] ||'não')
-      .replace(/\[_comorbidade\]/ig, txtGen['Comorbidade'] ||'não')
+      .replace(/\[_idade\]/ig, txtGen['Idade'] ||'<40 anos')
+      .replace(/\[_origem\]/ig, txtGen['Origem'] ||'Pronto Socorro')
+      .replace(/\[_comorbidade\]/ig, txtGen['Comorbidade'] ||'Nenhuma')
       .replace(/\[_internadoDias\]/ig, txtGen['Internado antes da admissão'] ||'não')
       .replace(/\[_ifeccao\]/ig, txtGen['Infectado antes da admissão'] ||'não')
-      .replace(/\[_admissao\]/ig, txtGen['Admissão planejada'] ||'não')
-      .replace(/\[_submetidoCirurgia\]/ig, txtGen['Submetido à cirurgia'] ||'não')
+      .replace(/\[_admissao\]/ig, txtGen['Admissão planejada'] ||'sim')
+      .replace(/\[_submetidoCirurgia\]/ig, txtGen['Submetido à cirurgia'] ||'eletiva; outro')
       .replace(/\[_submetidoUti\]/ig, txtGen['Motivo de admissão na UTI'] ||'outro')
-      .replace(/\[_gcs\]/ig, txtGen['Escala de Coma de Glasgow'] ||'não')
-      .replace(/\[_temperatura\]/ig, txtGen['Temperatura'] ||'não')
-      .replace(/\[_freqCardiaca\]/ig, txtGen['Frequência cardíaca'] ||'não')
-      .replace(/\[_pressaoSistolica\]/ig, txtGen['Pressão sistólica'] ||'não')
+      .replace(/\[_gcs\]/ig, txtGen['Escala de Coma de Glasgow'] ||'>=13')
+      .replace(/\[_temperatura\]/ig, txtGen['Temperatura'] ||'>=35 °C')
+      .replace(/\[_freqCardiaca\]/ig, txtGen['Frequência cardíaca'] ||'<120 bpm')
+      .replace(/\[_pressaoSistolica\]/ig, txtGen['Pressão sistólica'] ||'>=120 mmHg')
       .replace(/\[_drogaVasoativa\]/ig, txtGen['Droga vasoativa'] ||'não')
-      .replace(/\[_bilirrubina\]/ig, txtGen['Bilirrubina'] ||'não')
-      .replace(/\[_creatinina\]/ig, txtGen['Creatinina'] ||'não')
-      .replace(/\[_ph\]/ig, txtGen['pH'] ||'não')
-      .replace(/\[_leucocitos\]/ig, txtGen['Leucócitos'] ||'não')
-      .replace(/\[_plaquetas\]/ig, txtGen['Plaquetas'] ||'não')
-      .replace(/\[_oxigenacao\]/ig, txtGen['Oxigenação'] ||'não')
+      .replace(/\[_bilirrubina\]/ig, txtGen['Bilirrubina'] ||'<2 mg/dl')
+      .replace(/\[_creatinina\]/ig, txtGen['Creatinina'] ||'<1.2 mg/dl')
+      .replace(/\[_ph\]/ig, txtGen['pH'] ||'>7.25')
+      .replace(/\[_leucocitos\]/ig, txtGen['Leucócitos'] ||'<15mil /mm³')
+      .replace(/\[_plaquetas\]/ig, txtGen['Plaquetas'] ||'>=100mil /mm³')
+      .replace(/\[_oxigenacao\]/ig, txtGen['Oxigenação'] ||'paO2 >=60 sem VM')
+      .replace(/\[_bestScenario\]/ig, Prognosis.i.calcPrognPerf (document.querySelector('#saps-survival').value,
+      document.querySelector('#pacient-perfect').value))
     }
     else if(type == 'json') {
       let textJson = {}
@@ -1288,7 +1290,7 @@ class Saps {
   }
 
   async pacientOverview(pacientData){
-
+    console.log('============ damnit ', pacientData)
     let sapsScoreValues = Prognosis.sapsScoreValues['pacient']
     let sapsScoreKeys = Object.keys(sapsScoreValues)
     let sapsTextBuild = {}
@@ -1301,13 +1303,13 @@ class Saps {
           if(Prognosis.i.removeAccent(sapsScoreKeys[i]) == Prognosis.i.removeAccent(elem.value)){
             let sapsValue = sapsScoreValues[sapsScoreKeys[i]]['values']['Sim']['saps']
             let sapsText = sapsScoreValues[sapsScoreKeys[i]]['values']['Sim']['text']
-            // console.log('==============================================')
-            // console.log('============ selected')
-            // console.log(sapsScoreKeys[i])
-            //
-            // console.log(sapsValue)
-            // console.log('============ text')
-            // console.log(sapsText)
+            console.log('==============================================')
+            console.log('============ selected')
+            console.log(sapsScoreKeys[i])
+
+            console.log(sapsValue)
+            console.log('============ text')
+            console.log(sapsText)
             if (sapsText != ''){
               if (!sapsTextBuild[sapsScoreKeys[i]]) {
                 sapsTextBuild[sapsScoreKeys[i]] = []
@@ -1344,6 +1346,11 @@ class Saps {
 
         for (let i = 0; i < sapsScoreKeys.length; i++) {
           let valueKeys = Object.keys(sapsScoreValues[sapsScoreKeys[i]]['values'])
+          // console.log('============ saps keys:', sapsScoreKeys)
+          // console.log('============ saps values:',valueKeys)
+          // console.log('============ Saps score key:', sapsScoreKeys[i],'no accent:', Prognosis.i.removeAccent(sapsScoreKeys[i]))
+          // console.log('============ element full name', elem.name, 'no accent:',Prognosis.i.removeAccent(elem.name))
+          // console.log('============ element partial', elem.name.substring(0,(elem.name.length - 6)), 'no accent:', Prognosis.i.removeAccent(elem.name.substring(0,(elem.name.length - 6))))
           if (Prognosis.i.removeAccent(sapsScoreKeys[i]) == Prognosis.i.removeAccent(elem.name)
           || Prognosis.i.removeAccent(sapsScoreKeys[i]) == Prognosis.i.removeAccent(elem.name.substring(0,(elem.name.length - 6)))) {
             for (let k = 0; k < valueKeys.length; k++) {
@@ -1351,13 +1358,14 @@ class Saps {
                 let selectedOpt = sapsScoreValues[sapsScoreKeys[i]]['values'][valueKeys[k]]
                 let sapsValue = selectedOpt['saps']
                 let sapsText = selectedOpt['text']
-                // console.log('============ Selected radio')
-                // console.log(elem.name)
-                // console.log(elem.value)
-                // console.log('============ SAPS translated info')
-                // console.log(sapsValue)
-                // console.log(sapsText)
+                console.log('============ Selected radio')
+                console.log(elem.name)
+                console.log(elem.value)
+                console.log('============ SAPS translated info')
+                console.log(sapsValue)
+                console.log(sapsText)
                 if (sapsText != ''){
+                  // console.log('============')
                   if (!sapsTextBuild[sapsScoreKeys[i]]) {
                     sapsTextBuild[sapsScoreKeys[i]] = []
                   }
@@ -1380,12 +1388,12 @@ class Saps {
               if (Prognosis.i.removeAccent(valueKeys[k]) == Prognosis.i.removeAccent(elem.id)) {
                 let sapsValue = selectedOpt['saps']
                 let sapsText = selectedOpt['text']
-                // console.log('============ Selected checkbox')
-                // console.log(elem.value)
-                // console.log(elem.id)
-                // console.log('============ SAPS translated info')
-                // console.log(sapsValue)
-                // console.log(sapsText)
+                console.log('============ Selected checkbox')
+                console.log(elem.value)
+                console.log(elem.id)
+                console.log('============ SAPS translated info')
+                console.log(sapsValue)
+                console.log(sapsText)
                 if (sapsText != ''){
                   if (!sapsTextBuild[sapsScoreKeys[i]]) {
                     sapsTextBuild[sapsScoreKeys[i]] = []
@@ -1429,7 +1437,7 @@ class Saps {
   }
 
   bestPacient(){
-
+    // console.log('============ best patient')
     const checkOptions = function(object) {
       let possible = []
       for (let key of Object.values(object)) {
@@ -1513,5 +1521,6 @@ class Saps {
   <b>Leucócitos:</b>[_leucocitos]<br>
   <b>Plaquetas:</b> [_plaquetas]<br>
   <b>Oxigenação:</b> [_oxigenacao]<br>
+  <b>Melhor cenário criado:</b> [_bestScenario]<br>
   `
 })()
