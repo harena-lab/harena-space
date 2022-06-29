@@ -126,6 +126,16 @@
       <span style="top: 50%;position: absolute;"
       class="rounded"></span>
     </div>
+    <!-- Notice modal -->
+    <div class="modal fade" id="notice-modal" tabindex="-1" role="dialog" aria-labelledby="notice-modal" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-body text-center" id="modal-notice-body">
+              <h5 class="" id="modal-notice-txt"></h5>
+          </div>
+        </div>
+      </div>
+    </div>
     <!-- Login/logout header -->
     <dcc-include src="/author/partials/header.html"></dcc-include>
     <!-- Start of settings modal -->
@@ -424,7 +434,8 @@
                  <div id="properties-block" class="sty-properties-block std-border" style="display:none">
                     <div id="properties-panel" class="styp-properties-panel"></div>
                     <div id="properties-buttons">
-                       <div class="control-button"><dcc-button xstyle="in" topic="properties/apply/details" label="APPLY"></dcc-button></div>
+                       <dcc-button xstyle="in" topic="properties/apply/details" label="APPLY"></dcc-button>
+                       <dcc-button xstyle="in" topic="properties/undo/details" label="UNDO"></dcc-button>
                        <!--
                        <div class="control-button"><dcc-button xstyle="in" topic="control/element/selected/up" label="Element Up" image="icons/icon-move-up.svg"></dcc-button></div>
                        <div class="control-button"><dcc-button xstyle="in" topic="control/element/selected/down" label="Element Down" image="icons/icon-move-down.svg"></dcc-button></div>

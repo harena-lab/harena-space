@@ -249,12 +249,61 @@ class Properties {
     }
   }
 
-  async applyProperties (details, commandManager) {
-    let action = new ApplyPropertiesAction
-    (details, this._objProperties, this._panelDetails,
-    this._editor,this._buttonType,this._knotOriginalTitle,
-    this._typeProfile, this._itemEdit, this._item)
-    commandManager.execute(action)
+  async applyPropertiesDetails (topic, message) {
+    this.applyProperties(true)
+  }
+
+  async applyProperties (details) {
+    const sufix = (details) ? '_d' : '_s'
+    const panel = (details)
+      ? this._panelDetails : this._editor.editorExtended
+    if (this._objProperties) {
+      /* clone the object */
+      const profile = this._typeProfile(this._objProperties)[this._buttonType]
+      let seq = 1
+      /* all changes will be on the clone */
+      for (const p in profile) {
+        if (profile[p].type != 'void') {
+          if (!profile[p].composite) {
+            if (details ||
+                (profile[p].visual && profile[p].visual.includes('panel'))) {
+              /* adjust _applySingleProperty to avoid changing the objProperty */
+              const objProperty =
+                        await this._applySingleProperty(profile[p],
+                          seq, panel, sufix, this._objProperties[p])
+              if (objProperty != null) { this._objProperties[p] = objProperty }
+            }
+            seq++
+          } else {
+            for (const s in profile[p].composite) {
+              if (details || (profile[p].visual &&
+                         profile[p].visual.includes('panel'))) {
+                const objProperty = await this._applySingleProperty(
+                  profile[p].composite[s], seq, panel, sufix,
+                  this._objProperties[p])
+                if (objProperty != null &&
+                            (typeof objProperty !== 'string' ||
+                              objProperty.trim().length > 0)) {
+                  if (!this._objProperties[p]) { this._objProperties[p] = {} }
+                  this._objProperties[p][s] = objProperty
+                }
+              }
+              seq++
+            }
+          }
+        }
+      }
+
+      // transfer this operation to command
+      Translator.instance.updateElementMarkdown(this._objProperties)
+
+      if (this._knotOriginalTitle &&
+             this._knotOriginalTitle != this._objProperties.title) {
+        MessageBus.i.publish('control/knot/rename',
+          this._objProperties.title, true)
+        delete this._knotOriginalTitle
+      }
+    }
     await this.closeProperties(details)
   }
 
@@ -266,6 +315,85 @@ class Properties {
       await MessageBus.i.request('control/knot/update', null, null, true)
     }
     // if (!details) {MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message), null, true) }
+  }
+
+  async _applySingleProperty (property, seq, panel, sufix, previous) {
+    let objProperty = null
+    console.log('=== property')
+    console.log('#pfield' + seq + sufix)
+    const field = (panel != null) ?
+         panel.querySelector('#pfield' + seq + sufix) : null
+    switch (property.type) {
+      case 'shortStr' :
+      case 'text':
+      case 'textField':
+      case 'variable':
+        if (field == 'variable') {
+          console.log('=== variable')
+          console.log(field.value)
+        }
+        if (field != null) {
+          const value = field.value.trim()
+          if (value.length > 0) { objProperty = value }
+        }
+        break
+      case 'shortStrArray' :
+        if (field != null) {
+          const catStr = field.value.trim()
+          if (catStr.length > 0) {
+            const categories = catStr.split(',')
+            for (const c in categories) { categories[c] = categories[c].trim() }
+            objProperty = categories
+          }
+        }
+        break
+      case 'option':
+        objProperty = {}
+        let i = 0
+        for (const item in previous) {
+          if (i == this._item) {
+            if (this._itemEdit.edit.trim().length > 0) {
+              if (field != null)
+                previous[item].message = field.value.trim()  // correct this sentence
+              objProperty[this._itemEdit.edit] = previous[item]
+            }
+          } else { objProperty[item] = previous[item] }
+          i++
+        }
+        break
+      case 'propertyValue':
+        objProperty = {}
+        let sub = 1
+        let fp = null
+        do {
+          fp = panel.querySelector('#pfieldprop' + seq + sufix + '_' + sub)
+          if (fp != null) {
+            const fv = panel.querySelector('#pfield' + seq + sufix + '_' + sub)
+            objProperty[fp.value.trim()] = fv.value.trim()
+            sub++
+          }
+        } while (fp != null)
+        break
+      case 'select':
+        if (field != null)
+          objProperty = field.value
+        break
+      case 'image':
+        if (field != null) {
+          // uploads the image
+          if (field.files[0]) {
+            const asset = await
+            MessageBus.i.request('data/asset//new',
+              {
+                file: field.files[0],
+                caseid: Basic.service.currentCaseId
+              }, null, true)
+            objProperty = asset.message.filename
+          }
+        }
+        break
+    }
+    return objProperty
   }
 }
 

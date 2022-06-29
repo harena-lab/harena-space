@@ -205,7 +205,9 @@ class DCCAuthorServer {
         })
         .catch(function (error) {
           console.log('=== save error')
-          console.log(error)
+          console.log(error.response)
+          MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
+            error.response.statusText)
         })
       /* const response =
             await fetch(DCCCommonServer.managerAddressAPI + 'case/' + caseId, header)
