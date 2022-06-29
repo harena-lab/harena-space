@@ -37,7 +37,6 @@ class AuthorManager {
     MessageBus.i.subscribe('control/#', this.controlEvent)
 
     this.updateSourceField = this.updateSourceField.bind(this)
-    this._commandManager = new CommandManager('caseEditor')
     // this._uploadArtifacts = this._uploadArtifacts.bind(this)
 
     this._caseModified = false
@@ -46,6 +45,9 @@ class AuthorManager {
       return (this._caseModified)
         ? 'If you leave this page you will lose your unsaved changes.' : null
     }
+
+    this.commandManager = new CommandManager('caseEditor', this)
+    console.log(this._commandManager)
   }
 
   /* <TODO>
@@ -150,6 +152,9 @@ class AuthorManager {
     * Redirects control/<entity>/<operation> messages
     */
   async controlEvent (topic, message) {
+    console.log("oi")
+    console.log(topic)
+    console.log(message)
     if (MessageBus.matchFilter(topic, 'control/knot/selected')) {
       this.knotSelected(topic, message)
     } else if (MessageBus.matchFilter(topic, 'control/group/+/selected')) {
@@ -810,7 +815,7 @@ class AuthorManager {
       }
       parentDCC.edit(role)
       Properties.s.editElementProperties(
-        this._knots, this._knotSelected, el, dcc, role, message.buttonType, this._commandManager)
+        this._knots, this._knotSelected, el, dcc, role, message.buttonType, this.commandManager)
     }
   }
 

@@ -3,7 +3,7 @@
  */
 
 class EditDCC {
-  constructor (dcc, presentation, properties, commandManager) {
+  constructor (dcc, presentation, properties) {
     this._closed = false
     this._editDCC = dcc
     this._editElement = presentation
@@ -12,7 +12,6 @@ class EditDCC {
     this._editorWrapper = this._fetchEditorWrapper()
     this._editorContainer = this._fetchEditorContainer()
     this._containerRect = this._editorWrapper.getBoundingClientRect()
-    this.commandManager = commandManager
     if (dcc != null) {
       this._elementWrapper = this._fetchElementWrapper()
       this._elementWrapperRect = this._elementWrapper.getBoundingClientRect()
@@ -41,7 +40,7 @@ class EditDCC {
 
   async _handleEditorAction (action) {
     if (action === 'confirm') {
-      await this._properties.applyProperties(false, this.commandManager)
+      await this._properties.applyProperties(false)
       // await MessageBus.i.request('properties/apply/short', null, null, true)
     } else {
       await this._properties.closeProperties(false)

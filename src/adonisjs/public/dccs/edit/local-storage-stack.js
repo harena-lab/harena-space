@@ -16,11 +16,11 @@ class LocalStorageStack{
 
   pop(){
     let item = null
-    if(length > 0){
+    if(this.length > 0){
       this.length--
       localStorage.setItem(this._stackName, this.length)
       item = localStorage.getItem(this._stackName + this.length.toString())
-      localStorage.removeItem(his._stackName + this.length.toString())
+      localStorage.removeItem(this._stackName + this.length.toString())
     }
     return item
   }

@@ -1,28 +1,35 @@
 class CommandManager{
-  constructor (editorName) {
+  constructor (editorName, author) {
     this._undoStack = new LocalStorageStack(editorName + 'UndoStack')
     this._redoStack = new LocalStorageStack(editorName + 'RedoStack')
+    this._author = author
   };
 
   execute(action) {
-    this._undoStack.push(action)
+    this.knots = this._author._compiledCase.knots
+    action.execute(this.knots)
+    this._undoStack.push(action.serialize(action))
     this._redoStack.clear()
-    action.execute()
+
   }
 
   undo(){
+    this.knots = this._author._compiledCase.knots
     if(this._undoStack.length > 0){
       let action = this._undoStack.pop()
       this._redoStack.push(action)
-      action.undo()
+      action = ActionDeserializer.deserialize(action)
+      action.undo(this.knots)
     }
   }
 
   redo(){
+    this.knots = this._author._compiledCase.knots
     if(this._redoStack.length > 0){
       let action = this._redoStack.pop()
       this._undoStack.push(action)
-      action.execute()
+      action = ActionDeserializer.deserialize(action)
+      action.execute(this.knots)
     }
   }
 

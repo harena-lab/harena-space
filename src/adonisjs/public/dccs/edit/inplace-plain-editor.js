@@ -2,7 +2,7 @@
   ***************************/
 
 class EditDCCPlain {
-  constructor (obj, dcc, htmlProp, field, properties, commandManager) {
+  constructor (obj, dcc, htmlProp, field, properties) {
     if (field != null) {
       this._objProperties = obj
       this._editElement = dcc.currentPresentation()
@@ -11,7 +11,6 @@ class EditDCCPlain {
       this._originalEdit = this._editElement.innerHTML
       this._editElement.contentEditable = true
       this._editElement.focus()
-      this.commandManager = commandManager
     }
   }
 
@@ -22,7 +21,7 @@ class EditDCCPlain {
              .replace(/\u200B/gm, '') // removing non printable special characters
              .replace(/(?:<br>)+$/i, '')
 
-    await this._properties.applyProperties(false, this.commandManager)
+    await this._properties.applyProperties(false)
   }
 
   // <FUTURE>?
