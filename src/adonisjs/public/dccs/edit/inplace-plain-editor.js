@@ -16,6 +16,7 @@ class EditDCCPlain {
 
   async handleConfirm () {
     this._editElement.contentEditable = false
+    // <TODO> this will becone an action
     this._objProperties[this._objField] =
            this._editElement.innerHTML.trim()
              .replace(/\u200B/gm, '') // removing non printable special characters

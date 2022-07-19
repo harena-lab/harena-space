@@ -811,6 +811,7 @@ class AuthorManager {
 
   async elementSelected (topic, message) {
     console.log('=== element selected')
+    console.log(topic)
     console.log(message)
 
     await Properties.s.closePreviousProperties()
