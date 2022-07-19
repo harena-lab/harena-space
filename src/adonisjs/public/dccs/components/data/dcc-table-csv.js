@@ -56,9 +56,25 @@ class DCCTableCSV extends DCCVisual {
     return this.hasAttribute('view')
   }
 
-  set messages (hasView) {
+  set view (hasView) {
     if (hasView) { this.setAttribute('view', '') }
     else { this.removeAttribute('view') }
+  }
+
+  get schema () {
+    return this.getAttribute('schema')
+  }
+
+  set schema (newValue) {
+    this.setAttribute('schema', newValue)
+  }
+
+  get content () {
+    return this.getAttribute('content')
+  }
+
+  set content (newValue) {
+    this.setAttribute('content', newValue)
   }
 
   get separator () {
@@ -93,7 +109,8 @@ class DCCTableCSV extends DCCVisual {
   }
 
   _tableUpdated (mutationsList, observer) {
-    const content = this.innerHTML.trim()
+    let content = (this.hasAttribute('content'))
+      ? this.content.replace(/;/g, '\n') : this.innerHTML.trim()
     if (content.length > 0) {
       this._hideDropZone()
       this._processTable(content)
@@ -106,30 +123,49 @@ class DCCTableCSV extends DCCVisual {
       new RegExp('(?:^|' + sep + ')[ \\t]*(?:(?:"([^"]*)")|([^' + sep + ']*))',
       'g')
 
+    let prSchema = false
     let lines = csv.split(/\r\n|\r|\n/)
-    this._table = []
+    this._table = {
+    }
+    if (this.hasAttribute('schema')) {
+      prSchema = true
+      if (this.schema.length > 0)
+        lines.unshift(this.schema)
+    }
+    const content = []
     for (let l of lines) {
       let cells = l.matchAll(lineRE)
       let ln = []
       for (const c of cells)
         ln.push((c[1] != null) ? c[1] : c[2])
-      this._table.push(ln)
+      if (prSchema) {
+        this._table.schema = ln
+        prSchema = false
+      } else
+        content.push(ln)
+    }
+    this._table.content = content
+
+    if (this.view) {
+      let htmlTable = '<table>'
+      if (this._table.schema) {
+        htmlTable += '<tr>'
+        for (const c of this._table.schema)
+          htmlTable += '<th>' + c + '</th>'
+        htmlTable += '</tr>'
+      }
+      for (const l of this._table.content) {
+        htmlTable += '<tr>'
+        for (const c of l)
+          htmlTable += '<td>' + c + '</td>'
+        htmlTable += '</tr>'
+      }
+      htmlTable += '</table>'
+      this._tableView.innerHTML = htmlTable
     }
 
-    let htmlTable = '<table>'
-    let open = '<th>'
-    let close = '</th>'
-    for (let l of this._table) {
-      htmlTable += '<tr>'
-      for (let c of l)
-        htmlTable += open + c + close
-      htmlTable += '</tr>'
-      open = '<td>'
-      close = '</td>'
-    }
-    htmlTable += '</table>'
-    this._tableView.innerHTML = htmlTable
-
+    console.log('===== table')
+    console.log(this._table)
     this._publish('table/updated',
       {
         table: this._table,
@@ -141,6 +177,28 @@ class DCCTableCSV extends DCCVisual {
     this._dropZone.removeEventListener('drop', this._tableDropped)
     this._dropZone.removeEventListener('dragover', this._tableDrag)
     this._dropZone.style.display = 'none'
+  }
+
+  retrieve(field, index) {
+    if (this._table && this._table.schema) {
+      const column = this._table.schema.indexOf(field)
+      if (column > -1 && this._table.content[index-1]) {
+        console.log('=== ' + field.replace(/\./g, '/'))
+        console.log(this._table.content[index-1][column])
+        this._publish('var/set/' + field.replace(/\./g, '/'),
+                      this._table.content[index-1][column])
+      }
+    }
+  }
+
+  async notify (topic, message) {
+    const tp = topic.toLowerCase()
+    if (tp.startsWith('table/retrieve/')) {
+      const value = ((message.body != null)
+        ? ((message.body.value != null) ? message.body.value : message.body)
+        : ((message.value != null) ? message.value : message))
+      this.retrieve(tp.substring(15), value)
+    }
   }
 }
 
