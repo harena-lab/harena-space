@@ -31,7 +31,6 @@ class Properties {
   }
 
   async closePreviousProperties (selectedByAction = false) {
-    console.log(this._editor)
     if (this._editor != null)
       await this._editor.handleConfirm(selectedByAction)
   }
