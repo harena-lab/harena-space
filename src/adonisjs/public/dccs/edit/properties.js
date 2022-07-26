@@ -30,25 +30,31 @@ class Properties {
     this._artifacts = artifacts
   }
 
-  async closePreviousProperties () {
+  async closePreviousProperties (selectedByAction = false) {
+    console.log(this._editor)
     if (this._editor != null)
-      await this._editor.handleConfirm()
+      await this._editor.handleConfirm(selectedByAction)
   }
 
   editKnotProperties (obj, knotId) {
     this._knotOriginalTitle = obj.title
     const editp = this.editProperties(obj, null, 'default')
     /*
-    this._editor = new EditDCCProper_ties(null, presentation,
+    this._editor = new EditDCCProperties(null, presentation,
       editp.htmls + extra, this)
     */
   }
 
-  editElementProperties (knots, knotid, el, dcc, role, buttonType, commandManager) {
+  editElementProperties (knots, knotid, el, dcc, role, buttonType, presentationId, dccId, commandManager) {
     this._knots = knots
     this._knotid = knotid
     this._el = el
     this._commandManager = commandManager
+    this._buttonType = buttonType
+    this._role = role
+    this._presentationId = presentationId
+    this._dccId = dccId
+
     const knotContent = knots[knotid].content
     const element = dcc.currentPresentation()
     const obj = knotContent[el]
@@ -62,6 +68,7 @@ class Properties {
       .includes(Basic.service.currentThemeFamily)
     if (editp.inlineProperty != null) {
       if (this._editor != null && this._editor.closeEditor) { this._editor.closeEditor() }
+      console.log(editp.inlineProfile.type)
       switch (editp.inlineProfile.type) {
         case 'void':
           this._editor = new EditDCCPlain(obj, dcc, editp.htmls, editp.inlineProperty, this)
@@ -106,6 +113,7 @@ class Properties {
 
             }
           }
+          console.log(this.editor)
           break
       }
     } // else { this._editor = new EditDCCProperties(obj, dcc, editp.htmls, this) }
@@ -116,7 +124,6 @@ class Properties {
     */
   editProperties (obj, role, buttonType) {
     this._objProperties = obj
-    this._buttonType = buttonType
 
     const profile = this._typeProfile(obj)[buttonType]
     let seq = 1
@@ -258,27 +265,27 @@ class Properties {
   }
 
   undo(){
-    let element = this._commandManager.undo()
-    if (element != null && element.knotId == this._knotId && element.el == this._el){
-      this._objProperties = element.objectPropertiesClone
-    }
+    this._commandManager.undo()
   }
   redo(){
-    let element = this._commandManager.redo()
+    this._commandManager.redo()
   }
 
   async applyPropertiesDetails (topic, message) {
-    console.log(topic)
-    console.log(message)
-    this.applyProperties(true)
+    this.applyProperties(true, true)
   }
 
-  async applyProperties (details) {
+  async applyProperties (details, sidebar = false) {
+    console.log(sidebar)
     const sufix = (details) ? '_d' : '_s'
     const panel = (details)
       ? this._panelDetails : this._editor.editorExtended
     if (this._objProperties) {
-      let objectPropertiesClone = JSON.parse(JSON.stringify(this._objProperties))
+      let objectPropertiesClone = this._objProperties
+      if(sidebar){
+        objectPropertiesClone = JSON.parse(JSON.stringify(this._objProperties))
+      }
+
       const profile = this._typeProfile(objectPropertiesClone)[this._buttonType]
       let seq = 1
       for (const p in profile) {
@@ -309,21 +316,35 @@ class Properties {
               seq++
             }
           }
-        }
+            }
       }
-      const action = new ApplyPropertiesAction(this._knotid, this._el, objectPropertiesClone)
-      this._commandManager.execute(action)
+      if(sidebar){
+        const action = new ApplyPropertiesAction(this._knotid, this._el, objectPropertiesClone, null,
+                                                 this._dccId,this._role, this._buttonType, this.presentationId)
+        this._commandManager.execute(action)
+      }
+      else{
+        console.log(this._objProperties)
+        Translator.instance.updateElementMarkdown(this._objProperties)
+
+       if (this._knotOriginalTitle && this._knotOriginalTitle != this._objProperties.title) {
+          MessageBus.i.publish('control/knot/rename',
+          this._objProperties.title, true)
+          delete this._knotOriginalTitle
+      }
+        await this.closeProperties(details)
+      }
     }
   }
 
-  async closeProperties(details) {
-    if (this._editor != null)
-      this._editor = null
-    if (this._objProperties) {
-      delete this._objProperties
-      await MessageBus.i.request('control/knot/update', null, null, true)
-    }
-    // if (!details) {MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message), null, true) }
+   async closeProperties(details) {
+     if (this._editor != null)
+       this._editor = null
+     if (this._objProperties) {
+       this._objProperties = null
+       await MessageBus.i.request('control/knot/update', null, null, true)
+     }
+     // if (!details) {MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message), null, true) }
   }
 
   async _applySingleProperty (property, seq, panel, sufix, previous) {

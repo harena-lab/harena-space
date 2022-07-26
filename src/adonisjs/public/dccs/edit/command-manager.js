@@ -19,6 +19,7 @@ class CommandManager{
       let action = this._undoStack.pop()
       this._redoStack.push(action)
       action = ActionDeserializer.deserialize(action)
+      action.selectElement()
       action.undo(this.knots)
     }
   }
@@ -29,6 +30,7 @@ class CommandManager{
       let action = this._redoStack.pop()
       this._undoStack.push(action)
       action = ActionDeserializer.deserialize(action)
+      action.selectElement()
       action.execute(this.knots)
     }
   }

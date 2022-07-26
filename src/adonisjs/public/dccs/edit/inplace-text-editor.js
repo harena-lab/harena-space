@@ -135,9 +135,11 @@ class EditDCCText extends EditDCC {
     // MessageBus.i.publish('control/knot/update', null, true)
   }
 
-  async handleConfirm() {
-    this._updateTranslated()
-    await this._closeEditor()
+  async handleConfirm(selectedByAction) {
+    if(!selectedByAction){
+      this._updateTranslated()
+      await this._closeEditor()
+    }
   }
 
   async handleCancel() {

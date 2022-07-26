@@ -30,16 +30,16 @@ class EditDCC {
     return ep
   }
 
-  async handleConfirm () {
-    await this._handleEditorAction('confirm')
+  async handleConfirm (selectedByAction) {
+    await this._handleEditorAction('confirm', selectedByAction)
   }
 
   async handleCancel () {
     await this._handleEditorAction('cancel')
   }
 
-  async _handleEditorAction (action) {
-    if (action === 'confirm') {
+  async _handleEditorAction (action, selectedByAction) {
+    if (action === 'confirm' && !selectedByAction) {
       await this._properties.applyProperties(false)
       // await MessageBus.i.request('properties/apply/short', null, null, true)
     } else {

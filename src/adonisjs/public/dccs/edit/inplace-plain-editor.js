@@ -14,14 +14,15 @@ class EditDCCPlain {
     }
   }
 
-  async handleConfirm () {
+  async handleConfirm (selectedByAction) {
     this._editElement.contentEditable = false
     this._objProperties[this._objField] =
            this._editElement.innerHTML.trim()
              .replace(/\u200B/gm, '') // removing non printable special characters
              .replace(/(?:<br>)+$/i, '')
-
-    await this._properties.applyProperties(false)
+    if(!selectedByAction){
+      await this._properties.applyProperties(false)
+    }
   }
 
   // <FUTURE>?
