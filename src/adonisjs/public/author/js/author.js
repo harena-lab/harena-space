@@ -37,6 +37,7 @@ class AuthorManager {
     MessageBus.i.subscribe('control/#', this.controlEvent)
 
     this.updateSourceField = this.updateSourceField.bind(this)
+
     // this._uploadArtifacts = this._uploadArtifacts.bind(this)
 
     this._caseModified = false
@@ -45,8 +46,6 @@ class AuthorManager {
 // To use this uncomment the next two lines and  code and the tryHalt function.
 //    this.tryHalt = this.tryHalt.bind(this)
 //    window.onbeforeunload = this.tryHalt
-
-
 
     this.commandManager = new CommandManager('caseEditor', this)
   }
@@ -845,6 +844,7 @@ class AuthorManager {
 
     if (el != -1) {
       let dcc = await this._editableDCCWait(dccId)
+
       const element = this._knots[this._knotSelected].content[el]
 
       const role = (message != null) ? message.role : null

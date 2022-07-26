@@ -67,7 +67,6 @@ class Properties {
       .includes(Basic.service.currentThemeFamily)
     if (editp.inlineProperty != null) {
       if (this._editor != null && this._editor.closeEditor) { this._editor.closeEditor() }
-      console.log(editp.inlineProfile.type)
       switch (editp.inlineProfile.type) {
         case 'void':
           this._editor = new EditDCCPlain(obj, dcc, editp.htmls, editp.inlineProperty, this)
@@ -112,7 +111,6 @@ class Properties {
 
             }
           }
-          console.log(this.editor)
           break
       }
     } // else { this._editor = new EditDCCProperties(obj, dcc, editp.htmls, this) }
@@ -275,7 +273,6 @@ class Properties {
   }
 
   async applyProperties (details, sidebar = false) {
-    console.log(sidebar)
     const sufix = (details) ? '_d' : '_s'
     const panel = (details)
       ? this._panelDetails : this._editor.editorExtended
@@ -323,7 +320,6 @@ class Properties {
         this._commandManager.execute(action)
       }
       else{
-        console.log(this._objProperties)
         Translator.instance.updateElementMarkdown(this._objProperties)
 
        if (this._knotOriginalTitle && this._knotOriginalTitle != this._objProperties.title) {

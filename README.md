@@ -84,7 +84,7 @@ docker exec -it harena-space_harena-space_1 bash
 * `development`:
     * The latest code contaning the most recent updates made by the development team
     * [Changelog file](https://github.com/datasci4health/harena-space/blob/development/CHANGELOG.md) show unreleased features which will be merged into `master` from `development` branch in the next release
-    * Version running at http://harena.ds4h.org/development .
+    * Version running at http://harena.ds4h.org/development . 
     * Protected. Must use _pull request_ to merge new features.
 
 ## Change log
