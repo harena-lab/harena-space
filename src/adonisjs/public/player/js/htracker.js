@@ -18,8 +18,10 @@ class Tracker {
     this.knotStart = this.knotStart.bind(this)
     MessageBus.i.subscribe('knot/start/#', this.knotStart)
     this.caseCompleted = this.caseCompleted.bind(this)
+    this.sessionRound = this.sessionRound.bind(this)
     MessageBus.i.subscribe('case/completed/+', this.caseCompleted)
     MessageBus.i.subscribe('session/close', this.caseCompleted)
+    MessageBus.i.subscribe('session/round/+', this.sessionRound)
     this.caseTryHalt = this.caseTryHalt.bind(this)
     MessageBus.i.subscribe('case/tryhalt', this.caseTryHalt)
 
@@ -173,6 +175,24 @@ class Tracker {
          variables: this._variables,
          varTrack: this._varTrack}, true)
     }
+  }
+
+  async sessionRound (topic, message) {
+    const allVariables = await MessageBus.i.request('var/get/*')
+    const currentDateTime = new Date()
+    let kt = {
+      event: topic,
+      timeCompleted: currentDateTime.toJSON()
+    }
+    if (message && message.knotid)
+      kt.knotid = message.knotid
+    this._knotTrack.push(kt)
+    this._trackStore()
+    MessageBus.i.publish('case/summary/' + MessageBus.extractLevel(topic, 3),
+      {userId: message.userId,
+       caseId: message.caseId,
+       knotSingleTrack: kt,
+       variables: allVariables.message}, true)
   }
 
   async caseTryHalt (userId, caseId, instanceId) {

@@ -1,0 +1,17 @@
+@charset "UTF-8";
+
+/* Input Table DCC */
+
+.report-table table {
+   border: 1px solid darkgray;
+}
+
+.report-table th {
+   border: 1px solid darkgray;
+   background-color: lightgray;
+   font-weight: bold;
+}
+
+.report-table td {
+   border: 1px solid darkgray;
+}

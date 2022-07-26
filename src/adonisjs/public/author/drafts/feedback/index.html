@@ -111,7 +111,7 @@
                     <input class="" type="text" id="input-subject" name="input-subject" value="" hidden disabled>
                   </div>
                   <dcc-dhtml connect="retrieve:harena-institutions:service/request/get" id="dhtml-subject">
-                    <select class="custom-select" id="subject" name="subject">
+                    <select class="custom-select sel-institution" id="subject" name="subject">
                       <option selected></option>
                       {{@foreach . institution}}
                       <option value="{{institution.id}}">{{institution.title}}</option>

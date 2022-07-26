@@ -1,5 +1,24 @@
 @charset "UTF-8";
 
+#scroll-to-top-btn {
+  /* place it at the bottom-right corner */
+  position: fixed;
+  bottom: 90px;
+  left: 195px;
+ 
+  /* keep it at the top of everything else */
+  z-index: 100;
+ 
+  /* hide with opacity */
+  opacity: 0;
+ 
+  /* also add a translate effect */
+  transform: translateY(100px);
+ 
+  /* and a transition */
+  transition: all 5s ease
+}
+
 #inplace-editor-wrapper{
 
 	border-color: #004270;
@@ -8,6 +27,12 @@
 	border-width: 13px;
   border-bottom-width: 30px;
 
+}
+
+.show-scroll-btn {
+  opacity: 1;
+  transform: translateY(0);
+	z-index: 100;
 }
 
 .sty-main-panel {
@@ -54,6 +79,13 @@
    max-height: 90%;
    flex: 90%;
    display: flex;
+}
+
+
+ 
+.showBtn {
+  opacity: 1;
+  transform: translateY(0)
 }
 
 @media (orientation: landscape) {

@@ -395,13 +395,13 @@ class DCCAuthorServer {
     }
     await axios(config)
       .then(function (response) {
-        console.log('=== response image upload')
+        console.log('=== response media upload')
         console.log(response)
         MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
           response.data, track)
       })
       .catch(function (error) {
-        console.log('=== delete case error')
+        console.log('=== media upload error')
         console.log(error)
       })
   }

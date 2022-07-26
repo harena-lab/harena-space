@@ -161,6 +161,38 @@ class AuthorManager {
     }
   }
 
+  async scrollControl (){
+    var scrollBtn = document.querySelector('#scroll-to-top-btn')
+    var target = (document.querySelector("#knot-wrapper").firstElementChild).lastElementChild
+    function scrollToTop() {
+      // Scroll to top logic
+      this.parentElement.querySelector('#knot-panel').scrollTo({
+        top: 0,
+        behavior: "smooth"
+      })
+      document.querySelector('#comments-display').scrollTo({
+        top: 0,
+        behavior: "smooth"
+      })
+    }
+    scrollBtn.addEventListener("click", scrollToTop)
+    function callback(entries, observer) {
+      // The callback will return an array of entries, even if you are only observing a single item
+
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          // Show button
+          scrollBtn.classList.add('show-scroll-btn')
+        } else {
+          // Hide button
+          scrollBtn.classList.remove('show-scroll-btn')
+        }
+      });
+    }
+    let observer = new IntersectionObserver(callback);
+    observer.observe(target);
+  }
+
   /*
     * Redirects control/<entity>/<operation> messages
     */
@@ -381,6 +413,7 @@ class AuthorManager {
       }, closeTime)
     }
   }
+
   async caseSave () {
     this.noticeModalContent('text-dark','bg-white','SAVING...', 0)
     // this._messageSpace.classList.remove('invisible')
@@ -567,6 +600,7 @@ class AuthorManager {
     * ACTION: knot-selected
     */
   async knotSelected (topic, message) {
+
     const knotid =
          (message == null || message === '') ? this._knotSelected : message
     if (knotid != null) {
@@ -583,6 +617,7 @@ class AuthorManager {
       if (Panels.s.commentsVisible)
         MessageBus.i.publish('control/comments/editor')
       MessageBus.i.publish('case/ready/' + Basic.service.currentCaseId, null, true)
+      this.scrollControl()
     }
   }
 
@@ -793,6 +828,7 @@ class AuthorManager {
 
   async elementSelected (topic, message) {
     console.log('=== element selected')
+    console.log(topic)
     console.log(message)
 
     await Properties.s.closePreviousProperties(message._selectedByAction)
