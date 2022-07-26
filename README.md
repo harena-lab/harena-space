@@ -9,12 +9,12 @@
 
 Web-based front-end module of [Harena](https://github.com/datasci4health/harena) environment.
 
-Harena is available at https://jacinto.harena.org/.
+Harena is available at https://harena.ds4h.org/.
 
 <!-- platform that includes: authoring environment, player engine and the Versum narrative scripting language translator. -->
 
 <!--
-## Table of Contents 
+## Table of Contents
 
 * [Getting Started](#getting-started)
   * [Option 1: Access our instance running at cloud](#option-1-access-our-instance-running-at-cloud)
@@ -84,7 +84,7 @@ docker exec -it harena-space_harena-space_1 bash
 * `development`:
     * The latest code contaning the most recent updates made by the development team
     * [Changelog file](https://github.com/datasci4health/harena-space/blob/development/CHANGELOG.md) show unreleased features which will be merged into `master` from `development` branch in the next release
-    * Version running at http://harena.ds4h.org/development . 
+    * Version running at http://harena.ds4h.org/development .
     * Protected. Must use _pull request_ to merge new features.
 
 ## Change log
