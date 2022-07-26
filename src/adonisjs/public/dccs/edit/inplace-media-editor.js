@@ -12,6 +12,7 @@ class EditDCCMedia extends EditDCC {
     const path = await this._mediaUploadPanel(
                           mtype, EditDCCMedia.fileExt[mtype])
     if (path != null) {
+      // <TODO> this will becone an action
       if (path != '_#clear#_') {
         if (obj.image)
           obj.image.path = path

@@ -25,6 +25,9 @@ class PlayerManager {
     this.caseCompleted = this.caseCompleted.bind(this)
     MessageBus.i.subscribe('case/completed/+', this.caseCompleted)
 
+    this.sessionRound = this.sessionRound.bind(this)
+    MessageBus.i.subscribe('session/round', this.sessionRound)
+
     // tracking
     this.trackTyping = this.trackTyping.bind(this)
 
@@ -445,6 +448,13 @@ class PlayerManager {
   async sessionClose (topic, message) {
     this._state.sessionCompleted()
     window.open('../home/category/cases/?id=podcast&clearance=1', '_self')
+  }
+
+  async sessionRound (topic, message) {
+    MessageBus.i.publish('session/round/' + this._state.runningCase.runningId,
+                         {userId: this._state.userid,
+                          caseId: Basic.service.currentCaseId,
+                          knotid: this._currentKnot}, true)
   }
 
   presentKnot (knot) {

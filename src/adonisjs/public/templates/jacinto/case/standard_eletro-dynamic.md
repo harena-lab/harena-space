@@ -68,7 +68,7 @@ Check hypothesis (detailed_role)
 Nurse: @Nurse - {symptom}/=/.
 }}
 
-* Submit -> Review hypothesis 
+* Submit -> Review hypothesis
 
 Review hypothesis (input)
 -------------------------
@@ -192,5 +192,6 @@ Final report.
 
 * Return -> Final.Report  
 
-____ Data _____
-* theme: jacinto
+___ Template ___
+
+* template: jacinto/case/standard_eletro

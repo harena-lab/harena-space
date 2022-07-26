@@ -91,8 +91,10 @@ class DCCTimer extends DCCBase {
   }
 
   async start () {
-    this._timeout = setTimeout(this.next, this._interval)
-    await this.multiRequest('begin', this._currentCycle)
+    if (this._timeout == null) {
+      this._timeout = setTimeout(this.next, this._interval)
+      await this.multiRequest('begin', this._currentCycle)
+    }
   }
 
   async next () {
@@ -113,7 +115,10 @@ class DCCTimer extends DCCBase {
   }
 
   stop () {
-    if (this._timeout) { clearTimeout(this._timeout) }
+    if (this._timeout) {
+      clearTimeout(this._timeout)
+      this._timeout = null
+    }
   }
 }
 

@@ -295,7 +295,7 @@ class LayoutController {
       // console.log('============ entered dynamic modal')
       const selEntity = document.querySelector('#entity')
       const wrapperSelEntity = document.querySelector('#wrapper-entity')
-      const selSubject = document.querySelector('#dhtml-subject')
+      const selSubject = document.querySelector('#wrapper-subject .sel-institution')
       const inputSubject = document.querySelector('#wrapper-input-subject')
       const wrapperSelSubject = document.querySelector('#wrapper-subject')
       const selSubjectGrade = document.querySelector('#subject_grade')
@@ -308,10 +308,10 @@ class LayoutController {
             wrapperSelSubjectGrade.disabled = true
             wrapperSelSubjectGrade.hidden = true
 
-            selSubject.firstElementChild.disabled = true
-            selSubject.firstElementChild.hidden = true
-            selSubject.firstElementChild.id = 'select-subject'
-            selSubject.firstElementChild.name = 'select-subject'
+            selSubject.disabled = true
+            selSubject.hidden = true
+            selSubject.id = 'select-subject'
+            selSubject.name = 'select-subject'
 
             inputSubject.firstElementChild.disabled = false
             inputSubject.firstElementChild.hidden = false
@@ -329,10 +329,10 @@ class LayoutController {
             wrapperSelSubjectGrade.disabled = false
             wrapperSelSubjectGrade.hidden = false
 
-            selSubject.firstElementChild.disabled = false
-            selSubject.firstElementChild.hidden = false
-            selSubject.firstElementChild.id = 'subject'
-            selSubject.firstElementChild.name = 'subject'
+            selSubject.disabled = false
+            selSubject.hidden = false
+            selSubject.id = 'subject'
+            selSubject.name = 'subject'
 
             inputSubject.firstElementChild.disabled = true
             inputSubject.firstElementChild.hidden = true
@@ -347,10 +347,10 @@ class LayoutController {
             wrapperSelSubjectGrade.disabled = true
             wrapperSelSubjectGrade.hidden = true
 
-            selSubject.firstElementChild.disabled = true
-            selSubject.firstElementChild.hidden = true
-            selSubject.firstElementChild.id = 'select-subject'
-            selSubject.firstElementChild.name = 'select-subject'
+            selSubject.disabled = true
+            selSubject.hidden = true
+            selSubject.id = 'select-subject'
+            selSubject.name = 'select-subject'
 
             inputSubject.firstElementChild.disabled = false
             inputSubject.firstElementChild.hidden = false
