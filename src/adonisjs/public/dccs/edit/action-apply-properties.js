@@ -1,4 +1,6 @@
 class ApplyPropertiesAction{
+  //Action that implements element edit operations.
+
   constructor(knotId, el, newObjProperties, oldObjProperties = null, dccId, role, buttonType, presentationId){
     this._oldObjProperties = oldObjProperties
     this._objProperties = null
@@ -13,8 +15,11 @@ class ApplyPropertiesAction{
   }
 
     async execute(knots){
+      //Get Object Properties and clone it into oldObjProperties for later use
       this._objProperties = knots[this.knotId].content[this.el]
       this._oldObjProperties = JSON.parse(JSON.stringify(this._objProperties))
+
+      //Update Object Properties,Markdown and view
       knots[this.knotId].content[this.el] = this._newObjProperties
       Translator.instance.updateElementMarkdown(this._newObjProperties)
       await MessageBus.i.request('control/knot/update', null, null, true)
@@ -22,6 +27,7 @@ class ApplyPropertiesAction{
 
 
     async undo(knots){
+      //Restore object to oldObjProperties
       knots[this.knotId].content[this.el] = this._oldObjProperties
       this._objProperties = knots[this.knotId].content[this.el]
       this._objProperties._modified = true
@@ -29,6 +35,7 @@ class ApplyPropertiesAction{
     }
 
     selectElement(){
+      //Create a element selected message to change the selected element upon undo/redo actions
       let topic = 'control/element/' + this._dccId + '/selected'
 
       let message = {}
@@ -54,7 +61,6 @@ class ApplyPropertiesAction{
     static deserialize(properties){
       return new ApplyPropertiesAction(properties.knotId, properties.el, properties._newObjProperties, properties._oldObjProperties,
                                        properties._dccId,properties._role, properties._buttonType, properties.presentationId)
-
     }
 
 }

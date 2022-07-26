@@ -315,11 +315,14 @@ class Properties {
             }
       }
       if(sidebar){
+        //Create and execute action
         const action = new ApplyPropertiesAction(this._knotid, this._el, objectPropertiesClone, null,
                                                  this._dccId,this._role, this._buttonType, this.presentationId)
         this._commandManager.execute(action)
       }
       else{
+        //TODO : make this form of editing be done with the commandManager, by removing if(sidebar) and this else block and make nescessary adaptations.
+        
         Translator.instance.updateElementMarkdown(this._objProperties)
 
        if (this._knotOriginalTitle && this._knotOriginalTitle != this._objProperties.title) {
