@@ -844,7 +844,6 @@ class AuthorManager {
 
     if (el != -1) {
       let dcc = await this._editableDCCWait(dccId)
-
       const element = this._knots[this._knotSelected].content[el]
 
       const role = (message != null) ? message.role : null
@@ -862,6 +861,7 @@ class AuthorManager {
          dcc = inDCC
       }
       parentDCC.edit(role)
+      
       Properties.s.editElementProperties(
         this._knots, this._knotSelected, el, dcc, role, message.buttonType, message.presentationId, dccId, this.commandManager)
     }
