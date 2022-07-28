@@ -138,4 +138,50 @@ DCC.component(
   }
 )
 
+DCC.component(
+  'harena-hradm-groups',
+  'dcc-rest',
+  {
+    environment: {
+      'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api,
+    },
+    oas: {
+      paths: {
+        '{url-manager}/admin/groups': {
+          'get': {
+            operationId: 'groups-list',
+            parameters: [
+              {name: 'url-manager',
+               in: 'path'}
+            ]
+          }
+        }
+      }
+    }
+  }
+)
+
+DCC.component(
+  'harena-hradm-roles',
+  'dcc-rest',
+  {
+    environment: {
+      'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api,
+    },
+    oas: {
+      paths: {
+        '{url-manager}/admin/roles': {
+          'get': {
+            operationId: 'roles-list',
+            parameters: [
+              {name: 'url-manager',
+               in: 'path'}
+            ]
+          }
+        }
+      }
+    }
+  }
+)
+
 })()

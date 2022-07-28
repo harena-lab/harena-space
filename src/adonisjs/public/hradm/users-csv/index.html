@@ -72,11 +72,11 @@
     </script>
   </head>
 
-  <body onload="UsersCSVManager.i.start()">
+  <body>
     <!-- Login/logout header -->
     <dcc-include src="/author/partials/header.html"></dcc-include>
 
-    <div id="alert-feedback" class="alert alert-success ml-2 mt-5" role="alert" style="position:absolute; display:none;">
+    <div id="alert-feedback" class="alert alert-success fade show" role="alert" style="position:absolute; display:none; z-index:4;">
     </div>
 
     <main role="main">
@@ -85,13 +85,62 @@
       <dcc-rest id="harena-link-user-role" bind="harena-link-user-role" subscribe="link/role/post"></dcc-rest>
       <dcc-rest id="harena-link-user-group" bind="harena-link-user-group" subscribe="link/group/post"></dcc-rest>
 
-      <br><br><br>
+      <div class="home-author-padding align-items-center rounded row sticky-top mt-5 mx-2" style="z-index:3;">
+        <div class="h-100 w-100 draft-content-padding scroll-y">
+          <form action="javascript:void(0);">
+            <div class="pb-2 border rounded" style="background-color: #a8a8a870">
+              <h3 class="ml-3 text-secondary">Users settings:</h3>
+              <div class="ml-1 pl-3 row">
 
-      <div class="home-author-padding align-items-center rounded row sticky-top" style="z-index:3;">
-         <div class="h-100 w-100 draft-content-padding scroll-y">
-           <dcc-button label="Add Users" topic="/adm/add/users"></dcc-button>
-           <dcc-table-csv separator=","></dcc-table-csv>
-         </div>
+                <div class="pr-2">
+                  <select id="grade" name="grade" class="custom-select custom-select-sm" required>
+                    <option selected value="">Grade</option>
+                    <option value="student">Student</option>
+                    <option value="professor">Professor</option>
+                  </select>
+                </div>
+                <div class="pr-2">
+                  <dcc-rest id="harena-hradm-roles" bind="harena-hradm-roles"></dcc-rest>
+                  <dcc-dhtml id="harena-dhtml-roles" connect="retrieve:harena-hradm-roles:service/request/get">
+                    <select id="role" name="role" class="custom-select custom-select-sm" required>
+                      <option selected value="">Role</option>
+                      {{@foreach . role}}
+                      <option value={{role.id}} title="{{role.description}}">{{role.name}}</option>
+                      {{@endfor}}
+                    </select>
+                  </dcc-dhtml>
+                </div>
+                <div class="pr-2">
+                  <dcc-rest id="harena-institutions" bind="harena-institutions"></dcc-rest>
+                  <dcc-dhtml id="harena-dhtml-institutions" connect="retrieve:harena-institutions:service/request/get">
+                    <select id="institution" name="institution" class="custom-select custom-select-sm" required>
+                      <option selected value="">Institution</option>
+                      {{@foreach . institution}}
+                      <option value={{institution.acronym}} title={{institution.title}}>{{institution.acronym}}</option>
+                      {{@endfor}}
+                    </select>
+                  </dcc-dhtml>
+                </div>
+                <div class="pr-2">
+                  <dcc-rest id="harena-hradm-groups" bind="harena-hradm-groups"></dcc-rest>
+                  <dcc-dhtml id="harena-dhtml-groups" connect="retrieve:harena-hradm-groups:service/request/get">
+                    <select id="group" name="group" class="custom-select custom-select-sm">
+                      <option selected value="">Group</option>
+                      {{@foreach . group}}
+                      <option value={{group.id}}>{{group.title}}</option>
+                      {{@endfor}}
+                    </select>
+                  </dcc-dhtml>
+                </div>
+              </div>
+            </div>
+            <div class="mt-2">
+              <dcc-table-csv separator="," view=""></dcc-table-csv>
+            </div>
+            <button type="submit" class="btn btn-success my-2 disabled-look" id="btn-add-users">Add Users</button>
+            <dcc-button label="Add Users" xstyle="out" location="btn-add-users"topic="/adm/add/users"></dcc-button>
+          </form>
+        </div>
       </div>
 
       <br><br>
