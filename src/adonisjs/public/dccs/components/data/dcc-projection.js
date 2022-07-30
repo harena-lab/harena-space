@@ -34,6 +34,8 @@ class DCCProjection extends DCCBase {
   _updateTable (table) {
     if (this.hasAttribute('fields') && table.schema) {
       const fields = this.fields.split(',')
+      for (const f in fields)
+        fields[f] = fields[f].trim()
       const prj = []
       for (const f of fields) {
         const p = table.schema.indexOf(f)
