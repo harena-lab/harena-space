@@ -40,7 +40,8 @@ class DCCTableCSV extends DCCVisual {
   }
 
   static get observedAttributes () {
-    return DCCVisual.observedAttributes.concat(['drop', 'view', 'separator'])
+    return DCCVisual.observedAttributes.concat(
+      ['drop', 'view', 'schema', 'content', 'separator'])
   }
 
   get drop () {
@@ -136,12 +137,14 @@ class DCCTableCSV extends DCCVisual {
     for (let l of lines) {
       let cells = l.matchAll(lineRE)
       let ln = []
-      for (const c of cells)
-        ln.push((c[1] != null) ? c[1] : c[2])
+      for (const c of cells) {
+        if (c[0] != null && c[0].length > 0)
+          ln.push((c[1] != null) ? c[1] : c[2])
+      }
       if (prSchema) {
         this._table.schema = ln
         prSchema = false
-      } else
+      } else if (ln.length > 0)
         content.push(ln)
     }
     this._table.content = content

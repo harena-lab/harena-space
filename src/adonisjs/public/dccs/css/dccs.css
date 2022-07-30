@@ -55,6 +55,10 @@
  ****************/
 
 :root {
+   --dcc-chart-back: white;
+   --dcc-chart-axis: black;
+   --dcc-chart-plot: red;
+   --dcc-chart-label: blue;
    --dcc-progress-back: lightgray;
    --dcc-progress-front: rgb(100, 100, 255);
    --dcc-play-font-family: "Courier New", monospace;
