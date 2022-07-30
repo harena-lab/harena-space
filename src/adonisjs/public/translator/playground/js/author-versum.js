@@ -8,15 +8,21 @@ class AuthorVersumManager {
   constructor () {
    	// MessageBus.page = new MessageBus(false)
     Basic.service.rootPath = '../../'
+    new PlayState()
+    new Tracker()
     DCCCommonServer.instance.local = true
   }
 
   start () {
     this.translate = this.translate.bind(this)
     this.updateVisibility = this.updateVisibility.bind(this)
+    this.showJson = this.showJson.bind(this)
 
     MessageBus.i.subscribe('control/translate/example', this.translate)
     MessageBus.i.subscribe('input/changed/output', this.updateVisibility)
+
+    document.querySelector('#json-message').value = ''
+    MessageBus.i.subscribe('#', this.showJson)
   }
 
   async translate (topic, message) {
@@ -46,6 +52,14 @@ class AuthorVersumManager {
                (AuthorVersumManager.stateVis[message.value][si] == 0) ? 'none' : 'initial'
       }
     }
+  }
+
+  showJson(topic, message) {
+     if (topic != 'control/render/example')
+        document.querySelector('#json-message').value =
+           document.querySelector('#json-message').value +
+           'topic: ' + topic + '\n' +
+           'message: ' + JSON.stringify(message) + '\n\n'
   }
 }
 

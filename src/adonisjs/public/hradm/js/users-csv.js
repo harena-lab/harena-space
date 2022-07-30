@@ -1,42 +1,100 @@
 class UsersCSVManager {
-  start () {
+
+  constructor(){
+    this._totalReady = 0
     this._updateCSV = this._updateCSV.bind(this)
     MessageBus.i.subscribe('table/updated', this._updateCSV)
     this._addUsers = this._addUsers.bind(this)
     MessageBus.i.subscribe('/adm/add/users', this._addUsers)
+    this.preStart = this.preStart.bind(this)
+    MessageBus.i.subscribe('control/dhtml/ready', this.preStart)
+    MessageBus.i.publish('control/dhtml/status/request')
   }
+
+  async preStart () {
+    const dhtmlList = document.querySelectorAll('dcc-dhtml')
+    for (let i = 0; i < dhtmlList.length; i++) {
+      if(dhtmlList[i]._ready == true){
+        this._totalReady++
+      }
+      if(this._totalReady == dhtmlList.length){
+        MessageBus.i.unsubscribe('control/dhtml/ready', this.preStart)
+        MessageBus.i.unsubscribe('control/html/ready', this.preStart)
+        this.start()
+      }
+    }
+    if(dhtmlList.length == 0){
+      MessageBus.i.unsubscribe('control/html/ready', this.preStart)
+      this.start()
+    }
+  }
+
+  start () {
+    this._settingsFromUrl()
+  }
+
+
 
   _updateCSV (topic, message) {
     console.log('===== CSV received')
     console.log(message)
-    this._table = message.table
+    this._table = message.table.content
+  }
+  _settingsFromUrl(){
+    let url = new URL(document.location)
+    try {
+      if(url.searchParams.get('role')){
+        document.querySelector(`#role > option[value=${url.searchParams.get('role')}]`).setAttribute('selected','')
+      }
+    }catch(e){}
+    try{
+      if(url.searchParams.get('institution')){
+        document.querySelector(`#institution > option[value=${url.searchParams.get('institution')}]`).setAttribute('selected','')
+      }
+    }catch(e){}
+    try{
+      if(url.searchParams.get('grade')){
+        document.querySelector(`#grade > option[value=${url.searchParams.get('grade')}]`).setAttribute('selected','')
+      }
+    }catch(e){}
+    try{
+      if(url.searchParams.get('group')){
+        document.querySelector(`#group > option[value=${url.searchParams.get('group')}]`).setAttribute('selected','')
+      }
+    }catch(e){}
+
   }
 
   async _addUsers (topic, message) {
-    let nameC = -1
-    let emailC = -1
-    let schema = this._table[0]
-    for (let s in schema) {
-      switch (schema[s].toLowerCase()) {
-        case 'nome':
-        case 'name': nameC = s; break;
-        case 'e-mail':
-        case 'email': emailC = s; break;
+    if(document.querySelector('#btn-add-users').form.checkValidity() && this._table != null){
+      let nameC = -1
+      let emailC = -1
+      let schema = this._table[0]
+      const gradeId = document.querySelector('#grade').value
+      const roleId = document.querySelector('#role').value
+      const institutionId = document.querySelector('#institution').value
+      const groupId = document.querySelector('#group').value || null
+      for (let s in schema) {
+        switch (schema[s].toLowerCase()) {
+          case 'nome':
+          case 'name': nameC = s; break;
+          case 'e-mail':
+          case 'email': emailC = s; break;
+        }
       }
-    }
-    if (nameC > -1 && emailC > -1) {
-      for (let line = 1; line < this._table.length; line++) {
-        if (this._table[line][emailC]) {
-          let lp = this._table[line][emailC].substring(0, this._table[line][emailC].indexOf('@'))
-          console.log('========== creating user ==========')
-          let user = await MessageBus.i.request('user/create/post',
+      if (nameC > -1 && emailC > -1) {
+        for (let line = 1; line < this._table.length; line++) {
+          if (this._table[line][emailC]) {
+            let lp = this._table[line][emailC].substring(0, this._table[line][emailC].indexOf('@'))
+            console.log('========== creating user ==========')
+            let user = await MessageBus.i.request('user/create/post',
             {
               username: this._table[line][nameC],
               email: this._table[line][emailC],
               password: lp,
               login: this._table[line][emailC],
-              institution: new URL(document.location).searchParams.get('institution'),
-              grade: new URL(document.location).searchParams.get('grade')
+              institution: institutionId,
+              grade: gradeId
             }
           )
           if (user.message.error) {
@@ -46,31 +104,59 @@ class UsersCSVManager {
             console.log(user.message.username)
             console.log(user.message.id)
             let role = await MessageBus.i.request('link/role/post',
+            {
+              userId: user.message.id,
+              roleId: roleId
+            }
+          )
+          if (role.message.error) {
+            console.log('--- error')
+            console.log(role.message.error)
+          } else {
+            console.log('--- link role success')
+            if(groupId != null){
+              let group = await MessageBus.i.request('link/group/post',
               {
                 userId: user.message.id,
-                roleId: new URL(document.location).searchParams.get('role')
+                groupId: groupId
               }
             )
-            if (role.message.error) {
+            if (group.message.error) {
               console.log('--- error')
-              console.log(role.message.error)
-            } else {
-              console.log('--- link role success')
-              let group = await MessageBus.i.request('link/group/post',
-                {
-                  userId: user.message.id,
-                  groupId: new URL(document.location).searchParams.get('group')
-                }
-              )
-              if (group.message.error) {
-                console.log('--- error')
-                console.log(group.message.error)
-              } else
-                console.log('--- link group success')
-            }
+              console.log(group.message.error)
+            } else
+            console.log('--- link group success')
           }
         }
       }
+    }
+  }
+}
+    }
+    if(this._table == null){
+      let alert = document.querySelector('#alert-feedback')
+      alert.innerHTML = ""
+      let header = document.createElement('h4')
+      header.innerHTML = '<b>Empty table!</b>'
+      header.classList.add('alert-header')
+      header.style.color = '#721c24'
+      alert.classList.add('alert-danger', 'alert-dismissible', 'show')
+      alert.classList.remove('alert-success')
+      alert.insertAdjacentElement('afterbegin', header)
+      alert.insertAdjacentText('beforeend','You have to drag a csv containing the list of users with columns "name" and "email" in the "drag zone"')
+      alert.style.display = 'block'
+      alert.insertAdjacentHTML('beforeend',`
+      <button type="button" class="close" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>`)
+      alert.querySelector('button.close').onclick = function() {
+        alert.classList.remove('show')
+        alert.style.display = 'none'
+      }
+      setTimeout(function(){
+        alert.classList.remove('show')
+        alert.style.display = 'none'
+      }, 8000)
     }
   }
 }
