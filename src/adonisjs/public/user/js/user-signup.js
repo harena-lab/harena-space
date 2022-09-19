@@ -14,6 +14,15 @@ class UserSignup {
     document.querySelector('#date_agree_2').innerHTML = sdate
   }
 
+  startOpenTCLE () {
+    this._signupTCLE = this._signupTCLE.bind(this)
+    MessageBus.i.subscribe('/user/signup', this._signupTCLE)
+
+    const now = new Date()
+    const sdate = now.getDate() + '/' + (now.getMonth()+1) + '/' + now.getFullYear()
+    document.querySelector('#date_agree_1').value = sdate
+  }
+
   update () {
     if(document.querySelector('#username'))
       document.querySelector('#name_participant').innerHTML = document.querySelector('#username').value
@@ -160,6 +169,65 @@ class UserSignup {
         this._showFeedback('Usuário cadastrado com sucesso.', 'blue')
     }
   }
+  }
+
+  async _signupTCLE (topic, message) {
+    const parameters = (message && message.value) ? message.value : null
+    console.log('===== user parameters')
+    console.log(parameters)
+
+    this._showFeedback('')
+    if (parameters == null)
+      this._showFeedback('Erro de processamento, entre novamente na página a partir do link')
+    else if (parameters.username.trim().length == 0)
+      this._showFeedback('Nome do participante é obrigatório.')
+    else if (parameters.email.length == 0)
+      this._showFeedback('O e-mail do participante é obrigatório.')
+    else if (parameters.agree == null || parameters.agree.length == 0)
+      this._showFeedback('Você precisa responder se concorda participar da pesquisa.')
+    else {
+      console.log('========== creating user ==========')
+      // const login = parameters.login.replace(/ /g, '_')
+      const login = parameters.email.split('@')[0]
+      const userJson = {
+        username: parameters.username,
+        email: parameters.email,
+        password: new URL(document.location).searchParams.get('pwd'),
+        login: login,
+        institution: parameters.institution,
+        grade: parameters.grade,
+        eventId: new URL(document.location).searchParams.get('event')
+      }
+      let user = await MessageBus.i.request('user/create/post', userJson)
+      console.log(user.message)
+      if (user.message.error) {
+        console.log('--- error')
+        console.log(user.message)
+        if (user.message.error.includes('409'))
+          this._showFeedback('Já existe um usuário com este email. Por favor, escolha outro email.')
+        else
+          this._showFeedback('Houve algum erro no cadastro.')
+      } else {
+        const agree = (parameters.agree == 'agree')
+        const termJson = {
+          userId: user.message.id,
+          termId: parameters.term,
+          nameResponsible: '',
+          emailResponsible: parameters.email,
+          nameParticipant: parameters.username,
+          date: parameters.date_agree_1,
+          role: parameters.role,
+          agree: (agree) ? '1' : '0'
+        }
+        console.log('=== term json')
+        console.log(termJson)
+        let term = await MessageBus.i.request('user/term/post', termJson)
+        console.log('=== term add')
+        console.log(term)
+        document.querySelector('#complete-form').style.display = 'none'
+        this._showFeedback('Usuário cadastrado com sucesso.', 'blue')
+      }
+    }
   }
 }
 
