@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Cadastro de Usuário</title>
+
+	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
+
+	<link rel="stylesheet" href="/author/css/author.css">
+
+	<script src="/lib/axios-0.21.0/axios.min.js"></script>
+
+	<script src="/lib/jquery-3-4-1/jquery-3.4.1.slim.min.js"></script>
+	<script src="/lib/popper-1-15-0/popper.min.js"></script>
+	<script src="/lib/bootstrap-4.4.1/js/bootstrap.min.js"></script>
+
+	<script src="/config/config.js"></script>
+	<script src="/infra/bus.js"></script>
+	<script src="/infra/dcc-common-server-proxy.js"></script>
+	<script src="/infra/dcc-common-server-address.js"></script>
+
+	<script src="/dccs/base/primitive-dcc.js"></script>
+	<script src="/dccs/base/scope-dcc.js"></script>
+	<script src="/dccs/base/dcc.js"></script>
+	<script src="/dccs/base/dcc-base.js "></script>
+	<script src="/dccs/base/dcc-visual.js "></script>
+	<script src="/dccs/base/dcc-block.js"></script>
+	<script src="/dccs/components/visual/dcc-button.js"></script>
+	<script src="/dccs/components/visual/dcc-notice-input.js"></script>
+
+	<script src="/dccs/components/web/dcc-rest.js"></script>
+	<script src="/dccs/components/web/dcc-include.js"></script>
+	<script src="/dccs/components/web/dcc-dhtml.js"></script>
+
+	<script src="/dccs/components/data/dcc-submit.js"></script>
+	<script src="/dccs/components/data/dcc-model.js"></script>
+	<script src="/dccs/components/data/dcc-record.js"></script>
+
+	<script src="/dccs/base/subscribe-dcc.js"></script>
+	<script src="/dccs/base/trigger-dcc.js"></script>
+	<script src="/dccs/base/property-dcc.js"></script>
+	<script src="/dccs/base/connect-dcc.js"></script>
+
+	<script src="/infra/basic.js"></script>
+	<script src="/infra/dcc-rest-proxy.js"></script>
+	<script src="/infra/dcc-basic.js"></script>
+
+
+	<link rel="stylesheet" href="/lib/fontawesome-5-10-1/css/all.min.css">
+	<link rel="stylesheet" href="/lib/bootstrap-4.4.1/css/bootstrap.min.css">
+
+	<link rel="stylesheet" href="/dccs/css/dccs.css">
+	<link rel="stylesheet" href="/dccs/css/properties.css">
+	<link rel="stylesheet" href="/infra/css/common-player.css">
+	<link rel="stylesheet" href="/infra/css/common-author.css">
+
+	<script src="/user/js/dcc-rest-proxy-user.js"></script>
+  <script src="/user/js/user-signup.js"></script>
+</head>
+
+  <body onload="UserSignup.i.startOpenTCLE()">
+    <!-- Create a section to place page content -->
+    <main role="main">
+      <dcc-rest id="harena-create-user" bind="harena-create-user" subscribe="user/create/post"></dcc-rest>
+      <dcc-rest id="harena-link-term" bind="harena-link-term" subscribe="user/term/post"></dcc-rest>
+			<dcc-rest id="harena-link-user-role" bind="harena-link-user-role" subscribe="link/role/post"></dcc-rest>
+      <dcc-rest id="harena-link-user-group" bind="harena-link-user-group" subscribe="link/group/post"></dcc-rest>
+
+      <div class="d-flex flex-column vh-100 vw-100 hidden-overflow">
+
+        <div class="h-100 w-100 create-case-padding scroll-y">
+					<div class="col-md-6">
+						<!-- <img src="images/museum-platform.png" width="100%"> -->
+						<div class="home-text">
+	            <p id="template-title">Cadastro de Usuário na Plataforma</p>
+	          </div>
+
+						<hr>
+						<div id="feedback-message-1" style="font-size:24px;color:red"></div>
+						<hr>
+					</div>
+
+          <div id="complete-form" class="row" style="padding-bottom: 70px;">
+
+            <div class="col-md-6">
+							<!-- <h4 style="color:black">Este cadastro deve obrigatoriamente ser preenchido pelo responsável da criança ou adolescente que participará da oficina.</h4> -->
+
+              <form id="create-case-form">
+								<!-- TCLE -->
+                <div id="term-form" class="outer">
+                  <hr>
+                  <section id="main_content" class="inner">
+										<h1 id="termo-de-consentimento-livre-e-esclarecido">TERMO DE CONSENTIMENTO LIVRE E ESCLARECIDO (TCLE)</h1>
+
+											Projeto: Gameficação do ensino de prognóstico: uma outra forma de se pensar probabilidade<br>Pesquisadores: Juliana de Castro Solano Martins, Marco Antonio de Carvalho Filho<br>Número do CAAE:
+											45245021.7.0000.5577<br><br><span style="white-space:pre"> </span>Você está sendo convidado (a) a participar de uma pesquisa. Este documento, chamado Termo de Consentimento Livre e Esclarecido, visa assegurar seus direitos como
+											participante da pesquisa e é elaborado em duas vias, assinadas e rubricadas pelo pesquisador e pelo participante, sendo que uma via deverá ficar com você e outra com o pesquisador. <br><span style="white-space:pre"> </span>Por
+											favor, leia com atenção e calma, aproveitando para esclarecer suas dúvidas. Se houver perguntas antes ou mesmo depois de assiná-lo, você poderá esclarecê-las com o pesquisador. Se preferir, pode levar este Termo para casa e
+											consultar seus familiares ou outras pessoas antes de decidir participar. Não haverá nenhum tipo de penalização ou prejuízo se você não aceitar participar ou retirar sua autorização em qualquer momento.<br>Este trabalho foi
+											aprovado pelo Comitê de Ética e Pesquisa CEP) da Faculdade de Medicina da Bahia.<br><br>Justificativa e objetivos:<br><span style="white-space:pre"> </span>O envelhecimento populacional expôs cada vez mais os profissionais de
+											saúde a pacientes mais idosos, multimórbidos e com maior necessidade de abordagem integral, de forma que os Cuidados Paliativos ganham extrema importância no manejo dos pacientes com doenças ameaçadoras à vida.<br><span
+												style="white-space:pre"> </span>Apesar da expectativa de que a abordagem de diretivas antecipadas de vontade e objetivos de cuidado fosse realizada de forma precoce e, idealmente, ambulatorial, ainda é uma realidade ocidental
+											que a conversa se inicie no ambiente hospitalar e, por muitas vezes, dentro da Unidade de Terapia Intensiva. Ou seja, a primeira conversa sobre prognóstico de uma doença ameaçadora da vida não é realizada pelo médico assistente ou
+											por alguém especializado em comunicação, mas por outro especialista, muitas vezes pouco treinado nesta habilidade.<br><span style="white-space:pre"> </span>Entendendo a comunicação, o trabalho em equipe e o manejo de sintomas como
+											pilares fundamentais dos Cuidados Paliativos, torna-se categórica a necessidade de inserir conhecimentos básicos desta área de atuação no currículo formal do profissional médico, que será exposto a pacientes elegíveis a esta
+											abordagem independentemente da especialização escolhida.<br><span style="white-space:pre"> </span>O propósito deste estudo é a construção de uma ferramenta de ensino de prognóstico para pacientes admitidos em Unidade de Terapia
+											Intensiva, assim como identificar quais fatores geram maior dificuldade em se discutir prognóstico entre os alunos, através das seguintes ações:<br>1)<span style="white-space:pre"> </span>Desenvolver atividade pedagógica baseada
+											em um “serious game”, ou seja, aplicar um jogo que aborde o ensino de prognóstico;<br>2)<span style="white-space:pre"> </span>Avaliar o impacto dessa intervenção sobre: entendimento de prognóstico, capacidade de estabelecer
+											prognóstico, conforto em discutir terminalidade;<br>3)<span style="white-space:pre"> </span>Determinar o grau de satisfação e a impressão dos estudantes após aplicação da intervenção.<br>Pretende-se testar a hipótese de que o
+											ensino de prognóstico ajuda a desenvolver tolerância à incerteza e maior capacidade de comunicação, permitindo o desenvolvimento de discussões sobre terminalidade.<br><br>Procedimentos:<br><span style="white-space:pre"></span>
+											Participando do estudo você está sendo convidado a: participar de jogo de tabuleiro – forma presencial e/ou online - responder questionários sobre prognóstico de pacientes em Unidade de Terapia Intensiva, habilidades de
+											comunicação e emoções percebidas durante o jogo; além de participar de uma entrevista direcionada a respeito das suas impressões sobre o jogo.<br><span style="white-space:pre"> </span>A entrevista será gravada e em seguida
+											transcrita. Após transcrição, a entrevista será apagada. A transcrição da entrevista não será salva com seu nome, mas sim, apenas com um número. A coleta de dados será de 6 meses, a partir desse momento as entrevistas serão todas
+											transcritas. O pesquisador estima que o tempo de duração da pesquisa será de 12 meses, sendo assim, a entrevista poderá ficar armazenada durante esse período e será apagada após a conclusão da pesquisa.<br><br>Desconfortos e
+											riscos:<br><span style="white-space:pre"> </span>Você não deve participar deste estudo se se sentir desconfortável em abordar os assuntos sugeridos no item anterior, se acreditar que pode te fazer mal falar sobre os assuntos
+											mencionados ou se simplesmente não quiser explorar os aspectos sugeridos no item anterior. Não haverá nenhum problema ou penalização caso lendo o TCLE você decida abandonar a pesquisa. É importante que você tenha claro que
+											participar da seguinte pesquisa pode trazer alguns desconfortos, como: durante a realização do jogo e das entrevistas, você pode se sentir constrangido. Pode surgir algum incomodo pelo fato da entrevista ser gravada e da
+											transcrição ser compartilhada com a equipe de pesquisadores. Além disso, você pode se sentir triste durante a entrevista, considerando que ela fará referência a situações de terminalidade e explorará elementos envolvidos nessas
+											situações. <br><span style="white-space:pre"> </span>Todo o processo de entrevista será realizado numa sala reservada e silenciosa ou via plataforma virtual de comunicação (e.g. Zoom, Skype), apenas com a presença do pesquisador.
+											Para que você não se sinta desconfortável ou pressionado, o pesquisador sairá da sala e te deixará sozinho para realização dos questionários. O pesquisador se compromete a te explicar o processo quantas vezes forem necessárias e
+											tranquilizá-lo em relação ao objetivo da pesquisa e a forma de coleta de dados. Será explicado antes do início do processo, que os dados serão acessados somente pela equipe responsável pela pesquisa e que tanto os áudios quanto os
+											textos serão armazenados com nomenclatura que não permita sua identificação. Para minimizar o desconforto relacionado ao cansaço das entrevistas, você poderá interromper o processo em qualquer momento caso queira descansar e que
+											caso queira abandonar o processo no meio, não haverá nenhuma penalização.<br><br>Benefícios:<br><span style="white-space:pre"> </span>A participação no presente estudo tem o potencial de permitir ao participante se
+											instrumentalizar para a prática médica, com desenvolvimento de habilidades de comunicação e validação de emoções, tendo como um de seus benefícios a promoção de autoconhecimento e captação de outras perspectivas ao refletir sobre
+											as emoções presentes nos atendimentos médicos cotidianos. Conversar sobre certos aspectos e dificuldades a respeito das habilidades de comunicação e emoções também pode ser terapêutico para você como participante.<br><span
+												style="white-space:pre"> </span>Pensando em benefícios coletivos, a sua participação na pesquisa é extremamente importante para que seja validado instrumento de ensino de prognóstico diferente da aula expositiva convencional,
+											permitindo a expansão do ensino deste conteúdo.<br><br>Acompanhamento e assistência:<br><span style="white-space:pre"> </span>Você tem o direito à assistência integral e gratuita devido a danos diretos e indiretos, imediatos e
+											tardios, pelo tempo que for necessário. Juliana de Castro Solano Martins, médica e professora substituta do internato de Urgência e Emergência FMB-UFBA estará disponível através do email: <a
+												href="mailto:julianacsmartins@gmail.com">julianacsmartins@gmail.com</a> ou pelo telefone: (71) 98895-1427 durante todo o período da pesquisa e se compromete a dar qualquer suporte aos alunos envolvidos se necessário, durante ou
+											após a realizaçãodo curso e das entrevistas. Inclusive, caso seja necessário diante da vivência de emoções muito fortes, nos comprometemos a buscar suporte psicológico no programa de apoio pedagógico ao estudante e outros tipos de
+											apoio mais longos que sejam necessários.<br><br>Sigilo e privacidade:<br><span style="white-space:pre"> </span>Você tem a garantia de que sua identidade será mantida em sigilo e nenhuma informação será dada a outras pessoas que
+											não façam parte da equipe de pesquisadores. Na divulgação dos resultados desse estudo, seu nome não será citado. Durante o armazenamento dos desenhos e das entrevistas, o participante será identificado apenas por um número e não
+											pelo nome.<br><br>Contato:<br><span style="white-space:pre"> </span>Em caso de dúvidas sobre a pesquisa, você poderá entrar em contato com os pesquisadores: Juliana de Castro Solano Martins (FMB - UFBA) através do telefone (71)
+											98895-1427 ou email <a href="mailto:julianacsmartins@gmail.com">julianacsmartins@gmail.com</a>, assim como com Marco Antonio de Carvalho Filho (FCM – UNICAMP) através do email <a
+												href="mailto:macarvalhofilho@gmail.com">macarvalhofilho@gmail.com</a>.<br><span style="white-space:pre"> </span>Em caso de denúncias ou reclamações sobre sua participação e sobre questões éticas do estudo, você poderá entrar em
+											contato com Comitê de Ética em Pesquisa (CEP) da Faculdade de Medicina da Bahia às segundas, terças e quintas de 7:00 às 13:00 horas e às segundas, quartas e sextas de 14:00 às 18:00 horas – localizado no Largo do Terreiro de
+											Jesus, s/n, Centro Histórico, CEP 40.026-010, Salvador, Bahia –, através do telefone (71) 3283-5564 ou email <a href="mailto:cepfmb@ufba.br">cepfmb@ufba.br</a>.</div>
+
+										<hr>
+										<div style="text-align:center;">
+                    <a href="/user/signup/terms/tcle-prognosis.pdf" target="_blank">Download do Termo de Consentimento Livre e Esclarecido (TCLE)</a><br /><br />
+                    </div>
+										<hr>
+
+									<div class="form-group">
+	                  <label for="email">Email do Participante</label>
+	                  <input type="text" class="form-control" id="email" name="email" placeholder="Email do participante"
+										       aria-describedby="emailDesc" onchange="UserSignup.i.update()">
+										<small id="emailDesc" class="form-text text-muted">
+											Escolha um email que você usará para fazer login.
+										</small>
+	                </div>
+									<p>Após ter recebido esclarecimentos sobre a natureza da pesquisa, seus objetivos, métodos, benefícios previstos, potenciais riscos e o incômodo que esta possa acarretar, favor se identificar e concluir este
+										termo, caso concorde em participar:</p>
+
+	                <div class="form-group">
+	                  <label for="username">Nome completo do(a) participante da pesquisa</label>
+	                  <input type="text" class="form-control" id="username" name="username" placeholder="Nome completo"
+										       aria-describedby="usernameDesc" onchange="UserSignup.i.update()">
+										<small id="usernameDesc" class="form-text text-muted">
+											Digite o seu nome.
+										</small>
+	                </div>
+
+									<div class="form-inline">
+										<label for="date_agree_1">Data:&nbsp;</label>
+										<input type="text" class="form-control" id="date_agree_1" name="date_agree_1" readonly>
+									</div>
+
+									<br>
+									<p>Ao clicar em &quot;Concordo&quot; abaixo, você declara que, após ter recebido esclarecimentos sobre a natureza da pesquisa, seus objetivos, métodos, benefícios previstos, potenciais riscos e o incômodo que esta possa acarretar, concorda em participar.</p>
+
+									<p><input type="radio" id="agree_radio" name="agree" value="agree" onchange="UserSignup.i.update()"/> Concordo em participar da pesquisa <br>
+									<input type="radio" id="not_agree_radio" name="agree" value="not_agree" onchange="UserSignup.i.update()" /> Não desejo participar da pesquisa</p>
+
+									<br>
+									<h2 id="responsabilidade-do-pesquisador">Responsabilidade do Pesquisador</h2>
+									<p>Asseguro ter cumprido as exigências da resolução 466/2012 CNS/MS e complementares na elaboração do protocolo e na obtenção deste Termo de Consentimento Livre e Esclarecido. Asseguro, também, ter explicado e fornecido uma via deste documento ao participante da pesquisa. Informo que o estudo foi aprovado pelo CEP perante o qual o projeto foi apresentado e pela CONEP, quando pertinente. Comprometo-me a utilizar o material e os dados obtidos nesta pesquisa exclusivamente para as finalidades previstas neste documento ou conforme o consentimento dado pelo participante da pesquisa.</p>
+									<p>Juliana de Castro Solano Martins
+									<br>Salvador, 08 de setembro de 2021</p>
+									<br>
+
+	                <input type="hidden" id="institution" name="institution" value="progn">
+	                <input type="hidden" id="grade" name="grade" value="student">
+	                <input type="hidden" id="term" name="term" value="prognosis_game_2022">
+	                <input type="hidden" id="role" name="role" value="adult">
+									<hr>
+									<div id="feedback-message-2" style="font-size:24px;color:red"></div>
+									<hr>
+									<dcc-submit label="Enviar" topic="/user/signup" xstyle="out"></dcc-submit>
+								</section>
+								</div>
+							</form>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <!-- end of div /.container -->
+  </body>
+</html>
