@@ -11,7 +11,7 @@ class DCCGraph extends DCCVisual {
 
     const html = DCCGraph.svgTemplate
       .replace(/\[css\]/g,
-        Basic.service.themeStyleResolver('dcc-graph.css'))
+        DCCVisual.themeStyleResolver('dcc-graph.css'))
       // .replace(/\[width-div\]/g, this.width + 'px')
       // .replace(/\[height-div\]/g, this.height + 'px')
       .replace(/\[width\]/g, this.width)

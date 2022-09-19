@@ -25,6 +25,18 @@ class PrimitiveDCC extends HTMLElement {
     return parent
   }
 
+  static get rootPath () {
+    return PrimitiveDCC._rootPath
+  }
+
+  static set rootPath (newValue) {
+    PrimitiveDCC._rootPath = newValue
+  }
+
+  /*
+   * Bus Proxy
+   */
+
   _subscribe (topic, callback) {
     return this._bus.subscribe(topic, callback)
   }
@@ -69,3 +81,7 @@ class PrimitiveDCC extends HTMLElement {
     return await this._bus.requestC(id, topic, message)
   }
 }
+
+(function () {
+  PrimitiveDCC._rootPath = ""
+})()

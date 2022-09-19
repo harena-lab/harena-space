@@ -4,7 +4,7 @@
 class DCCImage extends DCCVisual {
   connectedCallback () {
     let html = "<img id='presentation-dcc' src='" +
-                    Basic.service.imageResolver(this.image) + "'" +
+                    DCCVisual.imageResolver(this.image) + "'" +
                     ((this.hasAttribute('title'))
                       ? " alt='" + this.title : '')
     for (const ra of DCCImage.replicatedAttributes) {

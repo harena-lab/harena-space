@@ -24,7 +24,7 @@ class DCCStateSelect extends DCCVisual {
     super.connectedCallback()
     DCCStateSelect.templateElements =
       "<style> @import '" +
-         Basic.service.themeStyleResolver('dcc-state-select.css') +
+         DCCVisual.themeStyleResolver('dcc-state-select.css') +
       "' </style>" +
       "<span id='presentation-dcc'>" +
          "<span id='presentation-text'><slot></slot></span>" +

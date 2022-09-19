@@ -155,7 +155,7 @@ class DCCInputTable extends DCCInput {
   async _renderInterface () {
     const templateElements =
       "<style> @import '" +
-         Basic.service.themeStyleResolver('dcc-input-table.css') +
+         DCCVisual.themeStyleResolver('dcc-input-table.css') +
       "' </style>" +
       "<div id='presentation-dcc-input'>" +
          '[statement]' +

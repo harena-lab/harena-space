@@ -8,7 +8,7 @@ class DCCMedia extends DCCVisual {
       '<' + mtype +
       ((this.controls) ? ' controls' : '') +
       ' id="presentation-dcc" ><source src="' +
-      Basic.service.imageResolver(this.source) + '">' +
+      DCCVisual.imageResolver(this.source) + '">' +
       '</' + mtype + '>' :
       '<div id="presentation-dcc" style="width:320px;height:256px">' +
       DCCMedia.mediaStub + '</div>'

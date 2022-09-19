@@ -4,7 +4,7 @@ class DCCContextMenu {
   constructor (x, y, items) {
     const template = document.createElement('template')
     template.innerHTML = DCCContextMenu.htmlTemplate
-      .replace('{css}', Basic.service.themeStyleResolver('dcc-context-menu.css'))
+      .replace('{css}', DCCVisual.themeStyleResolver('dcc-context-menu.css'))
       .replace('{left}', x)
       .replace('{top}', y)
     this._presentation = document.createElement('div')

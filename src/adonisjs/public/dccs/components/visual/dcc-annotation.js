@@ -5,7 +5,7 @@ class DCCAnnotation extends DCCVisual {
     const template = document.createElement('template')
     template.innerHTML =
          "<style> @import '" +
-            Basic.service.themeStyleResolver('dcc-annotation.css') +
+            DCCVisual.themeStyleResolver('dcc-annotation.css') +
          "' </style>" +
          "<span id='presentation-dcc' class='dcc-text-annotation'>" +
          '<slot></slot></span>'

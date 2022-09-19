@@ -176,15 +176,15 @@ class DCCBlock extends DCCVisual {
       if (shadow) {
         if (this._xstyle == 'in') {
           html = "<style>@import '" +
-                        Basic.service.systemStyleResolver(this.elementTag() + '.css') +
+                        DCCVisual.systemStyleResolver(this.elementTag() + '.css') +
                      "' </style>" + html
         } else if (this._xstyle == 'theme') {
-          if (Basic.service.currentCustomTheme != null)
+          if (DCCVisual.currentCustomTheme != null)
             html = "<style>@import '" +
-                     Basic.service.themeCustomStyleResolver(this.elementTag() + '.css') +
+                     DCCVisual.themeCustomStyleResolver(this.elementTag() + '.css') +
                    "' </style>" + html
           html = "<style>@import '" +
-                        Basic.service.themeStyleResolver(this.elementTag() + '.css') +
+                        DCCVisual.themeStyleResolver(this.elementTag() + '.css') +
                  "' </style>\n" + html
         }
       }

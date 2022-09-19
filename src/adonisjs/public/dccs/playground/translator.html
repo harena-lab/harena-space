@@ -6,24 +6,24 @@
 
    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
 
-   <script src="../../lib/showdown/showdown.min.js"></script>
+   <script src="lib/showdown/showdown.min.js"></script>
 
    <!-- <script src="../../config/config.js"></script> -->
    <script src="../../config/config-standalone.js"></script>
 
-   <link rel="stylesheet" href="../../lib/fontawesome-5-10-1/css/all.min.css">
-   <link rel="stylesheet" href="../../lib/bootstrap-4.4.1/css/bootstrap.min.css">
+   <link rel="stylesheet" href="lib/fontawesome-5-10-1/css/all.min.css">
+   <link rel="stylesheet" href="lib/bootstrap-4.4.1/css/bootstrap.min.css">
 
    <link rel="stylesheet" href="../../dccs/css/dccs.css">
    <link rel="stylesheet" href="../../infra/css/common-player.css">
    <link rel="stylesheet" href="../../infra/css/common-author.css">
 
-   <script src="../../lib/jquery-3-4-1/jquery-3.4.1.slim.min.js"></script>
-   <script src="../../lib/popper-1-15-0/popper.min.js"></script>
-   <script src="../../lib/bootstrap-4.4.1/js/bootstrap.min.js"></script>
-   <script src="../../lib/axios-0.21.0/axios.min.js"></script>
+   <script src="lib/jquery-3-4-1/jquery-3.4.1.slim.min.js"></script>
+   <script src="lib/popper-1-15-0/popper.min.js"></script>
+   <script src="lib/bootstrap-4.4.1/js/bootstrap.min.js"></script>
+   <script src="lib/axios-0.21.0/axios.min.js"></script>
 
-   <script src="../../infra/bus.js"></script>
+   <script src="../../dccs/infra/bus.js"></script>
    <script src="../../infra/basic.js"></script>
 
    <script src="../../dccs/base/primitive-dcc.js"></script>
@@ -131,7 +131,7 @@
       async function render(topic, message) {
         Translator.instance.authoringRender = false
 
-        Basic.service.currentThemeFamily = 'plain'
+        DCCVisual.currentThemeFamily = 'plain'
         DCCCommonServer.instance.local = true
 
         const compiled = await Translator.instance.compileMarkdown(
@@ -163,7 +163,7 @@
 <body onload="start()">
    <script>
       // MessageBus.page = new MessageBus(false)
-      Basic.service.rootPath = "../../"
+      PrimitiveDCC.rootPath = "../../"
       new PlayState()
       new Tracker()
    </script>

@@ -25,6 +25,67 @@ class DCCVisual extends DCCBase {
     }
   }
 
+  static themeStyleResolver (cssFile) {
+    return PrimitiveDCC.rootPath + 'themes/' + DCCVisual.currentThemeFamily +
+             '/css/' + cssFile
+  }
+
+  static themeCustomStyleResolver (cssFile) {
+    return PrimitiveDCC.rootPath + 'themes/' + DCCVisual.currentThemeFamily +
+             '/css/' + DCCVisual.currentCustomTheme + '/' + cssFile
+  }
+
+  static systemStyleResolver (cssFile) {
+    return PrimitiveDCC.rootPath + 'themes/' + DCCVisual.systemThemeFamily +
+             '/css/' + cssFile
+  }
+
+  imageResolver (path) {
+    let result = path
+    // <TODO> improve
+    if (DCCVisual.externalResolver != null)
+      result = DCCVisual.externalResolver.imageResolver(path)
+    else {
+      if (path.startsWith('theme/')) {
+        result = this._rootPath +
+                    'themes/' + this.currentThemeFamily +
+                    '/images/' + path.substring(6)
+      } else if (path.startsWith('template_fix/')) {
+        result = this._rootPath +
+                    'templates/' + path.substring(13)
+      } else if (path.startsWith('template/')) {
+        result = this._rootPath +
+                    'templates/' + this.currentThemeFamily +
+                    '/images/' + path.substring(9)
+      }
+    }
+    return result
+  }
+
+  static get externalResolver () {
+    return DCCVisual._externalResolver
+  }
+
+  static set externalResolver (newValue) {
+    DCCVisual._externalResolver = newValue
+  }
+
+  static get currentThemeFamily () {
+    return DCCVisual._currentThemeFamily
+  }
+
+  static set currentThemeFamily (newValue) {
+    DCCVisual._currentThemeFamily = newValue
+  }
+
+  static get currentCustomTheme () {
+    return DCCVisual._currentCustomTheme
+  }
+
+  static set currentCustomTheme (newValue) {
+    DCCVisual._currentCustomTheme = newValue
+  }
+
   static get observedAttributes () {
     return DCCBase.observedAttributes.concat(
       ['display'])
@@ -335,6 +396,10 @@ class editEventDCC {
 
 (function () {
   DCCVisual.selectedBorderStyle = '3px dashed #000000'
+  DCCVisual.systemThemeFamily = 'system'
+  DCCVisual._currentThemeFamily = DCCVisual.systemThemeFamily
+  DCCVisual._currentCustomTheme = ''
+  DCCVisual.externalResolver = null
 
   DCCVisual.templateHTML =
 `<div id="panel-presentation" style="position: absolute; top: {top}px; left: {left}px; width: {width}px; height: {height}px; background: rgba(0, 0, 0, 0.5); text-align: left; display: flex; flex-direction: row;">`

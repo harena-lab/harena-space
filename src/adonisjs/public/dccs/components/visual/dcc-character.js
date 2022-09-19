@@ -160,10 +160,10 @@ class DCCCharacter extends DCCVisual {
 
     return "<div class='dsty-image-box dsty-border'>" +
                 "<img id='char-image' class='dsty-image' src='" +
-                   Basic.service.imageResolver(this.image) + "'></div>" +
+                   DCCVisual.imageResolver(this.image) + "'></div>" +
              "<div class='dsty-icon-box dsty-border'>" +
                 "<img id='char-icon'class='dsty-icon' src='" +
-                   Basic.service.imageResolver(icon) + "'></div>"
+                   DCCVisual.imageResolver(icon) + "'></div>"
   }
 
   /* Editable Component */
