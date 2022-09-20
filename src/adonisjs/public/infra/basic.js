@@ -252,7 +252,7 @@ class Basic {
 }
 
 (function () {
-  Basic.standardThemeFamily = 'minimal'
+  Basic.standardThemeFamily = 'plain'
 
   // <TODO> provisory based on SVG from XD
   Basic.referenceViewport = { width: 1920, height: 1080 }
