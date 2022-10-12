@@ -14,7 +14,7 @@ Harena is available at https://harena.ds4h.org/.
 <!-- platform that includes: authoring environment, player engine and the Versum narrative scripting language translator. -->
 
 <!--
-## Table of Contents 
+## Table of Contents
 
 * [Getting Started](#getting-started)
   * [Option 1: Access our instance running at cloud](#option-1-access-our-instance-running-at-cloud)

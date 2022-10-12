@@ -7,8 +7,15 @@
 class Properties {
   constructor () {
     this.applyPropertiesDetails = this.applyPropertiesDetails.bind(this)
+    this.undo = this.undo.bind(this)
+    this.redo = this.redo.bind(this)
     MessageBus.i.subscribe('properties/apply/details',
       this.applyPropertiesDetails)
+    MessageBus.i.subscribe('properties/undo/details',
+      this.undo)
+    MessageBus.i.subscribe('properties/redo/details',
+        this.redo)
+    this._knotid = null
   }
 
   attachPanelDetails (panel) {
@@ -23,9 +30,9 @@ class Properties {
     this._artifacts = artifacts
   }
 
-  async closePreviousProperties () {
+  async closePreviousProperties (selectedByAction = false) {
     if (this._editor != null)
-      await this._editor.handleConfirm()
+      await this._editor.handleConfirm(selectedByAction)
   }
 
   editKnotProperties (obj, knotId) {
@@ -37,8 +44,16 @@ class Properties {
     */
   }
 
-  editElementProperties (knots, knotid, el, dcc, role, buttonType) {
+  editElementProperties (knots, knotid, el, dcc, role, buttonType, presentationId, dccId, commandManager) {
     this._knots = knots
+    this._knotid = knotid
+    this._el = el
+    this._commandManager = commandManager
+    this._buttonType = buttonType
+    this._role = role
+    this._presentationId = presentationId
+    this._dccId = dccId
+
     const knotContent = knots[knotid].content
     const element = dcc.currentPresentation()
     const obj = knotContent[el]
@@ -54,7 +69,7 @@ class Properties {
       if (this._editor != null && this._editor.closeEditor) { this._editor.closeEditor() }
       switch (editp.inlineProfile.type) {
         case 'void':
-          this._editor = new EditDCCPlain(obj, dcc, editp.htmls, this)
+          this._editor = new EditDCCPlain(obj, dcc, editp.htmls, editp.inlineProperty, this)
           break
         case 'text':
           this._editor = new EditDCCText(knotContent, el, dcc, svg, false, this,
@@ -106,7 +121,6 @@ class Properties {
     */
   editProperties (obj, role, buttonType) {
     this._objProperties = obj
-    this._buttonType = buttonType
 
     const profile = this._typeProfile(obj)[buttonType]
     let seq = 1
@@ -247,29 +261,38 @@ class Properties {
     }
   }
 
-  async applyPropertiesDetails (topic, message) {
-    this.applyProperties(true)
+  undo(){
+    this._commandManager.undo()
+  }
+  redo(){
+    this._commandManager.redo()
   }
 
-  async applyProperties (details) {
+  async applyPropertiesDetails (topic, message) {
+    this.applyProperties(true, true)
+  }
+
+  async applyProperties (details, sidebar = false) {
     const sufix = (details) ? '_d' : '_s'
     const panel = (details)
       ? this._panelDetails : this._editor.editorExtended
     if (this._objProperties) {
-      /* clone the object */
-      const profile = this._typeProfile(this._objProperties)[this._buttonType]
+      let objectPropertiesClone = this._objProperties
+      if(sidebar){
+        objectPropertiesClone = JSON.parse(JSON.stringify(this._objProperties))
+      }
+
+      const profile = this._typeProfile(objectPropertiesClone)[this._buttonType]
       let seq = 1
-      /* all changes will be on the clone */
       for (const p in profile) {
         if (profile[p].type != 'void') {
           if (!profile[p].composite) {
             if (details ||
                 (profile[p].visual && profile[p].visual.includes('panel'))) {
-              /* adjust _applySingleProperty to avoid changing the objProperty */
               const objProperty =
                         await this._applySingleProperty(profile[p],
-                          seq, panel, sufix, this._objProperties[p])
-              if (objProperty != null) { this._objProperties[p] = objProperty }
+                          seq, panel, sufix, objectPropertiesClone)
+              if (objProperty != null) { objectPropertiesClone[p] = objProperty}
             }
             seq++
           } else {
@@ -278,47 +301,52 @@ class Properties {
                          profile[p].visual.includes('panel'))) {
                 const objProperty = await this._applySingleProperty(
                   profile[p].composite[s], seq, panel, sufix,
-                  this._objProperties[p])
+                  objectPropertiesClone[p])
                 if (objProperty != null &&
                             (typeof objProperty !== 'string' ||
                               objProperty.trim().length > 0)) {
-                  if (!this._objProperties[p]) { this._objProperties[p] = {} }
-                  this._objProperties[p][s] = objProperty
+                  if (!objectPropertiesClone[p]) { objectPropertiesClone[p] = {} }
+                  objectPropertiesClone[p][s] = objProperty
                 }
               }
               seq++
             }
           }
-        }
+            }
       }
+      if(sidebar){
+        //Create and execute action
+        const action = new ApplyPropertiesAction(this._knotid, this._el, objectPropertiesClone, null,
+                                                 this._dccId,this._role, this._buttonType, this.presentationId)
+        this._commandManager.execute(action)
+      }
+      else{
+        //TODO : make this form of editing be done with the commandManager, by removing if(sidebar) and this else block and make nescessary adaptations.
+        
+        Translator.instance.updateElementMarkdown(this._objProperties)
 
-      // transfer this operation to command
-      Translator.instance.updateElementMarkdown(this._objProperties)
-
-      if (this._knotOriginalTitle &&
-             this._knotOriginalTitle != this._objProperties.title) {
-        MessageBus.i.publish('control/knot/rename',
+       if (this._knotOriginalTitle && this._knotOriginalTitle != this._objProperties.title) {
+          MessageBus.i.publish('control/knot/rename',
           this._objProperties.title, true)
-        delete this._knotOriginalTitle
+          delete this._knotOriginalTitle
+      }
+        await this.closeProperties(details)
       }
     }
-    await this.closeProperties(details)
   }
 
-  async closeProperties(details) {
-    if (this._editor != null)
-      this._editor = null
-    if (this._objProperties) {
-      delete this._objProperties
-      await MessageBus.i.request('control/knot/update', null, null, true)
-    }
-    // if (!details) {MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message), null, true) }
+   async closeProperties(details) {
+     if (this._editor != null)
+       this._editor = null
+     if (this._objProperties) {
+       this._objProperties = null
+       await MessageBus.i.request('control/knot/update', null, null, true)
+     }
+     // if (!details) {MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message), null, true) }
   }
 
   async _applySingleProperty (property, seq, panel, sufix, previous) {
     let objProperty = null
-    console.log('=== property')
-    console.log('#pfield' + seq + sufix)
     const field = (panel != null) ?
          panel.querySelector('#pfield' + seq + sufix) : null
     switch (property.type) {
@@ -327,8 +355,6 @@ class Properties {
       case 'textField':
       case 'variable':
         if (field == 'variable') {
-          console.log('=== variable')
-          console.log(field.value)
         }
         if (field != null) {
           const value = field.value.trim()
@@ -352,7 +378,7 @@ class Properties {
           if (i == this._item) {
             if (this._itemEdit.edit.trim().length > 0) {
               if (field != null)
-                previous[item].message = field.value.trim()  // correct this sentence
+                previous[item].message = field.value.trim()
               objProperty[this._itemEdit.edit] = previous[item]
             }
           } else { objProperty[item] = previous[item] }

@@ -42,11 +42,25 @@ class AuthorManager {
 
     this._caseModified = false
 
-    window.onbeforeunload = function () {
-      return (this._caseModified)
-        ? 'If you leave this page you will lose your unsaved changes.' : null
-    }
+// Function that runs when the user attempts to leave the page, making the user confirm before leaving
+// To use this uncomment the next two lines and  code and the tryHalt function.
+//    this.tryHalt = this.tryHalt.bind(this)
+//    window.onbeforeunload = this.tryHalt
+
+    this.commandManager = new CommandManager('caseEditor', this)
   }
+
+  /*  async tryHalt () {
+      try {
+      if (this._caseModified)
+          Tracker.caseTryHalt(pPlay.userid, pPlay.caseid, pPlay.running.runningId)
+      } catch (e) {
+        console.log('=== error on halt')
+        console.log(e)
+      }
+      return ''
+    }
+    */
 
   /* <TODO>
       A commom code for shared functionalities between player and author
@@ -261,6 +275,8 @@ class AuthorManager {
   async caseLoadSelect () {
     const saved = await this.saveChangedCase()
 
+    this.commandManager.clear()
+
     const cases = await MessageBus.i.request('data/case/*/list', null, null, true)
     // {user: this._userid});
 
@@ -298,7 +314,7 @@ class AuthorManager {
     */
   async caseNew (template) {
     this._temporaryCase = true
-
+    this.commandManager.clear()
     // await this._themeSelect();
     // let template = await this._templateSelect("case");
 
@@ -814,7 +830,7 @@ class AuthorManager {
     console.log(topic)
     console.log(message)
 
-    await Properties.s.closePreviousProperties()
+    await Properties.s.closePreviousProperties(message._selectedByAction)
 
     const dccId = MessageBus.extractLevel(topic, 3)
 
@@ -845,9 +861,9 @@ class AuthorManager {
          dcc = inDCC
       }
       parentDCC.edit(role)
-
+      
       Properties.s.editElementProperties(
-        this._knots, this._knotSelected, el, dcc, role, message.buttonType)
+        this._knots, this._knotSelected, el, dcc, role, message.buttonType, message.presentationId, dccId, this.commandManager)
     }
   }
 
