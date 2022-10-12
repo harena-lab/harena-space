@@ -218,7 +218,7 @@ class Basic {
     const newCSS = document.createElement('link')
     newCSS.setAttribute('rel', 'stylesheet')
     newCSS.setAttribute('type', 'text/css')
-    newCSS.setAttribute('href', this.themeStyleResolver(cssF))
+    newCSS.setAttribute('href', DCCVisual.themeStyleResolver(cssF))
     targetDocument.body.appendChild(newCSS)
 
     return newCSS
