@@ -53,8 +53,8 @@ class UserSignup {
     const feed1 = document.querySelector('#feedback-message-1')
     const feed2 = document.querySelector('#feedback-message-2')
     if (color != null) {
-      feed1.style.color = 'blue'
-      feed2.style.color = 'blue'
+      feed1.style.color = color || 'blue'
+      feed2.style.color = color || 'blue'
     }
     feed1.innerHTML = message
     feed2.innerHTML = message
@@ -99,7 +99,7 @@ class UserSignup {
         if (user.message.error.includes('409'))
           this._showFeedback('Já existe um usuário com este login. Por favor, escolha outro login.')
         else
-          this._showFeedback('Houve algum erro no cadastro.')
+          this._showFeedback('Houve algum erro no cadastro. Contate o suporte: contact@harena.org')
       } else {
         const agree = (parameters.agree && parameters.agree.length > 0 && parameters.agree == 'agree')
         const termJson = {
@@ -225,7 +225,7 @@ class UserSignup {
         console.log('=== term add')
         console.log(term)
         document.querySelector('#complete-form').style.display = 'none'
-        this._showFeedback('Usuário cadastrado com sucesso.', 'blue')
+        this._showFeedback(`Usuário cadastrado com sucesso!<br> Por favor mude a sua senha após o primeiro login.<br> <i style="color:darkred">Sua senha temporária é: ${userJson['password']}</i>`, 'darkblue')
       }
     }
   }
