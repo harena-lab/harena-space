@@ -11,6 +11,7 @@ buildEditor () {
   const presentation = document.querySelector('#editor-space')
   DecoupledEditor.create(presentation,
     {
+      toolbar: DecoupledEditor.defaultConfig.toolbar.items.concat(['annotate']),
       extraPlugins: [_harenaCustomUploadAdapterPlugin],
       mediaEmbed: {
         extraProviders: [
