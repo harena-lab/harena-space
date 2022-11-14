@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta charset="UTF-8">
+   <title>Translator Playground</title>
+
+   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
+
+   <link rel="stylesheet" href="../../lib/fontawesome-5-10-1/css/all.min.css">
+   <link rel="stylesheet" href="../../lib/bootstrap-4.4.1/css/bootstrap.min.css">
+
+   <link rel="stylesheet" href="../../infra/css/common-player.css">
+   <link rel="stylesheet" href="../../infra/css/common-author.css">
+
+   <script src="../../lib/showdown/showdown.min.js"></script>
+
+   <script src="../../config/config-standalone.js"></script>
+
+   <script src="../../dccs/infra/bus.js"></script>
+
+   <script src="../../dccs/base/primitive-dcc.js"></script>
+   <script src="../../dccs/base/scope-dcc.js"></script>
+   <script src="../../dccs/base/dcc.js"></script>
+   <script src="../../dccs/base/subscribe-dcc.js"></script>
+   <script src="../../dccs/base/trigger-dcc.js"></script>
+   <script src="../../dccs/base/property-dcc.js"></script>
+   <script src="../../dccs/base/dcc-base.js"></script>
+
+   <script src="../../dccs/components/control/dcc-timer.js"></script>
+   <script src="../../dccs/base/dcc-visual.js"></script>
+
+   <script src="../../infra/basic.js"></script>
+   <script src="../../infra/dcc-common-server-proxy.js"></script>
+   <script src="../../infra/dcc-rest-proxy.js"></script>
+
+   <script src="../../dccs/components/visual/dcc-monitor.js"></script>
+   <script src="../../dccs/components/visual/dcc-markdown.js"></script>
+   <script src="../../dccs/components/visual/dcc-annotation.js"></script>
+   <script src="../../dccs/components/visual/dcc-image.js"></script>
+   <script src="../../dccs/components/visual/dcc-media.js"></script>
+   <script src="../../dccs/components/visual/dcc-expression.js"></script>
+   <script src="../../dccs/base/dcc-block.js"></script>
+   <script src="../../dccs/components/visual/dcc-state.js"></script>
+   <script src="../../dccs/components/visual/dcc-group.js"></script>
+   <script src="../../dccs/components/visual/dcc-button.js"></script>
+   <script src="../../dccs/components/visual/dcc-character.js"></script>
+   <script src="../../dccs/components/visual/dcc-lively-dialog.js"></script>
+   <script src="../../dccs/components/visual/dcc-notice-input.js"></script>
+   <script src="../../dccs/components/visual/dcc-state-select.js"></script>
+   <script src="../../dccs/components/visual/dcc-image-marker.js"></script>
+   <script src="../../dccs/base/dcc-styler.js"></script>
+   <script src="../../dccs/components/visual/dcc-entity.js"></script>
+   <script src="../../dccs/components/visual/dcc-input.js"></script>
+   <script src="../../dccs/components/visual/dcc-input-typed.js"></script>
+   <script src="../../dccs/components/visual/dcc-input-choice.js"></script>
+   <script src="../../dccs/components/visual/dcc-input-table.js"></script>
+   <script src="../../dccs/components/visual/dcc-input-summary.js"></script>
+   <script src="../../dccs/components/visual/dcc-slider.js"></script>
+   <script src="../../dccs/components/visual/dcc-progress.js"></script>
+   <script src="../../dccs/components/visual/dcc-chart.js"></script>
+   <script src="../../dccs/components/control/dcc-compute.js"></script>
+   <script src="../../dccs/components/visual/dcc-report.js"></script>
+   <script src="../../dccs/components/web/dcc-web.js"></script>
+   <script src="../../dccs/components/visual/dcc-graph.js"></script>
+
+   <script src="../../dccs/components/data/dcc-table-csv.js"></script>
+   <script src="../../dccs/components/data/dcc-table.js"></script>
+   <script src="../../dccs/components/data/dcc-projection.js"></script>
+   <script src="../../dccs/components/data/dcc-model.js"></script>
+   <script src="../../dccs/components/data/dcc-submit.js"></script>
+   <script src="../../dccs/components/data/dcc-record.js"></script>
+   <script src="../../dccs/components/data/dcc-form.js"></script>
+
+   <script src="../../dccs/components/web/dcc-rss.js"></script>
+   <script src="../../dccs/components/web/dcc-aggregator.js"></script>
+   <script src="../../dccs/components/web/dcc-dhtml.js"></script>
+   <script src="../../dccs/components/web/dcc-rest.js"></script>
+
+   <script src="../../dccs/components/web/dcc-include.js"></script>
+   <script src="../../dccs/components/web/dcc-play.js"></script>
+
+   <script src="../../dccs/components/cell/dcc-space-cellular.js"></script>
+   <script src="../../dccs/components/cell/dcc-cell.js"></script>
+   <script src="../../dccs/components/cell/dcc-cell-color.js"></script>
+   <script src="../../dccs/components/cell/dcc-cell-image.js"></script>
+   <script src="../../dccs/components/cell/rule-dcc-cell.js"></script>
+   <script src="../../dccs/components/cell/rule-dcc-cell-transition.js"></script>
+   <script src="../../dccs/components/cell/rule-dcc-cell-neighbor.js"></script>
+   <script src="../../dccs/components/cell/rule-dcc-cell-expression.js"></script>
+
+   <script src="../../dccs/components/ml/underscore.js"></script>
+   <script src="../../dccs/components/ml/data_util.js"></script>
+   <script src="../../dccs/components/ml/learningjs.js"></script>
+   <script src="../../dccs/components/ml/dcc-decision-tree.js"></script>
+
+   <script src="../../player/js/state.js"></script>
+   <script src="../../player/js/htracker.js"></script>
+
+   <script src="../translator.js"></script>
+   <script src="../item-templates.js"></script>
+
+   <script src="../../lib/ckeditor5/ckeditor.js"></script>
+   <script src="js/editor-pg.js"></script>
+
+   <title>Translator Playground</title>
+</head>
+<body onload="EditorPG.i.buildEditor()">
+  <main role="main">
+    <div class="d-flex flex-column vh-100 hidden-overflow">
+      <div class="container-fluid">
+        <nav class="navbar navbar-light d-flex">
+          <div class="d-flex col">
+             <dcc-button topic="control/translate/example" label="TRANSLATE" xstyle="in">
+             </dcc-button>
+          </div>
+          <div class="d-flex col-10">
+             <dcc-input-choice variable="output" exclusive>
+                <b>Versum:</b>
+                <dcc-input-option value="versum-object" checked></dcc-input-option>Object&nbsp;
+                <dcc-input-option value="versum-html"></dcc-input-option>HTML&nbsp;
+                <dcc-input-option value="versum-rendered"></dcc-input-option>Rendered&nbsp;---&nbsp;
+                <b>Object:</b>
+                <dcc-input-option value="object-html"></dcc-input-option>HTML&nbsp;
+                <dcc-input-option value="object-rendered"></dcc-input-option>Rendered
+             </dcc-input-choice>
+          </div>
+        </nav>
+      </div>
+
+      <div class="d-flex h-100 mb-3">
+        <div id="editor-block" class="align-items-stretch col-6">
+          <div class="std-panel h-100">
+            <div class="d-flex h-100 w-100 position-relative flex-column">
+              <div id="editor-toolbar"></div>
+               <div id="editor-space" style="height:100%"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="object-block" class="align-items-stretch col-6">
+          <div class="std-panel h-100">
+            <div class="d-flex h-100 w-100 position-relative flex-column">
+              <div class="panel-label">Object</div>
+              <textarea id="object-results" class="w-100 h-100 std-monospace"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div id="html-block" class="align-items-stretch col-6">
+          <div class="std-panel h-100">
+            <div class="d-flex h-100 w-100 position-relative flex-column">
+              <div class="panel-label">Raw HTML</div>
+              <textarea id="html-panel" class="w-100 h-100 std-monospace"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div id="rendered-block" class="align-items-stretch col-6">
+          <div class="std-panel h-75">
+            <div class="d-flex h-100 w-100 position-relative flex-column">
+              <div class="panel-label">Rendered HTML</div>
+              <div id="render-panel" class="w-100 h-100 overflow-auto"></div>
+            </div>
+          </div>
+          <div class="d-flex std-panel h-25 flex-column">
+            <div class="panel-label">Messages</div>
+            <div class="d-flex h-100 w-100">
+               <textarea id="json-message" class="w-100 h-100 std-monospace"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+</body>
+</html>

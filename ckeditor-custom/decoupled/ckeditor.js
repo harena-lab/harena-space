@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -19,26 +19,25 @@ import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
+import CKBox from '@ckeditor/ckeditor5-ckbox/src/ckbox';
 import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
-import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
-
-// Harena customization
 import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
-
+import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
 import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import List from '@ckeditor/ckeditor5-list/src/list';
-// import ListStyle from '@ckeditor/ckeditor5-list/src/liststyle';  // Harena customization
+// import ListProperties from '@ckeditor/ckeditor5-list/src/listproperties';  // Harena customization
 import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
+import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
@@ -461,31 +460,33 @@ DecoupledEditor.builtinPlugins = [
   // Strikethrough,  -- Harena customization
 	// Underline,      -- Harena customization
   // BlockQuote,     -- Harena customization
-	CKFinder,
-	CloudServices,
-	EasyImage,
-  // Heading,  -- Harena customization
+	// CKBox,          -- Harena customization
+	// CKFinder,       -- Harena customization
+	// CloudServices,  -- Harena customization
+	// EasyImage,      -- Harena customization
+  // Heading,        -- Harena customization
 	Image,
 	ImageCaption,
+	ImageResize,
 	ImageStyle,
-  ImageResize,  // Harena customization
 	ImageToolbar,
 	ImageUpload,
-  UploadMediaPlugin,  // Harena customization
   // Indent,       -- Harena customization
 	// IndentBlock,  -- Harena customization
+  UploadMediaPlugin,  // Harena customization
 	Link,
 	List,
-	// ListStyle,  -- Harena customization
+	// ListProperties,  -- Harena customization
 	MediaEmbed,
 	Paragraph,
 	PasteFromOffice,
+  // PictureEditing,  -- Harena customization
 	Table,
 	TableToolbar,
 	TextTransformation,
-  HarenaTablePlugin, // Harena customization
+  HarenaTablePlugin,     // Harena customization
   HarenaAnnotatePlugin,  // Harena customization
-  HarenaPlugin       // Harena customization
+  HarenaPlugin           // Harena customization
 ];
 
 // Editor configuration.
@@ -528,17 +529,19 @@ DecoupledEditor.defaultConfig = {
 		]
 	},
 	image: {
+		resizeUnit: 'px',
 		styles: [
 			'full',
 			'alignLeft',
 			'alignRight'
 		],
 		toolbar: [
-			// 'imageStyle:alignLeft',   -- Harena customization
-			// 'imageStyle:full',
-			// 'imageStyle:alignRight',
+			// 'imageStyle:inline',   -- Harena customization
+			// 'imageStyle:wrapText',
+			// 'imageStyle:breakText',
       'imageResize',  // Harena customization
 			'|',
+			'toggleImageCaption',
 			'imageTextAlternative'
 		]
 	},
@@ -549,6 +552,13 @@ DecoupledEditor.defaultConfig = {
 			// 'mergeTableCells'  -- Harena customization
 		]
 	},
+	// list: {  -- Harena customization
+	// 	properties: {
+	// 		styles: true,
+	// 		startIndex: true,
+	// 		reversed: true
+	// 	}
+	// },
 	// This value must be kept in sync with the language defined in webpack.config.js.
 	language: 'en'
 };
