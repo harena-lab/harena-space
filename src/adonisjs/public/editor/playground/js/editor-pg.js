@@ -11,7 +11,9 @@ buildEditor () {
   const presentation = document.querySelector('#editor-space')
   DecoupledEditor.create(presentation,
     {
-      toolbar: DecoupledEditor.defaultConfig.toolbar.items.concat(['annotate']),
+      toolbar: ['annotatePatho', 'annotateEpi', 'annotateEti', 'annotateCli',
+                'annotateLab', 'annotateDiff', 'annotateThera', 'annotateEncap',
+                'annotateJar', 'annotateWrong'],
       extraPlugins: [_harenaCustomUploadAdapterPlugin],
       mediaEmbed: {
         extraProviders: [
@@ -35,6 +37,9 @@ buildEditor () {
     .then( editor => {
       const toolbarContainer = document.querySelector('#editor-toolbar')
       toolbarContainer.appendChild(editor.ui.view.toolbar.element)
+
+      if (CKEditorInspector)
+        CKEditorInspector.attach( editor );
 
       window.editor = editor;
       this._editor = editor;

@@ -47,6 +47,7 @@ import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices'
 import HarenaTablePlugin from './harena/table';
 import UploadMediaPlugin from './harena/upload';
 import HarenaAnnotatePlugin from './harena/annotate';
+import HarenaAnnotatePrePlugin from './harena/annotate-pre';
 import HarenaPlugin from './harena/harena';
 
 export default class DecoupledEditor extends DecoupledEditorBase {}
@@ -90,9 +91,10 @@ DecoupledEditor.builtinPlugins = [
 	Table,
 	TableToolbar,
 	TextTransformation,
-  HarenaTablePlugin,     // Harena customization
-  HarenaAnnotatePlugin,  // Harena customization
-  HarenaPlugin           // Harena customization
+  HarenaTablePlugin,        // Harena customization
+  // HarenaAnnotatePlugin,     // Harena customization
+  HarenaAnnotatePrePlugin,  // Harena customization
+  HarenaPlugin              // Harena customization
 ];
 
 // Editor configuration.
