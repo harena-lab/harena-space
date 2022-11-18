@@ -38,7 +38,9 @@ export default class AnnotateEditPre extends Plugin {
              model: {
                  key: 'annotation',
                  value: viewElement => {
-                     return {'categories': viewElement.getAttributeNames()};
+                   const attr = viewElement.getAttributeKeys()
+                   const attrArr = (attr == null) ? [] : [...attr]
+                   return (attrArr.length > 0) ? {'categories': attrArr} : {}
                  }
              }
          } );

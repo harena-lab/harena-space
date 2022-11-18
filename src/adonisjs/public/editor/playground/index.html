@@ -2,7 +2,7 @@
 <html>
 <head>
    <meta charset="UTF-8">
-   <title>Translator Playground</title>
+   <title>Editor Playground</title>
 
    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
 
@@ -101,22 +101,47 @@
    <script src="../../translator/item-templates.js"></script>
 
    <script src="../../lib/ckeditor5/ckeditor.js"></script>
+   <script src="../rich-editor.js"></script>
    <script src="js/editor-pg.js"></script>
 
-   <title>Translator Playground</title>
+   <title>Editor Playground</title>
 </head>
 <body onload="EditorPG.i.buildEditor()">
   <main role="main">
     <div class="d-flex flex-column vh-100 hidden-overflow">
+
+      <div class="container-fluid">
+        <nav class="navbar navbar-light d-flex">
+          <div class="d-flex col">
+             <dcc-button topic="control/tomark/text" label="Rich->Mark" xstyle="in">
+             </dcc-button>
+             <dcc-button topic="control/torich/text" label="Rich<-Mark" xstyle="in">
+             </dcc-button>
+          </div>
+          <div class="d-flex col-10">
+          </div>
+        </nav>
+      </div>
+
       <div class="d-flex h-100 mb-12">
-        <div id="editor-block" class="align-items-stretch col-12">
+        <div id="editor-block" class="align-items-stretch col-6">
           <div class="std-panel h-100">
             <div class="d-flex h-100 w-100 position-relative flex-column">
               <div id="editor-toolbar"></div>
               <div id="editor-space" style="height:100%">
-                A doença pulmonar obstrutiva crónica (português europeu) ou crônica (português brasileiro) (DPOC) é um tipo de doença pulmonar obstrutiva caracterizada por diminuição prolongada do calibre das vias aéreas respiratórias e destruição do tecido pulmonar.[1] Entre os principais sintomas estão falta de ar e tosse com produção de expectoração. A DPOC é uma doença progressiva, o que significa que geralmente se agrava com o decorrer do tempo.[8] A partir de determinado momento começam-se a verificar dificuldades em realizar atividades do dia-a-dia, como subir escadas.[3] Bronquite crónica e enfisema são termos antigos usados para denominar diferentes tipos de DPOC.[3][9] O termo "bronquite crónica" é ainda hoje usado para definir uma tosse produtiva que se manifeste durante pelo menos três meses por ano e ao longo de dois anos.[10]
-                A inalação de fumo de tabaco é a causa mais comum de DPOC. Outros fatores de risco, como a poluição do ar e a genética, são menos significativos.[2] Em países desenvolvidos, uma das fontes mais comuns de poluição do ar é a má ventilação de fontes de aquecimento e de queima de combustíveis.[3] A exposição prolongada a estes irritantes causa uma resposta inflamatória nos pulmões, o que provoca um estreitamento das vias aéreas e a destruição do tecido pulmonar.[5] O diagnóstico tem por base a medição do fluxo respiratório através de testes que avaliam a função respiratória.[4] Ao contrário da asma, o estreitamento das vias aéreas na DPOC não melhora significativamente após a administração de um broncodilatador.[3]
+                A doença pulmonar obstrutiva crónica (português europeu) ou crônica (português brasileiro) (DPOC) é um tipo de doença pulmonar obstrutiva caracterizada por diminuição prolongada do calibre das vias aéreas respiratórias e destruição do tecido pulmonar.
+
+                <figure class="image"><img alt="Fish" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Naturalis_Biodiversity_Center_-_RMNH.ART.261_-_Inimicus_japonicus_%28Cuvier%29_-_Kawahara_Keiga_-_1823_-_1829_-_Siebold_Collection_-_pencil_drawing_-_water_colour.jpeg/1024px-thumbnail.jpeg"></figure>
               </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="conversion-block" class="align-items-stretch col-6">
+          <div class="std-panel h-100">
+            <div class="d-flex h-100 w-100 position-relative flex-column">
+              <div class="panel-label">Conversion</div>
+              <textarea id="conversion-results" class="w-100 h-100 std-monospace"></textarea>
             </div>
           </div>
         </div>
