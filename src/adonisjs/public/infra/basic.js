@@ -4,14 +4,16 @@
 
 class Basic {
   constructor () {
-    this._host = null
-    this._rootPath = '../'
+    this.host = null
+    this.rootPath = '../'
 
     // initial values of shared states
     this._currentThemeFamily = Basic.standardThemeFamily
     this._currentThemeCSS = null
     this._currentCustomCSS = null
     this.currentCaseId = null
+
+    DCCVisual.externalResolver = this
 
     /*
       this.requestCurrentThemeFamily = this.requestCurrentThemeFamily.bind(this);
@@ -38,6 +40,7 @@ class Basic {
 
   set rootPath (newValue) {
     this._rootPath = newValue
+    PrimitiveDCC.rootPath = newValue
   }
 
   /*
@@ -50,6 +53,7 @@ class Basic {
 
   set currentThemeFamily (newValue) {
     this._currentThemeFamily = newValue
+    DCCVisual.currentThemeFamily = newValue
 
     this._currentThemeCSS =
          this.replaceStyle(document, this._currentThemeCSS, newValue)
@@ -61,6 +65,7 @@ class Basic {
 
   set currentCustomTheme (newValue) {
     this._currentCustomTheme = newValue
+    DCCVisual.currentCustomTheme = newValue
 
     this._currentCustomCSS =
          this.replaceStyle(document, this._currentCustomCSS, this.currentThemeFamily,
@@ -101,65 +106,6 @@ class Basic {
   isBlank (str) {
     return (!str || /^\s*$/.test(str))
   }
-
-  /*
-    * Use signin
-    *    state - player state variable; stores user credentials after login
-    */
-  /*
-   async signin(state, hasPrecase) {
-      let status = "start";
-
-      let userid = null;
-      let userEmail = null;
-
-      // if (!state) {
-      const authorState = this.authorStateRetrieve();
-
-      userid = (authorState != null && authorState.userid != null)
-         ? authorState.userid : null;
-
-      if (userid != null && !hasPrecase) {
-         let decision = await DCCNoticeInput.displayNotice(
-            "Proceed as " + authorState.email + "?", "message", "Yes", "No");
-         if (decision != "Yes")
-            userid = null;
-      }
-      if (userid != null) {
-         DCCCommonServer.instance.token = authorState.token;
-         userEmail = authorState.email;
-      }
-      // }
-
-      let errorMessage = "";
-      while (userid == null) {
-         userEmail =
-            await DCCNoticeInput.displayNotice(errorMessage +
-                                         "<h3>Signin</h3><h4>inform your email:</h4>",
-                                         "input");
-         const userPass =
-            await DCCNoticeInput.displayNotice("<h3>Signin</h3><h4>inform your password:</h4>",
-                                         "password");
-
-         let loginReturn = await MessageBus.i.request("data/user/login",
-                                                      {email: userEmail,
-                                                       password: userPass}, null, true);
-
-         userid = loginReturn.message.userid;
-         if (userid == null)
-            errorMessage =
-               "<span style='color: red'>Invalid user and/or password.</span>";
-      }
-      if (state)
-        state.sessionRecord(userid, DCCCommonServer.instance.token);
-      this.authorIdStore(userid, userEmail, DCCCommonServer.instance.token);
-   }
-
-   async signout() {
-      await this.authorStateClean();
-
-   }
-   */
 
   /*
     * Authoring State
@@ -248,10 +194,7 @@ class Basic {
       result = this._rootPath +
                   'templates/' + this.currentThemeFamily +
                   '/images/' + path.substring(9)
-    } else if (!path.includes('/'))
-    /* (!(path.startsWith("http://") || path.startsWith("https://") ||
-                 path.startsWith("/") || path.startsWith("../"))) */
-    {
+    } else if (!path.includes('/')) {
       result = DCCCommonServer.managerAddress + 'resources/artifacts/cases/' +
                   ((this.host != null) ? this.currentCaseId + '/' : '') +
                   path
@@ -267,21 +210,6 @@ class Basic {
     return relative
   }
 
-  themeStyleResolver (cssFile) {
-    return this._rootPath + 'themes/' + this.currentThemeFamily +
-             '/css/' + cssFile
-  }
-
-  themeCustomStyleResolver (cssFile) {
-    return this._rootPath + 'themes/' + this.currentThemeFamily +
-             '/css/' + this.currentCustomTheme + '/' + cssFile
-  }
-
-  systemStyleResolver (cssFile) {
-    return this._rootPath + 'themes/' + Basic.systemThemeFamily +
-             '/css/' + cssFile
-  }
-
   replaceStyle (targetDocument, oldCSS, newTheme, cssFile) {
     if (oldCSS) { targetDocument.body.removeChild(oldCSS) }
 
@@ -290,7 +218,7 @@ class Basic {
     const newCSS = document.createElement('link')
     newCSS.setAttribute('rel', 'stylesheet')
     newCSS.setAttribute('type', 'text/css')
-    newCSS.setAttribute('href', this.themeStyleResolver(cssF))
+    newCSS.setAttribute('href', DCCVisual.themeStyleResolver(cssF))
     targetDocument.body.appendChild(newCSS)
 
     return newCSS
@@ -324,8 +252,7 @@ class Basic {
 }
 
 (function () {
-  Basic.standardThemeFamily = 'minimal'
-  Basic.systemThemeFamily = 'system'
+  Basic.standardThemeFamily = 'plain'
 
   // <TODO> provisory based on SVG from XD
   Basic.referenceViewport = { width: 1920, height: 1080 }

@@ -1,0 +1,3 @@
+[submodule "src/adonisjs/public/dccs"]
+	path = src/adonisjs/public/dccs
+	url = https://github.com/harena-lab/dcc.git
