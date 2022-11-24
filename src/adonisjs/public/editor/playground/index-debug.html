@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta charset="UTF-8">
+   <title>Translator Playground</title>
+
+   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
+
+   <link rel="stylesheet" href="../../lib/fontawesome-5-10-1/css/all.min.css">
+   <link rel="stylesheet" href="../../lib/bootstrap-4.4.1/css/bootstrap.min.css">
+
+   <link rel="stylesheet" href="../css/editor.css">
+   <link rel="stylesheet" href="../../infra/css/common-player.css">
+   <link rel="stylesheet" href="../../infra/css/common-author.css">
+
+   <script src="../../lib/showdown/showdown.min.js"></script>
+
+   <script src="../../config/config-standalone.js"></script>
+
+   <script src="../../dccs/infra/bus.js"></script>
+
+   <script src="../../dccs/base/primitive-dcc.js"></script>
+   <script src="../../dccs/base/scope-dcc.js"></script>
+   <script src="../../dccs/base/dcc.js"></script>
+   <script src="../../dccs/base/subscribe-dcc.js"></script>
+   <script src="../../dccs/base/trigger-dcc.js"></script>
+   <script src="../../dccs/base/property-dcc.js"></script>
+   <script src="../../dccs/base/dcc-base.js"></script>
+
+   <script src="../../dccs/components/control/dcc-timer.js"></script>
+   <script src="../../dccs/base/dcc-visual.js"></script>
+
+   <script src="../../infra/basic.js"></script>
+   <script src="../../infra/dcc-common-server-proxy.js"></script>
+   <script src="../../infra/dcc-rest-proxy.js"></script>
+
+   <script src="../../dccs/components/visual/dcc-monitor.js"></script>
+   <script src="../../dccs/components/visual/dcc-markdown.js"></script>
+   <script src="../../dccs/components/visual/dcc-annotation.js"></script>
+   <script src="../../dccs/components/visual/dcc-image.js"></script>
+   <script src="../../dccs/components/visual/dcc-media.js"></script>
+   <script src="../../dccs/components/visual/dcc-expression.js"></script>
+   <script src="../../dccs/base/dcc-block.js"></script>
+   <script src="../../dccs/components/visual/dcc-state.js"></script>
+   <script src="../../dccs/components/visual/dcc-group.js"></script>
+   <script src="../../dccs/components/visual/dcc-button.js"></script>
+   <script src="../../dccs/components/visual/dcc-character.js"></script>
+   <script src="../../dccs/components/visual/dcc-lively-dialog.js"></script>
+   <script src="../../dccs/components/visual/dcc-notice-input.js"></script>
+   <script src="../../dccs/components/visual/dcc-state-select.js"></script>
+   <script src="../../dccs/components/visual/dcc-image-marker.js"></script>
+   <script src="../../dccs/base/dcc-styler.js"></script>
+   <script src="../../dccs/components/visual/dcc-entity.js"></script>
+   <script src="../../dccs/components/visual/dcc-input.js"></script>
+   <script src="../../dccs/components/visual/dcc-input-typed.js"></script>
+   <script src="../../dccs/components/visual/dcc-input-choice.js"></script>
+   <script src="../../dccs/components/visual/dcc-input-table.js"></script>
+   <script src="../../dccs/components/visual/dcc-input-summary.js"></script>
+   <script src="../../dccs/components/visual/dcc-slider.js"></script>
+   <script src="../../dccs/components/visual/dcc-progress.js"></script>
+   <script src="../../dccs/components/visual/dcc-chart.js"></script>
+   <script src="../../dccs/components/control/dcc-compute.js"></script>
+   <script src="../../dccs/components/visual/dcc-report.js"></script>
+   <script src="../../dccs/components/web/dcc-web.js"></script>
+   <script src="../../dccs/components/visual/dcc-graph.js"></script>
+
+   <script src="../../dccs/components/data/dcc-table-csv.js"></script>
+   <script src="../../dccs/components/data/dcc-table.js"></script>
+   <script src="../../dccs/components/data/dcc-projection.js"></script>
+   <script src="../../dccs/components/data/dcc-model.js"></script>
+   <script src="../../dccs/components/data/dcc-submit.js"></script>
+   <script src="../../dccs/components/data/dcc-record.js"></script>
+   <script src="../../dccs/components/data/dcc-form.js"></script>
+
+   <script src="../../dccs/components/web/dcc-rss.js"></script>
+   <script src="../../dccs/components/web/dcc-aggregator.js"></script>
+   <script src="../../dccs/components/web/dcc-dhtml.js"></script>
+   <script src="../../dccs/components/web/dcc-rest.js"></script>
+
+   <script src="../../dccs/components/web/dcc-include.js"></script>
+   <script src="../../dccs/components/web/dcc-play.js"></script>
+
+   <script src="../../dccs/components/cell/dcc-space-cellular.js"></script>
+   <script src="../../dccs/components/cell/dcc-cell.js"></script>
+   <script src="../../dccs/components/cell/dcc-cell-color.js"></script>
+   <script src="../../dccs/components/cell/dcc-cell-image.js"></script>
+   <script src="../../dccs/components/cell/rule-dcc-cell.js"></script>
+   <script src="../../dccs/components/cell/rule-dcc-cell-transition.js"></script>
+   <script src="../../dccs/components/cell/rule-dcc-cell-neighbor.js"></script>
+   <script src="../../dccs/components/cell/rule-dcc-cell-expression.js"></script>
+
+   <script src="../../dccs/components/ml/underscore.js"></script>
+   <script src="../../dccs/components/ml/data_util.js"></script>
+   <script src="../../dccs/components/ml/learningjs.js"></script>
+   <script src="../../dccs/components/ml/dcc-decision-tree.js"></script>
+
+   <script src="../../player/js/state.js"></script>
+   <script src="../../player/js/htracker.js"></script>
+
+   <script src="../translator.js"></script>
+   <script src="../item-templates.js"></script>
+
+   <script src="../../lib/ckeditor5/inspector.min.js"></script>
+   <script src="../../lib/ckeditor5/ckeditor.js"></script>
+   <script src="js/editor-pg.js"></script>
+
+   <title>Translator Playground</title>
+</head>
+<body onload="EditorPG.i.buildEditor()">
+  <main role="main">
+    <div class="d-flex flex-column vh-100 hidden-overflow">
+      <div class="d-flex h-100 mb-12">
+        <div id="editor-block" class="align-items-stretch col-12">
+          <div class="std-panel h-100">
+            <div class="d-flex h-100 w-100 position-relative flex-column">
+              <div id="editor-toolbar"></div>
+              <div id="editor-space" style="height:100%">
+                A doença pulmonar obstrutiva crónica (português europeu) ou crônica (português brasileiro) (DPOC) é um tipo de doença pulmonar obstrutiva caracterizada por diminuição prolongada do calibre das vias aéreas respiratórias e destruição do tecido pulmonar.[1] Entre os principais sintomas estão falta de ar e tosse com produção de expectoração. A DPOC é uma doença progressiva, o que significa que geralmente se agrava com o decorrer do tempo.[8] A partir de determinado momento começam-se a verificar dificuldades em realizar atividades do dia-a-dia, como subir escadas.[3] Bronquite crónica e enfisema são termos antigos usados para denominar diferentes tipos de DPOC.[3][9] O termo "bronquite crónica" é ainda hoje usado para definir uma tosse produtiva que se manifeste durante pelo menos três meses por ano e ao longo de dois anos.[10]
+                A inalação de fumo de tabaco é a causa mais comum de DPOC. Outros fatores de risco, como a poluição do ar e a genética, são menos significativos.[2] Em países desenvolvidos, uma das fontes mais comuns de poluição do ar é a má ventilação de fontes de aquecimento e de queima de combustíveis.[3] A exposição prolongada a estes irritantes causa uma resposta inflamatória nos pulmões, o que provoca um estreitamento das vias aéreas e a destruição do tecido pulmonar.[5] O diagnóstico tem por base a medição do fluxo respiratório através de testes que avaliam a função respiratória.[4] Ao contrário da asma, o estreitamento das vias aéreas na DPOC não melhora significativamente após a administração de um broncodilatador.[3]              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

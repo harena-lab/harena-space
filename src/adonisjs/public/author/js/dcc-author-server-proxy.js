@@ -281,16 +281,6 @@ class DCCAuthorServer {
   async loadTemplate (topic, message, track) {
     const templatePath =
          MessageBus.extractLevel(topic, 3).replace(/\./g, '/')
-    /*
-    const header = {
-      async: true,
-      crossDomain: true,
-      method: 'GET',
-      headers: {
-        'Content-Type': 'text/plain'
-      }
-    }
-    */
 
     const sd = templatePath.includes('/knot/') ? '' :
       ((message != null && message.static) ? '-static' : '-dynamic')
@@ -310,9 +300,6 @@ class DCCAuthorServer {
         console.log(error.code)
     })
 
-    // const response = await fetch(Basic.service.rootPath + 'templates/' + templatePath +
-    //                                '.md', header)
-    // const textResponse = await response.text()
     if (serviceResponse != null)
       MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),
         serviceResponse, track)

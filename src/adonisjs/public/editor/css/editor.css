@@ -1,0 +1,44 @@
+annotation[pathophysiology] {
+  background-color: #90ee9078;
+}
+
+annotation[epidemiology] {
+  background-color: #87cefac9;
+}
+
+annotation[etiology] {
+   background-color: #d3d3d385;
+}
+
+annotation[clinical] {
+   background-color: #ffff77;
+}
+
+annotation[laboratory] {
+   background-color: #f0808078;
+}
+
+annotation[differential] {
+   background-color: #ffaa0078;
+}
+
+annotation[therapeutic] {
+   background-color: #ffaae778;
+}
+
+annotation[wrong] {
+  border-style: solid;
+}
+
+annotation[encapsulated] {
+   border-style: solid;
+   border-color: blue;
+}
+
+annotation[jargon] {
+   border-style: dashed;
+}
+
+annotation[wrong] {
+   border-color: red;
+}

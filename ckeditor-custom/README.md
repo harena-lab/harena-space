@@ -17,3 +17,6 @@ To install Yarn:
 or
 
 `npm install yarn@1.22.5 --global`
+
+# Version History
+13 Nov 2022 - new base: https://github.com/ckeditor/ckeditor5/tree/a4f1ad51e42bceb94840b1774182b5cc3783b2ee

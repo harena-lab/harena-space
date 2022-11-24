@@ -147,35 +147,38 @@ class AuthorManager {
   }
 
   async scrollControl (){
-    var scrollBtn = document.querySelector('#scroll-to-top-btn')
-    var target = (document.querySelector("#knot-wrapper").firstElementChild).lastElementChild
-    function scrollToTop() {
-      // Scroll to top logic
-      this.parentElement.querySelector('#knot-panel').scrollTo({
-        top: 0,
-        behavior: "smooth"
-      })
-      document.querySelector('#comments-display').scrollTo({
-        top: 0,
-        behavior: "smooth"
-      })
-    }
-    scrollBtn.addEventListener("click", scrollToTop)
-    function callback(entries, observer) {
-      // The callback will return an array of entries, even if you are only observing a single item
+    // <TODO> Some templates does not have knot-wrapper (adjust)
+    if (document.querySelector("#knot-wrapper") != null) {
+      var scrollBtn = document.querySelector('#scroll-to-top-btn')
+      var target = (document.querySelector("#knot-wrapper").firstElementChild).lastElementChild
+      function scrollToTop() {
+        // Scroll to top logic
+        this.parentElement.querySelector('#knot-panel').scrollTo({
+          top: 0,
+          behavior: "smooth"
+        })
+        document.querySelector('#comments-display').scrollTo({
+          top: 0,
+          behavior: "smooth"
+        })
+      }
+      scrollBtn.addEventListener("click", scrollToTop)
+      function callback(entries, observer) {
+        // The callback will return an array of entries, even if you are only observing a single item
 
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          // Show button
-          scrollBtn.classList.add('show-scroll-btn')
-        } else {
-          // Hide button
-          scrollBtn.classList.remove('show-scroll-btn')
-        }
-      });
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            // Show button
+            scrollBtn.classList.add('show-scroll-btn')
+          } else {
+            // Hide button
+            scrollBtn.classList.remove('show-scroll-btn')
+          }
+        });
+      }
+      let observer = new IntersectionObserver(callback);
+      observer.observe(target);
     }
-    let observer = new IntersectionObserver(callback);
-    observer.observe(target);
   }
 
   /*
