@@ -12,15 +12,15 @@ class RichEditor {
 
     let htmlTranslate = editContent
       .replace(/<img([^>]*)title="([^"]*)"([^>]*)><figcaption>([^<]*)<\/figcaption>/igm,
-               '<img$1title="$4"$3>')
+               '<img$1title="$4"$3>')  // transfers image caption to title
       .replace(/<img([^>]*)><figcaption>([^<]*)<\/figcaption>/igm,
-               '<img$1 title="$2">')
+               '<img$1 title="$2">')  // transfers image caption to title
       .replace(/<figure class="image[^>]*style="width:([^;]*);">[^<]*<img([^>]*)><\/figure>/igm,
-               '<figure><img$2 width="$1" height="$1"></figure>')
-      .replace(/<figure class="image[^>]*>[^<]*<img([^>]*)><\/figure>/igm, '<img$1>')
+               '<figure><img$2 width="$1" height="$1"></figure>')  // transfers width from figure to image
+      .replace(/<figure class="image[^>]*>[^<]*<img([^>]*)><\/figure>/igm, '<img$1>') // remove figure around img
       .replace(/<figure class="media"><oembed url="([^"]+)"><\/oembed><\/figure>/igm,
-               '<video><source src="$1"></video>')
-      .replace(/<figure[^>]*>/igm, '')
+               '<video><source src="$1"></video>')  // transforms oembed in video
+      .replace(/<figure[^>]*>/igm, '') // remove all extra figures
       .replace(/<\/figure[^>]*>/igm, '')
 
     if (htmlTranslate.includes('</table>')) {
