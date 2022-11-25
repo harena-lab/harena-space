@@ -51,6 +51,7 @@ export default class AnnotateUIPre extends Plugin {
               editor.model.change(writer => {
                 for ( const range of selection.getRanges() ) {
                   writer.setAttribute( 'annotation', ann, range )
+                  MessageBus.i.publish('annotation/button/' + annotation)
                 }
               })
           })

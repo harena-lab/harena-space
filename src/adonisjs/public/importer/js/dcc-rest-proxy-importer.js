@@ -9,7 +9,7 @@ DCC.component(
     },
     oas: {
       paths: {
-        '{url-manager}/user/quests': {
+        '{url-manager}/admin/quests': {
           'get': {
             operationId: 'quests',
             parameters: [

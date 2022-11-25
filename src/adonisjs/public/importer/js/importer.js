@@ -45,7 +45,7 @@ class ImporterManager {
   _updateCSV (topic, message) {
     console.log('===== CSV received')
     console.log(message)
-    this._table = message.table.content
+    this._table = message.table
   }
 
   async _importDocuments (topic, message) {
@@ -62,7 +62,8 @@ class ImporterManager {
       console.log('=== prefix')
       console.log(prefix)
 
-      let schema = this._table[0]
+      const schema = this._table.schema
+      const content = this._table.content
 
       // look for the title and document columns
       let titleC = -1
@@ -85,22 +86,22 @@ class ImporterManager {
             {static: false}, null, false)
         console.log('=== template')
         console.log(templateMd)
-        for (let line = 1; line < this._table.length; line++) {
-          if (this._table[line][documentC]) {
+        for (let line = 0; line < content.length; line++) {
+          if (content[line][documentC]) {
             console.log('========== creating case/document ==========')
 
             let metadata = '* metadata'
             for (let c = 0; c < schema.length; c++)
               if (c != documentC)
-                metadata += '\n  * ' + schema[c] + ': ' + this._table[line][c]
+                metadata += '\n  * ' + schema[c] + ': ' + content[line][c]
 
             let cs = await MessageBus.i.request('case/create/post',
               {
                 title: prefix +
-                  ((titleC > -1 && this._table[line][titleC])
-                    ? this._table[line][titleC] : line),
+                  ((titleC > -1 && content[line][titleC])
+                    ? content[line][titleC] : line),
                 source: templateMd.message
-                  .replace('Text.', this._table[line][documentC])
+                  .replace('Text.', content[line][documentC])
                   .replace('* metadata', metadata)
               }
             )
