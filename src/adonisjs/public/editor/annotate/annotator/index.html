@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta charset="UTF-8">
+   <title>Annotator</title>
+
+   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
+
+   <link rel="stylesheet" href="/lib/fontawesome-5-10-1/css/all.min.css">
+   <link rel="stylesheet" href="/lib/bootstrap-4.4.1/css/bootstrap.min.css">
+
+   <link rel="stylesheet" href="/editor/css/editor.css">
+   <link rel="stylesheet" href="/infra/css/common-player.css">
+   <link rel="stylesheet" href="/infra/css/common-author.css">
+
+   <script src="/lib/showdown/showdown.min.js"></script>
+   <script src="/lib/axios-0.21.0/axios.min.js"></script>
+
+   <script src="/config/config.js"></script>
+   <script src="/dccs/infra/bus.js"></script>
+
+   <script src="/dccs/base/primitive-dcc.js"></script>
+   <script src="/dccs/base/scope-dcc.js"></script>
+   <script src="/dccs/base/dcc.js"></script>
+   <script src="/dccs/base/subscribe-dcc.js"></script>
+   <script src="/dccs/base/trigger-dcc.js"></script>
+   <script src="/dccs/base/property-dcc.js"></script>
+   <script src="/dccs/base/dcc-base.js"></script>
+
+   <script src="/dccs/components/control/dcc-timer.js"></script>
+   <script src="/dccs/base/dcc-visual.js"></script>
+
+   <script src="/infra/basic.js"></script>
+   <script src="/infra/dcc-common-server-proxy.js"></script>
+   <script src="/infra/dcc-rest-proxy.js"></script>
+
+   <script src="/dccs/components/visual/dcc-monitor.js"></script>
+   <script src="/dccs/components/visual/dcc-markdown.js"></script>
+   <script src="/dccs/components/visual/dcc-annotation.js"></script>
+   <script src="/dccs/components/visual/dcc-image.js"></script>
+   <script src="/dccs/components/visual/dcc-media.js"></script>
+   <script src="/dccs/components/visual/dcc-expression.js"></script>
+   <script src="/dccs/base/dcc-block.js"></script>
+   <script src="/dccs/components/visual/dcc-state.js"></script>
+   <script src="/dccs/components/visual/dcc-group.js"></script>
+   <script src="/dccs/components/visual/dcc-button.js"></script>
+   <script src="/dccs/components/visual/dcc-character.js"></script>
+   <script src="/dccs/components/visual/dcc-lively-dialog.js"></script>
+   <script src="/dccs/components/visual/dcc-notice-input.js"></script>
+   <script src="/dccs/components/visual/dcc-state-select.js"></script>
+   <script src="/dccs/components/visual/dcc-image-marker.js"></script>
+   <script src="/dccs/base/dcc-styler.js"></script>
+   <script src="/dccs/components/visual/dcc-entity.js"></script>
+   <script src="/dccs/components/visual/dcc-input.js"></script>
+   <script src="/dccs/components/visual/dcc-input-typed.js"></script>
+   <script src="/dccs/components/visual/dcc-input-choice.js"></script>
+   <script src="/dccs/components/visual/dcc-input-table.js"></script>
+   <script src="/dccs/components/visual/dcc-input-summary.js"></script>
+   <script src="/dccs/components/visual/dcc-slider.js"></script>
+   <script src="/dccs/components/visual/dcc-progress.js"></script>
+   <script src="/dccs/components/visual/dcc-chart.js"></script>
+   <script src="/dccs/components/control/dcc-compute.js"></script>
+   <script src="/dccs/components/visual/dcc-report.js"></script>
+   <script src="/dccs/components/web/dcc-web.js"></script>
+   <script src="/dccs/components/visual/dcc-graph.js"></script>
+
+   <script src="/dccs/components/data/dcc-table-csv.js"></script>
+   <script src="/dccs/components/data/dcc-table.js"></script>
+   <script src="/dccs/components/data/dcc-projection.js"></script>
+   <script src="/dccs/components/data/dcc-model.js"></script>
+   <script src="/dccs/components/data/dcc-submit.js"></script>
+   <script src="/dccs/components/data/dcc-record.js"></script>
+   <script src="/dccs/components/data/dcc-form.js"></script>
+
+   <script src="/dccs/components/web/dcc-rss.js"></script>
+   <script src="/dccs/components/web/dcc-aggregator.js"></script>
+   <script src="/dccs/components/web/dcc-dhtml.js"></script>
+   <script src="/dccs/components/web/dcc-rest.js"></script>
+
+   <script src="/dccs/components/web/dcc-include.js"></script>
+   <script src="/dccs/components/web/dcc-play.js"></script>
+
+   <script src="/dccs/components/cell/dcc-space-cellular.js"></script>
+   <script src="/dccs/components/cell/dcc-cell.js"></script>
+   <script src="/dccs/components/cell/dcc-cell-color.js"></script>
+   <script src="/dccs/components/cell/dcc-cell-image.js"></script>
+   <script src="/dccs/components/cell/rule-dcc-cell.js"></script>
+   <script src="/dccs/components/cell/rule-dcc-cell-transition.js"></script>
+   <script src="/dccs/components/cell/rule-dcc-cell-neighbor.js"></script>
+   <script src="/dccs/components/cell/rule-dcc-cell-expression.js"></script>
+
+   <script src="/dccs/components/ml/underscore.js"></script>
+   <script src="/dccs/components/ml/data_util.js"></script>
+   <script src="/dccs/components/ml/learningjs.js"></script>
+   <script src="/dccs/components/ml/dcc-decision-tree.js"></script>
+
+   <script src="/player/js/state.js"></script>
+   <script src="/player/js/htracker.js"></script>
+
+   <script src="/translator/translator.js"></script>
+   <script src="/translator/item-templates.js"></script>
+
+   <script src="/lib/ckeditor5/ckeditor.js"></script>
+   <script src="/editor/rich-editor.js"></script>
+   <script src="../js/dcc-rest-proxy-annotate.js"></script>
+   <script src="../js/annotator.js"></script>
+
+   <title>Document Annotator</title>
+</head>
+<body onload="Annotator.i.start()">
+  <main role="main">
+    <dcc-rest id="harena-load-case" bind="harena-load-case" subscribe="case/source/get"></dcc-rest>
+    <div class="d-flex flex-column vh-100 hidden-overflow">
+
+      <!--
+      <div class="container-fluid">
+        <nav class="navbar navbar-light d-flex">
+          <div class="d-flex col">
+             <dcc-button topic="control/tomark/text" label="Rich->Mark" xstyle="in">
+             </dcc-button>
+             <dcc-button topic="control/torich/text" label="Rich<-Mark" xstyle="in">
+             </dcc-button>
+          </div>
+          <div class="d-flex col-10">
+          </div>
+        </nav>
+      </div>
+      -->
+
+      <div class="d-flex h-100 mb-12">
+        <div id="editor-block" class="align-items-stretch col-6">
+          <div class="std-panel h-100">
+            <div class="d-flex h-100 w-100 position-relative flex-column">
+              <div id="editor-toolbar"></div>
+              <div id="editor-space" style="height:100%">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="conversion-block" class="align-items-stretch col-6">
+          <div class="std-panel h-100">
+            <div class="d-flex h-100 w-100 position-relative flex-column">
+              <div class="panel-label">Annotations</div>
+              <div id="details" class="w-100 h-100"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+</body>
+</html>
