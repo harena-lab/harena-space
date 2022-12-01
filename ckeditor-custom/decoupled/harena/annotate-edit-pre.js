@@ -9,40 +9,75 @@ export default class AnnotateEditPre extends Plugin {
     _defineSchema() {
         const schema = this.editor.model.schema;
         schema.extend( '$text', {
-            allowAttributes: [ 'annotation' ]
+            allowAttributes: ['annot1', 'annot2']
         } );
     }
 
+    _annotAttributeToElement (modelAttributeValue, conversionApi, tag) {
+        // console.log('=== model attribute/value')
+        // console.log(modelAttributeValue)
+        const { writer } = conversionApi;
+        const ann = {}
+        if (modelAttributeValue != null) {
+          if (modelAttributeValue.categories)
+            for (const a of modelAttributeValue.categories)
+              ann[a] = ''
+          if (modelAttributeValue.range)
+            ann.range = modelAttributeValue.range
+          if (modelAttributeValue.group)
+            ann.group = modelAttributeValue.group
+        }
+
+        return writer.createAttributeElement(tag, ann);
+    }
+
+    _annotElementToAttribute (viewElement) {
+      const attr = viewElement.getAttributeKeys()
+      const attrArr = (attr == null) ? [] : [...attr]
+      return (attrArr.length > 0)
+        ? {'categories': attrArr.filter(c => c!='range'),
+           'range': viewElement.getAttribute('range')}
+        : {}
+    }
+
     _defineConverters() {
-         const conversion = this.editor.conversion;
+      const conversion = this.editor.conversion;
 
-         conversion.for( 'downcast' ).attributeToElement( {
-             model: 'annotation',
-             view: ( modelAttributeValue, conversionApi ) => {
-                 const { writer } = conversionApi;
-                 const ann = {}
-                 if (modelAttributeValue != null &&
-                     modelAttributeValue.categories) {
-                   for (const a of modelAttributeValue.categories)
-                     ann[a] = ''
-                 }
+      this._annotAttributeToElement = this._annotAttributeToElement.bind(this)
+      this._annotElementToAttribute = this._annotElementToAttribute.bind(this)
 
-                 return writer.createAttributeElement( 'annotation', ann);
-             }
-         } );
+      conversion.for('downcast').attributeToElement( {
+         model: 'annot1',
+         view: (modelAttributeValue, conversionApi) => {
+                 return this._annotAttributeToElement
+                   (modelAttributeValue, conversionApi, 'annot1') }
+      } );
 
-         conversion.for( 'upcast' ).elementToAttribute( {
-             view: {
-                 name: 'annotation'
-             },
-             model: {
-                 key: 'annotation',
-                 value: viewElement => {
-                   const attr = viewElement.getAttributeKeys()
-                   const attrArr = (attr == null) ? [] : [...attr]
-                   return (attrArr.length > 0) ? {'categories': attrArr} : {}
-                 }
-             }
-         } );
+      conversion.for('downcast').attributeToElement( {
+         model: 'annot2',
+         view: (modelAttributeValue, conversionApi) => {
+                 return this._annotAttributeToElement
+                   (modelAttributeValue, conversionApi, 'annot2') }
+      } );
+
+      conversion.for('upcast').elementToAttribute( {
+         view: {
+             name: 'annot1'
+         },
+         model: {
+             key: 'annot1',
+             value: this._annotElementToAttribute
+         }
+      } );
+
+      conversion.for('upcast').elementToAttribute( {
+         view: {
+             name: 'annot2'
+         },
+         model: {
+             key: 'annot2',
+             value: this._annotElementToAttribute
+         }
+      } );
      }
 }

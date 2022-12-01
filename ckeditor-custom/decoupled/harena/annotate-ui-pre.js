@@ -4,6 +4,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 export default class AnnotateUIPre extends Plugin {
     init() {
+      this._group = 0 // controls grouped attributes
       const buttons = [
         ['annotatePatho', 'Pathophysiology', 'categories', 'pathophysiology'],
         ['annotateEpi', 'Epidemiology', 'categories', 'epidemiology'],
@@ -14,7 +15,8 @@ export default class AnnotateUIPre extends Plugin {
         ['annotateThera', 'Therapeutic plan', 'categories', 'therapeutic'],
         ['annotateEncap', 'Encapsulated', 'categories', 'encapsulated'],
         ['annotateJar', 'Jargon', 'categories', 'jargon'],
-        ['annotateWrong', 'Wrong', 'categories', 'wrong']
+        ['annotateWrong', 'Wrong', 'categories', 'wrong'],
+        ['annotateTypo', 'Typo', 'categories', 'typo']
       ]
       for (const b of buttons)
         this._buildButton(...b)
@@ -29,29 +31,50 @@ export default class AnnotateUIPre extends Plugin {
           button.tooltip = true;
           button.withText = true;
 
-          this.listenTo( button, 'execute', () => {
-              const selection = editor.model.document.selection;
+          this.listenTo(button, 'execute', () => {
+              const selection = editor.model.document.selection
 
-              let ann = selection.getAttribute('annotation')
-              console.log('=== existing annotation')
-              console.log(ann)
-              if (ann == null)
-                ann = {}
-              else
-                editor.model.change(writer => {
-                  for ( const range of selection.getRanges() ) {
-                      writer.removeAttribute('annotation', range)
-                  }
-                })
+              let label = 'annot1'
+              const ex = selection.getAttribute(label)
+              // console.log('=== existing annotation')
+              // console.log(ex)
 
-              if (ann[field] == null)
+              const av = []
+              for (const range of selection.getRanges()) {
+                const complete = range.start.path[0] + ',' +
+                                 range.start.path[1] + ',' +
+                                 range.end.path[0] + ',' +
+                                 range.end.path[1]
+                const ann = {
+                  range: complete
+                }
                 ann[field] = []
-              ann[field].push(annotation)
+                if (ex != null) {
+                  if(complete == ex.range) {
+                    ann[field] = ex[field]
+                    editor.model.change(writer => {
+                      writer.removeAttribute('annot1', range)
+                    })
+                  } else
+                    label = 'annot2'
+                }
+                ann[field].push(annotation)
+                av.push(ann)
+              }
+
+              if (av.length > 1) {
+                this._group++
+                av.forEach(ann => {ann.group = this._group})
+              }
 
               editor.model.change(writer => {
-                for ( const range of selection.getRanges() ) {
-                  writer.setAttribute( 'annotation', ann, range )
+                let a = 0
+                for (const range of selection.getRanges()) {
+                  // console.log('--- annotation range')
+                  // console.log(range)
+                  writer.setAttribute(label, av[a], range)
                   MessageBus.i.publish('annotation/button/' + annotation)
+                  a++
                 }
               })
           })
