@@ -38,7 +38,7 @@ class UsersCSVManager {
   _updateCSV (topic, message) {
     console.log('===== CSV received')
     console.log(message)
-    this._table = message.table.content
+    this._table = message.table
   }
   _settingsFromUrl(){
     let url = new URL(document.location)
@@ -66,10 +66,11 @@ class UsersCSVManager {
   }
 
   async _addUsers (topic, message) {
+    const tableContent = this._table.content
     if(document.querySelector('#btn-add-users').form.checkValidity() && this._table != null){
       let nameC = -1
       let emailC = -1
-      let schema = this._table[0]
+      let schema = this._table.schema
       const gradeId = document.querySelector('#grade').value
       const roleId = document.querySelector('#role').value
       const institutionId = document.querySelector('#institution').value
@@ -83,16 +84,16 @@ class UsersCSVManager {
         }
       }
       if (nameC > -1 && emailC > -1) {
-        for (let line = 1; line < this._table.length; line++) {
-          if (this._table[line][emailC]) {
-            let lp = this._table[line][emailC].substring(0, this._table[line][emailC].indexOf('@'))
+        for (let line = 0; line < tableContent.length; line++) {
+          if (tableContent[line][emailC]) {
+            let lp = tableContent[line][emailC].substring(0, tableContent[line][emailC].indexOf('@'))
             console.log('========== creating user ==========')
             let user = await MessageBus.i.request('user/create/post',
             {
-              username: this._table[line][nameC],
-              email: this._table[line][emailC],
+              username: tableContent[line][nameC],
+              email: tableContent[line][emailC],
               password: lp,
-              login: this._table[line][emailC],
+              login: tableContent[line][emailC],
               institution: institutionId,
               grade: gradeId
             }
@@ -133,7 +134,7 @@ class UsersCSVManager {
   }
 }
     }
-    if(this._table == null){
+    if(tableContent == null){
       let alert = document.querySelector('#alert-feedback')
       alert.innerHTML = ""
       let header = document.createElement('h4')
