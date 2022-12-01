@@ -50,13 +50,16 @@ class Annotator {
         toolbar: {
           items: ['annotatePatho', 'annotateEpi',  'annotateEti', 'annotateCli',
                   'annotateLab',   'annotateDiff', 'annotateThera', '-', 'annotateEncap',
-                  'annotateJar',   'annotateWrong'],
+                  'annotateJar',   'annotateWrong', 'annotateTypo'],
           shouldNotGroupWhenFull: true
         }
       } )
       .then( editor => {
         const toolbarContainer = document.querySelector('#editor-toolbar')
         toolbarContainer.appendChild(editor.ui.view.toolbar.element)
+
+        if (CKEditorInspector != undefined)
+          CKEditorInspector.attach(editor)
 
         window.editor = editor;
         this._editor = editor;
@@ -77,22 +80,73 @@ class Annotator {
     console.log(doc)
     let pi = doc.indexOf(Annotator.tags.start)
     const annotations = []
+    const anGroup = {}
     while (pi != -1) {
       const pf = doc.indexOf('>', pi)
-      const ei = doc.indexOf(Annotator.tags.end, pf)
-      const an = {start: pi,
-                  end: ei - pf - 1,
-                  fragment: doc.substring(pf + 1, ei)}
-      let meta = doc.substring(pi + Annotator.tags.start.length, pf).split('=""')
-      console.log(an)
-      console.log(meta)
+      let ei = doc.indexOf(Annotator.tags.end, pf)
 
-      for (const m of meta) {
-        if (m.trim().length > 0)
-          annotations.push(Object.assign({property: m.trim()}, an))
+      // check if there is an annotation inside another annotation
+      let shift = 0
+      const inside = doc.indexOf(Annotator.tags.start, pf)
+      if (inside > -1 && inside < ei) {
+        ei = doc.indexOf(Annotator.tags.end, ei + Annotator.tags.end.length + 1)
+        shift = doc.indexOf('>', inside) - inside + 1 +
+                Annotator.tags.end.length + 2
       }
 
-      doc = doc.substring(ei + Annotator.tags.end.length)
+      const an = {start: pi,
+                  end: ei - pf - 1 - shift,
+                  fragment: doc.substring(pf + 1, ei)
+                              .replace(/<annot[^>]*>/g, '')
+                              .replace(/<\/annot[\d]>/g, '')}
+
+      const meta = doc.substring(pi + Annotator.tags.start.length + 1, pf)
+        .matchAll(/([\w-]+)="([^"]*)"/g)
+      console.log('=== match')
+      const categories = []
+      let group = 0
+      for (const m of meta) {
+        if (m[2].length == 0)
+          categories.push(m[1])
+        else if (m[1] == 'group') {
+          group = m[2]
+        }
+        console.log(m)
+      }
+
+      let slot = {fragments: [], categories: categories}
+      if (group == 0 || anGroup[group] == null)
+        annotations.push(slot)
+      if (group != 0) {
+        if (anGroup[group])
+          slot = anGroup[group]
+        else {
+          slot.group = group
+          anGroup[group] = slot
+        }
+      }
+      slot.fragments.push(an)
+
+      /*
+      let meta = doc.substring(pi + Annotator.tags.start.length + 1, pf)
+                    .split('=""')
+
+      for (const m of meta) {
+        const mt = m.trim()
+        // if (mt == 'group')
+        //   an.group =
+        if (m.trim().length > 0 &&
+            !m.trim().startsWith("range") && !m.trim().startsWith("group"))
+          an.meta.push(m.trim())
+          // annotations.push(Object.assign({property: m.trim()}, an))
+      }
+      */
+
+      doc = doc.substring(0, pi) +
+            doc.substring(pf + 1, ei) +
+            doc.substring(ei + Annotator.tags.end.length + 2)
+      console.log('=== doc after')
+      console.log(doc)
       pi = doc.indexOf(Annotator.tags.start)
     }
     console.log('=== annotations')
@@ -104,11 +158,19 @@ class Annotator {
     let html = '<table>'
     let last = ''
     for (const an of annotations) {
-      html += '<tr><td>' +
-        ((an.fragment != last) ? an.fragment : '') + '</td>' +
-        '<td>' + an.property + '</td>'
-      last = an.fragment
+      html += '<tr><td>'
+      let sep = ''
+      for (const f of an.fragments) {
+        html += sep + f.fragment
+        sep = ' + '
+      }
+      html += '</td><td><table>'
+      for (const c of an.categories) {
+        html += '<tr><td>' + c + '</tr></td>'
+      }
+      html += '</td></tr></table>'
     }
+    html += '</table>'
     document.querySelector('#details').innerHTML = html
   }
 
@@ -133,7 +195,7 @@ class Annotator {
   Annotator.i = new Annotator()
 
   Annotator.tags = {
-    start: '<annotation',
-    end:   '</annotation>'
+    start: '<annot',
+    end:   '</annot'
   }
 })()
