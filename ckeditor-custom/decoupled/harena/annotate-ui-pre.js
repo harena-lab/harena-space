@@ -34,10 +34,12 @@ export default class AnnotateUIPre extends Plugin {
           this.listenTo(button, 'execute', () => {
               const selection = editor.model.document.selection
 
-              let label = 'annot1'
-              const ex = selection.getAttribute(label)
-              // console.log('=== existing annotation')
-              // console.log(ex)
+              let label = 'annot2'
+              let ex = selection.getAttribute(label)
+              if (ex == null) {
+                label = 'annot1'
+                ex = selection.getAttribute(label)
+              }
 
               const av = []
               for (const range of selection.getRanges()) {
@@ -50,10 +52,10 @@ export default class AnnotateUIPre extends Plugin {
                 }
                 ann[field] = []
                 if (ex != null) {
-                  if(complete == ex.range) {
+                  if (complete == ex.range) {
                     ann[field] = ex[field]
                     editor.model.change(writer => {
-                      writer.removeAttribute('annot1', range)
+                      writer.removeAttribute(label, range)
                     })
                   } else
                     label = 'annot2'
@@ -70,8 +72,6 @@ export default class AnnotateUIPre extends Plugin {
               editor.model.change(writer => {
                 let a = 0
                 for (const range of selection.getRanges()) {
-                  // console.log('--- annotation range')
-                  // console.log(range)
                   writer.setAttribute(label, av[a], range)
                   MessageBus.i.publish('annotation/button/' + annotation)
                   a++

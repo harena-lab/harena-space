@@ -58,6 +58,7 @@ class Annotator {
         const toolbarContainer = document.querySelector('#editor-toolbar')
         toolbarContainer.appendChild(editor.ui.view.toolbar.element)
 
+        // <INSPECTOR>
         // if (CKEditorInspector != undefined)
         //   CKEditorInspector.attach(editor)
 
