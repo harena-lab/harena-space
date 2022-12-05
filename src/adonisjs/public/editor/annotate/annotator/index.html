@@ -4,7 +4,8 @@
    <meta charset="UTF-8">
    <title>Annotator</title>
 
-   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
+   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no"
+         name="viewport">
 
    <link rel="stylesheet" href="/lib/fontawesome-5-10-1/css/all.min.css">
    <link rel="stylesheet" href="/lib/bootstrap-4.4.1/css/bootstrap.min.css">
@@ -100,6 +101,8 @@
    <script src="/translator/translator.js"></script>
    <script src="/translator/item-templates.js"></script>
 
+   <script src="/infra/proxy/dcc-proxy-knowledge.js"></script>
+
    <script src="/lib/ckeditor5/inspector.min.js"></script>
    <script src="/lib/ckeditor5/ckeditor.js"></script>
    <script src="/editor/rich-editor.js"></script>
@@ -109,47 +112,90 @@
    <title>Document Annotator</title>
 </head>
 <body onload="Annotator.i.start()">
-  <main role="main">
-    <dcc-rest id="harena-load-case" bind="harena-load-case" subscribe="case/source/get"></dcc-rest>
-    <div class="d-flex flex-column vh-100 hidden-overflow">
+<main role="main">
+  <dcc-rest id="harena-load-case" bind="harena-load-case"
+            subscribe="case/source/get"></dcc-rest>
+  <dcc-rest id="harena-case-annotate" bind="harena-case-annotate"
+            subscribe="case/annotation/post"></dcc-rest>
+  <dcc-rest id="harena-case-annotations" bind="harena-case-annotations"
+            subscribe="case/annotations/get"></dcc-rest>
+  <div class="d-flex flex-column vh-100 hidden-overflow">
 
-      <!--
-      <div class="container-fluid">
-        <nav class="navbar navbar-light d-flex">
-          <div class="d-flex col">
-             <dcc-button topic="control/tomark/text" label="Rich->Mark" xstyle="in">
-             </dcc-button>
-             <dcc-button topic="control/torich/text" label="Rich<-Mark" xstyle="in">
-             </dcc-button>
+    <div class="container-fluid">
+      <nav class="navbar navbar-light d-flex">
+        <form class="form-inline">
+          <label for="organization">Organization Level</label>
+          <div id="organization-field">
+            <select id="organization" name="organization"
+                    class="custom-select custom-select-sm">
+              <option value="c" selected>Choose...</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+            </select>
           </div>
-          <div class="d-flex col-10">
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <label for="score">Score Global</label>
+          <div id="score-field">
+            <select id="score" name="score"
+                    class="custom-select custom-select-sm">
+              <option value="c" selected>Choose...</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+            </select>
           </div>
-        </nav>
-      </div>
-      -->
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <dcc-button id="submit-button" topic="control/grade/save"
+                      label="Submit" xstyle="in">
+          </dcc-button>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <span id="status-message" style="color:red"></span>
+        </form>
+      </nav>
+    </div>
 
-      <div class="d-flex h-100 mb-12">
-        <div id="editor-block" class="align-items-stretch col-6">
-          <div class="std-panel h-100">
-            <div class="d-flex h-100 w-100 position-relative flex-column">
-              <div id="editor-toolbar"></div>
-              <div id="editor-space" style="height:100%">
-              </div>
+    <div class="d-flex h-100 mb-12">
+      <div id="editor-block" class="align-items-stretch col-6">
+        <div class="std-panel h-100">
+          <div class="d-flex h-100 w-100 position-relative flex-column">
+            <div id="editor-toolbar"></div>
+            <div id="editor-space" style="height:100%">
             </div>
           </div>
         </div>
+      </div>
 
-        <div id="conversion-block" class="align-items-stretch col-6">
+      <div id="conversion-block" class="align-items-stretch col-6">
+        <div style="height:90%;width:100%">
           <div class="std-panel h-100">
-            <div class="d-flex h-100 w-100 position-relative flex-column">
+            <div class="d-flex h-50 w-100 position-relative flex-column">
               <div class="panel-label">Annotations</div>
+              <div id="details" class="w-100 h-100"></div>
+            </div>
+            <div class="d-flex h-50 w-100 position-relative flex-column">
+              <div class="panel-label">Automatic Annotations</div>
               <div id="details" class="w-100 h-100"></div>
             </div>
           </div>
         </div>
+        <div id="panel-buttons" style="height:10%;width:100%">
+          <dcc-button id="save-annotations" topic="control/annotations/save"
+                      label="Save Annotations" xstyle="in">
+          </dcc-button>
+        </div>
       </div>
     </div>
-  </main>
+  </div>
+</main>
 
 </body>
 </html>
