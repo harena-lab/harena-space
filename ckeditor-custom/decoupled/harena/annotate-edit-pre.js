@@ -28,7 +28,7 @@ export default class AnnotateEditPre extends Plugin {
             ann.group = modelAttributeValue.group
         }
 
-        return writer.createAttributeElement(tag, ann);
+        return writer.createAttributeElement(tag, ann)
     }
 
     _annotElementToAttribute (viewElement) {

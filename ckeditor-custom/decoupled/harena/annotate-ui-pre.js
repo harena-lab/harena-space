@@ -69,14 +69,18 @@ export default class AnnotateUIPre extends Plugin {
                 av.forEach(ann => {ann.group = this._group})
               }
 
+              const rangeV = []
               editor.model.change(writer => {
                 let a = 0
                 for (const range of selection.getRanges()) {
                   writer.setAttribute(label, av[a], range)
                   MessageBus.i.publish('annotation/button/' + annotation)
                   a++
+                  rangeV.push({start: range.start, end: range.end})
                 }
               })
+
+              this.editor.editing.view.focus()
           })
 
           return button;

@@ -101,8 +101,8 @@ class Annotator {
   _annotationAction (topic, message) {
     let doc = this._editor.getData()
     doc = doc.replace(/<\/?p>/g, '')
-    console.log('=== getData')
-    console.log(doc)
+    // console.log('=== getData')
+    // console.log(doc)
     let pi = doc.indexOf(Annotator.tags.start)
     const annotations = []
     const anGroup = {}
@@ -127,7 +127,7 @@ class Annotator {
 
       const meta = doc.substring(pi + Annotator.tags.start.length + 1, pf)
         .matchAll(/([\w-]+)="([^"]*)"/g)
-      console.log('=== match')
+      // console.log('=== match')
       const categories = []
       let group = 0
       for (const m of meta) {
@@ -136,7 +136,7 @@ class Annotator {
         else if (m[1] == 'group') {
           group = m[2]
         }
-        console.log(m)
+        // console.log(m)
       }
 
       let slot = {fragments: [], categories: categories}
@@ -155,8 +155,8 @@ class Annotator {
       doc = doc.substring(0, pi) +
             doc.substring(pf + 1, ei) +
             doc.substring(ei + Annotator.tags.end.length + 2)
-      console.log('=== doc after')
-      console.log(doc)
+      // console.log('=== doc after')
+      // console.log(doc)
       pi = doc.indexOf(Annotator.tags.start)
     }
     this._annotations = annotations
