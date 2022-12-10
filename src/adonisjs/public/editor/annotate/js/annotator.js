@@ -371,20 +371,30 @@ class Annotator {
         sepR = ';'
         amsg.fragment += sepF + f.fragment
         sepF = ' '
-        amsg.property_value += (this._kmemory[this._kmemoryPrefix(f)]) ? 'm' : '-'
+        amsg.property_value +=
+          (this._kmemory[this._kmemoryPrefix(f)]) ? 'm' : '-'
       }
       let success = true
       const prefix = this._ksavePrefix(an)
       for (const c of an.categories) {
         if (!this._ksave[prefix + c]) {
           amsg.property_id = 'isc:' + c
-          const result = await MessageBus.i.request('case/annotation/post', amsg)
+          const result =
+            await MessageBus.i.request('case/annotation/post', amsg)
           if (result.message.error) {
             this._message.innerHTML = 'error saving annotations'
             success = false
             break
           }
           this._ksave[prefix + c] = true
+
+          for (const f of an.fragments) {
+            if (this._kmemory[this._kmemoryPrefix(f)]) {
+              const rquest =
+                await MessageBus.i.request('quest/annotation/post',
+                  {quest_id: })
+            }
+          }
         }
       }
       if (success) {
