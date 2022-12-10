@@ -10,7 +10,9 @@ class Annotator {
     Translator.instance.authoringRender = true
 
     this._document = ''
-    this._keys = {}
+    this._ksave = {}
+    this._kmemory = {}
+    this._countMemory = 0
 
     this._annotationAction = this._annotationAction.bind(this)
     MessageBus.i.subscribe('annotation/button/#', this._annotationAction)
@@ -20,6 +22,9 @@ class Annotator {
 
     this._annotationsSave = this._annotationsSave.bind(this)
     MessageBus.i.subscribe('control/annotations/save', this._annotationsSave)
+
+    this._memoryRemove = this._memoryRemove.bind(this)
+    MessageBus.i.subscribe('control/memory/remove', this._memoryRemove)
   }
 
   async start () {
@@ -109,8 +114,10 @@ class Annotator {
           this._score = c.property_value; break
         default:
           let slot
-          if (ifrag[c.fragment])
-            slot = ifrag[c.fragment]
+          const ifr = c.fragment + '_' + c.range
+          let mem = 0
+          if (ifrag[ifr])
+            slot = ifrag[ifr]
           else {
             let frag = c.fragment
             const fs = c.range.split(';')
@@ -119,20 +126,24 @@ class Annotator {
               const se = f.split(',')
               const start = parseInt(se[0])
               const size = parseInt(se[1])
-              fragments.push({
+              const fp = {
                 start: start,
                 size:  size,
                 fragment: frag.substr(0, size)
-              })
+              }
+              fragments.push(fp)
+              this._kmemory[this._kmemoryPrefix(fp)] =
+                (c.property_value[mem] == 'm')
+              mem++
               frag = frag.substr(size + 1)
             }
             slot = {fragments: fragments, categories: []}
             annotations.push(slot)
-            ifrag[c.fragment] = slot
+            ifrag[ifr] = slot
           }
           const cat = c.property_id.substring(4)
           slot.categories.push(cat)
-          this._keys[this._keyPrefix(slot) + cat] = true
+          this._ksave[this._ksavePrefix(slot) + cat] = true
       }
     }
     this._annotations = annotations
@@ -213,9 +224,12 @@ class Annotator {
       const fragTrim = fragment.trim()
 
       const an = {start: pi + fragment.indexOf(fragTrim),
-                  size: fragTrim.length, //ei - pf - 1 - shift,
-                  fragment: fragTrim,
-                  memory: true}
+                  size: fragTrim.length,
+                  fragment: fragTrim}
+
+      const kf = this._kmemoryPrefix(an)
+      if (this._kmemory[kf] == null)
+        this._kmemory[kf] = true
 
       const meta = doc.substring(pi + Annotator.tags.start.length + 1, pf)
         .matchAll(/([\w-]+)="([^"]*)"/g)
@@ -250,39 +264,39 @@ class Annotator {
     }
 
     for (const an of annotations) {
-      const prefix = this._keyPrefix(an)
+      const prefix = this._ksavePrefix(an)
       for (const c of an.categories)
-        if (this._keys[prefix + c] == null)
-          this._keys[prefix + c] = false
+        if (this._ksave[prefix + c] == null)
+          this._ksave[prefix + c] = false
     }
 
     this._annotations = annotations
     this._updateSummary()
   }
 
-  _keyPrefix (annotation) {
-    const f = annotation.fragments
-    return f[0].start + '_' + f[0].size + '_' +
-           f.map(x => x.fragment).join(' ') + '_'
-  }
-
   _updateSummary () {
     let html = '<table>'
     let last = ''
+    let ip = 0
+    this._inputMemory = []
     for (const an of this._annotations) {
-      html += '<tr><td>'
-      let sep = ''
+      html += '<tr><td><table>'
       for (const f of an.fragments) {
-        html += sep + f.fragment
-        sep = ' + '
+        html += '<tr><td>' + f.fragment + '</td><td>' +
+                ((this._kmemory[this._kmemoryPrefix(f)])
+                  ? '<span style="color:blue">M</span>'
+                  : '<span style="color:purple">#</span>') + '</td><td>' +
+                '<input type="checkbox" id="mem' + ip + '" name="mem' + ip + '">' +
+                '</td></tr>'
+        ip++
+        this._inputMemory.push(this._kmemoryPrefix(f))
       }
-      html += '</td><td><table>'
-      // const af = an.fragments[0]
-      // const prefix = af.start + '_' + af.size + '_' + af.fragment + '_'
-      const prefix = this._keyPrefix(an)
+      this._countMemory = ip
+      html += '</table></td><td><table>'
+      const prefix = this._ksavePrefix(an)
       for (const c of an.categories) {
         html += '<tr><td>' + c + '</td><td>' +
-                ((this._keys[prefix + c])
+                ((this._ksave[prefix + c])
                   ? '<span style="color:green">saved</span>'
                   : '<span style="color:red">unsaved</span>') +
                 '</td></tr>'
@@ -291,6 +305,18 @@ class Annotator {
     }
     html += '</table>'
     document.querySelector('#details').innerHTML = html
+  }
+
+  _memoryRemove () {
+    console.log('=== memory')
+    console.log(this._kmemory)
+    for (let i = 0; i < this._countMemory; i++)
+      if (document.querySelector('#mem' + i).checked) {
+        console.log('=== escolhido')
+        console.log(this._inputMemory[i])
+        this._kmemory[this._inputMemory[i]] = false
+      }
+    this._updateSummary()
   }
 
   async _gradeSave () {
@@ -337,6 +363,7 @@ class Annotator {
     for (const an of this._annotations) {
       amsg.range = ''
       amsg.fragment = ''
+      amsg.property_value = ''
       let sepR = ''
       let sepF = ''
       for (const f of an.fragments) {
@@ -344,21 +371,26 @@ class Annotator {
         sepR = ';'
         amsg.fragment += sepF + f.fragment
         sepF = ' '
+        amsg.property_value += (this._kmemory[this._kmemoryPrefix(f)]) ? 'm' : '-'
       }
       let success = true
+      const prefix = this._ksavePrefix(an)
       for (const c of an.categories) {
-
-        amsg.property_id = 'isc:' + c
-        const result = await MessageBus.i.request('case/annotation/post', amsg)
-        if (result.message.error) {
-          this._message.innerHTML = 'error saving annotations'
-          success = false
-          break
+        if (!this._ksave[prefix + c]) {
+          amsg.property_id = 'isc:' + c
+          const result = await MessageBus.i.request('case/annotation/post', amsg)
+          if (result.message.error) {
+            this._message.innerHTML = 'error saving annotations'
+            success = false
+            break
+          }
+          this._ksave[prefix + c] = true
         }
       }
       if (success) {
         this._message.style = 'color:blue'
         this._message.innerHTML = 'annotations saved'
+        this._updateSummary()
       }
     }
   }
@@ -368,6 +400,16 @@ class Annotator {
       ': ' + this._organization
     document.querySelector('#score-field').innerHTML = ': ' + this._score
     document.querySelector('#submit-button').style.display = 'none'
+  }
+
+  _ksavePrefix (annotation) {
+    const f = annotation.fragments
+    return f[0].start + '_' + f[0].size + '_' +
+           f.map(x => x.fragment).join(' ') + '_'
+  }
+
+  _kmemoryPrefix (frag) {
+    return frag.start + '_' + frag.size + '_' + frag.fragment
   }
 }
 
