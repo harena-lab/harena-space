@@ -71,9 +71,10 @@ class Annotator {
     DecoupledEditor.create(presentation,
       {
         toolbar: {
-          items: ['annotatePatho', 'annotateEpi',  'annotateEti', 'annotateCli',
-                  'annotateLab',   'annotateDiff', 'annotateThera', '-', 'annotateEncap',
-                  'annotateJar',   'annotateWrong', 'annotateTypo'],
+          items: ['annotatePatho', 'annotateEpi',  'annotateEti', 'annotateHist',
+                  'annotatePhys', 'annotateCompl',   'annotateDiff',
+                  'annotateThera', '-', 'annotateSimple', 'annotateEncap',
+                  'annotateJar', 'annotateRight', 'annotateWrong', 'annotateTypo'],
           shouldNotGroupWhenFull: true
         }
       } )
@@ -131,23 +132,13 @@ class Annotator {
           }
           const cat = c.property_id.substring(4)
           slot.categories.push(cat)
-          this._keys[slot.fragments[0].start + '_' +
-                     slot.fragments[0].size + '_' +
-                     slot.fragments[0].fragment + "_" +
-                     cat] = true
-          // console.log('=== key')
-          // console.log(slot.fragments[0].start + '_' +
-          //             slot.fragments[0].size + '_' +
-          //             slot.fragments[0].fragment + "_" +
-          //             cat)
+          this._keys[this._keyPrefix(slot) + cat] = true
       }
     }
     this._annotations = annotations
   }
 
   _markAnnotations () {
-    console.log('=== annotations')
-    console.log(this._annotations)
     const ranges = []
     for (const a of this._annotations) {
       for (const r of a.fragments)
@@ -176,27 +167,28 @@ class Annotator {
       for (const c of r.annot.categories)
         doca += ' ' + c
       if (r.annot.fragments.length > 1) {
-        console.log('=== group')
         if (r.annot.group == null) {
           group++
           r.annot.group = group
         }
-        console.log(group)
-        console.log(r.annot.group)
         doca += ' group="' + r.annot.group + '"'
       }
       doca += '>'
-      console.log(doca)
       last = next
       close.unshift(next + r.fragment.size)
       level++
     }
+    while (close.length > 0) {
+      level--
+      const pos = close.shift()
+      doca += doc.substring(last, pos) + '</annot' + level + '>'
+      last = pos
+    }
+    doca += doc.substring(last)
     this._document = doca
   }
 
   _annotationAction (topic, message) {
-    console.log('=== keys before')
-    console.log(JSON.stringify(this._keys))
     let doc = this._editor.getData()
     doc = doc.replace(/<\/?p>/g, '')
     let pi = doc.indexOf(Annotator.tags.start)
@@ -215,11 +207,14 @@ class Annotator {
                 Annotator.tags.end.length + 2
       }
 
-      const an = {start: pi,
-                  size: ei - pf - 1 - shift,
-                  fragment: doc.substring(pf + 1, ei)
-                              .replace(/<annot[^>]*>/g, '')
-                              .replace(/<\/annot[\d]>/g, ''),
+      const fragment = doc.substring(pf + 1, ei)
+                        .replace(/<annot[^>]*>/g, '')
+                        .replace(/<\/annot[\d]>/g, '')
+      const fragTrim = fragment.trim()
+
+      const an = {start: pi + fragment.indexOf(fragTrim),
+                  size: fragTrim.length, //ei - pf - 1 - shift,
+                  fragment: fragTrim,
                   memory: true}
 
       const meta = doc.substring(pi + Annotator.tags.start.length + 1, pf)
@@ -230,11 +225,6 @@ class Annotator {
       for (const m of meta) {
         if (m[2].length == 0) {
           let saved = false
-          const key = prefix + m[1]
-          // console.log('--- key')
-          // console.log(key)
-          if (this._keys[key] == null)
-            this._keys[key] = false
           categories.push(m[1])
         } else if (m[1] == 'group')
           group = m[2]
@@ -258,15 +248,22 @@ class Annotator {
             doc.substring(ei + Annotator.tags.end.length + 2)
       pi = doc.indexOf(Annotator.tags.start)
     }
+
+    for (const an of annotations) {
+      const prefix = this._keyPrefix(an)
+      for (const c of an.categories)
+        if (this._keys[prefix + c] == null)
+          this._keys[prefix + c] = false
+    }
+
     this._annotations = annotations
-
-    // console.log('=== annotation')
-    // console.log(this._annotations)
-
-    console.log('=== keys before')
-    console.log(JSON.stringify(this._keys))
-
     this._updateSummary()
+  }
+
+  _keyPrefix (annotation) {
+    const f = annotation.fragments
+    return f[0].start + '_' + f[0].size + '_' +
+           f.map(x => x.fragment).join(' ') + '_'
   }
 
   _updateSummary () {
@@ -280,16 +277,15 @@ class Annotator {
         sep = ' + '
       }
       html += '</td><td><table>'
-      const af = an.fragments[0]
-      const prefix = af.start + '_' + af.size + '_' + af.fragment + '_'
+      // const af = an.fragments[0]
+      // const prefix = af.start + '_' + af.size + '_' + af.fragment + '_'
+      const prefix = this._keyPrefix(an)
       for (const c of an.categories) {
         html += '<tr><td>' + c + '</td><td>' +
                 ((this._keys[prefix + c])
                   ? '<span style="color:green">saved</span>'
                   : '<span style="color:red">unsaved</span>') +
                 '</td></tr>'
-        // console.log('*** prefix')
-        // console.log(prefix + c)
       }
       html += '</td></tr></table>'
     }
@@ -351,6 +347,7 @@ class Annotator {
       }
       let success = true
       for (const c of an.categories) {
+
         amsg.property_id = 'isc:' + c
         const result = await MessageBus.i.request('case/annotation/post', amsg)
         if (result.message.error) {

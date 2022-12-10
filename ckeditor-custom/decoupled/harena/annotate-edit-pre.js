@@ -14,8 +14,6 @@ export default class AnnotateEditPre extends Plugin {
     }
 
     _annotAttributeToElement (modelAttributeValue, conversionApi, tag) {
-        // console.log('=== model attribute/value')
-        // console.log(modelAttributeValue)
         const { writer } = conversionApi;
         const ann = {}
         if (modelAttributeValue != null) {
