@@ -34,10 +34,14 @@ export default class AnnotateEditPre extends Plugin {
     _annotElementToAttribute (viewElement) {
       const attr = viewElement.getAttributeKeys()
       const attrArr = (attr == null) ? [] : [...attr]
-      return (attrArr.length > 0)
-        ? {'categories': attrArr.filter(c => c!='range'),
-           'range': viewElement.getAttribute('range')}
-        : {}
+      let result = {}
+      if (attrArr.length > 0) {
+        result = {'categories': attrArr.filter(c => c!='range' && c!='group'),
+                  'range': viewElement.getAttribute('range')}
+        if (viewElement.getAttribute('group'))
+          result['group'] = viewElement.getAttribute('group')
+      }
+      return result
     }
 
     _defineConverters() {

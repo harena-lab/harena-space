@@ -32,58 +32,58 @@ export default class AnnotateUIPre extends Plugin {
           button.withText = true;
 
           this.listenTo(button, 'execute', () => {
-              const selection = editor.model.document.selection
+            const selection = editor.model.document.selection
 
-              let label = 'annot2'
-              let ex = selection.getAttribute(label)
-              if (ex == null) {
-                label = 'annot1'
-                ex = selection.getAttribute(label)
+            let label = 'annot2'
+            let ex = selection.getAttribute(label)
+            if (ex == null) {
+              label = 'annot1'
+              ex = selection.getAttribute(label)
+            }
+
+            const av = []
+            for (const range of selection.getRanges()) {
+              const complete = range.start.path[0] + ',' +
+                               range.start.path[1] + ',' +
+                               range.end.path[0] + ',' +
+                               range.end.path[1]
+              const ann = {
+                range: complete
               }
+              ann[field] = []
+              if (ex != null) {
+                if (complete == ex.range) {
+                  ann[field] = ex[field]
+                  editor.model.change(writer => {
+                    writer.removeAttribute(label, range)
+                  })
+                } else
+                  label = 'annot2'
+              }
+              ann[field].push(annotation)
+              av.push(ann)
+            }
 
-              const av = []
+            if (av.length > 1) {
+              this._group++
+              av.forEach(ann => {ann.group = this._group})
+            }
+
+            const rangeV = []
+            editor.model.change(writer => {
+              let a = 0
               for (const range of selection.getRanges()) {
-                const complete = range.start.path[0] + ',' +
-                                 range.start.path[1] + ',' +
-                                 range.end.path[0] + ',' +
-                                 range.end.path[1]
-                const ann = {
-                  range: complete
-                }
-                ann[field] = []
-                if (ex != null) {
-                  if (complete == ex.range) {
-                    ann[field] = ex[field]
-                    editor.model.change(writer => {
-                      writer.removeAttribute(label, range)
-                    })
-                  } else
-                    label = 'annot2'
-                }
-                ann[field].push(annotation)
-                av.push(ann)
+                writer.setAttribute(label, av[a], range)
+                MessageBus.i.publish('annotation/button/' + annotation)
+                a++
+                rangeV.push({start: range.start, end: range.end})
               }
+            })
 
-              if (av.length > 1) {
-                this._group++
-                av.forEach(ann => {ann.group = this._group})
-              }
+            this.editor.editing.view.focus()
+        })
 
-              const rangeV = []
-              editor.model.change(writer => {
-                let a = 0
-                for (const range of selection.getRanges()) {
-                  writer.setAttribute(label, av[a], range)
-                  MessageBus.i.publish('annotation/button/' + annotation)
-                  a++
-                  rangeV.push({start: range.start, end: range.end})
-                }
-              })
-
-              this.editor.editing.view.focus()
-          })
-
-          return button;
+        return button;
       })
     }
 }

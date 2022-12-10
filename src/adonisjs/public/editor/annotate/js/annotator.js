@@ -10,6 +10,7 @@ class Annotator {
     Translator.instance.authoringRender = true
 
     this._document = ''
+    this._keys = {}
 
     this._annotationAction = this._annotationAction.bind(this)
     MessageBus.i.subscribe('annotation/button/#', this._annotationAction)
@@ -42,26 +43,24 @@ class Annotator {
         html += mkHTML
       }
 
+      html = html.replace(/<[^>]+>/gm,'')
+                 .replace(/<\/[^>]+>/gm, '')
+                 .replace(/^[\r\n][\r\n]?/, '')
+
       this._document = html
-      document.querySelector('#editor-space').innerHTML = html
 
       const caseAnn =
         await MessageBus.i.request('case/annotations/get', {case_id: caseId})
 
       if (caseAnn != null && caseAnn.message != null) {
-        const ca = caseAnn.message
-        let cOrg = null
-        let cScore = null
-        for (const c of ca) {
-          switch (c.property_id) {
-            case Annotator.category.organization: cOrg = c.property_value; break
-            case Annotator.category.score: cScore = c.property_value; break
-          }
-        }
-        if (cOrg != null && cScore != null)
-          this._showAnnotations(cOrg, cScore)
+        this._convertAnnotations(caseAnn.message)
+        if (this._organization != null && this._score != null)
+          this._showGrades()
+        this._markAnnotations()
+        this._updateSummary()
       }
 
+      document.querySelector('#editor-space').innerHTML = this._document
       this._buildEditor()
     } else
       this._message.innerHTML = 'document not found'
@@ -98,11 +97,108 @@ class Annotator {
     } );
   }
 
+  _convertAnnotations (caseAnn) {
+    const annotations = []
+    const ifrag = {}
+    for (const c of caseAnn) {
+      switch (c.property_id) {
+        case Annotator.category.organization:
+          this._organization = c.property_value; break
+        case Annotator.category.score:
+          this._score = c.property_value; break
+        default:
+          let slot
+          if (ifrag[c.fragment])
+            slot = ifrag[c.fragment]
+          else {
+            let frag = c.fragment
+            const fs = c.range.split(';')
+            const fragments = []
+            for (const f of fs) {
+              const se = f.split(',')
+              const start = parseInt(se[0])
+              const size = parseInt(se[1])
+              fragments.push({
+                start: start,
+                size:  size,
+                fragment: frag.substr(0, size)
+              })
+              frag = frag.substr(size + 1)
+            }
+            slot = {fragments: fragments, categories: []}
+            annotations.push(slot)
+            ifrag[c.fragment] = slot
+          }
+          const cat = c.property_id.substring(4)
+          slot.categories.push(cat)
+          this._keys[slot.fragments[0].start + '_' +
+                     slot.fragments[0].size + '_' +
+                     slot.fragments[0].fragment + "_" +
+                     cat] = true
+          // console.log('=== key')
+          // console.log(slot.fragments[0].start + '_' +
+          //             slot.fragments[0].size + '_' +
+          //             slot.fragments[0].fragment + "_" +
+          //             cat)
+      }
+    }
+    this._annotations = annotations
+  }
+
+  _markAnnotations () {
+    console.log('=== annotations')
+    console.log(this._annotations)
+    const ranges = []
+    for (const a of this._annotations) {
+      for (const r of a.fragments)
+        ranges.push({fragment: r, annot: a})
+    }
+    ranges.sort((a, b) => a.fragment.start - b.fragment.start)
+    let last = 0
+    const doc = this._document
+    let doca = ''
+    let close = []
+    let level = 1
+    let group = 0
+    for (const r of ranges) {
+      const next = r.fragment.start
+      if (close.length > 0 && close[0] < next) {
+        while (close.length > 0) {
+          level--
+          const pos = close.shift()
+          doca += doc.substring(last, pos) + '</annot' + level + '>'
+          last = pos
+        }
+      }
+      doca += doc.substring(last, next) +
+                '<annot' + level + ' range="' +
+                r.fragment.start + ',' + r.fragment.size + '"'
+      for (const c of r.annot.categories)
+        doca += ' ' + c
+      if (r.annot.fragments.length > 1) {
+        console.log('=== group')
+        if (r.annot.group == null) {
+          group++
+          r.annot.group = group
+        }
+        console.log(group)
+        console.log(r.annot.group)
+        doca += ' group="' + r.annot.group + '"'
+      }
+      doca += '>'
+      console.log(doca)
+      last = next
+      close.unshift(next + r.fragment.size)
+      level++
+    }
+    this._document = doca
+  }
+
   _annotationAction (topic, message) {
+    console.log('=== keys before')
+    console.log(JSON.stringify(this._keys))
     let doc = this._editor.getData()
     doc = doc.replace(/<\/?p>/g, '')
-    // console.log('=== getData')
-    // console.log(doc)
     let pi = doc.indexOf(Annotator.tags.start)
     const annotations = []
     const anGroup = {}
@@ -120,23 +216,28 @@ class Annotator {
       }
 
       const an = {start: pi,
-                  end: ei - pf - 1 - shift,
+                  size: ei - pf - 1 - shift,
                   fragment: doc.substring(pf + 1, ei)
                               .replace(/<annot[^>]*>/g, '')
-                              .replace(/<\/annot[\d]>/g, '')}
+                              .replace(/<\/annot[\d]>/g, ''),
+                  memory: true}
 
       const meta = doc.substring(pi + Annotator.tags.start.length + 1, pf)
         .matchAll(/([\w-]+)="([^"]*)"/g)
-      // console.log('=== match')
       const categories = []
       let group = 0
+      const prefix = an.start + '_' + an.size + '_' + an.fragment + '_'
       for (const m of meta) {
-        if (m[2].length == 0)
+        if (m[2].length == 0) {
+          let saved = false
+          const key = prefix + m[1]
+          // console.log('--- key')
+          // console.log(key)
+          if (this._keys[key] == null)
+            this._keys[key] = false
           categories.push(m[1])
-        else if (m[1] == 'group') {
+        } else if (m[1] == 'group')
           group = m[2]
-        }
-        // console.log(m)
       }
 
       let slot = {fragments: [], categories: categories}
@@ -155,11 +256,16 @@ class Annotator {
       doc = doc.substring(0, pi) +
             doc.substring(pf + 1, ei) +
             doc.substring(ei + Annotator.tags.end.length + 2)
-      // console.log('=== doc after')
-      // console.log(doc)
       pi = doc.indexOf(Annotator.tags.start)
     }
     this._annotations = annotations
+
+    // console.log('=== annotation')
+    // console.log(this._annotations)
+
+    console.log('=== keys before')
+    console.log(JSON.stringify(this._keys))
+
     this._updateSummary()
   }
 
@@ -174,8 +280,16 @@ class Annotator {
         sep = ' + '
       }
       html += '</td><td><table>'
+      const af = an.fragments[0]
+      const prefix = af.start + '_' + af.size + '_' + af.fragment + '_'
       for (const c of an.categories) {
-        html += '<tr><td>' + c + '</tr></td>'
+        html += '<tr><td>' + c + '</td><td>' +
+                ((this._keys[prefix + c])
+                  ? '<span style="color:green">saved</span>'
+                  : '<span style="color:red">unsaved</span>') +
+                '</td></tr>'
+        // console.log('*** prefix')
+        // console.log(prefix + c)
       }
       html += '</td></tr></table>'
     }
@@ -211,7 +325,9 @@ class Annotator {
         else {
           this._message.style = 'color:blue'
           this._message.innerHTML = 'organization/score submitted'
-          this._showAnnotations(organization, score)
+          this._organization = organization
+          this._score = score
+          this._showGrades()
         }
       }
     }
@@ -228,7 +344,7 @@ class Annotator {
       let sepR = ''
       let sepF = ''
       for (const f of an.fragments) {
-        amsg.range += sepR + f.start + ',' + f.end
+        amsg.range += sepR + f.start + ',' + f.size
         sepR = ';'
         amsg.fragment += sepF + f.fragment
         sepF = ' '
@@ -236,8 +352,6 @@ class Annotator {
       let success = true
       for (const c of an.categories) {
         amsg.property_id = 'isc:' + c
-        console.log('=== annotation')
-        console.log(amsg)
         const result = await MessageBus.i.request('case/annotation/post', amsg)
         if (result.message.error) {
           this._message.innerHTML = 'error saving annotations'
@@ -252,10 +366,10 @@ class Annotator {
     }
   }
 
-  _showAnnotations (organization, score) {
+  _showGrades () {
     document.querySelector('#organization-field').innerHTML =
-      ': ' + organization
-    document.querySelector('#score-field').innerHTML = ': ' + score
+      ': ' + this._organization
+    document.querySelector('#score-field').innerHTML = ': ' + this._score
     document.querySelector('#submit-button').style.display = 'none'
   }
 }
