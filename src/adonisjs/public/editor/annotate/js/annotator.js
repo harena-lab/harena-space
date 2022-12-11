@@ -10,27 +10,33 @@ class Annotator {
     Translator.instance.authoringRender = true
 
     this._document = ''
-    this._ksave = {}
+    this._ksaved = {}
+    this._ksource = {}
     this._kmemory = {}
     this._countMemory = 0
 
     this._annotationAction = this._annotationAction.bind(this)
     MessageBus.i.subscribe('annotation/button/#', this._annotationAction)
 
-    this._gradeSave = this._gradeSave.bind(this)
-    MessageBus.i.subscribe('control/grade/save', this._gradeSave)
+    this._saveGrade = this._saveGrade.bind(this)
+    MessageBus.i.subscribe('control/grade/save', this._saveGrade)
 
-    this._annotationsSave = this._annotationsSave.bind(this)
-    MessageBus.i.subscribe('control/annotations/save', this._annotationsSave)
+    this._incorporateAutomatic = this._incorporateAutomatic.bind(this)
+    MessageBus.i.subscribe(
+      'control/automatic/incorporate', this._incorporateAutomatic)
 
-    this._memoryRemove = this._memoryRemove.bind(this)
-    MessageBus.i.subscribe('control/memory/remove', this._memoryRemove)
+    this._removeMemory = this._removeMemory.bind(this)
+    MessageBus.i.subscribe('control/memory/remove', this._removeMemory)
+
+    this._saveAnnotations = this._saveAnnotations.bind(this)
+    MessageBus.i.subscribe('control/annotations/save', this._saveAnnotations)
   }
 
   async start () {
     this._message = document.querySelector('#status-message')
 
-    const caseId = new URL(document.location).searchParams.get('caseid')
+    this._questId = (new URL(document.location)).searchParams.get('questid')
+    const caseId = (new URL(document.location)).searchParams.get('caseid')
 
     const cs = await MessageBus.i.request('case/source/get', {caseId: caseId})
 
@@ -52,106 +58,132 @@ class Annotator {
                  .replace(/<\/[^>]+>/gm, '')
                  .replace(/^[\r\n][\r\n]?/, '')
 
+      this._original = html
       this._document = html
 
-      const caseAnn =
-        await MessageBus.i.request('case/annotations/get', {case_id: caseId})
-
-      if (caseAnn != null && caseAnn.message != null) {
-        this._convertAnnotations(caseAnn.message)
-        if (this._organization != null && this._score != null)
-          this._showGrades()
-        this._markAnnotations()
-        this._updateSummary()
-      }
-
       document.querySelector('#editor-space').innerHTML = this._document
-      this._buildEditor()
+      await this._loadAnnotations(caseId)
+      if (this._organization != null && this._score != null) {
+        this._showGrades()
+        await this._annotationsOrMemory()
+      }
     } else
       this._message.innerHTML = 'document not found'
   }
 
-  _buildEditor () {
-    const presentation = document.querySelector('#editor-space')
-    DecoupledEditor.create(presentation,
-      {
-        toolbar: {
-          items: ['annotatePatho', 'annotateEpi',  'annotateEti', 'annotateHist',
-                  'annotatePhys', 'annotateCompl',   'annotateDiff',
-                  'annotateThera', '-', 'annotateSimple', 'annotateEncap',
-                  'annotateJar', 'annotateRight', 'annotateWrong', 'annotateTypo'],
-          shouldNotGroupWhenFull: true
-        }
-      } )
-      .then( editor => {
-        const toolbarContainer = document.querySelector('#editor-toolbar')
-        toolbarContainer.appendChild(editor.ui.view.toolbar.element)
-
-        // <INSPECTOR>
-        // if (CKEditorInspector != undefined)
-        //   CKEditorInspector.attach(editor)
-
-        window.editor = editor;
-        this._editor = editor;
-
-        editor.model.document.on( 'change:data', () => {
-          this._textChanged = true
-        } );
-      } )
-      .catch( error => {
-        console.error( 'There was a problem initializing the editor.', error );
-    } );
-  }
-
-  _convertAnnotations (caseAnn) {
-    const annotations = []
-    const ifrag = {}
-    for (const c of caseAnn) {
-      switch (c.property_id) {
-        case Annotator.category.organization:
-          this._organization = c.property_value; break
-        case Annotator.category.score:
-          this._score = c.property_value; break
-        default:
-          let slot
-          const ifr = c.fragment + '_' + c.range
-          let mem = 0
-          if (ifrag[ifr])
-            slot = ifrag[ifr]
-          else {
-            let frag = c.fragment
-            const fs = c.range.split(';')
-            const fragments = []
-            for (const f of fs) {
-              const se = f.split(',')
-              const start = parseInt(se[0])
-              const size = parseInt(se[1])
-              const fp = {
-                start: start,
-                size:  size,
-                fragment: frag.substr(0, size)
-              }
-              fragments.push(fp)
-              this._kmemory[this._kmemoryPrefix(fp)] =
-                (c.property_value[mem] == 'm')
-              mem++
-              frag = frag.substr(size + 1)
-            }
-            slot = {fragments: fragments, categories: []}
-            annotations.push(slot)
-            ifrag[ifr] = slot
-          }
-          const cat = c.property_id.substring(4)
-          slot.categories.push(cat)
-          this._ksave[this._ksavePrefix(slot) + cat] = true
+  async _annotationsOrMemory () {
+    if (this._annotations != null && this._annotations.length > 0) {
+      this._markAnnotations(this._annotations)
+      this._updateSummary(true)
+      this._buildEditor()
+      document.querySelector('#remove-memory').style.display = 'initial'
+      document.querySelector('#save-annotations').style.display = 'initial'
+    } else {
+      await this._loadMemory(this._questId)
+      if (this._memory != null) {
+        this._markAnnotations(this._memory)
+        this._updateSummary(false)
+        document.querySelector('#incorporate-automatic').style.display =
+          'initial'
       }
     }
-    this._annotations = annotations
+    return editor
   }
 
-  _markAnnotations () {
+  async _loadAnnotations (caseId) {
+    let caseAnn =
+      await MessageBus.i.request('case/annotations/get', {case_id: caseId})
+
+    if (caseAnn != null && caseAnn.message != null) {
+      caseAnn = caseAnn.message
+      const annotations = []
+      const ifrag = {}
+      for (const c of caseAnn) {
+        switch (c.property_id) {
+          case Annotator.category.organization:
+            this._organization = c.property_value; break
+          case Annotator.category.score:
+            this._score = c.property_value; break
+          default:
+            let slot
+            const ifr = c.fragment + '_' + c.range
+            let mem = 0
+            if (ifrag[ifr])
+              slot = ifrag[ifr]
+            else {
+              let frag = c.fragment
+              const fs = c.range.split(';')
+              const fragments = []
+              for (const f of fs) {
+                const se = f.split(',')
+                const start = parseInt(se[0])
+                const size = parseInt(se[1])
+                const fp = {
+                  start: start,
+                  size:  size,
+                  fragment: frag.substr(0, size)
+                }
+                fragments.push(fp)
+                this._kmemory[this._kmemoryPrefix(fp)] = c.property_value[mem]
+                mem++
+                frag = frag.substr(size + 1)
+              }
+              slot = {fragments: fragments, categories: []}
+              annotations.push(slot)
+              ifrag[ifr] = slot
+            }
+            const cat = c.property_id.substring(4)
+            slot.categories.push(cat)
+            const key = this._kcatPrefix(slot) + cat
+            this._ksource[key] = c.source
+            this._ksaved[key] = true
+        }
+      }
+      this._annotations = annotations
+    }
+  }
+
+  _showGrades () {
+    document.querySelector('#organization-field').innerHTML =
+      ': ' + this._organization
+    document.querySelector('#score-field').innerHTML = ': ' + this._score
+    document.querySelector('#submit-button').style.display = 'none'
+  }
+
+  async _loadMemory (questId) {
+    const doc = this._document
+    let questAnn =
+      await MessageBus.i.request('quest/annotations/get', {quest_id: questId})
+
+    if (questAnn != null && questAnn.message != null) {
+      questAnn = questAnn.message
+      const annotations = []
+      const ifrag = {}
+      for (const c of questAnn) {
+        let slot
+        if (ifrag[c.fragment])
+          slot = ifrag[c.fragment]
+        else {
+          const pos = doc.indexOf(c.fragment)
+          if (pos > -1) {
+            slot = {
+              fragments: [
+                {fragment: c.fragment, start: pos, size: c.fragment.length}],
+              categories: []}
+            annotations.push(slot)
+            ifrag[c.fragment] = slot
+          }
+        }
+        const cat = c.property_id.substring(4)
+        slot.categories.push(cat)
+      }
+      this._memory = annotations
+    }
+  }
+
+  _markAnnotations (annotations) {
     const ranges = []
-    for (const a of this._annotations) {
+    for (const a of annotations) {
       for (const r of a.fragments)
         ranges.push({fragment: r, annot: a})
     }
@@ -197,6 +229,71 @@ class Annotator {
     }
     doca += doc.substring(last)
     this._document = doca
+    document.querySelector('#editor-space').innerHTML = doca
+  }
+
+  _incorporateAutomatic () {
+    let pos = 0
+    for (const an of this._memory) {
+      const key = this._kmemoryPrefix(an.fragments[0])
+      if (this._kmemory[key] == null)
+        this._kmemory[key] = 'a'
+      let transfer = false
+      let i = 0
+      const prefix = this._kcatPrefix(an)
+      const selcat = []
+      for (const c of an.categories) {
+        if (document.querySelector('#auto' + pos).checked) {
+          transfer = true
+          this._ksource[prefix + c] = 2
+          this._ksaved[prefix + c] = false
+          selcat.push(c)
+        }
+        i++
+        pos++
+      }
+      if (transfer) {
+        an.categories = selcat
+        this._annotations.push(an)
+      }
+    }
+    this._memory = null
+    document.querySelector('#memory-details').innerHTML = ''
+    this._document = this._original
+    document.querySelector('#incorporate-automatic').style.display = 'none'
+    this._annotationsOrMemory()
+  }
+
+  _buildEditor () {
+    const presentation = document.querySelector('#editor-space')
+    DecoupledEditor.create(presentation,
+      {
+        toolbar: {
+          items: ['annotatePatho', 'annotateEpi',  'annotateEti', 'annotateHist',
+                  'annotatePhys', 'annotateCompl',   'annotateDiff',
+                  'annotateThera', '-', 'annotateSimple', 'annotateEncap',
+                  'annotateJar', 'annotateRight', 'annotateWrong', 'annotateTypo'],
+          shouldNotGroupWhenFull: true
+        }
+      } )
+      .then( editor => {
+        const toolbarContainer = document.querySelector('#editor-toolbar')
+        toolbarContainer.appendChild(editor.ui.view.toolbar.element)
+
+        // <INSPECTOR>
+        // if (CKEditorInspector != undefined)
+        //   CKEditorInspector.attach(editor)
+
+        window.editor = editor;
+        this._editor = editor;
+
+        editor.model.document.on( 'change:data', () => {
+          this._textChanged = true
+        } );
+      } )
+      .catch( error => {
+        console.error( 'There was a problem initializing the editor.', error );
+    } );
   }
 
   _annotationAction (topic, message) {
@@ -229,7 +326,7 @@ class Annotator {
 
       const kf = this._kmemoryPrefix(an)
       if (this._kmemory[kf] == null)
-        this._kmemory[kf] = true
+        this._kmemory[kf] = 'm'
 
       const meta = doc.substring(pi + Annotator.tags.start.length + 1, pf)
         .matchAll(/([\w-]+)="([^"]*)"/g)
@@ -264,62 +361,75 @@ class Annotator {
     }
 
     for (const an of annotations) {
-      const prefix = this._ksavePrefix(an)
-      for (const c of an.categories)
-        if (this._ksave[prefix + c] == null)
-          this._ksave[prefix + c] = false
+      const prefix = this._kcatPrefix(an)
+      for (const c of an.categories) {
+        const key = prefix + c
+        if (this._ksaved[key] == null)
+          this._ksaved[key] = false
+        if (this._ksource[key] == null)
+          this._ksource[key] = 1
+      }
     }
 
     this._annotations = annotations
-    this._updateSummary()
+    this._updateSummary(true)
   }
 
-  _updateSummary () {
+  _updateSummary (isAnnotations) {
+    const annotations = (isAnnotations) ? this._annotations : this._memory
     let html = '<table>'
     let last = ''
     let ip = 0
     this._inputMemory = []
-    for (const an of this._annotations) {
+    for (const an of annotations) {
       html += '<tr><td><table>'
       for (const f of an.fragments) {
-        html += '<tr><td>' + f.fragment + '</td><td>' +
-                ((this._kmemory[this._kmemoryPrefix(f)])
-                  ? '<span style="color:blue">M</span>'
-                  : '<span style="color:purple">#</span>') + '</td><td>' +
-                '<input type="checkbox" id="mem' + ip + '" name="mem' + ip + '">' +
-                '</td></tr>'
-        ip++
+        html += '<tr><td>' + f.fragment
+        if (isAnnotations) {
+          html += '</td><td>' +
+                  ((this._kmemory[this._kmemoryPrefix(f)] == '-')
+                    ? '<span style="color:purple">-</span>'
+                    : '<span style="color:blue">M</span>') +
+                  '</td><td><input type="checkbox" id="mem' + ip +
+                    '" name="mem' + ip + '">'
+          ip++
+        }
+        html += '</td></tr>'
         this._inputMemory.push(this._kmemoryPrefix(f))
       }
-      this._countMemory = ip
       html += '</table></td><td><table>'
-      const prefix = this._ksavePrefix(an)
+      const prefix = this._kcatPrefix(an)
       for (const c of an.categories) {
-        html += '<tr><td>' + c + '</td><td>' +
-                ((this._ksave[prefix + c])
-                  ? '<span style="color:green">saved</span>'
-                  : '<span style="color:red">unsaved</span>') +
-                '</td></tr>'
+        html += '<tr><td>' + c + '</td><td>'
+        if (isAnnotations)
+          html +=  ((this._ksaved[prefix + c])
+                    ? '<span style="color:green">saved</span>'
+                    : '<span style="color:red">unsaved</span>')
+        else {
+          html += '<input type="checkbox" id="auto' + ip +
+                  '" name="auto' + ip + '">'
+          ip++
+        }
+        html += '</td></tr>'
       }
       html += '</td></tr></table>'
     }
     html += '</table>'
-    document.querySelector('#details').innerHTML = html
+    if (isAnnotations)
+      this._countMemory = ip
+    document.querySelector(
+      '#' + ((isAnnotations) ? 'annotation' : 'memory') + '-details')
+      .innerHTML = html
   }
 
-  _memoryRemove () {
-    console.log('=== memory')
-    console.log(this._kmemory)
+  _removeMemory () {
     for (let i = 0; i < this._countMemory; i++)
-      if (document.querySelector('#mem' + i).checked) {
-        console.log('=== escolhido')
-        console.log(this._inputMemory[i])
-        this._kmemory[this._inputMemory[i]] = false
-      }
-    this._updateSummary()
+      if (document.querySelector('#mem' + i).checked)
+        this._kmemory[this._inputMemory[i]] = '-'
+    this._updateSummary(true)
   }
 
-  async _gradeSave () {
+  async _saveGrade () {
     const organization = document.querySelector('#organization').value
     const score = document.querySelector('#score').value
 
@@ -350,15 +460,15 @@ class Annotator {
           this._organization = organization
           this._score = score
           this._showGrades()
+          await this._annotationsOrMemory()
         }
       }
     }
   }
 
-  async _annotationsSave () {
+  async _saveAnnotations () {
     const amsg = {
-      case_id: this._case.id,
-      source: 1
+      case_id: this._case.id
     }
     for (const an of this._annotations) {
       amsg.range = ''
@@ -371,14 +481,15 @@ class Annotator {
         sepR = ';'
         amsg.fragment += sepF + f.fragment
         sepF = ' '
-        amsg.property_value +=
-          (this._kmemory[this._kmemoryPrefix(f)]) ? 'm' : '-'
+        amsg.property_value += this._kmemory[this._kmemoryPrefix(f)]
       }
       let success = true
-      const prefix = this._ksavePrefix(an)
+      const prefix = this._kcatPrefix(an)
       for (const c of an.categories) {
-        if (!this._ksave[prefix + c]) {
+        const key = prefix + c
+        if (!this._ksaved[key]) {
           amsg.property_id = 'isc:' + c
+          amsg.source = this._ksource[key]
           const result =
             await MessageBus.i.request('case/annotation/post', amsg)
           if (result.message.error) {
@@ -386,13 +497,15 @@ class Annotator {
             success = false
             break
           }
-          this._ksave[prefix + c] = true
+          this._ksaved[key] = true
 
           for (const f of an.fragments) {
-            if (this._kmemory[this._kmemoryPrefix(f)]) {
+            if (this._kmemory[this._kmemoryPrefix(f)] != '-') {
               const rquest =
                 await MessageBus.i.request('quest/annotation/post',
-                  {quest_id: })
+                  {quest_id: this._questId,
+                   property_id: amsg.property_id,
+                   fragment: f.fragment})
             }
           }
         }
@@ -400,19 +513,12 @@ class Annotator {
       if (success) {
         this._message.style = 'color:blue'
         this._message.innerHTML = 'annotations saved'
-        this._updateSummary()
+        this._updateSummary(true)
       }
     }
   }
 
-  _showGrades () {
-    document.querySelector('#organization-field').innerHTML =
-      ': ' + this._organization
-    document.querySelector('#score-field').innerHTML = ': ' + this._score
-    document.querySelector('#submit-button').style.display = 'none'
-  }
-
-  _ksavePrefix (annotation) {
+  _kcatPrefix (annotation) {
     const f = annotation.fragments
     return f[0].start + '_' + f[0].size + '_' +
            f.map(x => x.fragment).join(' ') + '_'

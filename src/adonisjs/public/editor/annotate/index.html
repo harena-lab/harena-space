@@ -92,7 +92,7 @@
                 connect="retrieve:harena-quest-cases:service/request/get">
                 <input type="hidden" id="pages" value="{{pages}}">
                 {{@foreach . case}}
-                  <a href="annotator?caseid={{case.id}}">
+                  <a href="annotator?caseid={{case.id}}&questid={{page_url.questid}}">
                     <div class="row draft-author-case-container">
                       <div class="col draft-case-title">
                         <label class="ml-2">{{case.title}}</label>
