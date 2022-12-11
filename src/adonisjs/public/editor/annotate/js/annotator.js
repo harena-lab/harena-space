@@ -378,7 +378,6 @@ class Annotator {
   _updateSummary (isAnnotations) {
     const annotations = (isAnnotations) ? this._annotations : this._memory
     let html = '<table>'
-    let last = ''
     let ip = 0
     this._inputMemory = []
     for (const an of annotations) {
