@@ -7,40 +7,261 @@ function _harenaCustomUploadAdapterPlugin( editor ) {
 class Annotator {
   constructor () {
    	Basic.service.rootPath = '../../../'
-
     Translator.instance.authoringRender = true
+
+    this._document = ''
+    this._ksaved = {}
+    this._ksource = {}
+    this._kmemory = {}
+    this._countMemory = 0
 
     this._annotationAction = this._annotationAction.bind(this)
     MessageBus.i.subscribe('annotation/button/#', this._annotationAction)
 
-    this._richToMarkdown = this._richToMarkdown.bind(this)
-    MessageBus.i.subscribe('control/tomark/text', this._richToMarkdown)
-    this._markdownToRich = this._markdownToRich.bind(this)
-    MessageBus.i.subscribe('control/torich/text', this._markdownToRich)
+    this._saveGrade = this._saveGrade.bind(this)
+    MessageBus.i.subscribe('control/grade/save', this._saveGrade)
+
+    this._incorporateAutomatic = this._incorporateAutomatic.bind(this)
+    MessageBus.i.subscribe(
+      'control/automatic/incorporate', this._incorporateAutomatic)
+
+    this._removeMemory = this._removeMemory.bind(this)
+    MessageBus.i.subscribe('control/memory/remove', this._removeMemory)
+
+    this._saveAnnotations = this._saveAnnotations.bind(this)
+    MessageBus.i.subscribe('control/annotations/save', this._saveAnnotations)
   }
 
   async start () {
-    let cs = await MessageBus.i.request('case/source/get',
-      {
-        caseId: new URL(document.location).searchParams.get('caseid')
+    this._message = document.querySelector('#status-message')
+
+    this._questId = (new URL(document.location)).searchParams.get('questid')
+    const caseId = (new URL(document.location)).searchParams.get('caseid')
+
+    const cs = await MessageBus.i.request('case/source/get', {caseId: caseId})
+
+    if (cs != null && cs.message != null) {
+      this._case = cs.message
+
+      const compiled =
+           await Translator.instance.compileMarkdown(
+             this._case.id, this._case.source)
+
+      let html = ''
+      for (const knot in compiled.knots) {
+        const mkHTML =
+          await Translator.instance.generateHTML(compiled.knots[knot])
+        html += mkHTML
       }
-    )
-    const compiled =
-         await Translator.instance.compileMarkdown(
-           cs.message.id, cs.message.source)
-    console.log('=== case source')
-    console.log(this._compiledCase)
 
-    let html = ''
-    for (const knot in compiled.knots) {
-      const mkHTML = await Translator.instance.generateHTML(compiled.knots[knot])
-      html += mkHTML
+      html = html.replace(/<[^>]+>/gm,'')
+                 .replace(/<\/[^>]+>/gm, '')
+                 .replace(/^[\r\n][\r\n]?/, '')
+
+      this._original = html
+      this._document = html
+
+      document.querySelector('#editor-space').innerHTML = this._document
+      await this._loadAnnotations(caseId)
+      if (this._organization != null && this._score != null) {
+        this._showGrades()
+        await this._annotationsOrMemory()
+      }
+    } else
+      this._message.innerHTML = 'document not found'
+  }
+
+  async _annotationsOrMemory () {
+    if (this._annotations != null && this._annotations.length > 0) {
+      this._markAnnotations(this._annotations)
+      this._updateSummary(true)
+      this._buildEditor()
+      document.querySelector('#remove-memory').style.display = 'initial'
+      document.querySelector('#save-annotations').style.display = 'initial'
+    } else {
+      await this._loadMemory(this._questId)
+      if (this._memory != null) {
+        this._markAnnotations(this._memory)
+        this._updateSummary(false)
+        document.querySelector('#incorporate-automatic').style.display =
+          'initial'
+      }
     }
+    return editor
+  }
 
-    const annot = []
+  async _loadAnnotations (caseId) {
+    let caseAnn =
+      await MessageBus.i.request('case/annotations/get', {case_id: caseId})
 
-    document.querySelector('#editor-space').innerHTML = html
-    this._buildEditor()
+    if (caseAnn != null && caseAnn.message != null) {
+      caseAnn = caseAnn.message
+      const annotations = []
+      const ifrag = {}
+      for (const c of caseAnn) {
+        switch (c.property_id) {
+          case Annotator.category.organization:
+            this._organization = c.property_value; break
+          case Annotator.category.score:
+            this._score = c.property_value; break
+          default:
+            let slot
+            const ifr = c.fragment + '_' + c.range
+            let mem = 0
+            if (ifrag[ifr])
+              slot = ifrag[ifr]
+            else {
+              let frag = c.fragment
+              const fs = c.range.split(';')
+              const fragments = []
+              for (const f of fs) {
+                const se = f.split(',')
+                const start = parseInt(se[0])
+                const size = parseInt(se[1])
+                const fp = {
+                  start: start,
+                  size:  size,
+                  fragment: frag.substr(0, size)
+                }
+                fragments.push(fp)
+                this._kmemory[this._kmemoryPrefix(fp)] = c.property_value[mem]
+                mem++
+                frag = frag.substr(size + 1)
+              }
+              slot = {fragments: fragments, categories: []}
+              annotations.push(slot)
+              ifrag[ifr] = slot
+            }
+            const cat = c.property_id.substring(4)
+            slot.categories.push(cat)
+            const key = this._kcatPrefix(slot) + cat
+            this._ksource[key] = c.source
+            this._ksaved[key] = true
+        }
+      }
+      this._annotations = annotations
+    }
+  }
+
+  _showGrades () {
+    document.querySelector('#organization-field').innerHTML =
+      ': ' + this._organization
+    document.querySelector('#score-field').innerHTML = ': ' + this._score
+    document.querySelector('#submit-button').style.display = 'none'
+  }
+
+  async _loadMemory (questId) {
+    const doc = this._document
+    let questAnn =
+      await MessageBus.i.request('quest/annotations/get', {quest_id: questId})
+
+    if (questAnn != null && questAnn.message != null) {
+      questAnn = questAnn.message
+      const annotations = []
+      const ifrag = {}
+      for (const c of questAnn) {
+        let slot
+        if (ifrag[c.fragment])
+          slot = ifrag[c.fragment]
+        else {
+          const pos = doc.indexOf(c.fragment)
+          if (pos > -1) {
+            slot = {
+              fragments: [
+                {fragment: c.fragment, start: pos, size: c.fragment.length}],
+              categories: []}
+            annotations.push(slot)
+            ifrag[c.fragment] = slot
+          }
+        }
+        const cat = c.property_id.substring(4)
+        slot.categories.push(cat)
+      }
+      this._memory = annotations
+    }
+  }
+
+  _markAnnotations (annotations) {
+    const ranges = []
+    for (const a of annotations) {
+      for (const r of a.fragments)
+        ranges.push({fragment: r, annot: a})
+    }
+    ranges.sort((a, b) => a.fragment.start - b.fragment.start)
+    let last = 0
+    const doc = this._document
+    let doca = ''
+    let close = []
+    let level = 1
+    let group = 0
+    for (const r of ranges) {
+      const next = r.fragment.start
+      if (close.length > 0 && close[0] < next) {
+        while (close.length > 0) {
+          level--
+          const pos = close.shift()
+          doca += doc.substring(last, pos) + '</annot' + level + '>'
+          last = pos
+        }
+      }
+      doca += doc.substring(last, next) +
+                '<annot' + level + ' range="' +
+                r.fragment.start + ',' + r.fragment.size + '"'
+      for (const c of r.annot.categories)
+        doca += ' ' + c
+      if (r.annot.fragments.length > 1) {
+        if (r.annot.group == null) {
+          group++
+          r.annot.group = group
+        }
+        doca += ' group="' + r.annot.group + '"'
+      }
+      doca += '>'
+      last = next
+      close.unshift(next + r.fragment.size)
+      level++
+    }
+    while (close.length > 0) {
+      level--
+      const pos = close.shift()
+      doca += doc.substring(last, pos) + '</annot' + level + '>'
+      last = pos
+    }
+    doca += doc.substring(last)
+    this._document = doca
+    document.querySelector('#editor-space').innerHTML = doca
+  }
+
+  _incorporateAutomatic () {
+    let pos = 0
+    for (const an of this._memory) {
+      const key = this._kmemoryPrefix(an.fragments[0])
+      if (this._kmemory[key] == null)
+        this._kmemory[key] = 'a'
+      let transfer = false
+      let i = 0
+      const prefix = this._kcatPrefix(an)
+      const selcat = []
+      for (const c of an.categories) {
+        if (document.querySelector('#auto' + pos).checked) {
+          transfer = true
+          this._ksource[prefix + c] = 2
+          this._ksaved[prefix + c] = false
+          selcat.push(c)
+        }
+        i++
+        pos++
+      }
+      if (transfer) {
+        an.categories = selcat
+        this._annotations.push(an)
+      }
+    }
+    this._memory = null
+    document.querySelector('#memory-details').innerHTML = ''
+    this._document = this._original
+    document.querySelector('#incorporate-automatic').style.display = 'none'
+    this._annotationsOrMemory()
   }
 
   _buildEditor () {
@@ -48,9 +269,10 @@ class Annotator {
     DecoupledEditor.create(presentation,
       {
         toolbar: {
-          items: ['annotatePatho', 'annotateEpi',  'annotateEti', 'annotateCli',
-                  'annotateLab',   'annotateDiff', 'annotateThera', '-', 'annotateEncap',
-                  'annotateJar',   'annotateWrong', 'annotateTypo'],
+          items: ['annotatePatho', 'annotateEpi',  'annotateEti', 'annotateHist',
+                  'annotatePhys', 'annotateCompl',   'annotateDiff',
+                  'annotateThera', '-', 'annotateSimple', 'annotateEncap',
+                  'annotateJar', 'annotateRight', 'annotateWrong', 'annotateTypo'],
           shouldNotGroupWhenFull: true
         }
       } )
@@ -77,8 +299,6 @@ class Annotator {
   _annotationAction (topic, message) {
     let doc = this._editor.getData()
     doc = doc.replace(/<\/?p>/g, '')
-    console.log('=== getData')
-    console.log(doc)
     let pi = doc.indexOf(Annotator.tags.start)
     const annotations = []
     const anGroup = {}
@@ -95,24 +315,30 @@ class Annotator {
                 Annotator.tags.end.length + 2
       }
 
-      const an = {start: pi,
-                  end: ei - pf - 1 - shift,
-                  fragment: doc.substring(pf + 1, ei)
-                              .replace(/<annot[^>]*>/g, '')
-                              .replace(/<\/annot[\d]>/g, '')}
+      const fragment = doc.substring(pf + 1, ei)
+                        .replace(/<annot[^>]*>/g, '')
+                        .replace(/<\/annot[\d]>/g, '')
+      const fragTrim = fragment.trim()
+
+      const an = {start: pi + fragment.indexOf(fragTrim),
+                  size: fragTrim.length,
+                  fragment: fragTrim}
+
+      const kf = this._kmemoryPrefix(an)
+      if (this._kmemory[kf] == null)
+        this._kmemory[kf] = 'm'
 
       const meta = doc.substring(pi + Annotator.tags.start.length + 1, pf)
         .matchAll(/([\w-]+)="([^"]*)"/g)
-      console.log('=== match')
       const categories = []
       let group = 0
+      const prefix = an.start + '_' + an.size + '_' + an.fragment + '_'
       for (const m of meta) {
-        if (m[2].length == 0)
+        if (m[2].length == 0) {
+          let saved = false
           categories.push(m[1])
-        else if (m[1] == 'group') {
+        } else if (m[1] == 'group')
           group = m[2]
-        }
-        console.log(m)
       }
 
       let slot = {fragments: [], categories: categories}
@@ -128,67 +354,178 @@ class Annotator {
       }
       slot.fragments.push(an)
 
-      /*
-      let meta = doc.substring(pi + Annotator.tags.start.length + 1, pf)
-                    .split('=""')
-
-      for (const m of meta) {
-        const mt = m.trim()
-        // if (mt == 'group')
-        //   an.group =
-        if (m.trim().length > 0 &&
-            !m.trim().startsWith("range") && !m.trim().startsWith("group"))
-          an.meta.push(m.trim())
-          // annotations.push(Object.assign({property: m.trim()}, an))
-      }
-      */
-
       doc = doc.substring(0, pi) +
             doc.substring(pf + 1, ei) +
             doc.substring(ei + Annotator.tags.end.length + 2)
-      console.log('=== doc after')
-      console.log(doc)
       pi = doc.indexOf(Annotator.tags.start)
     }
-    console.log('=== annotations')
-    console.log(annotations)
-    this._updateSummary(annotations)
+
+    for (const an of annotations) {
+      const prefix = this._kcatPrefix(an)
+      for (const c of an.categories) {
+        const key = prefix + c
+        if (this._ksaved[key] == null)
+          this._ksaved[key] = false
+        if (this._ksource[key] == null)
+          this._ksource[key] = 1
+      }
+    }
+
+    this._annotations = annotations
+    this._updateSummary(true)
   }
 
-  _updateSummary (annotations) {
+  _updateSummary (isAnnotations) {
+    const annotations = (isAnnotations) ? this._annotations : this._memory
     let html = '<table>'
     let last = ''
+    let ip = 0
+    this._inputMemory = []
     for (const an of annotations) {
-      html += '<tr><td>'
-      let sep = ''
+      html += '<tr><td><table>'
       for (const f of an.fragments) {
-        html += sep + f.fragment
-        sep = ' + '
+        html += '<tr><td>' + f.fragment
+        if (isAnnotations) {
+          html += '</td><td>' +
+                  ((this._kmemory[this._kmemoryPrefix(f)] == '-')
+                    ? '<span style="color:purple">-</span>'
+                    : '<span style="color:blue">M</span>') +
+                  '</td><td><input type="checkbox" id="mem' + ip +
+                    '" name="mem' + ip + '">'
+          ip++
+        }
+        html += '</td></tr>'
+        this._inputMemory.push(this._kmemoryPrefix(f))
       }
-      html += '</td><td><table>'
+      html += '</table></td><td><table>'
+      const prefix = this._kcatPrefix(an)
       for (const c of an.categories) {
-        html += '<tr><td>' + c + '</tr></td>'
+        html += '<tr><td>' + c + '</td><td>'
+        if (isAnnotations)
+          html +=  ((this._ksaved[prefix + c])
+                    ? '<span style="color:green">saved</span>'
+                    : '<span style="color:red">unsaved</span>')
+        else {
+          html += '<input type="checkbox" id="auto' + ip +
+                  '" name="auto' + ip + '">'
+          ip++
+        }
+        html += '</td></tr>'
       }
       html += '</td></tr></table>'
     }
     html += '</table>'
-    document.querySelector('#details').innerHTML = html
+    if (isAnnotations)
+      this._countMemory = ip
+    document.querySelector(
+      '#' + ((isAnnotations) ? 'annotation' : 'memory') + '-details')
+      .innerHTML = html
   }
 
-  _richToMarkdown() {
-    const md = RichEditor.i.richToMarkdown(this._editor.getData())
-    document.querySelector('#conversion-results').value = md
+  _removeMemory () {
+    for (let i = 0; i < this._countMemory; i++)
+      if (document.querySelector('#mem' + i).checked)
+        this._kmemory[this._inputMemory[i]] = '-'
+    this._updateSummary(true)
   }
 
-  async _markdownToRich() {
-    const compiled = await Translator.instance.compileMarkdown(
-      'test', document.querySelector('#conversion-results').value)
-    let html = ''
-    for (const knot in compiled.knots) {
-      const mkHTML = await Translator.instance.generateHTML(compiled.knots[knot])
-      html += mkHTML
+  async _saveGrade () {
+    const organization = document.querySelector('#organization').value
+    const score = document.querySelector('#score').value
+
+    if (organization == 'c')
+      this._message.innerHTML = 'select the organization'
+    else if (score == 'c')
+      this._message.innerHTML = 'select the score'
+    else {
+      const ann = {
+        case_id: this._case.id,
+        property_id: Annotator.category.organization,
+        range: 'complete',
+        property_value: organization,
+        source: 1
+      }
+      let result = await MessageBus.i.request('case/annotation/post', ann)
+      if (result.message.error)
+        this._message.innerHTML = 'error saving organization'
+      else {
+        ann.property_id = Annotator.category.score
+        ann.property_value = score
+        result = await MessageBus.i.request('case/annotation/post', ann)
+        if (result.message.error)
+          this._message.innerHTML = 'error saving score'
+        else {
+          this._message.style = 'color:blue'
+          this._message.innerHTML = 'organization/score submitted'
+          this._organization = organization
+          this._score = score
+          this._showGrades()
+          await this._annotationsOrMemory()
+        }
+      }
     }
-    this._editor.setData(html)
+  }
+
+  async _saveAnnotations () {
+    const amsg = {
+      case_id: this._case.id
+    }
+    for (const an of this._annotations) {
+      amsg.range = ''
+      amsg.fragment = ''
+      amsg.property_value = ''
+      let sepR = ''
+      let sepF = ''
+      for (const f of an.fragments) {
+        amsg.range += sepR + f.start + ',' + f.size
+        sepR = ';'
+        amsg.fragment += sepF + f.fragment
+        sepF = ' '
+        amsg.property_value += this._kmemory[this._kmemoryPrefix(f)]
+      }
+      let success = true
+      const prefix = this._kcatPrefix(an)
+      for (const c of an.categories) {
+        const key = prefix + c
+        if (!this._ksaved[key]) {
+          amsg.property_id = 'isc:' + c
+          amsg.source = this._ksource[key]
+          const result =
+            await MessageBus.i.request('case/annotation/post', amsg)
+          if (result.message.error) {
+            this._message.innerHTML = 'error saving annotations'
+            success = false
+            break
+          }
+          this._ksaved[key] = true
+
+          for (const f of an.fragments) {
+            if (this._kmemory[this._kmemoryPrefix(f)] != '-') {
+              const rquest =
+                await MessageBus.i.request('quest/annotation/post',
+                  {quest_id: this._questId,
+                   property_id: amsg.property_id,
+                   fragment: f.fragment})
+            }
+          }
+        }
+      }
+      if (success) {
+        this._message.style = 'color:blue'
+        this._message.innerHTML = 'annotations saved'
+        this._updateSummary(true)
+      }
+    }
+  }
+
+  _kcatPrefix (annotation) {
+    const f = annotation.fragments
+    return f[0].start + '_' + f[0].size + '_' +
+           f.map(x => x.fragment).join(' ') + '_'
+  }
+
+  _kmemoryPrefix (frag) {
+    return frag.start + '_' + frag.size + '_' + frag.fragment
   }
 }
 
@@ -198,5 +535,11 @@ class Annotator {
   Annotator.tags = {
     start: '<annot',
     end:   '</annot'
+  }
+
+  // isc: Illness Script Components
+  Annotator.category = {
+    organization: 'isc:organization',
+    score: 'isc:score'
   }
 })()

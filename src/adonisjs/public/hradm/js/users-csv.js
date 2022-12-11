@@ -67,6 +67,7 @@ class UsersCSVManager {
 
   async _addUsers (topic, message) {
     const tableContent = this._table.content
+    let playersSuccess = {}
     if(document.querySelector('#btn-add-users').form.checkValidity() && this._table != null){
       let nameC = -1
       let emailC = -1
@@ -84,23 +85,26 @@ class UsersCSVManager {
         }
       }
       if (nameC > -1 && emailC > -1) {
+
         for (let line = 0; line < tableContent.length; line++) {
           if (tableContent[line][emailC]) {
             let lp = tableContent[line][emailC].substring(0, tableContent[line][emailC].indexOf('@'))
             console.log('========== creating user ==========')
             let user = await MessageBus.i.request('user/create/post',
-            {
-              username: tableContent[line][nameC],
-              email: tableContent[line][emailC],
-              password: lp,
-              login: tableContent[line][emailC],
-              institution: institutionId,
-              grade: gradeId
-            }
-          )
+              {
+                username: tableContent[line][nameC],
+                email: tableContent[line][emailC],
+                password: lp,
+                login: tableContent[line][emailC],
+                institution: institutionId,
+                grade: gradeId
+              }
+            )
+            playersSuccess[tableContent[line][nameC]] = {}
           if (user.message.error) {
             console.log('--- error')
             console.log(user.message.error)
+            playersSuccess[tableContent[line][nameC]]['error'] = 'Creation conflict'
           } else {
             console.log(user.message.username)
             console.log(user.message.id)
@@ -113,8 +117,10 @@ class UsersCSVManager {
           if (role.message.error) {
             console.log('--- error')
             console.log(role.message.error)
+              playersSuccess[tableContent[line][nameC]]['role'] = 0
           } else {
             console.log('--- link role success')
+              playersSuccess[tableContent[line][nameC]]['role'] =  ' (SUCCESS)'
             if(groupId != null){
               let group = await MessageBus.i.request('link/group/post',
               {
@@ -125,14 +131,57 @@ class UsersCSVManager {
             if (group.message.error) {
               console.log('--- error')
               console.log(group.message.error)
-            } else
-            console.log('--- link group success')
+                playersSuccess[tableContent[line][nameC]]['group'] = 0
+            } else{
+              console.log('--- link group success')
+              playersSuccess[tableContent[line][nameC]]['group'] = ' (SUCCESS)'
+            }
           }
         }
       }
     }
   }
 }
+      let playersAddedTxt = ''
+      for (const [key, value] of Object.entries(playersSuccess)) {
+        console.log('222222',key, value)
+        console.log(key, playersSuccess[key])
+        playersAddedTxt += key+' -> '
+        for (const [subKey, subValue] of Object.entries(playersSuccess[key])) {
+          console.log('3333333',subKey, subValue)
+          playersAddedTxt += subKey+' '+subValue+' ||'
+          if (subKey == 'error') {
+            playersAddedTxt +=`      <i class="fas fa-exclamation-triangle"></i> `
+          }
+        }
+        console.log('next user, breaking line...');
+        playersAddedTxt +='<br>'
+      }
+      console.log(playersAddedTxt)
+      let alert = document.querySelector('#alert-feedback')
+      alert.innerHTML = ""
+      let header = document.createElement('h4')
+      header.innerHTML = '<b>Users created</b>'
+      header.classList.add('alert-header')
+      header.style.color = '#721c24'
+      alert.classList.add('alert-success', 'alert-dismissible', 'show')
+      alert.classList.remove('alert-danger')
+      alert.insertAdjacentElement('afterbegin', header)
+      alert.insertAdjacentHTML('beforeend',playersAddedTxt)
+      alert.style.display = 'block'
+      alert.insertAdjacentHTML('beforeend',`
+      <button type="button" class="close" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>`)
+      alert.querySelector('button.close').onclick = function() {
+        alert.classList.remove('show')
+        alert.style.display = 'none'
+      }
+      setTimeout(function(){
+        alert.classList.remove('show')
+        alert.style.display = 'none'
+      }, 8000)
+
     }
     if(tableContent == null){
       let alert = document.querySelector('#alert-feedback')

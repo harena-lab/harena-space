@@ -14,8 +14,6 @@ export default class AnnotateEditPre extends Plugin {
     }
 
     _annotAttributeToElement (modelAttributeValue, conversionApi, tag) {
-        // console.log('=== model attribute/value')
-        // console.log(modelAttributeValue)
         const { writer } = conversionApi;
         const ann = {}
         if (modelAttributeValue != null) {
@@ -28,16 +26,20 @@ export default class AnnotateEditPre extends Plugin {
             ann.group = modelAttributeValue.group
         }
 
-        return writer.createAttributeElement(tag, ann);
+        return writer.createAttributeElement(tag, ann)
     }
 
     _annotElementToAttribute (viewElement) {
       const attr = viewElement.getAttributeKeys()
       const attrArr = (attr == null) ? [] : [...attr]
-      return (attrArr.length > 0)
-        ? {'categories': attrArr.filter(c => c!='range'),
-           'range': viewElement.getAttribute('range')}
-        : {}
+      let result = {}
+      if (attrArr.length > 0) {
+        result = {'categories': attrArr.filter(c => c!='range' && c!='group'),
+                  'range': viewElement.getAttribute('range')}
+        if (viewElement.getAttribute('group'))
+          result['group'] = viewElement.getAttribute('group')
+      }
+      return result
     }
 
     _defineConverters() {

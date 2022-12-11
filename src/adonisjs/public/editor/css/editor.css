@@ -7,15 +7,19 @@ annot1[epidemiology], annot2[epidemiology] {
 }
 
 annot1[etiology], annot2[etiology] {
-   background-color: #d3d3d385;
+   background-color: #ee909b;
 }
 
-annot1[clinical], annot2[clinical] {
+annot1[history], annot2[history] {
+   background-color: #90ebee;
+}
+
+annot1[physical], annot2[physical] {
    background-color: #ffff77;
 }
 
-annot1[laboratory], annot2[laboratory] {
-   background-color: #f0808078;
+annot1[exams], annot2[exams] {
+   background-color: #cc90ee;
 }
 
 annot1[differential], annot2[differential] {
@@ -26,9 +30,13 @@ annot1[therapeutic], annot2[therapeutic] {
    background-color: #ffaae778;
 }
 
-annot1[encapsulated], annot2[encapsulated], annot1[wrong], annot2[wrong],
-annot1[typo], annot2[typo] {
+annot1[encapsulated], annot2[encapsulated], annot1[right], annot2[right],
+annot1[wrong], annot2[wrong], annot1[typo], annot2[typo] {
   border-style: solid;
+}
+
+annot1[simple], annot2[simple] {
+   border-style: dotted;
 }
 
 annot1[encapsulated], annot2[encapsulated] {
@@ -37,6 +45,10 @@ annot1[encapsulated], annot2[encapsulated] {
 
 annot1[typo], annot2[typo] {
   border-color: purple;
+}
+
+annot1[right], annot2[right] {
+  border-color: green;
 }
 
 annot1[wrong], annot2[wrong] {

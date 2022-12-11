@@ -6,7 +6,7 @@ DCC.component(
   {
     environment: {
       'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api,
-      'questId': new URL(document.location).searchParams.get('questid')
+      'questId': (new URL(document.location)).searchParams.get('questid')
     },
     oas: {
       paths: {
