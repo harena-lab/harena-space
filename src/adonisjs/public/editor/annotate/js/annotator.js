@@ -65,14 +65,15 @@ class Annotator {
       await this._loadAnnotations(caseId)
       if (this._organization != null && this._score != null) {
         this._showGrades()
-        await this._annotationsOrMemory()
+        await this._annotationsOrMemory(false)
       }
     } else
       this._message.innerHTML = 'document not found'
   }
 
-  async _annotationsOrMemory () {
-    if (this._annotations != null && this._annotations.length > 0) {
+  async _annotationsOrMemory (incorporated) {
+    if (incorporated ||
+        (this._annotations != null && this._annotations.length > 0)) {
       this._markAnnotations(this._annotations)
       this._updateSummary(true)
       this._buildEditor()
@@ -87,7 +88,6 @@ class Annotator {
           'initial'
       }
     }
-    return editor
   }
 
   async _loadAnnotations (caseId) {
@@ -261,7 +261,7 @@ class Annotator {
     document.querySelector('#memory-details').innerHTML = ''
     this._document = this._original
     document.querySelector('#incorporate-automatic').style.display = 'none'
-    this._annotationsOrMemory()
+    this._annotationsOrMemory(true)
   }
 
   _buildEditor () {
@@ -459,7 +459,7 @@ class Annotator {
           this._organization = organization
           this._score = score
           this._showGrades()
-          await this._annotationsOrMemory()
+          await this._annotationsOrMemory(false)
         }
       }
     }
