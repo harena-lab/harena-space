@@ -63,7 +63,8 @@ class Annotator {
 
       document.querySelector('#editor-space').innerHTML = this._document
       await this._loadAnnotations(caseId)
-      if (this._organization != null && this._score != null) {
+      if (this._organization != null && this._score != null &&
+          this._year != null) {
         this._showGrades()
         await this._annotationsOrMemory(false)
       }
@@ -104,6 +105,8 @@ class Annotator {
             this._organization = c.property_value; break
           case Annotator.category.score:
             this._score = c.property_value; break
+          case Annotator.category.year:
+            this._year = c.property_value; break
           default:
             let slot
             const ifr = c.fragment + '_' + c.range
@@ -147,6 +150,7 @@ class Annotator {
     document.querySelector('#organization-field').innerHTML =
       ': ' + this._organization
     document.querySelector('#score-field').innerHTML = ': ' + this._score
+    document.querySelector('#year-field').innerHTML = ': ' + this._year
     document.querySelector('#submit-button').style.display = 'none'
   }
 
@@ -431,11 +435,14 @@ class Annotator {
   async _saveGrade () {
     const organization = document.querySelector('#organization').value
     const score = document.querySelector('#score').value
+    const year = document.querySelector('#year').value
 
     if (organization == 'c')
-      this._message.innerHTML = 'select the organization'
+      this._message.innerHTML = 'select the organization level'
     else if (score == 'c')
-      this._message.innerHTML = 'select the score'
+      this._message.innerHTML = 'select the global score'
+    else if (year == 'c')
+      this._message.innerHTML = 'select the student year'
     else {
       const ann = {
         case_id: this._case.id,
@@ -446,20 +453,28 @@ class Annotator {
       }
       let result = await MessageBus.i.request('case/annotation/post', ann)
       if (result.message.error)
-        this._message.innerHTML = 'error saving organization'
+        this._message.innerHTML = 'error saving organization level'
       else {
         ann.property_id = Annotator.category.score
         ann.property_value = score
         result = await MessageBus.i.request('case/annotation/post', ann)
         if (result.message.error)
-          this._message.innerHTML = 'error saving score'
+          this._message.innerHTML = 'error saving global score'
         else {
-          this._message.style = 'color:blue'
-          this._message.innerHTML = 'organization/score submitted'
-          this._organization = organization
-          this._score = score
-          this._showGrades()
-          await this._annotationsOrMemory(false)
+          ann.property_id = Annotator.category.year
+          ann.property_value = year
+          result = await MessageBus.i.request('case/annotation/post', ann)
+          if (result.message.error)
+            this._message.innerHTML = 'error saving student year'
+          else {
+            this._message.style = 'color:blue'
+            this._message.innerHTML = 'organization/score/year submitted'
+            this._organization = organization
+            this._score = score
+            this._year = year
+            this._showGrades()
+            await this._annotationsOrMemory(false)
+          }
         }
       }
     }
@@ -539,6 +554,7 @@ class Annotator {
   // isc: Illness Script Components
   Annotator.category = {
     organization: 'isc:organization',
-    score: 'isc:score'
+    score: 'isc:score',
+    year: 'isc:student_year'
   }
 })()
