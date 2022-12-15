@@ -164,7 +164,7 @@ class Annotator {
       const annotations = []
       const ifrag = {}
       for (const c of questAnn) {
-        let slot
+        let slot = null
         if (ifrag[c.fragment])
           slot = ifrag[c.fragment]
         else {
@@ -173,13 +173,13 @@ class Annotator {
             slot = {
               fragments: [
                 {fragment: c.fragment, start: pos, size: c.fragment.length}],
-              categories: []}
+                 categories: []}
             annotations.push(slot)
             ifrag[c.fragment] = slot
           }
         }
         const cat = c.property_id.substring(4)
-        slot.categories.push(cat)
+        if (slot != null) slot.categories.push(cat)
       }
       this._memory = annotations
     }
