@@ -12,8 +12,9 @@
      "icon": "zombie/case/plain.png",
      "scope": "case",
      "environment": "development"},
-"Jacinto Standard EKG":
-  {"description": "Standard cycle with an EKG.",
+"Jacinto Novo":
+  {"questId": "jacinto",
+   "description": "Novo visual do Jacinto.",
    "path": "jacinto/case/standard_eletro",
    "icon": "jacinto/images/standard_eletro.png",
    "scope": "case"},

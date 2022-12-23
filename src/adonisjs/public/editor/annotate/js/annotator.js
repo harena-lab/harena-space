@@ -35,10 +35,11 @@ class Annotator {
   async start () {
     this._message = document.querySelector('#status-message')
 
-    this._questId = (new URL(document.location)).searchParams.get('questid')
+    this._roomId = (new URL(document.location)).searchParams.get('roomid')
     const caseId = (new URL(document.location)).searchParams.get('caseid')
 
-    const cs = await MessageBus.i.request('case/source/get', {caseId: caseId})
+    const cs = await MessageBus.i.request('case/source/get',
+      {room_id: this._roomId, case_id: caseId})
 
     if (cs != null && cs.message != null) {
       this._case = cs.message
@@ -93,7 +94,8 @@ class Annotator {
 
   async _loadAnnotations (caseId) {
     let caseAnn =
-      await MessageBus.i.request('case/annotations/get', {case_id: caseId})
+      await MessageBus.i.request('case/annotations/get',
+        {room_id: this._roomId, case_id: caseId})
 
     if (caseAnn != null && caseAnn.message != null) {
       caseAnn = caseAnn.message
@@ -157,7 +159,8 @@ class Annotator {
   async _loadMemory (questId) {
     const doc = this._document
     let questAnn =
-      await MessageBus.i.request('quest/annotations/get', {quest_id: questId})
+      await MessageBus.i.request('quest/annotations/get',
+        {room_id: this._roomId, quest_id: questId})
 
     if (questAnn != null && questAnn.message != null) {
       questAnn = questAnn.message
@@ -445,6 +448,7 @@ class Annotator {
       this._message.innerHTML = 'select the student year'
     else {
       const ann = {
+        room_id: this._roomId,
         case_id: this._case.id,
         property_id: Annotator.category.organization,
         range: 'complete',
@@ -482,6 +486,7 @@ class Annotator {
 
   async _saveAnnotations () {
     const amsg = {
+      room_id: this._roomId,
       case_id: this._case.id
     }
     for (const an of this._annotations) {
@@ -517,7 +522,7 @@ class Annotator {
             if (this._kmemory[this._kmemoryPrefix(f)] != '-') {
               const rquest =
                 await MessageBus.i.request('quest/annotation/post',
-                  {quest_id: this._questId,
+                  {room_id: this._roomId,
                    property_id: amsg.property_id,
                    fragment: f.fragment})
             }

@@ -6,9 +6,9 @@ class AnnotatorMemory {
   }
 
   async _loadMemory () {
-    const questId = (new URL(document.location)).searchParams.get('questid')
+    const roomId = (new URL(document.location)).searchParams.get('roomid')
     let questAnn =
-      await MessageBus.i.request('quest/annotations/get', {quest_id: questId})
+      await MessageBus.i.request('quest/annotations/get', {room_id: roomId})
 
     if (questAnn != null && questAnn.message != null) {
       questAnn = questAnn.message
