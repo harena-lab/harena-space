@@ -1,22 +1,22 @@
 (function () {
 
 DCC.component(
-  'harena-quest-cases',
+  'harena-room-cases',
   'dcc-rest',
   {
     environment: {
       'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api,
-      'questId': (new URL(document.location)).searchParams.get('questid')
+      'room_id': (new URL(document.location)).searchParams.get('roomid')
     },
     oas: {
       paths: {
-        '{url-manager}/author/quest/cases': {
+        '{url-manager}/room/case/list': {
           'get': {
-            operationId: 'quest-cases',
+            operationId: 'room-cases',
             parameters: [
               {name: 'url-manager',
                in: 'path'},
-              {name: 'questId',
+              {name: 'room_id',
                in: 'query'}
             ]
           }
@@ -27,7 +27,7 @@ DCC.component(
 )
 
 DCC.component(
-  'harena-load-case',
+  'harena-room-load-case',
   'dcc-rest',
   {
     environment: {
@@ -35,13 +35,15 @@ DCC.component(
     },
     oas: {
       paths: {
-        '{url-manager}/case': {
+        '{url-manager}/room/case': {
           'get': {
             operationId: 'case',
             parameters: [
               {name: 'url-manager',
                in: 'path'},
-              {name: 'caseId',
+              {name: 'room_id',
+               in: 'query'},
+              {name: 'case_id',
                in: 'query'}
             ]
           }
