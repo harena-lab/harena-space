@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Cadastro de Usuário</title>
+
+	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
+
+	<link rel="stylesheet" href="/author/css/author.css">
+
+	<script src="/lib/axios-0.21.0/axios.min.js"></script>
+
+	<script src="/lib/jquery-3-4-1/jquery-3.4.1.slim.min.js"></script>
+	<script src="/lib/popper-1-15-0/popper.min.js"></script>
+	<script src="/lib/bootstrap-4.4.1/js/bootstrap.min.js"></script>
+
+	<script src="/config/config.js"></script>
+	<script src="/dccs/infra/bus.js"></script>
+
+	<script src="/dccs/base/primitive-dcc.js"></script>
+	<script src="/dccs/base/scope-dcc.js"></script>
+	<script src="/dccs/base/dcc.js"></script>
+	<script src="/dccs/base/dcc-base.js "></script>
+	<script src="/dccs/base/dcc-visual.js "></script>
+	<script src="/dccs/base/dcc-block.js"></script>
+	<script src="/dccs/components/visual/dcc-button.js"></script>
+	<script src="/dccs/components/visual/dcc-notice-input.js"></script>
+
+	<script src="/dccs/components/web/dcc-rest.js"></script>
+	<script src="/dccs/components/web/dcc-include.js"></script>
+	<script src="/dccs/components/web/dcc-dhtml.js"></script>
+
+	<script src="/dccs/components/data/dcc-submit.js"></script>
+	<script src="/dccs/components/data/dcc-model.js"></script>
+	<script src="/dccs/components/data/dcc-record.js"></script>
+
+	<script src="/dccs/base/subscribe-dcc.js"></script>
+	<script src="/dccs/base/trigger-dcc.js"></script>
+	<script src="/dccs/base/property-dcc.js"></script>
+	<script src="/dccs/base/connect-dcc.js"></script>
+
+	<script src="/infra/basic.js"></script>
+	<script src="/infra/dcc-common-server-proxy.js"></script>
+	<script src="/infra/dcc-common-server-address.js"></script>
+	<script src="/infra/dcc-rest-proxy.js"></script>
+	<script src="/infra/dcc-basic.js"></script>
+
+	<link rel="stylesheet" href="/lib/fontawesome-5-10-1/css/all.min.css">
+	<link rel="stylesheet" href="/lib/bootstrap-4.4.1/css/bootstrap.min.css">
+
+	<link rel="stylesheet" href="/dccs/css/dccs.css">
+	<link rel="stylesheet" href="/dccs/css/properties.css">
+	<link rel="stylesheet" href="/infra/css/common-player.css">
+	<link rel="stylesheet" href="/infra/css/common-author.css">
+
+	<script src="/user/js/dcc-rest-proxy-user.js"></script>
+  <script src="/user/js/user-signup.js"></script>
+</head>
+
+  <body onload="UserSignup.i.startOpenTCLE()">
+    <!-- Create a section to place page content -->
+    <main role="main">
+      <dcc-rest id="harena-create-user" bind="harena-create-user" subscribe="user/create/post"></dcc-rest>
+      <dcc-rest id="harena-link-term" bind="harena-link-term" subscribe="user/term/post"></dcc-rest>
+
+      <div class="d-flex flex-column vh-100 vw-100 hidden-overflow">
+
+        <div class="h-100 w-100 create-case-padding scroll-y">
+					<div class="col-md-12 col-lg-6">
+						<div class="home-text">
+	            <p id="template-title">Pesquisa em Raciocínio Clínico</p>
+	          </div>
+
+						<hr>
+						<div id="feedback-message-1" style="font-size:24px;color:red"></div>
+						<hr>
+					</div>
+
+          <div id="complete-form" class="row" style="padding-bottom: 70px;">
+
+            <div class="col-md-12 col-lg-6">
+							<!-- <h4 style="color:black">Este cadastro deve obrigatoriamente ser preenchido pelo responsável da criança ou adolescente que participará da oficina.</h4> -->
+
+              <form id="create-case-form">
+								<!-- TCLE -->
+                <div id="term-form" class="outer">
+                  <hr>
+                  <section id="main_content" class="inner">
+										<h1 id="termo-de-consentimento-livre-e-esclarecido">TERMO DE CONSENTIMENTO LIVRE E ESCLARECIDO (TCLE)</h1>
+
+										<h2>Pesquisa em Raciocínio Clínico</h2>
+
+                    <p>Olá! Você recebeu um convite para participar da pesquisa "Comparação de um instrumento de avaliação de scripts de doença com medidas de conhecimento factual e acurácia diagnóstica". Trata-se de um trabalho que visa entender melhor o desenvolvimento do raciocínio clínico em estudantes de medicina, com o objetivo final de melhorar o ensino. Nas próximas telas, você irá ler os esclarecimentos referentes ao projeto e poderá optar por participar ou não. É totalmente voluntário.</p>
+                    <p>Caso você possua perguntas sobre o estudo ou se pensar que houve algum prejuízo pela sua participação nesse estudo, pode conversar a qualquer momento com o coordenador da pesquisa Fernando Salvetti Valente através do telefone (19) 998389002 ou pelo e-mail <a href="f.valente@hc.fm.usp.br">f.valente@hc.fm.usp.br</a>.</p>
+
+                    <h1>Esclarecimento</h1>
+
+                    <h2>Justificativa, objetivos e procedimentos</h2>
+
+                    </p>O raciocínio clínico é uma parte importante da prática médica. Apesar disso, e de conseguirmos perceber suas influências e até mesmo medir alguns dos seus resultados, ainda temos dificuldade em explorar e compreender seus mecanismos. O objetivo desta pesquisa é entender melhor como o conhecimento médico de cada um se organiza na memória. Existem modelos que tentam explicar esse fenômeno. O principal deles chama-se script de doença, um conjunto de informações chave das doenças (epidemiologia, síndrome clínica e temporalidade) que se forma na memória no decorrer das diversas exposições que temos às doenças, principalmente na forma de prática clínica com pacientes. Nosso grupo de pesquisa desenvolveu uma ferramenta que avalia objetivamente aspectos esses scripts, como sua organização. Uma parte relevante do entendimento é comparar esta ferramenta com outros instrumentos de medida. A coleta de dados é bastante simples: você responderá a duas perguntas abertas sobre uma doença e terá cinco minutos para cada uma. Além disso, resolverá alguns casos clínicos. O objetivo não é medir seu conhecimento, mas sim como ele se organiza. Queremos entender melhor este aspecto, para melhorarmos o ensino de medicina. Queremos entender, não julgar.</p>
+
+                    <h2>Desconfortos, riscos e benefícios</h2>
+
+                    <p>A participação na pesquisa acarretará no consumo de seu tempo. Entendemos que isso acrescenta ao cansaço pelo qual já está passando, mas nos esforçamos para deixar este documento sem uma extensão muito longa e a tarefa o mais curta possível. Não há riscos à saúde envolvidos nessa pesquisa, não haverá qualquer custo financeiro para quem participar, assim como os riscos à privacidade também serão reduzidos ao máximo, por meio da anonimização dos dados. Os benefícios possíveis são um melhor entendimento dos processos envolvidos no raciocínio de médicos e estudantes de medicina, com consequente melhora do ensino e formação de médicos cujo raciocínio seja mais bem desenvolvido.</h2>
+
+                    <h2>Liberdade de recusar-se e retirar-se do estudo</h2>
+
+                    <p>Você poderá, a qualquer momento, optar por retirar-se da pesquisa. Isso não acarretará em nenhum julgamento, punição, prejuízo ou represália de qualquer pessoa ou instituição.</p>
+
+                    <h2>Manutenção do sigilo e privacidade</h2>
+
+                    <p>Somente serão coletadas respostas e outros dados dos alunos que aceitarem participar da pesquisa. Durante a realização do trabalho, serão utilizados alguns dados dos alunos participantes. Não será possível a identificação individual de cada aluno, nem mesmo pelos pesquisadores participantes, por conta do uso de códigos anonimizados e aleatórios para identificação, ao invés dos seus nomes ou números de matrícula. Solicitamos sua autorização para que os dados obtidos sejam utilizados em uma publicação científica, meio pelo qual os resultados de uma pesquisa são divulgados e compartilhados com a comunidade científica.</p>
+
+                    <h2>Garantia de ressarcimento</h2>
+
+                    <p>Você não terá qualquer custo, pois ele será de responsabilidade do orçamento da pesquisa. Você tem direito a ressarcimento em caso de despesas decorrentes da sua participação na pesquisa.</p>
+
+                    <h2>Garantia de indenização</h2>
+
+                    <p>Você tem direito à indenização diante de eventuais danos decorrentes da pesquisa. Você receberá uma cópia deste TCLE no seu e-mail, fornecido ao final deste documento, caso opte por participar.</p>
+
+                    <hr>
+										<div style="text-align:center;">
+                    <a href="/user/signup/terms/tcle-raciocinio-clinico.pdf" target="_blank">Download do Termo de Consentimento Livre e Esclarecido (TCLE)</a><br /><br />
+                    </div>
+										<hr>
+
+                    <h1>Consentimento após esclarecimento</h1>
+
+                    <p>Acredito ter sido suficientemente informado a respeito das informações que li, descrevendo o estudo "Comparação de um instrumento de avaliação de scripts de doença com medidas de conhecimento factual e acurácia diagnóstica". Ficaram claros para mim quais são os propósitos do estudo, os procedimentos a serem realizados, seus desconfortos e riscos, as garantias de confidencialidade e de esclarecimentos permanentes. Ficou claro também que minha participação é isenta de despesas. Concordo voluntariamente em participar deste estudo e poderei retirar o meu consentimento a qualquer momento, antes ou durante o mesmo, sem penalidades ou prejuízo ou perda de qualquer benefício que eu possa ter adquirido.</p>
+
+									<div class="form-group">
+	                  <label for="email">Email do Participante</label>
+	                  <input type="text" class="form-control" id="email" name="email" placeholder="Email do participante"
+										       aria-describedby="emailDesc" onchange="UserSignup.i.update()">
+										<small id="emailDesc" class="form-text text-muted">
+											Escolha um email que você usará para fazer login.
+										</small>
+	                </div>
+									<p>Favor se identificar e concluir este termo, caso concorde em participar:</p>
+
+	                <div class="form-group">
+	                  <label for="username">Nome completo do(a) participante da pesquisa</label>
+	                  <input type="text" class="form-control" id="username" name="username" placeholder="Nome completo"
+										       aria-describedby="usernameDesc" onchange="UserSignup.i.update()">
+										<small id="usernameDesc" class="form-text text-muted">
+											Digite o seu nome.
+										</small>
+	                </div>
+
+									<div class="form-inline">
+										<label for="date_agree_1">Data:&nbsp;</label>
+										<input type="text" class="form-control" id="date_agree_1" name="date_agree_1" readonly>
+									</div>
+
+									<p><input type="radio" id="agree_radio" name="agree" value="agree" onchange="UserSignup.i.update()"/> Concordo em participar da pesquisa <br>
+									<input type="radio" id="not_agree_radio" name="agree" value="not_agree" onchange="UserSignup.i.update()" /> Não desejo participar da pesquisa</p>
+
+	                <input type="hidden" id="institution" name="institution" value="usp">
+	                <input type="hidden" id="grade" name="grade" value="student">
+	                <input type="hidden" id="term" name="term" value="avaliacao_scripts_2023">
+	                <input type="hidden" id="role" name="role" value="adult">
+									<hr>
+									<div id="feedback-message-2" style="font-size:24px;color:red"></div>
+									<hr>
+									<dcc-submit label="Enviar" topic="/user/signup" xstyle="out"></dcc-submit>
+								</section>
+								</div>
+							</form>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <!-- end of div /.container -->
+  </body>
+</html>
