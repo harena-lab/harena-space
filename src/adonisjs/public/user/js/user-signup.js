@@ -24,18 +24,19 @@ class UserSignup {
   }
 
   update () {
-    if(document.querySelector('#username'))
+    if(document.querySelector('#username') && document.querySelector('#name_participant'))
       document.querySelector('#name_participant').innerHTML = document.querySelector('#username').value
-    if(document.querySelector('#respname'))
+    if(document.querySelector('#respname') && document.querySelector('#name_responsible'))
       document.querySelector('#name_responsible').innerHTML = document.querySelector('#respname').value
-    if (document.querySelector('#email'))
+    if (document.querySelector('#email') && document.querySelector('#email_responsible'))
       document.querySelector('#email_responsible').innerHTML = document.querySelector('#email').value
-    document.querySelector('#answer_agree').innerHTML =
-      (document.querySelector('#agree_radio').checked)
-        ? 'Concordo em participar da pesquisa'
-        : (document.querySelector('#not_agree_radio').checked)
-          ? 'Não desejo participar da pesquisa'
-          : ''
+    if (document.querySelector('#answer_agree'))
+      document.querySelector('#answer_agree').innerHTML =
+        (document.querySelector('#agree_radio').checked)
+          ? 'Concordo em participar da pesquisa'
+          : (document.querySelector('#not_agree_radio').checked)
+            ? 'Não desejo participar da pesquisa'
+            : ''
   }
 
   _expandTerm () {
@@ -66,25 +67,71 @@ class UserSignup {
     console.log(parameters)
 
     this._showFeedback('')
-    if(parameters.respname){
-    if (parameters == null)
-      this._showFeedback('Erro de processamento, entre novamente na página a partir do link')
-    else if (parameters.login.length == 0)
-      this._showFeedback('Login do usuário é obrigatório.')
-    else if (parameters.username.trim().length == 0)
-      this._showFeedback('Nome do usuário é obrigatório.')
-    else if (parameters.respname.length == 0)
-      this._showFeedback('Nome do responsável é obrigatório.')
-    else if (parameters.email.length == 0)
-      this._showFeedback('O e-mail do responsável do usuário é obrigatório.')
-    else if (parameters.password.length == 0)
-      this._showFeedback('A senha é obrigatória.')
-    else {
-      console.log('========== creating user ==========')
-      const login = parameters.login.replace(/ /g, '_')
-      const userJson = {
+    if(parameters.respname) {
+      if (parameters == null)
+        this._showFeedback('Erro de processamento, entre novamente na página a partir do link')
+      else if (parameters.login.length == 0)
+        this._showFeedback('Login do usuário é obrigatório.')
+      else if (parameters.username.trim().length == 0)
+        this._showFeedback('Nome do usuário é obrigatório.')
+      else if (parameters.respname.length == 0)
+        this._showFeedback('Nome do responsável é obrigatório.')
+      else if (parameters.email.length == 0)
+        this._showFeedback('O e-mail do responsável do usuário é obrigatório.')
+      else if (parameters.password.length == 0)
+        this._showFeedback('A senha é obrigatória.')
+      else {
+        console.log('========== creating user ==========')
+        const login = parameters.login.replace(/ /g, '_')
+        const userJson = {
+          username: parameters.username,
+          email: login + '@museu.unicamp.br',
+          password: parameters.password,
+          login: login,
+          institution: parameters.institution,
+          grade: parameters.grade,
+          eventId: new URL(document.location).searchParams.get('event')
+        }
+        let user = await MessageBus.i.request('user/create/post', userJson)
+        console.log(user.message)
+        if (user.message.error) {
+          console.log('--- error')
+          console.log(user.message)
+          if (user.message.error.includes('409'))
+            this._showFeedback('Já existe um usuário com este login. Por favor, escolha outro login.')
+          else
+            this._showFeedback('Houve algum erro no cadastro. Contate o suporte: contact@harena.org')
+        } else {
+          const agree = (parameters.agree && parameters.agree.length > 0 && parameters.agree == 'agree')
+          const termJson = {
+            userId: user.message.id,
+            termId: parameters.term,
+            nameResponsible: parameters.respname,
+            emailResponsible: parameters.email,
+            nameParticipant: parameters.username,
+            date: parameters.date_agree_1,
+            role: parameters.role,
+            agree: (agree) ? '1' : '0'
+          }
+          console.log('=== term json')
+          console.log(termJson)
+          let term = await MessageBus.i.request('user/term/post', termJson)
+          console.log('=== term add')
+          console.log(term)
+          document.querySelector('#complete-form').style.display = 'none'
+          if (agree)
+            this._showFeedback(
+              'Usuário cadastrado com sucesso.<br>' +
+              '<span style="color:purple"><b>Importante: </b>Ainda há duas etapas extras a serem cumpridas. Você receberá um e-mail para confirmar que é o responsável. Em seguida, o participante também receberá um link para confirmar a sua concordância com a pesquisa.</span>', 'blue')
+          else
+            this._showFeedback('Usuário cadastrado com sucesso.', 'blue')
+        }
+      }
+    } else {
+      let login = parameters.login.replace(/ /g, '_')
+      let userJson = {
         username: parameters.username,
-        email: login + '@museu.unicamp.br',
+        email: login + '@email.com',
         password: parameters.password,
         login: login,
         institution: parameters.institution,
@@ -92,22 +139,21 @@ class UserSignup {
         eventId: new URL(document.location).searchParams.get('event')
       }
       let user = await MessageBus.i.request('user/create/post', userJson)
-      console.log(user.message)
       if (user.message.error) {
         console.log('--- error')
         console.log(user.message)
         if (user.message.error.includes('409'))
           this._showFeedback('Já existe um usuário com este login. Por favor, escolha outro login.')
         else
-          this._showFeedback('Houve algum erro no cadastro. Contate o suporte: contact@harena.org')
+          this._showFeedback('Houve algum erro no cadastro.')
       } else {
         const agree = (parameters.agree && parameters.agree.length > 0 && parameters.agree == 'agree')
         const termJson = {
           userId: user.message.id,
           termId: parameters.term,
-          nameResponsible: parameters.respname,
-          emailResponsible: parameters.email,
           nameParticipant: parameters.username,
+          nameResponsible: null,
+          emailResponsible: null,
           date: parameters.date_agree_1,
           role: parameters.role,
           agree: (agree) ? '1' : '0'
@@ -119,56 +165,11 @@ class UserSignup {
         console.log(term)
         document.querySelector('#complete-form').style.display = 'none'
         if (agree)
-          this._showFeedback(
-            'Usuário cadastrado com sucesso.<br>' +
-            '<span style="color:purple"><b>Importante: </b>Ainda há duas etapas extras a serem cumpridas. Você receberá um e-mail para confirmar que é o responsável. Em seguida, o participante também receberá um link para confirmar a sua concordância com a pesquisa.</span>', 'blue')
+          this._showFeedback('Usuário cadastrado com sucesso.<br>', 'blue')
         else
           this._showFeedback('Usuário cadastrado com sucesso.', 'blue')
       }
     }
-  }else {
-    let login = parameters.login.replace(/ /g, '_')
-    let userJson = {
-      username: parameters.username,
-      email: login + '@email.com',
-      password: parameters.password,
-      login: login,
-      institution: parameters.institution,
-      grade: parameters.grade,
-      eventId: new URL(document.location).searchParams.get('event')
-    }
-    let user = await MessageBus.i.request('user/create/post', userJson)
-    if (user.message.error) {
-      console.log('--- error')
-      console.log(user.message)
-      if (user.message.error.includes('409'))
-        this._showFeedback('Já existe um usuário com este login. Por favor, escolha outro login.')
-      else
-        this._showFeedback('Houve algum erro no cadastro.')
-    }else {
-      const agree = (parameters.agree && parameters.agree.length > 0 && parameters.agree == 'agree')
-      const termJson = {
-        userId: user.message.id,
-        termId: parameters.term,
-        nameParticipant: parameters.username,
-        nameResponsible: null,
-        emailResponsible: null,
-        date: parameters.date_agree_1,
-        role: parameters.role,
-        agree: (agree) ? '1' : '0'
-      }
-      console.log('=== term json')
-      console.log(termJson)
-      let term = await MessageBus.i.request('user/term/post', termJson)
-      console.log('=== term add')
-      console.log(term)
-      document.querySelector('#complete-form').style.display = 'none'
-      if (agree)
-        this._showFeedback('Usuário cadastrado com sucesso.<br>', 'blue')
-      else
-        this._showFeedback('Usuário cadastrado com sucesso.', 'blue')
-    }
-  }
   }
 
   async _signupTCLE (topic, message) {
@@ -187,7 +188,6 @@ class UserSignup {
       this._showFeedback('Você precisa responder se concorda participar da pesquisa.')
     else {
       console.log('========== creating user ==========')
-      // const login = parameters.login.replace(/ /g, '_')
       const login = parameters.email.split('@')[0]
       const userJson = {
         username: parameters.username,
