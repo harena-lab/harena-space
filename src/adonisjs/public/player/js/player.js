@@ -337,11 +337,14 @@ class PlayerManager {
   async _caseLoad (caseid) {
     Basic.service.currentCaseId =
       new URL(document.location).searchParams.get('id')
+    const roomId = new URL(document.location).searchParams.get('room')
     /*
     const caseObj = await MessageBus.i.request(
       'service/request/get', {caseId: Basic.service.currentCaseId}, null, true)
     */
-    const caseObj = await MessageBus.i.request('case/get/' + Basic.service.currentCaseId, null, null, true)
+    const caseObj = await MessageBus.i.request(
+      'case/get/' + Basic.service.currentCaseId,
+      (roomId == null) ? null : {room: roomId}, null, true)
 
     this._currentCaseTitle = caseObj.message.title
 

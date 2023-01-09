@@ -53,8 +53,8 @@
   <script src="/dccs/base/property-dcc.js"></script>
   <script src="/dccs/base/connect-dcc.js"></script>
 
-
   <script src="/infra/dcc-rest-proxy.js"></script>
+  <script src="/infra/proxy/dcc-proxy-case.js"></script>
   <script src="/infra/dcc-basic.js"></script>
   <script src="/infra/dcc-logger.js"></script>
   <script src="/infra/dcc-logger-manager.js"></script>
@@ -132,6 +132,7 @@
     <main role="main">
       <div id="main-panel" class="d-flex flex-column vh-100 vw-100 scroll-y index-boot-padding">
         <dcc-rest id="harena-case" bind="harena-case" subscribe="service/request/get"></dcc-rest>
+        <dcc-rest id="harena-room-case" bind="harena-room-load-case" subscribe="case/room/get"></dcc-rest>
         <div class="mr-auto author-breadcrumb" id="preview-panel">
         <!-- <div class="sty-preview-panel" id="preview-panel"> -->
           <nav aria-label="breadcrumb">

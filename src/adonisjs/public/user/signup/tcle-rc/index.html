@@ -57,11 +57,12 @@
   <script src="/user/js/user-signup.js"></script>
 </head>
 
-  <body onload="UserSignup.i.startOpenTCLE()">
+  <body onload="UserSignup.i.startOpenTCLEExperiment()">
     <!-- Create a section to place page content -->
     <main role="main">
       <dcc-rest id="harena-create-user" bind="harena-create-user" subscribe="user/create/post"></dcc-rest>
       <dcc-rest id="harena-link-term" bind="harena-link-term" subscribe="user/term/post"></dcc-rest>
+      <dcc-rest id="harena-login-event" bind="harena-login-event" subscribe="user/login/post"></dcc-rest>
 
       <div class="d-flex flex-column vh-100 vw-100 hidden-overflow">
 
