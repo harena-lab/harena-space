@@ -14,7 +14,36 @@ class UserSignup {
     document.querySelector('#date_agree_2').innerHTML = sdate
   }
 
-  startOpenTCLE () {
+  async _experimentStart () {
+    const userLogin = {
+      username: this.current.username,
+      eventId: this.current.eventId
+    }
+    let user = await MessageBus.i.request('user/login/post', userLogin)
+    // window.location.href = "/player/case/?id=41813d6c-70c7-4bda-9683-1dd39ba3c990&room=c6b241ee-e6e5-4921-9cc8-ed6ffd62e85d"
+    window.location.href = "/player/case/?id=46d46199-a32d-42ed-b49a-578c47c3e7bb&room=5ff12575-0d4c-41f6-ac6a-e94ee1eb7cbc"
+  }
+
+  startOpenTCLEGeneric () {
+    this.finalMessage =
+`Usuário cadastrado com sucesso!<br>
+ Por favor mude a sua senha após o primeiro login.<br>
+ <i style="color:darkred">Sua senha temporária é: {password}</i>`
+    this._startOpenTCLE()
+  }
+
+  startOpenTCLEExperiment () {
+    this._experimentStart = this._experimentStart.bind(this)
+    MessageBus.i.subscribe('control/experiment/start', this._experimentStart)
+
+    this.finalMessage =
+`<div style="color:black"><p>Bem-vindo(a)! Você foi convidado(a) a participar de um estudo científico sobre raciocínio clínico e aceitou! Agradeço muito por isso.</p>
+<p>Nas próximas telas, você resolverá alguns casos clínicos. Existem casos em diversos cenários de prática, desde ambulatório até pronto-socorro. Sua tarefa é ler cada caso e escrever qual é o diagnóstico. É importante que você se empenhe bastante em acertar. Depois dos casos, você responderá a mais duas perguntas curtas.</p>
+<p><dcc-button topic="control/experiment/start" xstyle="out" label="Iniciar"></dcc-button></p></div>`
+    this._startOpenTCLE()
+  }
+
+  _startOpenTCLE () {
     this._signupTCLE = this._signupTCLE.bind(this)
     MessageBus.i.subscribe('/user/signup', this._signupTCLE)
 
@@ -198,6 +227,10 @@ class UserSignup {
         grade: parameters.grade,
         eventId: new URL(document.location).searchParams.get('event')
       }
+      this.current = {
+        username: userJson.username,
+        eventId: userJson.eventId
+      }
       let user = await MessageBus.i.request('user/create/post', userJson)
       console.log(user.message)
       if (user.message.error) {
@@ -225,7 +258,9 @@ class UserSignup {
         console.log('=== term add')
         console.log(term)
         document.querySelector('#complete-form').style.display = 'none'
-        this._showFeedback(`Usuário cadastrado com sucesso!<br> Por favor mude a sua senha após o primeiro login.<br> <i style="color:darkred">Sua senha temporária é: ${userJson['password']}</i>`, 'darkblue')
+        this._showFeedback(
+          this.finalMessage.replace('{password}', userJson['password']),
+          'darkblue')
       }
     }
   }

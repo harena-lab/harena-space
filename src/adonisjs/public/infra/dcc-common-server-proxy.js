@@ -63,8 +63,14 @@ class DCCCommonServer {
     } else {
       // <TODO> the topic service/request/get is extremely fragile -- refactor
       const caseId = MessageBus.extractLevel(topic, 3)
-      const caseObj = await MessageBus.i.request(
-        'service/request/get', {caseId: caseId}, null, track)
+      let caseObj
+      if (message != null && message.room != null)
+        caseObj = await MessageBus.i.request(
+          'case/room/get', {room_id: message.room, case_id: caseId},
+          null, track)
+      else
+        caseObj = await MessageBus.i.request(
+          'service/request/get', {caseId: caseId}, null, track)
 
       caseComplete = caseObj.message
       const template =
