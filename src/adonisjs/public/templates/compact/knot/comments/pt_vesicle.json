@@ -1,0 +1,534 @@
+{
+ "property": "media",
+ "blocks": [
+  {
+   "title": "Comentários",
+   "type": "text",
+   "property": "details",
+   "placeholder": "Digite seus comentários"
+  },
+  {
+   "title": "Nota",
+   "type": "radio-h",
+   "comments": [
+    {
+     "title": "1 |",
+     "property": "grade",
+     "value": "1"
+    },
+    {
+     "title": "2 |",
+     "property": "grade",
+     "value": "2"
+    },
+    {
+     "title": "3 |",
+     "property": "grade",
+     "value": "3"
+    },
+    {
+     "title": "4 |",
+     "property": "grade",
+     "value": "4"
+    },
+    {
+     "title": "5 |",
+     "property": "grade",
+     "value": "5"
+    }
+   ]
+  }
+ ],
+ "contexts": {
+  "VS-VL": {
+   "title": "Vídeo – Varredura longitudinal da vesícula",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
+     "title": "Referências anatómicas/qualidade",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Tríade portal ausente",
+       "property": "portal_triad",
+       "value": "not_present"
+      },
+      {
+       "title": "MILF ausente",
+       "property": "milf",
+       "value": "not_present"
+      },
+      {
+       "title": "Varredura fora do eixo longitudinal da vesícula",
+       "property": "off_axis_longitudinal_sweep_gallbladder",
+       "value": "yes"
+      },
+      {
+       "title": "Varredura incompleta",
+       "property": "incomplete_sweep",
+       "value": "yes"
+      }
+     ]
+    }
+   ]
+  },
+  "VS-VT": {
+   "title": "Vídeo – Varredura transversal da vesícula",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
+     "title": "Referências anatómicas/qualidade",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Varredura fora do eixo transversal da vesícula",
+       "property": "off_axis_transversal_sweep_gallbladder",
+       "value": "yes"
+      },
+      {
+       "title": "Varredura incompleta",
+       "property": "incomplete_sweep",
+       "value": "yes"
+      }
+     ]
+    }
+   ]
+  },
+  "VS-ME": {
+   "title": "Imagem – Medida espessura da parede da vesícula",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
+     "title": "Medida",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "Adequada",
+       "property": "is",
+       "value": "adequate"
+      },
+      {
+       "title": "Inadequada",
+       "property": "is",
+       "value": "inadequate"
+      }
+     ]
+    }
+   ]
+  },
+  "TRIA": {
+   "title": "Vídeo – Tríade portal",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
+     "title": "Referências anatómicas/qualidade",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Ducto biliar comum ausente",
+       "property": "common_bile_duct",
+       "value": "not_present"
+      },
+      {
+       "title": "Veia porta ausente",
+       "property": "portal_vein",
+       "value": "not_present"
+      },
+      {
+       "title": "Artéria hepática ausente",
+       "property": "hepatic_artery",
+       "value": "not_present"
+      }
+     ]
+    }
+   ]
+  },
+  "BILI": {
+   "title": "Imagem – Ducto biliar comum",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
+     "title": "Medida",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "Adequada",
+       "property": "is",
+       "value": "adequate"
+      },
+      {
+       "title": "Inadequada",
+       "property": "is",
+       "value": "inadequate"
+      }
+     ]
+    }
+   ]
+  }
+ }
+}

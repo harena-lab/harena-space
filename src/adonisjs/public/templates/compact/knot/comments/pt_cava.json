@@ -1,0 +1,391 @@
+{
+ "property": "media",
+ "blocks": [
+  {
+   "title": "Comentários",
+   "type": "text",
+   "property": "details",
+   "placeholder": "Digite seus comentários"
+  },
+  {
+   "title": "Nota",
+   "type": "radio-h",
+   "comments": [
+    {
+     "title": "1 |",
+     "property": "grade",
+     "value": "1"
+    },
+    {
+     "title": "2 |",
+     "property": "grade",
+     "value": "2"
+    },
+    {
+     "title": "3 |",
+     "property": "grade",
+     "value": "3"
+    },
+    {
+     "title": "4 |",
+     "property": "grade",
+     "value": "4"
+    },
+    {
+     "title": "5 |",
+     "property": "grade",
+     "value": "5"
+    }
+   ]
+  }
+ ],
+ "contexts": {
+  "CV-VI": {
+   "title": "Vídeo",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
+     "title": "Referências anatómicas/qualidade",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Supra-hepática ausente",
+       "property": "suprahepatic",
+       "value": "not_present"
+      },
+      {
+       "title": "Confluência no átrio direito ausente",
+       "property": "right_atrium_confluence",
+       "value": "not_present"
+      },
+      {
+       "title": "Maior diâmetro da cava ausente",
+       "property": "cavas_largest_diameter",
+       "value": "not_present"
+      }
+     ]
+    },
+    {
+     "title": "Achados - Diâmetro",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "Aquisição inconclusiva",
+       "property": "findings_diameter",
+       "value": "inconclusive_acquisition"
+      },
+      {
+       "title": "Menor que 2.1 cm",
+       "property": "findings_diameter",
+       "value": "less_than_2_1_cm"
+      },
+      {
+       "title": "Maior ou igual que 2.1 cm",
+       "property": "findings_diameter",
+       "value": "greater_or_equal_to_2_1_cm"
+      },
+      {
+       "title": "Colabada",
+       "property": "findings_diameter",
+       "value": "collapsing"
+      }
+     ]
+    },
+    {
+     "title": "Achados - Variabilidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "Aquisição inconclusiva",
+       "property": "findings_variability",
+       "value": "inconclusive_acquisition"
+      },
+      {
+       "title": "Maior do que 50%",
+       "property": "findings_variability",
+       "value": "greater_than_50_percent"
+      },
+      {
+       "title": "Menor do que 50%",
+       "property": "findings_variability",
+       "value": "less_than_50_percent"
+      }
+     ]
+    }
+   ]
+  },
+  "CV-II": {
+   "title": "Imagem Inspiração",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
+     "title": "Medida",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "Não efetuada",
+       "property": "measurements",
+       "value": "not_performed"
+      },
+      {
+       "title": "Correta",
+       "property": "measurements",
+       "value": "correct"
+      },
+      {
+       "title": "Incorreta",
+       "property": "measurements",
+       "value": "incorrect"
+      }
+     ]
+    }
+   ]
+  },
+  "CV-IE": {
+   "title": "Imagem Expiração",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
+     "title": "Medida",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "Não efetuada",
+       "property": "measurements",
+       "value": "not_performed"
+      },
+      {
+       "title": "Correta",
+       "property": "measurements",
+       "value": "correct"
+      },
+      {
+       "title": "Incorreta",
+       "property": "measurements",
+       "value": "incorrect"
+      }
+     ]
+    }
+   ]
+  }
+ }
+}
