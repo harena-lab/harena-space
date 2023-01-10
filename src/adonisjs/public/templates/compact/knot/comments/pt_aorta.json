@@ -1,0 +1,524 @@
+{
+ "property": "media",
+ "blocks": [
+  {
+   "title": "Comentários",
+   "type": "text",
+   "property": "details",
+   "placeholder": "Digite seus comentários"
+  },
+  {
+   "title": "Nota",
+   "type": "radio-h",
+   "comments": [
+    {
+     "title": "1 |",
+     "property": "grade",
+     "value": "1"
+    },
+    {
+     "title": "2 |",
+     "property": "grade",
+     "value": "2"
+    },
+    {
+     "title": "3 |",
+     "property": "grade",
+     "value": "3"
+    },
+    {
+     "title": "4 |",
+     "property": "grade",
+     "value": "4"
+    },
+    {
+     "title": "5 |",
+     "property": "grade",
+     "value": "5"
+    }
+   ]
+  }
+ ],
+ "contexts": {
+  "AO-P": {
+   "title": "Imagem - Aorta proximal",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
+     "title": "Referências anatómicas/qualidade",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Corpo vertebral ausente",
+       "property": "vertebral_body",
+       "value": "not_present"
+      },
+      {
+       "title": "Mesentérica superior ausente",
+       "property": "superior_mesenteric_artery",
+       "value": "not_present"
+      },
+      {
+       "title": "Tronco celíaco ausente",
+       "property": "celiac_trunk",
+       "value": "not_present"
+      },
+      {
+       "title": "Medida do diâmetro inadequada",
+       "property": "diameter_measurement",
+       "value": "inadequate"
+      }
+     ]
+    }
+   ]
+  },
+  "AO-D": {
+   "title": "Imagem - Aorta distal",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
+     "title": "Referências anatómicas/qualidade",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Corpo vertebral ausente",
+       "property": "vertebral_body",
+       "value": "not_present"
+      },
+      {
+       "title": "Medida do diâmetro inadequada",
+       "property": "diameter_measurement",
+       "value": "inadequate"
+      }
+     ]
+    }
+   ]
+  },
+  "AO-I": {
+   "title": "Imagem - Ilíacas",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
+     "title": "Referências anatómicas/qualidade",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Medidas inadequadas",
+       "property": "measurement",
+       "value": "inadequate"
+      }
+     ]
+    }
+   ]
+  },
+  "AO-M": {
+   "title": "Imagem - Aorta medial",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
+     "title": "Referências anatómicas/qualidade",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Corpo vertebral ausente",
+       "property": "vertebral_body",
+       "value": "not_present"
+      },
+      {
+       "title": "Medida do diâmetro inadequada",
+       "property": "diameter_measurement",
+       "value": "inadequate"
+      }
+     ]
+    }
+   ]
+  },
+  "AO-L": {
+   "title": "Vídeo - Varredura ao longitudinal",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
+     "title": "Varredura",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "Completa",
+       "property": "sweep",
+       "value": "complete"
+      },
+      {
+       "title": "Incompleta",
+       "property": "sweep",
+       "value": "incomplete"
+      }
+     ]
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,994 @@
+{
+ "property": "media",
+ "blocks": [
+  {
+   "title": "Comentários",
+   "type": "text",
+   "property": "details",
+   "placeholder": "Digite seus comentários"
+  },
+  {
+   "title": "Nota",
+   "type": "radio-h",
+   "comments": [
+    {
+     "title": "1 |",
+     "property": "grade",
+     "value": "1"
+    },
+    {
+     "title": "2 |",
+     "property": "grade",
+     "value": "2"
+    },
+    {
+     "title": "3 |",
+     "property": "grade",
+     "value": "3"
+    },
+    {
+     "title": "4 |",
+     "property": "grade",
+     "value": "4"
+    },
+    {
+     "title": "5 |",
+     "property": "grade",
+     "value": "5"
+    }
+   ]
+  }
+ ],
+ "contexts": {
+  "RD-VL": {
+   "title": "Vídeo – Rim D (varredura longitudinal)",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
+     "title": "Referências anatómicas/qualidade",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Varredura fora do eixo longitudinal do rim",
+       "property": "off_axis_longitudinal_sweep_kidney",
+       "value": "yes"
+      },
+      {
+       "title": "Varredura incompleta",
+       "property": "incomplete_sweep",
+       "value": "yes"
+      }
+     ]
+    }
+   ]
+  },
+  "RD-VT": {
+   "title": "Vídeo – Rim D (varredura transversal)",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
+     "title": "Referências anatómicas/qualidade",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Varredura fora do eixo transversal do rim",
+       "property": "off_axis_transversal_sweep_kidney",
+       "value": "yes"
+      },
+      {
+       "title": "Varredura incompleta",
+       "property": "incomplete_sweep",
+       "value": "yes"
+      }
+     ]
+    }
+   ]
+  },
+  "RD-ML": {
+   "title": "Imagem – Medida longitudinal do rim D",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
+     "title": "Medidas",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "Adequadas",
+       "property": "are",
+       "value": "adequate"
+      },
+      {
+       "title": "Inadequadas",
+       "property": "are",
+       "value": "inadequate"
+      }
+     ]
+    }
+   ]
+  },
+  "RE-VL": {
+   "title": "Vídeo – Rim E (varredura longitudinal)",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
+     "title": "Referências anatómicas/qualidade",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Varredura fora do eixo longitudinal do rim",
+       "property": "off_axis_longitudinal_sweep_kidney",
+       "value": "yes"
+      },
+      {
+       "title": "Varredura incompleta",
+       "property": "incomplete_sweep",
+       "value": "yes"
+      }
+     ]
+    }
+   ]
+  },
+  "RE-VT": {
+   "title": "Vídeo – Rim E (varredura transversal)",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
+     "title": "Referências anatómicas/qualidade",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Varredura fora do eixo transversal do rim",
+       "property": "off_axis_transversal_sweep_kidney",
+       "value": "yes"
+      },
+      {
+       "title": "Varredura incompleta",
+       "property": "incomplete_sweep",
+       "value": "yes"
+      }
+     ]
+    }
+   ]
+  },
+  "RE-ML": {
+   "title": "Imagem – Medida longitudinal do Rim E",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
+     "title": "Medidas",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "Adequadas",
+       "property": "are",
+       "value": "adequate"
+      },
+      {
+       "title": "Inadequadas",
+       "property": "are",
+       "value": "inadequate"
+      }
+     ]
+    }
+   ]
+  },
+  "BX-VL": {
+   "title": "Vídeo – Bexiga (varredura longitudinal)",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
+     "title": "Referências anatómicas/qualidade",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Varredura incompleta",
+       "property": "incomplete_sweep",
+       "value": "yes"
+      },
+      {
+       "title": "Varredura muito rápida",
+       "property": "sweep_too_fast",
+       "value": "yes"
+      }
+     ]
+    }
+   ]
+  },
+  "BX-VT": {
+   "title": "Vídeo – Bexiga (varredura transversal)",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
+     "title": "Referências anatómicas/qualidade",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Varredura incompleta",
+       "property": "incomplete_sweep",
+       "value": "yes"
+      },
+      {
+       "title": "Varredura muito rápida",
+       "property": "sweep_too_fast",
+       "value": "yes"
+      }
+     ]
+    }
+   ]
+  },
+  "BX-ML": {
+   "title": "Imagem – Medida da bexiga (longitudinal)",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
+     "title": "Medidas",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "Adequadas",
+       "property": "are",
+       "value": "adequate"
+      },
+      {
+       "title": "Inadequadas",
+       "property": "are",
+       "value": "inadequate"
+      }
+     ]
+    }
+   ]
+  },
+  "BX-MT": {
+   "title": "Imagem – Medida da bexiga (transversal)",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
+     "title": "Medidas",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "Adequadas",
+       "property": "are",
+       "value": "adequate"
+      },
+      {
+       "title": "Inadequadas",
+       "property": "are",
+       "value": "inadequate"
+      }
+     ]
+    }
+   ]
+  }
+ }
+}

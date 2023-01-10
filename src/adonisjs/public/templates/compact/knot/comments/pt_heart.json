@@ -1,0 +1,955 @@
+{
+ "property": "media",
+ "blocks": [
+  {
+   "title": "Comentários",
+   "type": "text",
+   "property": "details",
+   "placeholder": "Digite seus comentários"
+  },
+  {
+   "title": "Nota",
+   "type": "radio-h",
+   "comments": [
+    {
+     "title": "1 |",
+     "property": "grade",
+     "value": "1"
+    },
+    {
+     "title": "2 |",
+     "property": "grade",
+     "value": "2"
+    },
+    {
+     "title": "3 |",
+     "property": "grade",
+     "value": "3"
+    },
+    {
+     "title": "4 |",
+     "property": "grade",
+     "value": "4"
+    },
+    {
+     "title": "5 |",
+     "property": "grade",
+     "value": "5"
+    }
+   ]
+  }
+ ],
+ "contexts": {
+  "CO-SX": {
+   "title": "Vídeo - Sub-xifóide/sub-costal",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
+     "title": "Referências anatómicas/qualidade",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Ventrículo direito ausente",
+       "property": "right_ventricle",
+       "value": "not_present"
+      },
+      {
+       "title": "Ventrículo esquerdo ausente",
+       "property": "left_ventricle",
+       "value": "not_present"
+      },
+      {
+       "title": "Átrio direito ausente",
+       "property": "right_atrium",
+       "value": "not_present"
+      },
+      {
+       "title": "Átrio esquerdo ausente",
+       "property": "left_atrium",
+       "value": "not_present"
+      },
+      {
+       "title": "Válvula mitral ausente",
+       "property": "mitral_valve",
+       "value": "not_present"
+      },
+      {
+       "title": "Válvula tricúspide ausente",
+       "property": "tricuspid_valve",
+       "value": "not_present"
+      },
+      {
+       "title": "Aorta descente ausente",
+       "property": "descending_aorta",
+       "value": "not_present"
+      },
+      {
+       "title": "Fígado ausente",
+       "property": "liver",
+       "value": "not_present"
+      },
+      {
+       "title": "Ápex cardíaco ausente",
+       "property": "cardiac_apex",
+       "value": "not_present"
+      },
+      {
+       "title": "Câmaras desalinhadas",
+       "property": "misaligned_chambers",
+       "value": "yes"
+      }
+     ]
+    },
+    {
+     "title": "Achados",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Aquisição inconclusiva",
+       "property": "acquisition",
+       "value": "inconclusive"
+      },
+      {
+       "title": "Derrame pericárdico s/ repercussão",
+       "property": "pericardial_effusion_without_tamponade",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pericárdico c/ repercussão",
+       "property": "pericardial_effusion_with_tamponade",
+       "value": "yes"
+      },
+      {
+       "title": "Disfunção ventricular esquerda leve",
+       "property": "mild_left_ventricular_dysfunction",
+       "value": "yes"
+      },
+      {
+       "title": "Disfunção ventricular esquerda moderada",
+       "property": "moderate_left_ventricular_dysfunction",
+       "value": "yes"
+      },
+      {
+       "title": "Disfunção ventricular esquerda acentuada",
+       "property": "severe_left_ventricular_dysfunction",
+       "value": "yes"
+      },
+      {
+       "title": "Dilatação de ventrículo direito",
+       "property": "right_ventricule_dilation",
+       "value": "yes"
+      },
+      {
+       "title": "Presença de trombo/massa intracardíaca",
+       "property": "presence_intracardiac_thrombus_mass",
+       "value": "yes"
+      },
+      {
+       "title": "Vegetação valvar grosseira",
+       "property": "large_valvular_vegetation",
+       "value": "yes"
+      },
+      {
+       "title": "Hipertrofia septal grave",
+       "property": "severe_septal_hypertrophy",
+       "value": "yes"
+      },
+      {
+       "title": "Doença valvar",
+       "property": "severe_valvular_disease",
+       "value": "yes"
+      }
+     ]
+    }
+   ]
+  },
+  "CO-PL": {
+   "title": "Vídeo – Para-esternal longa",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
+     "title": "Referências anatómicas/qualidade",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Ventrículo direito ausente",
+       "property": "right_ventricle",
+       "value": "not_present"
+      },
+      {
+       "title": "Ventrículo esquerdo ausente",
+       "property": "left_ventricle",
+       "value": "not_present"
+      },
+      {
+       "title": "Septo ausente",
+       "property": "septum",
+       "value": "not_present"
+      },
+      {
+       "title": "Via de saída do ventrículo esquerdo ausente",
+       "property": "left_ventricular_outflow_tract",
+       "value": "not_present"
+      },
+      {
+       "title": "Válvula aórtica ausente",
+       "property": "aortic_valve",
+       "value": "not_present"
+      },
+      {
+       "title": "Válvula mitral ausente",
+       "property": "mitral_valve",
+       "value": "not_present"
+      },
+      {
+       "title": "Aorta descente ausente",
+       "property": "descending_aorta",
+       "value": "not_present"
+      },
+      {
+       "title": "Átrio esquerdo ausente",
+       "property": "left_atrium",
+       "value": "not_present"
+      },
+      {
+       "title": "Janela fora do eixo longo",
+       "property": "window_off_long_axis",
+       "value": "yes"
+      }
+     ]
+    },
+    {
+     "title": "Achados",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Aquisição inconclusiva",
+       "property": "acquisition",
+       "value": "inconclusive"
+      },
+      {
+       "title": "Derrame pericárdico s/ repercussão",
+       "property": "pericardial_effusion_without_tamponade",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pericárdico c/ repercussão",
+       "property": "pericardial_effusion_with_tamponade",
+       "value": "yes"
+      },
+      {
+       "title": "Disfunção ventricular esquerda leve",
+       "property": "mild_left_ventricular_dysfunction",
+       "value": "yes"
+      },
+      {
+       "title": "Disfunção ventricular esquerda moderada",
+       "property": "moderate_left_ventricular_dysfunction",
+       "value": "yes"
+      },
+      {
+       "title": "Disfunção ventricular esquerda acentuada",
+       "property": "severe_left_ventricular_dysfunction",
+       "value": "yes"
+      },
+      {
+       "title": "Presença de trombo/massa intracardíaca",
+       "property": "presence_intracardiac_thrombus_mass",
+       "value": "yes"
+      },
+      {
+       "title": "Vegetação valvar grosseira",
+       "property": "large_valvular_vegetation",
+       "value": "yes"
+      },
+      {
+       "title": "Hipertrofia septal grave",
+       "property": "severe_septal_hypertrophy",
+       "value": "yes"
+      },
+      {
+       "title": "Doença valvar",
+       "property": "severe_valvular_disease",
+       "value": "yes"
+      }
+     ]
+    }
+   ]
+  },
+  "CO-PV": {
+   "title": "Vídeo – Para-esternal curta, nível v. aórtica",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
+     "title": "Referências anatómicas/qualidade",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Válvula aórtica ausente",
+       "property": "aortic_valve",
+       "value": "not_present"
+      },
+      {
+       "title": "Janela fora do eixo curto",
+       "property": "window_out_of_short_axis",
+       "value": "yes"
+      }
+     ]
+    }
+   ]
+  },
+  "CO-PM": {
+   "title": "Vídeo – Para-esternal curta, nível v. mitral",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
+     "title": "Referências anatómicas/qualidade",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Válvula mitral ausente",
+       "property": "mitral_valve",
+       "value": "not_present"
+      },
+      {
+       "title": "Janela fora do eixo curto",
+       "property": "window_out_of_short_axis",
+       "value": "yes"
+      }
+     ]
+    }
+   ]
+  },
+  "CO-PP": {
+   "title": "Vídeo – Para-esternal curta, nível papilares",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
+     "title": "Referências anatómicas/qualidade",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Músculos Papilares ausente",
+       "property": "papillary_muscles",
+       "value": "not_present"
+      },
+      {
+       "title": "Janela fora do eixo curto",
+       "property": "window_out_of_short_axis",
+       "value": "yes"
+      }
+     ]
+    }
+   ]
+  },
+  "CO-PC": {
+   "title": "Vídeos sobre Para-esternal curta",
+   "property": "media",
+   "dependency": ["CO-PV", "CO-PM", "CO-PP"],
+   "blocks": [
+    {
+     "title": "Achados",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Aquisição inconclusiva",
+       "property": "acquisition",
+       "value": "inconclusive"
+      },
+      {
+       "title": "Derrame pericárdico s/ repercussão",
+       "property": "pericardial_effusion_without_tamponade",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pericárdico c/ repercussão",
+       "property": "pericardial_effusion_with_tamponade",
+       "value": "yes"
+      },
+      {
+       "title": "Disfunção ventricular esquerda leve",
+       "property": "mild_left_ventricular_dysfunction",
+       "value": "yes"
+      },
+      {
+       "title": "Disfunção ventricular esquerda moderada",
+       "property": "moderate_left_ventricular_dysfunction",
+       "value": "yes"
+      },
+      {
+       "title": "Disfunção ventricular esquerda acentuada",
+       "property": "severe_left_ventricular_dysfunction",
+       "value": "yes"
+      },
+      {
+       "title": "Sobrecarga de Ventrículo Direito",
+       "property": "right_ventricular_overload",
+       "value": "yes"
+      },
+      {
+       "title": "Doença valvar",
+       "property": "severe_valvular_disease",
+       "value": "yes"
+      }
+     ]
+    }
+   ]
+  },
+  "CO-A4": {
+   "title": "Vídeo - Apical de 4 câmaras",
+   "property": "media",
+   "blocks": [
+    {
+     "title": "Ganho",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "gain",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "gain",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "gain",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Profundidade",
+     "type": "radio",
+     "comments": [
+      {
+       "title": "1. insuficiente",
+       "property": "depth",
+       "value": "insufficient"
+      },
+      {
+       "title": "2. apropriado",
+       "property": "depth",
+       "value": "appropriate"
+      },
+      {
+       "title": "3. excessivo",
+       "property": "depth",
+       "value": "excessive"
+      }
+     ]
+    },
+    {
+     "title": "Nota",
+     "type": "radio-h",
+     "comments": [
+      {
+       "title": "1 |",
+       "property": "grade",
+       "value": "1"
+      },
+      {
+       "title": "2 |",
+       "property": "grade",
+       "value": "2"
+      },
+      {
+       "title": "3 |",
+       "property": "grade",
+       "value": "3"
+      },
+      {
+       "title": "4 |",
+       "property": "grade",
+       "value": "4"
+      },
+      {
+       "title": "5 |",
+       "property": "grade",
+       "value": "5"
+      }
+     ]
+    },
+    {
+     "title": "Referências anatómicas/qualidade",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Septo verticalizado ausente",
+       "property": "vertical_septum",
+       "value": "not_present"
+      },
+      {
+       "title": "Ventrículo direito ausente",
+       "property": "right_ventricle",
+       "value": "not_present"
+      },
+      {
+       "title": "Ventrículo esquerdo ausente",
+       "property": "left_ventricle",
+       "value": "not_present"
+      },
+      {
+       "title": "Válvula mitral ausente",
+       "property": "mitral_valve",
+       "value": "not_present"
+      },
+      {
+       "title": "Válvula tricúspide ausente",
+       "property": "tricuspid_valve",
+       "value": "not_present"
+      },
+      {
+       "title": "Átrio esquerdo ausente",
+       "property": "left_atrium",
+       "value": "not_present"
+      },
+      {
+       "title": "Átrio direito ausente",
+       "property": "right_atrium",
+       "value": "not_present"
+      },
+      {
+       "title": "Aorta descendente ausente",
+       "property": "descending_aorta",
+       "value": "not_present"
+      },
+      {
+       "title": "Câmaras desalinhadas",
+       "property": "misaligned_chambers",
+       "value": "yes"
+      }
+     ]
+    },
+    {
+     "title": "Achados",
+     "type": "checkbox",
+     "comments": [
+      {
+       "title": "Aquisição inconclusiva",
+       "property": "acquisition",
+       "value": "inconclusive"
+      },
+      {
+       "title": "Derrame pericárdico s/ repercussão",
+       "property": "pericardial_effusion_without_tamponade",
+       "value": "yes"
+      },
+      {
+       "title": "Derrame pericárdico c/ repercussão",
+       "property": "pericardial_effusion_with_tamponade",
+       "value": "yes"
+      },
+      {
+       "title": "Disfunção ventricular esquerda leve",
+       "property": "mild_left_ventricular_dysfunction",
+       "value": "yes"
+      },
+      {
+       "title": "Disfunção ventricular esquerda moderada",
+       "property": "moderate_left_ventricular_dysfunction",
+       "value": "yes"
+      },
+      {
+       "title": "Disfunção ventricular esquerda acentuada",
+       "property": "severe_left_ventricular_dysfunction",
+       "value": "yes"
+      },
+      {
+       "title": "Dilatação de ventrículo direito",
+       "property": "right_ventricle_dilation",
+       "value": "yes"
+      },
+      {
+       "title": "Presença de trombo/massa intracardíaca",
+       "property": "presence_intracardiac_thrombus_mass",
+       "value": "yes"
+      },
+      {
+       "title": "Vegetação valvar grosseira",
+       "property": "large_valvular_vegetation",
+       "value": "yes"
+      },
+      {
+       "title": "Hipertrofia septal grave",
+       "property": "severe_septal_hypertrophy",
+       "value": "yes"
+      },
+      {
+       "title": "Doença valvar",
+       "property": "severe_valvular_disease",
+       "value": "yes"
+      }
+     ]
+    }
+   ]
+  }
+ }
+}
