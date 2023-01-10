@@ -201,10 +201,10 @@
  *****************/
 
 .dcc-input-typed-theme input, .dcc-input-typed-theme textarea {
-   font-size: 1rem;
+   font-size: 2vmin;
    font-weight: 400;
-   color: #6c757d;
-   border: 1px solid #ced4da;
+   color: black;
+   border: 2px solid black;
    border-radius: .25rem;
    padding: .375rem .75rem;
    width: 100%;
@@ -239,9 +239,9 @@
 table {
    border-collapse: collapse;
    border-spacing: 0;
-   width: 100%;
-   height: 100%;
    border: 1px double #b3b3b3;
+   margin-top: 0.70em;
+   margin-bottom: 0.70em;
 }
 
 table th {
@@ -250,7 +250,9 @@ table th {
 }
 
 table td, table th {
-   min-width: 2em;
-   padding: .4em;
    border: 1px solid #bfbfbf;
+}
+
+br {
+  height: 1px;
 }
