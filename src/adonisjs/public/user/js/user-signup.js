@@ -38,7 +38,7 @@ class UserSignup {
 
     this.finalMessage =
 `<div style="color:black"><p>Bem-vindo(a)! Você foi convidado(a) a participar de um estudo científico sobre raciocínio clínico e aceitou! Agradeço muito por isso.</p>
-<p>Nas próximas telas, você resolverá alguns casos clínicos. Existem casos em diversos cenários de prática, desde ambulatório até pronto-socorro. Sua tarefa é ler cada caso e escrever qual é o diagnóstico. É importante que você se empenhe bastante em acertar. Depois dos casos, você responderá a mais duas perguntas curtas.</p>
+<p>Nas próximas telas, você resolverá alguns casos clínicos. Existem casos em diversos cenários de prática, desde ambulatório até pronto-socorro. Sua tarefa é ler cada caso e escrever qual é o diagnóstico. Você deverá escrever algum diagnóstico para conseguir passar para a próxima tela. É importante que você se empenhe bastante em acertar. Depois dos casos, você responderá a duas perguntas abertas.</p>
 <p><dcc-button topic="control/experiment/start" xstyle="out" label="Iniciar"></dcc-button></p></div>`
     this._startOpenTCLE()
   }
