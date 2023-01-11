@@ -62,7 +62,8 @@ class PlayerManager {
           mandatoryEmpty = mandatoryM.message[m].message }
       }
 
-      if (mandatoryEmpty != null) {
+      if ((message == null || message.resume == null) &&
+          mandatoryEmpty != null) {
         MessageBus.i.publish(MessageBus.extractLevelsSegment(topic, 1, 2) + '/!',
                              'Input missing: ' + mandatoryEmpty, true)
         await DCCNoticeInput.displayNotice(
@@ -224,11 +225,7 @@ class PlayerManager {
   async startPlayer (caseid) {
     this.tryHalt = this.tryHalt.bind(this)
     window.onbeforeunload = this.tryHalt
-    /*
-    window.onbeforeunload = function() {
-      return "";
-    }
-    */
+
     const resumeActive = true  // activates and deactivates case resume
     this._mainPanel = document.querySelector('#player-panel')
 
@@ -280,7 +277,7 @@ class PlayerManager {
         await this._caseLoad(this._state.currentCase)
 
         // this._caseFlow()
-        MessageBus.i.publish('knot/navigate/' + currKnot, null, true)
+        MessageBus.i.publish('knot/navigate/' + currKnot, {resume: true}, true)
       } // else { this._state.sessionCompleted() }
     }
 
