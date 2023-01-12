@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Cadastro de Usuário</title>
+
+	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
+
+	<link rel="stylesheet" href="/author/css/author.css">
+
+	<script src="/lib/axios-0.21.0/axios.min.js"></script>
+
+	<script src="/lib/jquery-3-4-1/jquery-3.4.1.slim.min.js"></script>
+	<script src="/lib/popper-1-15-0/popper.min.js"></script>
+	<script src="/lib/bootstrap-4.4.1/js/bootstrap.min.js"></script>
+
+	<script src="/config/config.js"></script>
+	<script src="/dccs/infra/bus.js"></script>
+
+	<script src="/dccs/base/primitive-dcc.js"></script>
+	<script src="/dccs/base/scope-dcc.js"></script>
+	<script src="/dccs/base/dcc.js"></script>
+	<script src="/dccs/base/dcc-base.js "></script>
+	<script src="/dccs/base/dcc-visual.js "></script>
+
+	<script src="/infra/basic.js"></script>
+	<script src="/infra/dcc-common-server-proxy.js"></script>
+	<script src="/infra/dcc-common-server-address.js"></script>
+
+	<script src="/dccs/base/dcc-block.js"></script>
+	<script src="/dccs/components/visual/dcc-button.js"></script>
+	<script src="/dccs/components/visual/dcc-notice-input.js"></script>
+
+	<script src="/dccs/components/web/dcc-rest.js"></script>
+	<script src="/dccs/components/web/dcc-include.js"></script>
+	<script src="/dccs/components/web/dcc-dhtml.js"></script>
+
+	<script src="/dccs/components/data/dcc-submit.js"></script>
+	<script src="/dccs/components/data/dcc-model.js"></script>
+	<script src="/dccs/components/data/dcc-record.js"></script>
+
+	<script src="/dccs/base/subscribe-dcc.js"></script>
+	<script src="/dccs/base/trigger-dcc.js"></script>
+	<script src="/dccs/base/property-dcc.js"></script>
+	<script src="/dccs/base/connect-dcc.js"></script>
+
+	<script src="/infra/dcc-rest-proxy.js"></script>
+	<script src="/infra/dcc-basic.js"></script>
+
+
+	<link rel="stylesheet" href="/lib/fontawesome-5-10-1/css/all.min.css">
+	<link rel="stylesheet" href="/lib/bootstrap-4.4.1/css/bootstrap.min.css">
+
+	<link rel="stylesheet" href="/dccs/css/dccs.css">
+	<link rel="stylesheet" href="/dccs/css/properties.css">
+	<link rel="stylesheet" href="/infra/css/common-player.css">
+	<link rel="stylesheet" href="/infra/css/common-author.css">
+
+	<script src="/user/js/dcc-rest-proxy-user.js"></script>
+  <script src="/user/js/user-signup.js"></script>
+</head>
+
+  <body onload="UserSignup.i.start()">
+    <!-- Create a section to place page content -->
+    <main role="main">
+      <div class="d-flex flex-column vh-100 vw-100 hidden-overflow">
+
+        <div class="h-100 w-100 create-case-padding scroll-y">
+					<div class="col-md-6">
+						<div class="home-text">
+	            <p id="template-title">Pesquisa no Museu</p>
+	          </div>
+
+            <h2>Na tela seguinte você cadastrará sua(eu) filha(o) ou dependente na nossa plataforma.</h2>
+
+            <img src="images/kids.svg" width="100%">
+            <h2>Ela(e) também será convidada(o) a participar de uma pesquisa no Museu.</h2>
+
+            <img src="images/sci-back.svg" width="100%">
+            <h2>Trata-se de uma pesquisa científica que será desenvolvida sobre o nosso ambiente virtual, chamado Plataforma Museu.</h2>
+
+            <img src="images/kids-computer.svg" width="100%">
+            <h2>Se concordar que ela(ele) participe, apenas coletaremos dados de forma anônima sobre o uso da plataforma. Nenhum dado pessoal (nome, idade, fotografia ou voz) será armazenado para a pesquisa.</h2>
+
+            <img src="images/kids-draw.svg" width="100%">
+            <h2>Participe, você ajudará o Museu criar um ambiente sempre melhor!</h2>
+
+            <dcc-button label="Cadastrar" xstyle="out"></dcc-button>
+          </div>
+        </div>
+      </div>
+    </main>
+    <!-- end of div /.container -->
+  </body>
+</html>
