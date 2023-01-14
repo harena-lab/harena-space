@@ -1,7 +1,5 @@
 (function () {
-  const localTheme = `
-<div class="styt-pul-main">{knot}</div>
-`
+  const localTheme = `{knot}`
 
   MessageBus.i.publish('control/theme/knot/load/ready', localTheme)
 })()

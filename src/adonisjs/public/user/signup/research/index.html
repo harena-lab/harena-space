@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>Cadastro de Usuário</title>
+	<title>Cadastro na Plataforma</title>
 
 	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
 
@@ -58,34 +58,48 @@
 
 	<script src="/user/js/dcc-rest-proxy-user.js"></script>
   <script src="/user/js/user-signup.js"></script>
+
+  <script>
+    function start() {
+      MessageBus.i.subscribe("control/signup", signup)
+    }
+    function signup() {
+      const params = new URL(document.location).searchParams
+      window.location.href = '../index.html?event=' + params.get('event')
+    }
+  </script>
 </head>
 
-  <body onload="UserSignup.i.start()">
+
+  <body onload="start()">
     <!-- Create a section to place page content -->
     <main role="main">
       <div class="d-flex flex-column vh-100 vw-100 hidden-overflow">
 
-        <div class="h-100 w-100 create-case-padding scroll-y">
-					<div class="col-md-6">
+        <div class="h-100 w-100 create-case-padding scroll-y text-center">
+					<div class="col-md-6 offset-md-3">
 						<div class="home-text">
-	            <p id="template-title">Pesquisa no Museu</p>
+	            <p id="template-title" style="font-size:3rem">Cadastro na Plataforma</p>
 	          </div>
 
-            <h2>Na tela seguinte você cadastrará sua(eu) filha(o) ou dependente na nossa plataforma.</h2>
+            <p style="font-size:1.5rem">Na tela seguinte você cadastrará seu(ua) filho(a) ou dependente na nossa Plataforma Museu.</p>
 
-            <img src="images/kids.svg" width="100%">
-            <h2>Ela(e) também será convidada(o) a participar de uma pesquisa no Museu.</h2>
+            <img src="images/kids.svg" width="50%">
+            <p style="font-size:1.5rem">Ele(a) também será convidado(a) a participar de uma pesquisa no Museu.</p>
 
-            <img src="images/sci-back.svg" width="100%">
-            <h2>Trata-se de uma pesquisa científica que será desenvolvida sobre o nosso ambiente virtual, chamado Plataforma Museu.</h2>
+            <img src="images/sci-back.svg" width="50%">
+            <p style="font-size:1.5rem">Trata-se de uma pesquisa científica que será desenvolvida sobre o nosso ambiente virtual, cuja participação é voluntária e não interfere na experiência.</p>
 
-            <img src="images/kids-computer.svg" width="100%">
-            <h2>Se concordar que ela(ele) participe, apenas coletaremos dados de forma anônima sobre o uso da plataforma. Nenhum dado pessoal (nome, idade, fotografia ou voz) será armazenado para a pesquisa.</h2>
+            <img src="images/kids-computer.svg" width="50%">
+            <p style="font-size:1.5rem">Se concordar que ele(a) participe, apenas coletaremos dados de forma anônima sobre o uso da plataforma. Nenhum dado pessoal (nome, idade, fotografia ou voz) será coletado ou armazenado para a pesquisa.</p>
 
-            <img src="images/kids-draw.svg" width="100%">
-            <h2>Participe, você ajudará o Museu criar um ambiente sempre melhor!</h2>
+            <img src="images/kids-draw.svg" width="50%">
+            <p style="font-size:1.5rem">Participe, você ajudará o Museu criar uma plataforma sempre melhor!</p>
 
-            <dcc-button label="Cadastrar" xstyle="out"></dcc-button>
+            <br>
+
+            <dcc-button label="Continuar para o Cadatro" xstyle="in" topic="control/signup"
+              style="font-size:32px;border:1px solid;border-radius:.5rem;border-color:lightblue;padding:.5rem .5rem;background-color:blue;color:white"></dcc-button>
           </div>
         </div>
       </div>

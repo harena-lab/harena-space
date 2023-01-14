@@ -1,11 +1,12 @@
 class UserSignup {
-  start () {
+  // TALE, TCLE (responsible), TCLE (age >= 18) of the Museum
+  startOpenMuseum () {
     this._expandTerm = this._expandTerm.bind(this)
     MessageBus.i.subscribe('/user/term/expand', this._expandTerm)
     this._retractTerm = this._retractTerm.bind(this)
     MessageBus.i.subscribe('/user/term/retract', this._retractTerm)
-    this._signup = this._signup.bind(this)
-    MessageBus.i.subscribe('/user/signup', this._signup)
+    this._signupMuseum = this._signupMuseum.bind(this)
+    MessageBus.i.subscribe('/user/signup', this._signupMuseum)
     this.update = this.update.bind(this)
 
     const now = new Date()
@@ -14,25 +15,17 @@ class UserSignup {
     document.querySelector('#date_agree_2').innerHTML = sdate
   }
 
-  async _experimentStart () {
-    const userLogin = {
-      username: this.current.username,
-      eventId: this.current.eventId
-    }
-    let user = await MessageBus.i.request('user/login/post', userLogin)
-    // window.location.href = "/player/case/?id=41813d6c-70c7-4bda-9683-1dd39ba3c990&room=c6b241ee-e6e5-4921-9cc8-ed6ffd62e85d"
-    window.location.href = "/player/case/?id=46d46199-a32d-42ed-b49a-578c47c3e7bb&room=5ff12575-0d4c-41f6-ac6a-e94ee1eb7cbc"
-  }
-
-  startOpenTCLEGeneric () {
+  // TCLE of the Prognosis Game
+  startPrognosis () {
     this.finalMessage =
 `Usuário cadastrado com sucesso!<br>
  Por favor mude a sua senha após o primeiro login.<br>
  <i style="color:darkred">Sua senha temporária é: {password}</i>`
-    this._startOpenTCLE()
+    this._startPrognosisISC()
   }
 
-  startOpenTCLEExperiment () {
+  // TCLE of the Experiment Illness Script Components (ISC)
+  startISC () {
     this._experimentStart = this._experimentStart.bind(this)
     MessageBus.i.subscribe('control/experiment/start', this._experimentStart)
 
@@ -40,12 +33,12 @@ class UserSignup {
 `<div style="color:black"><p>Bem-vindo(a)! Você foi convidado(a) a participar de um estudo científico sobre raciocínio clínico e aceitou! Agradeço muito por isso.</p>
 <p>Nas próximas telas, você resolverá alguns casos clínicos. Existem casos em diversos cenários de prática, desde ambulatório até pronto-socorro. Sua tarefa é ler cada caso e escrever qual é o diagnóstico. Você deverá escrever algum diagnóstico para conseguir passar para a próxima tela. É importante que você se empenhe bastante em acertar. Depois dos casos, você responderá a duas perguntas abertas.</p>
 <p><dcc-button topic="control/experiment/start" xstyle="out" label="Iniciar"></dcc-button></p></div>`
-    this._startOpenTCLE()
+    this._startPrognosisISC()
   }
 
-  _startOpenTCLE () {
-    this._signupTCLE = this._signupTCLE.bind(this)
-    MessageBus.i.subscribe('/user/signup', this._signupTCLE)
+  _startPrognosisISC () {
+    this._signupPrognosisISC = this._signupPrognosisISC.bind(this)
+    MessageBus.i.subscribe('/user/signup', this._signupPrognosisISC)
 
     const now = new Date()
     const sdate = now.getDate() + '/' + (now.getMonth()+1) + '/' + now.getFullYear()
@@ -90,48 +83,59 @@ class UserSignup {
     feed2.innerHTML = message
   }
 
-  async _signup (topic, message) {
+  async _signupMuseum (topic, message) {
     const parameters = (message && message.value) ? message.value : null
     console.log('===== user parameters')
     console.log(parameters)
 
     this._showFeedback('')
-    if(parameters.respname) {
+    // children responsible
+    if(parameters.respname != null) {
       if (parameters == null)
         this._showFeedback('Erro de processamento, entre novamente na página a partir do link')
-      else if (parameters.login.length == 0)
-        this._showFeedback('Login do usuário é obrigatório.')
       else if (parameters.username.trim().length == 0)
-        this._showFeedback('Nome do usuário é obrigatório.')
+        this._showFeedback('Nome do participante é obrigatório.')
       else if (parameters.respname.length == 0)
         this._showFeedback('Nome do responsável é obrigatório.')
       else if (parameters.email.length == 0)
-        this._showFeedback('O e-mail do responsável do usuário é obrigatório.')
-      else if (parameters.password.length == 0)
-        this._showFeedback('A senha é obrigatória.')
+        this._showFeedback('O e-mail do responsável é obrigatório.')
+      else if (parameters.agree == null || parameters.agree.length == 0)
+        this._showFeedback('Você precisa informar se concorda ou não em participar da pesquisa.')
       else {
         console.log('========== creating user ==========')
-        const login = parameters.login.replace(/ /g, '_')
+        const now = Date.now()
+        const login = (parameters.login && parameters.login.length > 0)
+          ? parameters.login.replace(/ /g, '_')
+          : parameters.username.toLowerCase().replace(/ /g, '_') + '_' + now
+        const password = (parameters.password && parameters.password.length > 0)
+          ? parameters.password : login
         const userJson = {
           username: parameters.username,
           email: login + '@museu.unicamp.br',
-          password: parameters.password,
+          password: password,
           login: login,
           institution: parameters.institution,
           grade: parameters.grade,
+          property_ids: 'harena:responsible_name,harena:responsible_email',
+          property_values: '"' + parameters.respname + '","' +
+                           parameters.email + '"',
           eventId: new URL(document.location).searchParams.get('event')
         }
         let user = await MessageBus.i.request('user/create/post', userJson)
         console.log(user.message)
         if (user.message.error) {
-          console.log('--- error')
-          console.log(user.message)
-          if (user.message.error.includes('409'))
-            this._showFeedback('Já existe um usuário com este login. Por favor, escolha outro login.')
+          const err = user.message.error
+          if (err.type && err.type == 'unauthorized')
+            this._showFeedback(
+              'Você precisa de uma autorização para se cadastrar.')
           else
-            this._showFeedback('Houve algum erro no cadastro. Contate o suporte: contact@harena.org')
+            this._showFeedback(
+              'Houve algum erro no cadastro. Contate o suporte: ' +
+              'museu@unicamp.br indicando a mensagem de erro: "' +
+              ((user.message.error.message)
+                ? user.message.error.message : '') + '".'
+            )
         } else {
-          const agree = (parameters.agree && parameters.agree.length > 0 && parameters.agree == 'agree')
           const termJson = {
             userId: user.message.id,
             termId: parameters.term,
@@ -140,7 +144,7 @@ class UserSignup {
             nameParticipant: parameters.username,
             date: parameters.date_agree_1,
             role: parameters.role,
-            agree: (agree) ? '1' : '0'
+            agree: (parameters.agree == 'agree') ? '1' : '0'
           }
           console.log('=== term json')
           console.log(termJson)
@@ -148,15 +152,18 @@ class UserSignup {
           console.log('=== term add')
           console.log(term)
           document.querySelector('#complete-form').style.display = 'none'
-          if (agree)
+          if (parameters.agree == 'agree')
             this._showFeedback(
-              'Usuário cadastrado com sucesso.<br>' +
-              '<span style="color:purple"><b>Importante: </b>Ainda há duas etapas extras a serem cumpridas. Você receberá um e-mail para confirmar que é o responsável. Em seguida, o participante também receberá um link para confirmar a sua concordância com a pesquisa.</span>', 'blue')
+              'Usuário cadastrado com sucesso!<br>' +
+              '<img src="images/envelope.svg" width="100px"><br>' +
+              '<div style="color:purple"><b>Importante: </b>Você receberá um e-mail para confirmar que é o responsável. É fundamental que você responda.</div>', 'blue')
           else
             this._showFeedback('Usuário cadastrado com sucesso.', 'blue')
         }
       }
     } else {
+      console.log('=== user login')
+      console.log(parameters.login)
       let login = parameters.login.replace(/ /g, '_')
       let userJson = {
         username: parameters.username,
@@ -201,7 +208,7 @@ class UserSignup {
     }
   }
 
-  async _signupTCLE (topic, message) {
+  async _signupPrognosisISC (topic, message) {
     const parameters = (message && message.value) ? message.value : null
     console.log('===== user parameters')
     console.log(parameters)
@@ -263,6 +270,17 @@ class UserSignup {
           'darkblue')
       }
     }
+  }
+
+  // experiment version
+  async _experimentStart () {
+    const userLogin = {
+      username: this.current.username,
+      eventId: this.current.eventId
+    }
+    let user = await MessageBus.i.request('user/login/post', userLogin)
+    // window.location.href = "/player/case/?id=41813d6c-70c7-4bda-9683-1dd39ba3c990&room=c6b241ee-e6e5-4921-9cc8-ed6ffd62e85d"
+    window.location.href = "/player/case/?id=46d46199-a32d-42ed-b49a-578c47c3e7bb&room=5ff12575-0d4c-41f6-ac6a-e94ee1eb7cbc"
   }
 }
 

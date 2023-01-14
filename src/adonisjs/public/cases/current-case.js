@@ -1,13 +1,14 @@
 (function () {
   const localCase = {
+    id: 'gustavo-case-01',
     name: 'Gustavo Case 01',
     source: `# Abertura (detailed, start)
 
 ClinicRAC
 
-Olá!!! Seja bem-vindo a plataforma virtual interativa para avaliação de raciocínio clínico. 
+Olá!!! Seja bem-vindo a plataforma virtual interativa para avaliação de raciocínio clínico.
 
-Você irá interagir com alguns casos clínicos e o objetivo é tentar resolvê-los conforme as instruções que serão apresentadas. 
+Você irá interagir com alguns casos clínicos e o objetivo é tentar resolvê-los conforme as instruções que serão apresentadas.
 
 A atividade tem um tempo máximo para sua finalização de 1 hora.
 Vamos começar???
@@ -218,6 +219,15 @@ CAIXA DE TEXTO COLOCAR O DIAGNÓSTICO DEFINITIVO
 
 O diagnóstico mais provável para este caso é:
 CAIXA DE TEXTO COM O DIAGNÓSTICO CORRETO DO CASO
+
+___ Template ___
+
+* template: simple/case/virtual_visit
+
+___ Flow ___
+
+* Sequential:
+  * _sequential_
 
 ___ Data ___
 
