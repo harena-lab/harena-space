@@ -14,5 +14,5 @@
 </div>
 `
 
-  MessageBus.i.publish('control/theme/knot/load/ready', localTheme)
+  MessageBus.i.publish('control/theme/detailed/load/ready', localTheme)
 })()

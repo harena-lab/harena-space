@@ -60,6 +60,7 @@ class DCCCommonServer {
       // <TODO> adjust topic
       const caseM = await MessageBus.i.waitMessage('control/case/load/ready')
       caseComplete = caseM.message
+      Basic.service.currentCaseId = caseM.message.id
     } else {
       // <TODO> the topic service/request/get is extremely fragile -- refactor
       const caseId = MessageBus.extractLevel(topic, 3)

@@ -27,6 +27,10 @@ DCC.component(
                in: 'query'},
               {name: 'grade',
                in: 'query'},
+              {name: 'property_ids',
+                in: 'query'},
+              {name: 'property_values',
+                in: 'query'},
               {name: 'eventId',
                in: 'query'}
             ]

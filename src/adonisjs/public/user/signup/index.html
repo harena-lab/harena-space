@@ -6,7 +6,7 @@
 
 	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
 
-	<link rel="stylesheet" href="../../css/author.css">
+	<link rel="stylesheet" href="../../author/css/author.css">
 
 	<script src="/lib/axios-0.21.0/axios.min.js"></script>
 
@@ -60,7 +60,7 @@
   <script src="../js/user-signup.js"></script>
 </head>
 
-  <body onload="UserSignup.i.start()">
+  <body onload="UserSignup.i.startOpenMuseum()">
     <!-- Create a section to place page content -->
     <main role="main">
       <dcc-rest id="harena-create-user" bind="harena-create-user" subscribe="user/create/post"></dcc-rest>
@@ -71,10 +71,10 @@
       <div class="d-flex flex-column vh-100 vw-100 hidden-overflow">
 
         <div class="h-100 w-100 create-case-padding scroll-y">
-					<div class="col-md-6">
+					<div class="col-md-6 offset-md-3">
 						<img src="images/museum-platform.png" width="100%">
 						<div class="home-text">
-	            <p id="template-title">Cadastro de Usuário na Plataforma (para participação na oficina)</p>
+	            <p id="template-title" style="text-align:center">Cadastro de Usuário na Plataforma</p>
 	          </div>
 
 						<hr>
@@ -84,7 +84,7 @@
 
           <div id="complete-form" class="row" style="padding-bottom: 70px;">
 
-            <div class="col-md-6">
+            <div class="col-md-6 offset-md-3">
 							<h4 style="color:black">Este cadastro deve obrigatoriamente ser preenchido pelo responsável da criança ou adolescente que participará da oficina.</h4>
 
               <form id="create-case-form">
@@ -95,22 +95,6 @@
 									<small id="usernameDesc" class="form-text text-muted">
 										Digite o nome da criança ou adolescente que participará da oficina.
 									</small>
-                </div>
-								<div class="form-group">
-                  <label for="login">Login do Participante da Oficina</label>
-                  <input type="text" class="form-control" id="login" name="login" placeholder="Login do usuário"
-									       aria-describedby="loginDesc" onchange="UserSignup.i.update()">
-									<small id="loginDesc" class="form-text text-muted">
-										Escolha um login para o participante (sem espaços em branco). Ele usará para fazer login na plataforma no início da oficina.
-									</small>
-                </div>
-								<div class="form-group">
-                  <label for="password">Senha</label>
-                  <input type="password" class="form-control" id="password" name="password"
- 									       aria-describedby="passwordDesc">
- 								  <small id="loginDesc" class="form-text text-muted">
- 										Escolha uma senha para o participante.
- 									</small>
                 </div>
 								<div class="form-group">
                   <label for="respname">Nome Completo do Responsável</label>
@@ -133,7 +117,7 @@
                 <input type="hidden" id="term" name="term" value="museu_harena_2021">
                 <input type="hidden" id="role" name="role" value="responsible">
 
-                O participante também é convidado a contribuir com a pesquisa do Museu. Se concordar, durante a aplicação da oficina, os dados da sua atuação serão coletados de forma anônima sem interferir na experiência da atividade. Se o participante e o responsável concordarem, o responsável deve clicar na opção a seguir concordando. Há um botão que apresenta todos todos os detalhes sobre o Termo de Consentimento relacionados à pesquisa.
+                Se concordarem em participar da pesquisa, como descrito na página anterior, clique na opção a seguir concordando.
 
 								<div class="form-inline">
 									<label for="date_agree_1">Data:&nbsp;</label>
@@ -142,6 +126,17 @@
 
 								<input type="radio" id="agree_radio" name="agree" value="agree" onchange="UserSignup.i.update()"/> Concordo em participar da pesquisa <br />
 								<input type="radio" id="not_agree_radio" name="agree" value="not_agree" onchange="UserSignup.i.update()" /> Não desejo participar da pesquisa <br />
+
+                <br>
+
+                <div class="text-center">
+                  <dcc-submit label="Cadastrar" topic="/user/signup" xstyle="in"
+                              style="font-size:32px;border:1px solid;border-radius:.5rem;border-color:lightblue;padding:.5rem .5rem;background-color:blue;color:white">
+                  </dcc-submit>
+                </div>
+
+                <br>
+                Clique no botão a seguir se quiser ver detalhes do Termo de Consentimento da pesquisa.
 
 								<!-- TCLE -->
                 <div id="term-form" class="outer">
@@ -248,12 +243,14 @@ Problemas</b> <br />
                     <a href="terms/tcle-responsible.pdf" target="_blank">Download do Termo de Consentimento Livre e Esclarecido (TCLE)</a><br /><br />
                     </div>
 
-										<dcc-button label="Recolher Detalhes do Termo de Consentimento" topic="/user/term/retract" xstyle="out">
+										<dcc-button label="- Recolher Detalhes do Termo de Consentimento" topic="/user/term/retract"
+                                xstyle="in" style="padding:.5rem .5rem;background-color:gray;color:white;width:100%">
 										</dcc-button>
 
 									  </div>
 
-										<dcc-button id="button-expand" label="Mostrar Detalhes do Termo de Consentimento" topic="/user/term/expand" xstyle="out">
+                    <dcc-button id="button-expand" label="+ Mostrar Detalhes do Termo de Consentimento" topic="/user/term/expand"
+                                xstyle="in" style="padding:.5rem .5rem;background-color:gray;color:white;width:100%">
 										</dcc-button>
 
                   </section>
@@ -261,7 +258,6 @@ Problemas</b> <br />
 									<hr>
                   <div id="feedback-message-2" style="font-size:24px;color:red"></div>
                   <hr>
-                  <dcc-submit label="Cadastrar" topic="/user/signup" xstyle="out"></dcc-submit>
               </form>
 
 

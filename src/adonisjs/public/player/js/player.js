@@ -282,13 +282,13 @@ class PlayerManager {
     }
 
     if (!resume) {
-      if (DCCCommonServer.instance.local) { await this._caseLoad() } else {
-        /*
-           await Basic.service.signin(this._state,
-                 (precase != null || precaseid != null));
-           */
-
-        if (DCCPlayerServer.localEnv) { Basic.service.currentCaseId = DCCPlayerServer.playerObj.id } else {
+      if (HarenaConfig.local) {
+        MessageBus.i.publish('user/login/local_user', null, true)
+        await this._caseLoad()
+      } else {
+        // if (DCCPlayerServer.localEnv) {  // deprecated?
+        //   Basic.service.currentCaseId = DCCPlayerServer.playerObj.id
+        // } else {
           if (precaseid) { caseid = precaseid } else {
             let pi = -1
             let cases = null
@@ -322,10 +322,9 @@ class PlayerManager {
           // console.log("=== case: " + caseid);
           this._state.currentCase = caseid
           await this._caseLoad(caseid)
-
-          this._caseFlow()
-        }
+        // }
       }
+      this._caseFlow()
       MessageBus.i.publish('knot/navigate/<<', null, true)
       // this.knotLoad("entry");
     }
@@ -410,26 +409,34 @@ class PlayerManager {
       this._knotScript.src = "knots/" + knotName + ".js";
       document.head.appendChild(this._knotScript);
       */
-    if (!DCCPlayerServer.localEnv) {
-      if (parameter) {
-        MessageBus.i.publish(
-          'var/set/' + knotName.replace(/\./g, '/') + '/parameter', parameter, true)
-      }
-      if (this._compiledCase.role && this._compiledCase.role == 'metacase' &&
-             this._knots[knotName].categories &&
-             this._knots[knotName].categories.includes('script')) { MetaPlayer.player.play(this._knots[knotName], this._state) } else {
-        let knot = await Translator.instance.generateHTML(
-          this._knots[knotName])
-        knot = '<scope-dcc id="player" externalize>' + knot + '</scope-dcc>'
-        let note = false
-        if (this._knots[knotName].categories && Translator.instance.themeSettings &&
-            Translator.instance.themeSettings.note) {
-          note = this._knots[knotName].categories.find(
-            cat => Translator.instance.themeSettings.note.includes(cat))
-        }
-        if (note) { this.presentNote(knot) } else { this.presentKnot(knot) }
-      }
+    // if (!DCCPlayerServer.localEnv) {
+    if (parameter) {
+      MessageBus.i.publish(
+        'var/set/' + knotName.replace(/\./g, '/') + '/parameter', parameter, true)
     }
+    if (this._compiledCase.role && this._compiledCase.role == 'metacase' &&
+           this._knots[knotName].categories &&
+           this._knots[knotName].categories.includes('script')) {
+             MetaPlayer.player.play(this._knots[knotName], this._state)
+    } else {
+      console.log('=== knot name')
+      console.log(knotName)
+      console.log(this._knots[knotName])
+      let knot = await Translator.instance.generateHTML(
+        this._knots[knotName])
+      knot = '<scope-dcc id="player" externalize>' + knot + '</scope-dcc>'
+      console.log('=== knot')
+      console.log(knot)
+      let note = false
+      if (this._knots[knotName].categories && Translator.instance.themeSettings &&
+          Translator.instance.themeSettings.note) {
+        note = this._knots[knotName].categories.find(
+          cat => Translator.instance.themeSettings.note.includes(cat))
+      }
+      console.log(note)
+      if (note) { this.presentNote(knot) } else { this.presentKnot(knot) }
+    }
+    // }
     MessageBus.i.publish('knot/start/' + knotName.replace(/\./g, '/'),
                          null, true)
 
