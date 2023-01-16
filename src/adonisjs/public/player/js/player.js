@@ -421,8 +421,6 @@ class PlayerManager {
       let knot = await Translator.instance.generateHTML(
         this._knots[knotName])
       knot = '<scope-dcc id="player" externalize>' + knot + '</scope-dcc>'
-      console.log('=== knot')
-      console.log(knot)
       let note = false, cell = false
       if (this._knots[knotName].categories && Translator.instance.themeSettings) {
         if (Translator.instance.themeSettings.note)
