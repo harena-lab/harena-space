@@ -229,21 +229,17 @@ class PlayerManager {
     const resumeActive = true  // activates and deactivates case resume
     this._mainPanel = document.querySelector('#player-panel')
 
-    const parameters = window.location.search.substr(1)
+    const parameters = (new URL(document.location)).searchParams
     let precase = null
     let precaseid = null
     this._previewCase = false
-    if (parameters != null && parameters.length > 0) {
-      precase = parameters.match(/case=([\w-]+)/i)
-      if (precase != null) { precase = precase[1] } else {
-        precaseid = parameters.match(/id=([\w-]+)/i)
-        precaseid = (precaseid != null) ? precaseid[1] : null
-      }
+    if (parameters.toString().length > 0) {
+      precase = parameters.get('case')
+      if (precase == null) precaseid = parameters.get('id')
       const metaparameter = this._state.metaexecParameterGet()
-      if (metaparameter != null) { this._state.metaparameter = metaparameter }
-      const previewRE = /preview/i
-      this._previewCase = previewRE.test(parameters)
-      if (this._previewCase) { document.querySelector('#preview-panel').style.display = 'initial' }
+      if (metaparameter != null) this._state.metaparameter = metaparameter
+      if (parameters.has('preview'))
+        document.querySelector('#preview-panel').style.display = 'initial'
     } else { precase = null }
 
     let resume = false
@@ -416,9 +412,9 @@ class PlayerManager {
     }
     if (this._compiledCase.role && this._compiledCase.role == 'metacase' &&
            this._knots[knotName].categories &&
-           this._knots[knotName].categories.includes('script')) {
-             MetaPlayer.player.play(this._knots[knotName], this._state)
-    } else {
+           this._knots[knotName].categories.includes('script'))
+      MetaPlayer.player.play(this._knots[knotName], this._state)
+    else {
       console.log('=== knot name')
       console.log(knotName)
       console.log(this._knots[knotName])
@@ -427,14 +423,21 @@ class PlayerManager {
       knot = '<scope-dcc id="player" externalize>' + knot + '</scope-dcc>'
       console.log('=== knot')
       console.log(knot)
-      let note = false
-      if (this._knots[knotName].categories && Translator.instance.themeSettings &&
-          Translator.instance.themeSettings.note) {
-        note = this._knots[knotName].categories.find(
-          cat => Translator.instance.themeSettings.note.includes(cat))
+      let note = false, cell = false
+      if (this._knots[knotName].categories && Translator.instance.themeSettings) {
+        if (Translator.instance.themeSettings.note)
+          note = this._knots[knotName].categories.find(
+            cat => Translator.instance.themeSettings.note.includes(cat))
+        if (Translator.instance.themeSettings.cell)
+          cell = this._knots[knotName].categories.find(
+            cat => Translator.instance.themeSettings.cell.includes(cat))
       }
-      console.log(note)
-      if (note) { this.presentNote(knot) } else { this.presentKnot(knot) }
+      if (note)
+        this.presentNote(knot)
+      else if (cell)
+        this.presentCell(knot)
+      else
+        this.presentKnot(knot)
     }
     // }
     MessageBus.i.publish('knot/start/' + knotName.replace(/\./g, '/'),
@@ -465,19 +468,37 @@ class PlayerManager {
   }
 
   presentKnot (knot) {
-    // MessageBus.page = new MessageBus(false)
-
     this._mainPanel.innerHTML = knot
     document.querySelector('#main-panel').scrollTo(0, 0)
 
     // <TODO> Local Environment - Future
     /*
-      if (DCCPlayerServer.localEnv)
-         document.head.removeChild(this._knotScript);
-      */
+    if (DCCPlayerServer.localEnv)
+       document.head.removeChild(this._knotScript);
+    */
 
     // <TODO> Improve the strategy
-    if (this._currentKnot == 'entry') { this.startGame() }
+    if (this._currentKnot == 'entry') this.startGame()
+  }
+
+  presentCell (knot) {
+    const content = this._compiledCase.layers.Data.content
+
+    let types = content.find(
+      element => element.type == 'field' && element.field == 'cell_types')
+    types = (types != null) ? types.value : null
+
+    let blocks = content.find(
+      element => element.type == 'field' && element.field == 'block_types')
+    blocks = (blocks != null) ? blocks.value : null
+
+    AuthorCellManager.instance.start(
+      {name: this._currentKnot,
+       types: types,
+       blocks: blocks,
+       source: knot,
+       buttonTypes: ''},
+      null, null, '/dccs/')
   }
 
   presentNote (knot) {

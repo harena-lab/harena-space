@@ -1,3 +1,4 @@
 {
-  "note": ["note", "note_references"]
+  "note": ["note", "note_references"],
+  "cell": ["cell_editor"]
 }
