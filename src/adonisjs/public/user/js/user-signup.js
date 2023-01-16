@@ -213,9 +213,15 @@ class UserSignup {
     console.log('===== user parameters')
     console.log(parameters)
 
+    const eventId = new URL(document.location).searchParams.get('event')
+    const password = new URL(document.location).searchParams.get('pwd')
+
     this._showFeedback('')
     if (parameters == null)
       this._showFeedback('Erro de processamento, entre novamente na página a partir do link')
+    else if (eventId == null || password == null ||
+             eventId.length == 0 || password.length == 0)
+      this._showFeedback('Link de cadastro incompleto.')
     else if (parameters.username.trim().length == 0)
       this._showFeedback('Nome do participante é obrigatório.')
     else if (parameters.email.length == 0)
@@ -228,11 +234,11 @@ class UserSignup {
       const userJson = {
         username: parameters.username,
         email: parameters.email,
-        password: new URL(document.location).searchParams.get('pwd'),
+        password: password,
         login: login,
         institution: parameters.institution,
         grade: parameters.grade,
-        eventId: new URL(document.location).searchParams.get('event')
+        eventId: eventId
       }
       this.current = {
         username: userJson.username,
@@ -243,10 +249,19 @@ class UserSignup {
       if (user.message.error) {
         console.log('--- error')
         console.log(user.message)
-        if (user.message.error.includes('409'))
+        const err = user.message.error
+        if (err.type && err.type == 'duplicated')
           this._showFeedback('Já existe um usuário com este email. Por favor, escolha outro email.')
+        else if (err.type && err.type == 'unauthorized')
+          this._showFeedback(
+            'Você precisa de uma autorização para se cadastrar.')
         else
-          this._showFeedback('Houve algum erro no cadastro.')
+          this._showFeedback(
+            'Houve algum erro no cadastro. Contate o suporte: ' +
+            'indicando a mensagem de erro: "' +
+            ((user.message.error.message)
+              ? user.message.error.message : '') + '".'
+          )
       } else {
         const agree = (parameters.agree == 'agree')
         const termJson = {
