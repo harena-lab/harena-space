@@ -69,7 +69,7 @@
       <div class="d-flex flex-column vh-100 vw-100 hidden-overflow">
 
         <div class="h-100 w-100 create-case-padding scroll-y">
-					<div class="col-md-6">
+					<div class="col-md-6 offset-md-3">
 						<img src="images/museum-platform.png" width="100%">
 
 						<div id="proceed" style="text-align:center">
@@ -78,36 +78,26 @@
 
 						<div id="title-form" style="display:none">
 							<div class="home-text">
-		            <p id="template-title">Termo de Assentimento para Menores</p>
+		            <p id="template-title" style="text-align:center">Termo de Assentimento para Menores</p>
 		          </div>
 
 							<hr>
 							<div id="feedback-message-1" style="font-size:24px;color:red"></div>
 							<hr>
-					  </hr>
-					</div>
+					  </div>
+          </div>
 
           <div id="complete-form" style="display:none" class="row" style="padding-bottom: 70px;">
 
-            <div class="col-md-6">
-							<h4 style="color:black">Esta aceitação do termo deve ser feita pela criança ou adolescente que participará da oficina.</h4>
-
-              <form id="create-case-form">
-                <p><b>Nome do Participante da Oficina (criança ou adolescente): </b>
-								<span id="username_1"></span></p>
-								<p><b>Nome do Responsável: </b>
-								<span id="respname_1"></span></p>
+            <div class="col-md-6 offset-md-3">
+							<form id="create-case-form">
                 <input type="hidden" id="institution" name="institution" value="mcunicamp">
                 <input type="hidden" id="grade" name="grade" value="student">
                 <input type="hidden" id="term" name="term" value="museu_harena_2021">
                 <input type="hidden" id="role" name="role" value="minor">
 
-                Um de seus pais ou responsável concordou com a sua participação na pesquisa. Se você também concorda, clique na opção a seguir concordando.
-
-								<p>ENTENDI QUE POSSO DIZER “SIM” E PARTICIPAR, MAS QUE, A QUALQUER
-								MOMENTO, POSSO DIZER “NÃO” E DESISTIR. ENTENDI QUE NINGUÉM FICARÁ BRAVO
-								SE EU DESISTIR. SEMPRE PODEREI TIRAR MINHAS DÚVIDAS COM OS PESQUISADORES
-								 E CONVERSAR COM OS MEUS PAIS OU RESPONSÁVEIS.</p>
+                <h3 style="color:black">Um de seus pais ou responsável concordou com a sua participação na pesquisa.
+                Você também concorda?</h3>
 
 								<div class="form-inline">
 									<label for="date_agree_1">Data:&nbsp;</label>
@@ -117,7 +107,21 @@
 								<input type="radio" id="agree_radio" name="agree" value="agree" onchange="UserTale.i.update()"/> <img src="images/agree.png"> Concordo em participar da pesquisa  <br />
 								<input type="radio" id="not_agree_radio" name="agree" value="not_agree" onchange="UserTale.i.update()" /> <img src="images/not-agree.png"> Não desejo participar da pesquisa  <br />
 
-								<dcc-submit label="Registrar" topic="/user/agreement" xstyle="out"></dcc-submit>
+                <div class="text-center">
+                  <dcc-submit label="Prosseguir" topic="/user/agreement" xstyle="in"
+                              style="font-size:32px;border:1px solid;border-radius:.5rem;border-color:lightblue;padding:.5rem .5rem;background-color:blue;color:white">
+                  </dcc-submit>
+                </div>
+
+                <br><br>
+                <p><b>Nome do Participante da Oficina (criança ou adolescente): </b>
+								<span id="username_1"></span></p>
+								<p><b>Nome do Responsável: </b>
+								<span id="respname_1"></span></p>
+                <p>ENTENDI QUE POSSO DIZER “SIM” E PARTICIPAR, MAS QUE, A QUALQUER
+								MOMENTO, POSSO DIZER “NÃO” E DESISTIR. ENTENDI QUE NINGUÉM FICARÁ BRAVO
+								SE EU DESISTIR. SEMPRE PODEREI TIRAR MINHAS DÚVIDAS COM OS PESQUISADORES
+								 E CONVERSAR COM OS MEUS PAIS OU RESPONSÁVEIS.</p>
 
 								<!-- TALE 7 a 10 -->
 						    <div id="term-form-a" class="outer">
@@ -364,18 +368,21 @@
 
 										 <p><b>Concordância:</b> <span id="answer_agree"></span></p>
 
-											<dcc-button label="Recolher Detalhes do Termo de Consentimento" topic="/user/term/retract" xstyle="out">
+											<dcc-button label="Recolher Detalhes do Termo de Consentimento" topic="/user/term/retract"
+                                  xstyle="in" style="padding:.5rem .5rem;background-color:gray;color:white;width:100%">
 											</dcc-button>
 
 									  </div>
 
 										Os botões abaixo apresentam todos todos os detalhes sobre o Termo de Assentimento, você deve escolher aquele que corresponde a sua idade.
+                    <br><br>
+										<p><dcc-button id="button-expand-a" label="+ Mostrar Detalhes do Termo 7 a 10 anos" topic="/user/term/expand/a"
+                                xstyle="in" style="padding:.5rem .5rem;background-color:gray;color:white;width:100%">
+										</dcc-button></p>
 
-										<dcc-button id="button-expand-a" label="Mostrar Detalhes do Termo 7 a 10 anos" topic="/user/term/expand/a" xstyle="out">
-										</dcc-button>
-
-										<dcc-button id="button-expand-b" label="Mostrar Detalhes do Termo 11 a 14 anos" topic="/user/term/expand/b" xstyle="out">
-										</dcc-button>
+										<p><dcc-button id="button-expand-b" label="+ Mostrar Detalhes do Termo 11 a 14 anos" topic="/user/term/expand/b"
+                                xstyle="in" style="padding:.5rem .5rem;background-color:gray;color:white;width:100%">
+										</dcc-button></p>
 
                   </section>
                   </div>

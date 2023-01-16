@@ -1,0 +1,58 @@
+<div class="d-flex panel-label">
+  <div class="col-3">
+    <div id="editor-button">
+       <dcc-button topic="control/editor/switch" label="EDITOR" xstyle="in">
+       </dcc-button>
+    </div>
+    <div id="execute-button">
+       <dcc-button topic="control/editor/switch" label="OPERAÇÃO" xstyle="in">
+       </dcc-button>
+    </div>
+  </div>
+  <div id="operation-panel" class="d-flex col-3">
+    <div id="play-button" class="control-button">
+      <dcc-button label="Play" topic="control/space/play"
+                   image="images/icon/play.svg"></dcc-button>
+    </div>
+    <div id="stop-button" class="control-button">
+      <dcc-button label="Stop" topic="control/space/stop"
+                   image="images/icon/stop.svg"></dcc-button>
+    </div>
+    <div id="restart-button" class="control-button">
+      <dcc-button label="Restart" topic="control/space/restart"
+                   image="images/icon/restart.svg"></dcc-button>
+    </div>
+    <div id="next-button" class="control-button">
+      <dcc-button label="Next" topic="state/next"
+                   image="images/icon/step.svg"></dcc-button>
+    </div>
+  </div>
+  <span class="col-3" id="source-name">Result</span>
+  <div class="col-3">
+     <dcc-button topic="flow/navigate/>" label="CONCLUIR" xstyle="in">
+     </dcc-button>
+  </div>
+</div>
+<div id="action-panels" class="d-flex h-100 mb-3">
+  <div id="composition-block" class="d-flex col-6 flex-column align-items-stretch">
+     <div>
+        <div id="render-panel">{knot}</div>
+        <div id="types-panel"></div>
+     </div>
+     <div id="rules-panel"></div>
+  </div>
+  <div id="script-block" class="d-flex col-6 flex-column align-items-stretch">
+     <div class="sty-navigation-expansion">
+         <dcc-button id="button-expand-script" topic="control/script/expand" label="Expand" image="images/icon/icon-expansion-left.svg"></dcc-button>
+         <dcc-button id="button-retract-script" topic="control/script/retract" label="Retract" image="images/icon/icon-expansion-right.svg"></dcc-button>
+     </div>
+     <div class="sty-navigation-expansion">
+         <dcc-button id="button-retract-cells" topic="control/cells/retract" label="Expand" image="images/icon/icon-expansion-left.svg"></dcc-button>
+         <dcc-button id="button-expand-cells" topic="control/cells/expand" label="Retract" image="images/icon/icon-expansion-right.svg"></dcc-button>
+     </div>
+     <div class="h-100 w-100" style="padding-left:.800rem">
+        <div class="h-100 w-100" id="script-panel"></div>
+     </div>
+  </div>
+</div>
+<div id="xml-toolbox"></div>

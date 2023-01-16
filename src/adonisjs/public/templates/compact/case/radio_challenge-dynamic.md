@@ -22,4 +22,4 @@ Enter Feedback.
 
 ___ Template ___
 
-* template: simple/case/radio_challenge
+* template: compact/case/radio_challenge
