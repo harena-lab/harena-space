@@ -108,28 +108,32 @@ class UserTale {
     console.log('===== user parameters')
     console.log(parameters)
 
-    const agree = (parameters.agree && parameters.agree.length > 0 && parameters.agree == 'agree')
-    const termJson = {
-      userId: this._userId,
-      termId: this._termId,
-      nameResponsible: this._userTerm.name_responsible,
-      emailResponsible: this._userTerm.email_responsible,
-      nameParticipant: this._userTerm.name_participant,
-      date: parameters.date_agree_1,
-      role: parameters.role,
-      agree: (agree) ? '1' : '0'
+    // const agree = (parameters.agree && parameters.agree.length > 0 && parameters.agree == 'agree')
+    if (parameters.agree == null || parameters.agree.length == 0)
+        this._showFeedback('Você precisa informar se concorda ou não em participar da pesquisa.')
+    else {
+      const termJson = {
+        userId: this._userId,
+        termId: this._termId,
+        nameResponsible: this._userTerm.name_responsible,
+        emailResponsible: this._userTerm.email_responsible,
+        nameParticipant: this._userTerm.name_participant,
+        date: parameters.date_agree_1,
+        role: parameters.role,
+        agree: (parameters.agree == 'agree') ? '1' : '0'
+      }
+      console.log('=== term json')
+      console.log(termJson)
+      let term = await MessageBus.i.request('user/term/post', termJson)
+      console.log('=== term add')
+      console.log(term)
+      document.querySelector('#complete-form').style.display = 'none'
+      if (parameters.agree == 'agree')
+        this._showFeedback('Termo aceito com sucesso.', 'blue')
+      else
+        this._showFeedback('O termo não foi aceito pelo participante.', 'blue')
+      window.location.href = "/player/env/"
     }
-    console.log('=== term json')
-    console.log(termJson)
-    let term = await MessageBus.i.request('user/term/post', termJson)
-    console.log('=== term add')
-    console.log(term)
-    document.querySelector('#complete-form').style.display = 'none'
-    if (agree)
-      this._showFeedback('Termo aceito com sucesso.', 'blue')
-    else
-      this._showFeedback('O termo não foi aceito pelo participante.', 'blue')
-    window.location.href = "/player/env/"
   }
 }
 
