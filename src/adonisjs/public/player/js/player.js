@@ -496,7 +496,7 @@ class PlayerManager {
        blocks: blocks,
        source: knot,
        buttonTypes: ''},
-      null, null, '/dccs/')
+      null, null, false, '/dccs/')
   }
 
   presentNote (knot) {
