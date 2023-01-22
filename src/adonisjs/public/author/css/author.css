@@ -5,16 +5,16 @@
   position: fixed;
   bottom: 90px;
   left: 195px;
- 
+
   /* keep it at the top of everything else */
   z-index: 100;
- 
+
   /* hide with opacity */
   opacity: 0;
- 
+
   /* also add a translate effect */
   transform: translateY(100px);
- 
+
   /* and a transition */
   transition: all 5s ease
 }
@@ -82,7 +82,7 @@
 }
 
 
- 
+
 .showBtn {
   opacity: 1;
   transform: translateY(0)
@@ -226,10 +226,3 @@
 	 position: relative;
 
 }
-
-/*
-.ql-editor {
-   font-family: monospace;
-   font-size: 14pt;
-}
-*/

@@ -16,6 +16,10 @@ DCC.component(
               {name: 'url-manager',
                in: 'path'},
               {name: 'caseId',
+               in: 'query'},
+              {name: 'startingDateTime',
+               in: 'query'},
+              {name: 'endingDateTime',
                in: 'query'}
             ]
           }
@@ -31,7 +35,9 @@ DCC.component(
   {
     environment: {
       'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api,
-      'caseId': new URL(document.location).searchParams.get('id')
+      'caseId': new URL(document.location).searchParams.get('id'),
+      'startingDateTime': new URL(document.location).searchParams.get('start'),
+      'endingDateTime': new URL(document.location).searchParams.get('end')
     },
     oas: {
       paths: {
@@ -42,6 +48,10 @@ DCC.component(
               {name: 'url-manager',
                in: 'path'},
               {name: 'caseId',
+               in: 'query'},
+              {name: 'startingDateTime',
+               in: 'query'},
+              {name: 'endingDateTime',
                in: 'query'}
             ]
           }

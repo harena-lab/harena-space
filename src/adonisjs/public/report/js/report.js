@@ -8,7 +8,9 @@ class ReportManager {
     const reportArea = document.querySelector('#report-area')
 
     let logger = await MessageBus.i.request('logger/list/get',
-      {caseId: new URL(document.location).searchParams.get('id')})
+      {caseId: new URL(document.location).searchParams.get('id'),
+       startingDateTime: new URL(document.location).searchParams.get('start'),
+       endingDateTime: new URL(document.location).searchParams.get('end')})
 
     if (logger.message.error) {
       console.log('--- error')
@@ -81,19 +83,28 @@ class ReportManager {
         }
         html += '</table>'
       } else {
-        html += '<table>'
-        for (const a in value)
-          html += '<tr><td style="border: 1px solid darkgray">' +
-                  this._presentValue(value[a]) + '<td></tr>'
-        html += '</table>'
+        if (isNaN(value[0])) {
+          html += '<table>'
+          for (const a in value)
+            html += '<tr><td style="border: 1px solid darkgray">' +
+                    this._presentValue(value[a]) + '<td></tr>'
+          html += '</table>'
+        } else {
+          html += '['
+          for (const a in value)
+            html += value[a] + ((a < value.length-1) ? ',' : '')
+          html += ']'
+        }
       }
     } else if (typeof value === 'object') {
-      html += '['
-      const ov = Object.values(value)
-      for (const o in ov)
-        html += this._presentValue(ov[o]) + ((o < ov.length-1) ? ',' : '')
-      html += ']'
-    } else if (value.endsWith(':false') || value.endsWith(':true')) {
+      html += '<table>'
+      for (const o in value)
+        html += '<tr><td>' + o + ':</td>' +
+                '<td style="border: 1px solid darkgray">' +
+                this._presentValue(value[o]) + '<td></tr>'
+      html += '</table>'
+    } else if ((typeof value === 'string' || value instanceof String) &&
+               (value.endsWith(':false') || value.endsWith(':true'))) {
       const v = value.substring(value.lastIndexOf(':') + 1)
       html = '<table><tr><td style="border: 1px solid darkgray">' +
              value.substring(0, value.lastIndexOf(':')) +
@@ -101,7 +112,7 @@ class ReportManager {
              ((v == 'true') ? 'blue' : 'red') + '">' + v + '</td>' +
              '<tr></table>'
     } else
-      html = value
+      html = ('' + value).replace(/\n/g, '<br>')
     return html
   }
 }
