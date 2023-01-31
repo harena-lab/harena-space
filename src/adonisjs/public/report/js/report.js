@@ -2,20 +2,62 @@ class ReportManager {
   start () {
     this._report = this._report.bind(this)
     MessageBus.i.subscribe('report/update', this._report)
+    this._download = this._download.bind(this)
+    MessageBus.i.subscribe('report/download', this._download)
+  }
+
+  async _requestLogger () {
+    const logger = await MessageBus.i.request('logger/list/get',
+      {caseId: new URL(document.location).searchParams.get('id'),
+       startingDateTime: new URL(document.location).searchParams.get('start'),
+       endingDateTime: new URL(document.location).searchParams.get('end')})
+    if (logger.message.error) {
+      console.log('--- error')
+      console.log(logger.message.error)
+      return null
+    } else
+      return logger
+  }
+
+  async _download () {
+    const logger = await this._requestLogger()
+
+    if (logger != null) {
+      const schema = ['Caso_01', 'Caso_02', 'Caso_03', 'Caso_04', 'Caso_05',
+                      'Caso_06', 'Caso_07', 'Caso_08', 'Caso_09', 'Caso_10',
+                      'Caso_11', 'Caso_12', 'Pergunta_01', 'Pergunta_02']
+      let table = '"user","start"'
+      for (const s of schema)
+        table += ',"' + s + '","time"'
+      table += '\n'
+      for (const l of logger.message.logs) {
+        const answers = JSON.parse(l.log)
+        const track = this._prepareTrack(answers.knotTrack, answers.varTrack)
+        table += '"' + l.user_id + '","' + track.timeStart + '"'
+        for (const s of schema) {
+          const sh = s + '.hypothesis'
+          table += ',"'  + (answers.variables[sh] == null ? '' : answers.variables[sh]) +
+                   '","' + (track[sh] == null ? '' : track[sh]) + '"'
+        }
+        table += '\n'
+      }
+
+      const element = document.createElement('a')
+      element.setAttribute('href',
+        'data:text/plain;charset=utf-8,' + encodeURIComponent(table))
+      element.setAttribute('download', 'log.csv')
+      element.style.display = 'none'
+      document.body.appendChild(element)
+      element.click()
+      document.body.removeChild(element)
+    }
   }
 
   async _report () {
     const reportArea = document.querySelector('#report-area')
+    const logger = await this._requestLogger()
 
-    let logger = await MessageBus.i.request('logger/list/get',
-      {caseId: new URL(document.location).searchParams.get('id'),
-       startingDateTime: new URL(document.location).searchParams.get('start'),
-       endingDateTime: new URL(document.location).searchParams.get('end')})
-
-    if (logger.message.error) {
-      console.log('--- error')
-      console.log(logger.message.error)
-    } else {
+    if (logger != null) {
       const logs = {}
       for (const l of logger.message.logs)
         logs[l.id] = l
@@ -29,13 +71,14 @@ class ReportManager {
       for (const c of checked) {
         if (c.checked) {
           const answers = JSON.parse(logs[c.value].log)
+          const track = this._prepareTrack(answers.knotTrack, answers.varTrack)
           html += '<tr><td style="border: 2px solid darkgray">' +
                   logs[c.value].username +
                   '</td><td style="border: 2px solid darkgray">' +
-                  logs[c.value].created_at +
+                  track.timeStart + '<br>to<br>' + logs[c.value].created_at +
                   '</td><td style="border: 2px solid darkgray">' +
                   '<table style="border: 2px solid darkgray">' +
-                  this._presentVariables(answers.variables) +
+                  this._presentVariables(answers.variables, track) +
                   '</table></td></tr>'
         }
       }
@@ -44,7 +87,18 @@ class ReportManager {
     }
   }
 
-  _presentVariables (variables) {
+  _prepareTrack (knotTrack, varTrack) {
+    const track = {timeStart: knotTrack[0].timeStart}
+    for (const v of varTrack) {
+      const changed = v.changed
+      for (const t in v)
+        if (t != 'changed' && !track[v[t]])
+          track[t] = changed
+    }
+    return track
+  }
+
+  _presentVariables (variables, track) {
     let html = ''
     let levels = []
     let max = 1
@@ -60,6 +114,8 @@ class ReportManager {
         }
         if (l == lv.length-1)
           html += '<td style="border: 1px solid darkgray">' +
+                  track[v] + '</td>' +
+                  '<td style="border: 1px solid darkgray">' +
                   this._presentValue(variables[v]) + '</td>'
       }
       html += '</tr>'
