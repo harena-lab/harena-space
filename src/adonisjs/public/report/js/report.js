@@ -50,7 +50,7 @@ class ReportManager {
             lastTime = t
           }
           table += ',"'  + (answers.variables[sh] == null ? ''
-                     : answers.variables[sh]) +
+                     : answers.variables[sh].replace(/"/g, '""')) +
                    '","' + (time == -1 ? ''
                      : zeroPad(time.getMinutes()) + ':' +
                        zeroPad(time.getSeconds())) + '","' +
