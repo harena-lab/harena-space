@@ -20,24 +20,41 @@ class ReportManager {
   }
 
   async _download () {
+    const zeroPad = (num) => String(num).padStart(2, '0')
+
     const logger = await this._requestLogger()
 
     if (logger != null) {
       const schema = ['Caso_01', 'Caso_02', 'Caso_03', 'Caso_04', 'Caso_05',
                       'Caso_06', 'Caso_07', 'Caso_08', 'Caso_09', 'Caso_10',
                       'Caso_11', 'Caso_12', 'Pergunta_01', 'Pergunta_02']
-      let table = '"user","start"'
+      let table = '"user id","user","start","date"'
       for (const s of schema)
-        table += ',"' + s + '","time"'
+        table += ',"' + s + '","time","miliseconds"'
       table += '\n'
       for (const l of logger.message.logs) {
         const answers = JSON.parse(l.log)
         const track = this._prepareTrack(answers.knotTrack, answers.varTrack)
-        table += '"' + l.user_id + '","' + track.timeStart + '"'
+        let lastTime = new Date(track.timeStart)
+        table += '"' + l.user_id + '","' + l.username + '","' +
+                 track.timeStart + '","' +
+                 zeroPad(lastTime.getDate()) + '/' +
+                 zeroPad(lastTime.getMonth() + 1) + '/' +
+                 zeroPad(lastTime.getFullYear()) + '"'
         for (const s of schema) {
           const sh = s + '.hypothesis'
-          table += ',"'  + (answers.variables[sh] == null ? '' : answers.variables[sh]) +
-                   '","' + (track[sh] == null ? '' : track[sh]) + '"'
+          let time = -1
+          if (track[sh] != null) {
+            const t = new Date(track[sh])
+            time = new Date(t - lastTime)
+            lastTime = t
+          }
+          table += ',"'  + (answers.variables[sh] == null ? ''
+                     : answers.variables[sh]) +
+                   '","' + (time == -1 ? ''
+                     : zeroPad(time.getMinutes()) + ':' +
+                       zeroPad(time.getSeconds())) + '","' +
+                   ((time == -1) ? '' : time.getTime()) + '"'
         }
         table += '\n'
       }
