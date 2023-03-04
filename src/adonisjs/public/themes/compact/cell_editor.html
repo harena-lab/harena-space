@@ -27,7 +27,17 @@
                    image="images/icon/step.svg"></dcc-button>
     </div>
   </div>
-  <span class="col-3" id="source-name">Result</span>
+  <span id="stage-label" class="col-3"><label for="stage-field">Estágio</label>
+       <select id="stage-field" name="stage-field">
+         <option value="01_movement_h">Movimento Horizontal</option>
+         <option value="02_revert">Reverte</option>
+         <option value="03_movement_v">Movimento Vertical</option>
+         <option value="04_eat">Come</option>
+         <option value="05_reproduction">Reprodução</option>
+         <option value="06_die">Morre</option>
+         <option value="07_free">Estilo Livre</option>
+       </select>
+  </span>
   <div class="col-3">
      <dcc-button topic="control/editor/finish" label="***TERMINAR***" xstyle="in"
         style="font-size:32px;border:1px solid;border-radius:.5rem;border-color:lightred;padding:.5rem .5rem;background-color:red;color:white"
@@ -35,6 +45,8 @@
        <subscribe-dcc topic="control/finish/enable" map="enable"></subscribe-dcc>
        <subscribe-dcc topic="control/finish/disable" map="disable"></subscribe-dcc>
      </dcc-button>
+     &nbsp;&nbsp;
+     <span id="source-name">Result</span>
   </div>
 </div>
 <div id="action-panels" class="d-flex h-100 mb-3">
