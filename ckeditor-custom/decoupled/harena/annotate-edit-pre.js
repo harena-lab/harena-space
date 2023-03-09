@@ -17,13 +17,15 @@ export default class AnnotateEditPre extends Plugin {
         const { writer } = conversionApi;
         const ann = {}
         if (modelAttributeValue != null) {
-          if (modelAttributeValue.categories)
-            for (const a of modelAttributeValue.categories)
-              ann[a] = ''
+          if (modelAttributeValue.categories) {
+            for (const a of modelAttributeValue.categories) {
+              const cat = a.split(':')[1]
+              ann[cat] = ''
+            }
+            ann.categories = modelAttributeValue.categories.join(';')
+          }
           if (modelAttributeValue.range)
             ann.range = modelAttributeValue.range
-          if (modelAttributeValue.group)
-            ann.group = modelAttributeValue.group
         }
 
         return writer.createAttributeElement(tag, ann)
@@ -34,10 +36,8 @@ export default class AnnotateEditPre extends Plugin {
       const attrArr = (attr == null) ? [] : [...attr]
       let result = {}
       if (attrArr.length > 0) {
-        result = {'categories': attrArr.filter(c => c!='range' && c!='group'),
-                  'range': viewElement.getAttribute('range')}
-        if (viewElement.getAttribute('group'))
-          result['group'] = viewElement.getAttribute('group')
+        if (viewElement.getAttribute('categories'))
+          result['categories'] = viewElement.getAttribute('categories').split(';')
       }
       return result
     }

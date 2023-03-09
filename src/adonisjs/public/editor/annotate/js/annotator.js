@@ -189,12 +189,24 @@ class Annotator {
   }
 
   _markAnnotations (annotations) {
+    // sort and merge overlapping annotations
     const ranges = []
+    let grp = 1
     for (const a of annotations) {
+      a.group = grp
+      grp++
       for (const r of a.fragments)
-        ranges.push({fragment: r, annot: a})
+        ranges.push({fragment: r, annot: [a]})
     }
     ranges.sort((a, b) => a.fragment.start - b.fragment.start)
+    for (let r = 0; r < ranges.length - 1; r++) {
+      if ((ranges[r].fragment.start == ranges[r + 1].fragment.start) &&
+          (ranges[r].fragment.size == ranges[r + 1].fragment.size)) {
+        ranges[r].annot.push(ranges[r + 1].annot[0])
+        ranges.splice(r + 1, 1)
+      }
+    }
+    
     let last = 0
     const doc = this._document
     let doca = ''
@@ -203,6 +215,9 @@ class Annotator {
     let group = 0
     for (const r of ranges) {
       const next = r.fragment.start
+      console.log('fragment: ' + r.fragment.fragment + ' start: ' + next)
+      console.log('close')
+      console.log(close[0] || 'vazio')
       if (close.length > 0 && close[0] < next) {
         while (close.length > 0) {
           level--
@@ -211,19 +226,31 @@ class Annotator {
           last = pos
         }
       }
+      console.log('level: ' + level)
       doca += doc.substring(last, next) +
                 '<annot' + level + ' range="' +
                 r.fragment.start + ',' + r.fragment.size + '"'
-      for (const c of r.annot.categories)
-        doca += ' ' + c
-      if (r.annot.fragments.length > 1) {
-        if (r.annot.group == null) {
-          group++
-          r.annot.group = group
-        }
-        doca += ' group="' + r.annot.group + '"'
+      let union = r.annot[0].categories
+      for (let i = 1; i < r.annot.length; i++)
+        union = [...new Set([...union, ...r.annot[i].categories])]
+      doca += ' ' + union.join(' ')
+      // const grp = []
+      doca += ' categories="'
+      let sep = ''
+      for (const a of r.annot) {
+        doca += sep + a.group + ':' + a.categories.join(',')
+        sep = ';'
+        // if (a.fragments.length > 1) {
+        //   if (a.group == null) {
+        //     group++
+        //     a.group = group
+        //   }
+        //   grp.push(a.group)
+        // }
       }
-      doca += '>'
+      // if (grp.length > 0)
+      //   doca += ' groups="' + grp.join(',') + '"'
+      doca += '">'
       last = next
       close.unshift(next + r.fragment.size)
       level++
@@ -236,6 +263,8 @@ class Annotator {
     }
     doca += doc.substring(last)
     this._document = doca
+    console.log('=== resulting document')
+    console.log(doca)
     document.querySelector('#editor-space').innerHTML = doca
   }
 
@@ -335,37 +364,53 @@ class Annotator {
       if (this._kmemory[kf] == null)
         this._kmemory[kf] = 'm'
 
+      let groups = []
+      
       const meta = doc.substring(pi + Annotator.tags.start.length + 1, pf)
         .matchAll(/([\w-]+)="([^"]*)"/g)
-      const categories = []
-      let group = 0
-      const prefix = an.start + '_' + an.size + '_' + an.fragment + '_'
       for (const m of meta) {
-        if (m[2].length == 0) {
-          let saved = false
-          categories.push(m[1])
-        } else if (m[1] == 'group')
-          group = m[2]
-      }
-
-      let slot = {fragments: [], categories: categories}
-      if (group == 0 || anGroup[group] == null)
-        annotations.push(slot)
-      if (group != 0) {
-        if (anGroup[group])
-          slot = anGroup[group]
-        else {
-          slot.group = group
-          anGroup[group] = slot
+        if (m[1] == 'categories') {
+          const grp = m[2].split(';')
+          for (const g of grp) {
+            const gi = g.split(':')
+            groups[gi[0]] = gi[1].split(',')
+          }
         }
       }
-      slot.fragments.push(an)
+
+      for (const g in groups) {
+        if (anGroup[g])
+          anGroup[g].fragments.push(an)
+        else {
+          anGroup[g] = {fragments: [an], categories: groups[g], group: g}
+          annotations.push(anGroup[g])
+        }
+      }
 
       doc = doc.substring(0, pi) +
             doc.substring(pf + 1, ei) +
             doc.substring(ei + Annotator.tags.end.length + 2)
       pi = doc.indexOf(Annotator.tags.start)
     }
+
+    // merge annotations in the same groups
+    console.log('=== annotations before')
+    console.log([...annotations])
+    let current = this._annotationFragmentKey(annotations[0])
+    for (let a = 0; a < annotations.length - 1; a++) {
+      const next = this._annotationFragmentKey(annotations[a + 1])
+      console.log('current: ' + current + ', next: ' + next)
+      if (current == next) {
+        annotations[a].categories = annotations[a].categories.concat(
+          annotations[a + 1].categories)
+        annotations.splice(a + 1, 1)
+        a--
+      }
+      else
+        current = next
+    }
+    console.log('=== annotations after')
+    console.log([...annotations])
 
     for (const an of annotations) {
       const prefix = this._kcatPrefix(an)
@@ -382,15 +427,23 @@ class Annotator {
     this._updateSummary(true)
   }
 
+  _annotationFragmentKey (annotation) {
+    let key = ''
+    for (const f of annotation.fragments)
+      key += f.start + '-' + f.size + ';'
+    return key
+  }
+
   _updateSummary (isAnnotations) {
     const annotations = (isAnnotations) ? this._annotations : this._memory
     let html = '<table>'
     let ip = 0
     this._inputMemory = []
     for (const an of annotations) {
-      html += '<tr><td><table>'
+      html += '<tr><td><table><tr>'
+      let sep = ''
       for (const f of an.fragments) {
-        html += '<tr><td>' + f.fragment
+        html += sep + '<td>' + f.fragment
         if (isAnnotations) {
           html += '</td><td>' +
                   ((this._kmemory[this._kmemoryPrefix(f)] == '-')
@@ -400,10 +453,11 @@ class Annotator {
                     '" name="mem' + ip + '">'
           ip++
         }
-        html += '</td></tr>'
+        html += '</td>'
         this._inputMemory.push(this._kmemoryPrefix(f))
+        sep = '</td><td>+'
       }
-      html += '</table></td><td><table>'
+      html += '</tr></table></td><td><table>'
       const prefix = this._kcatPrefix(an)
       for (const c of an.categories) {
         html += '<tr><td>' + c + '</td><td>'
