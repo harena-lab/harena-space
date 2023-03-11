@@ -215,9 +215,6 @@ class Annotator {
     let group = 0
     for (const r of ranges) {
       const next = r.fragment.start
-      console.log('fragment: ' + r.fragment.fragment + ' start: ' + next)
-      console.log('close')
-      console.log(close[0] || 'vazio')
       if (close.length > 0 && close[0] < next) {
         while (close.length > 0) {
           level--
@@ -226,7 +223,6 @@ class Annotator {
           last = pos
         }
       }
-      console.log('level: ' + level)
       doca += doc.substring(last, next) +
                 '<annot' + level + ' range="' +
                 r.fragment.start + ',' + r.fragment.size + '"'
@@ -234,22 +230,12 @@ class Annotator {
       for (let i = 1; i < r.annot.length; i++)
         union = [...new Set([...union, ...r.annot[i].categories])]
       doca += ' ' + union.join(' ')
-      // const grp = []
       doca += ' categories="'
       let sep = ''
       for (const a of r.annot) {
         doca += sep + a.group + ':' + a.categories.join(',')
         sep = ';'
-        // if (a.fragments.length > 1) {
-        //   if (a.group == null) {
-        //     group++
-        //     a.group = group
-        //   }
-        //   grp.push(a.group)
-        // }
       }
-      // if (grp.length > 0)
-      //   doca += ' groups="' + grp.join(',') + '"'
       doca += '">'
       last = next
       close.unshift(next + r.fragment.size)
@@ -394,8 +380,6 @@ class Annotator {
     }
 
     // merge annotations in the same groups
-    console.log('=== annotations before')
-    console.log([...annotations])
     let current = this._annotationFragmentKey(annotations[0])
     for (let a = 0; a < annotations.length - 1; a++) {
       const next = this._annotationFragmentKey(annotations[a + 1])
@@ -409,8 +393,6 @@ class Annotator {
       else
         current = next
     }
-    console.log('=== annotations after')
-    console.log([...annotations])
 
     for (const an of annotations) {
       const prefix = this._kcatPrefix(an)

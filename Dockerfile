@@ -10,7 +10,7 @@ COPY ./src/adonisjs .
 #RUN chown node:node /app
 
 RUN npm i npm
-RUN npm i -g @adonisjs/cli
+RUN npm i -g --unsafe-perm @adonisjs/cli
 
 RUN npm install
 
