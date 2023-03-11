@@ -38,6 +38,8 @@ export default class AnnotateEditPre extends Plugin {
       if (attrArr.length > 0) {
         if (viewElement.getAttribute('categories'))
           result['categories'] = viewElement.getAttribute('categories').split(';')
+        if (viewElement.getAttribute('range'))
+          result['range'] = viewElement.getAttribute('range')
       }
       return result
     }

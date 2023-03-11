@@ -53,10 +53,7 @@ export default class AnnotateUIPre extends Plugin {
                 range.end.offset - (content.length - min.length - newStart)
               rangev.push(range)
 
-              const complete = range.start.path[0] + ',' +
-                               range.start.path[1] + ',' +
-                               range.end.path[0] + ',' +
-                               range.end.path[1]              
+              const complete = range.start.path[1] + ',' + min.length
 
               // find existing annotation
               const items = range.getItems()
