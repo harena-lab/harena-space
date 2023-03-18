@@ -1,30 +1,142 @@
 import annotateIcon from '@ckeditor/ckeditor5-highlight/theme/icons/marker.svg';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import SwitchButtonView from '@ckeditor/ckeditor5-ui/src/button/switchbuttonview';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 export default class AnnotateUI extends Plugin {
     init() {
-        const editor = this.editor;
+      this._group = 0 // controls grouped attributes
+      this._lock = false // controls lock of grouped selections
+      this._lockedRanges = {} // stores locked ranges
 
-        editor.ui.componentFactory.add( 'annotate', () => {
-            const button = new ButtonView();
+      const buttons = [
+        ['annotatePatho', 'Pathophysiology', 'pathophysiology'],
+        ['annotateEpi', 'Epidemiology', 'epidemiology'],
+        ['annotateEti', 'Etiology', 'etiology'],
+        ['annotateHist', 'History', 'history'],
+        ['annotatePhys', 'Physical examination', 'physical'],
+        ['annotateCompl', 'Complementary exams', 'exams'],
+        ['annotateDiff', 'Differential diagnosis', 'differential'],
+        ['annotateThera', 'Therapeutic plan', 'therapeutic'],
+        ['annotateSimple', 'Simple', 'simple'],
+        ['annotateEncap', 'Encapsulated', 'encapsulated'],
+        ['annotateJar', 'Jargon', 'jargon'],
+        ['annotateRight', 'Right', 'right'],
+        ['annotateWrong', 'Wrong', 'wrong'],
+        ['annotateTypo', 'Typo', 'typo']
+      ]
+      for (const b of buttons)
+        this._buildButton(...b)
 
-            button.label = 'Annotate';
-            button.icon = annotateIcon;
-            button.tooltip = true;
+      this.editor.ui.componentFactory.add('annotateLock', () => {
+        const button = new SwitchButtonView()
+        button.label = 'Lock'
+        button.tooltip = true
+        this.listenTo(button, 'execute', () => {
+          button.isOn = !button.isOn
+          if (button.isOn)
+            this._lock = true
+          else {
+            this._lock = false
+            this._lockedRanges = {}
+          }
+        })
+        return button
+      })
 
-            this.listenTo( button, 'execute', () => {
-                const selection = editor.model.document.selection;
-                const title = 'pathophysiology';
+      this.editor.ui.componentFactory.add('annotateReset', () => {
+        const button = new ButtonView()
+        button.label = '(R)'
+        button.tooltip = 'Restart'
+        button.withText = true
+        this.listenTo(button, 'execute', () => {
+          this._lockedRanges = {}
+        })
+        return button
+      })
+    }
 
-                editor.model.change( writer => {
-                  for ( const range of editor.model.document.selection.getRanges() ) {
-                    writer.setAttribute( 'annotation', title, range );
-                  }
-                } );
-            } );
+    _buildButton(id, label, annotation) {
+      const editor = this.editor;
+      editor.ui.componentFactory.add( id, () => {
+        const button = new ButtonView();
 
-            return button;
-        } );
+        button.label = label;
+        button.tooltip = true;
+        button.withText = true;
+
+        this.listenTo(button, 'execute', () => {
+          const selection = editor.model.document.selection
+
+          let tag = 'annot2'
+          this._group++
+          const av = []
+          const rangev = {...this._lockedRanges} // empty if not locked
+
+          for (const range of selection.getRanges()) {
+            // adjust range delimitation (removing extra spaces)
+            let content = ''
+            for (const i of range.getItems())
+              content += i.data
+            const min = content.trim()
+            const newStart = content.indexOf(min)
+            range.start.offset = range.start.offset + newStart
+            range.end.offset =
+              range.end.offset - (content.length - min.length - newStart)
+            const complete = range.start.path[1] + ',' + min.length
+            rangev[complete] = range
+          }
+
+          for (const r in rangev) {
+            const range = rangev[r]
+
+            // find existing annotation
+            const items = range.getItems()
+            let ex = null
+            for (const i of items) {
+              ex = i.getAttribute(tag)
+              if (ex == null) {
+                tag = 'annot1'
+                ex = i.getAttribute(tag)
+              }
+              if (ex != null) break
+            }
+
+            const ann = {
+              range: r
+            }
+            ann.categories = []
+            // expand the existing annotation (same range) or level it up (different range)
+            if (ex != null) {
+              if (r == ex.range) {
+                // initialize with existing categories/groups to a add new ones
+                ann.categories = ex.categories
+                editor.model.change(writer => {
+                  writer.removeAttribute(tag, range)
+                })
+              } else
+                tag = 'annot2'  // annotation level up for a different overlapping range
+            }
+            ann.categories.push('N' + this._group + ':' + annotation)
+            av.push(ann)
+          }
+
+          editor.model.change(writer => {
+            let a = 0
+            for (const r in rangev) {
+              writer.setAttribute(tag, av[a], rangev[r])
+              MessageBus.i.publish('annotation/button/' + annotation)
+              a++
+            }
+          })
+
+          if (this._lock)
+            this._lockedRanges = rangev
+
+          this.editor.editing.view.focus()
+        })
+
+        return button;
+      })
     }
 }
