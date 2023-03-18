@@ -19,8 +19,9 @@ export default class AnnotateEditPre extends Plugin {
         if (modelAttributeValue != null) {
           if (modelAttributeValue.categories) {
             for (const a of modelAttributeValue.categories) {
-              const cat = a.split(':')[1]
-              ann[cat] = ''
+              const cat = a.split(':')[1].split(',')
+              for (const c of cat)
+                ann[c] = ''
             }
             ann.categories = modelAttributeValue.categories.join(';')
           }
