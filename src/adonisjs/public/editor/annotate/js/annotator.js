@@ -74,21 +74,24 @@ class Annotator {
   }
 
   async _annotationsOrMemory (incorporated) {
-    if (incorporated ||
-        (this._annotations != null && this._annotations.length > 0)) {
+    let memory = false
+    if (!incorporated &&
+        (this._annotations == null || this._annotations.length == 0)) {
+      await this._loadMemory(this._questId)
+      memory = this._memory != null && this._memory.length > 0
+    }
+
+    if (memory) {
+      this._markAnnotations(this._memory)
+      this._updateSummary(false)
+      document.querySelector('#incorporate-automatic').style.display =
+        'initial'
+    } else {
       this._markAnnotations(this._annotations)
       this._updateSummary(true)
       this._buildEditor()
       document.querySelector('#remove-memory').style.display = 'initial'
       document.querySelector('#save-annotations').style.display = 'initial'
-    } else {
-      await this._loadMemory(this._questId)
-      if (this._memory != null) {
-        this._markAnnotations(this._memory)
-        this._updateSummary(false)
-        document.querySelector('#incorporate-automatic').style.display =
-          'initial'
-      }
     }
   }
 
@@ -294,7 +297,8 @@ class Annotator {
           items: ['annotatePatho', 'annotateEpi',  'annotateEti', 'annotateHist',
                   'annotatePhys', 'annotateCompl',   'annotateDiff',
                   'annotateThera', '-', 'annotateSimple', 'annotateEncap',
-                  'annotateJar', 'annotateRight', 'annotateWrong', 'annotateTypo'],
+                  'annotateJar', 'annotateRight', 'annotateWrong', 'annotateTypo',
+                  'annotateLock', 'annotateReset'],
           shouldNotGroupWhenFull: true
         }
       } )
