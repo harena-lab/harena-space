@@ -18,6 +18,9 @@ class Annotator {
     this._annotationAction = this._annotationAction.bind(this)
     MessageBus.i.subscribe('annotation/button/#', this._annotationAction)
 
+    this._annotationSequence = this._annotationSequence.bind(this)
+    MessageBus.i.subscribe('annotation/sequence/update', this._annotationSequence)
+
     this._saveGrade = this._saveGrade.bind(this)
     MessageBus.i.subscribe('control/grade/save', this._saveGrade)
 
@@ -298,7 +301,7 @@ class Annotator {
                   'annotatePhys', 'annotateCompl',   'annotateDiff',
                   'annotateThera', '-', 'annotateSimple', 'annotateEncap',
                   'annotateJar', 'annotateRight', 'annotateWrong', 'annotateTypo',
-                  'annotateLock', 'annotateReset'],
+                  'annotateLock', 'annotateAdd', 'annotateRemove', 'annotateReset'],
           shouldNotGroupWhenFull: true
         }
       } )
@@ -320,6 +323,12 @@ class Annotator {
       .catch( error => {
         console.error( 'There was a problem initializing the editor.', error );
     } );
+  }
+
+  _annotationSequence (topic, message) {
+    console.log('=== annotation sequence')
+    console.log(message)
+    document.querySelector('#annotation-sequence').innerHTML = message
   }
 
   _annotationAction (topic, message) {
