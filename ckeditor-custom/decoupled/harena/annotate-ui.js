@@ -44,6 +44,38 @@ export default class AnnotateUI extends Plugin {
         return button
       })
 
+      this.editor.ui.componentFactory.add('annotateAdd', () => {
+        const button = new ButtonView()
+        button.label = '(+)'
+        button.tooltip = 'Add'
+        button.withText = true
+        this.listenTo(button, 'execute', () => {
+          // add selection to locked ranges
+          const rangev = {...this._lockedRanges}
+          AnnotateUI._addMinimizedSelection(rangev, editor.model.document.selection)
+          this._lockedRanges = rangev
+          AnnotateUI._updateSequence(this._lockedRanges)
+        })
+        return button
+      })
+
+      this.editor.ui.componentFactory.add('annotateRemove', () => {
+        const button = new ButtonView()
+        button.label = '(-)'
+        button.tooltip = 'Remove'
+        button.withText = true
+        this.listenTo(button, 'execute', () => {
+          const rangev = {...this._lockedRanges}
+          const keys = Object.keys(rangev)
+          if (keys.length > 0) {
+            delete rangev[keys[keys.length - 1]]
+            this._lockedRanges = rangev
+          }
+          AnnotateUI._updateSequence(this._lockedRanges)
+        })
+        return button
+      })
+
       this.editor.ui.componentFactory.add('annotateReset', () => {
         const button = new ButtonView()
         button.label = '(R)'
@@ -51,6 +83,7 @@ export default class AnnotateUI extends Plugin {
         button.withText = true
         this.listenTo(button, 'execute', () => {
           this._lockedRanges = {}
+          AnnotateUI._updateSequence(this._lockedRanges)
         })
         return button
       })
@@ -66,26 +99,12 @@ export default class AnnotateUI extends Plugin {
         button.withText = true;
 
         this.listenTo(button, 'execute', () => {
-          const selection = editor.model.document.selection
-
           let tag = 'annot2'
           this._group++
           const av = []
           const rangev = {...this._lockedRanges} // empty if not locked
 
-          for (const range of selection.getRanges()) {
-            // adjust range delimitation (removing extra spaces)
-            let content = ''
-            for (const i of range.getItems())
-              content += i.data
-            const min = content.trim()
-            const newStart = content.indexOf(min)
-            range.start.offset = range.start.offset + newStart
-            range.end.offset =
-              range.end.offset - (content.length - min.length - newStart)
-            const complete = range.start.path[1] + ',' + min.length
-            rangev[complete] = range
-          }
+          AnnotateUI._addMinimizedSelection(rangev, editor.model.document.selection)
 
           for (const r in rangev) {
             const range = rangev[r]
@@ -133,10 +152,42 @@ export default class AnnotateUI extends Plugin {
           if (this._lock)
             this._lockedRanges = rangev
 
+          AnnotateUI._updateSequence(this._lockedRanges)
+
           this.editor.editing.view.focus()
         })
 
         return button;
       })
+    }
+
+    static _addMinimizedSelection(rangev, selection) {
+      for (const range of selection.getRanges()) {
+        // adjust range delimitation (removing extra spaces)
+        let content = ''
+        for (const i of range.getItems())
+          content += i.data
+        const min = content.trim()
+        const newStart = content.indexOf(min)
+        range.start.offset = range.start.offset + newStart
+        range.end.offset =
+          range.end.offset - (content.length - min.length - newStart)
+        const complete = range.start.path[1] + ',' + min.length
+        rangev[complete] = range
+      }       
+    }
+
+    static _updateSequence(lockedRanges) {
+      // convert locked ranges fragments into a string
+      let seq = ''
+      let sep = ''
+      for (const r in lockedRanges) {
+        const range = lockedRanges[r]
+        for (const i of range.getItems()) {
+          seq += sep + i.data
+          sep = ' + '
+        }
+      }
+      MessageBus.i.publish('annotation/sequence/update', seq)
     }
 }
