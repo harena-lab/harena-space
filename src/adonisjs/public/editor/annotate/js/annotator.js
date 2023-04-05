@@ -31,6 +31,9 @@ class Annotator {
     this._removeMemory = this._removeMemory.bind(this)
     MessageBus.i.subscribe('control/memory/remove', this._removeMemory)
 
+    this._deleteAnnotation = this._deleteAnnotation.bind(this)
+    MessageBus.i.subscribe('control/annotation/delete', this._deleteAnnotation)
+
     this._saveAnnotations = this._saveAnnotations.bind(this)
     MessageBus.i.subscribe('control/annotations/save', this._saveAnnotations)
   }
@@ -94,6 +97,7 @@ class Annotator {
       this._updateSummary(true)
       this._buildEditor()
       document.querySelector('#remove-memory').style.display = 'initial'
+      document.querySelector('#delete-annotation').style.display = 'initial'
       document.querySelector('#save-annotations').style.display = 'initial'
     }
   }
@@ -147,7 +151,7 @@ class Annotator {
             slot.categories.push(cat)
             const key = this._kcatPrefix(slot) + cat
             this._ksource[key] = c.source
-            this._ksaved[key] = true
+            this._ksaved[key] = 's' // saved
         }
       }
       this._annotations = annotations
@@ -274,7 +278,7 @@ class Annotator {
         if (document.querySelector('#auto' + pos).checked) {
           transfer = true
           this._ksource[prefix + c] = 2
-          this._ksaved[prefix + c] = false
+          this._ksaved[prefix + c] = 'u' // unsaved
           selcat.push(c)
         }
         i++
@@ -412,7 +416,7 @@ class Annotator {
       for (const c of an.categories) {
         const key = prefix + c
         if (this._ksaved[key] == null)
-          this._ksaved[key] = false
+          this._ksaved[key] = 'u' // unsaved
         if (this._ksource[key] == null)
           this._ksource[key] = 1
       }
@@ -432,8 +436,14 @@ class Annotator {
   _updateSummary (isAnnotations) {
     const annotations = (isAnnotations) ? this._annotations : this._memory
     let html = '<table>'
-    let ip = 0
+    let ip = 0, dc = 0
     this._inputMemory = []
+    this._deleteCandidate = []
+    const anStatus = {
+      'u': {mess: 'unsaved', color: 'red'},
+      's': {mess: 'saved', color: 'green'},
+      'd': {mess: 'deleted', color: 'purple'}
+    }
     for (const an of annotations) {
       html += '<tr><td><table><tr>'
       let sep = ''
@@ -455,12 +465,18 @@ class Annotator {
       html += '</tr></table></td><td><table>'
       const prefix = this._kcatPrefix(an)
       for (const c of an.categories) {
+        this._deleteCandidate.push(prefix + c)
         html += '<tr><td>' + c + '</td><td>'
-        if (isAnnotations)
-          html +=  ((this._ksaved[prefix + c])
-                    ? '<span style="color:green">saved</span>'
-                    : '<span style="color:red">unsaved</span>')
-        else {
+        if (isAnnotations) {
+          // html +=  ((this._ksaved[prefix + c] == 's')
+          //           ? '<span style="color:green">saved</span>'
+          //           : '<span style="color:red">unsaved</span>')
+          html += '<span style="color:' + anStatus[this._ksaved[prefix + c]].color +  
+                  '">' + anStatus[this._ksaved[prefix + c]].mess + '</span>' +
+                  '</td><td><input type="checkbox" id="del' + dc +
+                  '" name="del' + dc + '">'
+          dc++
+        } else {
           html += '<input type="checkbox" id="auto' + ip +
                   '" name="auto' + ip + '">'
           ip++
@@ -470,8 +486,10 @@ class Annotator {
       html += '</td></tr></table>'
     }
     html += '</table>'
-    if (isAnnotations)
+    if (isAnnotations) {
       this._countMemory = ip
+      this._countDelCandidates = dc
+    }
     document.querySelector(
       '#' + ((isAnnotations) ? 'annotation' : 'memory') + '-details')
       .innerHTML = html
@@ -481,6 +499,16 @@ class Annotator {
     for (let i = 0; i < this._countMemory; i++)
       if (document.querySelector('#mem' + i).checked)
         this._kmemory[this._inputMemory[i]] = '-'
+    this._updateSummary(true)
+  }
+
+  _deleteAnnotation () {
+    for (let d = 0; d < this._countDelCandidates; d++) {
+      if (document.querySelector('#del' + d).checked &&
+          this._ksaved[this._deleteCandidate[d]] != 's')
+        this._ksaved[this._deleteCandidate[d]] = 'd'
+      console.log(this._deleteCandidate[d] + ': ' + this._ksaved[this._deleteCandidate[d]])
+    }
     this._updateSummary(true)
   }
 
@@ -555,7 +583,7 @@ class Annotator {
       const prefix = this._kcatPrefix(an)
       for (const c of an.categories) {
         const key = prefix + c
-        if (!this._ksaved[key]) {
+        if (this._ksaved[key] == 'u') {
           amsg.property_id = 'isc:' + c
           amsg.source = this._ksource[key]
           const result =
@@ -565,7 +593,7 @@ class Annotator {
             success = false
             break
           }
-          this._ksaved[key] = true
+          this._ksaved[key] = 's' // saved
 
           for (const f of an.fragments) {
             if (this._kmemory[this._kmemoryPrefix(f)] != '-') {
