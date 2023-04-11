@@ -15,6 +15,18 @@ class UserSignup {
     document.querySelector('#date_agree_2').innerHTML = sdate
   }
 
+  // TCLE of the Experiment Illness Script Components (ISC)
+  startAdultMuseum () {
+    this._experimentStartAdultMuseum = this._experimentStartAdultMuseum.bind(this)
+    MessageBus.i.subscribe('control/experiment/start', this._experimentStartAdultMuseum)
+
+    this.finalMessage =
+`<div style="color:black"><p>Bem-vindo(a)! Você foi convidado(a) a participar de um estudo científico sobre resolução de casos! Agradeço muito por isso.</p>
+<p>Nas próximas telas, você participará de um desafio chamado Zombie Venom.</p>
+<p><dcc-button topic="control/experiment/start" xstyle="out" label="Iniciar"></dcc-button></p></div>`
+    this._startPrognosisISC()
+  }
+
   // TCLE of the Prognosis Game
   startPrognosis () {
     this.finalMessage =
@@ -26,8 +38,8 @@ class UserSignup {
 
   // TCLE of the Experiment Illness Script Components (ISC)
   startISC () {
-    this._experimentStart = this._experimentStart.bind(this)
-    MessageBus.i.subscribe('control/experiment/start', this._experimentStart)
+    this._experimentStartISC = this._experimentStartISC.bind(this)
+    MessageBus.i.subscribe('control/experiment/start', this._experimentStartISC)
 
     this.finalMessage =
 `<div style="color:black"><p>Bem-vindo(a)! Você foi convidado(a) a participar de um estudo científico sobre raciocínio clínico e aceitou! Agradeço muito por isso.</p>
@@ -288,7 +300,7 @@ class UserSignup {
   }
 
   // experiment version
-  async _experimentStart () {
+  async _experimentStartISC () {
     const userLogin = {
       username: this.current.username,
       eventId: this.current.eventId
@@ -296,6 +308,16 @@ class UserSignup {
     let user = await MessageBus.i.request('user/login/post', userLogin)
     // window.location.href = "/player/case/?id=41813d6c-70c7-4bda-9683-1dd39ba3c990&room=c6b241ee-e6e5-4921-9cc8-ed6ffd62e85d"
     window.location.href = "/player/case/?id=46d46199-a32d-42ed-b49a-578c47c3e7bb&room=5ff12575-0d4c-41f6-ac6a-e94ee1eb7cbc"
+  }
+
+  async _experimentStartAdultMuseum () {
+    const userLogin = {
+      username: this.current.username,
+      eventId: this.current.eventId
+    }
+    let user = await MessageBus.i.request('user/login/post', userLogin)
+    // window.location.href = "/player/case/?id=8b969606-ad6b-4772-a8e8-f15ae8033e0e&room=f2ef57a5-7c71-4fd9-9fd5-69448020c981"
+    window.location.href = "/player/case/?id=164e49f9-fee2-49dc-aa16-53bf7cf3ea97&room=2dcc1f39-85e6-4cfe-9539-58145f6cc98b"
   }
 }
 
