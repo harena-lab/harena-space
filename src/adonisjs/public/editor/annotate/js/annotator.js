@@ -99,6 +99,7 @@ class Annotator {
       document.querySelector('#remove-memory').style.display = 'initial'
       document.querySelector('#delete-annotation').style.display = 'initial'
       document.querySelector('#save-annotations').style.display = 'initial'
+      document.querySelector('#memory-scores-title').innerHTML = 'Scores'
     }
   }
 
@@ -290,7 +291,8 @@ class Annotator {
       }
     }
     this._memory = null
-    document.querySelector('#memory-details').innerHTML = ''
+    document.querySelector('#memory-scores').innerHTML = ''
+    document.querySelector('#memory-scores-title').innerHTML = 'Scores'
     this._document = this._original
     document.querySelector('#incorporate-automatic').style.display = 'none'
     this._annotationsOrMemory(true)
@@ -434,6 +436,14 @@ class Annotator {
   }
 
   _updateSummary (isAnnotations) {
+    const catList = ['pathophysiology', 'epidemiology', 'etiology',
+                     'history', 'physical', 'exams', 'differential',
+                     'therapeutic']
+
+    let ctideas = 0, ctright = 0, ctinfright = 0
+    let ctwrong = 0, ctrightencap = 0, ctwrongencap = 0
+    const catIndex = {}
+
     const annotations = (isAnnotations) ? this._annotations : this._memory
     let html = '<table>'
     let ip = 0, dc = 0
@@ -445,6 +455,7 @@ class Annotator {
       'd': {mess: 'deleted', color: 'purple'}
     }
     for (const an of annotations) {
+      ctideas++
       html += '<tr><td><table><tr>'
       let sep = ''
       for (const f of an.fragments) {
@@ -464,7 +475,18 @@ class Annotator {
       }
       html += '</tr></table></td><td><table>'
       const prefix = this._kcatPrefix(an)
+      if (an.categories.includes('encapsulated'))
+        if (an.categories.includes('wrong'))
+          ctwrongencap++
+        else
+          ctrightencap++
+      if (!an.categories.includes('wrong'))
+        ctinfright++
       for (const c of an.categories) {
+        if (c == 'right') ctright++
+        else if (c == 'wrong') ctwrong++
+        if (catList.includes(c))
+          catIndex[c] = c
         this._deleteCandidate.push(prefix + c)
         html += '<tr><td>' + c + '</td><td>'
         if (isAnnotations) {
@@ -491,8 +513,27 @@ class Annotator {
       this._countDelCandidates = dc
     }
     document.querySelector(
-      '#' + ((isAnnotations) ? 'annotation' : 'memory') + '-details')
+      '#' + ((isAnnotations) ? 'annotation-details' : 'memory-scores'))
       .innerHTML = html
+
+    const ctcategories = Object.keys(catIndex).length
+    if (isAnnotations) {
+      document.querySelector('#memory-scores').innerHTML =
+        `<ul>
+          <li><b>used categories:</b> ${ctcategories}</li>
+          <li><b>right:</b> ${ctright}</li>
+          <li><b>right (inferred):</b> ${ctinfright}</li>
+          <li><b>total ideas:</b> ${ctideas}</li>
+          <li><b>right encapsulated:</b> ${ctrightencap}</li>
+          <li><b>wrong:</b> ${ctwrong}</li>
+          <li><b>wrong encapsulated:</b> ${ctwrongencap}</li>
+          <br>
+          <li><b>coverage score:</b> ${ctcategories * ctideas}</li>
+          <li><b>accuracy score:</b> ${(ctideas == 0) ? '' : ctright / ctideas}</li>
+          <li><b>accuracy score (inferred):</b> ${(ctideas == 0) ? '' : ctinfright / ctideas}</li>
+          <li><b>encapsulated score:</b> ${(ctideas == 0) ? '' : (ctrightencap + ctwrongencap) / ctideas}</li>
+        </ul>`
+    }
   }
 
   _removeMemory () {
