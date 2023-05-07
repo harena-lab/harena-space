@@ -52,7 +52,8 @@ export default class AnnotateUI extends Plugin {
         this.listenTo(button, 'execute', () => {
           // add selection to locked ranges
           const rangev = {...this._lockedRanges}
-          AnnotateUI._addMinimizedSelection(rangev, editor.model.document.selection)
+          AnnotateUI._addMinimizedSelection(
+            rangev, editor.model.document.selection)
           this._lockedRanges = rangev
           AnnotateUI._updateSequence(this._lockedRanges)
         })
@@ -100,11 +101,13 @@ export default class AnnotateUI extends Plugin {
 
         this.listenTo(button, 'execute', () => {
           let tag = 'annot2'
+          let tagLocked = false
           this._group++
           const av = []
           const rangev = {...this._lockedRanges} // empty if not locked
 
-          AnnotateUI._addMinimizedSelection(rangev, editor.model.document.selection)
+          AnnotateUI._addMinimizedSelection(
+            rangev, editor.model.document.selection)
 
           for (const r in rangev) {
             const range = rangev[r]
@@ -114,7 +117,7 @@ export default class AnnotateUI extends Plugin {
             let ex = null
             for (const i of items) {
               ex = i.getAttribute(tag)
-              if (ex == null) {
+              if (ex == null && !tagLocked) {
                 tag = 'annot1'
                 ex = i.getAttribute(tag)
               }
@@ -133,8 +136,10 @@ export default class AnnotateUI extends Plugin {
                 editor.model.change(writer => {
                   writer.removeAttribute(tag, range)
                 })
-              } else
-                tag = 'annot2'  // annotation level up for a different overlapping range
+              } else {
+                tag = 'annot2' // annotation level up for a different overlapping range
+                tagLocked = true  // maintain tag in level 2 for composite annotations
+              }
             }
             ann.categories.push('N' + this._group + ':' + annotation)
             av.push(ann)
