@@ -441,7 +441,7 @@ class Annotator {
                      'therapeutic']
 
     let ctideas = 0, ctright = 0, ctinfright = 0
-    let ctwrong = 0, ctrightencap = 0, ctwrongencap = 0
+    let ctwrong = 0, ctrightencap = 0, ctinfrightencap = 0, ctwrongencap = 0
     const catIndex = {}
 
     const annotations = (isAnnotations) ? this._annotations : this._memory
@@ -478,8 +478,11 @@ class Annotator {
       if (an.categories.includes('encapsulated'))
         if (an.categories.includes('wrong'))
           ctwrongencap++
-        else
-          ctrightencap++
+        else {
+          ctinfrightencap++
+          if (an.categories.includes('right'))
+            ctrightencap++
+        }
       if (!an.categories.includes('wrong'))
         ctinfright++
       for (const c of an.categories) {
@@ -525,6 +528,7 @@ class Annotator {
           <li><b>right (inferred):</b> ${ctinfright}</li>
           <li><b>total ideas:</b> ${ctideas}</li>
           <li><b>right encapsulated:</b> ${ctrightencap}</li>
+          <li><b>right encapsulated (inferred):</b> ${ctinfrightencap}</li>
           <li><b>wrong:</b> ${ctwrong}</li>
           <li><b>wrong encapsulated:</b> ${ctwrongencap}</li>
           <br>
