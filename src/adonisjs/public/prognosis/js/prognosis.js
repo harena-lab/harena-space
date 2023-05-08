@@ -1607,22 +1607,23 @@ class Prognosis {
   }
 
   bestPacientScore(pacient){
-    // console.log('============ receiving pacient for best score check')
-    // console.log(pacient)
+    console.log('============ receiving pacient for best score check')
+    console.log(pacient)
     const checkOptions = function(object) {
       let possible = []
       let bestValues = []
+      let bestForAnalysis = {}
       let isOptionSummed = false
-      // console.log('============ object of choices')
-      // console.log(object)
-      // console.log(Object.values(object))
+      console.log('============ object of choices')
+      console.log(object)
+      console.log(Object.values(object))
       let optionKeys = Object.keys(object)
       let currentKey = {}
-      // console.log('============ keys', optionKeys)
+      console.log('============ keys', optionKeys)
       for (let _key of optionKeys) {
         let key = object[_key]
         currentKey[_key] = key
-        // console.log('============ damn', key)
+        console.log('============ damn',_key, key)
         if(typeof key == 'object'){
           let group = Object.values(key)
           let groupValue = 0
@@ -1640,7 +1641,7 @@ class Prognosis {
               // console.log([...group])
               // console.log('============ looks like a group, but it isnt :)')
               // console.log(key)
-              // console.log('============ pushing possible choice ',value)
+              console.log('============ pushing possible choice ',value)
               // console.log('============ min ')
 
               // console.log(Math.min.apply(null, group))
@@ -1652,7 +1653,7 @@ class Prognosis {
             // console.log(possible)
             // console.log(Math.min.apply(null, possible))
             bestValues.push(Math.min.apply(null, possible))
-            // console.log('============ current values in bestValues ', bestValues)
+            console.log('============ current values in bestValues ', bestValues)
             possible = []
 
           }
@@ -1666,7 +1667,7 @@ class Prognosis {
           possible.push(key)
         }
       }
-      // console.log('============ current possible choices: ',possible)
+      console.log('============ current possible choices: ',possible)
 
       if(possible.length>0 || isOptionSummed){
         let bestOption
@@ -1675,14 +1676,14 @@ class Prognosis {
             bestOption = variable
           }
         }
-        // console.log('============ best option')
-        // console.log(bestOption)
-        // console.log('============ is there options summed? ', isOptionSummed )
+        console.log('============ best option')
+        console.log(bestOption)
+        console.log('============ is there options summed? ', isOptionSummed )
         if(isOptionSummed){
-          // console.log('============ returning sum ', bestValues.reduce((a,b)=>a+b))
+          console.log('============ returning sum ', bestValues.reduce((a,b)=>a+b))
           return bestValues.reduce((a,b)=>a+b)
         }else if(bestOption != null && !isOptionSummed){
-          // console.log('============ returning single value ', bestOption)
+          console.log('============ returning single value ', bestOption)
           return bestOption
         }
 
@@ -1703,8 +1704,9 @@ class Prognosis {
         // console.log(Object.values(pacient.open)[i])
         let object = Object.values(pacient.open)[i]
         // console.log('============open begins')
+        console.log('============ open parent',Object.keys(pacient.open)[i], '============')
         openOptions += checkOptions(object)
-        // console.log(openOptions)
+        console.log(openOptions,'/***************************************/')
       }
     }
     function round(value, precision) {
