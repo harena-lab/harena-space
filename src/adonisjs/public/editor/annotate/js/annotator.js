@@ -435,6 +435,66 @@ class Annotator {
     return key
   }
 
+  _selfOrderCount(categoriesOrder) {
+    // sort by text position (second element)
+    const sortedL = categoriesOrder.sort((a, b) => a[1] - b[1])
+    // console.log(sortedL)
+  
+    // group by category (first element)
+    // group = [category, position, count]
+    const grouped = []
+    for (let cat = 1; cat <= 8; cat++) {
+      let prev = -1
+      let catG = null
+      for (let i = 0; i < sortedL.length; i++) {
+        if (sortedL[i][0] === cat) {
+          if (prev !== cat) {
+            catG = [cat, sortedL[i][1], 1]
+            grouped.push(catG)
+          } else {
+            catG[2]++
+          }
+        }
+        prev = sortedL[i][0]
+      }
+    }
+    // console.log(grouped)
+  
+    // sort groups by position (second element)
+    const sortedG = grouped.sort((a, b) => a[1] - b[1])
+    const groupsText = JSON.parse(JSON.stringify(sortedG))
+    // console.log(groupsText)
+  
+    // count order change to group together categories
+    let subs = 0
+    for (let cat = 1; cat <= 8; cat++) {
+      let prev = -1
+      for (let i = 0; i < sortedG.length; i++) {
+        if (sortedG[i][0] === cat) {
+          if (prev === -1)
+            prev = i
+          else {
+            subs++
+            if (sortedG[prev][2] >= sortedG[i][2]) {
+              sortedG[prev][2] += sortedG[i][2]
+              sortedG.splice(i, 1)
+            } else {
+              sortedG[i][2] += sortedG[prev][2]
+              sortedG.splice(prev, 1)
+            }
+          }
+        }
+      }
+    }
+    // console.log(sortedG)
+  
+    return {
+      groups: groupsText,
+      ordered: sortedG,
+      score: subs
+    }
+  }
+
   _updateSummary (isAnnotations) {
     const catList = ['pathophysiology', 'epidemiology', 'etiology',
                      'history', 'physical', 'exams', 'differential',
@@ -443,6 +503,7 @@ class Annotator {
     let ctideas = 0, ctright = 0, ctinfright = 0
     let ctwrong = 0, ctrightencap = 0, ctinfrightencap = 0, ctwrongencap = 0
     const catIndex = {}
+    const catOrder = []
 
     const annotations = (isAnnotations) ? this._annotations : this._memory
     let html = '<table>'
@@ -458,7 +519,9 @@ class Annotator {
       ctideas++
       html += '<tr><td><table><tr>'
       let sep = ''
+      let start = -1
       for (const f of an.fragments) {
+        start = (start == -1) ? f.start : start
         html += sep + '<td>' + f.fragment
         if (isAnnotations) {
           html += '</td><td>' +
@@ -488,8 +551,10 @@ class Annotator {
       for (const c of an.categories) {
         if (c == 'right') ctright++
         else if (c == 'wrong') ctwrong++
-        if (catList.includes(c))
+        if (catList.includes(c)) {
           catIndex[c] = c
+          catOrder.push([catList.indexOf(c)+1, start])
+        }
         this._deleteCandidate.push(prefix + c)
         html += '<tr><td>' + c + '</td><td>'
         if (isAnnotations) {
@@ -519,6 +584,18 @@ class Annotator {
       '#' + ((isAnnotations) ? 'annotation-details' : 'memory-scores'))
       .innerHTML = html
 
+    const selfOrder = this._selfOrderCount(catOrder)
+
+    let o1html = '<table><tr style="border: 3px solid black"><th colspan="2">Text Grouped Categories</th></tr><tr><th>category</th><th>count</th></tr>'
+    for (const g of selfOrder.groups) {
+      o1html += '<tr><td>' + catList[g[0]-1] + '</td><td>' + g[2] + '</td></tr>'
+    }
+    o1html += '</table>'
+
+    let o2html = '<table><tr style="border: 3px solid black"><th colspan="2">Text Ordered Categories</th></tr><tr><th>category</th><th>count</th></tr>'
+    for (const g of selfOrder.ordered) {
+      o2html += '<tr><td>' + catList[g[0]-1] + '</td><td>' + g[2] + '</td></tr>'
+    }
     const ctcategories = Object.keys(catIndex).length
     if (isAnnotations) {
       document.querySelector('#memory-scores').innerHTML =
@@ -536,6 +613,10 @@ class Annotator {
           <li><b>accuracy score:</b> ${(ctideas == 0) ? '' : ctright / ctideas}</li>
           <li><b>accuracy score (inferred):</b> ${(ctideas == 0) ? '' : ctinfright / ctideas}</li>
           <li><b>encapsulated score:</b> ${(ctideas == 0) ? '' : (ctrightencap + ctwrongencap) / ctideas}</li>
+          <li><b>self order score:</b> ${selfOrder.score}</li>
+          <li><b>normalized self order score:</b> ${(ctideas == 0) ? 0 : selfOrder.score / ctideas}</li>
+          <li> ${o1html} </li>
+          <li> ${o2html} </li>
         </ul>`
     }
   }
