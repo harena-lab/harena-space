@@ -18,7 +18,12 @@ class ReportManager {
 
   // <TODO> Copy of the same method in annotator.js
   async _loadAnnotations (caseId) {
-    let result = null
+    let result = {
+      organization: '',
+      score: '',
+      year: '',
+      annotations: []
+    }
 
     let caseAnn =
       await MessageBus.i.request('case/annotations/get',
@@ -31,11 +36,11 @@ class ReportManager {
       for (const c of caseAnn) {
         switch (c.property_id) {
           case ReportManager.category.organization:
-            this._organization = c.property_value; break
+            result.organization = c.property_value; break
           case ReportManager.category.score:
-            this._score = c.property_value; break
+            result.score = c.property_value; break
           case ReportManager.category.year:
-            this._year = c.property_value; break
+            result.year = c.property_value; break
           default:
             let slot
             const ifr = c.fragment + '_' + c.range
@@ -67,7 +72,7 @@ class ReportManager {
             slot.categories.push(cat)
         }
       }
-      result = annotations
+      result.annotations = annotations
     }
 
     return result
@@ -137,7 +142,7 @@ class ReportManager {
     const cases = await this._requestCases()
 
     if (cases != null) {
-      let table = '"student id","annotation id",' +
+      let table = '"student id","annotation id","oranization level","global score","student year",' +
         '"used categories","right","right (inferred)","total ideas","right encapsulated",' +
         '"right encapsulated (inferred)","wrong","wrong encapsulated","coverage score",' +
         '"accuracy score","accuracy score (inferred)","encapsulated score","self order score",' +
@@ -155,10 +160,11 @@ class ReportManager {
 
         table += '"' + c.title + '","' + c.id + '",'
 
-        const annotations = await this._loadAnnotations(c.id)
-        const metrics = this._calculateMetrics(annotations)
+        const ant = await this._loadAnnotations(c.id)
+        const metrics = this._calculateMetrics(ant.annotations)
 
-        table += metrics + '\n'
+        table += `"${ant.organization}","${ant.score}","${ant.year}",` + 
+                 metrics + '\n'
       }
 
       const element = document.createElement('a')
