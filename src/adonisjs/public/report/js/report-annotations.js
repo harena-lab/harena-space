@@ -142,7 +142,7 @@ class ReportManager {
     const cases = await this._requestCases()
 
     if (cases != null) {
-      let table = '"student id","annotation id","oranization level","global score","student year",' +
+      let table = '"user id","annotation id","oranization level","global score","student year",' +
         '"used categories","right","right (inferred)","total ideas","right encapsulated",' +
         '"right encapsulated (inferred)","wrong","wrong encapsulated","coverage score",' +
         '"accuracy score","accuracy score (inferred)","encapsulated score","self order score",' +
