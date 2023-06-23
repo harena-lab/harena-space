@@ -8,17 +8,21 @@ class AnnotationMetrics {
     const grouped = []
     for (let cat = 1; cat <= 8; cat++) {
       let prev = -1
+      let prevG = -1
       let catG = null
       for (let i = 0; i < sortedL.length; i++) {
         if (sortedL[i][0] === cat) {
-          if (prev !== cat) {
+          if (prev == -1 || (sortedL[prev][0] !== cat &&
+              (prevG == -1 || sortedL[prev][1] > sortedL[prevG][1]))) {
             catG = [cat, sortedL[i][1], 1]
             grouped.push(catG)
           } else {
             catG[2]++
           }
+          prevG = i
         }
-        prev = sortedL[i][0]
+        if (i+1 == sortedL.length || sortedL[i+1][1] !== sortedL[i][1])
+          prev = i
       }
     }
   
