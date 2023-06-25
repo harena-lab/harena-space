@@ -85,6 +85,7 @@
     <main role="main">
       <dcc-rest id="harena-create-case" bind="harena-create-case" subscribe="case/create/post"></dcc-rest>
       <dcc-rest id="harena-link-case-quest" bind="harena-link-case-quest" subscribe="link/quest/post"></dcc-rest>
+      <dcc-rest id="harena-link-case-room" bind="harena-link-case-room" subscribe="link/room/post"></dcc-rest>
 
       <div class="home-author-padding align-items-center rounded row sticky-top mt-5 mx-2" style="z-index:3;">
         <div class="h-100 w-100 draft-content-padding scroll-y">
@@ -106,6 +107,17 @@
                         <option selected value="">Quest</option>
                         {{@foreach . quest}}
                         <option value={{quest.id}} title="{{quest.title}}">{{quest.title}}</option>
+                        {{@endfor}}
+                      </select>
+                    </dcc-dhtml>
+                </div>
+                <div class="pr-2">
+                  <dcc-rest id="harena-rooms" bind="harena-room-list"></dcc-rest>
+                    <dcc-dhtml id="harena-dhtml-rooms" connect="retrieve:harena-rooms:service/request/get">
+                      <select id="rooms" name="rooms" class="custom-select custom-select-sm" required>
+                        <option selected value="">Rooms</option>
+                        {{@foreach . room}}
+                        <option value={{room.id}} title="{{room.title}}">{{room.title}}</option>
                         {{@endfor}}
                       </select>
                     </dcc-dhtml>

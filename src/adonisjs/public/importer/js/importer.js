@@ -58,6 +58,10 @@ class ImporterManager {
       console.log('=== quest selected')
       console.log(questId)
 
+      const roomId = document.querySelector('#rooms').value
+      console.log('=== room selected')
+      console.log(roomId)
+
       let prefix = document.querySelector('#tprefix').value
       console.log('=== prefix')
       console.log(prefix)
@@ -121,8 +125,21 @@ class ImporterManager {
               if (csq.message.error) {
                 console.log('--- error')
                 console.log(csq.message.error)
-              } else
+              } else {
                 console.log('--- link quest success')
+                let rmq = await MessageBus.i.request('link/room/post',
+                  {
+                    room_id: roomId,
+                    case_id: cs.message.id
+                  }
+                )
+                if (rmq.message.error) {
+                  console.log('--- error')
+                  console.log(rmq.message.error)
+                } else {
+                  console.log('--- link room success')
+                }
+              }
             }
           }
         }
