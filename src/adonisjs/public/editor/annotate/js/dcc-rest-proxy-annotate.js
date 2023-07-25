@@ -10,7 +10,7 @@ DCC.component(
     },
     oas: {
       paths: {
-        '{url-manager}/room/case/list': {
+        '{url-manager}/room/case/listq': {
           'get': {
             operationId: 'room-cases',
             parameters: [
