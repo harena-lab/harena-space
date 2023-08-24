@@ -27,7 +27,7 @@ services:
       - HARENA_LOGGER_URL=http://localhost:10030
       - HARENA_LOGGER_API_VERSION=v1
 
-    restart: always
+    restart: on-failure:5
     networks:
       - harena-space
     volumes:
@@ -57,7 +57,7 @@ services:
       - HASH_DRIVER=bcrypt
     depends_on:
       - harena-manager-database
-    restart: always
+    restart: on-failure:5
     networks:
       - harena-space
     volumes:
@@ -78,7 +78,7 @@ services:
       - MYSQL_PASSWORD=jacinto
       - MYSQL_ALLOW_EMPTY_PASSWORD=yes
       - MYSQL_ROOT_PASSWORD=root
-    restart: always
+    restart: on-failure:5
     networks:
       - harena-space
 
