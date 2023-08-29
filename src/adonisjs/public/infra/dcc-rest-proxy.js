@@ -363,7 +363,7 @@
     'dcc-rest',
     {
       environment: {
-        'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api,
+        'url-manager': HarenaConfig.manager.urharena-prognosis-highest-lvll + HarenaConfig.manager.api,
         'questId': new URL(document.location).searchParams.get('id')
       },
       oas: {
@@ -792,6 +792,41 @@
                  in: 'query'},
                 {name: 'log',
                  in: 'query'}
+              ]
+            }
+          }
+        }
+      }
+    }
+  )
+
+  DCC.component(
+    'harena-cases-inf331',
+    'dcc-rest',
+    {
+      environment: {
+        'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api,
+        'clearance': 5,
+        'fSearchStr': 'INF 331 - Laboratório',
+        'page': 1,
+        'nItems': 30,
+      },
+      oas: {
+        paths: {
+          '{url-manager}/user/cases': {
+            'get': {
+              operationId: 'cases-list',
+              parameters: [
+                {name: 'url-manager',
+                  in: 'path'},
+                {name: 'clearance',
+                  in: 'query'},
+                {name: 'fSearchStr',
+                  in: 'query'},
+                {name: 'page',
+                  in: 'query'},
+                {name: 'nItems',
+                  in: 'query'},
               ]
             }
           }

@@ -17,35 +17,6 @@ class TemplateToCase {
           document.querySelector('#category').value = _url.searchParams.get('category')
 
           const params = new FormData(document.querySelector('#create-case-form'))
-          // console.log(params);
-          // console.log(params.get('template'));
-          /*
-          // params.set('template', _url.searchParams.get('template').replace(/__/ig, "/"))
-          // params.set('quest', _url.searchParams.get('quest'))
-          // for (var pair of params.entries()) {
-          //   console.log(pair[0] + ': ' + pair[1])
-          // }
-          // console.log(params)
-
-          // load template
-          */
-          /*
-          const templateRequest = {
-            method: 'GET',
-            url: '/templates/' +
-            params.get('template') + '.md'
-          }
-
-          let markdown = null
-          await axios(templateRequest)
-            .then(function (endpointResponse) {
-              markdown = endpointResponse.data
-            })
-            .catch(function (error) {
-              console.log(error)
-              console.log(error.code)
-            })
-          */
 
           const templateMd =
             await MessageBus.i.request(
@@ -106,7 +77,74 @@ class TemplateToCase {
       }
     )
   }
-}
+
+  //Object containing key 'params'. 
+  //Inside it, needs to contain 'title','description','language','domain','keywords','creationDate','complexity'
+  //'category','template'
+  async storeCaseNoUi (incoming) {
+      try {
+        const _url = new URL(document.location)
+
+        const params = incoming['params']
+        
+        const templateMd =
+          await MessageBus.i.request(
+            'data/template/' + params['template'].replace(/\//g, '.') +
+              '/get', {static: false}, null, true)
+        let markdown = templateMd.message
+
+        if (markdown != null) {
+          const config = {
+            method: 'POST',
+            url: DCCCommonServer.managerAddressAPI + 'case',
+            data: {
+              title: params['title'],
+              description: params['description'],
+              language: params['language'],
+              domain: params['domain'],
+              specialty: params['specialty'],
+              keywords: params['keywords'],
+              source: markdown,
+              original_date: params['creationDate'],
+              complexity: params['complexity'],
+            },
+            withCredentials: true
+          }
+
+          let _caseId
+          await axios(config)
+            .then(function (endpointResponse) {
+              _caseId = endpointResponse.data.id
+            })
+            .catch(function (error) {
+              console.log(error)
+            })
+
+          const linkCase = {
+            method: 'POST',
+            url: DCCCommonServer.managerAddressAPI + 'category/link/case',
+            data: {
+              categoryId: params['category'],
+              caseId: _caseId,
+              orderPosition: 0
+            },
+            withCredentials: true
+          }
+          await axios(linkCase)
+            .then(function (endpointResponse) {
+              window.location.href = '/author/?id=' + _caseId
+            })
+            .catch(function (error) {
+              console.log(error)
+              window.location.href = '/author/?id=' + _caseId
+            })
+        }
+      } catch (e) {
+        console.log(e)
+      }
+    }
+  }
+
 
 (function () {
   TemplateToCase.s = new TemplateToCase()

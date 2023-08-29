@@ -261,9 +261,9 @@
         .replace(/\[correctPrognosisColor\]/ig, (accuracy == 'Na mosca!'?successColor:failColor))
         .replace(/\[starPoints\]/ig, this.stars(lvlSuccess, 3, 2))
         .replace(/\[overviewPart\]/ig, PrognosisProgress.overviewTxt
-                                        .replace(/\[currentLvl\]/ig, i)
-                                        .replace(/\[pacientOverviewTxt\]/ig, overviewTxt)
-                                        .replace(/\[gameMode\]/ig, 'progn'))
+        .replace(/\[currentLvl\]/ig, i)
+        .replace(/\[pacientOverviewTxt\]/ig, overviewTxt)
+        .replace(/\[gameMode\]/ig, 'progn'))
       progressWrapper.appendChild(template.content.cloneNode(true))
 
     }
@@ -274,7 +274,7 @@
     }
 
     // lastAvailable(progressWrapper, highestLvl)
-    this.lockedLvls(progressWrapper, highestLvl, 11)
+    this.lockedLvls(progressWrapper, highestLvl, 15)
 
   }
 
@@ -433,9 +433,9 @@
         .replace(/\[correctPrognosisColor\]/ig, (accuracy.includes('Na mosca!')?successColor:failColor))
         .replace(/\[starPoints\]/ig, this.stars(lvlSuccess, 2, 1))
         .replace(/\[overviewPart\]/ig, PrognosisProgress.overviewTxt
-                                        .replace(/\[currentLvl\]/ig, i)
-                                        .replace(/\[pacientOverviewTxt\]/ig, overviewTxt)
-                                        .replace(/\[gameMode\]/ig, 'ch2'))
+        .replace(/\[currentLvl\]/ig, i)
+        .replace(/\[pacientOverviewTxt\]/ig, overviewTxt)
+        .replace(/\[gameMode\]/ig, 'ch2'))
       progressWrapper.appendChild(template.content.cloneNode(true))
     }
     this.lockedLvls(progressWrapper, highestLvl, limitLvl)
@@ -444,6 +444,7 @@
 }
 (function() {
   PrognosisProgress.i = new PrognosisProgress()
+
   PrognosisProgress.overviewTxt = `
   <button type="button" class="col-3 btn btn-warning w-100 mb-2" data-bus-entity="trigger/run" data-bus-id="/[gameMode]OverviewLvl[currentLvl]"
    data-toggle="modal" data-target="#pacient-overview-modal-[gameMode][currentLvl]"><i class="far fa-address-card"></i></button>
@@ -464,39 +465,25 @@
   </div>`
   PrognosisProgress.lvlContainer = `
   <div class="progn-lvl-progress col-lg-3 col-md-5 col-12 m-1 pt-2 [containerColor] border border-light rounded">
-    <h5 class="mb-1 text-light" style="color:#808080; font-weight: bold;">Dificuldade: [currentLvl]</h5>
+    <h5 class="mb-1 text-light" style="color:#808080; font-weight: bold;">Laboratório: [currentLvl]</h5>
     <h5 class="mb-1 [progressColor] rounded">Progresso: [progress]</h5>
-    <h5 class="mb-1 [correctPrognosisColor] rounded">Acertou prognóstico?<br> [correctPrognosis]</h5>
-    <h5 class="mb-1 [bestPacientColor] rounded">Criou o melhor cenário possível?<br> [bestPacient]</h5>
+    <h5 class="mb-1 [correctPrognosisColor] rounded">Última edição: [correctPrognosis]</h5>
+    <h5 class="mb-1 [bestPacientColor] rounded">Entregue: [bestPacient]</h5>
     <h5 class="mb-1 text-center text-dark rounded bg-secondary">[starPoints]</h5>
     <div class="row px-3">
       <button type="button" class="col btn btn-info w-100 mb-2" data-bus-entity="case/navigate"
       data-bus-id="/progn/[currentLvl]" data-action="/prognosis/learn/player?diffic=[currentLvl]"><i class="fas fa-play"></i></button>
-      [overviewPart]
     </div>
 
   </div>
   `
-  PrognosisProgress.chLvlContainer = `
-  <div class="progn-lvl-progress col-lg-3 col-md-5 col-12 m-1 pt-2 [containerColor] border border-light rounded">
-    <h5 class="mb-1 text-light" style="color:#808080; font-weight: bold;">Dificuldade: [currentLvl]</h5>
-    <h5 class="mb-1 [progressColor] rounded">Progresso: [progress]</h5>
-    <h5 class="mb-1 [correctPrognosisColor] rounded">Acertou prognóstico?<br> [correctPrognosis]</h5>
-    <h5 class="mb-1 text-center text-dark rounded bg-secondary">[starPoints]</h5>
-    <div class="row px-3">
-      <button type="button" class="col btn btn-info w-100 mb-2" data-bus-entity="case/navigate"
-      data-bus-id="/[gameModeAbbr]/[currentLvl]" data-action="/prognosis/[gameMode]?diffic=[currentLvl]"><i class="fas fa-play"></i></button>
-      [overviewPart]
-    </div>
 
-  </div>
-  `
   PrognosisProgress.lvlContainerLocked = `
   <div class="progn-lvl-progress col-lg-3 col-md-5 col-12 m-1 pt-2 disabled-look rounded">
     <div class="position-absolute" style="top:30%; left:43%; font-size: 3rem !important;">
       <i class="fas fa-lock"></i>
     </div>
     <h5 class="mb-1 text-secondary" style="color:#808080; font-weight: bold;">Laboratório: [difficulty]</h5>
-    <h5 class="mb-1 rounded bg-secondary">Ainda não publicado...</h5>
+    <h5 class="rounded bg-secondary" style="margin-bottom: 8rem!important">Ainda não publicado...</h5>
   </div>`
 })()
