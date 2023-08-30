@@ -9,6 +9,7 @@
   async start(){
     MessageBus.i.unsubscribe('control/dhtml/ready', this.start)
     await this.getPrognosisUserInfo()
+    await this.getLabUserInfo()
     if(document.querySelector('#progn-lvl-progress-wrapper')){
       let selectList = document.querySelector('#progress-select-mode')
       let _ch1 = selectList.querySelector('option[value="ch1"]')
@@ -29,13 +30,13 @@
       selectList.value = location.hash.substring(1) || 'learning'
       switch (selectList.value) {
         case 'learning':
-          this.listLvlProgress()
+          this.listLabProgress()
           break
         case 'ch1':
           if (this._ch1Locked) {
             location.hash = '#learning'
             selectList.value = 'learning'
-            this.listLvlProgress()
+            this.listLabProgress()
           }else {
             this.listChOneProgress()
           }
@@ -44,7 +45,7 @@
           if (this._ch2Locked) {
             location.hash = '#learning'
             selectList.value = 'learning'
-            this.listLvlProgress()
+            this.listLabProgress()
           }else {
             this.listChTwoProgress()
           }
@@ -56,7 +57,7 @@
         switch (this.value) {
           case 'learning':
             location.hash = '#learning'
-            PrognosisProgress.i.listLvlProgress()
+            PrognosisProgress.i.listLabProgress()
             break
           case 'ch1':
             location.hash = '#ch1'
@@ -74,6 +75,34 @@
     }
 
 
+  }
+
+  async getLabUserInfo (){
+    PrognosisProgress.i.lab = {}
+    const config = {
+      method: 'GET',
+      url: DCCCommonServer.managerAddressAPI + 'user/cases',
+      params: {
+        clearance: 5,
+        fSearchStr: 'INF 331 - Laboratório',
+        page: 1,
+        nItems: 30,
+      },
+      withCredentials: true
+    }
+    let labList
+    let prognosisList = {}
+    await axios(config)
+      .then(function (endpointResponse) {
+        labList = endpointResponse.data.cases
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
+    for (let lab of labList) {
+      PrognosisProgress.i.lab[lab.title.substring(lab.title.length-1)] = lab.id
+    }
+    MessageBus.i.publish('data/lab.info/ready')
   }
 
   async getPrognosisUserInfo (){
@@ -149,15 +178,100 @@
     return stars
   }
 
-  async listLvlProgress (){
+  async listLabProgress (){
+    console.log('laaaaaaaaaaaaab',PrognosisProgress.i.lab)
+    // querySelectorAll('[id^="creation-container-bundle-"]')
+    let labList = PrognosisProgress.i.lab
     let prognosisList = PrognosisProgress.i.user
     const progressWrapper = document.querySelector('#progn-lvl-progress-wrapper')
     const highestLvl = prognosisList[`prognosis-highest-lvl`]
     const successColor = 'bg-success text-light'
     const failColor = 'bg-secondary text-dark'
 
+    const highestLab = labList.length
     progressWrapper.innerHTML = ''
     
+    function createLabs (wrapper,highest){
+      let template = document.createElement('template')
+      if(highestLab == '10'){
+        let diffCalc = prognosisList[`prognosis-lvl-10-best-guess`]
+        let overviewTxt = prognosisList[`prognosis-lvl-10-pacient`]
+        let bestProgn = prognosisList[`prognosis-lvl-10-best-progn`]
+        let perfectValue = prognosisList[`prognosis-lvl-10-perfect`]
+        let bestScenario = false
+        let lvlCompleted = false
+        if((bestProgn == perfectValue) && (bestProgn != null && perfectValue != null)){
+          bestScenario = true
+        }else{
+          bestScenario = false
+        }
+        if(bestProgn == null || perfectValue == null){
+          lvlCompleted = false
+        }else {
+          lvlCompleted = true
+        }
+
+        let accuracy = PrognosisProgress.i.checkAccuracy(diffCalc, 10)
+        let lvlSuccess = []
+
+        if(bestScenario)
+          lvlSuccess.push(true)
+        if(accuracy == 'Na mosca!')
+          lvlSuccess.push(true)
+        if(lvlCompleted)
+          lvlSuccess.push(true)
+
+        template.innerHTML = PrognosisProgress.lvlContainer
+          .replace(/\[containerColor\]/ig, 'bg-dark')
+          .replace(/\[currentLvl\]/ig, '10')
+          .replace(/\[progress\]/ig, lvlCompleted?'Completo':'Em aberto')
+          .replace(/\[progressColor\]/ig, lvlCompleted?successColor:'bg-warning text-dark')
+          .replace(/\[pacientOverviewTxt\]/ig, overviewTxt)
+          .replace(/\[labDelivered\]/ig, bestScenario?'Sim':'Não')
+          .replace(/\[labDeliveredColor\]/ig, bestScenario?successColor:failColor)
+          .replace(/\[labLastEdit\]/ig, accuracy)
+          .replace(/\[labLastEditColor\]/ig, (accuracy == 'Na mosca!'?successColor:failColor))
+          .replace(/\[starPoints\]/ig, PrognosisProgress.i.stars(lvlSuccess, 3, 2))
+          .replace(/\[overviewPart\]/ig, PrognosisProgress.overviewTxt
+                                          .replace(/\[currentLvl\]/ig, '10')
+                                          .replace(/\[pacientOverviewTxt\]/ig, overviewTxt)
+                                          .replace(/\[gameMode\]/ig, 'progn'))
+      }else {
+        template.innerHTML = PrognosisProgress.lvlContainer
+          .replace(/\[containerColor\]/ig, 'bg-light')
+          .replace(/\[labNumber\]/ig, highest)
+          .replace(/\[progress\]/ig, 'Em aberto')
+          .replace(/\[progressColor\]/ig, 'text-dark bg-warning')
+          .replace(/\[pacientOverviewTxt\]/ig, '')
+          .replace(/\[labDelivered\]/ig, '')
+          .replace(/\[labDeliveredColor\]/ig, failColor)
+          .replace(/\[labLastEdit\]/ig, '')
+          .replace(/\[labLastEditColor\]/ig, failColor)
+      }
+      wrapper.appendChild(template.content.cloneNode(true))
+
+    }
+
+    for (var i = 1; i <= highestLab; i++) {
+      let template = document.createElement('template')
+      template.innerHTML = PrognosisProgress.lvlContainer
+        .replace(/\[containerColor\]/ig, 'bg-dark')
+        .replace(/\[labNumber\]/ig, prognosisList.i.lab[i-1].key())
+        .replace(/\[progress\]/ig, lvlCompleted?'Completo':'Em aberto')
+        .replace(/\[progressColor\]/ig, lvlCompleted?successColor:'bg-warning text-dark')
+        .replace(/\[pacientOverviewTxt\]/ig, overviewTxt)
+        .replace(/\[labDelivered\]/ig, bestScenario?'Sim':'Não')
+        .replace(/\[labDeliveredColor\]/ig, bestScenario?successColor:failColor)
+        .replace(/\[labLastEdit\]/ig, accuracy)
+        .replace(/\[labLastEditColor\]/ig, (accuracy == 'Na mosca!'?successColor:failColor))
+        .replace(/\[starPoints\]/ig, this.stars(lvlSuccess, 3, 2))
+        .replace(/\[overviewPart\]/ig, PrognosisProgress.overviewTxt
+        .replace(/\[labId\]/ig, prognosisList.i.lab[i-1])
+        .replace(/\[pacientOverviewTxt\]/ig, overviewTxt)
+        .replace(/\[gameMode\]/ig, 'progn'))
+      progressWrapper.appendChild(template.content.cloneNode(true))
+    }
+
     function lastAvailable (wrapper, highest){
       let template = document.createElement('template')
       if(highestLvl == '10'){
@@ -194,10 +308,10 @@
           .replace(/\[progress\]/ig, lvlCompleted?'Completo':'Em aberto')
           .replace(/\[progressColor\]/ig, lvlCompleted?successColor:'bg-warning text-dark')
           .replace(/\[pacientOverviewTxt\]/ig, overviewTxt)
-          .replace(/\[bestPacient\]/ig, bestScenario?'Sim':'Não')
-          .replace(/\[bestPacientColor\]/ig, bestScenario?successColor:failColor)
-          .replace(/\[correctPrognosis\]/ig, accuracy)
-          .replace(/\[correctPrognosisColor\]/ig, (accuracy == 'Na mosca!'?successColor:failColor))
+          .replace(/\[labDelivered\]/ig, bestScenario?'Sim':'Não')
+          .replace(/\[labDeliveredColor\]/ig, bestScenario?successColor:failColor)
+          .replace(/\[labLastEdit\]/ig, accuracy)
+          .replace(/\[labLastEditColor\]/ig, (accuracy == 'Na mosca!'?successColor:failColor))
           .replace(/\[starPoints\]/ig, PrognosisProgress.i.stars(lvlSuccess, 3, 2))
           .replace(/\[overviewPart\]/ig, PrognosisProgress.overviewTxt
                                           .replace(/\[currentLvl\]/ig, '10')
@@ -210,63 +324,63 @@
           .replace(/\[progress\]/ig, 'Em aberto')
           .replace(/\[progressColor\]/ig, 'text-dark bg-warning')
           .replace(/\[pacientOverviewTxt\]/ig, '')
-          .replace(/\[bestPacient\]/ig, '')
-          .replace(/\[bestPacientColor\]/ig, failColor)
-          .replace(/\[correctPrognosis\]/ig, '')
-          .replace(/\[correctPrognosisColor\]/ig, failColor)
+          .replace(/\[labDelivered\]/ig, '')
+          .replace(/\[labDeliveredColor\]/ig, failColor)
+          .replace(/\[labLastEdit\]/ig, '')
+          .replace(/\[labLastEditColor\]/ig, failColor)
           .replace(/\[starPoints\]/ig, stars([], 3, 2))
           .replace(/\[overviewPart\]/ig, '')
       }
       wrapper.appendChild(template.content.cloneNode(true))
     }
     
-    for (var i = 1; i <= highestLvl; i++) {
-      let diffCalc = prognosisList[`prognosis-lvl-${i}-best-guess`]
-      let overviewTxt = prognosisList[`prognosis-lvl-${i}-pacient`]
-      let bestProgn = prognosisList[`prognosis-lvl-${i}-best-progn`]
-      let perfectValue = prognosisList[`prognosis-lvl-${i}-perfect`]
-      let bestScenario = false
-      let lvlCompleted = false
-      if((bestProgn == perfectValue) && (bestProgn != null && perfectValue != null)){
-        bestScenario = true
-      }else{
-        bestScenario = false
-      }
-      if(bestProgn == null || perfectValue == null){
-        lvlCompleted = false
-      }else {
-        lvlCompleted = true
-      }
+    // for (var i = 1; i <= highestLvl; i++) {
+    //   let diffCalc = prognosisList[`prognosis-lvl-${i}-best-guess`]
+    //   let overviewTxt = prognosisList[`prognosis-lvl-${i}-pacient`]
+    //   let bestProgn = prognosisList[`prognosis-lvl-${i}-best-progn`]
+    //   let perfectValue = prognosisList[`prognosis-lvl-${i}-perfect`]
+    //   let bestScenario = false
+    //   let lvlCompleted = false
+    //   if((bestProgn == perfectValue) && (bestProgn != null && perfectValue != null)){
+    //     bestScenario = true
+    //   }else{
+    //     bestScenario = false
+    //   }
+    //   if(bestProgn == null || perfectValue == null){
+    //     lvlCompleted = false
+    //   }else {
+    //     lvlCompleted = true
+    //   }
 
-      let accuracy = this.checkAccuracy(diffCalc, 10)
-      let lvlSuccess = []
+    //   let accuracy = this.checkAccuracy(diffCalc, 10)
+    //   let lvlSuccess = []
 
-      if(bestScenario)
-        lvlSuccess.push(true)
-      if(accuracy == 'Na mosca!')
-        lvlSuccess.push(true)
-      if(lvlCompleted)
-        lvlSuccess.push(true)
+    //   if(bestScenario)
+    //     lvlSuccess.push(true)
+    //   if(accuracy == 'Na mosca!')
+    //     lvlSuccess.push(true)
+    //   if(lvlCompleted)
+    //     lvlSuccess.push(true)
 
-      let template = document.createElement('template')
-      template.innerHTML = PrognosisProgress.lvlContainer
-        .replace(/\[containerColor\]/ig, 'bg-dark')
-        .replace(/\[currentLvl\]/ig, i)
-        .replace(/\[progress\]/ig, lvlCompleted?'Completo':'Em aberto')
-        .replace(/\[progressColor\]/ig, lvlCompleted?successColor:'bg-warning text-dark')
-        .replace(/\[pacientOverviewTxt\]/ig, overviewTxt)
-        .replace(/\[bestPacient\]/ig, bestScenario?'Sim':'Não')
-        .replace(/\[bestPacientColor\]/ig, bestScenario?successColor:failColor)
-        .replace(/\[correctPrognosis\]/ig, accuracy)
-        .replace(/\[correctPrognosisColor\]/ig, (accuracy == 'Na mosca!'?successColor:failColor))
-        .replace(/\[starPoints\]/ig, this.stars(lvlSuccess, 3, 2))
-        .replace(/\[overviewPart\]/ig, PrognosisProgress.overviewTxt
-        .replace(/\[currentLvl\]/ig, i)
-        .replace(/\[pacientOverviewTxt\]/ig, overviewTxt)
-        .replace(/\[gameMode\]/ig, 'progn'))
-      progressWrapper.appendChild(template.content.cloneNode(true))
+    //   let template = document.createElement('template')
+    //   template.innerHTML = PrognosisProgress.lvlContainer
+    //     .replace(/\[containerColor\]/ig, 'bg-dark')
+    //     .replace(/\[labNumber\]/ig, i)
+    //     .replace(/\[progress\]/ig, lvlCompleted?'Completo':'Em aberto')
+    //     .replace(/\[progressColor\]/ig, lvlCompleted?successColor:'bg-warning text-dark')
+    //     .replace(/\[pacientOverviewTxt\]/ig, overviewTxt)
+    //     .replace(/\[labDelivered\]/ig, bestScenario?'Sim':'Não')
+    //     .replace(/\[labDeliveredColor\]/ig, bestScenario?successColor:failColor)
+    //     .replace(/\[labLastEdit\]/ig, accuracy)
+    //     .replace(/\[labLastEditColor\]/ig, (accuracy == 'Na mosca!'?successColor:failColor))
+    //     .replace(/\[starPoints\]/ig, this.stars(lvlSuccess, 3, 2))
+    //     .replace(/\[overviewPart\]/ig, PrognosisProgress.overviewTxt
+    //     .replace(/\[labId\]/ig, i)
+    //     .replace(/\[pacientOverviewTxt\]/ig, overviewTxt)
+    //     .replace(/\[gameMode\]/ig, 'progn'))
+    //   progressWrapper.appendChild(template.content.cloneNode(true))
 
-    }
+    // }
     const prognBusList = document.querySelectorAll('#progn-lvl-progress-wrapper [data-bus-entity]')
     for (let el of prognBusList) {
       //TEMPORARY FIX - Generate change for MutationObserver
@@ -274,7 +388,7 @@
     }
 
     // lastAvailable(progressWrapper, highestLvl)
-    this.lockedLvls(progressWrapper, highestLvl, 15)
+    this.lockedLvls(progressWrapper, highestLab, 15)
 
   }
 
@@ -367,8 +481,8 @@
         .replace(/\[progress\]/ig, lvlCompleted?'Completo':'Em aberto')
         .replace(/\[progressColor\]/ig, lvlCompleted?successColor:'bg-warning text-dark')
         .replace(/\[pacientOverviewTxt\]/ig, overviewTxt)
-        .replace(/\[correctPrognosis\]/ig, accuracy)
-        .replace(/\[correctPrognosisColor\]/ig, (accuracy == 'Na mosca!'?successColor:failColor))
+        .replace(/\[labLastEdit\]/ig, accuracy)
+        .replace(/\[labLastEditColor\]/ig, (accuracy == 'Na mosca!'?successColor:failColor))
         .replace(/\[starPoints\]/ig, this.stars(lvlSuccess, 2, 1))
         .replace(/\[overviewPart\]/ig, PrognosisProgress.overviewTxt
                                         .replace(/\[currentLvl\]/ig, i)
@@ -429,8 +543,8 @@
         .replace(/\[progress\]/ig, lvlCompleted?'Completo':'Em aberto')
         .replace(/\[progressColor\]/ig, lvlCompleted?successColor:'bg-warning text-dark')
         .replace(/\[pacientOverviewTxt\]/ig, overviewTxt)
-        .replace(/\[correctPrognosis\]/ig, accuracy)
-        .replace(/\[correctPrognosisColor\]/ig, (accuracy.includes('Na mosca!')?successColor:failColor))
+        .replace(/\[labLastEdit\]/ig, accuracy)
+        .replace(/\[labLastEditColor\]/ig, (accuracy.includes('Na mosca!')?successColor:failColor))
         .replace(/\[starPoints\]/ig, this.stars(lvlSuccess, 2, 1))
         .replace(/\[overviewPart\]/ig, PrognosisProgress.overviewTxt
         .replace(/\[currentLvl\]/ig, i)
@@ -465,14 +579,13 @@
   </div>`
   PrognosisProgress.lvlContainer = `
   <div class="progn-lvl-progress col-lg-3 col-md-5 col-12 m-1 pt-2 [containerColor] border border-light rounded">
-    <h5 class="mb-1 text-light" style="color:#808080; font-weight: bold;">Laboratório: [currentLvl]</h5>
+    <h5 class="mb-1 text-light" style="color:#808080; font-weight: bold;">Laboratório: [labNumber]</h5>
     <h5 class="mb-1 [progressColor] rounded">Progresso: [progress]</h5>
-    <h5 class="mb-1 [correctPrognosisColor] rounded">Última edição: [correctPrognosis]</h5>
-    <h5 class="mb-1 [bestPacientColor] rounded">Entregue: [bestPacient]</h5>
-    <h5 class="mb-1 text-center text-dark rounded bg-secondary">[starPoints]</h5>
+    <h5 class="mb-1 [labLastEditColor] rounded">Última edição: [labLastEdit]</h5>
+    <h5 class="mb-1 [labDeliveredColor] rounded">Entregue: [labDelivered]</h5>
     <div class="row px-3">
-      <button type="button" class="col btn btn-info w-100 mb-2" data-bus-entity="case/navigate"
-      data-bus-id="/progn/[currentLvl]" data-action="/prognosis/learn/player?diffic=[currentLvl]"><i class="fas fa-play"></i></button>
+      <button type="button" class="col btn btn-info w-100 mb-2"
+      data-action="/author?id=[labId]"><i class="fas fa-play"></i></button>
     </div>
 
   </div>

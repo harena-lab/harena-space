@@ -363,7 +363,7 @@
     'dcc-rest',
     {
       environment: {
-        'url-manager': HarenaConfig.manager.urharena-prognosis-highest-lvll + HarenaConfig.manager.api,
+        'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api,
         'questId': new URL(document.location).searchParams.get('id')
       },
       oas: {

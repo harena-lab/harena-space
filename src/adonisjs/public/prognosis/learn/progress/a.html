@@ -144,7 +144,9 @@
   </dcc-dhtml>
 
   <dcc-dhtml id="harena-dhtml-inf-331" connect="retrieve:harena-cases-inf331:service/request/get">
-    <input type="hidden" name="{{userProperty.0.title}}" id="highest-lvl" value="{{userProperty.0.value}}">
+    {{@foreach cases c}}
+      <input type="hidden" name="{{c.title}}" id="{{c.title}}" value="{{c.id}}">
+    {{@endfor}}
   </dcc-dhtml>
 </body>
 </html>
