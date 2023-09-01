@@ -295,9 +295,11 @@ class DCCAuthorServer {
         serviceResponse = endpointResponse.data
     })
       .catch(function (error) {
+        error.code = JSON.stringify(error.message).includes('404')?404:'undefined error'
         console.log('=== load ' + sd + ' template error')
         console.log(error)
         console.log(error.code)
+        serviceResponse = error
     })
 
     if (serviceResponse != null)

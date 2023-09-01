@@ -29,10 +29,10 @@
 
   <link rel="stylesheet" href="/dccs/css/dccs.css">
   <link rel="stylesheet" href="/dccs/css/properties.css">
-  <!-- <link rel="stylesheet" href="/infra/css/common-player.css">
-  <link rel="stylesheet" href="/infra/css/common-author.css"> -->
-  <link rel="stylesheet" href="/prognosis/css/prognosis.css">
+  <link rel="stylesheet" href="/infra/css/common-player.css">
+  <link rel="stylesheet" href="/infra/css/common-author.css">
 
+  <link rel="stylesheet" href="/author/env/inf331_2023/css/lab.css">
 
   <script src="/context/context.js"></script>
 
@@ -104,49 +104,38 @@
   <script src="/translator/translator.js"></script>
   <script src="/translator/item-templates.js"></script>
 
+  <script src="/author/js/dcc-author-server-proxy.js"></script>
   <script src="/author/js/template-case.js"></script>
 
-  <script src="/prognosis/js/prognosis.js"></script>
-  <script src="/prognosis/js/progress copy.js"></script>
-  <script src="/prognosis/js/challenge-progress.js"></script>
-  <script src="/prognosis/js/avatar.js"></script>
+  <script src="/author/env/inf331_2023/js/lab-progress.js"></script>
 
 </head>
 
 <body>
-  <dcc-rest id="harena-prognosis-lvl" bind="harena-prognosis-lvl"></dcc-rest>
-  <dcc-rest id="harena-prognosis-highest-lvl" bind="harena-prognosis-highest-lvl"></dcc-rest>
-  <dcc-rest id="harena-cases-inf331" bind="harena-cases-inf331"></dcc-rest>
-  
-  <dcc-rest id="harena-create-logger" bind="harena-create-logger" subscribe="logger/create/post"></dcc-rest>
 
   <dcc-include src="/author/partials/header.html"></dcc-include>
-  <main role="">
-    <div id="main-panel" class="d-flex bg-light flex-column vh-100 vw-100 index-boot-padding">
-      <div id="main-wrapper" class=" d-flex flex-column w-xl-75 h-100 w-100 main-scroll scroll-y bg-secondary mx-auto align-items-center">
-        <h1 class="text-dark mt-5">INF 331 - Laboratórios</h1>
-        <div class="" id="select-wrapper">
-          <select class="text-dark bg-light custom-select" id="progress-select-mode">
-            <option value="learning">Aprendendo Prognóstico </option>
-            <option value="ch1">Desafio 1</option>
-            <option value="ch2">Desafio 2</option>
-          </select>
+  <!-- Notice modal -->
+  <div class="modal fade" id="notice-modal" tabindex="-1" role="dialog" aria-labelledby="notice-modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-body text-center" id="modal-notice-body">
+            <h5 class="" id="modal-notice-txt"></h5>
         </div>
+      </div>
+    </div>
+  </div>
+  <!-- End notice modal -->
+  <main role="">
+    <div id="main-panel" class="d-flex bg-lab-light flex-column vh-100 vw-100 index-boot-padding">
+      <div id="main-wrapper" class=" d-flex flex-column w-xl-75 h-100 w-100 main-scroll scroll-y 
+      bg-lab-dark mx-auto align-items-center">
+        <h1 class="text-lab-light-pink mt-5">INF 331 - Laboratórios</h1>
         <div class="mt-5 d-flex flex-column w-75 w-md-100" id="btn-home-container">
-          <div id="progn-lvl-progress-wrapper" class="progn-lvl-progress-wrapper row row-cols-2 justify-content-center">
+          <div id="lab-progress-wrapper" class="row row-cols-2 justify-content-center">
           </div>
         </div>
       </div>
     </div>
   </main>
-  <dcc-dhtml id="harena-dhtml-prognosis" connect="retrieve:harena-prognosis-highest-lvl:service/request/get">
-    <input type="hidden" name="{{userProperty.0.title}}" id="highest-lvl" value="{{userProperty.0.value}}">
-  </dcc-dhtml>
-
-  <dcc-dhtml id="harena-dhtml-inf-331" connect="retrieve:harena-cases-inf331:service/request/get">
-    {{@foreach cases c}}
-      <input type="hidden" name="{{c.title}}" id="{{c.title}}" value="{{c.id}}">
-    {{@endfor}}
-  </dcc-dhtml>
 </body>
 </html>

@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Authoring Environment</title>
+    <title>Harena - Labs Environment</title>
 
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
@@ -32,6 +32,7 @@
     <link rel="stylesheet" href="/dccs/css/properties.css">
     <link rel="stylesheet" href="/infra/css/common-player.css">
     <link rel="stylesheet" href="/infra/css/common-author.css">
+    <link rel="stylesheet" href="/author/env/inf331_2023/css/lab.css">
 
     <script src="/context/context.js"></script>
 
@@ -109,6 +110,10 @@
     <script src="/author/edit/inplace-text-editor.js"></script>
     <script src="/author/edit/inplace-media-editor.js"></script>
 
+    <script>
+      Basic.service.rootPath = '../../../../'
+    </script>
+
     <script src="/author/js/dcc-author-server-proxy.js"></script>
     <script src="/author/js/panels.js"></script>
     <script src="/author/js/navigator.js"></script>
@@ -118,6 +123,8 @@
     <script src="/author/js/modifier.js"></script>
 
     <script src="/author/js/author.js"></script>
+
+    <script src="/author/env/inf331_2023/js/lab-rest-proxy.js"></script>
   </head>
 
   <body onload="AuthorManager.i.start()">
@@ -138,8 +145,9 @@
     </div>
     <!-- Login/logout header -->
     <dcc-include src="/author/partials/header.html"></dcc-include>
-    <!-- Start of settings modal -->
     <dcc-rest id="harena-case" bind="harena-case" subscribe="service/request/get"></dcc-rest>
+    <!-- Start of settings modal -->
+    
     <dcc-dhtml id="dhtml-case" subscribe="service/response/get/harena-case:update">
       <div class="modal fade" id="settings-modal" tabindex="-1" role="dialog" aria-labelledby="settings-modal" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -212,7 +220,7 @@
 
                 <input type="hidden" id="source" name="source" value="{{source}}">
                 <button type="button" class="btn btn-secondary" id="btn-save-settings" data-toggle="modal" data-target="#settings-modal" >Save</button>
-                <dcc-button topic="control/case/save" label="SAVE" location="btn-save-settings" xstyle="out"></dcc-button>
+                <dcc-button topic="control/case/save" label="Salvar rascunho" location="btn-save-settings" xstyle="out"></dcc-button>
 
                 <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
               </form>
@@ -342,13 +350,7 @@
           <nav class="navbar navbar-light">
             <div class="col-6">
               <button type="button" class="btn btn-secondary" id="btn-save-draft">Save</button>
-              <dcc-button topic="control/case/save" location="btn-save-draft" label="SAVE" xstyle="out"></dcc-button>
-
-              <!-- Settings button activates a modal -->
-              <button type="button" class="btn btn-secondary m-1" data-toggle="modal" data-target="#settings-modal">
-                Settings
-              </button>
-
+              <dcc-button topic="control/case/save" location="btn-save-draft" label="Salvar rascunho" xstyle="out"></dcc-button>
 
               <div id="advanced-mode" style="display:none">
                 <dcc-button topic="control/case/markdown" label="MARKDOWN" xstyle="in"></dcc-button>
@@ -361,19 +363,19 @@
                 Share case
               </button>
               <div id="div-toolbar-rightside" class="d-flex ">
-
+                <!-- <div class="home-author-sub-text align-self-center" style="color:#808080">Entregar Laboratório:</div>
+                <dcc-rest id="harena-inf331-complete-lab" bind="harena-inf331-complete-lab"
+                subscribe="service/request/post"></dcc-rest>
+                <dcc-rest id="harena-case-property" bind="harena-case-property" subscribe="service/request/post"></dcc-rest>
+                <form id="form-case-property">
+                  <input type="hidden" id="property_value" name="property_value" value="0">
+                  <input type="hidden" id="property_title" name="property_title" value="complete">
+                  <dcc-submit id="dcc-submit-feedback" bind="submit-case-property"
+                  xstyle="btn btn-secondary m-1" label="Entregar" topic="service/request/post"
+                  data-toggle="tooltip" data-placement="top" title="Entregar laboratório para o/a professor/a."></dcc-submit>
+                </form> -->
               </div>
             </div>
-  <!--          <div class="navbar-sub col-2">
-              <div class="custom-control custom-switch" data-on="success" data-off="default">
-                <input type="checkbox" class="custom-control-input" id="preview-switch">
-                <label class="custom-control-label" for="preview-switch">Preview mode</label>
-              </div>
-            </div>
-          -->
-            <!-- <div class="col-2">
-
-            </div> -->
         </div>
         <!-- End of toolbar -->
 

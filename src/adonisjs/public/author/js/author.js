@@ -448,7 +448,7 @@ class AuthorManager {
         })
         let dummy = await promise
         this._messageSpace.classList.add('invisible')
-        document.getElementById('btn-save-draft').innerHTML = 'SAVE'
+        // document.getElementById('btn-save-draft').innerHTML = 'SAVE'
       }else {
         this.noticeModalContent('text-white','bg-danger',`${status.message}. Please try again. <br> If it persists, contact the support.`, 15000)
         // this._messageSpace.firstElementChild.innerHTML = status.message
@@ -471,12 +471,12 @@ class AuthorManager {
         this._messageSpace.firstElementChild.style.backgroundColor = null
         this._messageSpace.firstElementChild.style.borderRadius = null
         this._messageSpace.firstElementChild.style.right = null
-        document.getElementById('btn-save-draft').innerHTML = 'SAVE'
+        // document.getElementById('btn-save-draft').innerHTML = 'SAVE'
       }
     } else{
       this._messageSpace.firstElementChild.innerHTML = 'Error...try again.'
       setTimeout(this._messageSpace.classList.add('invisible'), 1500)
-      document.getElementById('btn-save-draft').innerHTML = 'SAVE'
+      // document.getElementById('btn-save-draft').innerHTML = 'SAVE'
     }
   }
 

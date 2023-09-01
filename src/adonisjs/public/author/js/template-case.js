@@ -17,7 +17,6 @@ class TemplateToCase {
           document.querySelector('#category').value = _url.searchParams.get('category')
 
           const params = new FormData(document.querySelector('#create-case-form'))
-
           const templateMd =
             await MessageBus.i.request(
               'data/template/' + params.get('template').replace(/\//g, '.') +
@@ -82,15 +81,17 @@ class TemplateToCase {
   //Inside it, needs to contain 'title','description','language','domain','keywords','creationDate','complexity'
   //'category','template'
   async storeCaseNoUi (incoming) {
+      let _caseId
       try {
         const _url = new URL(document.location)
 
         const params = incoming['params']
-        
+        console.log('asking bus for template');
         const templateMd =
           await MessageBus.i.request(
             'data/template/' + params['template'].replace(/\//g, '.') +
               '/get', {static: false}, null, true)
+        console.log('got template',templateMd);
         let markdown = templateMd.message
 
         if (markdown != null) {
@@ -111,7 +112,7 @@ class TemplateToCase {
             withCredentials: true
           }
 
-          let _caseId
+          
           await axios(config)
             .then(function (endpointResponse) {
               _caseId = endpointResponse.data.id
@@ -132,13 +133,14 @@ class TemplateToCase {
           }
           await axios(linkCase)
             .then(function (endpointResponse) {
-              window.location.href = '/author/?id=' + _caseId
+              // window.location.href = '/author/?id=' + _caseId
             })
             .catch(function (error) {
               console.log(error)
-              window.location.href = '/author/?id=' + _caseId
+              // window.location.href = '/author/?id=' + _caseId
             })
         }
+        return {'data':_caseId,'message':'Case created successfully!','status':200}
       } catch (e) {
         console.log(e)
       }
