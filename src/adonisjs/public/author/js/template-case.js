@@ -86,12 +86,10 @@ class TemplateToCase {
         const _url = new URL(document.location)
 
         const params = incoming['params']
-        console.log('asking bus for template');
         const templateMd =
           await MessageBus.i.request(
             'data/template/' + params['template'].replace(/\//g, '.') +
               '/get', {static: false}, null, true)
-        console.log('got template',templateMd);
         let markdown = templateMd.message
 
         if (markdown != null) {
