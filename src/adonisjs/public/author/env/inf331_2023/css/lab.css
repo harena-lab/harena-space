@@ -49,6 +49,10 @@
 	background-color: var(--dark);
 	border-color: var(--dark);
 }
+.btn-lab-primary:hover {
+  color: var(--primary) !important;
+  font-size: 1.1rem !important;
+}
 
 .btn-lab-secondary {
 	color: var(--light);
@@ -61,4 +65,3 @@
   background-color: var(--light-pink);
   opacity: 0.8
 }
-
