@@ -15,7 +15,7 @@ class UserSignup {
     document.querySelector('#date_agree_2').innerHTML = sdate
   }
 
-  // TCLE of the Experiment Illness Script Components (ISC)
+  // TCLE of the Zombie Venom for 18+ years old
   startAdultMuseum () {
     this._experimentStartAdultMuseum = this._experimentStartAdultMuseum.bind(this)
     MessageBus.i.subscribe('control/experiment/start', this._experimentStartAdultMuseum)
@@ -23,6 +23,17 @@ class UserSignup {
     this.finalMessage =
 `<div style="color:black"><p>Bem-vindo(a)! Você foi convidado(a) a participar de um estudo científico sobre resolução de casos! Agradeço muito por isso.</p>
 <p>Nas próximas telas, você participará de um desafio chamado Zombie Venom.</p>
+<p><dcc-button topic="control/experiment/start" xstyle="out" label="Iniciar"></dcc-button></p></div>`
+    this._startPrognosisISC()
+  }
+
+  // TCLE of the Software Engineering for 18+ years old
+  startAdultSWE () {
+    MessageBus.i.subscribe('control/experiment/start', this._experimentStartSWE.bind(this))
+
+    this.finalMessage =
+`<div style="color:black"><p>Bem-vindo(a)! Você foi convidado(a) a participar de um estudo científico no ambiente Harena.</p>
+<p>Nas próximas telas, você será conduzido a um ambiente de resolução de laboratórios.</p>
 <p><dcc-button topic="control/experiment/start" xstyle="out" label="Iniciar"></dcc-button></p></div>`
     this._startPrognosisISC()
   }
@@ -318,6 +329,15 @@ class UserSignup {
     let user = await MessageBus.i.request('user/login/post', userLogin)
     // window.location.href = "/player/case/?id=8b969606-ad6b-4772-a8e8-f15ae8033e0e&room=f2ef57a5-7c71-4fd9-9fd5-69448020c981"
     window.location.href = "/player/case/?id=164e49f9-fee2-49dc-aa16-53bf7cf3ea97&room=2dcc1f39-85e6-4cfe-9539-58145f6cc98b"
+  }
+
+  async _experimentStartSWE () {
+    const userLogin = {
+      username: this.current.username,
+      eventId: this.current.eventId
+    }
+    let user = await MessageBus.i.request('user/login/post', userLogin)
+    window.location.href = '/author/env/inf331_2023'
   }
 }
 
