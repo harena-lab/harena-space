@@ -430,7 +430,7 @@ class AuthorManager {
           source: md
         }, null, true)
 
-      if(status.message && !status.message.includes('Error')  ){
+      if(status.message && (!status.message.includes('Error') && !status.message.includes('Forbidden'))  ){
         Basic.service.authorPropertyStore('caseId', Basic.service.currentCaseId)
 
         this.noticeModalContent('text-white','bg-success','SAVED!', 900)
@@ -448,9 +448,9 @@ class AuthorManager {
         })
         let dummy = await promise
         this._messageSpace.classList.add('invisible')
-        document.getElementById('btn-save-draft').innerHTML = 'SAVE'
+        // document.getElementById('btn-save-draft').innerHTML = 'SAVE'
       }else {
-        this.noticeModalContent('text-white','bg-danger',`${status.message}. Please try again. <br> If it persists, contact the support.`, 15000)
+        this.noticeModalContent('text-white','bg-danger',`${status.message}.. Please try again. <br> If it persists, contact the support.`, 15000)
         // this._messageSpace.firstElementChild.innerHTML = status.message
         // this._messageSpace.firstElementChild.style.backgroundColor = '#f21313b5'
         // this._messageSpace.firstElementChild.style.borderRadius = '50px'
@@ -471,12 +471,12 @@ class AuthorManager {
         this._messageSpace.firstElementChild.style.backgroundColor = null
         this._messageSpace.firstElementChild.style.borderRadius = null
         this._messageSpace.firstElementChild.style.right = null
-        document.getElementById('btn-save-draft').innerHTML = 'SAVE'
+        // document.getElementById('btn-save-draft').innerHTML = 'SAVE'
       }
     } else{
       this._messageSpace.firstElementChild.innerHTML = 'Error...try again.'
       setTimeout(this._messageSpace.classList.add('invisible'), 1500)
-      document.getElementById('btn-save-draft').innerHTML = 'SAVE'
+      // document.getElementById('btn-save-draft').innerHTML = 'SAVE'
     }
   }
 

@@ -122,12 +122,12 @@ class Annotator {
             this._year = c.property_value; break
           default:
             let slot
-            const ifr = c.fragment + '_' + c.range
+            const ifr = c.fragment.toLowerCase() + '_' + c.range
             let mem = 0
             if (ifrag[ifr])
               slot = ifrag[ifr]
             else {
-              let frag = c.fragment
+              let frag = c.fragment.toLowerCase()
               const fs = c.range.split(';')
               const fragments = []
               for (const f of fs) {
@@ -175,21 +175,23 @@ class Annotator {
 
     if (questAnn != null && questAnn.message != null) {
       questAnn = questAnn.message
+      const doclc = doc.toLowerCase()
       const annotations = []
       const ifrag = {}
       for (const c of questAnn) {
         let slot = null
-        if (ifrag[c.fragment])
-          slot = ifrag[c.fragment]
+        const fraglc = c.fragment.toLowerCase()
+        if (ifrag[fraglc])
+          slot = ifrag[fraglc]
         else {
-          const pos = doc.indexOf(c.fragment)
+          const pos = doclc.indexOf(fraglc)
           if (pos > -1) {
             slot = {
               fragments: [
-                {fragment: c.fragment, start: pos, size: c.fragment.length}],
+                {fragment: fraglc, start: pos, size: fraglc.length}],
                  categories: []}
             annotations.push(slot)
-            ifrag[c.fragment] = slot
+            ifrag[fraglc] = slot
           }
         }
         const cat = c.property_id.substring(4)

@@ -36,7 +36,10 @@ class LayoutController {
 
     if(new URL(document.location).pathname == '/author/'){
       this.dynamicAuthor()
+    }else if(new URL(document.location).pathname.includes('/author/env/inf331_2023/lab')){
+      this.dynamicLab()
     }
+    
     if(new URL(document.location).pathname == '/author/home/'){
       this.dynamicMenu()
     }else if(new URL(document.location).pathname == '/author/drafts/feedback/'){
@@ -60,9 +63,10 @@ class LayoutController {
   async busMessages(){
     // console.log('======= starting conditional-layout')
     LayoutController.user = await MessageBus.i.waitMessage('user/login/+')
-    if(new URL(document.location).pathname == '/author/'){
+    if(new URL(document.location).pathname == '/author/' || new URL(document.location).pathname.includes('/author/env/inf331_2023/lab')){
       LayoutController.case = await MessageBus.i.waitMessage('service/response/get/harena-case')
     }
+    
     // console.log('============ starting controller dynamic')
     this.startController()
 
@@ -174,8 +178,73 @@ class LayoutController {
       }
 
     }
-
   }
+
+  async dynamicLab (){
+    const toolbarDiv = document.querySelector('#div-toolbar-rightside')
+      toolbarDiv.innerHTML =
+      `<div class="home-author-sub-text align-self-center" style="color:#808080">Entregar Laboratório:</div>
+      <dcc-rest id="harena-inf331-complete-lab" bind="harena-inf331-complete-lab"
+      subscribe="service/request/post"></dcc-rest>
+      <dcc-rest id="harena-case-property" bind="harena-case-property" subscribe="service/request/post"></dcc-rest>
+      <form id="form-case-property">
+      <input type="hidden" id="property_value" name="property_value" value="">
+      <input type="hidden" id="property_title" name="property_title" value="complete">
+
+      </form>`
+      // ------------------------------------------------------------------------------- //
+
+
+
+      const dccSubmitProp = document.createElement('dcc-submit')
+      const userGrade = LayoutController.user.message.grade
+      const formProp = document.querySelector('#form-case-property')
+      const inputPropertyValue = document.querySelector('#property_value')
+
+      if(userGrade === 'student'){
+
+        dccSubmitProp.setAttribute('id','dcc-submit-feedback')
+        dccSubmitProp.setAttribute('bind','submit-case-property')
+        dccSubmitProp.setAttribute('xstyle','btn btn-secondary m-1')
+        dccSubmitProp.setAttribute('label', "Entregar")
+        dccSubmitProp.setAttribute('topic','service/request/post')
+        dccSubmitProp.setAttribute('data-toggle','tooltip')
+        dccSubmitProp.setAttribute('data-placement','top')
+        dccSubmitProp.setAttribute('title',"Entregar laboratório para o/a professor/a.")
+        await formProp.appendChild(dccSubmitProp)
+
+        inputPropertyValue.value = '0'
+
+        //Disable save button if expiration date is met        
+      }
+      // else if(userGrade === 'professor' || userGrade === 'coordinator'){
+      //   dccSubmitProp.setAttribute('id','dcc-submit-feedback')
+      //   dccSubmitProp.setAttribute('bind','submit-case-property')
+      //   dccSubmitProp.setAttribute('xstyle','btn btn-secondary m-1')
+      //   dccSubmitProp.setAttribute('label','Set Feedback Complete')
+      //   dccSubmitProp.setAttribute('topic','service/request/put')
+      //   dccSubmitProp.setAttribute('connect','submit:harena-case-property:service/request/put')
+      //   dccSubmitProp.setAttribute('data-toggle','tooltip')
+      //   dccSubmitProp.setAttribute('data-placement','top')
+      //   dccSubmitProp.setAttribute('title',"Sets feedback as finished (for your student's knowlegde)")
+
+      //   await formProp.appendChild(dccSubmitProp)
+
+      //   inputPropertyValue.value = '1'
+      // }
+
+      this.labDeliverButtonCaseState()
+
+      // if(new URL(document.location).searchParams.get('fdbk')){
+      //   setTimeout(function(){
+      //     // document.querySelector('#button-comments-nav').click()
+      //     // MessageBus.i.publish('control/properties/expand')
+      //     MessageBus.i.publish('control/comments/expand')
+      //     // MessageBus.i.publish('control/comments/editor')
+      //   }, 500)
+      // }
+
+    }
 
   async dynamicMenu (){
 
@@ -214,6 +283,88 @@ class LayoutController {
 
       }
     }
+  }
+
+  async labDeliverButtonCaseState (propValue){
+    const userGrade = LayoutController.user.message.grade
+    const btnLabDelivered = document.querySelector('#dcc-submit-feedback')
+    if(propValue){
+      LayoutController.case.message.property.complete = propValue
+    }
+    if(userGrade === 'student'){
+      let labN = LayoutController.case.message.keywords
+      labN = labN.substring(labN.length-1)
+      const expirationDate = labProgressManager.i.labExpiration[labN]
+      //Verifies property 'feedback' to disable button and change layout
+      if(LayoutController.case.message.property.complete){
+        if(LayoutController.case.message.property.complete == 0){
+
+          btnLabDelivered.firstElementChild.innerHTML = 'Entregue'
+        }
+        // else {
+        //   btnLabDelivered.firstElementChild.innerHTML = 'Recieved'
+        // }
+
+        btnLabDelivered.firstElementChild.classList.add('disabled')
+        btnLabDelivered.style.pointerEvents = 'none'
+        document.querySelector('#dcc-submit-feedback').removeAttribute('topic')
+        document.querySelector('#dcc-submit-feedback').removeAttribute('connect')
+        try {
+          document.querySelector('#property_value').remove()
+          document.querySelector('#property_title').remove()
+          document.querySelector('#harena-case-property').remove()
+          document.querySelector('#harena-inf331-complete-lab').remove()
+        } catch (e) {
+          console.log(e)
+        }
+      }
+      btnLabDelivered.addEventListener("click", function(event) {
+          btnLabDelivered.firstElementChild.innerHTML = 'Entregue'
+          btnLabDelivered.firstElementChild.classList.add('disabled')
+          btnLabDelivered.style.pointerEvents = 'none'
+          document.querySelector('#dcc-submit-feedback').removeAttribute('topic')
+          document.querySelector('#dcc-submit-feedback').removeAttribute('connect')
+          document.querySelector('#harena-case-property').remove()
+          document.querySelector('#harena-inf331-complete-lab').remove()
+      })
+      if (expirationDate < new Date()){
+        const saveBtn = document.querySelector('#btn-save-draft')
+        saveBtn.innerHTML = 'Data da entrega expirada'
+        btnLabDelivered.firstElementChild.innerHTML = btnLabDelivered.firstElementChild.innerHTML == 'Entregar'?'Não entregue':'Entregue'
+        saveBtn.classList.add('disabled')
+        saveBtn.nextElementSibling.remove()
+      }
+    }
+    /*else if(userGrade === 'professor' || userGrade === 'coordinator'){
+      if(document.querySelector('#harena-inf331-complete-lab'))
+        document.querySelector('#harena-inf331-complete-lab').remove()
+
+      let casePropertyRest = document.querySelector('#harena-case-property')
+      let caseDccSubmit = document.querySelector('#dcc-submit-feedback')
+
+      if(LayoutController.case.message.property.feedback){
+        btnLabDelivered.firstElementChild.innerHTML = 'Notify as Complete'
+
+        if(LayoutController.case.message.property.feedback == 1){
+          casePropertyRest.remove()
+          btnLabDelivered.firstElementChild.innerHTML = 'Notified as Complete'
+          btnLabDelivered.firstElementChild.classList.add('disabled')
+          btnLabDelivered.style.pointerEvents = 'none'
+          caseDccSubmit.removeAttribute('topic')
+          caseDccSubmit.removeAttribute('connect')
+          try {
+            document.querySelector('#property_value').remove()
+            document.querySelector('#property_title').remove()
+          } catch (e) {
+            console.log(e)
+          }
+
+        }
+        btnLabDelivered.addEventListener("click", function(event) {
+            btnLabDelivered.firstElementChild.innerHTML = 'Notified as Complete'
+          })
+      }
+    }*/
   }
 
   async feedbackButtonCaseState (propValue){
@@ -295,7 +446,7 @@ class LayoutController {
       // console.log('============ entered dynamic modal')
       const selEntity = document.querySelector('#entity')
       const wrapperSelEntity = document.querySelector('#wrapper-entity')
-      const selSubject = document.querySelector('#wrapper-subject .sel-institution')
+      const selSubject = document.querySelector('#wrapper-subject #subject')
       const inputSubject = document.querySelector('#wrapper-input-subject')
       const wrapperSelSubject = document.querySelector('#wrapper-subject')
       const selSubjectGrade = document.querySelector('#subject_grade')
