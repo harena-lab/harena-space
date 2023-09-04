@@ -174,8 +174,21 @@
                 </select>
               </div>
               <div class="pr-3" style="width: 120px;">
+                <dcc-rest id="harena-user-groups" bind="harena-user-groups"></dcc-rest>
+                <dcc-dhtml id="harena-dhtml-groups" connect="retrieve:harena-user-groups:service/request/get">
+                  <select id="fGroup" name="fGroup" class="custom-select custom-select-sm">
+                    <option selected value="">Group</option>
+                    {{@foreach . group}}
+                    <option value={{group.group_id}}>{{group.group_title}}</option>
+                    {{@endfor}}
+                  </select>
+                </dcc-dhtml>
+              </div>
+              
+              <div class="pr-3" style="width: 120px;">
                 <input type="text" class="form-control custom-select-sm" id="fSpecialty" placeholder="Specialty">
               </div>
+              
               <input type="text" class="mr-2 my-2 form-control custom-select-sm" id="fSearchStr"
                placeholder="Search similar title, keywords or description...">
 
