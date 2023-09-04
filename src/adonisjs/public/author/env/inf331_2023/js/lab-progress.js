@@ -221,7 +221,6 @@
     // console.log('============',this.getDateString(currentDate))
     // console.log('============',this.getTimeString(this.labRelease[1]))
     // console.log('============',this.convertToLocalTz(currentDate,true))
-    console.log(labProgressManager.i.lab)
     let createdBtn = false
     let released = true
     const lateReleaseTxt = 'Não publicado...(atraso)'
