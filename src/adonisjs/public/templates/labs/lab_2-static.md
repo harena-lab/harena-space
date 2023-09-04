@@ -5,4 +5,4 @@ ___ Flow ___
 
 ___ Data ___
 
-* theme: simple(blue)
+* theme: simple(purple)

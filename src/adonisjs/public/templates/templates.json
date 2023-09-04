@@ -4,7 +4,21 @@
     "path": "plain/case/empty",
     "icon": "plain/case/plain.png",
     "scope": "case",
-    "environment": "development"},
+    "environment": "jacinto"},
+"Lab 1":
+   {"questId": "labs",
+    "description": "Lab 1.",
+    "path": "labs/lab_1",
+    "icon": "labs/labs.png",
+    "scope": "case",
+    "environment": "jacinto"},
+"Lab 2":
+   {"questId": "labs",
+    "description": "Lab 2.",
+    "path": "labs/lab_2",
+    "icon": "labs/labs.png",
+    "scope": "case",
+    "environment": "jacinto"},
 "Zombie":
     {"questId": "zombie",
      "description": "Zombie Venom.",
