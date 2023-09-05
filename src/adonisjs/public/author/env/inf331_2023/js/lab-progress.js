@@ -183,7 +183,7 @@
 
   async lockedLvls (wrapper, highest, limitLvl){
     console.log(highest);
-    let i = parseInt(highest+1)
+    let i = parseInt(highest+1  )
     let released = true
     for (i; i <= limitLvl; i++) {
       // let labTemplate = await MessageBus.i.request(
@@ -210,7 +210,7 @@
     let labCompleted = false
     let labDelivered = false
     let labLastEdit = null
-    const highestLab = Object.keys(labList).length
+    let highestLab = 0
     const currentDate = new Date()
     // console.log('============',this.convertToLocalTz(new Date(),'date'))
     // let tzOffset = this.prependZero(-1*(currentDate.getTimezoneOffset()/60))
@@ -307,7 +307,6 @@
           .replace(/\[labText\]/ig, lateReleaseTxt)
 
         }else{
-          console.log('aqui');
           createdBtn = true
           template.innerHTML = labProgressManager.lvlContainer
           .replace(/\[containerColor\]/ig, 'bg-lab-primary')
@@ -364,7 +363,9 @@
         }
       }
 
-
+      if (released && this.setDateToISO(currentDate) > this.setDateToISO(this.labRelease[i])){
+        highestLab += 1
+      }
     }
       let template = document.createElement('template')
       /*if(highestLab == '10'){
