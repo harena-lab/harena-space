@@ -63,6 +63,16 @@
 	color: #BC9EC1 !important;
 }
 
+.btn-lab-save {
+	color: #1F2232 !important;
+	background-color: #E3BAC6 !important;
+	border-color: #1F2232 !important;
+  border-width: 0.2rem !important;
+}
+.btn-lab-save:hover {
+	background: #BC9EC1 !important;
+}
+
 .disabled-lock, .disabled-look{
   pointer-events: none !important;
   background-color: #E3BAC6 !important;
@@ -71,4 +81,11 @@
 
 .border-lab-dark{
   border-color: #1F2232 !important;
+}
+.border-lab-primary{
+  border-color: #BC9EC1 !important;
+}
+
+.no-pointers, .no-pointer{
+  pointer-events: none;
 }
