@@ -210,7 +210,8 @@
     let labCompleted = false
     let labDelivered = false
     let labLastEdit = null
-    let highestLab = 0
+    const highestLab = Object.keys(labList).length
+    let nLabReleased = 0
     const currentDate = new Date()
     // console.log('============',this.convertToLocalTz(new Date(),'date'))
     // let tzOffset = this.prependZero(-1*(currentDate.getTimezoneOffset()/60))
@@ -323,6 +324,11 @@
           .replace(/\[labLastEditColor\]/ig, (failColor))
           .replace(/\[buttonIcon\]/ig, 'plus')
         }
+      }else if (currentDate < this.labRelease[i]){
+        template.innerHTML = labProgressManager.lvlContainerLocked
+        .replace(/\[difficulty\]/ig, i)
+        .replace(/\[labRelease\]/ig, `${this.convertToLocalTz(this.labRelease[i],'string')}`)
+        .replace(/\[labText\]/ig, 'Ainda não publicado...')
       }
 
       progressWrapper.appendChild(template.content.cloneNode(true))
@@ -363,9 +369,6 @@
         }
       }
 
-      if (released && this.setDateToISO(currentDate) > this.setDateToISO(this.labRelease[i])){
-        highestLab += 1
-      }
     }
       let template = document.createElement('template')
       /*if(highestLab == '10'){
@@ -422,7 +425,7 @@
     }*/
 
     // lastAvailable(progressWrapper, highestLvl)
-    this.lockedLvls(progressWrapper, highestLab, 6)
+    // this.lockedLvls(progressWrapper, highestLab+nLabReleased, 6)
 
   }
 
