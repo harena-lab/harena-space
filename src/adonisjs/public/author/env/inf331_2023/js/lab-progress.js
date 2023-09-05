@@ -7,12 +7,12 @@
     // this.labRelease = {1:new Date('2023/08/31'),2:new Date('2023/09/06'),
     // 3:new Date('2023/09/06'),4:new Date('2023/09/13'),
     // 5:new Date('2023/09/20'),6:new Date('2023/09/27')}
-    this.labRelease = {1:this.setDateToISO(hourExpiration(new Date('2023/08/31 GMT-0300'),18)),2:this.setDateToISO(hourExpiration(new Date('2023/09/05 GMT-0300'),9)),
+    this.labRelease = {1:this.setDateToISO(hourExpiration(new Date('2023/09/05 GMT-0300'),13)),2:this.setDateToISO(hourExpiration(new Date('2023/09/05 GMT-0300'),14)),
     3:this.setDateToISO(hourExpiration(new Date('2023/09/06 GMT-0300'),18)),4:this.setDateToISO(hourExpiration(new Date('2023/09/13 GMT-0300'),18)),
     5:this.setDateToISO(hourExpiration(new Date('2023/09/20 GMT-0300'),18)),6:this.setDateToISO(hourExpiration(new Date('2023/09/27 GMT-0300'),18))}
-    this.labExpiration = {1:this.setDateToISO(hourExpiration(new Date('2023/09/07 GMT-0300'),8)), 2:this.setDateToISO(hourExpiration(new Date('2023/09/16 GMT-0300'),8)),
-    3:this.setDateToISO(hourExpiration(new Date('2023/09/16 GMT-0300'),8)),4:this.setDateToISO(hourExpiration(new Date('2023/09/23 GMT-0300'),8)),
-    5:this.setDateToISO(hourExpiration(new Date('2023/09/30 GMT-0300'),8)),6:this.setDateToISO(hourExpiration(new Date('2023/10/06 GMT-0300'),8))}
+    this.labExpiration = {1:this.setDateToISO(hourExpiration(new Date('2023/09/09 GMT-0300'),23)), 2:this.setDateToISO(hourExpiration(new Date('2023/09/16 GMT-0300'),23)),
+    3:this.setDateToISO(hourExpiration(new Date('2023/09/16 GMT-0300'),23)),4:this.setDateToISO(hourExpiration(new Date('2023/09/23 GMT-0300'),23)),
+    5:this.setDateToISO(hourExpiration(new Date('2023/09/30 GMT-0300'),23)),6:this.setDateToISO(hourExpiration(new Date('2023/10/06 GMT-0300'),23))}
     this.start = this.start.bind(this)
     MessageBus.i.subscribe('control/html/ready', this.start)
   }
@@ -259,7 +259,7 @@
           .replace(/\[labNumber\]/ig, Object.keys(this.labRelease)[i-1])
           .replace(/\[progress\]/ig, 'Fechado')
           .replace(/\[progressColor\]/ig, labCompleted?successColor:'bg-lab-dark text-lab-light')
-          .replace(/\[this.labExpirationColor\]/ig, 'btn-lab-primary text-lab-light-pink')
+          .replace(/\[this.labExpirationColor\]/ig, 'bg-lab-dark text-lab-light-pink')
           .replace(/\[this.labExpiration\]/ig,
           `${this.convertToLocalTz(this.labExpiration[i],'string')}`)
           .replace(/\[labDelivered\]/ig, labDelivered?'Sim!':'Não')
@@ -273,7 +273,7 @@
         .replace(/\[labNumber\]/ig, Object.keys(labList)[i-1])
         .replace(/\[progress\]/ig, 'Em aberto')
         .replace(/\[progressColor\]/ig, labCompleted?successColor:'bg-lab-dark text-lab-light')
-        .replace(/\[this.labExpirationColor\]/ig, 'btn-lab-primary text-lab-light-pink')
+        .replace(/\[this.labExpirationColor\]/ig, 'bg-lab-dark text-lab-light-pink')
         .replace(/\[this.labExpiration\]/ig,
         `${this.convertToLocalTz(this.labExpiration[i],'string')}`)
         .replace(/\[labDelivered\]/ig, labDelivered?'Sim!':'Não')
@@ -292,7 +292,7 @@
         .replace(/\[labNumber\]/ig, Object.keys(this.labRelease)[i-1])
         .replace(/\[progress\]/ig, 'Fechado')
         .replace(/\[progressColor\]/ig, labCompleted?successColor:'bg-lab-dark text-lab-light')
-        .replace(/\[this.labExpirationColor\]/ig, 'btn-lab-primary text-lab-light-pink')
+        .replace(/\[this.labExpirationColor\]/ig, 'bg-lab-dark text-lab-light-pink')
         .replace(/\[this.labExpiration\]/ig,
         `${this.convertToLocalTz(this.labExpiration[i],'string')}`)
         .replace(/\[labDelivered\]/ig, labDelivered?'Sim!':'Não')
@@ -315,7 +315,7 @@
           .replace(/\[labNumber\]/ig, Object.keys(this.labRelease)[i-1])
           .replace(/\[progress\]/ig, 'Em aberto')
           .replace(/\[progressColor\]/ig, labCompleted?successColor:'bg-lab-dark text-lab-light')
-          .replace(/\[this.labExpirationColor\]/ig, 'btn-lab-primary text-lab-light-pink')
+          .replace(/\[this.labExpirationColor\]/ig, 'bg-lab-dark text-lab-light-pink')
           .replace(/\[this.labExpiration\]/ig,
           `${this.convertToLocalTz(this.labExpiration[i],'string')}`)
           .replace(/\[labDelivered\]/ig, labDelivered?'Sim!':'Não')

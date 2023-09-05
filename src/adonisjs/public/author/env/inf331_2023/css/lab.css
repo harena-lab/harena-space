@@ -6,62 +6,86 @@
   --light: #FDE8E9;
 }
 .bg-lab-light {
-  background-color: var(--light) !important;
+  background-color: #FDE8E9 !important;
 }
 .bg-lab-light-pink {
-  background-color: var(--light-pink) !important;
+  background-color: #E3BAC6 !important;
 }
 .bg-lab-primary {
-  background-color: var(--primary) !important;
+  background-color: #BC9EC1 !important;
 }
 .bg-lab-secondary {
-  background-color: var(--secondary) !important;
+  background-color: #596475 !important;
 }
 .bg-lab-dark {
-  background-color: var(--dark) !important;
+  background-color: #1F2232 !important;
 }
 
 .text-lab-dark {
-  color: var(--dark) !important;
+  color: #1F2232 !important;
 }
 
 .text-lab-secondary {
-  color: var(--secondary) !important;
+  color: #596475 !important;
 }
 
 .text-lab-primary {
-  color: var(--primary) !important;
+  color: #BC9EC1 !important;
 }
 .text-primary {
-  color: var(--dark) !important;
+  color: #1F2232 !important;
 }
 
 .text-lab-light-pink {
-  color: var(--light-pink) !important;
+  color: #E3BAC6 !important;
 }
 
 .text-lab-light {
-  color: var(--light) !important;
+  color: #FDE8E9 !important;
 }
 
 .btn-lab-primary {
-	color: var(--light);
-	background-color: var(--dark);
-	border-color: var(--dark);
+	color: #FDE8E9 !important;
+	background-color: #1F2232 !important;
+	border-color: #1F2232 !important;
 }
 .btn-lab-primary:hover {
-  color: var(--primary) !important;
+  color: #BC9EC1 !important;
   font-size: 1.1rem !important;
 }
 
 .btn-lab-secondary {
-	color: var(--light);
-	background-color: var(--secondary);
-	border-color: var(--secondary);
+	color: #FDE8E9 !important;
+	background-color: #596475 !important;
+	border-color: #596475 !important;
+}
+.btn-lab-secondary:hover {
+	color: #BC9EC1 !important;
+}
+
+.btn-lab-save {
+	color: #1F2232 !important;
+	background-color: #E3BAC6 !important;
+	border-color: #1F2232 !important;
+  border-width: 0.2rem !important;
+}
+.btn-lab-save:hover {
+	background: #BC9EC1 !important;
 }
 
 .disabled-lock, .disabled-look{
+  pointer-events: none !important;
+  background-color: #E3BAC6 !important;
+  opacity: 0.8 !important;
+}
+
+.border-lab-dark{
+  border-color: #1F2232 !important;
+}
+.border-lab-primary{
+  border-color: #BC9EC1 !important;
+}
+
+.no-pointers, .no-pointer{
   pointer-events: none;
-  background-color: var(--light-pink);
-  opacity: 0.8
 }
