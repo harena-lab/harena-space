@@ -7,7 +7,7 @@
     // this.labRelease = {1:new Date('2023/08/31'),2:new Date('2023/09/06'),
     // 3:new Date('2023/09/06'),4:new Date('2023/09/13'),
     // 5:new Date('2023/09/20'),6:new Date('2023/09/27')}
-    this.labRelease = {1:this.setDateToISO(hourExpiration(new Date('2023/08/31 GMT-0300'),18)),2:this.setDateToISO(hourExpiration(new Date('2023/09/06 GMT-0300'),15)),
+    this.labRelease = {1:this.setDateToISO(hourExpiration(new Date('2023/08/31 GMT-0300'),18)),2:this.setDateToISO(hourExpiration(new Date('2023/09/05 GMT-0300'),9)),
     3:this.setDateToISO(hourExpiration(new Date('2023/09/06 GMT-0300'),18)),4:this.setDateToISO(hourExpiration(new Date('2023/09/13 GMT-0300'),18)),
     5:this.setDateToISO(hourExpiration(new Date('2023/09/20 GMT-0300'),18)),6:this.setDateToISO(hourExpiration(new Date('2023/09/27 GMT-0300'),18))}
     this.labExpiration = {1:this.setDateToISO(hourExpiration(new Date('2023/09/07 GMT-0300'),8)), 2:this.setDateToISO(hourExpiration(new Date('2023/09/16 GMT-0300'),8)),
@@ -173,8 +173,6 @@
     return convertedT
   }
 
-
-
   getDateString(date){
     return date.toLocaleDateString('pt-BR', { hour12:false })
   }
@@ -184,6 +182,7 @@
   }
 
   async lockedLvls (wrapper, highest, limitLvl){
+    console.log(highest);
     let i = parseInt(highest+1)
     let released = true
     for (i; i <= limitLvl; i++) {
@@ -226,7 +225,8 @@
     const lateReleaseTxt = 'Não publicado...(atraso)'
     progressWrapper.innerHTML = ''
     for (var i = 1; i <= Object.keys(this.labRelease).length; i++) {
-
+      labCompleted = false
+      labDelivered = false
       let labTemplate = await MessageBus.i.request(
         'data/template/' + `labs/lab_${i}`.replace(/\//g, '.') +
           '/get', {static: false}, null, true)
@@ -262,7 +262,7 @@
           .replace(/\[this.labExpirationColor\]/ig, 'btn-lab-primary text-lab-light-pink')
           .replace(/\[this.labExpiration\]/ig,
           `${this.convertToLocalTz(this.labExpiration[i],'string')}`)
-          .replace(/\[labDelivered\]/ig, labDelivered?'Sim':'Não')
+          .replace(/\[labDelivered\]/ig, labDelivered?'Sim!':'Não')
           .replace(/\[labDeliveredColor\]/ig, labDelivered?successColor:failColor)
           .replace(/\[labLastEdit\]/ig, labLastEdit)
           .replace(/\[labLastEditColor\]/ig, (failColor))
@@ -295,7 +295,7 @@
         .replace(/\[this.labExpirationColor\]/ig, 'btn-lab-primary text-lab-light-pink')
         .replace(/\[this.labExpiration\]/ig,
         `${this.convertToLocalTz(this.labExpiration[i],'string')}`)
-        .replace(/\[labDelivered\]/ig, labDelivered?'Sim':'Não')
+        .replace(/\[labDelivered\]/ig, labDelivered?'Sim!':'Não')
         .replace(/\[labDeliveredColor\]/ig, labDelivered?successColor:failColor)
         .replace(/\[labLastEdit\]/ig, labLastEdit)
         .replace(/\[labLastEditColor\]/ig, (failColor))
@@ -307,6 +307,7 @@
           .replace(/\[labText\]/ig, lateReleaseTxt)
 
         }else{
+          console.log('aqui');
           createdBtn = true
           template.innerHTML = labProgressManager.lvlContainer
           .replace(/\[containerColor\]/ig, 'bg-lab-primary')
@@ -317,7 +318,7 @@
           .replace(/\[this.labExpirationColor\]/ig, 'btn-lab-primary text-lab-light-pink')
           .replace(/\[this.labExpiration\]/ig,
           `${this.convertToLocalTz(this.labExpiration[i],'string')}`)
-          .replace(/\[labDelivered\]/ig, labDelivered?'Sim':'Não')
+          .replace(/\[labDelivered\]/ig, labDelivered?'Sim!':'Não')
           .replace(/\[labDeliveredColor\]/ig, labDelivered?successColor:failColor)
           .replace(/\[labLastEdit\]/ig, labLastEdit)
           .replace(/\[labLastEditColor\]/ig, (failColor))
@@ -420,7 +421,7 @@
     }*/
 
     // lastAvailable(progressWrapper, highestLvl)
-    this.lockedLvls(progressWrapper, highestLab+1, 6)
+    this.lockedLvls(progressWrapper, highestLab, 6)
 
   }
 
