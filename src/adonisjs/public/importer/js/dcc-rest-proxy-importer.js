@@ -24,6 +24,29 @@ DCC.component(
 )
 
 DCC.component(
+  'harena-room-list',
+  'dcc-rest',
+  {
+    environment: {
+      'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api
+    },
+    oas: {
+      paths: {
+        '{url-manager}/admin/room/list': {
+          'get': {
+            operationId: 'rooms',
+            parameters: [
+              {name: 'url-manager',
+               in: 'path'}
+            ]
+          }
+        }
+      }
+    }
+  }
+)
+
+DCC.component(
   'harena-create-case',
   'dcc-rest',
   {
@@ -86,6 +109,33 @@ DCC.component(
               {name: 'caseId',
                in: 'query'},
               {name: 'orderPosition',
+               in: 'query'}
+            ]
+          }
+        }
+      }
+    }
+  }
+)
+
+DCC.component(
+  'harena-link-case-room',
+  'dcc-rest',
+  {
+    environment: {
+      'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api
+    },
+    oas: {
+      paths: {
+        '{url-manager}/admin/room/link/case': {
+          'post': {
+            operationId: 'link-case-room',
+            parameters: [
+              {name: 'url-manager',
+               in: 'path'},
+              {name: 'room_id',
+               in: 'query'},
+              {name: 'case_id',
                in: 'query'}
             ]
           }

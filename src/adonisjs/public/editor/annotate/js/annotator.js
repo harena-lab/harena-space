@@ -122,12 +122,12 @@ class Annotator {
             this._year = c.property_value; break
           default:
             let slot
-            const ifr = c.fragment + '_' + c.range
+            const ifr = c.fragment.toLowerCase() + '_' + c.range
             let mem = 0
             if (ifrag[ifr])
               slot = ifrag[ifr]
             else {
-              let frag = c.fragment
+              let frag = c.fragment.toLowerCase()
               const fs = c.range.split(';')
               const fragments = []
               for (const f of fs) {
@@ -175,21 +175,23 @@ class Annotator {
 
     if (questAnn != null && questAnn.message != null) {
       questAnn = questAnn.message
+      const doclc = doc.toLowerCase()
       const annotations = []
       const ifrag = {}
       for (const c of questAnn) {
         let slot = null
-        if (ifrag[c.fragment])
-          slot = ifrag[c.fragment]
+        const fraglc = c.fragment.toLowerCase()
+        if (ifrag[fraglc])
+          slot = ifrag[fraglc]
         else {
-          const pos = doc.indexOf(c.fragment)
+          const pos = doclc.indexOf(fraglc)
           if (pos > -1) {
             slot = {
               fragments: [
-                {fragment: c.fragment, start: pos, size: c.fragment.length}],
+                {fragment: fraglc, start: pos, size: fraglc.length}],
                  categories: []}
             annotations.push(slot)
-            ifrag[c.fragment] = slot
+            ifrag[fraglc] = slot
           }
         }
         const cat = c.property_id.substring(4)
@@ -443,6 +445,7 @@ class Annotator {
     let ctideas = 0, ctright = 0, ctinfright = 0
     let ctwrong = 0, ctrightencap = 0, ctinfrightencap = 0, ctwrongencap = 0
     const catIndex = {}
+    const catOrder = []
 
     const annotations = (isAnnotations) ? this._annotations : this._memory
     let html = '<table>'
@@ -458,7 +461,9 @@ class Annotator {
       ctideas++
       html += '<tr><td><table><tr>'
       let sep = ''
+      let start = -1
       for (const f of an.fragments) {
+        start = (start == -1) ? f.start : start
         html += sep + '<td>' + f.fragment
         if (isAnnotations) {
           html += '</td><td>' +
@@ -488,8 +493,10 @@ class Annotator {
       for (const c of an.categories) {
         if (c == 'right') ctright++
         else if (c == 'wrong') ctwrong++
-        if (catList.includes(c))
+        if (catList.includes(c)) {
           catIndex[c] = c
+          catOrder.push([catList.indexOf(c)+1, start])
+        }
         this._deleteCandidate.push(prefix + c)
         html += '<tr><td>' + c + '</td><td>'
         if (isAnnotations) {
@@ -519,6 +526,18 @@ class Annotator {
       '#' + ((isAnnotations) ? 'annotation-details' : 'memory-scores'))
       .innerHTML = html
 
+    const selfOrder = AnnotationMetrics.i._selfOrderCount(catOrder)
+
+    let o1html = '<table><tr style="border: 3px solid black"><th colspan="2">Text Grouped Categories</th></tr><tr><th>category</th><th>count</th></tr>'
+    for (const g of selfOrder.groups) {
+      o1html += '<tr><td>' + catList[g[0]-1] + '</td><td>' + g[2] + '</td></tr>'
+    }
+    o1html += '</table>'
+
+    let o2html = '<table><tr style="border: 3px solid black"><th colspan="2">Text Ordered Categories</th></tr><tr><th>category</th><th>count</th></tr>'
+    for (const g of selfOrder.ordered) {
+      o2html += '<tr><td>' + catList[g[0]-1] + '</td><td>' + g[2] + '</td></tr>'
+    }
     const ctcategories = Object.keys(catIndex).length
     if (isAnnotations) {
       document.querySelector('#memory-scores').innerHTML =
@@ -536,6 +555,10 @@ class Annotator {
           <li><b>accuracy score:</b> ${(ctideas == 0) ? '' : ctright / ctideas}</li>
           <li><b>accuracy score (inferred):</b> ${(ctideas == 0) ? '' : ctinfright / ctideas}</li>
           <li><b>encapsulated score:</b> ${(ctideas == 0) ? '' : (ctrightencap + ctwrongencap) / ctideas}</li>
+          <li><b>self order score:</b> ${selfOrder.score}</li>
+          <li><b>normalized self order score:</b> ${(ctideas == 0) ? 0 : selfOrder.score / ctideas}</li>
+          <li> ${o1html} </li>
+          <li> ${o2html} </li>
         </ul>`
     }
   }

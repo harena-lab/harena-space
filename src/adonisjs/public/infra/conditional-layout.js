@@ -208,7 +208,6 @@ class LayoutController {
         dccSubmitProp.setAttribute('xstyle','btn btn-secondary m-1')
         dccSubmitProp.setAttribute('label', "Entregar")
         dccSubmitProp.setAttribute('topic','service/request/post')
-        // dccSubmitProp.setAttribute('connect','submit:harena-case-property:service/request/post')
         dccSubmitProp.setAttribute('data-toggle','tooltip')
         dccSubmitProp.setAttribute('data-placement','top')
         dccSubmitProp.setAttribute('title',"Entregar laboratório para o/a professor/a.")
@@ -216,6 +215,7 @@ class LayoutController {
 
         inputPropertyValue.value = '0'
 
+        //Disable save button if expiration date is met        
       }
       // else if(userGrade === 'professor' || userGrade === 'coordinator'){
       //   dccSubmitProp.setAttribute('id','dcc-submit-feedback')
@@ -287,24 +287,26 @@ class LayoutController {
 
   async labDeliverButtonCaseState (propValue){
     const userGrade = LayoutController.user.message.grade
-    const btnFeedback = document.querySelector('#dcc-submit-feedback')
+    const btnLabDelivered = document.querySelector('#dcc-submit-feedback')
     if(propValue){
       LayoutController.case.message.property.complete = propValue
     }
     if(userGrade === 'student'){
-
+      let labN = LayoutController.case.message.keywords
+      labN = labN.substring(labN.length-1)
+      const expirationDate = labProgressManager.i.labExpiration[labN]
       //Verifies property 'feedback' to disable button and change layout
       if(LayoutController.case.message.property.complete){
         if(LayoutController.case.message.property.complete == 0){
 
-          btnFeedback.firstElementChild.innerHTML = 'Entregue'
+          btnLabDelivered.firstElementChild.innerHTML = 'Entregue'
         }
         // else {
-        //   btnFeedback.firstElementChild.innerHTML = 'Recieved'
+        //   btnLabDelivered.firstElementChild.innerHTML = 'Recieved'
         // }
 
-        btnFeedback.firstElementChild.classList.add('disabled')
-        btnFeedback.style.pointerEvents = 'none'
+        btnLabDelivered.firstElementChild.classList.add('disabled')
+        btnLabDelivered.style.pointerEvents = 'none'
         document.querySelector('#dcc-submit-feedback').removeAttribute('topic')
         document.querySelector('#dcc-submit-feedback').removeAttribute('connect')
         try {
@@ -316,16 +318,22 @@ class LayoutController {
           console.log(e)
         }
       }
-      btnFeedback.addEventListener("click", function(event) {
-          btnFeedback.firstElementChild.innerHTML = 'Entregue'
-          btnFeedback.firstElementChild.classList.add('disabled')
-          btnFeedback.style.pointerEvents = 'none'
+      btnLabDelivered.addEventListener("click", function(event) {
+          btnLabDelivered.firstElementChild.innerHTML = 'Entregue'
+          btnLabDelivered.firstElementChild.classList.add('disabled')
+          btnLabDelivered.style.pointerEvents = 'none'
           document.querySelector('#dcc-submit-feedback').removeAttribute('topic')
           document.querySelector('#dcc-submit-feedback').removeAttribute('connect')
           document.querySelector('#harena-case-property').remove()
           document.querySelector('#harena-inf331-complete-lab').remove()
       })
-
+      if (expirationDate < new Date()){
+        const saveBtn = document.querySelector('#btn-save-draft')
+        saveBtn.innerHTML = 'Data da entrega expirada'
+        btnLabDelivered.firstElementChild.innerHTML = btnLabDelivered.firstElementChild.innerHTML == 'Entregar'?'Não entregue':'Entregue'
+        saveBtn.classList.add('disabled')
+        saveBtn.nextElementSibling.remove()
+      }
     }
     /*else if(userGrade === 'professor' || userGrade === 'coordinator'){
       if(document.querySelector('#harena-inf331-complete-lab'))
@@ -335,13 +343,13 @@ class LayoutController {
       let caseDccSubmit = document.querySelector('#dcc-submit-feedback')
 
       if(LayoutController.case.message.property.feedback){
-        btnFeedback.firstElementChild.innerHTML = 'Notify as Complete'
+        btnLabDelivered.firstElementChild.innerHTML = 'Notify as Complete'
 
         if(LayoutController.case.message.property.feedback == 1){
           casePropertyRest.remove()
-          btnFeedback.firstElementChild.innerHTML = 'Notified as Complete'
-          btnFeedback.firstElementChild.classList.add('disabled')
-          btnFeedback.style.pointerEvents = 'none'
+          btnLabDelivered.firstElementChild.innerHTML = 'Notified as Complete'
+          btnLabDelivered.firstElementChild.classList.add('disabled')
+          btnLabDelivered.style.pointerEvents = 'none'
           caseDccSubmit.removeAttribute('topic')
           caseDccSubmit.removeAttribute('connect')
           try {
@@ -352,8 +360,8 @@ class LayoutController {
           }
 
         }
-        btnFeedback.addEventListener("click", function(event) {
-            btnFeedback.firstElementChild.innerHTML = 'Notified as Complete'
+        btnLabDelivered.addEventListener("click", function(event) {
+            btnLabDelivered.firstElementChild.innerHTML = 'Notified as Complete'
           })
       }
     }*/
@@ -438,7 +446,7 @@ class LayoutController {
       // console.log('============ entered dynamic modal')
       const selEntity = document.querySelector('#entity')
       const wrapperSelEntity = document.querySelector('#wrapper-entity')
-      const selSubject = document.querySelector('#wrapper-subject .sel-institution')
+      const selSubject = document.querySelector('#wrapper-subject #subject')
       const inputSubject = document.querySelector('#wrapper-input-subject')
       const wrapperSelSubject = document.querySelector('#wrapper-subject')
       const selSubjectGrade = document.querySelector('#subject_grade')

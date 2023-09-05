@@ -262,6 +262,7 @@
         'fSpecialty': new URL(document.location).searchParams.get('fSpecialty'),
         'fPropertyValue': new URL(document.location).searchParams.get('fPropertyValue'),
         'fSearchStr': new URL(document.location).searchParams.get('fSearchStr'),
+        'fGroup': new URL(document.location).searchParams.get('fGroup'),
         'page': new URL(document.location).searchParams.get('page'),
         'nItems': new URL(document.location).searchParams.get('limit'),
       },
@@ -286,6 +287,8 @@
                 {name: 'fPropertyValue',
                   in: 'query'},
                 {name: 'fSearchStr',
+                  in: 'query'},
+                {name: 'fGroup',
                   in: 'query'},
                 {name: 'page',
                   in: 'query'},
@@ -429,6 +432,30 @@
       }
     }
   )
+
+    //Retrieves groups that user is a part of
+    DCC.component(
+      'harena-user-groups',
+      'dcc-rest',
+      {
+        environment: {
+          'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api,
+        },
+        oas: {
+          paths: {
+            '{url-manager}/group': {
+              'get': {
+                operationId: 'user-group-list',
+                parameters: [
+                  {name: 'url-manager',
+                   in: 'path'}
+                ]
+              }
+            }
+          }
+        }
+      }
+    )
 
   DCC.component(
     'harena-ask-feedback',

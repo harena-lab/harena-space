@@ -20,7 +20,7 @@
     <link rel="stylesheet" href="/infra/css/common-player.css">
     <link rel="stylesheet" href="/infra/css/common-author.css">
 
-    <link rel="stylesheet" href="../css/editor.css">
+    <link rel="stylesheet" href="/editor/css/editor.css">
 
     <script src="/lib/axios-0.21.0/axios.min.js"></script>
 
@@ -65,14 +65,17 @@
     <script src="/infra/dcc-rest-proxy.js"></script>
     <script src="/infra/dcc-basic.js"></script>
 
-    <script src="js/dcc-rest-proxy-annotate.js"></script>
+    <script src="/infra/proxy/dcc-proxy-knowledge.js"></script>
+    <script src="/editor/annotate/js/dcc-rest-proxy-annotate.js"></script>
+    <script src="/editor/annotate/js/metrics.js"></script>
+    <script src="../js/report-annotations.js"></script>
 
     <script>
       Basic.service.rootPath = '../../../'
     </script>
   </head>
 
-  <body>
+  <body onload="ReportManager.i.start()">
     <!-- Login/logout header -->
     <dcc-include src="/author/partials/header.html"></dcc-include>
 
@@ -83,25 +86,19 @@
       <div class="home-author-padding align-items-center rounded row sticky-top" style="z-index:3;">
          <div class="h-100 w-100 draft-content-padding scroll-y">
             <div class="home-text" style="height: auto !important;">
-              <p>Documents to Annotate</p>
+              <p>Export Annotations</p>
             </div>
-
+            <div class="ml-1 pl-3 row">
+              <div class="pr-2">
+                  <label for="tprefix">Title prefix (used in the import)</label>
+                  <input type="text" id="tprefix" name="tprefix">
+              </div>
+            </div>
             <div id="user-boxes" class="draft-scroll-container">
-              <dcc-rest id="harena-room-cases" bind="harena-room-cases"></dcc-rest>
-              <dcc-dhtml id="harena-dhtml-cases"
-                connect="retrieve:harena-room-cases:service/request/get">
-                <input type="hidden" id="pages" value="{{pages}}">
-                {{@foreach . case}}
-                  <a href="annotator?caseid={{case.id}}&roomid={{page_url.roomid}}">
-                    <div class="row draft-author-case-container">
-                      <div class="col draft-case-title">
-                        <label class="ml-2">{{case.order_position}}</label>
-                        <label class="ml-2">{{case.title}}</label>
-                      </div>
-                    </div>
-                  </a>
-                {{@endfor}}
-              </dcc-dhtml>
+              <dcc-rest id="harena-room-cases" bind="harena-room-cases" subscribe="room/cases/get"></dcc-rest>
+              <dcc-rest id="harena-room-case-annotations" bind="harena-room-case-annotations"
+                        subscribe="case/annotations/get"></dcc-rest>
+              <dcc-button label="Export" xstyle="in" topic="report/download"></dcc-button>
             </div>
 
          </div>
