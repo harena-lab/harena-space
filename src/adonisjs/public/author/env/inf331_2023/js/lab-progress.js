@@ -304,7 +304,7 @@
         if (released == false){
           template.innerHTML = labProgressManager.lvlContainerLocked
           .replace(/\[difficulty\]/ig, i)
-          .replace(/\[labRelease\]/ig, `${this.getDateStringthis(this.labRelease[i])}`)
+          .replace(/\[labRelease\]/ig, `${this.convertToLocalTz(this.labRelease[i],'string')}`)
           .replace(/\[labText\]/ig, lateReleaseTxt)
 
         }else{

@@ -204,7 +204,7 @@ class LayoutController {
       if(userGrade === 'student'){
 
         dccSubmitProp.setAttribute('id','dcc-submit-feedback')
-        dccSubmitProp.setAttribute('bind','submit-case-property')
+        dccSubmitProp.setAttribute('bind','submit-save-case-and-property')
         dccSubmitProp.setAttribute('xstyle','btn btn-secondary btn-lab-primary m-1')
         dccSubmitProp.setAttribute('label', "Entregar")
         dccSubmitProp.setAttribute('topic','service/request/post')

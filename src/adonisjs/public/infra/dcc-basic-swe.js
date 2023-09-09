@@ -120,7 +120,6 @@
     {
       pos: async function (response) {
         // console.log('============ pos dcc-submit prop')
-        // console.log(response)
         let propValue = null
         if(response['harena-case-property']['case_property']){
           propValue = response['harena-case-property']['case_property']['value']
@@ -128,6 +127,29 @@
           propValue = response['harena-case-property']['value']
         }
         LayoutController.instance.feedbackButtonCaseState(propValue)
+      }
+    }
+  )
+
+  DCC.component(
+    'submit-save-case-and-property',
+    'dcc-submit',
+    {
+      pre: function (message, form, schema) {
+        const saveCase = document.querySelector(`button[id="btn-save-draft"]`)
+        saveCase.click()
+        return true
+      },
+      pos: async function (response) {
+        
+        // console.log(response)
+        let propValue = null
+        if(response['harena-case-property']['case_property']){
+          propValue = response['harena-case-property']['case_property']['value']
+        }else{
+          propValue = response['harena-case-property']['value']
+        }
+        LayoutController.instance.labDeliverButtonCaseState(propValue)
       }
     }
   )
