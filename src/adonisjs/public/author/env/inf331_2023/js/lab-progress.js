@@ -7,12 +7,12 @@
     // this.labRelease = {1:new Date('2023/08/31'),2:new Date('2023/09/06'),
     // 3:new Date('2023/09/06'),4:new Date('2023/09/13'),
     // 5:new Date('2023/09/20'),6:new Date('2023/09/27')}
-    this.labRelease = {1:this.setDateToISO(hourExpiration(new Date('2023/08/31 GMT-0300'),18)),2:this.setDateToISO(hourExpiration(new Date('2023/09/06 GMT-0300'),15)),
-    3:this.setDateToISO(hourExpiration(new Date('2023/09/06 GMT-0300'),18)),4:this.setDateToISO(hourExpiration(new Date('2023/09/13 GMT-0300'),18)),
+    this.labRelease = {1:this.setDateToISO(hourExpiration(new Date('2023/09/05 GMT-0300'),13)),2:this.setDateToISO(hourExpiration(new Date('2023/09/05 GMT-0300'),14)),
+    3:this.setDateToISO(hourExpiration(new Date('2023/09/11 GMT-0300'),14)),4:this.setDateToISO(hourExpiration(new Date('2023/09/13 GMT-0300'),18)),
     5:this.setDateToISO(hourExpiration(new Date('2023/09/20 GMT-0300'),18)),6:this.setDateToISO(hourExpiration(new Date('2023/09/27 GMT-0300'),18))}
-    this.labExpiration = {1:this.setDateToISO(hourExpiration(new Date('2023/09/07 GMT-0300'),8)), 2:this.setDateToISO(hourExpiration(new Date('2023/09/16 GMT-0300'),8)),
-    3:this.setDateToISO(hourExpiration(new Date('2023/09/16 GMT-0300'),8)),4:this.setDateToISO(hourExpiration(new Date('2023/09/23 GMT-0300'),8)),
-    5:this.setDateToISO(hourExpiration(new Date('2023/09/30 GMT-0300'),8)),6:this.setDateToISO(hourExpiration(new Date('2023/10/06 GMT-0300'),8))}
+    this.labExpiration = {1:this.setDateToISO(hourExpiration(new Date('2023/09/09 GMT-0300'),23)), 2:this.setDateToISO(hourExpiration(new Date('2023/09/16 GMT-0300'),23)),
+    3:this.setDateToISO(hourExpiration(new Date('2023/09/16 GMT-0300'),23)),4:this.setDateToISO(hourExpiration(new Date('2023/09/23 GMT-0300'),23)),
+    5:this.setDateToISO(hourExpiration(new Date('2023/09/30 GMT-0300'),23)),6:this.setDateToISO(hourExpiration(new Date('2023/10/06 GMT-0300'),23))}
     this.start = this.start.bind(this)
     MessageBus.i.subscribe('control/html/ready', this.start)
   }
@@ -173,8 +173,6 @@
     return convertedT
   }
 
-
-
   getDateString(date){
     return date.toLocaleDateString('pt-BR', { hour12:false })
   }
@@ -184,7 +182,8 @@
   }
 
   async lockedLvls (wrapper, highest, limitLvl){
-    let i = parseInt(highest+1)
+    console.log(highest);
+    let i = parseInt(highest+1  )
     let released = true
     for (i; i <= limitLvl; i++) {
       // let labTemplate = await MessageBus.i.request(
@@ -212,6 +211,7 @@
     let labDelivered = false
     let labLastEdit = null
     const highestLab = Object.keys(labList).length
+    let nLabReleased = 0
     const currentDate = new Date()
     // console.log('============',this.convertToLocalTz(new Date(),'date'))
     // let tzOffset = this.prependZero(-1*(currentDate.getTimezoneOffset()/60))
@@ -226,7 +226,8 @@
     const lateReleaseTxt = 'Não publicado...(atraso)'
     progressWrapper.innerHTML = ''
     for (var i = 1; i <= Object.keys(this.labRelease).length; i++) {
-
+      labCompleted = false
+      labDelivered = false
       let labTemplate = await MessageBus.i.request(
         'data/template/' + `labs/lab_${i}`.replace(/\//g, '.') +
           '/get', {static: false}, null, true)
@@ -259,10 +260,10 @@
           .replace(/\[labNumber\]/ig, Object.keys(this.labRelease)[i-1])
           .replace(/\[progress\]/ig, 'Fechado')
           .replace(/\[progressColor\]/ig, labCompleted?successColor:'bg-lab-dark text-lab-light')
-          .replace(/\[this.labExpirationColor\]/ig, 'btn-lab-primary text-lab-light-pink')
+          .replace(/\[this.labExpirationColor\]/ig, 'bg-lab-dark text-lab-light-pink')
           .replace(/\[this.labExpiration\]/ig,
           `${this.convertToLocalTz(this.labExpiration[i],'string')}`)
-          .replace(/\[labDelivered\]/ig, labDelivered?'Sim':'Não')
+          .replace(/\[labDelivered\]/ig, labDelivered?'Sim!':'Não')
           .replace(/\[labDeliveredColor\]/ig, labDelivered?successColor:failColor)
           .replace(/\[labLastEdit\]/ig, labLastEdit)
           .replace(/\[labLastEditColor\]/ig, (failColor))
@@ -273,7 +274,7 @@
         .replace(/\[labNumber\]/ig, Object.keys(labList)[i-1])
         .replace(/\[progress\]/ig, 'Em aberto')
         .replace(/\[progressColor\]/ig, labCompleted?successColor:'bg-lab-dark text-lab-light')
-        .replace(/\[this.labExpirationColor\]/ig, 'btn-lab-primary text-lab-light-pink')
+        .replace(/\[this.labExpirationColor\]/ig, 'bg-lab-dark text-lab-light-pink')
         .replace(/\[this.labExpiration\]/ig,
         `${this.convertToLocalTz(this.labExpiration[i],'string')}`)
         .replace(/\[labDelivered\]/ig, labDelivered?'Sim!':'Não')
@@ -292,10 +293,10 @@
         .replace(/\[labNumber\]/ig, Object.keys(this.labRelease)[i-1])
         .replace(/\[progress\]/ig, 'Fechado')
         .replace(/\[progressColor\]/ig, labCompleted?successColor:'bg-lab-dark text-lab-light')
-        .replace(/\[this.labExpirationColor\]/ig, 'btn-lab-primary text-lab-light-pink')
+        .replace(/\[this.labExpirationColor\]/ig, 'bg-lab-dark text-lab-light-pink')
         .replace(/\[this.labExpiration\]/ig,
         `${this.convertToLocalTz(this.labExpiration[i],'string')}`)
-        .replace(/\[labDelivered\]/ig, labDelivered?'Sim':'Não')
+        .replace(/\[labDelivered\]/ig, labDelivered?'Sim!':'Não')
         .replace(/\[labDeliveredColor\]/ig, labDelivered?successColor:failColor)
         .replace(/\[labLastEdit\]/ig, labLastEdit)
         .replace(/\[labLastEditColor\]/ig, (failColor))
@@ -303,7 +304,7 @@
         if (released == false){
           template.innerHTML = labProgressManager.lvlContainerLocked
           .replace(/\[difficulty\]/ig, i)
-          .replace(/\[labRelease\]/ig, `${this.getDateStringthis(this.labRelease[i])}`)
+          .replace(/\[labRelease\]/ig, `${this.convertToLocalTz(this.labRelease[i],'string')}`)
           .replace(/\[labText\]/ig, lateReleaseTxt)
 
         }else{
@@ -314,15 +315,20 @@
           .replace(/\[labNumber\]/ig, Object.keys(this.labRelease)[i-1])
           .replace(/\[progress\]/ig, 'Em aberto')
           .replace(/\[progressColor\]/ig, labCompleted?successColor:'bg-lab-dark text-lab-light')
-          .replace(/\[this.labExpirationColor\]/ig, 'btn-lab-primary text-lab-light-pink')
+          .replace(/\[this.labExpirationColor\]/ig, 'bg-lab-dark text-lab-light-pink')
           .replace(/\[this.labExpiration\]/ig,
           `${this.convertToLocalTz(this.labExpiration[i],'string')}`)
-          .replace(/\[labDelivered\]/ig, labDelivered?'Sim':'Não')
+          .replace(/\[labDelivered\]/ig, labDelivered?'Sim!':'Não')
           .replace(/\[labDeliveredColor\]/ig, labDelivered?successColor:failColor)
           .replace(/\[labLastEdit\]/ig, labLastEdit)
           .replace(/\[labLastEditColor\]/ig, (failColor))
           .replace(/\[buttonIcon\]/ig, 'plus')
         }
+      }else if (currentDate < this.labRelease[i]){
+        template.innerHTML = labProgressManager.lvlContainerLocked
+        .replace(/\[difficulty\]/ig, i)
+        .replace(/\[labRelease\]/ig, `${this.convertToLocalTz(this.labRelease[i],'string')}`)
+        .replace(/\[labText\]/ig, 'Ainda não publicado...')
       }
 
       progressWrapper.appendChild(template.content.cloneNode(true))
@@ -362,7 +368,6 @@
           btnLab.addEventListener('click',function(){window.location.href = `/author/env/inf331_2023/lab/?id=${btnLab.dataset.action}`})
         }
       }
-
 
     }
       let template = document.createElement('template')
@@ -420,7 +425,7 @@
     }*/
 
     // lastAvailable(progressWrapper, highestLvl)
-    this.lockedLvls(progressWrapper, highestLab+1, 6)
+    // this.lockedLvls(progressWrapper, highestLab+nLabReleased, 6)
 
   }
 

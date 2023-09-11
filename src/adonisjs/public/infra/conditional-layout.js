@@ -204,8 +204,8 @@ class LayoutController {
       if(userGrade === 'student'){
 
         dccSubmitProp.setAttribute('id','dcc-submit-feedback')
-        dccSubmitProp.setAttribute('bind','submit-case-property')
-        dccSubmitProp.setAttribute('xstyle','btn btn-secondary m-1')
+        dccSubmitProp.setAttribute('bind','submit-save-case-and-property')
+        dccSubmitProp.setAttribute('xstyle','btn btn-secondary btn-lab-primary m-1')
         dccSubmitProp.setAttribute('label', "Entregar")
         dccSubmitProp.setAttribute('topic','service/request/post')
         dccSubmitProp.setAttribute('data-toggle','tooltip')
@@ -332,7 +332,8 @@ class LayoutController {
         saveBtn.innerHTML = 'Data da entrega expirada'
         btnLabDelivered.firstElementChild.innerHTML = btnLabDelivered.firstElementChild.innerHTML == 'Entregar'?'Não entregue':'Entregue'
         saveBtn.classList.add('disabled')
-        saveBtn.nextElementSibling.remove()
+        saveBtn.classList.add('no-pointer')
+        saveBtn.nextElementSibling.topic = ""
       }
     }
     /*else if(userGrade === 'professor' || userGrade === 'coordinator'){

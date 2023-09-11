@@ -46,10 +46,12 @@
     <script src="/dccs/base/dcc-visual.js"></script>
 
     <script src="/infra/basic.js"></script>
+    <script src="/infra/dcc-basic-swe.js"></script>
+
     <script src="/infra/dcc-common-server-proxy.js"></script>
     <script src="/infra/dcc-common-server-address.js"></script>
     <script src="/infra/simple-page-tasks.js"></script>
-    <script src="/infra/token-validator.js"></script>
+    <script src="/infra/token-validator-swe.js"></script>
     <script src="/infra/conditional-layout.js"></script>
 
     <script src="/dccs/components/visual/dcc-markdown.js"></script>
@@ -96,7 +98,6 @@
     <script src="/dccs/components/web/dcc-rest.js"></script>
 
     <script src="/infra/dcc-rest-proxy.js"></script>
-    <script src="/infra/dcc-basic.js"></script>
 
     <script src="/lib/showdown/showdown.min.js"></script>
     <script src="/translator/translator.js"></script>
@@ -145,7 +146,51 @@
       </div>
     </div>
     <!-- Login/logout header -->
-    <dcc-include src="/author/partials/header.html"></dcc-include>
+    <div class="fixed-top up-scroll" style="transition: top 0.3s !important;">
+      <dcc-rest id="harena-login" bind="harena-login"></dcc-rest>
+      <nav>
+          <div class="d-flex overflow-hidden pt-2 mr-4" id="harena-header">
+    
+          <span class="inline-flex rounded-md ml-auto " id="header-login">
+            <div id="login-block">
+                <button id="loginDropdownBtn" class="btn btn-light border-top border-left border-right text-primary pl-4 pt-1 dropdown-toggle " type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Login
+                </button>
+                <form class="needs-validation dropdown-menu p-4 mr-5" novalidate>
+                  <div class="form-group">
+                    <label for="email">Email address</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="email@example.com" required>
+                    <div class="invalid-feedback">
+                      Please type a valid email.
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                  </div>
+                  <dcc-submit id="btn-submit-login" bind="submit-login" label="Login" xstyle="btn btn-outline-primary" connect="submit:harena-login:service/request/post"></dcc-submit>
+                  <div id="login-message-alert" class="alert mt-3" role="alert">
+                  </div>
+                </form>
+            </div>
+            <div id="logout-block" style="display: none;">
+              <dcc-rest id="harena-logout" bind="harena-logout"></dcc-rest>
+              <button id="logoutDropdownBtn" class="btn btn-light border-top border-left border-right text-lab-primary px-1 pt-1 dropdown-toggle " type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Logout
+              </button>
+              <div class="dropdown-menu mr-5" aria-labelledby="logoutDropdownBtn">
+                <a class="dropdown-item" href="/user/settings">Change Password</a>
+                <div class="dropdown-divider"></div>
+    
+                <dcc-submit xstyle="dropdown-item" id="logout-button" bind="submit-logout" label="Logout" connect="submit:harena-logout:service/request/post">
+    
+                </div>
+            </div>
+          </span>
+        </div>
+      </nav>
+    </div>
+    <!-- <dcc-include src="/author/partials/header.html"></dcc-include> -->
     <dcc-rest id="harena-case" bind="harena-case" subscribe="service/request/get"></dcc-rest>
     <dcc-dhtml id="dhtml-case" subscribe="service/response/get/harena-case:update">
       <div class="modal fade" id="settings-modal" tabindex="-1" role="dialog" aria-labelledby="settings-modal" aria-hidden="true">
@@ -191,7 +236,7 @@
                     <label for="domain">Domain</label>
                     <select name="domain" id="domain" value="{{domain}}">
                       <option value="{{domain}}" selected disabled hidden>{{domain}}</option>
-                      <option value="Medicine">Medicine</option>
+                      <option value="Medicine">Medicine</option>1F2232
                       <option value="Nurse">Nurse</option>
                       <option value="Physioterapy">Physioterapy</option>
                       <option value="Pharmacy">Pharmacy</option>
@@ -404,15 +449,7 @@
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <!-- <li class="breadcrumb-item"><a href="//home.html">Home</a></li> -->
-              <li class="breadcrumb-item"><a href="/">Welcome</a></li>
-              <li class="breadcrumb-item"><a href="/author/home">Home</a></li>
-              <li class="breadcrumb-item">
-                <div style="height: 15px;">
-                    <dcc-button topic="control/leave/drafts" label="Drafts" xstyle="none">
-                    </dcc-button>
-                </div>
-              </li>
-              <li class="breadcrumb-item active" aria-current="page">Edit case</li>
+              <button type="button" class="btn btn-lab-secondary rounded-pill" onclick="location.href='/author/env/inf331_2023'"><i class="fas fa-arrow-left"></i> Lista de Labs</button>
             </ol>
           </nav>
         </div>
@@ -421,7 +458,7 @@
         <!-- Page title and description -->
         <div class="container-fluid">
           <dcc-dhtml subscribe="service/response/get/harena-case:update">
-            <h1>{{title}}</h1>
+            <h1 class="text-lab-primary">{{title}}</h1>
 
           </dcc-dhtml>
         </div>
@@ -432,7 +469,7 @@
              style="position:relative">
           <nav class="navbar navbar-light">
             <div class="col-6">
-              <button type="button" class="btn btn-secondary" id="btn-save-draft">Save</button>
+              <button type="button" class="btn btn-secondary btn-lab-save" id="btn-save-draft">Save</button>
               <dcc-button topic="control/case/save" location="btn-save-draft" label="Salvar rascunho" xstyle="out"></dcc-button>
 
               <div id="advanced-mode" style="display:none">
@@ -487,7 +524,7 @@
                 <div class="w-100">
                    <button id="scroll-to-top-btn" type="button" name="button" class="btn bg-secondary rounded-circle" ><i class="fas fa-arrow-up"></i></button>
                    <div id="toolbar-editor"></div>
-                   <div id="inplace-editor-wrapper" class="d-flex h-100 sticky-top std-border">
+                   <div id="inplace-editor-wrapper" class="d-flex h-100 sticky-top std-border border-lab-dark">
                      <div id="knot-panel" class="d-flex flex-column sty-knot-panel w-100 h-100 scroll-y">
 
                      </div>

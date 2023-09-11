@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/author/css/author.css">
 
     <script src="/lib/axios-0.21.0/axios.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="/lib/jquery-3-4-1/jquery-3.4.1.slim.min.js"></script>
 
     <script src="/lib/jquery-3-4-1/jquery-3.4.1.slim.min.js"></script>
     <script src="/lib/popper-1-15-0/popper.min.js"></script>
@@ -64,6 +64,8 @@
     <link rel="stylesheet" href="/dccs/css/properties.css">
     <link rel="stylesheet" href="/infra/css/common-player.css">
     <link rel="stylesheet" href="/infra/css/common-author.css">
+    
+    <link rel="stylesheet" href="/author/env/inf331_2023/css/lab.css">
 
     <script src="author/js/dcc-author-server-proxy.js"></script>
 
@@ -84,33 +86,77 @@
 
   <body onload="TokenController.instance.checkToken()">
     <!-- Login/logout header -->
-    <dcc-include src="/author/partials/header.html"></dcc-include>
+    <div class="fixed-top up-scroll" style="transition: top 0.3s !important;">
+      <dcc-rest id="harena-login" bind="harena-login"></dcc-rest>
+      <nav>
+          <div class="d-flex overflow-hidden pt-2 mr-4" id="harena-header">
+    
+          <span class="inline-flex rounded-md ml-auto " id="header-login">
+            <div id="login-block">
+                <button id="loginDropdownBtn" class="btn btn-light border-top border-left border-right text-primary pl-4 pt-1 dropdown-toggle " type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Login
+                </button>
+                <form class="needs-validation dropdown-menu p-4 mr-5" novalidate>
+                  <div class="form-group">
+                    <label for="email">Email address</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="email@example.com" required>
+                    <div class="invalid-feedback">
+                      Please type a valid email.
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                  </div>
+                  <dcc-submit id="btn-submit-login" bind="submit-login" label="Login" xstyle="btn btn-outline-primary" connect="submit:harena-login:service/request/post"></dcc-submit>
+                  <div id="login-message-alert" class="alert mt-3" role="alert">
+                  </div>
+                </form>
+            </div>
+            <div id="logout-block" style="display: none;">
+              <dcc-rest id="harena-logout" bind="harena-logout"></dcc-rest>
+              <button id="logoutDropdownBtn" class="btn btn-light border-top border-left border-right text-lab-primary px-1 pt-1 dropdown-toggle " type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Logout
+              </button>
+              <div class="dropdown-menu mr-5" aria-labelledby="logoutDropdownBtn">
+                <a class="dropdown-item" href="/user/settings">Change Password</a>
+                <div class="dropdown-divider"></div>
+    
+                <dcc-submit xstyle="dropdown-item" id="logout-button" bind="submit-logout" label="Logout" connect="submit:harena-logout:service/request/post">
+    
+                </div>
+            </div>
+          </span>
+        </div>
+      </nav>
+    </div>
+    <!-- <dcc-include src="/author/partials/header.html"></dcc-include> -->
       <main>
         <div class="d-flex vh-100 vw-100" style="background-color: rgb(245,245,245);">
-          <div class="d-flex w-100 mx-5 home-image-margin" style="">
+          <div class="d-flex w-100 mx-5 home-image-margin border-lab-dark" style="">
 
             <div class="d-flex ml-auto flex-column align-items-center justify-content-center align-items-center">
               <div class="d-flex flex-column">
-                <h1 class="home-header-text">INF331 - Componentização e Reúso de Software 2023</h1>
-                <p class="home-p-text">Acesso à plataforma de Laboratórios.</p>
+                <h1 class="home-header-text text-lab-primary">INF331 - Componentização e Reúso de Software 2023</h1>
+                <p class="home-p-text text-lab-dark">Acesso à plataforma de Laboratórios.</p>
                 <div class="container-fluid">
                   <div class="row home-play-container">
-                    <button id="player-btn" class="btn col-4 ml-4 lets-play rounded-pill" onclick="location.href='/author/env/inf331_2023'">Labs</button>
+                    <button id="player-btn" class="btn col-4 ml-4 lets-play rounded-pill btn-lab-secondary" onclick="location.href='/author/env/inf331_2023'">Labs</button>
                   </div>
 
                 </div>
               </div>
             </div>
             <div class="d-flex ml-auto w-50 flex-column align-items-center justify-content-center"
-              style="background: url('start/img/background_harena.png');">
+              style="background: url('start/img/background_inf331.png');">
               <div>
-                <img src="start/img/home_harena.png" alt="" class="h-100 float-right" id="home-image"/>
+                <img src="start/img/home-image-inf331.png" alt="" class="h-100 float-right" id="home-image"/>
               </div>
             </div>
           </div>
         </div>
       </main>
-      <div id="version-footnote" class="fixed-bottom" style="text-align:center">
+      <div id="version-footnote" class="fixed-bottom text-lab-light" style="text-align:center">
       </div>
 
   </body>
