@@ -72,12 +72,14 @@
     let prognosisList = {}
     await axios(config)
       .then(function (endpointResponse) {
+        // for (let c of endpointResponse.data.cases){}
         labList = endpointResponse.data.cases
       })
       .catch(function (error) {
         console.log(error)
       })
     for (let lab of labList) {
+      if (lab.username == sessionStorage.getItem('harena-user-username')){
       let propsLab = await this.getCaseProperties(lab.id)
       let extendPeriod = null
       let property = null
@@ -95,7 +97,7 @@
         labProgressManager.i.lab[lab.title.substring(lab.title.length-1)] = {'id':lab.id,'desc':lab.description,'keywords':lab.keywords,'property':property, 'extendPeriod':extendPeriod}
       }else if (lab.description == lab.keywords){
         labProgressManager.i.lab[lab.description.substring(lab.description.length-1)] = {'id':lab.id,'desc':lab.description,'keywords':lab.keywords,'property':property, 'extendPeriod':extendPeriod}
-      }
+      }}
     }
     MessageBus.i.publish('data/lab.info/ready')
   }
