@@ -8,7 +8,7 @@
     // 3:new Date('2023/09/06'),4:new Date('2023/09/13'),
     // 5:new Date('2023/09/20'),6:new Date('2023/09/27')}
     this.labRelease = {1:this.setDateToISO(hourExpiration(new Date('2023/09/05 GMT-0300'),13)),2:this.setDateToISO(hourExpiration(new Date('2023/09/05 GMT-0300'),14)),
-    3:this.setDateToISO(hourExpiration(new Date('2023/09/06 GMT-0300'),18)),4:this.setDateToISO(hourExpiration(new Date('2023/09/13 GMT-0300'),18)),
+    3:this.setDateToISO(hourExpiration(new Date('2023/09/11 GMT-0300'),14)),4:this.setDateToISO(hourExpiration(new Date('2023/09/13 GMT-0300'),18)),
     5:this.setDateToISO(hourExpiration(new Date('2023/09/20 GMT-0300'),18)),6:this.setDateToISO(hourExpiration(new Date('2023/09/27 GMT-0300'),18))}
     this.labExpiration = {1:this.setDateToISO(hourExpiration(new Date('2023/09/09 GMT-0300'),23)), 2:this.setDateToISO(hourExpiration(new Date('2023/09/16 GMT-0300'),23)),
     3:this.setDateToISO(hourExpiration(new Date('2023/09/16 GMT-0300'),23)),4:this.setDateToISO(hourExpiration(new Date('2023/09/23 GMT-0300'),23)),
