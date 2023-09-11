@@ -78,16 +78,23 @@
         console.log(error)
       })
     for (let lab of labList) {
-      let property = await this.getCaseProperties(lab.id)
-      if ('complete' in property){
-        property = property['complete']
+      let propsLab = await this.getCaseProperties(lab.id)
+      let extendPeriod = null
+      let property = null
+      if ('complete' in propsLab){
+        property = propsLab['complete']
       }else{
         property = null
       }
+      if ('extendPeriod' in propsLab){
+        extendPeriod = new Date((propsLab['extendPeriod']))
+      }else{
+        extendPeriod = null
+      }
       if (lab.title == lab.description && lab.title == lab.keywords){
-        labProgressManager.i.lab[lab.title.substring(lab.title.length-1)] = {'id':lab.id,'desc':lab.description,'keywords':lab.keywords,'property':property}
+        labProgressManager.i.lab[lab.title.substring(lab.title.length-1)] = {'id':lab.id,'desc':lab.description,'keywords':lab.keywords,'property':property, 'extendPeriod':extendPeriod}
       }else if (lab.description == lab.keywords){
-        labProgressManager.i.lab[lab.description.substring(lab.description.length-1)] = {'id':lab.id,'desc':lab.description,'keywords':lab.keywords,'property':property}
+        labProgressManager.i.lab[lab.description.substring(lab.description.length-1)] = {'id':lab.id,'desc':lab.description,'keywords':lab.keywords,'property':property, 'extendPeriod':extendPeriod}
       }
     }
     MessageBus.i.publish('data/lab.info/ready')
@@ -210,17 +217,14 @@
     let labCompleted = false
     let labDelivered = false
     let labLastEdit = null
+    let labExtended = false
+    let labExpired = false
+    let pastRelease = false
     const highestLab = Object.keys(labList).length
-    let nLabReleased = 0
+    // let nLabReleased = 0
     const currentDate = new Date()
-    // console.log('============',this.convertToLocalTz(new Date(),'date'))
-    // let tzOffset = this.prependZero(-1*(currentDate.getTimezoneOffset()/60))
-    // if (-1*(currentDate.getTimezoneOffset()/60) > 0){
-    //   tzOffset = `GMT+${tzOffset}00`
-    // }
-    // console.log('============',this.getDateString(currentDate))
-    // console.log('============',this.getTimeString(this.labRelease[1]))
-    // console.log('============',this.convertToLocalTz(currentDate,true))
+    // console.log(labProgressManager.i.lab);
+
     let createdBtn = false
     let released = true
     const lateReleaseTxt = 'Não publicado...(atraso)'
@@ -228,6 +232,29 @@
     for (var i = 1; i <= Object.keys(this.labRelease).length; i++) {
       labCompleted = false
       labDelivered = false
+      labExtended = false
+      labExpired = false
+      pastRelease = false
+      
+
+      if (this.setDateToISO(currentDate) > this.setDateToISO(this.labExpiration[i])){
+        labExpired = true
+      }
+      // console.log(`lab ${i}`,this.setDateToISO(currentDate), this.setDateToISO(this.labRelease[i]));
+      if (this.setDateToISO(currentDate) > this.setDateToISO(this.labRelease[i])){
+        pastRelease = true
+      }
+
+      if (labExpired){
+        if (Object.keys(labList).length >= i){
+          if (labList[i]['extendPeriod'] != null){
+            if((this.setDateToISO((labList[i]['extendPeriod'])) > this.setDateToISO(currentDate))){
+              labExtended = true
+            }
+          }
+        }
+      }
+      
       let labTemplate = await MessageBus.i.request(
         'data/template/' + `labs/lab_${i}`.replace(/\//g, '.') +
           '/get', {static: false}, null, true)
@@ -237,10 +264,10 @@
       createdBtn = false
 
       let template = document.createElement('template')
-      // console.log('============ current greater then release',this.setDateToISO(currentDate) > this.setDateToISO(this.labRelease[i]))
-      // console.log('============ current date greater then expiration',this.setDateToISO(currentDate) > this.setDateToISO(this.labExpiration[i]))
+      // console.log('============ current greater then release',pastRelease)
+      // console.log('============ current date greater then expiration',labExpired)
 
-      if (this.setDateToISO(currentDate) > this.setDateToISO(this.labRelease[i]) && highestLab >= i){
+      if (pastRelease && highestLab >= i){
         if (labProgressManager.i.lab[i]['property'] != null && labProgressManager.i.lab[i]['property'] == '0'){
           labDelivered = true
         }
@@ -252,7 +279,7 @@
           .replace(/\[labRelease\]/ig, `${this.convertToLocalTz(this.labRelease[i],'string')}`)
           .replace(/\[labText\]/ig, lateReleaseTxt)
 
-        }else if (this.setDateToISO(currentDate) > this.setDateToISO(this.labRelease[i]) && this.setDateToISO(currentDate) > this.setDateToISO(this.labExpiration[i])){
+        }else if (pastRelease && labExpired && !labExtended){
           // console.log('============ release and expiration greater')
           template.innerHTML = labProgressManager.lvlContainerExpired
           .replace(/\[containerColor\]/ig, 'bg-lab-primary')
@@ -267,26 +294,44 @@
           .replace(/\[labDeliveredColor\]/ig, labDelivered?successColor:failColor)
           .replace(/\[labLastEdit\]/ig, labLastEdit)
           .replace(/\[labLastEditColor\]/ig, (failColor))
-        }else{
-          template.innerHTML = labProgressManager.lvlContainer
-        .replace(/\[containerColor\]/ig, 'bg-lab-primary')
-        .replace(/\[btnColor\]/ig, 'btn-lab-primary')
-        .replace(/\[labNumber\]/ig, Object.keys(labList)[i-1])
-        .replace(/\[progress\]/ig, 'Em aberto')
-        .replace(/\[progressColor\]/ig, labCompleted?successColor:'bg-lab-dark text-lab-light')
-        .replace(/\[this.labExpirationColor\]/ig, 'bg-lab-dark text-lab-light-pink')
-        .replace(/\[this.labExpiration\]/ig,
-        `${this.convertToLocalTz(this.labExpiration[i],'string')}`)
-        .replace(/\[labDelivered\]/ig, labDelivered?'Sim!':'Não')
-        .replace(/\[labDeliveredColor\]/ig, labDelivered?successColor:failColor)
-        .replace(/\[labLastEdit\]/ig, labLastEdit)
-        .replace(/\[labLastEditColor\]/ig, (failColor))
-        .replace(/\[labId\]/ig, labList[i]['id'])
-        .replace(/\[buttonIcon\]/ig, 'play')
+        }else if (pastRelease && !labExpired || (pastRelease && labExpired && labExtended)){
+          if (labExtended){
+            template.innerHTML = labProgressManager.lvlContainer
+          .replace(/\[containerColor\]/ig, 'bg-lab-primary')
+          .replace(/\[btnColor\]/ig, 'btn-lab-primary')
+          .replace(/\[labNumber\]/ig, Object.keys(labList)[i-1])
+          .replace(/\[progress\]/ig, 'Submissão extendida')
+          .replace(/\[progressColor\]/ig, labCompleted?successColor:'bg-lab-dark text-lab-light')
+          .replace(/\[this.labExpirationColor\]/ig, 'bg-lab-dark text-lab-light-pink')
+          .replace(/\[this.labExpiration\]/ig,
+          `${this.convertToLocalTz(labList[i]['extendPeriod'],'string')}`)
+          .replace(/\[labDelivered\]/ig, labDelivered?'Sim!':'Não')
+          .replace(/\[labDeliveredColor\]/ig, labDelivered?successColor:failColor)
+          .replace(/\[labLastEdit\]/ig, labLastEdit)
+          .replace(/\[labLastEditColor\]/ig, (failColor))
+          .replace(/\[labId\]/ig, labList[i]['id'])
+          .replace(/\[buttonIcon\]/ig, 'play')
+          }else{
+            template.innerHTML = labProgressManager.lvlContainer
+            .replace(/\[containerColor\]/ig, 'bg-lab-primary')
+            .replace(/\[btnColor\]/ig, 'btn-lab-primary')
+            .replace(/\[labNumber\]/ig, Object.keys(this.labRelease)[i-1])
+            .replace(/\[progress\]/ig, 'Em aberto')
+            .replace(/\[progressColor\]/ig, labCompleted?successColor:'bg-lab-dark text-lab-light')
+            .replace(/\[this.labExpirationColor\]/ig, 'bg-lab-dark text-lab-light-pink')
+            .replace(/\[this.labExpiration\]/ig,
+            `${this.convertToLocalTz(this.labExpiration[i],'string')}`)
+            .replace(/\[labDelivered\]/ig, labDelivered?'Sim!':'Não')
+            .replace(/\[labDeliveredColor\]/ig, labDelivered?successColor:failColor)
+            .replace(/\[labLastEdit\]/ig, labLastEdit)
+            .replace(/\[labLastEditColor\]/ig, (failColor))
+            .replace(/\[labId\]/ig, labList[i]['id'])
+            .replace(/\[buttonIcon\]/ig, 'play')
+          }
         }
 
 
-      }else if(this.setDateToISO(currentDate) > this.setDateToISO(this.labRelease[i]) && this.setDateToISO(currentDate) > this.setDateToISO(this.labExpiration[i])){
+      }else if(pastRelease && labExpired && !labExtended){
         template.innerHTML = labProgressManager.lvlContainerExpired
         .replace(/\[containerColor\]/ig, 'bg-lab-primary')
         .replace(/\[btnColor\]/ig, 'btn-lab-secondary')
@@ -300,7 +345,7 @@
         .replace(/\[labDeliveredColor\]/ig, labDelivered?successColor:failColor)
         .replace(/\[labLastEdit\]/ig, labLastEdit)
         .replace(/\[labLastEditColor\]/ig, (failColor))
-      }else if (currentDate > this.labRelease[i]){
+      }else if (pastRelease){
         if (released == false){
           template.innerHTML = labProgressManager.lvlContainerLocked
           .replace(/\[difficulty\]/ig, i)
@@ -309,22 +354,41 @@
 
         }else{
           createdBtn = true
-          template.innerHTML = labProgressManager.lvlContainer
-          .replace(/\[containerColor\]/ig, 'bg-lab-primary')
-          .replace(/\[btnColor\]/ig, 'btn-lab-secondary')
-          .replace(/\[labNumber\]/ig, Object.keys(this.labRelease)[i-1])
-          .replace(/\[progress\]/ig, 'Em aberto')
-          .replace(/\[progressColor\]/ig, labCompleted?successColor:'bg-lab-dark text-lab-light')
-          .replace(/\[this.labExpirationColor\]/ig, 'bg-lab-dark text-lab-light-pink')
-          .replace(/\[this.labExpiration\]/ig,
-          `${this.convertToLocalTz(this.labExpiration[i],'string')}`)
-          .replace(/\[labDelivered\]/ig, labDelivered?'Sim!':'Não')
-          .replace(/\[labDeliveredColor\]/ig, labDelivered?successColor:failColor)
-          .replace(/\[labLastEdit\]/ig, labLastEdit)
-          .replace(/\[labLastEditColor\]/ig, (failColor))
-          .replace(/\[buttonIcon\]/ig, 'plus')
+          if (!labExpired || (pastRelease && labExpired && labExtended)){
+            if (labExtended){
+              template.innerHTML = labProgressManager.lvlContainer
+              .replace(/\[containerColor\]/ig, 'bg-lab-primary')
+              .replace(/\[btnColor\]/ig, 'btn-lab-primary')
+              .replace(/\[labNumber\]/ig, Object.keys(labList)[i-1])
+              .replace(/\[progress\]/ig, 'Submissão extendida')
+              .replace(/\[progressColor\]/ig, labCompleted?successColor:'bg-lab-dark text-lab-light')
+              .replace(/\[this.labExpirationColor\]/ig, 'bg-lab-dark text-lab-light-pink')
+              .replace(/\[this.labExpiration\]/ig,
+              `${this.convertToLocalTz(labList[i]['extendPeriod'],'string')}`)
+              .replace(/\[labDelivered\]/ig, labDelivered?'Sim!':'Não')
+              .replace(/\[labDeliveredColor\]/ig, labDelivered?successColor:failColor)
+              .replace(/\[labLastEdit\]/ig, labLastEdit)
+              .replace(/\[labLastEditColor\]/ig, (failColor))
+              .replace(/\[buttonIcon\]/ig, 'plus')
+            }else{
+              template.innerHTML = labProgressManager.lvlContainer
+            .replace(/\[containerColor\]/ig, 'bg-lab-primary')
+            .replace(/\[btnColor\]/ig, 'btn-lab-secondary')
+            .replace(/\[labNumber\]/ig, Object.keys(this.labRelease)[i-1])
+            .replace(/\[progress\]/ig, 'Em aberto')
+            .replace(/\[progressColor\]/ig, labCompleted?successColor:'bg-lab-dark text-lab-light')
+            .replace(/\[this.labExpirationColor\]/ig, 'bg-lab-dark text-lab-light-pink')
+            .replace(/\[this.labExpiration\]/ig,
+            `${this.convertToLocalTz(this.labExpiration[i],'string')}`)
+            .replace(/\[labDelivered\]/ig, labDelivered?'Sim!':'Não')
+            .replace(/\[labDeliveredColor\]/ig, labDelivered?successColor:failColor)
+            .replace(/\[labLastEdit\]/ig, labLastEdit)
+            .replace(/\[labLastEditColor\]/ig, (failColor))
+            .replace(/\[buttonIcon\]/ig, 'plus')
+            }
         }
-      }else if (currentDate < this.labRelease[i]){
+      }
+      }else if (!pastRelease){
         template.innerHTML = labProgressManager.lvlContainerLocked
         .replace(/\[difficulty\]/ig, i)
         .replace(/\[labRelease\]/ig, `${this.convertToLocalTz(this.labRelease[i],'string')}`)
