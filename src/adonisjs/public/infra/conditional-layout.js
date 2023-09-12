@@ -327,13 +327,23 @@ class LayoutController {
           document.querySelector('#harena-case-property').remove()
           document.querySelector('#harena-inf331-complete-lab').remove()
       })
-      if (expirationDate < new Date()){
+      let currentDate = labProgressManager.i.setDateToISO(new Date())
+      if (expirationDate < currentDate && LayoutController.case.message.property.extendPeriod == null){
         const saveBtn = document.querySelector('#btn-save-draft')
         saveBtn.innerHTML = 'Data da entrega expirada'
         btnLabDelivered.firstElementChild.innerHTML = btnLabDelivered.firstElementChild.innerHTML == 'Entregar'?'Não entregue':'Entregue'
         saveBtn.classList.add('disabled')
         saveBtn.classList.add('no-pointer')
         saveBtn.nextElementSibling.topic = ""
+      }else if (LayoutController.case.message.property.extendPeriod != null){
+        if (labProgressManager.i.setDateToISO(new Date(LayoutController.case.message.property.extendPeriod)) < currentDate){
+          const saveBtn = document.querySelector('#btn-save-draft')
+          saveBtn.innerHTML = 'Data da entrega expirada'
+          btnLabDelivered.firstElementChild.innerHTML = btnLabDelivered.firstElementChild.innerHTML == 'Entregar'?'Não entregue':'Entregue'
+          saveBtn.classList.add('disabled')
+          saveBtn.classList.add('no-pointer')
+          saveBtn.nextElementSibling.topic = ""
+        }
       }
     }
     /*else if(userGrade === 'professor' || userGrade === 'coordinator'){
