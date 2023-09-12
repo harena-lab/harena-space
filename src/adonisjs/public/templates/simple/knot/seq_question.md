@@ -1,4 +1,4 @@
-# Question _knot_number_ (input) #
+# Q _knot_number_ (input) #
 
 **Question X**
 
