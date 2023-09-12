@@ -5,6 +5,13 @@
     "icon": "plain/case/plain.png",
     "scope": "case",
     "environment": "jacinto"},
+"Sequence":
+   {"questId": "sequence",
+    "description": "Basic sequence of events.",
+    "path": "simple/case/sequence",
+    "icon": "simple/case/sequence.png",
+    "scope": "case",
+    "environment": "jacinto"},
 "Lab 1":
    {"questId": "labs",
     "description": "Lab 1.",
@@ -25,7 +32,7 @@
     "path": "labs/lab_3",
     "icon": "labs/labs.png",
     "scope": "case",
-    "environment": "jacinto"},
+    "environment": "development"},
 "Zombie":
     {"questId": "zombie",
      "description": "Zombie Venom.",
@@ -38,7 +45,8 @@
    "description": "Novo visual do Jacinto.",
    "path": "jacinto/case/standard_eletro",
    "icon": "jacinto/images/standard_eletro.png",
-   "scope": "case"},
+   "scope": "case",
+   "environment": "development"},
 "Quiz da Emergência":
    {"questId": "quiz-da-emergencia",
     "description": "Um quiz com quatro alternativas.",
@@ -107,9 +115,24 @@
     "path": "simple/knot/quiz",
     "icon": "simple/knot/quiz.png",
     "scope": "knot"},
+ "Description Sequence":
+   {"description": "Description block (sequence).",
+    "path": "simple/knot/seq_description",
+    "icon": "simple/images/description.png",
+    "scope": "knot"},
  "Description":
    {"description": "Description of a case or report.",
     "path": "simple/knot/description",
+    "icon": "simple/images/description.png",
+    "scope": "knot"},
+ "Question Sequence":
+   {"description": "Question with a text input (sequence).",
+    "path": "simple/knot/seq_question",
+    "icon": "simple/images/description.png",
+    "scope": "knot"},
+ "Question with Certainty Sequence":
+   {"description": "Question with a text input and certainty (sequence).",
+    "path": "simple/knot/seq_question_certainty",
     "icon": "simple/images/description.png",
     "scope": "knot"},
  "Input":
