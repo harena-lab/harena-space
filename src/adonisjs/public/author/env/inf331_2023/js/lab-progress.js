@@ -248,7 +248,7 @@
       }
 
       if (labExpired){
-        if (Object.keys(labList).length >= i){
+        if (Object.keys(labList).length > i){
           if (labList[i]['extendPeriod'] != null){
             if((this.setDateToISO((labList[i]['extendPeriod'])) > this.setDateToISO(currentDate))){
               labExtended = true
