@@ -269,7 +269,7 @@
       // console.log('============ current greater then release',pastRelease)
       // console.log('============ current date greater then expiration',labExpired)
 
-      if (pastRelease && highestLab >= i){
+      if (pastRelease && highestLab > i){
         if (labProgressManager.i.lab[i]['property'] != null && labProgressManager.i.lab[i]['property'] == '0'){
           labDelivered = true
         }
