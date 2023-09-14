@@ -124,8 +124,8 @@
                   </dcc-dhtml>
                 </div>
                 <div class="pr-2">
-                  <dcc-rest id="harena-hradm-groups" bind="harena-hradm-groups"></dcc-rest>
-                  <dcc-dhtml id="harena-dhtml-groups" connect="retrieve:harena-hradm-groups:service/request/get">
+                  <dcc-rest id="harena-admin-groups" bind="harena-admin-groups"></dcc-rest>
+                  <dcc-dhtml id="harena-dhtml-groups" connect="retrieve:harena-admin-groups:service/request/get">
                     <select id="group" name="group" class="custom-select custom-select-sm">
                       <option selected value="">Group</option>
                       {{@foreach . group}}
