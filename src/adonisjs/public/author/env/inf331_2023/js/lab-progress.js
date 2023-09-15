@@ -225,13 +225,14 @@
     const highestLab = Object.keys(labList).length
     // let nLabReleased = 0
     const currentDate = new Date()
-    // console.log(labProgressManager.i.lab);
+    console.log(labProgressManager.i.lab)
+    console.log(highestLab);
 
     let createdBtn = false
     let released = true
     const lateReleaseTxt = 'Não publicado...(atraso)'
     progressWrapper.innerHTML = ''
-    for (var i = 1; i <= Object.keys(this.labRelease).length; i++) {
+    for (let i = 1; i <= Object.keys(this.labRelease).length; i++) {
       labCompleted = false
       labDelivered = false
       labExtended = false
@@ -248,7 +249,7 @@
       }
 
       if (labExpired){
-        if (Object.keys(labList).length > i){
+        if (Object.keys(labList).includes(String(i))){
           if (labList[i]['extendPeriod'] != null){
             if((this.setDateToISO((labList[i]['extendPeriod'])) > this.setDateToISO(currentDate))){
               labExtended = true
@@ -268,8 +269,9 @@
       let template = document.createElement('template')
       // console.log('============ current greater then release',pastRelease)
       // console.log('============ current date greater then expiration',labExpired)
-
-      if (pastRelease && highestLab > i){
+      // console.log('keys',Object.keys(labList));
+      // console.log(Object.keys(labList).includes(String(i)));
+      if (pastRelease && Object.keys(labList).includes(String(i))){
         if (labProgressManager.i.lab[i]['property'] != null && labProgressManager.i.lab[i]['property'] == '0'){
           labDelivered = true
         }
@@ -355,6 +357,7 @@
           .replace(/\[labText\]/ig, lateReleaseTxt)
 
         }else{
+          console.log('heere',i);
           createdBtn = true
           if (!labExpired || (pastRelease && labExpired && labExtended)){
             if (labExtended){
