@@ -8,10 +8,10 @@
     // 3:new Date('2023/09/06'),4:new Date('2023/09/13'),
     // 5:new Date('2023/09/20'),6:new Date('2023/09/27')}
     this.labRelease = {1:this.setDateToISO(hourExpiration(new Date('2023/09/05 GMT-0300'),13)),2:this.setDateToISO(hourExpiration(new Date('2023/09/05 GMT-0300'),14)),
-    3:this.setDateToISO(hourExpiration(new Date('2023/09/11 GMT-0300'),14)),4:this.setDateToISO(hourExpiration(new Date('2023/09/13 GMT-0300'),18)),
+    3:this.setDateToISO(hourExpiration(new Date('2023/09/11 GMT-0300'),14)),4:this.setDateToISO(hourExpiration(new Date('2023/09/16 GMT-0300'),18)),
     5:this.setDateToISO(hourExpiration(new Date('2023/09/20 GMT-0300'),18)),6:this.setDateToISO(hourExpiration(new Date('2023/09/27 GMT-0300'),18))}
-    this.labExpiration = {1:this.setDateToISO(hourExpiration(new Date('2023/09/09 GMT-0300'),23)), 2:this.setDateToISO(hourExpiration(new Date('2023/09/16 GMT-0300'),23)),
-    3:this.setDateToISO(hourExpiration(new Date('2023/09/16 GMT-0300'),23)),4:this.setDateToISO(hourExpiration(new Date('2023/09/23 GMT-0300'),23)),
+    this.labExpiration = {1:this.setDateToISO(hourExpiration(new Date('2023/09/18 GMT-0300'),23)), 2:this.setDateToISO(hourExpiration(new Date('2023/09/18 GMT-0300'),23)),
+    3:this.setDateToISO(hourExpiration(new Date('2023/09/18 GMT-0300'),23)),4:this.setDateToISO(hourExpiration(new Date('2023/09/23 GMT-0300'),23)),
     5:this.setDateToISO(hourExpiration(new Date('2023/09/30 GMT-0300'),23)),6:this.setDateToISO(hourExpiration(new Date('2023/10/06 GMT-0300'),23))}
     this.start = this.start.bind(this)
     MessageBus.i.subscribe('control/html/ready', this.start)
@@ -225,13 +225,14 @@
     const highestLab = Object.keys(labList).length
     // let nLabReleased = 0
     const currentDate = new Date()
-    // console.log(labProgressManager.i.lab);
+    console.log(labProgressManager.i.lab)
+    console.log(highestLab);
 
     let createdBtn = false
     let released = true
     const lateReleaseTxt = 'Não publicado...(atraso)'
     progressWrapper.innerHTML = ''
-    for (var i = 1; i <= Object.keys(this.labRelease).length; i++) {
+    for (let i = 1; i <= Object.keys(this.labRelease).length; i++) {
       labCompleted = false
       labDelivered = false
       labExtended = false
@@ -248,7 +249,7 @@
       }
 
       if (labExpired){
-        if (Object.keys(labList).length > i){
+        if (Object.keys(labList).includes(String(i))){
           if (labList[i]['extendPeriod'] != null){
             if((this.setDateToISO((labList[i]['extendPeriod'])) > this.setDateToISO(currentDate))){
               labExtended = true
@@ -268,8 +269,9 @@
       let template = document.createElement('template')
       // console.log('============ current greater then release',pastRelease)
       // console.log('============ current date greater then expiration',labExpired)
-
-      if (pastRelease && highestLab > i){
+      // console.log('keys',Object.keys(labList));
+      // console.log(Object.keys(labList).includes(String(i)));
+      if (pastRelease && Object.keys(labList).includes(String(i))){
         if (labProgressManager.i.lab[i]['property'] != null && labProgressManager.i.lab[i]['property'] == '0'){
           labDelivered = true
         }
@@ -355,6 +357,7 @@
           .replace(/\[labText\]/ig, lateReleaseTxt)
 
         }else{
+          console.log('heere',i);
           createdBtn = true
           if (!labExpired || (pastRelease && labExpired && labExtended)){
             if (labExtended){
