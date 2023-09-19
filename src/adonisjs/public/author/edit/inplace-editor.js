@@ -223,10 +223,10 @@ class EditDCC {
     const ep = await this._extendedPanel(
       EditDCC.imageBrowseTemplate, mtype, ftypes)
     let path = null
-    if (ep.select != null &&
-        ep.select.options[ep.select.selectedIndex].value.length > 0)
-      path = ep.select.options[ep.select.selectedIndex].value
-    else {
+    if (ep.select != null) {
+      if (ep.select.options[ep.select.selectedIndex].value.length > 0)
+        path = ep.select.options[ep.select.selectedIndex].value
+    } else if (ep.browse != null) {
       console.log('===== files selected')
       for (let f of ep.browse.files)
         console.log(f)
