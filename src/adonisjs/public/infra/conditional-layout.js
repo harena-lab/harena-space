@@ -294,7 +294,7 @@ class LayoutController {
     if(userGrade === 'student'){
       let labN = LayoutController.case.message.keywords
       labN = labN.substring(labN.length-1)
-      const expirationDate = labProgressManager.i.labExpiration[labN]
+      const expirationDate = new Date()
       //Verifies property 'feedback' to disable button and change layout
       if(LayoutController.case.message.property.complete){
         if(LayoutController.case.message.property.complete == 0){
@@ -327,24 +327,24 @@ class LayoutController {
           document.querySelector('#harena-case-property').remove()
           document.querySelector('#harena-inf331-complete-lab').remove()
       })
-      let currentDate = labProgressManager.i.setDateToISO(new Date())
-      if (expirationDate < currentDate && LayoutController.case.message.property.extendPeriod == null){
-        const saveBtn = document.querySelector('#btn-save-draft')
-        saveBtn.innerHTML = 'Data da entrega expirada'
-        btnLabDelivered.firstElementChild.innerHTML = btnLabDelivered.firstElementChild.innerHTML == 'Entregar'?'Não entregue':'Entregue'
-        saveBtn.classList.add('disabled')
-        saveBtn.classList.add('no-pointer')
-        saveBtn.nextElementSibling.topic = ""
-      }else if (LayoutController.case.message.property.extendPeriod != null){
-        if (labProgressManager.i.setDateToISO(new Date(LayoutController.case.message.property.extendPeriod)) < currentDate){
-          const saveBtn = document.querySelector('#btn-save-draft')
-          saveBtn.innerHTML = 'Data da entrega expirada'
-          btnLabDelivered.firstElementChild.innerHTML = btnLabDelivered.firstElementChild.innerHTML == 'Entregar'?'Não entregue':'Entregue'
-          saveBtn.classList.add('disabled')
-          saveBtn.classList.add('no-pointer')
-          saveBtn.nextElementSibling.topic = ""
-        }
-      }
+      // let currentDate = labProgressManager.i.setDateToISO(new Date())
+      // if (expirationDate < currentDate && LayoutController.case.message.property.extendPeriod == null){
+      //   const saveBtn = document.querySelector('#btn-save-draft')
+      //   saveBtn.innerHTML = 'Data da entrega expirada'
+      //   btnLabDelivered.firstElementChild.innerHTML = btnLabDelivered.firstElementChild.innerHTML == 'Entregar'?'Não entregue':'Entregue'
+      //   saveBtn.classList.add('disabled')
+      //   saveBtn.classList.add('no-pointer')
+      //   saveBtn.nextElementSibling.topic = ""
+      // }else if (LayoutController.case.message.property.extendPeriod != null){
+      //   if (labProgressManager.i.setDateToISO(new Date(LayoutController.case.message.property.extendPeriod)) < currentDate){
+      //     const saveBtn = document.querySelector('#btn-save-draft')
+      //     saveBtn.innerHTML = 'Data da entrega expirada'
+      //     btnLabDelivered.firstElementChild.innerHTML = btnLabDelivered.firstElementChild.innerHTML == 'Entregar'?'Não entregue':'Entregue'
+      //     saveBtn.classList.add('disabled')
+      //     saveBtn.classList.add('no-pointer')
+      //     saveBtn.nextElementSibling.topic = ""
+      //   }
+      // }
     }
     /*else if(userGrade === 'professor' || userGrade === 'coordinator'){
       if(document.querySelector('#harena-inf331-complete-lab'))
