@@ -11,7 +11,7 @@
     3:this.setDateToISO(hourExpiration(new Date('2023/09/11 GMT-0300'),14)),4:this.setDateToISO(hourExpiration(new Date('2023/09/16 GMT-0300'),18)),
     5:this.setDateToISO(hourExpiration(new Date('2023/09/20 GMT-0300'),18)),6:this.setDateToISO(hourExpiration(new Date('2023/09/27 GMT-0300'),18))}
     this.labExpiration = {1:this.setDateToISO(hourExpiration(new Date('2023/09/18 GMT-0300'),23)), 2:this.setDateToISO(hourExpiration(new Date('2023/09/18 GMT-0300'),23)),
-    3:this.setDateToISO(hourExpiration(new Date('2023/09/18 GMT-0300'),23)),4:this.setDateToISO(hourExpiration(new Date('2023/09/23 GMT-0300'),23)),
+    3:this.setDateToISO(hourExpiration(new Date('2023/09/18 GMT-0300'),23)),4:this.setDateToISO(hourExpiration(new Date('2023/09/30 GMT-0300'),23)),
     5:this.setDateToISO(hourExpiration(new Date('2023/09/30 GMT-0300'),23)),6:this.setDateToISO(hourExpiration(new Date('2023/10/06 GMT-0300'),23))}
     this.start = this.start.bind(this)
     MessageBus.i.subscribe('control/html/ready', this.start)
@@ -231,6 +231,7 @@
     let createdBtn = false
     let released = true
     const lateReleaseTxt = 'Não publicado...(atraso)'
+    const progressLate = 'Aberto (com perda na nota)'
     progressWrapper.innerHTML = ''
     for (let i = 1; i <= Object.keys(this.labRelease).length; i++) {
       labCompleted = false
@@ -285,12 +286,12 @@
 
         }else if (pastRelease && labExpired && !labExtended){
           // console.log('============ release and expiration greater')
-          template.innerHTML = labProgressManager.lvlContainerExpired
+          template.innerHTML = labProgressManager.lvlContainer
           .replace(/\[containerColor\]/ig, 'bg-lab-primary')
           .replace(/\[btnColor\]/ig, 'btn-lab-secondary')
           .replace(/\[labNumber\]/ig, Object.keys(this.labRelease)[i-1])
-          .replace(/\[progress\]/ig, 'Fechado')
-          .replace(/\[progressColor\]/ig, labCompleted?successColor:'bg-lab-dark text-lab-light')
+          .replace(/\[progress\]/ig, progressLate)
+          .replace(/\[progressColor\]/ig, failColor)
           .replace(/\[this.labExpirationColor\]/ig, 'bg-lab-dark text-lab-light-pink')
           .replace(/\[this.labExpiration\]/ig,
           `${this.convertToLocalTz(this.labExpiration[i],'string')}`)
@@ -298,6 +299,8 @@
           .replace(/\[labDeliveredColor\]/ig, labDelivered?successColor:failColor)
           .replace(/\[labLastEdit\]/ig, labLastEdit)
           .replace(/\[labLastEditColor\]/ig, (failColor))
+          .replace(/\[labId\]/ig, labList[i]['id'])
+          .replace(/\[buttonIcon\]/ig, 'play')
         }else if (pastRelease && !labExpired || (pastRelease && labExpired && labExtended)){
           if (labExtended){
             template.innerHTML = labProgressManager.lvlContainer
@@ -336,12 +339,12 @@
 
 
       }else if(pastRelease && labExpired && !labExtended){
-        template.innerHTML = labProgressManager.lvlContainerExpired
+        template.innerHTML = labProgressManager.lvlContainer
         .replace(/\[containerColor\]/ig, 'bg-lab-primary')
         .replace(/\[btnColor\]/ig, 'btn-lab-secondary')
         .replace(/\[labNumber\]/ig, Object.keys(this.labRelease)[i-1])
-        .replace(/\[progress\]/ig, 'Fechado')
-        .replace(/\[progressColor\]/ig, labCompleted?successColor:'bg-lab-dark text-lab-light')
+        .replace(/\[progress\]/ig, progressLate)
+        .replace(/\[progressColor\]/ig, failColor)
         .replace(/\[this.labExpirationColor\]/ig, 'bg-lab-dark text-lab-light-pink')
         .replace(/\[this.labExpiration\]/ig,
         `${this.convertToLocalTz(this.labExpiration[i],'string')}`)
@@ -349,6 +352,8 @@
         .replace(/\[labDeliveredColor\]/ig, labDelivered?successColor:failColor)
         .replace(/\[labLastEdit\]/ig, labLastEdit)
         .replace(/\[labLastEditColor\]/ig, (failColor))
+        .replace(/\[buttonIcon\]/ig, 'plus')
+
       }else if (pastRelease){
         if (released == false){
           template.innerHTML = labProgressManager.lvlContainerLocked
@@ -357,7 +362,6 @@
           .replace(/\[labText\]/ig, lateReleaseTxt)
 
         }else{
-          console.log('heere',i);
           createdBtn = true
           if (!labExpired || (pastRelease && labExpired && labExtended)){
             if (labExtended){
