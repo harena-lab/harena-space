@@ -490,13 +490,25 @@ class PlayerManager {
       element => element.type == 'field' && element.field == 'block_types')
     blocks = (blocks != null) ? blocks.value : null
 
+    let sliders = content.find(
+      element => element.type == 'field' && element.field == 'sliders')
+    sliders = (sliders != null) ? sliders.value : null
+
+    console.log('=== sliders')
+    console.log(sliders)
+
+    let mode = content.find(
+      element => element.type == 'field' && element.field == 'script_mode')
+    mode = (mode != null) ? mode.value : null
+
     AuthorCellManager.instance.start(
       {name: this._currentKnot,
        types: types,
        blocks: blocks,
        source: knot,
-       buttonTypes: ''},
-      null, null, false, '/dccs/')
+       buttonTypes: '',
+       sliders: sliders},
+      mode, null, false, '/dccs/')
   }
 
   presentNote (knot) {
