@@ -1,4 +1,4 @@
 {
   "note": ["note", "note_references"],
-  "cell": ["cell_editor", "cell_editor_sliders", "cell_agent"]
+  "cell": ["cell_editor", "cell_editor_sliders", "cell_mutant", "cell_mutant_sliders", "cell_agent"]
 }

@@ -2,4 +2,4 @@
 
 ___ Template ___
 
-* template: compact/case/cell_editor
+* template: compact/case/cell_editor_sliders
