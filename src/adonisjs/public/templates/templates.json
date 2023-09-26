@@ -39,6 +39,13 @@
     "path": "labs/lab_4",
     "icon": "labs/labs.png",
     "scope": "case",
+    "environment": "development"},
+"Lab 5":
+   {"questId": "labs",
+    "description": "Lab 5.",
+    "path": "labs/lab_5",
+    "icon": "labs/labs.png",
+    "scope": "case",
     "environment": "jacinto"},
 "Zombie":
     {"questId": "zombie",

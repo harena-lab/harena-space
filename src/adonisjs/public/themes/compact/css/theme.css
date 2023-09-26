@@ -132,6 +132,11 @@
    }
 }
 
+.styt-pul-main, .styn-note, .styn-control-button {
+   font-family: "Trebuchet MS", Helvetica, sans-serif;
+   font-size: 3vh;
+}
+
 /* Public styles for DCCs - overwritten by shadow ones */
 
 /* Button DCC */
