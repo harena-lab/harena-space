@@ -339,6 +339,7 @@
 
 
       }else if(pastRelease && labExpired && !labExtended){
+        createdBtn = true
         template.innerHTML = labProgressManager.lvlContainer
         .replace(/\[containerColor\]/ig, 'bg-lab-primary')
         .replace(/\[btnColor\]/ig, 'btn-lab-secondary')
