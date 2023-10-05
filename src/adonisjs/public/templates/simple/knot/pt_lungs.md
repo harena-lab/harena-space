@@ -2,7 +2,9 @@
 
 **Lungs - POCUS Exam Videos:**
 
+{{closure
 **Findings**
+}}
 
 {{findings
 Describe here your findings concerning the following videos.

@@ -154,12 +154,13 @@ class Comments {
   }
 
   _generateForm (template, collection) {
-    let htmlForm = this._blockToForm('', template, collection.comments)
+    let htmlForm = ''
     for (const c in collection.contexts) {
       const tmpl = template.contexts[collection.contexts[c].context]
       if (tmpl != null)
         htmlForm += this._blockToForm(c, tmpl, collection.contexts[c].comments)
     }
+    htmlForm += '<hr>' + this._blockToForm('', template, collection.comments)
 
     document.querySelector('#comments-display').innerHTML =
       Comments.html.form.replace(/{form}/gm, htmlForm)

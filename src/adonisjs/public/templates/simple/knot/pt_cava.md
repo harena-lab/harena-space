@@ -2,7 +2,9 @@
 
 **Cava - POCUS Exam Videos and Photos:**
 
+{{closure
 **Findings**
+}}
 
 {{findings
 Describe here your findings concerning the following videos.
