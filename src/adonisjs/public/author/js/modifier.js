@@ -174,9 +174,16 @@ class Modifier {
       let replace = false
       let includeContext = false
       let c = 0
+
+      const insertionContext = 'closure'  // <TODO> make it configurable
+      let insertionPoint = content.length
+
       const artifactType = Translator.instance.classifyArtifactType(artifact)
       const artifactSuperType = (artifactType == 'image') ? 'image' : 'media'
       while (c < content.length && targetEl < 0) {
+        if (content[c].type == 'context-open' &&
+            content[c].context == insertionContext)
+          insertionPoint = c
         if (content[c].type == 'context-open' &&
             content[c].context == target)
           targetEl = -1
@@ -191,7 +198,10 @@ class Modifier {
         c++
       }
       if (targetEl < 0 && includeMissing) {
-        targetEl = content.length
+        targetEl = insertionPoint
+        console.log('=== insertion point')
+        console.log(targetEl)
+        console.log((targetEl == content.length) ? '--- length' : content[targetEl])
         includeContext = true
       }
       if (targetEl >= 0) {
@@ -388,7 +398,7 @@ class Modifier {
   }
 
   elementReplace (knot, position, element) {
-    status = false
+    let status = false
     if (this._checkKnotContentPosition(knot, position, true)) {
       if (element == null)
         this._reportError('element.replace.missing')
@@ -410,7 +420,7 @@ class Modifier {
   }
 
   elementDelete (knot, position) {
-    status = false
+    let status = false
     if (this._checkKnotContentPosition(knot, position, true)) {
       this._compiledCase.knots[knot].content.splice(position, 1)
       this._recordOperation('element', 'delete',

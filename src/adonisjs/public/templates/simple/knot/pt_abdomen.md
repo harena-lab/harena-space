@@ -2,7 +2,9 @@
 
 **Abdomen for free liquid detection - POCUS Exam Videos:**
 
+{{closure
 **Findings**
+}}
 
 {{findings
 Describe here your findings concerning the following videos.
