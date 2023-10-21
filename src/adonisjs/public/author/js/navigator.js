@@ -23,7 +23,7 @@ class Navigator {
     if (this._navigatorSpread == 0) { Panels.s.setupVisibleNavigator() } else {
       Panels.s.setupWideNavigator()
       this._retracted = false
-      this._presentTreeCase()
+      // this._presentTreeCase()
     }
     this._navigatorSpread++
   }
@@ -32,7 +32,7 @@ class Navigator {
     if (this._navigatorSpread == 1) { Panels.s.setupHiddenNavigator() } else {
       Panels.s.setupRegularNavigator()
       this._retracted = true
-      this._presentTreeCase()
+      // this._presentTreeCase()
     }
     this._navigatorSpread--
   }
@@ -70,7 +70,14 @@ class Navigator {
           label: knots[k].title,
           render: knots[k].render,
           level: knots[k].level
+          // width: knots[k].title.length * 10 + 20
         }
+        /*
+        if (newKnot.level == 1) {
+          newKnot.width = newKnot.label.length * 10 + 20
+          // newKnot.height = newKnot.width / 1.618  // golden ratio
+        }
+        */
 
         // attach menus to nodes
         const items = {}
