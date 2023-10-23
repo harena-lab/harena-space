@@ -33,7 +33,7 @@
 
 .dcc-node-label-group-theme {
    display: flex;
-   align-items: left;
-   justify-content: left;
+   align-items: center;
+   justify-content: center;
    margin-left: 3px;
 }

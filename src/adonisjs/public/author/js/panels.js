@@ -79,8 +79,8 @@ class Panels {
     document.querySelector('#button-expand-prop').style.display = 'initial'
     if (this._propertiesVisible) { this.setupPropertiesExpand() }
     // this._knotMain.classList.add('w-' + this._knotPanelSize)
-    // this._navigationBlock.classList.remove('w-100')
-    // this._navigationBlock.classList.add('w-25')
+    this._navigationBlock.classList.remove('w-50')
+    this._navigationBlock.classList.add('w-25')
     this._navigationBlock.style.display = 'initial'
     this._buttonExpandNav.style.display = 'initial'
     this._buttonRetractNav.style.display = 'initial'
@@ -92,8 +92,8 @@ class Panels {
       this._propertiesVisible = true
     }
     // this._knotMain.classList.remove('w-' + this._knotPanelSize)
-    // this._navigationBlock.classList.remove('w-25')
-    // this._navigationBlock.classList.add('w-100')
+    this._navigationBlock.classList.remove('w-25')
+    this._navigationBlock.classList.add('w-50')
     this._navigationBlock.style.width = '100%'
     this._buttonExpandNav.style.display = 'none'
     this._buttonRetractNav.style.display = 'initial'
