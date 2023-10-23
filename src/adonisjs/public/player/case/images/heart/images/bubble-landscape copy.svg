@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="104.84675mm"
+   height="45.562897mm"
+   viewBox="0 0 104.84675 45.562897"
+   preserveAspectRatio="none"
+   version="1.1"
+   id="svg2880"
+   sodipodi:docname="bubble-2-landscape.svg"
+   inkscape:version="1.2.2 (732a01da63, 2022-12-09, custom)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview2882"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="1.5674954"
+     inkscape:cx="17.224931"
+     inkscape:cy="110.68613"
+     inkscape:window-width="1850"
+     inkscape:window-height="1016"
+     inkscape:window-x="70"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2877" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-44.246882,-12.701658)">
+    <path
+       id="dialog"
+       style="opacity:1;fill:#f6f1b9;fill-opacity:1;stroke:#7e0c0c;stroke-width:0.970268;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:label="#dialog"
+       d="m 59.095618,13.186792 c -2.605992,0 -4.703589,2.231467 -4.703589,5.003312 v 13.644645 l -4.357874,1.792656 -4.511869,1.8557 4.511869,1.855701 4.357874,1.792656 v 13.644645 c 0,2.771845 2.097597,5.003312 4.703589,5.003312 h 84.808772 c 2.606,0 4.70411,-2.231467 4.70411,-5.003312 V 18.190104 c 0,-2.771845 -2.09811,-5.003312 -4.70411,-5.003312 z" />
+  </g>
+</svg>

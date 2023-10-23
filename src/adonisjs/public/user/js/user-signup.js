@@ -38,6 +38,17 @@ class UserSignup {
     this._startPrognosisISC()
   }
 
+  // TCLE of the Jacinto for 18+ years old
+  startAdultJacinto () {
+    MessageBus.i.subscribe('control/experiment/start', this._experimentStartJacinto.bind(this))
+
+    this.finalMessage =
+`<div style="color:black"><p>Bem-vindo(a)! Você foi convidado(a) a participar de um estudo científico no ambiente Harena.</p>
+<p>Nas próximas telas, você será conduzido a um ambiente de resolução de desafios.</p>
+<p><dcc-button topic="control/experiment/start" xstyle="out" label="Iniciar"></dcc-button></p></div>`
+    this._startPrognosisISC()
+  }
+
   // TCLE of the Prognosis Game
   startPrognosis () {
     this.finalMessage =
@@ -338,6 +349,15 @@ class UserSignup {
     }
     let user = await MessageBus.i.request('user/login/post', userLogin)
     window.location.href = '/author/env/inf331_2023'
+  }
+
+  async _experimentStartJacinto () {
+    const userLogin = {
+      username: this.current.username,
+      eventId: this.current.eventId
+    }
+    let user = await MessageBus.i.request('user/login/post', userLogin)
+    window.location.href = '/player/env/index-jacinto.html'
   }
 }
 
