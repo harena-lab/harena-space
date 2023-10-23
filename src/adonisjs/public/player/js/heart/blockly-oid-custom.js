@@ -57,10 +57,10 @@ blocks:
         'type': 'field_dropdown',
         'name': 'estrutura',
         'options': [
-          ['Sino atrial', 'ondaP'],
-          ['Nó atrio ventricular', 'segmentoPR'],
           ['Sistema His-Purkinje', 'ondaQRS'],
-          ['Ventrículo', 'segmentoST/OndaT']
+          ['Sino atrial', 'ondaP'],
+          ['Ventrículo', 'segmentoST/ondaT'],
+          ['Nó atrio ventricular', 'segmentoPR']
         ]
       }
     ],
@@ -70,10 +70,10 @@ blocks:
         'type': 'field_dropdown',
         'name': 'efeito',
         'options': [
-          ['Estímulo disparando a despolarização atrial', 'ondaP'],
           ['Tempo de retardo entre a ativação auricular e ventricular', 'segmentoPR'],
           ['Condução rápida dos estímulos elétricos nos ventrículos', 'ondaQRS'],
           ['Intervalo entre o fim da despolarização e o início da repolarização ventricular', 'segmentoST'],
+          ['Estímulo disparando a despolarização atrial', 'ondaP'],
           ['Repolarização ventricular', 'ondaT']
         ]
       }
@@ -91,9 +91,9 @@ blocks:
         'type': 'field_dropdown',
         'name': 'image',
         'options': [
+          [{src: '/player/case/images/heart/images/3movimento.png', width: 200, height: 200, alt: 'heart_mov 3'}, 'ondaQRS'],
           [{src: '/player/case/images/heart/images/1movimento.png', width: 200, height: 200, alt: 'heart_mov 1'}, 'ondaP'],
           [{src: '/player/case/images/heart/images/2movimento.png', width: 200, height: 200, alt: 'heart_mov 2'}, 'segmentoPR/segmentoST'],
-          [{src: '/player/case/images/heart/images/3movimento.png', width: 200, height: 200, alt: 'heart_mov 3'}, 'ondaQRS'],
           [{src: '/player/case/images/heart/images/5movimento.png', width: 200, height: 200, alt: 'heart_mov 4'}, 'ondaT']
         ]
       }
@@ -104,9 +104,9 @@ blocks:
         'type': 'field_dropdown',
         'name': 'estrutura',
         'options': [
-          ['Átrio', 'ondaP'],
           ['Nó AV', 'segmentoPR'],
-          ['Ventrículo', 'ondaQRS/segmentoST/OndaT']
+          ['Átrio', 'ondaP'],
+          ['Ventrículo', 'ondaQRS/segmentoST/ondaT']
         ]
       }
     ],
@@ -116,10 +116,10 @@ blocks:
         'type': 'field_dropdown',
         'name': 'efeitoMec',
         'options': [
-          ['Contração atrial', 'ondaP'],
-          ['Convergência dos estímulos atriais + retardo da condução do estímulo elétrico', 'segmentoPR'],
-          ['Contração ventricular', 'ondaQRS'],
           ['Não existe atividade mecânica', 'segmentoST'],
+          ['Convergência dos estímulos atriais + retardo da condução do estímulo elétrico', 'segmentoPR'],
+          ['Contração atrial', 'ondaP'],
+          ['Contração ventricular', 'ondaQRS'],
           ['Relaxamento Ventricular', 'ondaT']
         ]
       }
@@ -131,7 +131,7 @@ blocks:
         'name': 'efeitoFis',
         'options': [
           ['Envio de sangue sob pressão do átrio para ventrículos', 'ondaP'],
-          ['Retadrdo de condução para contração atrial antes da contração ventricular', 'segmentoPR'],
+          ['Retardo de condução para contração atrial antes da contração ventricular', 'segmentoPR'],
           ['Envio do sangue para o sistema arterial pulmonar e sistêmico', 'ondaQRS'],
           ['Representa o início da repolarização ventricular', 'segmentoST'],
           ['Enchimento dos ventrículos', 'ondaT']
