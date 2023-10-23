@@ -13,28 +13,39 @@ Oid.customize('foid:lively-talk', {
   process: function(oid, parameters) {
     if (parameters) {
       if (parameters.value == 'simular') {
+        let erro = 0
         oid.know = ''
         console.log('=== simular')
         console.log(oid.statements)
-        if (oid.statements == null || oid.statements.length == 0)
+        if (oid.statements == null || oid.statements.length == 0){
           oid.handleSend('display', {value: '-> Nada a ser processado'})
+          erro++
+        }
         else {
-          if (oid.statements.length > 1 || !Array.isArray(oid.statements[0]))
+          if (oid.statements.length > 1 || !Array.isArray(oid.statements[0])){
             oid.handleSend('display', {value: '-> Ainda há instruções soltas, não posso processar'})
-          else {
+            erro++
+          }
+          else{
             let feedback = ''
             const vstm = oid.statements[0]
-            if (vstm.length < 5)
+            if (vstm.length < 5){
               feedback += '-> Estão faltando ciclos no meu pobre coração\n'
-            else if (vstm.length > 5)
+              erro++
+            }
+            else if (vstm.length > 5){
               feedback += '-> Há muitos ciclos no meu coração, ele está fora de controle\n'
+              erro++
+            }
             let empty = false
             for (const stm of vstm) {
               if (stm.onda == null || stm.atvEle == null || stm.atvMec == null)
                 empty = true
             }
-            if (empty) feedback += '-> Há uma ou mais instruções incompletas\n'
-
+            if (empty) {
+              feedback += '-> Há uma ou mais instruções incompletas\n'
+              erro++
+            }
             // analisando consistencia entre texto e imagem de cada célula
             let pEle = 0
             for (const stm of vstm) {
@@ -47,6 +58,7 @@ Oid.customize('foid:lively-talk', {
             if (pEle > 0) {
               feedback += `-> O texto que você escolheu em uma das imagens em algum dos blocos não descreve adequadamente a atividade ilustrada. (detalhes em Saiba mais)\n`
               oid.know += `-> Associação entre textos e imagens inconsistente em ${pEle} blocos na atividade elétrica\n`
+              erro++
             }
             // analisando consistencia entre texto e imagem atividade mecanica
             let pMec = 0
@@ -59,10 +71,11 @@ Oid.customize('foid:lively-talk', {
             if (pMec > 0) {
               feedback += `-> O texto que você escolheu em uma das imagens em algum dos blocos não descreve adequadamente a atividade ilustrada. (detalhes em Saiba mais)\n`
               oid.know += `-> Associação entre textos e imagens inconsistente em ${pMec} blocos na atividade mecânica\n`
+              erro++
             }
 
             // analisando a ordem das células atividade elétrica
-            const ordemEle = ['ondaP', 'segmentoPR', 'ondaQRS', 'segmentoST', 'OndaT']
+            const ordemEle = ['ondaP', 'segmentoPR', 'ondaQRS', 'segmentoST', 'ondaT']
             const max = (vstm.length < 5) ? vstm.length : 5
             let iEle = false
             for (let i = 0; i < max; i++) {
@@ -71,8 +84,9 @@ Oid.customize('foid:lively-talk', {
                 iEle = true
             }
             if (iEle) {
-              feedback += `-> Alguma coisa está fora de ordem.\n`
+              //feedback += `-> Alguma coisa está fora de ordem. (detalhes em Saiba mais)\n`
               oid.know += `-> Revise a ordem em que o pulso elétrico segue. Do jeito que está, o impulso não segue uma sequência contínua.\n`
+              erro++
             }
             // analisando a ordem das Ondas ECG 
             let iOnda = false
@@ -80,21 +94,27 @@ Oid.customize('foid:lively-talk', {
               const onda = vstm[i].onda
               if (onda != null && onda.image != ordemEle[i])
                 iOnda = true
-              }
+            }
+              
             if (iOnda){
-              feedback += `-> Alguma coisa está fora de ordem.\n`
+              //feedback += `-> Alguma coisa está fora de ordem. (detalhes em Saiba mais)\n`
               oid.know += `-> Revise a ordem da onda do ECG. Do jeito que está a onda não segue uma sequência contínua.\n`
+              erro++
             }
             // analisando a ordem da atividade mecanica
+            let iMec = false
             for (let i = 0; i < max; i++) {
               const onda = vstm[i].atvMec
               if (onda != null && onda.efeitoFis != ordemEle[i])
-                iOnda = true
+              iMec = true
               }
-            if (iOnda){
-                feedback += `-> Alguma coisa está fora de ordem.\n`
-                oid.know += `-> Revise a ordem da atividade mecânica. Do jeito que está, o movimento não permite bombear sangue na sequência correta.\n`
+            if (iMec){
+              //feedback += `-> Alguma coisa está fora de ordem. (detalhes em Saiba mais)\n`
+              oid.know += `-> Revise a ordem da atividade mecânica. Do jeito que está, o movimento não permite bombear sangue na sequência correta.\n`
+              erro++
             }
+            if(iMec || iEle || iOnda)
+              feedback += `-> Alguma coisa está fora de ordem. (detalhes em Saiba mais)\n`
             // verifica compatibilidade entre as células das três colunas
             let incompat = false
             for (let i = 0; i < max; i++) {
@@ -108,9 +128,15 @@ Oid.customize('foid:lively-talk', {
                   vstm[i].atvEle.image != vstm[i].atvMec.efeitoFis)
                 incompat = true
             }
-            if (incompat) feedback += '-> Há incompatibilidade entre as colunas\n'
-
+            if (incompat){
+              feedback += '-> Há incompatibilidade entre as colunas\n'
+              erro++
+            }
+            if(erro==0){
+              feedback = '-> Parabéns! Meu coração esta funcionando!\n'
+            }
             oid.handleSend('display', {value: feedback})
+
           }
         }
       }
