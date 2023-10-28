@@ -494,8 +494,9 @@ class PlayerManager {
       element => element.type == 'field' && element.field == 'sliders')
     sliders = (sliders != null) ? sliders.value : null
 
-    console.log('=== sliders')
-    console.log(sliders)
+    let radio = content.find(
+      element => element.type == 'field' && element.field == 'radio')
+    radio = (radio != null) ? radio.value : null
 
     let mode = content.find(
       element => element.type == 'field' && element.field == 'script_mode')
@@ -507,7 +508,8 @@ class PlayerManager {
        blocks: blocks,
        source: knot,
        buttonTypes: '',
-       sliders: sliders},
+       sliders: sliders,
+       radio: radio},
       mode, null, false, '/dccs/')
   }
 
