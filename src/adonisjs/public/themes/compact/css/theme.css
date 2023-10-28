@@ -199,7 +199,8 @@
  ******************/
 
 .dcc-input-choice-theme-label {
-  margin-left: 6px
+  margin-left: 6px;
+  font-size: 3vmin;
 }
 
 /* Input Typed DCC
