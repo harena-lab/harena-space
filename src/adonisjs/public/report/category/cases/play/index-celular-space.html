@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Report Play</title>
+
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
+
+    <link rel="stylesheet" href="../css/adm.css">
+
+    <script src="/lib/axios-0.21.0/axios.min.js"></script>
+
+    <script src="/lib/jquery-3-4-1/jquery-3.4.1.slim.min.js"></script>
+    <script src="/lib/popper-1-15-0/popper.min.js"></script>
+    <script src="/lib/bootstrap-4.4.1/js/bootstrap.min.js"></script>
+
+    <script src="/config/config.js"></script>
+    <script src="/dccs/infra/bus.js"></script>
+
+    <script src="/dccs/base/primitive-dcc.js"></script>
+    <script src="/dccs/base/scope-dcc.js"></script>
+    <script src="/dccs/base/dcc.js"></script>
+    <script src="/dccs/base/dcc-base.js "></script>
+    <script src="/dccs/base/dcc-visual.js "></script>
+
+    <script src="/infra/basic.js"></script>
+    <script src="/infra/dcc-common-server-proxy.js"></script>
+    <script src="/infra/dcc-common-server-address.js"></script>
+    <script src="/infra/simple-page-tasks.js"></script>
+    <script src="/infra/token-validator.js"></script>
+    <script src="/infra/conditional-layout.js"></script>
+
+    <script src="/dccs/base/dcc-block.js"></script>
+    <script src="/dccs/components/visual/dcc-button.js"></script>
+    <script src="/dccs/components/visual/dcc-notice-input.js"></script>
+
+    <script src="/dccs/components/web/dcc-rest.js"></script>
+    <script src="/dccs/components/web/dcc-include.js"></script>
+    <script src="/dccs/components/web/dcc-dhtml.js"></script>
+
+    <script src="/dccs/components/data/dcc-submit.js"></script>
+    <script src="/dccs/components/data/dcc-model.js"></script>
+    <script src="/dccs/components/data/dcc-record.js"></script>
+    <script src="/dccs/components/data/dcc-table-csv.js"></script>
+
+    <script src="/dccs/base/subscribe-dcc.js"></script>
+    <script src="/dccs/base/trigger-dcc.js"></script>
+    <script src="/dccs/base/property-dcc.js"></script>
+    <script src="/dccs/base/connect-dcc.js"></script>
+
+    <script src="/dccs/components/cell/dcc-space-cellular.js"></script>
+    <script src="/dccs/components/cell/dcc-cell.js"></script>
+    <script src="/dccs/components/cell/dcc-cell-color.js"></script>
+    <script src="/dccs/components/cell/dcc-cell-image.js"></script>
+
+    <script src="/infra/dcc-rest-proxy.js"></script>
+    <script src="/infra/dcc-basic.js"></script>
+
+    <script src="/report/js/dcc-rest-proxy-report.js"></script>
+    <script src="/report/js/report-cell-space.js"></script>
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="shortcut icon" href="/icons/favicon.ico">
+    <link rel="manifest" href="/site.webmanifest">
+
+    <link rel="stylesheet" href="/lib/fontawesome-5-10-1/css/all.min.css">
+    <link rel="stylesheet" href="/lib/bootstrap-4.4.1/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="/dccs/css/dccs.css">
+    <link rel="stylesheet" href="/dccs/css/properties.css">
+    <link rel="stylesheet" href="/infra/css/common-player.css">
+    <link rel="stylesheet" href="/infra/css/common-author.css">
+
+    <script>
+      Basic.service.rootPath = '../../../'
+    </script>
+  </head>
+
+  <body onload="ReportManager.i.start()">
+    <!-- Login/logout header -->
+    <dcc-include src="/author/partials/header.html"></dcc-include>
+
+    <div id="alert-feedback" class="alert alert-success ml-2 mt-5" role="alert" style="position:absolute; display:none;">
+    </div>
+
+    <main role="main">
+      <div class="home-author-padding align-items-center rounded row sticky-top" style="z-index:3;">
+         <div class="h-100 w-100 draft-content-padding scroll-y">
+            <div class="home-text" style="height: auto !important;">
+              <p>Report</p>
+            </div>
+
+            <hr>
+            <div class="mt-2">
+              Schema: list of fields to be retrieved
+              <dcc-table-csv separator="," view=""></dcc-table-csv>
+            </div>
+            <hr>
+
+            <div id="case-boxes" class="container-fluid draft-scroll-container">
+              <dcc-rest id="harena-logger-list" bind="harena-logger-list" subscribe="logger/list/get"></dcc-rest>
+              <dcc-rest id="harena-logger-list-page" bind="harena-logger-list-page"></dcc-rest>
+              <dcc-dhtml id="harena-dhtml-logger" connect="retrieve:harena-logger-list-page:service/request/get">
+                <input type="hidden" id="pages" value="{{pages}}">
+                {{@foreach logs lg}}
+                <!-- checkbox for selecting instances -->
+                <div class="share-cases-element wrapper-checkbox-select-case">
+                  <div class="col">
+                    <div class="form-check share-checkbox">
+                      <input class="form-check-input" type="checkbox" id="c{{lg.id}}" value="{{lg.id}}">
+                    </div>
+                  </div>
+                </div>
+                <div id="b{{lg.id}}" class="row draft-author-case-container">
+                  <div class="col draft-case-title" style="margin-left:15px">
+                    <label class="ml-2">{{lg.username}} / {{lg.created_at}}</label>
+
+                    <!--
+                    <div class="row">
+                      <h6>user {{lg.username}}; case ; instance {{lg.instance_id}}</h6>
+                    </div>
+                    -->
+                  </div>
+
+                </div>
+                {{@endfor}}
+              </dcc-dhtml>
+
+              <dcc-button label="Filter" xstyle="out" topic="report/update"></dcc-button>
+              <dcc-button label="Download" xstyle="out" topic="report/download"></dcc-button>
+
+            </div>
+
+            <div id="report-area"></div>
+
+         </div>
+      </div>
+
+
+
+        <!--
+        <table>
+        {{@foreach . user}}
+          <tr>
+          <td style="border: 1px solid black;">{{user.username}}</td>
+          <td style="border: 1px solid black;">{{user.login}}</td>
+          </tr>
+       {{@endfor}}
+        </table>
+      </dcc-dhtml>
+      <hr>
+      <dcc-dhtml connect="retrieve:harena-users:service/request/get">
+        {{@foreach . user}}
+          <p><strong>Name:</strong> {{user.username}}</p>
+          <p><strong>Description:</strong> {{user.login}}</p>
+        {{@endfor}}
+      </dcc-dhtml>
+    -->
+    </main>
+  </body>
+</html>
