@@ -41,6 +41,7 @@
     <script src="/dccs/components/data/dcc-submit.js"></script>
     <script src="/dccs/components/data/dcc-model.js"></script>
     <script src="/dccs/components/data/dcc-record.js"></script>
+    <script src="/dccs/components/data/dcc-table-csv.js"></script>
 
     <script src="/dccs/base/subscribe-dcc.js"></script>
     <script src="/dccs/base/trigger-dcc.js"></script>
@@ -85,6 +86,13 @@
             <div class="home-text" style="height: auto !important;">
               <p>Report</p>
             </div>
+
+            <hr>
+            <div class="mt-2">
+              Schema: list of fields to be retrieved
+              <dcc-table-csv separator="," view=""></dcc-table-csv>
+            </div>
+            <hr>
 
             <div id="case-boxes" class="container-fluid draft-scroll-container">
               <dcc-rest id="harena-logger-list" bind="harena-logger-list" subscribe="logger/list/get"></dcc-rest>

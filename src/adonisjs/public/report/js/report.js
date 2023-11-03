@@ -4,6 +4,7 @@ class ReportManager {
     MessageBus.i.subscribe('report/update', this._report)
     this._download = this._download.bind(this)
     MessageBus.i.subscribe('report/download', this._download)
+    MessageBus.i.subscribe('table/updated', this._updateCSV.bind(this))
   }
 
   async _requestLogger () {
@@ -19,15 +20,19 @@ class ReportManager {
       return logger
   }
 
+  _updateCSV (topic, message) {
+    console.log('===== CSV received')
+    console.log(message.table.schema)
+    this._schema = message.table.schema
+  }
+
   async _download () {
     const zeroPad = (num) => String(num).padStart(2, '0')
 
     const logger = await this._requestLogger()
 
     if (logger != null) {
-      const schema = ['Caso_01', 'Caso_02', 'Caso_03', 'Caso_04', 'Caso_05',
-                      'Caso_06', 'Caso_07', 'Caso_08', 'Caso_09', 'Caso_10',
-                      'Caso_11', 'Caso_12', 'Pergunta_01', 'Pergunta_02']
+      const schema = this._schema
       let table = '"user id","user","start","date"'
       for (const s of schema)
         table += ',"' + s + '","time","miliseconds"'
@@ -41,16 +46,18 @@ class ReportManager {
                  zeroPad(lastTime.getDate()) + '/' +
                  zeroPad(lastTime.getMonth() + 1) + '/' +
                  zeroPad(lastTime.getFullYear()) + '"'
+        console.log(track)
+        console.log(schema)
         for (const s of schema) {
-          const sh = s + '.hypothesis'
+          console.log(track[s])
           let time = -1
-          if (track[sh] != null) {
-            const t = new Date(track[sh])
+          if (track[s] != null) {
+            const t = new Date(track[s])
             time = new Date(t - lastTime)
             lastTime = t
           }
-          table += ',"'  + (answers.variables[sh] == null ? ''
-                     : answers.variables[sh].replace(/"/g, '""')) +
+          table += ',"'  + (answers.variables[s] == null ? ''
+                     : answers.variables[s].replace(/"/g, '""')) +
                    '","' + (time == -1 ? ''
                      : zeroPad(time.getMinutes()) + ':' +
                        zeroPad(time.getSeconds())) + '","' +
