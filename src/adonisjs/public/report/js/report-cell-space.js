@@ -139,28 +139,30 @@ class ReportManager {
     let levels = []
     let max = 1
     for (const v in variables) {
-      if (v == 'space_state') {
+      // if (v == 'space_state') {
         let lv = v.split('.')
         html += '<tr>'
         for (const l in lv) {
-          // if (levels[l] && levels[l] == lv[l]) {
-          //   html += '<td style="border: 1px solid darkgray"></td>'
-          // } else {
-          //   html += '<td style="border: 1px solid darkgray">' + lv[l] + '</td>'
-          //   levels = lv.slice(0, l)
-          // }
+          if (levels[l] && levels[l] == lv[l]) {
+            html += '<td style="border: 1px solid darkgray"></td>'
+          } else {
+            html += '<td style="border: 1px solid darkgray">' + lv[l] + '</td>'
+            levels = lv.slice(0, l)
+          }
           if (l == lv.length-1)
             html += '<td style="border: 1px solid darkgray">' +
                     track[v] + '</td>' +
                     '<td style="border: 1px solid darkgray">' +
-                    '<dcc-space-cellular cell-width="20" cell-height="20" background-color="#dddddd" grid="">' +
+                    ((v != 'space_state') ? '' : 
+                      '<dcc-space-cellular cell-width="20" cell-height="20" background-color="#dddddd" grid="">') +
                     // this._presentValue(variables[v]) +
                     variables[v] +
-                    '</dcc-space-cellular>' +
+                    ((v != 'space_state') ? '' : 
+                      '</dcc-space-cellular>') +
                     '</td>'
         }
         html += '</tr>'
-      }
+      // }
     }
     return html
   }
@@ -170,21 +172,28 @@ class ReportManager {
     let levels = []
     let max = 1
     for (const v of varTrack) {
-      if (v['space_state']) {
+      let variable = ''
+      for (const l in v) {
+        if (l != 'changed')
+          variable = l
+      }
+      console.log('variable')
+      console.log(variable)
+      // if (v['space_state']) {
         html += '<tr>'
-        html += '<td style="border: 1px solid darkgray">' +
+        html += '<td style="border: 1px solid darkgray">' + variable + '</td>' +
+                '<td style="border: 1px solid darkgray">' +
                 v['changed'] +
                 '</td>' +
                 '<td style="border: 1px solid darkgray">' +
-                '<dcc-space-cellular cell-width="20" cell-height="20" background-color="#dddddd" grid="">' +
-                v['space_state'] +
-                '</dcc-space-cellular>' +
+                ((variable != 'space_state') ? '' : 
+                  '<dcc-space-cellular cell-width="20" cell-height="20" background-color="#dddddd" grid="">') +
+                v[variable] +
+                ((variable != 'space_state') ? '' :
+                  '</dcc-space-cellular>') +
                 '</td>'
-        console.log('<dcc-space-cellular cell-width="20" cell-height="20" background-color="#dddddd" grid="">' +
-        v['space_state'] +
-        '</dcc-space-cellular>')
         html += '</tr>'
-      }
+      // }
     }
     return html
   }
