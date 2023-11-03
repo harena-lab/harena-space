@@ -46,18 +46,22 @@ class ReportManager {
                  zeroPad(lastTime.getDate()) + '/' +
                  zeroPad(lastTime.getMonth() + 1) + '/' +
                  zeroPad(lastTime.getFullYear()) + '"'
-        console.log(track)
-        console.log(schema)
         for (const s of schema) {
-          console.log(track[s])
           let time = -1
           if (track[s] != null) {
             const t = new Date(track[s])
             time = new Date(t - lastTime)
             lastTime = t
           }
-          table += ',"'  + (answers.variables[s] == null ? ''
-                     : answers.variables[s].replace(/"/g, '""')) +
+          console.log('=== variable ' + s)
+          console.log(answers.variables[s])
+          table += ',"'  + 
+                   (answers.variables[s] == null
+                    ? ''
+                    : (typeof answers.variables[s] === 'string' || answers.variables[s] instanceof String)
+                      ? answers.variables[s].replace(/"/g, '""')
+                      : answers.variables[s]
+                   ) +
                    '","' + (time == -1 ? ''
                      : zeroPad(time.getMinutes()) + ':' +
                        zeroPad(time.getSeconds())) + '","' +
