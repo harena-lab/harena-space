@@ -7,6 +7,7 @@ class LayoutController {
     this.prognosisAvatar = this.prognosisAvatar.bind(this)
     MessageBus.i.subscribe('control/html/ready', this.prognosisAvatar)
     // this.startController()
+    this._pocusUniversities = ['hcpa','unisinos','hcusp', 'uni']
   }
 
   set case (newValue) {
@@ -113,7 +114,7 @@ class LayoutController {
   async dynamicAuthor (){
 
     if(LayoutController.case.message.category_id === 'pocus-training'
-    && (LayoutController.user.message.institution === 'hcpa' || LayoutController.user.message.institution === 'unisinos')){
+    && this._pocusUniversities.includes(LayoutController.user.message.institution)){
       const toolbarDiv = document.querySelector('#div-toolbar-rightside')
       toolbarDiv.innerHTML =
       `<div class="home-author-sub-text align-self-center" style="color:#808080">FEEDBACK:</div>
@@ -248,7 +249,7 @@ class LayoutController {
 
   async dynamicMenu (){
 
-    if((LayoutController.user.message.institution === 'hcpa' || LayoutController.user.message.institution === 'unisinos')
+    if(this._pocusUniversities.includes(LayoutController.user.message.institution)
     && document.querySelector('#home-btn-container')){
       const btnContainer = document.querySelector('#home-btn-container')
       const btnFeedback = document.createElement('template')
