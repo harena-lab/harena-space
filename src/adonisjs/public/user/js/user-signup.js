@@ -329,7 +329,8 @@ class UserSignup {
     }
     let user = await MessageBus.i.request('user/login/post', userLogin)
     // window.location.href = "/player/case/?id=41813d6c-70c7-4bda-9683-1dd39ba3c990&room=c6b241ee-e6e5-4921-9cc8-ed6ffd62e85d"
-    window.location.href = "/player/case/?id=46d46199-a32d-42ed-b49a-578c47c3e7bb&room=5ff12575-0d4c-41f6-ac6a-e94ee1eb7cbc"
+    // window.location.href = "/player/case/?id=46d46199-a32d-42ed-b49a-578c47c3e7bb&room=5ff12575-0d4c-41f6-ac6a-e94ee1eb7cbc"
+    window.location.href = "/player/case/?id=cc2ba189-3a9a-465b-8011-579cbf1bf42c&room=5ff12575-0d4c-41f6-ac6a-e94ee1eb7cbc"
   }
 
   async _experimentStartAdultMuseum () {
