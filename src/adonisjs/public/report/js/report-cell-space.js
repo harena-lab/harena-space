@@ -107,10 +107,18 @@ class ReportManager {
                   '</td><td style="border: 2px solid darkgray">' +
                   '<table style="border: 2px solid darkgray">' +
                   this._presentVariables(answers.variables, track) +
+                  this._presentVarTrack(answers.varTrack, track) +
                   '</table></td></tr>'
         }
       }
       html += '</table>'
+      html += `<dcc-cell-image type="." label="vazio" image="https://mc-unicamp.github.io/oficinas/simula/mutant/image/cell-gray.svg"></dcc-cell-image>
+      <dcc-cell-image type="1" label="cell1" image="https://mc-unicamp.github.io/oficinas/simula/mutant/image/cell-1.png"></dcc-cell-image>
+      <dcc-cell-image type="3" label="cell3" image="https://mc-unicamp.github.io/oficinas/simula/mutant/image/cell-3.png"></dcc-cell-image>
+      <dcc-cell-image type="5" label="cell5" image="https://mc-unicamp.github.io/oficinas/simula/mutant/image/cell-5.png"></dcc-cell-image>
+      <dcc-cell-image type="y" label="yellow" image="https://mc-unicamp.github.io/oficinas/simula/mutant/image/cell-yellow.svg"></dcc-cell-image>
+      <dcc-cell-image type="b" label="brown" image="https://mc-unicamp.github.io/oficinas/simula/mutant/image/cell-brown.svg"></dcc-cell-image>`
+
       document.querySelector('#report-area').innerHTML = html
     }
   }
@@ -131,22 +139,61 @@ class ReportManager {
     let levels = []
     let max = 1
     for (const v in variables) {
-      let lv = v.split('.')
-      html += '<tr>'
-      for (const l in lv) {
-        if (levels[l] && levels[l] == lv[l]) {
-          html += '<td style="border: 1px solid darkgray"></td>'
-        } else {
-          html += '<td style="border: 1px solid darkgray">' + lv[l] + '</td>'
-          levels = lv.slice(0, l)
+      // if (v == 'space_state') {
+        let lv = v.split('.')
+        html += '<tr>'
+        for (const l in lv) {
+          if (levels[l] && levels[l] == lv[l]) {
+            html += '<td style="border: 1px solid darkgray"></td>'
+          } else {
+            html += '<td style="border: 1px solid darkgray">' + lv[l] + '</td>'
+            levels = lv.slice(0, l)
+          }
+          if (l == lv.length-1)
+            html += '<td style="border: 1px solid darkgray">' +
+                    track[v] + '</td>' +
+                    '<td style="border: 1px solid darkgray">' +
+                    ((v != 'space_state') ? '' : 
+                      '<dcc-space-cellular cell-width="20" cell-height="20" background-color="#dddddd" grid="">') +
+                    // this._presentValue(variables[v]) +
+                    variables[v] +
+                    ((v != 'space_state') ? '' : 
+                      '</dcc-space-cellular>') +
+                    '</td>'
         }
-        if (l == lv.length-1)
-          html += '<td style="border: 1px solid darkgray">' +
-                  track[v] + '</td>' +
-                  '<td style="border: 1px solid darkgray">' +
-                  this._presentValue(variables[v]) + '</td>'
+        html += '</tr>'
+      // }
+    }
+    return html
+  }
+
+  _presentVarTrack (varTrack, track) {
+    let html = ''
+    let levels = []
+    let max = 1
+    for (const v of varTrack) {
+      let variable = ''
+      for (const l in v) {
+        if (l != 'changed')
+          variable = l
       }
-      html += '</tr>'
+      console.log('variable')
+      console.log(variable)
+      // if (v['space_state']) {
+        html += '<tr>'
+        html += '<td style="border: 1px solid darkgray">' + variable + '</td>' +
+                '<td style="border: 1px solid darkgray">' +
+                v['changed'] +
+                '</td>' +
+                '<td style="border: 1px solid darkgray">' +
+                ((variable != 'space_state') ? '' : 
+                  '<dcc-space-cellular cell-width="20" cell-height="20" background-color="#dddddd" grid="">') +
+                v[variable] +
+                ((variable != 'space_state') ? '' :
+                  '</dcc-space-cellular>') +
+                '</td>'
+        html += '</tr>'
+      // }
     }
     return html
   }
