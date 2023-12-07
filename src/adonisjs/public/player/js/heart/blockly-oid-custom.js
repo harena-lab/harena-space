@@ -43,11 +43,11 @@ blocks:
         'type': 'field_dropdown',
         'name': 'image',
         'options': [
-          [{src: '/player/case/images/heart/images/1ondaP.png', width: 200, height: 200, alt: 'heart 1'}, 'ondaP'],
-          [{src: '/player/case/images/heart/images/2segmentoPR.png', width: 200, height: 200, alt: 'heart 2'}, 'segmentoPR'],
-          [{src: '/player/case/images/heart/images/3ondaQRS.png', width: 200, height: 200, alt: 'heart 3'}, 'ondaQRS'],
+          [{src: '/player/case/images/heart/images/ondaP.gif', width: 200, height: 200, alt: 'heart 1'}, 'ondaP'],
+          [{src: '/player/case/images/heart/images/PR.gif', width: 200, height: 200, alt: 'heart 2'}, 'segmentoPR'],
+          [{src: '/player/case/images/heart/images/qrs.gif', width: 200, height: 200, alt: 'heart 3'}, 'ondaQRS'],
           [{src: '/player/case/images/heart/images/4segmentoST.png', width: 200, height: 200, alt: 'heart 4'}, 'segmentoST'],
-          [{src: '/player/case/images/heart/images/5ondaT.png', width: 200, height: 200, alt: 'heart 4'}, 'ondaT']
+          [{src: '/player/case/images/heart/images/ondaT.gif', width: 200, height: 200, alt: 'heart 4'}, 'ondaT']
         ]
       }
     ],
