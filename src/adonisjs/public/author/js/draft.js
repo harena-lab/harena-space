@@ -52,9 +52,14 @@ class DraftManager {
         function () {
           Basic.service.authorPropertyStore('caseId', this.id.substring(1))
           // window.location.href = "http://0.0.0.0:10010/author/author.html";
+          let params = new URLSearchParams(document.location.search)
+          let mode = params.get("mode")
+
           if(new URL(document.location).pathname.includes('feedback')){
             window.location.href =
                     '/author?id=' + this.id.substring(1)+'&fdbk'
+          }else if(mode == 'advanced'){
+            window.open('/author?id=' + this.id.substring(1),'_blank')
           }else {
             window.location.href =
                     '/author?id=' + this.id.substring(1)
@@ -176,9 +181,13 @@ class DraftManager {
           const listenerFnEdit = function () {
             Basic.service.authorPropertyStore('caseId', editButton.id.substring(1))
             // window.location.href = "http://0.0.0.0:10010/author/author.html";
+            let params = new URLSearchParams(document.location.search)
+            let mode = params.get("mode")
             if(new URL(document.location).pathname.includes('feedback')){
               window.location.href =
               '/author?id=' + this.id.substring(1)+'&fdbk=""'
+            }else if (mode == 'advanced'){
+              window.open('/author?id=' + this.id.substring(1),'_blank').focus()
             }else {
               window.location.href =
               '/author?id=' + this.id.substring(1)
