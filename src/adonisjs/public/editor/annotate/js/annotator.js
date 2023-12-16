@@ -539,6 +539,9 @@ class Annotator {
       o2html += '<tr><td>' + catList[g[0]-1] + '</td><td>' + g[2] + '</td></tr>'
     }
     const ctcategories = Object.keys(catIndex).length
+
+    const clustering = Math.round(AnnotationMetrics.i._clusteringFreeRecall(catOrder)*100) / 100
+
     if (isAnnotations) {
       document.querySelector('#memory-scores').innerHTML =
         `<ul>
@@ -556,7 +559,8 @@ class Annotator {
           <li><b>accuracy score (inferred):</b> ${(ctideas == 0) ? '' : ctinfright / ctideas}</li>
           <li><b>encapsulated score:</b> ${(ctideas == 0) ? '' : (ctrightencap + ctwrongencap) / ctideas}</li>
           <li><b>self order score:</b> ${selfOrder.score}</li>
-          <li><b>normalized self order score:</b> ${(ctideas == 0) ? 0 : selfOrder.score / ctideas}</li>
+          <li><b>normalized self order score:</b> ${(ctideas == 0) ? 0 : Math.round(selfOrder.score / ctideas * 100) / 100}</li>
+          <li><b>clustering in free recall:</b> ${clustering}</li>
           <li> ${o1html} </li>
           <li> ${o2html} </li>
         </ul>`

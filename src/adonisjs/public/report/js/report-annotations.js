@@ -111,6 +111,8 @@ class ReportManager {
     }
     const selfOrder = AnnotationMetrics.i._selfOrderCount(catOrder)
 
+    const clustering = AnnotationMetrics.i._clusteringFreeRecall(catOrder)
+
     let o1csv = ''
     let sep = ''
     for (const g of selfOrder.groups) {
@@ -133,7 +135,10 @@ class ReportManager {
     
     const ctcategories = Object.keys(catIndex).length
 
-    return `${ctcategories},${ctright},${ctinfright},${ctideas},${ctrightencap},${ctinfrightencap},${ctwrong},${ctwrongencap},${ctcategories * ctideas},${(ctideas == 0) ? 0 : ctright / ctideas},${(ctideas == 0) ? 0 : ctinfright / ctideas},${(ctideas == 0) ? 0 : (ctrightencap + ctwrongencap) / ctideas},${selfOrder.score},${(ctideas == 0) ? 0 : selfOrder.score / ctideas}${countCat},"${o1csv}","${o2csv}"`
+    return `${ctcategories},${ctright},${ctinfright},${ctideas},${ctrightencap},${ctinfrightencap},${ctwrong},${ctwrongencap},` +
+           `${ctcategories * ctideas},${(ctideas == 0) ? 0 : ctright / ctideas},${(ctideas == 0) ? 0 : ctinfright / ctideas},` +
+           `${(ctideas == 0) ? 0 : (ctrightencap + ctwrongencap) / ctideas},${selfOrder.score},` +
+           `${(ctideas == 0) ? 0 : selfOrder.score / ctideas},${clustering}${countCat},"${o1csv}","${o2csv}"`
   }
 
   async _download () {
@@ -146,7 +151,7 @@ class ReportManager {
         '"used categories","right","right (inferred)","total ideas","right encapsulated",' +
         '"right encapsulated (inferred)","wrong","wrong encapsulated","coverage score",' +
         '"accuracy score","accuracy score (inferred)","encapsulated score","self order score",' +
-        '"normalized self order score"'
+        '"normalized self order score","clustering in free recall"'
 
       for (const m in ReportManager.catList)
         table += ',"' + ReportManager.catList[m] + '"'
