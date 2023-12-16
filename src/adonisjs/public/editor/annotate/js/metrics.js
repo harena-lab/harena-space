@@ -60,6 +60,58 @@ class AnnotationMetrics {
       score: subs
     }
   }
+
+  /*
+  * Category clustering calculator for free recall
+  * https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3665324/
+  */
+  _clusteringFreeRecall (categoriesOrder) {
+    const n = categoriesOrder.length  // number of recalled items
+
+    // sort by text position (second element)
+    const sortedL = categoriesOrder.sort((a, b) => a[1] - b[1])
+
+    const nc = {}  // number of recalled items in each recalled category
+    let r = 0  // number of category repetition
+    for (let i = 0; i < sortedL.length; i++) {
+      const cat = sortedL[i][0]
+      if (!nc[cat])
+        nc[cat] = 1
+      else
+        nc[cat]++
+      let nextPos = i + 1
+      while (nextPos < sortedL.length && sortedL[nextPos][1] === sortedL[i][1])
+        nextPos++
+      if (nextPos < sortedL.length) {
+        let sp = nextPos
+        while (sp < sortedL.length && sortedL[sp][1] === sortedL[nextPos][1]) {
+          if (cat == sortedL[sp][0]) {
+            r++
+            break
+          }
+          sp++
+        }
+      }
+    }
+
+    const c = Object.keys(nc).length  // number of recalled categories
+    const max = n - c  // maximum possible number of category repetitions
+
+    let er = 0  // expected number of category repetitions
+    for (const cat in nc)
+      er += nc[cat] * nc[cat]
+    er = er / n - 1
+
+    const rr = r / (n - 1)  // ratio of repetition
+
+    const mrr = r / max  // modified ratio of repetition
+
+    const ds = r - er  // deviation score
+
+    const arc = (r - er) / (max - er)  // adjusted ratio of clustering
+
+    return arc
+  }
 }
 
 (function () {
