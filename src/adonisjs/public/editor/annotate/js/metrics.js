@@ -1,5 +1,5 @@
 class AnnotationMetrics {
-  _selfOrderCount(categoriesOrder) {
+  _selfOrderCount(categoriesOrder, present) {
     // sort by text position (second element)
     const sortedL = categoriesOrder.sort((a, b) => a[1] - b[1])
   
@@ -48,6 +48,18 @@ class AnnotationMetrics {
         }
       }
     }
+
+    if (present != null) {
+      present('\n\n=== Self Order Count ===')
+      present('--- sorted by position')
+      present(sortedL)
+      present('--- grouped by category')
+      present(JSON.parse(JSON.stringify(grouped)))
+      present('--- group sorted by position')
+      present(JSON.parse(JSON.stringify(sortedG)))
+      present('--- final group after ordering')
+      present(sortedG)
+    }
   
     return {
       groups: groupsText,
@@ -60,7 +72,7 @@ class AnnotationMetrics {
   * Category clustering calculator for free recall
   * https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3665324/
   */
-  _clusteringFreeRecall (categoriesOrder) {
+  _clusteringFreeRecall (categoriesOrder, present) {
     const n = categoriesOrder.length  // number of recalled items
 
     // sort by text position (second element)
@@ -104,6 +116,24 @@ class AnnotationMetrics {
     const ds = r - er  // deviation score
 
     const arc = (r - er) / (max - er)  // adjusted ratio of clustering
+
+    if (present != null) {
+      present('\n\n=== Clustering Free Recall ===')
+      present(JSON.stringify(categoriesOrder))
+      present('--- n = ' + n)
+      present('--- sorted by position')
+      present(JSON.stringify(sortedL))
+      present('--- c = ' + c)
+      present('--- ni')
+      present(nc)
+      present('--- r = ' + r)
+      present('--- max = ' + max)
+      present('--- E(r) = ' + Math.round(er * 100) / 100)
+      present('--- RR = ' + Math.round(rr * 100) / 100)
+      present('--- MRR = ' + Math.round(mrr * 100) / 100)
+      present('--- DS = ' + Math.round(ds * 100) / 100)
+      present('--- ARC = ' + Math.round(arc * 100) / 100)
+    }
 
     return arc
   }
