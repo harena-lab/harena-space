@@ -4,7 +4,7 @@ class AnnotationMetrics {
     const sortedL = categoriesOrder.sort((a, b) => a[1] - b[1])
   
     // group by category (first element)
-    // group = [category, position, count]
+    // group = [category, position of the first group element, count]
     const grouped = []
     for (let cat = 1; cat <= 8; cat++) {
       let prev = -1
@@ -12,15 +12,17 @@ class AnnotationMetrics {
       let catG = null
       for (let i = 0; i < sortedL.length; i++) {
         if (sortedL[i][0] === cat) {
+          // if any element in the previous position is not in the same category
           if (prev == -1 || (sortedL[prev][0] !== cat &&
               (prevG == -1 || sortedL[prev][1] > sortedL[prevG][1]))) {
-            catG = [cat, sortedL[i][1], 1]
+            catG = [cat, sortedL[i][1], 1]  // new category grouping
             grouped.push(catG)
           } else {
             catG[2]++
           }
           prevG = i
         }
+        // last distinct position in the sequence
         if (i+1 == sortedL.length || sortedL[i+1][1] !== sortedL[i][1])
           prev = i
       }
@@ -42,13 +44,6 @@ class AnnotationMetrics {
             subs++
             sortedG[prev][2] += sortedG[i][2]
             sortedG.splice(i, 1)
-            // if (sortedG[prev][2] >= sortedG[i][2]) {
-            //   sortedG[prev][2] += sortedG[i][2]
-            //   sortedG.splice(i, 1)
-            // } else {
-            //   sortedG[i][2] += sortedG[prev][2]
-            //   sortedG.splice(prev, 1)
-            // }
           }
         }
       }
