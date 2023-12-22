@@ -23,6 +23,7 @@
     <link rel="stylesheet" href="/editor/css/editor.css">
 
     <script src="/lib/axios-0.21.0/axios.min.js"></script>
+    <script src="/lib/showdown/showdown.min.js"></script>
 
     <script src="/lib/jquery-3-4-1/jquery-3.4.1.slim.min.js"></script>
     <script src="/lib/popper-1-15-0/popper.min.js"></script>
@@ -61,7 +62,9 @@
     <script src="/dccs/base/property-dcc.js"></script>
     <script src="/dccs/base/connect-dcc.js"></script>
 
-
+    <script src="/translator/translator.js"></script>
+    <script src="/translator/item-templates.js"></script>
+ 
     <script src="/infra/dcc-rest-proxy.js"></script>
     <script src="/infra/dcc-basic.js"></script>
 
@@ -98,7 +101,10 @@
               <dcc-rest id="harena-room-cases" bind="harena-room-cases" subscribe="room/cases/get"></dcc-rest>
               <dcc-rest id="harena-room-case-annotations" bind="harena-room-case-annotations"
                         subscribe="case/annotations/get"></dcc-rest>
-              <dcc-button label="Export" xstyle="in" topic="report/download"></dcc-button>
+              <dcc-rest id="harena-room-load-case" bind="harena-room-load-case"
+                        subscribe="case/source/get"></dcc-rest>
+              <dcc-button label="Export Analysis" xstyle="in" topic="report/download"></dcc-button>
+              <dcc-button label="Export BILOU" xstyle="in" topic="report/bilou"></dcc-button>
             </div>
 
          </div>
