@@ -107,7 +107,7 @@ class AnnotationMetrics {
     let er = 0  // expected number of category repetitions
     for (const cat in nc)
       er += nc[cat] * nc[cat]
-    er = er / n - 1
+    er = er / (n - 1)
 
     const rr = r / (n - 1)  // ratio of repetition
 
@@ -125,7 +125,7 @@ class AnnotationMetrics {
       present(JSON.stringify(sortedL))
       present('--- c = ' + c)
       present('--- ni')
-      present(nc)
+      present(JSON.stringify(nc))
       present('--- r = ' + r)
       present('--- max = ' + max)
       present('--- E(r) = ' + Math.round(er * 100) / 100)

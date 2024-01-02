@@ -32,3 +32,6 @@ present(AnnotationMetrics.i._clusteringFreeRecall(
   [[2, 71], [2, 96], [3, 98], [2, 98], [5, 98], [5, 130], [5, 135], [3, 140], [5, 180]], present))
 present(AnnotationMetrics.i._clusteringFreeRecall(
   [[2, 71], [2, 96], [3, 98], [2, 98], [5, 98], [7,98], [5, 130], [5, 135], [3, 140], [5, 180]], present))
+  present(AnnotationMetrics.i._clusteringFreeRecall(
+    [[3, 1], [3, 2], [3, 3]], present
+  ))
