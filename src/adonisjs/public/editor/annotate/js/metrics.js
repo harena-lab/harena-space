@@ -107,7 +107,7 @@ class AnnotationMetrics {
     let er = 0  // expected number of category repetitions
     for (const cat in nc)
       er += nc[cat] * nc[cat]
-    er = er / (n - 1)
+    er = er / n - 1
 
     const rr = r / (n - 1)  // ratio of repetition
 
@@ -116,6 +116,22 @@ class AnnotationMetrics {
     const ds = r - er  // deviation score
 
     const arc = (r - er) / (max - er)  // adjusted ratio of clustering
+
+    console.log('\n\n=== Clustering Free Recall ===')
+    console.log(JSON.stringify(categoriesOrder))
+    console.log('--- n = ' + n)
+    console.log('--- sorted by position')
+    console.log(JSON.stringify(sortedL))
+    console.log('--- c = ' + c)
+    console.log('--- ni')
+    console.log(JSON.stringify(nc))
+    console.log('--- r = ' + r)
+    console.log('--- max = ' + max)
+    console.log('--- E(r) = ' + Math.round(er * 100) / 100)
+    console.log('--- RR = ' + Math.round(rr * 100) / 100)
+    console.log('--- MRR = ' + Math.round(mrr * 100) / 100)
+    console.log('--- DS = ' + Math.round(ds * 100) / 100)
+    console.log('--- ARC = ' + (Math.round(arc * 100) / 100))
 
     if (present != null) {
       present('\n\n=== Clustering Free Recall ===')
