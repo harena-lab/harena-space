@@ -211,7 +211,11 @@ class Annotator {
       for (const r of a.fragments)
         ranges.push({fragment: r, annot: [a]})
     }
-    ranges.sort((a, b) => a.fragment.start - b.fragment.start)
+    ranges.sort((a, b) =>
+      (a.fragment.start == b.fragment.start)
+        ? b.fragment.size - a.fragment.size  // bigger first
+        : a.fragment.start - b.fragment.start
+      )
     for (let r = 0; r < ranges.length - 1; r++) {
       if ((ranges[r].fragment.start == ranges[r + 1].fragment.start) &&
           (ranges[r].fragment.size == ranges[r + 1].fragment.size)) {
