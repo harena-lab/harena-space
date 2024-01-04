@@ -87,7 +87,9 @@ class AnnotationMetrics {
       else
         nc[cat]++
       let nextPos = i + 1
-      while (nextPos < sortedL.length && sortedL[nextPos][1] === sortedL[i][1])
+      // find next position of the same category or neighbor start
+      while (nextPos < sortedL.length &&
+             sortedL[nextPos][0] != cat && sortedL[nextPos][1] === sortedL[i][1])
         nextPos++
       if (nextPos < sortedL.length) {
         let sp = nextPos
@@ -115,7 +117,24 @@ class AnnotationMetrics {
 
     const ds = r - er  // deviation score
 
-    const arc = (r - er) / (max - er)  // adjusted ratio of clustering
+    const arc = 
+      (max - er == 0) ? '0/0' : (r - er) / (max - er)  // adjusted ratio of clustering
+
+    console.log('\n\n=== Clustering Free Recall ===')
+    console.log(JSON.stringify(categoriesOrder))
+    console.log('--- n = ' + n)
+    console.log('--- sorted by position')
+    console.log(JSON.stringify(sortedL))
+    console.log('--- c = ' + c)
+    console.log('--- ni')
+    console.log(JSON.stringify(nc))
+    console.log('--- r = ' + r)
+    console.log('--- max = ' + max)
+    console.log('--- E(r) = ' + Math.round(er * 100) / 100)
+    console.log('--- RR = ' + Math.round(rr * 100) / 100)
+    console.log('--- MRR = ' + Math.round(mrr * 100) / 100)
+    console.log('--- DS = ' + Math.round(ds * 100) / 100)
+    console.log('--- ARC = ' + ((isNaN(arc)) ? arc : Math.round(arc * 100) / 100))
 
     if (present != null) {
       present('\n\n=== Clustering Free Recall ===')
@@ -125,14 +144,14 @@ class AnnotationMetrics {
       present(JSON.stringify(sortedL))
       present('--- c = ' + c)
       present('--- ni')
-      present(nc)
+      present(JSON.stringify(nc))
       present('--- r = ' + r)
       present('--- max = ' + max)
       present('--- E(r) = ' + Math.round(er * 100) / 100)
       present('--- RR = ' + Math.round(rr * 100) / 100)
       present('--- MRR = ' + Math.round(mrr * 100) / 100)
       present('--- DS = ' + Math.round(ds * 100) / 100)
-      present('--- ARC = ' + Math.round(arc * 100) / 100)
+      present('--- ARC = ' + ((isNaN(arc)) ? arc : Math.round(arc * 100) / 100))
     }
 
     return arc
