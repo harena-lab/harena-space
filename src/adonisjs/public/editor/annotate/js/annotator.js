@@ -544,7 +544,8 @@ class Annotator {
     }
     const ctcategories = Object.keys(catIndex).length
 
-    const clustering = Math.round(AnnotationMetrics.i._clusteringFreeRecall(catOrder)*100) / 100
+    const cfr = AnnotationMetrics.i._clusteringFreeRecall(catOrder)
+    const clustering = (isNaN) ? cfr : Math.round(cfr * 100) / 100
 
     if (isAnnotations) {
       document.querySelector('#memory-scores').innerHTML =
