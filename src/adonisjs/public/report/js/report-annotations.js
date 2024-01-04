@@ -2,6 +2,7 @@ class ReportManager {
   start () {
     MessageBus.i.subscribe('report/download', this._downloadAnalysis.bind(this))
     MessageBus.i.subscribe('report/bilou', this._downloadBILOU.bind(this))
+    MessageBus.i.subscribe('report/json', this._downloadJSON.bind(this))
     this._roomId = new URL(document.location).searchParams.get('roomid')
   }
 
@@ -78,140 +79,20 @@ class ReportManager {
     return result
   }
 
-  async _buildBILOU (caseId, annotations) {
-    const tt = await this._tokenize(caseId)
-    const tokens = tt.tokens
-
-    const ranges = []
-    for (const an of annotations) {
-      // find a proper category
-      let cat = null
-      for (const c of an.categories)
-        if (ReportManager.catList.includes(c)) {
-          cat = c
-          break
-        }
-
-      if (cat != null) {
-        if (!this._rangeConflict(ranges, an.fragments)) {
-          this._addRanges(ranges, an.fragments)
-          for (let f = 0; f < an.fragments.length; f++) {
-            let firstMatch = true
-            let firstToken = null
-            let prevLast = null
-            for (const tk of tokens) {
-              if (tk[1] >= an.fragments[f].start &&
-                  tk[1] <= an.fragments[f].start + an.fragments[f].size - 1) {
-                tk[3] =
-                  (an.fragments.length == 1 && firstMatch)
-                    ? 'U'
-                    : ((f == 0 && firstMatch)
-                      ? 'B'
-                      : ((f+1 < an.fragments.length) || (tk[2] < an.fragments[f].last))
-                        ? 'I'
-                        : 'L')
-                tk[4] = cat
-                if (firstMatch)
-                  firstToken = tk
-                else if (firstToken != -1) {
-                  firstToken[3] = 'B'
-                  firstToken = -1
-                }
-                firstMatch = false
-                if (prevLast != null) {
-                  prevLast[3] = 'I'
-                  prevLast = null
-                }
-                if (tk[3] == 'L')
-                  prevLast = tk
-              }
-            }
-          }
-        }
-      }
-    }
-
-    console.log('=== tokens NER')
-    console.log(tokens)
-
-    return {
-      doc_id: caseId,
-      text: tt.text,
-      labels: tokens
-    }
+  _download (table) {
+    const element = document.createElement('a')
+    element.setAttribute('href',
+      'data:text/plain;charset=utf-8,' + encodeURIComponent(table))
+    element.setAttribute('download', 'annotations.csv')
+    element.style.display = 'none'
+    document.body.appendChild(element)
+    element.click()
+    document.body.removeChild(element)
   }
 
-  async _tokenize (caseId) {
-    
-    const tokens = []
-
-    let result = {}
-
-    const cs = await MessageBus.i.request('case/source/get',
-                                          {room_id: this._roomId, case_id: caseId})
-
-    if (cs != null && cs.message != null) {
-      const compiled =
-      await Translator.instance.compileMarkdown(
-        cs.message.id, cs.message.source)
-
-      let text = ''
-      for (const knot in compiled.knots) {
-        const mkHTML =
-          await Translator.instance.generateHTML(compiled.knots[knot])
-        text += mkHTML
-      }
-  
-      text = text.replace(/<[^>]+>/gm,'')
-                 .replace(/<\/[^>]+>/gm, '')
-                 .replace(/^[\r\n][\r\n]?/, '')
-  
-      let c = 0
-      let tk = ''
-      let tks = -1
-      while (c <= text.length) {
-        if (c == text.length || ReportManager.separators.includes(text[c])) {
-          if (tks != -1) {
-            tokens.push([tk, tks, c-1, 'O', null])
-            tk = ''
-            tks = -1
-          }
-        } else {
-          if (tks == -1)
-            tks = c
-          tk += text[c]
-        }
-        c++
-      }
-
-      result = {
-        text: text,
-        tokens: tokens
-      }
-    }
-  
-    return result
-  }
-
-  _rangeConflict (ranges, fragments) {
-    const start = fragments[0].start
-    const final = fragments[fragments.length-1].start + fragments[fragments.length-1].size - 1
-    let r = 0
-    while (r < ranges.length && start < ranges[r][1]) {
-      if ((start >= ranges[r][0] && start <= ranges[r][1]) ||
-          (final >= ranges[r][0] && final <= ranges[r][1]) ||
-          (ranges[r][0] >= start && ranges[r][0] <= final) ||
-          (ranges[r][1] >= start && ranges[r][1] <= final))
-        return true
-      r++
-    }
-    return false
-  }
-
-  _addRanges (ranges, fragments) {
-    for (const f of fragments)
-      ranges.push([f.start, f.start + f.size - 1])
-  }
+  /*
+   * Export Analysis
+  */
 
   _calculateMetrics (annotations) {
     let ctideas = 0, ctright = 0, ctinfright = 0
@@ -276,25 +157,6 @@ class ReportManager {
            `${(ctideas == 0) ? 0 : selfOrder.score / ctideas},${clustering}${countCat},"${o1csv}","${o2csv}"`
   }
 
-  async _downloadBILOU () {
-    const tprefix = document.querySelector('#tprefix').value
-
-    const cases = await this._requestCases()
-
-    console.log(cases)
-    let table = ''
-
-    if (cases != null) {
-      for (const c of cases.message) {
-        const ant = await this._loadAnnotations(c.id)
-        const bilou = await this._buildBILOU(c.id, ant.annotations)
-        table += JSON.stringify(bilou) + '\n'
-      }
-
-      this._download(table)
-    }
-  }
-
   async _downloadAnalysis () {
     const tprefix = document.querySelector('#tprefix').value
 
@@ -330,15 +192,212 @@ class ReportManager {
     }
   }
 
-  _download (table) {
-    const element = document.createElement('a')
-    element.setAttribute('href',
-      'data:text/plain;charset=utf-8,' + encodeURIComponent(table))
-    element.setAttribute('download', 'annotations.csv')
-    element.style.display = 'none'
-    document.body.appendChild(element)
-    element.click()
-    document.body.removeChild(element)
+  /*
+   * Export BILOU
+  */
+
+  async _buildBILOU (caseId, annotations) {
+    const tt = await this._tokenize(caseId)
+    const tokens = tt.tokens
+
+    const ranges = []
+    for (const an of annotations) {
+      // find a proper category
+      let cat = null
+      for (const c of an.categories)
+        if (ReportManager.catList.includes(c)) {
+          cat = c
+          break
+        }
+
+      if (cat != null) {
+        if (!this._rangeConflict(ranges, an.fragments)) {
+          this._addRanges(ranges, an.fragments)
+          for (let f = 0; f < an.fragments.length; f++) {
+            let firstMatch = true
+            let firstToken = null
+            let prevLast = null
+            for (const tk of tokens) {
+              if (tk[1] >= an.fragments[f].start &&
+                  tk[1] <= an.fragments[f].start + an.fragments[f].size - 1) {
+                tk[3] =
+                  (an.fragments.length == 1 && firstMatch)
+                    ? 'U'
+                    : ((f == 0 && firstMatch)
+                      ? 'B'
+                      : ((f+1 < an.fragments.length) || (tk[2] < an.fragments[f].last))
+                        ? 'I'
+                        : 'L')
+                tk[4] = cat
+                if (firstMatch)
+                  firstToken = tk
+                else if (firstToken != -1) {
+                  firstToken[3] = 'B'
+                  firstToken = -1
+                }
+                firstMatch = false
+                if (prevLast != null) {
+                  prevLast[3] = 'I'
+                  prevLast = null
+                }
+                if (tk[3] == 'L')
+                  prevLast = tk
+              }
+            }
+          }
+        }
+      }
+    }
+
+    console.log('=== tokens NER')
+    console.log(tokens)
+
+    return {
+      doc_id: caseId,
+      text: tt.text,
+      labels: tokens
+    }
+  }
+
+  async _loadCaseText (caseId) {
+    const cs = await MessageBus.i.request('case/source/get',
+                                          {room_id: this._roomId, case_id: caseId})
+
+    let text = null
+    if (cs != null && cs.message != null) {
+      const compiled =
+      await Translator.instance.compileMarkdown(
+        cs.message.id, cs.message.source)
+
+      text = ''
+      for (const knot in compiled.knots) {
+        const mkHTML =
+          await Translator.instance.generateHTML(compiled.knots[knot])
+        text += mkHTML
+      }
+  
+      text = text.replace(/<[^>]+>/gm,'')
+                 .replace(/<\/[^>]+>/gm, '')
+                 .replace(/^[\r\n][\r\n]?/, '')
+    }
+
+    return text
+  }
+
+  async _tokenize (caseId) {
+    const tokens = []
+    let result = {}
+
+    const text = await this._loadCaseText(caseId)
+  
+    if (text != null) {
+      let c = 0
+      let tk = ''
+      let tks = -1
+      while (c <= text.length) {
+        if (c == text.length || ReportManager.separators.includes(text[c])) {
+          if (tks != -1) {
+            tokens.push([tk, tks, c-1, 'O', null])
+            tk = ''
+            tks = -1
+          }
+        } else {
+          if (tks == -1)
+            tks = c
+          tk += text[c]
+        }
+        c++
+      }
+
+      result = {
+        text: text,
+        tokens: tokens
+      }
+    }
+  
+    return result
+  }
+
+  _rangeConflict (ranges, fragments) {
+    const start = fragments[0].start
+    const final = fragments[fragments.length-1].start + fragments[fragments.length-1].size - 1
+    let r = 0
+    while (r < ranges.length && start < ranges[r][1]) {
+      if ((start >= ranges[r][0] && start <= ranges[r][1]) ||
+          (final >= ranges[r][0] && final <= ranges[r][1]) ||
+          (ranges[r][0] >= start && ranges[r][0] <= final) ||
+          (ranges[r][1] >= start && ranges[r][1] <= final))
+        return true
+      r++
+    }
+    return false
+  }
+
+  _addRanges (ranges, fragments) {
+    for (const f of fragments)
+      ranges.push([f.start, f.start + f.size - 1])
+  }
+
+  async _downloadBILOU () {
+    const tprefix = document.querySelector('#tprefix').value
+
+    const cases = await this._requestCases()
+
+    let table = ''
+
+    if (cases != null) {
+      for (const c of cases.message) {
+        const ant = await this._loadAnnotations(c.id)
+        const bilou = await this._buildBILOU(c.id, ant.annotations)
+        table += JSON.stringify(bilou) + '\n'
+      }
+
+      this._download(table)
+    }
+  }
+
+  /*
+   * Export JSON
+  */
+
+  async _buildJSON (caseId, annotations) {
+    const text = await this._loadCaseText(caseId)
+    const annComp = []
+
+    for (const an of annotations) {
+      for (let f = 0; f < an.fragments.length; f++) {
+        annComp.push([
+          an.fragments[f].fragment,
+          an.fragments[f].start,
+          an.fragments[f].start + an.fragments[f].size - 1,
+          (an.fragments.length == 1) ? 'U' : ((f == 0) ? 'B' : ((f+1 < an.fragments.length) ? 'I' : 'L')),
+          an.categories
+        ])
+      }
+    }
+
+    return {
+      doc_id: caseId,
+      text: text,
+      annotations: annComp
+    }
+  }
+
+  async _downloadJSON () {
+    const tprefix = document.querySelector('#tprefix').value
+
+    const cases = await this._requestCases()
+
+    let table = ''
+    if (cases != null) {
+      for (const c of cases.message) {
+        const ant = await this._loadAnnotations(c.id)
+        const annJson = await this._buildJSON(c.id, ant.annotations)
+        table += JSON.stringify(annJson) + '\n'
+      }
+
+      this._download(table)
+    }
   }
 }
 
