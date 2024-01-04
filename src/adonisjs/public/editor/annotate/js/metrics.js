@@ -118,7 +118,7 @@ class AnnotationMetrics {
     const ds = r - er  // deviation score
 
     const arc = 
-      (max - er == 0) ? '0/0' : (r - er) / (max - er)  // adjusted ratio of clustering
+      (max - er == 0) ? ('' + (r - er)) + ('/' + (max - er)) : (r - er) / (max - er)  // adjusted ratio of clustering
 
     console.log('\n\n=== Clustering Free Recall ===')
     console.log(JSON.stringify(categoriesOrder))
