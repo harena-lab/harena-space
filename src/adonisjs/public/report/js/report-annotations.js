@@ -365,15 +365,16 @@ class ReportManager {
     const annComp = []
 
     for (const an of annotations) {
-      for (let f = 0; f < an.fragments.length; f++) {
-        annComp.push([
-          an.fragments[f].fragment,
-          an.fragments[f].start,
-          an.fragments[f].start + an.fragments[f].size - 1,
-          (an.fragments.length == 1) ? 'U' : ((f == 0) ? 'B' : ((f+1 < an.fragments.length) ? 'I' : 'L')),
-          an.categories
-        ])
-      }
+      let frag = ''
+      for (let f = 0; f < an.fragments.length; f++) 
+        frag += (f > 0 ? ' + ' : '') + an.fragments[f].fragment
+      const last = an.fragments.length - 1
+      annComp.push([
+        frag,
+        an.fragments[0].start,
+        an.fragments[last].start + an.fragments[last].size - 1,
+        an.categories
+      ])
     }
 
     return {
