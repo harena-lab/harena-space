@@ -1,7 +1,8 @@
 class ReportManager {
   start () {
     MessageBus.i.subscribe('report/download', this._downloadAnalysis.bind(this))
-    MessageBus.i.subscribe('report/bilou', this._downloadBILOU.bind(this))
+    MessageBus.i.subscribe('report/bilou/single', this._downloadBILOU.bind(this))
+    MessageBus.i.subscribe('report/bilou/multiple', this._downloadBILOU.bind(this))
     MessageBus.i.subscribe('report/json', this._downloadJSON.bind(this))
     this._roomId = new URL(document.location).searchParams.get('roomid')
   }
@@ -196,21 +197,25 @@ class ReportManager {
    * Export BILOU
   */
 
-  async _buildBILOU (caseId, annotations) {
+  async _buildBILOU (caseId, annotations, multiple) {
+    console.log('=== multiple')
+    console.log(multiple)
     const tt = await this._tokenize(caseId)
-    const tokens = tt.tokens
+    let tokens = tt.tokens
+    const extraTokens = []
 
     const ranges = []
     for (const an of annotations) {
-      // find a proper category
-      let cat = null
+      // gather proper categories
+      let cat = []
       for (const c of an.categories)
-        if (ReportManager.catList.includes(c)) {
-          cat = c
-          break
-        }
+        if (ReportManager.catList.includes(c))
+          cat.push(c)
 
-      if (cat != null) {
+      console.log('=== cat')
+      console.log(cat)
+
+      if (cat.length >0) {
         if (!this._rangeConflict(ranges, an.fragments)) {
           this._addRanges(ranges, an.fragments)
           for (let f = 0; f < an.fragments.length; f++) {
@@ -228,7 +233,14 @@ class ReportManager {
                       : ((f+1 < an.fragments.length) || (tk[2] < an.fragments[f].last))
                         ? 'I'
                         : 'L')
-                tk[4] = cat
+                tk[4] = cat[0]
+                if (multiple && cat.length > 1) {
+                  for (let c = 1; c < cat.length; c++) {
+                    const tk2 = tk.slice()
+                    tk2[4] = cat[c]
+                    extraTokens.push(tk2)
+                  }
+                }
                 if (firstMatch)
                   firstToken = tk
                 else if (firstToken != -1) {
@@ -247,6 +259,15 @@ class ReportManager {
           }
         }
       }
+    }
+
+    console.log('=== extraTokens')
+    console.log(extraTokens)
+
+    // reorganize tokens by position
+    if (multiple) {
+      tokens = tokens.concat(extraTokens)
+      tokens = tokens.sort((a, b) => a[1] - b[1])
     }
 
     console.log('=== tokens NER')
@@ -340,7 +361,9 @@ class ReportManager {
       ranges.push([f.start, f.start + f.size - 1])
   }
 
-  async _downloadBILOU () {
+  async _downloadBILOU (topic, message) {
+    const multiple = (topic == 'report/bilou/multiple')
+
     const tprefix = document.querySelector('#tprefix').value
 
     const cases = await this._requestCases()
@@ -350,7 +373,8 @@ class ReportManager {
     if (cases != null) {
       for (const c of cases.message) {
         const ant = await this._loadAnnotations(c.id)
-        const bilou = await this._buildBILOU(c.id, ant.annotations)
+        const bilou =
+          await this._buildBILOU(c.id, ant.annotations, multiple)
         table += JSON.stringify(bilou) + '\n'
       }
 
