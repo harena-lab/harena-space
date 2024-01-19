@@ -202,8 +202,7 @@ class ReportManager {
     console.log(multiple)
     const tt = await this._tokenize(caseId)
     let tokens = tt.tokens
-    const extraTokens = []
-
+  
     const ranges = []
     for (const an of annotations) {
       // gather proper categories
@@ -212,17 +211,17 @@ class ReportManager {
         if (ReportManager.catList.includes(c))
           cat.push(c)
 
-      console.log('=== cat')
-      console.log(cat)
-
       if (cat.length >0) {
         if (!this._rangeConflict(ranges, an.fragments)) {
           this._addRanges(ranges, an.fragments)
           for (let f = 0; f < an.fragments.length; f++) {
             let firstMatch = true
             let firstToken = null
+            let firstTokenPos = -1
             let prevLast = null
-            for (const tk of tokens) {
+            let extraTokens = []
+            for (let t = 0; t < tokens.length; t++) {
+              const tk = tokens[t]
               if (tk[1] >= an.fragments[f].start &&
                   tk[1] <= an.fragments[f].start + an.fragments[f].size - 1) {
                 tk[3] =
@@ -241,9 +240,10 @@ class ReportManager {
                     extraTokens.push(tk2)
                   }
                 }
-                if (firstMatch)
+                if (firstMatch) {
                   firstToken = tk
-                else if (firstToken != -1) {
+                  firstTokenPos = t
+                } else if (firstToken != -1) {
                   firstToken[3] = 'B'
                   firstToken = -1
                 }
@@ -256,19 +256,27 @@ class ReportManager {
                   prevLast = tk
               }
             }
+            console.log('=== tokens')
+            console.log(JSON.stringify(tokens))
+            console.log('=== extraTokens')
+            console.log(JSON.stringify(extraTokens))
+            if (firstTokenPos > -1 && extraTokens.length > 0) {
+              extraTokens = extraTokens.sort((a, b) => (a[4] == b[4]) ? a[1] - b[1] : a[4].localeCompare(b[4]))
+              tokens.splice(firstTokenPos, 0, ...extraTokens)
+              console.log(JSON.stringify(tokens))
+              console.log(JSON.stringify(extraTokens))
+            }
           }
         }
       }
     }
 
-    console.log('=== extraTokens')
-    console.log(extraTokens)
 
     // reorganize tokens by position
-    if (multiple) {
-      tokens = tokens.concat(extraTokens)
-      tokens = tokens.sort((a, b) => a[1] - b[1])
-    }
+    // if (multiple) {
+    //   tokens = tokens.concat(extraTokens)
+    //   tokens = tokens.sort((a, b) => a[1] - b[1])
+    // }
 
     console.log('=== tokens NER')
     console.log(tokens)
