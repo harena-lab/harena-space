@@ -130,22 +130,13 @@ class ReportManager {
 
     const clustering = AnnotationMetrics.i._clusteringFreeRecall(catOrder)
 
-    let o1csv = ''
-    let sep = ''
-    for (const g of selfOrder.groups) {
-      o1csv += sep + ReportManager.catList[g[0]-1] + ':' + g[2]
-      sep = '; '
-    }
+    const o1csv = this._groupsToCSV(selfOrder.groups)
 
-    let o2csv = ''
-    sep = ''
+    const o2csv = this._groupsToCSV(selfOrder.ordered)
+
     const ordered = {}
-    for (const g of selfOrder.ordered) {
+    for (const g of selfOrder.ordered)
       ordered[ReportManager.catList[g[0]-1]] = g[2]
-      o2csv += sep + ReportManager.catList[g[0]-1] + ':' + g[2]
-      sep = '; '
-    }
-
     let countCat = ''
     for (const c of ReportManager.catList)
       countCat += ',' + (ordered[c] ? ordered[c] : 0)
@@ -156,6 +147,16 @@ class ReportManager {
            `${ctcategories * ctideas},${(ctideas == 0) ? 0 : ctright / ctideas},${(ctideas == 0) ? 0 : ctinfright / ctideas},` +
            `${(ctideas == 0) ? 0 : (ctrightencap + ctwrongencap) / ctideas},${selfOrder.score},` +
            `${(ctideas == 0) ? 0 : selfOrder.score / ctideas},${clustering}${countCat},"${o1csv}","${o2csv}"`
+  }
+
+  _groupsToCSV (groups) {
+    let g2csv = ''
+    let sep = ''
+    for (const g of groups) {
+      g2csv += sep + ReportManager.catList[g[0]-1] + ':' + g[2]
+      sep = '; '
+    }
+    return g2csv
   }
 
   async _downloadAnalysis () {
@@ -242,6 +243,7 @@ class ReportManager {
     // expand annotations (one class per token)
     let expanded = []
     let t = 0
+    const catOrder = []  // to calculate metrics
     while (t < tokens.length) {
       const tk = tokens[t]
       const tCats = Object.keys(tk[3])
@@ -263,8 +265,10 @@ class ReportManager {
           blocks.push(bl)
         }
         if (multiple) {
-          for (const bl of blocks)
+          for (const bl of blocks) {
             expanded = expanded.concat(bl)
+            catOrder.push([ReportManager.catList.indexOf(bl[0][4])+1, bl[0][1]])
+          }
         } else {
           // select the longest blocks
           const selected = []
@@ -276,15 +280,23 @@ class ReportManager {
           // select a random among biggest
           const sel = selected[Math.floor(Math.random() * selected.length)]
           expanded = expanded.concat(sel)
+          catOrder.push([ReportManager.catList.indexOf(sel[0][4])+1, sel[0][1]])
         }
       }
       t = last + 1
     }
+
+    const selfOrder = AnnotationMetrics.i._selfOrderCount(catOrder)
   
     return {
       doc_id: caseId,
       text: tt.text,
-      labels: expanded
+      labels: expanded,
+      self_order_score: selfOrder.score,
+      self_order_score_normalized: (annotations.length == 0) ? 0 : selfOrder.score / annotations.length,
+      clustering: AnnotationMetrics.i._clusteringFreeRecall(catOrder),
+      self_order_groups: this._groupsToCSV(selfOrder.groups),
+      self_order_ordered: this._groupsToCSV(selfOrder.ordered)
     }
   }
 

@@ -120,22 +120,6 @@ class AnnotationMetrics {
     const arc = 
       (max - er == 0) ? ('' + (r - er)) + ('/' + (max - er)) : (r - er) / (max - er)  // adjusted ratio of clustering
 
-    console.log('\n\n=== Clustering Free Recall ===')
-    console.log(JSON.stringify(categoriesOrder))
-    console.log('--- n = ' + n)
-    console.log('--- sorted by position')
-    console.log(JSON.stringify(sortedL))
-    console.log('--- c = ' + c)
-    console.log('--- ni')
-    console.log(JSON.stringify(nc))
-    console.log('--- r = ' + r)
-    console.log('--- max = ' + max)
-    console.log('--- E(r) = ' + Math.round(er * 100) / 100)
-    console.log('--- RR = ' + Math.round(rr * 100) / 100)
-    console.log('--- MRR = ' + Math.round(mrr * 100) / 100)
-    console.log('--- DS = ' + Math.round(ds * 100) / 100)
-    console.log('--- ARC = ' + ((isNaN(arc)) ? arc : Math.round(arc * 100) / 100))
-
     if (present != null) {
       present('\n\n=== Clustering Free Recall ===')
       present(JSON.stringify(categoriesOrder))
