@@ -3,7 +3,7 @@ class ReportManager {
     MessageBus.i.subscribe('report/download', this._downloadAnalysis.bind(this))
     MessageBus.i.subscribe('report/bio/single', this._downloadBIO.bind(this))
     MessageBus.i.subscribe('report/bio/multiple', this._downloadBIO.bind(this))
-    MessageBus.i.subscribe('report/json', this._downloadJSON.bind(this))
+    MessageBus.i.subscribe('report/full', this._downloadFull.bind(this))
     this._roomId = new URL(document.location).searchParams.get('roomid')
   }
 
@@ -143,10 +143,18 @@ class ReportManager {
     
     const ctcategories = Object.keys(catIndex).length
 
-    return `${ctcategories},${ctright},${ctinfright},${ctideas},${ctrightencap},${ctinfrightencap},${ctwrong},${ctwrongencap},` +
-           `${ctcategories * ctideas},${(ctideas == 0) ? 0 : ctright / ctideas},${(ctideas == 0) ? 0 : ctinfright / ctideas},` +
-           `${(ctideas == 0) ? 0 : (ctrightencap + ctwrongencap) / ctideas},${selfOrder.score},` +
-           `${(ctideas == 0) ? 0 : selfOrder.score / ctideas},${clustering}${countCat},"${o1csv}","${o2csv}"`
+    const ctordernorm = (ctideas == 0) ? 0 : selfOrder.score / ctideas
+
+    return {self_order_score: selfOrder.score,
+            self_order_score_normalized: ctordernorm,
+            clustering: clustering,
+            self_order_groups: o1csv,
+            self_order_ordered: o2csv,
+            csv: `${ctcategories},${ctright},${ctinfright},${ctideas},${ctrightencap},${ctinfrightencap},${ctwrong},${ctwrongencap},` +
+                 `${ctcategories * ctideas},${(ctideas == 0) ? 0 : ctright / ctideas},${(ctideas == 0) ? 0 : ctinfright / ctideas},` +
+                 `${(ctideas == 0) ? 0 : (ctrightencap + ctwrongencap) / ctideas},${selfOrder.score},` +
+                 `${ctordernorm},${clustering}${countCat},"${o1csv}","${o2csv}"`
+           }
   }
 
   _groupsToCSV (groups) {
@@ -184,7 +192,7 @@ class ReportManager {
         table += '"' + c.title + '","' + c.id + '",'
 
         const ant = await this._loadAnnotations(c.id)
-        const metrics = this._calculateMetrics(ant.annotations)
+        const metrics = this._calculateMetrics(ant.annotations).csv
 
         table += `"${ant.organization}","${ant.score}","${ant.year}",` + 
                  metrics + '\n'
@@ -401,7 +409,7 @@ class ReportManager {
    * Export JSON
   */
 
-  async _buildJSON (caseId, annotations) {
+  async _buildFull (caseId, annotations) {
     const text = await this._loadCaseText(caseId)
     const annComp = []
 
@@ -418,14 +426,21 @@ class ReportManager {
       ])
     }
 
+    const metrics = this._calculateMetrics(annotations)
+
     return {
       doc_id: caseId,
       text: text,
-      annotations: annComp
+      annotations: annComp,
+      self_order_score: metrics.self_order_score,
+      self_order_score_normalized: metrics.self_order_score_normalized,
+      clustering: metrics.clustering,
+      self_order_groups: metrics.self_order_groups,
+      self_order_ordered: metrics.self_order_ordered
     }
   }
 
-  async _downloadJSON () {
+  async _downloadFull () {
     const tprefix = document.querySelector('#tprefix').value
 
     const cases = await this._requestCases()
@@ -434,7 +449,7 @@ class ReportManager {
     if (cases != null) {
       for (const c of cases.message) {
         const ant = await this._loadAnnotations(c.id)
-        const annJson = await this._buildJSON(c.id, ant.annotations)
+        const annJson = await this._buildFull(c.id, ant.annotations)
         table += JSON.stringify(annJson) + '\n'
       }
 
