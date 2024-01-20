@@ -1,8 +1,7 @@
 class ReportManager {
   start () {
     MessageBus.i.subscribe('report/download', this._downloadAnalysis.bind(this))
-    MessageBus.i.subscribe('report/bio/single', this._downloadBIO.bind(this))
-    MessageBus.i.subscribe('report/bio/multiple', this._downloadBIO.bind(this))
+    MessageBus.i.subscribe('report/bio/#', this._downloadBIO.bind(this))
     MessageBus.i.subscribe('report/full', this._downloadFull.bind(this))
     this._roomId = new URL(document.location).searchParams.get('roomid')
   }
@@ -206,15 +205,20 @@ class ReportManager {
    * Export BIO
   */
 
-  async _buildBIO (caseId, annotations, multiple) {
+  async _buildBIO (caseId, annotations, multiple, composed) {
     const tt = await this._tokenize(caseId)
     let tokens = tt.tokens
 
     // plan all annotations in a single array
     let plan = []
-    for (const an of annotations)
-      for (const f of an.fragments)
-        plan.push([f, an.categories])
+    for (const an of annotations) {
+      let first = true
+      for (const f of an.fragments) {
+        if (composed || first)
+          plan.push([f, an.categories])
+        first = false
+      }
+    }
 
     // order them by the last position
     plan = plan.sort((a, b) =>
@@ -386,6 +390,7 @@ class ReportManager {
 
   async _downloadBIO (topic, message) {
     const multiple = (topic == 'report/bio/multiple')
+    const composed = (multiple || topic == 'report/bio/single/composed')
 
     const tprefix = document.querySelector('#tprefix').value
 
@@ -397,7 +402,7 @@ class ReportManager {
       for (const c of cases.message) {
         const ant = await this._loadAnnotations(c.id)
         const bio =
-          await this._buildBIO(c.id, ant.annotations, multiple)
+          await this._buildBIO(c.id, ant.annotations, multiple, composed)
         table += JSON.stringify(bio) + '\n'
       }
 
