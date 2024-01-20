@@ -1,8 +1,8 @@
 class ReportManager {
   start () {
     MessageBus.i.subscribe('report/download', this._downloadAnalysis.bind(this))
-    MessageBus.i.subscribe('report/bilou/single', this._downloadBILOU.bind(this))
-    MessageBus.i.subscribe('report/bilou/multiple', this._downloadBILOU.bind(this))
+    MessageBus.i.subscribe('report/bio/single', this._downloadBIO.bind(this))
+    MessageBus.i.subscribe('report/bio/multiple', this._downloadBIO.bind(this))
     MessageBus.i.subscribe('report/json', this._downloadJSON.bind(this))
     this._roomId = new URL(document.location).searchParams.get('roomid')
   }
@@ -80,11 +80,11 @@ class ReportManager {
     return result
   }
 
-  _download (table) {
+  _download (table, extension) {
     const element = document.createElement('a')
     element.setAttribute('href',
       'data:text/plain;charset=utf-8,' + encodeURIComponent(table))
-    element.setAttribute('download', 'annotations.csv')
+    element.setAttribute('download', 'annotations.' + extension)
     element.style.display = 'none'
     document.body.appendChild(element)
     element.click()
@@ -189,102 +189,102 @@ class ReportManager {
                  metrics + '\n'
       }
 
-      this._download(table)
+      this._download(table, 'csv')
     }
   }
 
   /*
-   * Export BILOU
+   * Export BIO
   */
 
-  async _buildBILOU (caseId, annotations, multiple) {
-    console.log('=== multiple')
-    console.log(multiple)
+  async _buildBIO (caseId, annotations, multiple) {
     const tt = await this._tokenize(caseId)
     let tokens = tt.tokens
-  
+
+    // plan all annotations in a single array
+    let plan = []
+    for (const an of annotations)
+      for (const f of an.fragments)
+        plan.push([f, an.categories])
+
+    // order them by the last position
+    plan = plan.sort((a, b) =>
+      (a[0].start + a[0].size) - (b[0].start + b[0].size))
+
     const ranges = []
-    for (const an of annotations) {
+    for (const pl of plan) {
       // gather proper categories
       let cat = []
-      for (const c of an.categories)
+      for (const c of pl[1])
         if (ReportManager.catList.includes(c))
           cat.push(c)
 
+      const an = pl[0]
+
       if (cat.length >0) {
-        if (!this._rangeConflict(ranges, an.fragments)) {
-          this._addRanges(ranges, an.fragments)
-          for (let f = 0; f < an.fragments.length; f++) {
-            let firstMatch = true
-            let firstToken = null
-            let firstTokenPos = -1
-            let prevLast = null
-            let extraTokens = []
-            for (let t = 0; t < tokens.length; t++) {
-              const tk = tokens[t]
-              if (tk[1] >= an.fragments[f].start &&
-                  tk[1] <= an.fragments[f].start + an.fragments[f].size - 1) {
-                tk[3] =
-                  (an.fragments.length == 1 && firstMatch)
-                    ? 'U'
-                    : ((f == 0 && firstMatch)
-                      ? 'B'
-                      : ((f+1 < an.fragments.length) || (tk[2] < an.fragments[f].last))
-                        ? 'I'
-                        : 'L')
-                tk[4] = cat[0]
-                if (multiple && cat.length > 1) {
-                  for (let c = 1; c < cat.length; c++) {
-                    const tk2 = tk.slice()
-                    tk2[4] = cat[c]
-                    extraTokens.push(tk2)
-                  }
-                }
-                if (firstMatch) {
-                  firstToken = tk
-                  firstTokenPos = t
-                } else if (firstToken != -1) {
-                  firstToken[3] = 'B'
-                  firstToken = -1
-                }
-                firstMatch = false
-                if (prevLast != null) {
-                  prevLast[3] = 'I'
-                  prevLast = null
-                }
-                if (tk[3] == 'L')
-                  prevLast = tk
-              }
-            }
-            console.log('=== tokens')
-            console.log(JSON.stringify(tokens))
-            console.log('=== extraTokens')
-            console.log(JSON.stringify(extraTokens))
-            if (firstTokenPos > -1 && extraTokens.length > 0) {
-              extraTokens = extraTokens.sort((a, b) => (a[4] == b[4]) ? a[1] - b[1] : a[4].localeCompare(b[4]))
-              tokens.splice(firstTokenPos, 0, ...extraTokens)
-              console.log(JSON.stringify(tokens))
-              console.log(JSON.stringify(extraTokens))
+        if (!this._rangesConflict(ranges, an)) {
+          ranges.push([an.start, an.start + an.size - 1])
+          let firstMatch = true
+          // transfers annotations to tokens
+          for (let t = 0; t < tokens.length; t++) {
+            const tk = tokens[t]
+            if (tk[1] >= an.start && tk[1] <= an.start + an.size - 1) {
+              const bio = (firstMatch) ? 'B' : 'I'
+              for (const c of cat)
+                tk[3][c] = bio
+              firstMatch = false
             }
           }
         }
       }
     }
 
+    // expand annotations (one class per token)
+    let expanded = []
+    let t = 0
+    while (t < tokens.length) {
+      const tk = tokens[t]
+      const tCats = Object.keys(tk[3])
+      let last = t
+      if (tCats.length == 0)
+        expanded.push([tk[0], tk[1], tk[2], 'O', null])
+      else { // gather together BIO sequences
+        const blocks = []
+        for (const c of tCats) {
+          let tk = tokens[t]
+          const bl = [[tk[0], tk[1], tk[2], 'B', c]]
+          let shift = t + 1
+          while (shift < tokens.length && tokens[shift][3][c] == 'I') {
+            tk = tokens[shift]
+            bl.push([tk[0], tk[1], tk[2], 'I', c])
+            shift++
+          }
+          last = Math.max(last, shift - 1)
+          blocks.push(bl)
+        }
+        if (multiple) {
+          for (const bl of blocks)
+            expanded = expanded.concat(bl)
+        } else {
+          // select the longest blocks
+          const selected = []
+          const biggest = last - t + 1
+          for (const bl of blocks)
+            if (bl.length == biggest)
+              selected.push(bl)
 
-    // reorganize tokens by position
-    // if (multiple) {
-    //   tokens = tokens.concat(extraTokens)
-    //   tokens = tokens.sort((a, b) => a[1] - b[1])
-    // }
-
-    console.log('=== tokens NER')
-    console.log(tokens)
-
+          // select a random among biggest
+          const sel = selected[Math.floor(Math.random() * selected.length)]
+          expanded = expanded.concat(sel)
+        }
+      }
+      t = last + 1
+    }
+  
     return {
       doc_id: caseId,
       text: tt.text,
-      labels: tokens
+      labels: expanded
     }
   }
 
@@ -326,11 +326,11 @@ class ReportManager {
       while (c <= text.length) {
         if (c == text.length || ReportManager.separators.includes(text[c])) {
           if (tks != -1) {
-            tokens.push([tk, tks, c-1, 'O', null])
+            tokens.push([tk, tks, c-1, {}])
             tk = ''
             tks = -1
             if (c < text.length && ReportManager.septoken.includes(text[c]))
-              tokens.push([text[c], c, c, 'O', null])
+              tokens.push([text[c], c, c, {}])
           }
         } else {
           if (tks == -1)
@@ -349,28 +349,23 @@ class ReportManager {
     return result
   }
 
-  _rangeConflict (ranges, fragments) {
-    const start = fragments[0].start
-    const final = fragments[fragments.length-1].start + fragments[fragments.length-1].size - 1
-    let r = 0
-    while (r < ranges.length && start < ranges[r][1]) {
-      if ((start >= ranges[r][0] && start <= ranges[r][1]) ||
-          (final >= ranges[r][0] && final <= ranges[r][1]) ||
-          (ranges[r][0] >= start && ranges[r][0] <= final) ||
-          (ranges[r][1] >= start && ranges[r][1] <= final))
+  _rangesConflict (ranges, annotation) {
+    const start = annotation.start
+    const final = annotation.start + annotation.size - 1
+    for (const r of ranges) {
+      const rStart = r[0]
+      const rFinal = r[1]
+      // avoid breaking previous annotations in the middle
+      // test contained or cross ranges - start or final inside one range
+      if ((start > rStart && start <= rFinal) ||
+          (final >= rStart && final < rFinal))
         return true
-      r++
     }
     return false
   }
 
-  _addRanges (ranges, fragments) {
-    for (const f of fragments)
-      ranges.push([f.start, f.start + f.size - 1])
-  }
-
-  async _downloadBILOU (topic, message) {
-    const multiple = (topic == 'report/bilou/multiple')
+  async _downloadBIO (topic, message) {
+    const multiple = (topic == 'report/bio/multiple')
 
     const tprefix = document.querySelector('#tprefix').value
 
@@ -381,12 +376,12 @@ class ReportManager {
     if (cases != null) {
       for (const c of cases.message) {
         const ant = await this._loadAnnotations(c.id)
-        const bilou =
-          await this._buildBILOU(c.id, ant.annotations, multiple)
-        table += JSON.stringify(bilou) + '\n'
+        const bio =
+          await this._buildBIO(c.id, ant.annotations, multiple)
+        table += JSON.stringify(bio) + '\n'
       }
 
-      this._download(table)
+      this._download(table, 'jsonl')
     }
   }
 
@@ -431,7 +426,7 @@ class ReportManager {
         table += JSON.stringify(annJson) + '\n'
       }
 
-      this._download(table)
+      this._download(table, 'jsonl')
     }
   }
 }
