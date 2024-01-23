@@ -64,6 +64,7 @@ class Annotator {
       html = html.replace(/<[^>]+>/gm,'')
                  .replace(/<\/[^>]+>/gm, '')
                  .replace(/^[\r\n][\r\n]?/, '')
+                 .replace(/[ \t\n\r\f]*\n[ \t\n\r\f]*/gm, ' ')
 
       this._original = html
       this._document = html
@@ -223,13 +224,15 @@ class Annotator {
         ranges.splice(r + 1, 1)
       }
     }
+
+    console.log('=== sorted annotations')
+    console.log(ranges)
     
     let last = 0
     const doc = this._document
     let doca = ''
     let close = []
     let level = 1
-    let group = 0
     for (const r of ranges) {
       const next = r.fragment.start
       if (close.length > 0 && close[0] < next) {
@@ -504,9 +507,6 @@ class Annotator {
         this._deleteCandidate.push(prefix + c)
         html += '<tr><td>' + c + '</td><td>'
         if (isAnnotations) {
-          // html +=  ((this._ksaved[prefix + c] == 's')
-          //           ? '<span style="color:green">saved</span>'
-          //           : '<span style="color:red">unsaved</span>')
           html += '<span style="color:' + anStatus[this._ksaved[prefix + c]].color +  
                   '">' + anStatus[this._ksaved[prefix + c]].mess + '</span>' +
                   '</td><td><input type="checkbox" id="del' + dc +
@@ -694,7 +694,7 @@ class Annotator {
   _kcatPrefix (annotation) {
     const f = annotation.fragments
     return f[0].start + '_' + f[0].size + '_' +
-           f.map(x => x.fragment).join(' ') + '_'
+           f.map(x => x.fragment.toLowerCase()).join(' ') + '_'
   }
 
   _kmemoryPrefix (frag) {
