@@ -10,15 +10,11 @@ export class HarenaDCCOid {
 
   reportBlocksUpdate (topic, message) {
     let cps = ''
-    console.log('=== reportBlocksUpdate')
-    console.log(topic)
     if (message.value == null || (message.value[0] != '{' && message.value[0] != '['))
       cps = message.value
     else {
       const jsonl = message.value.split('\n')
       const cpl = []
-      console.log('=== jsonl')
-      console.log(jsonl)
       for (const jl of jsonl) {
         let vj = JSON.parse(jl)
         let compact = {}
