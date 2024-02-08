@@ -45,8 +45,6 @@ Oid.customize('foid:lively-talk', {
         oid.txt = '<meta charset="UTF-8"><table><tr><th>Análise</th><th>Status</th><th></th></tr>'
         //oid.txt = '<table><tr><th>Erro</th><th></th></tr>'
         oid.know = ''
-        console.log('=== simular')
-        console.log(oid.statements)
         if (oid.statements == null || oid.statements.length == 0){
           //oid.handleSend('display', {value: '-> Nada a ser processado'})
           existe = '&#10060;'
@@ -321,8 +319,6 @@ Oid.customize('foid:lively-talk', {
       else if (parameters.value.length == 0)
         oid.statements = null
       else if (parameters.value != null) {
-        console.log('=== guarda parametros')
-        console.log(parameters.value)
         const lines = parameters.value.split('\n')
         oid.statements = []
         for (const l of lines)

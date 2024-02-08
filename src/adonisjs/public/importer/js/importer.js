@@ -1,11 +1,13 @@
 class ImporterManager {
 
-  constructor(){
+  constructor (){
     this._totalReady = 0
     this._updateCSV = this._updateCSV.bind(this)
     MessageBus.i.subscribe('table/updated', this._updateCSV)
     this._importDocuments = this._importDocuments.bind(this)
     MessageBus.i.subscribe('author/import/documents', this._importDocuments)
+    MessageBus.i.subscribe('author/select/samples',
+                           this._importSampleSelection.bind(this))
     this._preStart = this._preStart.bind(this)
     MessageBus.i.subscribe('control/dhtml/ready', this._preStart)
     MessageBus.i.publish('control/dhtml/status/request')
@@ -33,7 +35,7 @@ class ImporterManager {
     this._settingsFromUrl()
   }
 
-  _settingsFromUrl(){
+  _settingsFromUrl () {
     let url = new URL(document.location)
     try {
       if(url.searchParams.get('quest')){
@@ -156,6 +158,79 @@ class ImporterManager {
       alert.classList.remove('alert-success')
       alert.insertAdjacentElement('afterbegin', header)
       alert.insertAdjacentText('beforeend','You have to drag a csv containing the list of documents with columns "title" (optional) and "document" in the "drag zone"')
+      alert.style.display = 'block'
+      alert.insertAdjacentHTML('beforeend',`
+      <button type="button" class="close" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>`)
+      alert.querySelector('button.close').onclick = function() {
+        alert.classList.remove('show')
+        alert.style.display = 'none'
+      }
+      setTimeout(function(){
+        alert.classList.remove('show')
+        alert.style.display = 'none'
+      }, 8000)
+    }
+  }
+
+  async _importSampleSelection (topic, message) {
+    console.log('=== import sample selection')
+    console.log(document.querySelector('#btn-samples').form.checkValidity())
+    console.log(this._table)
+    if(document.querySelector('#btn-samples').form.checkValidity() &&
+       this._table != null) {
+      const questId = document.querySelector('#quests').value
+      console.log('=== quest selected')
+      console.log(questId)
+
+      const roomId = document.querySelector('#rooms').value
+      console.log('=== room selected')
+      console.log(roomId)
+
+      const schema = this._table.schema
+      const content = this._table.content
+
+      for (let line = 0; line < content.length; line++) {
+        const caseId = content[line][0]
+        let csq = await MessageBus.i.request('link/quest/post',
+          {
+            questId: questId,
+            caseId: caseId,
+            orderPosition: line
+          }
+        )
+        if (csq.message.error) {
+          console.log('--- error')
+          console.log(csq.message.error)
+        } else {
+          console.log('--- link quest success')
+          let rmq = await MessageBus.i.request('link/room/post',
+            {
+              room_id: roomId,
+              case_id: caseId
+            }
+          )
+          if (rmq.message.error) {
+            console.log('--- error')
+            console.log(rmq.message.error)
+          } else {
+            console.log('--- link room success')
+          }
+        }
+      }
+    }
+    if(this._table == null){
+      let alert = document.querySelector('#alert-feedback')
+      alert.innerHTML = ""
+      let header = document.createElement('h4')
+      header.innerHTML = '<b>Empty table!</b>'
+      header.classList.add('alert-header')
+      header.style.color = '#721c24'
+      alert.classList.add('alert-danger', 'alert-dismissible', 'show')
+      alert.classList.remove('alert-success')
+      alert.insertAdjacentElement('afterbegin', header)
+      alert.insertAdjacentText('beforeend','You have to drag a csv containing the list of the selected documents id in the "drag zone"')
       alert.style.display = 'block'
       alert.insertAdjacentHTML('beforeend',`
       <button type="button" class="close" aria-label="Close">

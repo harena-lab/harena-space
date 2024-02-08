@@ -130,7 +130,15 @@
             </div>
             <button type="submit" class="btn btn-success my-2 disabled-look" id="btn-import">Import</button>
             <dcc-button label="Import" xstyle="out" location="btn-import" topic="author/import/documents"></dcc-button>
+            <button type="submit" class="btn btn-success my-2 disabled-look" id="btn-samples">Samples</button>
+            <dcc-button label="Samples" xstyle="out" location="btn-samples" topic="author/select/samples"></dcc-button>
           </form>
+
+          <ul>
+            <li><b>Import</b> - imports documents to annotate from a CSV: each row contains the <i>title</i> and <i>document</i>.</li>
+            <li><b>Sample</b> - samples existing imported documents in a new Quest and Room: each row contains the <i>id</i> of the selected case</li>
+          </ul>
+
         </div>
       </div>
 

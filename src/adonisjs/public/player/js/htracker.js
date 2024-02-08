@@ -2,6 +2,11 @@ class Tracker {
   constructor () {
     this.initializeTrack()
 
+    MessageBus.i.subscribe('case/start/#', this.caseStart.bind(this))
+
+    this._details = false
+    MessageBus.i.subscribe('track/detailed', this.trackDetailed.bind(this))
+
     this.inputReady = this.inputReady.bind(this)
     MessageBus.i.subscribe('input/ready/#', this.inputReady)
     this.inputMandatory = this.inputMandatory.bind(this)
@@ -39,6 +44,23 @@ class Tracker {
 
     this._knotTrack = []
     this._caseCompleted = false
+  }
+
+  caseStart (topic, message) {
+    this._instanceId = MessageBus.extractLevel(topic, 3)
+
+    // <TODO> redundant provisory
+    this._userId = message.userId
+    this._caseId = message.caseId
+
+    if (this._details)
+      MessageBus.i.publish('case/track/' + this._instanceId,
+        {userId: message.userId,
+         caseId: message.caseId}, true)
+  }
+
+  trackDetailed () {
+    this._details = true
   }
 
   _extractEntityId (topic, position) {
@@ -85,13 +107,27 @@ class Tracker {
     // this._changedVariable(topic, message.value) <FUTURE>
   }
 
+  _publishDetails (message, userId, caseId) {
+    if (this._details) {
+      const ii = (this._instanceId == null)
+        ? ii = ui + '__' + ci : this._instanceId
+      message['userId'] = (userId == null) ? this._userId : userId
+      message['caseId'] = (caseId == null) ? this._caseId : caseId
+
+      MessageBus.i.publish('case/track/' + ii, message, true)
+    }
+  }
+
   inputChanged (topic, message) {
     const varid = this._extractEntityId(topic, 3)
     const currentDateTime = new Date()
     const tr = {changed: currentDateTime.toJSON()}
     tr[varid] = message.value
     this._varTrack.push(tr)
-    this._updateVariable(this._extractEntityId(topic, 3), message.value)
+
+    this._publishDetails({varTrack: tr}, message.userId, message.caseId)
+
+    this._updateVariable(varid, message.value)
 
     // <TODO> check for inconsistencies
     MessageBus.i.publish('var/set/' + MessageBus.extractLevel(topic, 3),
@@ -145,10 +181,11 @@ class Tracker {
 
   knotStart (topic, message) {
     const currentDateTime = new Date()
-    this._knotTrack.push(
-      {knotid: this._extractEntityId(topic, 3),
-       timeStart: currentDateTime.toJSON()})
+    const kt = {knotid: this._extractEntityId(topic, 3),
+                timeStart: currentDateTime.toJSON()}
+    this._knotTrack.push(kt)
     this._trackStore()
+    this._publishDetails({knotTrack: kt}, this._userId, this._caseId)
   }
 
   inputSummary (topic, message) {
@@ -168,6 +205,8 @@ class Tracker {
         kt.knotid = message.knotid
       this._knotTrack.push(kt)
       this._trackStore()
+      this._publishDetails({knotTrack: kt}, message.userId, message.caseId)
+      this._publishDetails({variables: this._variables}, message.userId, message.caseId)
       MessageBus.i.publish('case/summary/' + MessageBus.extractLevel(topic, 3),
         {userId: message.userId,
          caseId: message.caseId,
@@ -188,6 +227,7 @@ class Tracker {
       kt.knotid = message.knotid
     this._knotTrack.push(kt)
     this._trackStore()
+    this._publishDetails({knotTrack: kt}, message.userId, message.caseId)
     MessageBus.i.publish('case/summary/' + MessageBus.extractLevel(topic, 3),
       {userId: message.userId,
        caseId: message.caseId,
@@ -197,10 +237,10 @@ class Tracker {
 
   async caseTryHalt (userId, caseId, instanceId) {
     const currentDateTime = new Date()
-    this._knotTrack.push(
-      {event: '*** try case halt ***',
-       timeResume: currentDateTime.toJSON()}
-    )
+    const kt = {event: '*** try case halt ***',
+                timeResume: currentDateTime.toJSON()}
+    this._knotTrack.push(kt)
+    this._publishDetails({knotTrack: kt}, userId, caseId)
     this._variables['try case halt'] = '*** try case halt ***'
     await MessageBus.i.publish('case/summary/' + instanceId,
       {userId: userId,
@@ -214,10 +254,10 @@ class Tracker {
     const track = this._trackRetrieve()
     if (track != null) {
       const currentDateTime = new Date()
-      track.knotTrack.push(
-        {event: '*** case halted ***',
-         timeResume: currentDateTime.toJSON()}
-      )
+      const kt = {event: '*** case halted ***',
+                  timeResume: currentDateTime.toJSON()}
+      track.knotTrack.push(kt)
+      this._publishDetails({knotTrack: kt}, userId, caseId)
       track.variables['case halted'] = '*** case halted ***'
       MessageBus.i.publish('case/summary/' + instanceId,
         {userId: userId,
