@@ -47,9 +47,6 @@ class Tracker {
   }
 
   caseStart (topic, message) {
-    console.log('=== Case Start')
-    console.log(topic)
-    console.log(message)
     this._instanceId = MessageBus.extractLevel(topic, 3)
 
     // <TODO> redundant provisory

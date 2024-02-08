@@ -11,10 +11,6 @@ class DCCLoggerManager extends DCCLight {
   }
 
   async _notifyLogger (topic, message, track) {
-    console.log('=== Logger Manager')
-    console.log(topic)
-    console.log(message)
-    console.log(track)
     if (track) {
       if (message.userId != null)
         delete message.userId
@@ -34,9 +30,6 @@ class DCCLoggerManager extends DCCLight {
       if (logger.message.error) {
         console.log('--- error')
         console.log(logger.message.error)
-      } else {
-        console.log('=== success ===')
-        console.log(logger.message)
       }
     }
   }

@@ -9,34 +9,35 @@ export class HarenaDCCOid {
   }
 
   reportBlocksUpdate (topic, message) {
-    console.log('=== Harena to record')
-    console.log(message)
-    const jsonl = message.value.split('\n')
-    const cpl = []
-    for (const jl of jsonl) {
-      let vj = JSON.parse(jl)
-      let compact = {}
-      if (!Array.isArray(vj))
-        compact = this._mapFields(vj)
-      else {
-        compact = []
-        for (const j of vj)
-          compact.push(this._mapFields(j))
-      }
-      cpl.push(compact)
-    }
-    console.log('=== Compact')
-    console.log(cpl)
-
     let cps = ''
-    let sep = ''
-    for (const cp of cpl) {
-      cps += sep + JSON.stringify(cp)
-      sep = '\n'
-    }
+    console.log('=== reportBlocksUpdate')
+    console.log(topic)
+    if (message.value == null || (message.value[0] != '{' && message.value[0] != '['))
+      cps = message.value
+    else {
+      const jsonl = message.value.split('\n')
+      const cpl = []
+      console.log('=== jsonl')
+      console.log(jsonl)
+      for (const jl of jsonl) {
+        let vj = JSON.parse(jl)
+        let compact = {}
+        if (!Array.isArray(vj))
+          compact = this._mapFields(vj)
+        else {
+          compact = []
+          for (const j of vj)
+            compact.push(this._mapFields(j))
+        }
+        cpl.push(compact)
+      }
 
-    console.log('=== Compact String')
-    console.log(cps)
+      let sep = ''
+      for (const cp of cpl) {
+        cps += sep + JSON.stringify(cp)
+        sep = '\n'
+      }
+    }
 
     MessageBus.i.publish('input/changed/blocks',
                          {value: cps}, true)
@@ -63,8 +64,6 @@ export class HarenaDCCOid {
   }
 
   reportRobotTalk (topic, message) {
-    console.log('=== Talk to record')
-    console.log(message)
     MessageBus.i.publish('input/changed/talk',
                          {value: message}, true)
   }
