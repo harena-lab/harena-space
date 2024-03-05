@@ -37,8 +37,12 @@ class ReportManager {
       for (const s of schema)
         table += ',"' + s + '","time","miliseconds"'
       table += '\n'
-      for (const l of logger.message.logs) {
-        const answers = JSON.parse(l.log)
+
+      const logSet = this._preprocess(logger.message.logs,
+        (new URL(document.location).searchParams.get('aggregate')) == 'true')
+
+      for (const l of logSet) {
+        const answers = l.log
         const track = this._prepareTrack(answers.knotTrack, answers.varTrack)
         let lastTime = new Date(track.timeStart)
         table += '"' + l.user_id + '","' + l.username + '","' +
@@ -79,6 +83,67 @@ class ReportManager {
       element.click()
       document.body.removeChild(element)
     }
+  }
+
+  _preprocess (logs, aggregate) {
+    const toAdd = ['knotTrack', 'varTrack']
+    const toUpdate = ['variables', 'varUpdated', 'mandatoryFilled']
+    const toReplace = ['groupInput', 'caseCompleted']
+    const pp = (aggregate) ? [] : logs[l]
+    let agg = null
+    let l = 0
+    let prev = null
+    while (l < logs.length) {
+      const parsed = JSON.parse(logs[l].log)
+      if (!aggregate)
+        pp[l].log = parsed
+      else {
+        if (prev == null || prev != logs[l].instance_id) {
+          if (agg != null) {
+            console.log('=== agg')
+            console.log(agg)
+            pp.push(agg)
+          }
+          agg = logs[l]
+          agg.log = {variables: {}}
+          prev = logs[l].instance_id
+        }
+        for (const ta of toAdd) {
+          if (parsed[ta] != null) {
+            if (agg.log[ta] == null)
+              agg.log[ta] = [parsed[ta]]
+            else
+              agg.log[ta] = agg.log[ta].concat(parsed[ta])
+          }
+        }
+        for (const tu of toUpdate)
+          if (parsed[tu] != null) {
+            if (agg.log[tu] == null)
+              agg.log[tu] = parsed[tu]
+            else
+              for (const t in parsed[tu])
+                agg.log[tu][t] = parsed[tu][t]
+          }
+        for (const tr of toReplace)
+          if (parsed[tr] != null)
+            agg.log[tr] = parsed[tr]
+        if (parsed['varTrack'] != null) {
+          const vt = (Array.isArray(parsed['varTrack'])) ? parsed['varTrack'] : [parsed['varTrack']]
+          for (const v of vt) {
+            for (const f in Object.keys(v)) {
+              if (v[f] != 'changed')
+                agg.log.variables[f] = v[f]
+            }
+          }
+        }
+      }
+      l++
+    }
+    if (agg != null)
+      pp.push(agg)
+    console.log('=== pp')
+    console.log(pp)
+    return pp
   }
 
   async _report () {
