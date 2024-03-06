@@ -43,35 +43,37 @@ class ReportManager {
 
       for (const l of logSet) {
         const answers = l.log
-        const track = this._prepareTrack(answers.knotTrack, answers.varTrack)
-        let lastTime = new Date(track.timeStart)
-        table += '"' + l.user_id + '","' + l.username + '","' +
-                 track.timeStart + '","' +
-                 zeroPad(lastTime.getDate()) + '/' +
-                 zeroPad(lastTime.getMonth() + 1) + '/' +
-                 zeroPad(lastTime.getFullYear()) + '"'
-        for (const s of schema) {
-          let time = -1
-          if (track[s] != null) {
-            const t = new Date(track[s])
-            time = new Date(t - lastTime)
-            lastTime = t
+        if (answers.varTrack != null) {
+          const track = this._prepareTrack(answers.knotTrack, answers.varTrack)
+          let lastTime = new Date(track.timeStart)
+          table += '"' + l.user_id + '","' + l.username + '","' +
+                  track.timeStart + '","' +
+                  zeroPad(lastTime.getDate()) + '/' +
+                  zeroPad(lastTime.getMonth() + 1) + '/' +
+                  zeroPad(lastTime.getFullYear()) + '"'
+          for (const s of schema) {
+            let time = -1
+            if (track[s] != null) {
+              const t = new Date(track[s])
+              time = new Date(t - lastTime)
+              lastTime = t
+            }
+            console.log('=== variable ' + s)
+            console.log(answers.variables[s])
+            table += ',"'  + 
+                    (answers.variables[s] == null
+                      ? ''
+                      : (typeof answers.variables[s] === 'string' || answers.variables[s] instanceof String)
+                        ? answers.variables[s].replace(/"/g, '""')
+                        : answers.variables[s]
+                    ) +
+                    '","' + (time == -1 ? ''
+                      : zeroPad(time.getMinutes()) + ':' +
+                        zeroPad(time.getSeconds())) + '","' +
+                    ((time == -1) ? '' : time.getTime()) + '"'
           }
-          console.log('=== variable ' + s)
-          console.log(answers.variables[s])
-          table += ',"'  + 
-                   (answers.variables[s] == null
-                    ? ''
-                    : (typeof answers.variables[s] === 'string' || answers.variables[s] instanceof String)
-                      ? answers.variables[s].replace(/"/g, '""')
-                      : answers.variables[s]
-                   ) +
-                   '","' + (time == -1 ? ''
-                     : zeroPad(time.getMinutes()) + ':' +
-                       zeroPad(time.getSeconds())) + '","' +
-                   ((time == -1) ? '' : time.getTime()) + '"'
+          table += '\n'
         }
-        table += '\n'
       }
 
       const element = document.createElement('a')
@@ -89,7 +91,7 @@ class ReportManager {
     const toAdd = ['knotTrack', 'varTrack']
     const toUpdate = ['variables', 'varUpdated', 'mandatoryFilled']
     const toReplace = ['groupInput', 'caseCompleted']
-    const pp = (aggregate) ? [] : logs[l]
+    const pp = (aggregate) ? [] : logs
     let agg = null
     let l = 0
     let prev = null
