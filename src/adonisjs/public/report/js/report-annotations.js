@@ -306,13 +306,8 @@ class ReportManager {
         }
         console.log('=== blocks')
         console.log(blocks)
-        // if (multiple) {
-        //   for (const bl of blocks) {
-        //     expanded = expanded.concat(bl)
-        //     catOrder.push([ReportManager.catList.indexOf(bl[0][4])+1, bl[0][1]])
-        //   }
-        // } else {
-          // select the longest blocks
+
+        // select the longest blocks
         const selected = []
         const biggest = last - t + 1
         for (const bl of blocks)
@@ -328,7 +323,7 @@ class ReportManager {
             else
               // union of the two arrays without repetition
               cats[s[0[4]]] = [...new Set([...cats[s[0][4]], ...s[0][5]])]
-            catOrder.push([ReportManager.catList.indexOf(s[0][4])+1, s[0][5], s[0][1]])
+            catOrder.push([ReportManager.catList.indexOf(s[0][4])+1, s[0][1]])
           }
           for (const sel of selected[0]) {
             sel[4] = cats
@@ -339,7 +334,7 @@ class ReportManager {
           // select a random among biggest
           const sel = selected[Math.floor(Math.random() * selected.length)]
           expanded = expanded.concat(sel)
-          catOrder.push([ReportManager.catList.indexOf(sel[0][4])+1, sel[0][5], sel[0][1]])
+          catOrder.push([ReportManager.catList.indexOf(sel[0][4])+1, sel[0][1]])
         }
       }
       t = last + 1
