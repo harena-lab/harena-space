@@ -211,19 +211,24 @@ class ReportManager {
 
     // plan all annotations in a single array
     let plan = []
+    let annGroup = 1  // id for each annotation group
     for (const an of annotations) {
       let first = true
       for (const f of an.fragments) {
-        if (composed || first)
-          plan.push([f, an.categories])
+        if (composed || first)  // maintain only the first fragment for pruned
+          plan.push([f, an.categories, annGroup])
         first = false
       }
+      annGroup++
     }
+    console.log('=== plan')
+    console.log(plan)
 
     // order them by the last position
     plan = plan.sort((a, b) =>
       (a[0].start + a[0].size) - (b[0].start + b[0].size))
 
+    // transform annotations by fragments in annotations by token
     const ranges = []
     for (const pl of plan) {
       // gather proper categories
@@ -233,6 +238,7 @@ class ReportManager {
           cat.push(c)
 
       const an = pl[0]
+      const group = pl[2]
 
       if (cat.length >0) {
         if (!this._rangesConflict(ranges, an)) {
@@ -243,8 +249,12 @@ class ReportManager {
             const tk = tokens[t]
             if (tk[1] >= an.start && tk[1] <= an.start + an.size - 1) {
               const bio = (firstMatch) ? 'B' : 'I'
-              for (const c of cat)
-                tk[3][c] = bio
+              for (const c of cat) {
+                if (tk[3][c] == null)
+                  tk[3][c] = [bio, [group]]
+                else
+                  tk[3][c][1].push(group)
+              }
               firstMatch = false
             }
           }
@@ -252,7 +262,24 @@ class ReportManager {
       }
     }
 
-    // expand annotations (one class per token)
+    // merge together BIO in sequence of the same group
+    for (let t = 1; t < tokens.length; t++) {
+      const tk = tokens[t]
+      const prev = tokens[t-1]
+      for (const c in tk[3]) {
+        if (prev[3][c]) {
+          const intersection = tk[3][c][1].filter(x => prev[3][c][1].includes(x))
+          if (intersection.length > 0)
+            // merge together
+            tk[3][c][0] = 'I'
+        }
+      }
+    }
+
+    console.log('=== tokens')
+    console.log(tokens)
+
+    // expand annotations to serialize
     let expanded = []
     let t = 0
     const catOrder = []  // to calculate metrics
@@ -266,29 +293,44 @@ class ReportManager {
         const blocks = []
         for (const c of tCats) {
           let tk = tokens[t]
-          const bl = [[tk[0], tk[1], tk[2], 'B', c]]
+          const bl = [[tk[0], tk[1], tk[2], 'B', c, tk[3][c][1]]]
           let shift = t + 1
-          while (shift < tokens.length && tokens[shift][3][c] == 'I') {
+          while (shift < tokens.length && tokens[shift][3][c] &&
+                 tokens[shift][3][c][0] == 'I') {
             tk = tokens[shift]
-            bl.push([tk[0], tk[1], tk[2], 'I', c])
+            bl.push([tk[0], tk[1], tk[2], 'I', c, tk[3][c][1]])
             shift++
           }
           last = Math.max(last, shift - 1)
           blocks.push(bl)
         }
-        if (multiple) {
-          for (const bl of blocks) {
-            expanded = expanded.concat(bl)
-            catOrder.push([ReportManager.catList.indexOf(bl[0][4])+1, bl[0][1]])
-          }
-        } else {
-          // select the longest blocks
-          const selected = []
-          const biggest = last - t + 1
-          for (const bl of blocks)
-            if (bl.length == biggest)
-              selected.push(bl)
+        console.log('=== blocks')
+        console.log(blocks)
 
+        // select the longest blocks
+        const selected = []
+        const biggest = last - t + 1
+        for (const bl of blocks)
+          if (bl.length == biggest)
+            selected.push(bl)
+
+        if (multiple) {
+          // concentrate all categories and groups in a single annotation
+          const cats = {}
+          for (const s of selected) {
+            if (cats[s[0][4]] == null)
+              cats[s[0][4]] = s[0][5]
+            else
+              // union of the two arrays without repetition
+              cats[s[0[4]]] = [...new Set([...cats[s[0][4]], ...s[0][5]])]
+            catOrder.push([ReportManager.catList.indexOf(s[0][4])+1, s[0][1]])
+          }
+          for (const sel of selected[0]) {
+            sel[4] = cats
+            sel.pop()
+          }
+          expanded = expanded.concat(selected[0])
+        } else {
           // select a random among biggest
           const sel = selected[Math.floor(Math.random() * selected.length)]
           expanded = expanded.concat(sel)
@@ -401,6 +443,8 @@ class ReportManager {
     if (cases != null) {
       for (const c of cases.message) {
         const ant = await this._loadAnnotations(c.id)
+        console.log('=== case')
+        console.log(c.id)
         const bio =
           await this._buildBIO(c.id, ant.annotations, multiple, composed)
         table += JSON.stringify(bio) + '\n'
