@@ -58,8 +58,6 @@ class ReportManager {
               time = new Date(t - lastTime)
               lastTime = t
             }
-            console.log('=== variable ' + s)
-            console.log(answers.variables[s])
             table += ',"'  + 
                     (answers.variables[s] == null
                       ? ''
@@ -101,11 +99,8 @@ class ReportManager {
         pp[l].log = parsed
       else {
         if (prev == null || prev != logs[l].instance_id) {
-          if (agg != null) {
-            console.log('=== agg')
-            console.log(agg)
+          if (agg != null)
             pp.push(agg)
-          }
           agg = logs[l]
           agg.log = {variables: {}}
           prev = logs[l].instance_id
@@ -132,8 +127,8 @@ class ReportManager {
         if (parsed['varTrack'] != null) {
           const vt = (Array.isArray(parsed['varTrack'])) ? parsed['varTrack'] : [parsed['varTrack']]
           for (const v of vt) {
-            for (const f in Object.keys(v)) {
-              if (v[f] != 'changed')
+            for (const f of Object.keys(v)) {
+              if (f != 'changed')
                 agg.log.variables[f] = v[f]
             }
           }
