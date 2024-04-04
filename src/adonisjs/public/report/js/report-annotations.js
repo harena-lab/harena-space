@@ -395,9 +395,9 @@ class ReportManager {
             tokens.push([tk, tks, c-1, {}])
             tk = ''
             tks = -1
-            if (c < text.length && ReportManager.septoken.includes(text[c]))
-              tokens.push([text[c], c, c, {}])
           }
+          if (c < text.length && ReportManager.septoken.includes(text[c]))
+            tokens.push([text[c], c, c, {}])
         } else {
           if (tks == -1)
             tks = c
