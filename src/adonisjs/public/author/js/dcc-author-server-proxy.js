@@ -369,6 +369,7 @@ class DCCAuthorServer {
       data.append('image', this.b64toBlob(message.b64))
     }
     data.append('caseId', message.caseid)
+    data.append('classify', message.classify)
     const config = {
       method: 'POST',
       url: DCCCommonServer.managerAddressAPI + 'artifact',

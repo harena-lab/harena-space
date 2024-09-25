@@ -20,8 +20,10 @@ class Artifacts {
   }
 
   async _uploadArtifacts () {
+    this._artifactClass = {}
     let files = document.querySelector('#artifacts-select').files
     let progSpace = document.querySelector('#progress-artifacts')
+    const classify = document.querySelector('#auto-classify').checked
     let a = 0
     for (let f of files) {
       let art = document.createElement('div')
@@ -39,11 +41,15 @@ class Artifacts {
           {
             file: f,
             caseid: Basic.service.currentCaseId,
+            classify: (classify) ? 'true' : 'false',
             progress: prMsg
           }, null, true)
-      ref.innerHTML = '<a href="' + artifact.message.url + '" target="_blank">' +
-                      f.name + '</a>'
+      const html = `<a href="${artifact.message.url}" target="_blank">${f.name}</a>`
+      ref.innerHTML = html
+
       this._insertArtifactReference(artifact.message.filename, f.name)
+      if (artifact.message.classification != null)
+        this._artifactClass[artifact.message.filename] = artifact.message.classification
     }
     progSpace.innerHTML = ''
     this.showArtifacts()
@@ -103,7 +109,8 @@ class Artifacts {
       document.querySelector('#artifact-controls').style.display = 'none'
       ArtifactKnotGenerator.activate(
         compiled.artifacts, compiled.generators['artifact-knot'],
-          document.querySelector('#case-artifacts'))
+        document.querySelector('#case-artifacts'),
+        this._artifactClass)
     }
   }
 

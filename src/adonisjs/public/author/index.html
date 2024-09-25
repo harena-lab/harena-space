@@ -449,9 +449,13 @@
                     <div id="case-artifacts"></div>
                     <div id="progress-artifacts"></div>
                     <div id="artifact-controls">
-                       <input type="file" id="artifacts-select" name="artifacts-select" multiple="multiple"
-                              accept="image/png, image/jpeg, image/svg+xml, audio/mpeg, video/mp4, video/webm, video/quicktime, video/x-msvideo">
-                       <dcc-button xstyle="in" topic="generator/activate/artifact-knot" label="PLACE IN KNOTS"></dcc-button>
+                      <input type="file" id="artifacts-select" name="artifacts-select" multiple="multiple"
+                             accept="image/png, image/jpeg, image/svg+xml, audio/mpeg, video/mp4, video/webm, video/quicktime, video/x-msvideo">
+                      <div class="form-check" style="background-color: lightgray; padding: 10px;">
+                        <input type="checkbox" id="auto-classify" name="auto-classify">
+                        <label for="auto-classify">Automatically Classify (may take time)</label>
+                      </div>
+                      <dcc-button xstyle="in" topic="generator/activate/artifact-knot" label="PLACE IN KNOTS"></dcc-button>
                     </div>
                  </div>
               </div>

@@ -3,14 +3,14 @@
  */
 
 class ArtifactKnotGenerator {
-  static activate (artifacts, candidates, html) {
+  static activate (artifacts, candidates, html, classification) {
     if (ArtifactKnotGenerator.i == null)
       ArtifactKnotGenerator.i = new ArtifactKnotGenerator()
 
-    ArtifactKnotGenerator.i.buildGenerator(artifacts, candidates, html)
+    ArtifactKnotGenerator.i.buildGenerator(artifacts, candidates, html, classification)
   }
 
-  buildGenerator (artifacts, candidates, html) {
+  buildGenerator (artifacts, candidates, html, classification) {
     MessageBus.i.publish('control/elements/wide')
 
     this._prepareSubgroup = this._prepareSubgroup.bind(this)
@@ -42,7 +42,10 @@ class ArtifactKnotGenerator {
                  '<option value="_empty_" selected></option>'
       for (let c in candidates)
          artHTML += '<option value="' + c + '">' + candidates[c].description + '</option>'
-      artHTML += '</select></td>'
+      artHTML += '</select>'
+      if (classification[a] != null)
+        artHTML += `<p>suggestion: ${classification[a]} - ${ArtifactKnotGenerator._classDescription[classification[a]]}</p>`
+      artHTML += '</td>'
       artHTML += '<td><select name="s_' + id + '" id="s_' + id + '">' +
                  '<option value="_empty_" selected></option></select></td></tr>'
     }
@@ -138,4 +141,15 @@ class ArtifactKnotGenerator {
     MessageBus.i.publish('control/elements/retract')
     MessageBus.i.publish('generator/finished/artifact-knot')
   }
+}
+
+ArtifactKnotGenerator._classDescription = {
+  'SX': 'Sub-xifóide ou Subcostal',
+  'PL': 'Para-esternal Longa',
+  'A4': 'Apical de 4 câmaras',
+  'PM': 'Paraesternal curta nível mitral',
+  'PV': 'Paraesternal curta nível V. aortica',
+  'PP': 'Paraesternal curta nível papilares',
+  'VI': 'Other',
+  'UN': 'Unidentified'
 }
