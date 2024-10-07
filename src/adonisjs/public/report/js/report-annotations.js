@@ -160,7 +160,7 @@ class ReportManager {
     let g2csv = ''
     let sep = ''
     for (const g of groups) {
-      g2csv += sep + ReportManager.catList[g[0]-1] + ':' + g[2]
+      g2csv += `${sep + ReportManager.catList[g[0]-1]}:${g[1]}/${g[2]}`
       sep = '; '
     }
     return g2csv
@@ -181,7 +181,7 @@ class ReportManager {
       for (const m in ReportManager.catList)
         table += ',"' + ReportManager.catList[m] + '"'
 
-      table += ',"self order groups","self order ordered"\n'
+      table += ',"categories ordered","self order grouped"\n'
 
       for (const c of cases.message) {
         // remove prefix from title

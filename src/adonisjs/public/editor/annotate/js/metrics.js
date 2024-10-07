@@ -12,18 +12,23 @@ class AnnotationMetrics {
       let catG = null
       for (let i = 0; i < sortedL.length; i++) {
         if (sortedL[i][0] === cat) {
+          const quantity = (sortedL[i].length === 2) ? 1 : sortedL[i][2]
           // if any element in the previous position is not in the same category
-          if (prev == -1 || (sortedL[prev][0] !== cat &&
-              (prevG == -1 || sortedL[prev][1] > sortedL[prevG][1]))) {
-            catG = [cat, sortedL[i][1], 1]  // new category grouping
+          if ((prev === -1 && prevG === -1)  ||  // first appearance
+              (prev !== -1 &&  // has an element in a previous position
+               (sortedL[prev][0] !== cat &&  // not in the same category
+               (prevG === -1 ||  // has no previous element of the category
+                // previous in the category precedes last annotation position
+                sortedL[prev][1] > sortedL[prevG][1])))) {
+            catG = [cat, sortedL[i][1], quantity]  // new category grouping
             grouped.push(catG)
           } else {
-            catG[2]++
+            catG[2] += quantity
           }
           prevG = i
         }
         // last distinct position in the sequence
-        if (i+1 == sortedL.length || sortedL[i+1][1] !== sortedL[i][1])
+        if (i+1 === sortedL.length || sortedL[i+1][1] !== sortedL[i][1])
           prev = i
       }
     }
