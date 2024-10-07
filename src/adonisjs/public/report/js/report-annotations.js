@@ -287,7 +287,7 @@ class ReportManager {
       const tk = tokens[t]
       const tCats = Object.keys(tk[3])
       let last = t
-      if (tCats.length == 0)
+      if (tCats.length === 0)
         expanded.push([tk[0], tk[1], tk[2], 'O', null])
       else { // gather together BIO sequences
         const blocks = []
