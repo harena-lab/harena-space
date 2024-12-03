@@ -344,7 +344,8 @@ class UserSignup {
     }
     let user = await MessageBus.i.request('user/login/post', userLogin)
     // window.location.href = "/player/case/?id=8b969606-ad6b-4772-a8e8-f15ae8033e0e&room=f2ef57a5-7c71-4fd9-9fd5-69448020c981"
-    window.location.href = "/player/case/?id=164e49f9-fee2-49dc-aa16-53bf7cf3ea97&room=2dcc1f39-85e6-4cfe-9539-58145f6cc98b"
+    // window.location.href = "/player/case/?id=164e49f9-fee2-49dc-aa16-53bf7cf3ea97&room=2dcc1f39-85e6-4cfe-9539-58145f6cc98b"
+    window.location.href = '/player/env/teacher.html'
   }
 
   async _experimentStartSWE () {
