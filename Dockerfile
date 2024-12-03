@@ -1,4 +1,4 @@
-FROM node:10
+FROM node:13
 
 #Update stretch repositories
 RUN sed -i s/deb.debian.org/archive.debian.org/g /etc/apt/sources.list
