@@ -34,6 +34,23 @@ class PlayerManager {
     // <TODO> provisory
     // this._nextKnot = 1;
 
+    this.handleKeyPress = this.handleKeyPress.bind(this);
+    document.addEventListener('keydown', this.handleKeyPress);
+  }
+
+  handleKeyPress(event) {
+    if (event.altKey && event.ctrlKey && event.key === 'a') {
+      this.onAltCtrlA();
+    }
+  }
+
+  async onAltCtrlA() {
+    console.log('Alt+Ctrl+A was pressed');
+    const decision = await DCCNoticeInput.displayNotice(
+      'Control super-powers. Next screen?', 'message', 'Yes', 'No')
+    if (decision === 'Yes') {
+      MessageBus.i.publish('flow/navigate/>', null, true)
+    }
   }
 
   /*
