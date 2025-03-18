@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Cadastro de Usuário</title>
+
+	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
+
+	<link rel="stylesheet" href="/author/css/author.css">
+
+	<script src="/lib/axios-0.21.0/axios.min.js"></script>
+
+	<script src="/lib/jquery-3-4-1/jquery-3.4.1.slim.min.js"></script>
+	<script src="/lib/popper-1-15-0/popper.min.js"></script>
+	<script src="/lib/bootstrap-4.4.1/js/bootstrap.min.js"></script>
+
+	<script src="/config/config.js"></script>
+	<script src="/dccs/infra/bus.js"></script>
+
+	<script src="/dccs/base/primitive-dcc.js"></script>
+	<script src="/dccs/base/scope-dcc.js"></script>
+	<script src="/dccs/base/dcc.js"></script>
+	<script src="/dccs/base/dcc-base.js "></script>
+	<script src="/dccs/base/dcc-visual.js "></script>
+	<script src="/dccs/base/dcc-block.js"></script>
+	<script src="/dccs/components/visual/dcc-button.js"></script>
+	<script src="/dccs/components/visual/dcc-notice-input.js"></script>
+
+	<script src="/dccs/components/web/dcc-rest.js"></script>
+	<script src="/dccs/components/web/dcc-include.js"></script>
+	<script src="/dccs/components/web/dcc-dhtml.js"></script>
+
+	<script src="/dccs/components/data/dcc-submit.js"></script>
+	<script src="/dccs/components/data/dcc-model.js"></script>
+	<script src="/dccs/components/data/dcc-record.js"></script>
+
+	<script src="/dccs/base/subscribe-dcc.js"></script>
+	<script src="/dccs/base/trigger-dcc.js"></script>
+	<script src="/dccs/base/property-dcc.js"></script>
+	<script src="/dccs/base/connect-dcc.js"></script>
+
+	<script src="/infra/basic.js"></script>
+	<script src="/infra/dcc-common-server-proxy.js"></script>
+	<script src="/infra/dcc-common-server-address.js"></script>
+	<script src="/infra/dcc-rest-proxy.js"></script>
+	<script src="/infra/dcc-basic.js"></script>
+
+	<link rel="stylesheet" href="/lib/fontawesome-5-10-1/css/all.min.css">
+	<link rel="stylesheet" href="/lib/bootstrap-4.4.1/css/bootstrap.min.css">
+
+	<link rel="stylesheet" href="/dccs/css/dccs.css">
+	<link rel="stylesheet" href="/dccs/css/properties.css">
+	<link rel="stylesheet" href="/infra/css/common-player.css">
+	<link rel="stylesheet" href="/infra/css/common-author.css">
+
+	<script src="/user/js/dcc-rest-proxy-user.js"></script>
+  <script src="/user/js/user-signup.js"></script>
+</head>
+
+  <body onload="UserSignup.i.startISC()">
+    <!-- Create a section to place page content -->
+    <main role="main">
+      <dcc-rest id="harena-create-user" bind="harena-create-user" subscribe="user/create/post"></dcc-rest>
+      <dcc-rest id="harena-link-term" bind="harena-link-term" subscribe="user/term/post"></dcc-rest>
+      <dcc-rest id="harena-login-event" bind="harena-login-event" subscribe="user/login/post"></dcc-rest>
+
+      <div class="d-flex flex-column vh-100 vw-100 hidden-overflow">
+
+        <div class="h-100 w-100 create-case-padding scroll-y">
+					<div class="col-md-12 col-lg-6">
+						<hr>
+						<div id="feedback-message-1" style="font-size:24px;color:red"></div>
+						<hr>
+					</div>
+
+          <div id="complete-form" class="row" style="padding-bottom: 70px;">
+
+            <div class="col-md-12 col-lg-6">
+							<!-- <h4 style="color:black">Este cadastro deve obrigatoriamente ser preenchido pelo responsável da criança ou adolescente que participará da oficina.</h4> -->
+
+              <form id="create-case-form">
+								<!-- TCLE -->
+                <div id="term-form" class="outer">
+                  <hr>
+                  <section id="main_content" class="inner">
+										<h1 id="termo-de-consentimento-livre-e-esclarecido">Clinical Reasoning in Cardiology education</h1>
+
+										<p></p>
+										
+										<p>Dear student, </p>
+										
+										<p>In this information letter, we ask you to take part in a scientific study in medical education. Participation is voluntary. In order to take part, we need your written permission.</p>
+										
+										<p>Before you decide to take part in this study, we will explain what the study entails. Read through the information and reach out to a researcher if you have any questions.</p>
+										
+										<p></p>
+										
+										<h2>Introduction</h2>
+										
+										<p>This study is initiated and executed by the cardiology department of the UMCG and the Wenkebach Instituut voor Onderwijs en Opleiden (WIOO). We are reaching out to you because we would like to study the educational methods that we use in the Medicine bachelor program. As you are a third-year or pre-master student, you are invited to take part in the study.</p>
+										
+										<p>We would like to ask you to carefully read the topics below and to, if you decide to take part in the study, sign the consent form with mention of the date.</p>
+										
+										<p></p>
+										
+										<h2>1. Background and goal of the study</h2>
+										
+										<p>In this study, we would like to study the effect of our education on your clinical reasoning skills. The cardiology department has been using multiple types of educational activities, ranging from textual information to lectures to podcasts. With this study, we would like to study the effects of these different educational forms on your clinical reasoning skills in cardiology.</p>
+										
+										<p></p>
+										
+										<h2>2. Execution of the study</h2>
+										
+										<p>The main researcher for this study is Marco de Carvalho Filho (m.a.de.carvalho.filho@umcg.nl).</p>
+										
+										<p>For this study, we will schedule an extra, non-obligatory, educational session on March 25th&nbsp;in the UMCG. During this session, you will receive another explanation about the study, after which you are asked to perform different exercises individually for 40-50 minutes. Although this session is not part of regular education for that week, the content will be about the materials of that week. This study will therefore be <u>additional</u>&nbsp;to the regular activities.</p>
+										
+										<p></p>
+										
+										<h2>3. What the researcher expects from you</h2>
+										
+										<p>For this study, we expect you to take part in the intervention, and perform the different exercises that belong to it without the additional use of sources from the internet or other students. </p>
+										
+										<p>After doing the exercises, you will have the opportunity to discuss it with the researchers, which will involve discussing topics relevant to your studies. </p>
+										
+										<p>You do not need to prepare before the session. </p>
+										
+										<p>Participation in the whole session, including the introduction, exercise and the following discussion, will take you approximately 2 hours.</p>
+										
+										<p></p>
+										
+										<h2>4. Possible risks</h2>
+										
+										<p><i>4.1 Study progress</i></p>
+										
+										<p>The study is extra-class activity, and therefore not participating in it will in no way affect your study progress or future assessments. It is totally understandable if you decide not to participate, and your choice will not affect your relationship with your teachers or the researchers. </p>
+										
+										<p><i>4.2 Privacy</i></p>
+										
+										<p>In our study, we collect personal data. In collecting personal data, there are always privacy risks. We kindly refer to parts 9 and 10 for a more thorough description of the data that we collect.</p>
+										
+										<p></p>
+										
+										<h2>5. Advantages and disadvantages of participation</h2>
+										
+										<p><i>5.1 Advantages</i></p>
+										
+										<p>Taking part in this study will provide you with additional education for the week that concerns chest pain. Furthermore, you will receive an extra quiz on the topics that you learn during the study. Lastly, the cardiology teachers will be present to elaborate on the (in)correct answers of the quizzes at the end of the study,.</p>
+										
+										<p<i>5.2 Disadvantages</i></p>
+										
+										<p>Taking part in this study requires a 2-hour time investment. The exercises during the study may give you some (varying degree of) cognitive stress.</p>
+										
+										<p></p>
+										
+										<h2>6. If you do not wish to participate (anymore)</h2>
+										
+										<p>Taking part in this study is completely voluntary, and you have the ability to withdraw your consent up until the results are submitted for publishing. You can withdraw your consent by sending an email to L.M. (Ligia) Cayres Ribeiro (l.m.cayres.ribeiro@umcg.nl), with mention of your personal code, which consists of the last four numbers of your telephone number, and the first four numbers of your zip code (example: 46719725). If you withdraw your consent, then your data will be destroyed and will not be included in the analysis. Your personal code is necessary to enable us to match your results of this study to our pseudonymized dataset in order to delete it if you wish. Please notice that the aggregated results will be published in a scientific journal, and after that it is not possible to withdraw consent.</p>
+										
+										<p></p>
+										
+										<h2>7. You will be informed if relevant information becomes available about the study</h2>
+										
+										<p>If there are changes or updates in the study that are relevant to you or your informed consent, you will be notified. Additionally, if there are reasons to end the study, you will also be notified.</p>
+										
+										<p></p>
+										
+										<h2>8. Recording and storage of data</h2>
+										
+										<p><i>8.1 Recorded personal data</i></p>
+										
+										<p>In this study, we collect personal data. Personal data are data that can be traced back to an individual. Specifically, we ask for your age and gender, previous education, and personal code. All personal data will be handled by the researchers keeping in mind the Dutch &ldquo;AVG wet&rdquo;. </p>
+										
+										<p><i>8.2 Data storage</i></p>
+										
+										<p>All data will be stored in the UMCG research environment. The dataset will not contain any sensitive information and is pseudonymized at the moment of storage. </p>
+										
+										<p><i>8.3 Confidentiality of data</i></p>
+										
+										<p>The pseudonymized dataset will be shared within the research team. The results of the study will be published in a scientific journal, but the data used in these papers cannot be traced back to you as an individual.</p>
+										
+										<p><i>8.4 Length of data storage</i></p>
+										
+										<p>Data will be stored for a minimum of 10 years, due to scientific integrity. </p>
+										
+										<p><i>8.5 Use of data after this study has ended</i></p>
+										
+										<p>Sometimes in research, the researcher(s) would like to use the data that was collected for future studies, that have not been identified yet. In the informed consent, we ask you to give consent to the use of the data from this study for this future purpose. It is important that you know that when you give consent to the future use of your pseudonymized data, that we will never publish data that can be traced back to individuals, and we will always adhere to the ethics of doing (bio)medical-education research in future studies.</p>
+										
+										<p></p>
+										
+										<h2>9. Information about your rights in data analysis</h2>
+										
+										<p>As a participant in this study, you have certain rights, such as the right to information, right of inspection and right to oblivion. For general information, please consult the website of the Authority Personal Data. For questions about your rights applicable to this specific study, please contact the controller of your personal data. This is: L.M. (Ligia) Cayres Ribeiro, UMCG (<a class="c6" href="mailto:l.m.cayres.ribeiro@umcg.nl">l.m.cayres.ribeiro@umcg.nl</a>). If you have any questions or complaints about the processing of your personal data, we encourage you to contact the researcher first. You can also contact the Data Protection Officer of the educational institution (<a class="c6" href="mailto:privacy@umcg.nl">privacy@umcg.nl)</a>&nbsp;or the Personal Data Authority.</p>
+										
+										<h2>10. Reward for participation</h2>
+										
+										<p>You will not be paid or reimbursed for participating in this study. However, we will provide an extra knowledge quiz about the topics of the week, and the explanation of all the questions by the cardiology teachers as a token for your participation.</p>
+										
+										<p></p>
+										
+										<h2>11. Ethical approval from the NVMO-ERB</h2>
+										
+										<p>The ethical board of the NVMO has granted ethical permission for this study.</p>
+										
+										<p></p>
+										
+										<h2>12. If you have any other questions or complaints</h2>
+										
+										<p>If you have further questions about this study, you can contact L.M. (Ligia) Cayres Ribeiro. </p>
+										
+										<p></p>
+										
+										<h2>13. Informed consent</h2>
+										
+										<p>When you have had sufficient information and time to consider and decide to participate in the study, we will ask you to confirm in writing on the accompanying consent form/ informed consent that you have understood the information and agree to participate in the study. Both you and the researcher will receive a signed version of this consent form. You do not need to send this form via email, you will be able to sign it during the study on November 25th.</p>
+										
+										<p></p>
+										
+										<p>Kind regards,</p>
+										
+										<p></p>
+										
+										<p>Marco de Carvalho Filho (professor and researcher), UMCG<br>
+										Ligia Cayres Ribeiro (researcher), UMCG<br>
+										Wybe Nieuwland (cardiologist), UMCG<br>
+										Haye van der Wal (cardiologist), UMCG<br>
+										Lizayra Dassen (research assistant), UMCG</p>
+
+                    <!--
+										<hr>
+										<div style="text-align:center;">
+                    <a href="/user/signup/terms/tcle-raciocinio-clinico.pdf" target="_blank">Download do Termo de Consentimento Livre e Esclarecido (TCLE)</a><br /><br />
+                    </div>
+										<hr>
+										-->
+
+                    <h1>Personal Code</h1>
+
+										<!--
+										<p>Clinical reasoning in cardiology</p>
+										<ul>
+											<li>I have read the information letter. I was able to ask questions. My questions were answered sufficiently. I had enough time to decide about my participation.</li>
+											<li>I know that participating is voluntary and that I can withdraw my consent at any moment in the research. I do not have to provide a reason for this.</li>
+											<li>I know that if I withdraw, that the data that has been collected up until that moment can still be used, unless I ask for destroying of already existing data as well.</li>
+											<li>I consent to collecting, saving and using my data for answering the research question in this study.</li>
+											<li>I want to participate in this study.</li>
+										</ul>
+									-->
+
+									<!--
+									<div class="form-group">
+	                  <label for="email">Email of participant</label>
+	                  <input type="text" class="form-control" id="email" name="email" placeholder="Email of participant"
+										       aria-describedby="emailDesc" onchange="UserSignup.i.update()">
+	                </div>
+									
+	                <div class="form-group">
+	                  <label for="username">Name of participant</label>
+	                  <input type="text" class="form-control" id="username" name="username" placeholder="Full name of participant"
+										       aria-describedby="usernameDesc" onchange="UserSignup.i.update()">
+	                </div>
+								  -->
+
+									<p>In this study, we do not record your name or email address as part of the study. However, if you decide after the study that you would like to withdraw from the study, we have to be able to identify your data. For that reason, we ask you to construct a personal code. This code consists of the following: the last four numbers of your telephone number, and the four numbers of your postal code (for example: 27469725).</p>
+
+									<div class="form-group">
+	                  <label for="id_participant">What is your personal code?</label>
+	                  <input type="text" class="form-control" id="id_participant" name="id_participant" placeholder="Personal code of participant"
+										       aria-describedby="idDesc" onchange="UserSignup.i.update()">
+	                </div>
+
+									<!--
+									<div class="form-inline">
+										<label for="date_agree_1">Date:&nbsp;</label>
+										<input type="text" class="form-control" id="date_agree_1" name="date_agree_1" readonly>
+									</div>
+
+									<p><input type="checkbox" id="agree_checkbox" name="agree" value="agree" onchange="UserSignup.i.update()"/> I agree to participating in this study <br>
+									<input type="checkbox" id="consent_checkbox" name="consent" value="consent" onchange="UserSignup.i.update()" /> I consent to the re-use of my data after this study for not yet identified  	
+									research projects within the scope of (bio)medical-educational research. For this, ethical norms for this type of scientific research are taken into consideration.</p>
+									-->
+
+	                <input type="hidden" id="institution" name="institution" value="umcg">
+	                <input type="hidden" id="grade" name="grade" value="student">
+	                <input type="hidden" id="term" name="term" value="podcast_2023">
+	                <input type="hidden" id="role" name="role" value="adult">
+									<hr>
+									<div id="feedback-message-2" style="font-size:24px;color:red"></div>
+									<hr>
+									<dcc-submit label="Start" topic="/user/signup" xstyle="out"></dcc-submit>
+								</section>
+								</div>
+							</form>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <!-- end of div /.container -->
+  </body>
+</html>
