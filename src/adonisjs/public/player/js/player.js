@@ -457,6 +457,10 @@ class PlayerManager {
     // }
     MessageBus.i.publish('knot/start/' + knotName.replace(/\./g, '/'),
                          null, true)
+    MessageBus.i.publish('knot/track/' + this._state.runningCase.runningId,
+      {userId: this._state.userid,
+        caseId: Basic.service.currentCaseId,
+        knotid: knotName}, true)
 
     if (this._knots[knotName].categories &&
         this._knots[knotName].categories.includes('end'))

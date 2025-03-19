@@ -6,51 +6,93 @@ class ReportManager {
   }
 
   async _requestLogger () {
-    const logger = await MessageBus.i.request('logger/list/get',
-      {caseId: new URL(document.location).searchParams.get('id'),
+    const logger1 = await MessageBus.i.request('logger/list/get',
+      {caseId: new URL(document.location).searchParams.get('id1'),
        startingDateTime: new URL(document.location).searchParams.get('start'),
        endingDateTime: new URL(document.location).searchParams.get('end')})
-    if (logger.message.error) {
+    if (logger1.message.error) {
       console.log('--- error')
-      console.log(logger.message.error)
+      console.log(logger1.message.error)
       return null
     }
-    return logger
+    const logger2 = await MessageBus.i.request('logger/list/get',
+      {caseId: new URL(document.location).searchParams.get('id2'),
+       startingDateTime: new URL(document.location).searchParams.get('start'),
+       endingDateTime: new URL(document.location).searchParams.get('end')})
+    if (logger2.message.error) {
+      console.log('--- error')
+      console.log(logger2.message.error)
+      return null
+    }
+    return {message: {logs: logger1.message.logs.concat(logger2.message.logs)}}
   }
 
   // Function to process logs and generate user summary HTML
   _generateUserSummary(jsonData) {
+    const addressMap = { // remote
+      'e7451e3b-507e-472e-a092-4a2e1d56483d': 'nl/podcast',
+      '9d86ae9a-d582-4f03-bce8-ac73250047cf': 'nl/text',
+      'c087573d-0490-445d-ae5f-7d7f953aeaa8': 'en/podcast',
+      '341986cd-4781-4027-8360-1112bfd07cf0': 'en/text',
+      '14a3f09b-773b-49d9-808c-69b714c24251': 'nl/podcast',
+      'cf9e88f2-08b3-4376-8872-88f1fde12ce1': 'nl/text',
+      'fa56b36e-d22b-403c-a841-7ef2cae5e0bc': 'en/podcast',
+      'd10263f3-e97c-4033-b7e4-087eeaab3e90': 'en/text'
+    }
+
     // Parse the JSON if it's a string
     const data = typeof jsonData === 'string' ? JSON.parse(jsonData) : jsonData;
     const logs = data.message.logs;
     
     // Object to store user information
-    const userSummary = {};
+    const userSummary = {}
+    let recentLog = null
     
     // Process each log entry
-    logs.forEach(log => {
+    for (const log of logs) {
       const userId = log.user_id;
       const username = log.username;
-      const createdAt = new Date(log.created_at);
+      const createdAt = new Date(log.created_at)
       
       // If this is the first entry for this user, initialize their record
       if (!userSummary[userId]) {
         userSummary[userId] = {
-          userId: userId,
           username: username,
+          caseType: addressMap[log.case_id],
           entryCount: 0,
-          mostRecentDate: new Date(0) // Start with epoch time
-        };
+          mostRecentDate: new Date(0), // Start with epoch time
+          log: null,
+          stage: ''
+        }
       }
       
       // Update the user's entry count
-      userSummary[userId].entryCount++;
+      userSummary[userId].entryCount++
+
+      if (userSummary[userId].log === null)
+        userSummary[userId].log = log
       
       // Update the most recent date if this entry is newer
       if (createdAt > userSummary[userId].mostRecentDate) {
-        userSummary[userId].mostRecentDate = createdAt;
+        userSummary[userId].mostRecentDate = createdAt
+        userSummary[userId].log = log
       }
-    });
+    }
+
+    for (const userId in userSummary) {
+      let recent = new Date(0)
+      if (userSummary[userId].log !== null) {
+        const parsedLog = JSON.parse(userSummary[userId].log.log)
+        console.log(parsedLog)
+        for (const kt of parsedLog.knotTrack) {
+          const start = new Date(kt.timeStart)
+          if (start > recent) {
+            recent = start
+            userSummary[userId].stage = kt.knotid
+          }
+        }
+      }
+    }
     
     // Convert the user summary object to an array
     const userSummaryArray = Object.values(userSummary);
@@ -96,27 +138,29 @@ class ReportManager {
       <table>
         <thead>
           <tr>
-            <th>Username</th>
-            <th>User ID</th>
-            <th>Entry Count</th>
-            <th>Most Recent Activity</th>
+            <th>User</th>
+            <th>Case</th>
+            <th>Entries</th>
+            <th>Stage</th>
+            <th>Most Recent</th>
           </tr>
         </thead>
         <tbody>
     `;
     
     // Add a row for each user
-    userSummaryArray.forEach(user => {
+    for (const user of userSummaryArray) {
       const formattedDate = user.mostRecentDate.toLocaleString();
       html += `
           <tr>
             <td>${user.username}</td>
-            <td>${user.userId}</td>
+            <td>${user.caseType}</td>
             <td>${user.entryCount}</td>
+            <td>${user.stage}</td>
             <td>${formattedDate}</td>
           </tr>
       `;
-    });
+    }
     
     // Close the HTML
     html += `
