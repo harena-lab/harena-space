@@ -42,6 +42,26 @@ DCC.component(
 )
 
 DCC.component(
+  'harena-create-ticket',
+  'dcc-rest',
+  {
+    environment: {
+      'url-manager': HarenaConfig.manager.url + HarenaConfig.manager.api
+    },
+    oas: {
+      paths: {
+        '{url-manager}/ticket': {
+          'post': {
+            operationId: 'create-ticket',
+            parameters: []
+          }
+        }
+      }
+    }
+  }
+)
+
+DCC.component(
   'harena-link-term',
   'dcc-rest',
   {

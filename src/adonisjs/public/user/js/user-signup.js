@@ -83,6 +83,11 @@ class UserSignup {
     document.querySelector('#date_agree_1').value = sdate
   }
 
+  _startPodcast () {
+    this._signupPodcast = this._signupPodcast.bind(this)
+    MessageBus.i.subscribe('/user/signup', this._signupPodcast)
+  }
+
   update () {
     if(document.querySelector('#username') && document.querySelector('#name_participant'))
       document.querySelector('#name_participant').innerHTML = document.querySelector('#username').value
@@ -321,6 +326,132 @@ class UserSignup {
         this._showFeedback(
           this.finalMessage.replace('{password}', userJson['password']),
           'darkblue')
+      }
+    }
+  }
+
+  async _signupPodcast (topic, message) {
+    const parameters = (message && message.value) ? message.value : null
+    console.log('===== user parameters')
+    console.log(parameters)
+
+    const eventId = new URL(document.location).searchParams.get('event')
+    const password = new URL(document.location).searchParams.get('pwd')
+    const language = new URL(document.location).searchParams.get('lang')
+
+    this._showFeedback('')
+    if (parameters == null)
+      this._showFeedback('Processing error, please re-enter the page from the link.')
+    else if (eventId == null || password == null ||
+             eventId.length === 0 || password.length === 0 ||
+             language == null || language.length === 0)
+      this._showFeedback('Incomplete registration link.')
+    else if (parameters.id_participant.trim().length === 0)
+      this._showFeedback('Personal code is mandatory.')
+    else {
+      let ticket = await MessageBus.i.request('ticket/create/post')
+      if (!ticket.message.id)
+        this._showFeedback('Error creating ticket.')
+      else {
+        ticket = ticket.message.id
+        console.log('=== ticket')
+        console.log(ticket)
+
+        console.log('========== creating user ==========')
+        const participant = parameters.id_participant.trim()
+        const login = `${participant}_${ticket}`
+        const email = `${login}@email.com`
+        const userJson = {
+          username: participant,
+          email: email,
+          password: password,
+          login: login,
+          institution: parameters.institution,
+          grade: parameters.grade,
+          eventId: eventId
+        }
+        this.current = {
+          username: participant,
+          eventId: userJson.eventId,
+          ticket: ticket,
+          language: language
+        }
+        const user = await MessageBus.i.request('user/create/post', userJson)
+        console.log(user.message)
+        if (user.message.error) {
+          console.log('--- error')
+          console.log(user.message)
+          const err = user.message.error
+          if (err.type && err.type === 'duplicated')
+            this._showFeedback(`Duplicated id ${login}.`)
+          else if (err.type && err.type === 'unauthorized')
+            this._showFeedback(
+              'You need authorization to register.')
+          else
+            this._showFeedback(
+              'There was an error in your registration. Contact support: ' +
+              'error message - "' +
+              ((user.message.error.message)
+                ? user.message.error.message : '') + '".'
+            )
+        } else {
+          const agree = true
+          const now = new Date()
+          const termJson = {
+            userId: user.message.id,
+            termId: parameters.term,
+            nameResponsible: '',
+            emailResponsible: email,
+            nameParticipant: participant,
+            date: `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()}`,
+            role: parameters.role,
+            agree: (agree) ? '1' : '0'
+          }
+          console.log('=== term json')
+          console.log(termJson)
+          const term = await MessageBus.i.request('user/term/post', termJson)
+          console.log('=== term add')
+          console.log(term)
+          document.querySelector('#complete-form').style.display = 'none'
+          // this._showFeedback(
+          //   this.finalMessage.replace('{password}', userJson['password']),
+          //   'darkblue')
+
+          const userLogin = {
+            username: this.current.username,
+            eventId: this.current.eventId
+          }
+          const userL = await MessageBus.i.request('user/login/post', userLogin)
+
+          const address = { // remote
+            'nl': {
+              0: 'e7451e3b-507e-472e-a092-4a2e1d56483d',
+              1: '9d86ae9a-d582-4f03-bce8-ac73250047cf'
+            },
+            'en': {
+              0: 'c087573d-0490-445d-ae5f-7d7f953aeaa8',
+              1: '341986cd-4781-4027-8360-1112bfd07cf0'
+            }
+          }
+          const caseRoom = '7d04fe0f-039a-4da7-af97-612d71f6182d' // remote
+
+          /*
+          const address = { // local
+            'nl': {
+              0: '14a3f09b-773b-49d9-808c-69b714c24251',
+              1: 'cf9e88f2-08b3-4376-8872-88f1fde12ce1'
+            },
+            'en': {
+              0: 'fa56b36e-d22b-403c-a841-7ef2cae5e0bc',
+              1: 'd10263f3-e97c-4033-b7e4-087eeaab3e90'
+            }
+          }
+          const caseRoom = '1252bde2-c370-4268-950d-d05c889d34e6' // local
+          */
+
+          const selectedAddress = address[this.current.language][Number.parseInt(this.current.ticket) % 2]
+          window.location.href = `/player/case/?id=${selectedAddress}&room=${caseRoom}`
+        }
       }
     }
   }
