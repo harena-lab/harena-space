@@ -45,6 +45,7 @@ class Tracker {
     this._groupInput = null
 
     this._knotTrack = []
+    this._knotTrackUpd = []
     this._caseCompleted = false
   }
 
@@ -185,6 +186,7 @@ class Tracker {
     const currentDateTime = new Date()
     const kt = {knotid: this._extractEntityId(topic, 3),
                 timeStart: currentDateTime.toJSON()}
+    this._knotTrackUpd.push(kt)
     this._knotTrack.push(kt)
     this._trackStore()
     this._publishDetails({knotTrack: kt}, this._userId, this._caseId)
@@ -192,13 +194,27 @@ class Tracker {
 
   knotRecord (topic, message) {
     if (message != null) {
-      MessageBus.i.publish('case/summary/' + MessageBus.extractLevel(topic, 3),
+      MessageBus.i.publish('case/record/' + MessageBus.extractLevel(topic, 3),
           {userId: message.userId,
-          caseId: message.caseId,
-          knotTrack: this._knotTrack,
-          variables: this._variables,
-          varTrack: this._varTrack}, true)
+           caseId: message.caseId,
+           knotTrack: this._knotTrackUpd,
+           variables: this._variables,
+           varTrack: this._varTrack}, true)
     }
+  }
+
+  async superAction (userId, caseId, instanceId, message) {
+    const currentDateTime = new Date()
+    const kt = {event: message,
+                timeAction: currentDateTime.toJSON()}
+    this._knotTrackUpd.push(kt)
+    this._knotTrack.push(kt)
+    await MessageBus.i.publish('case/summary/' + instanceId,
+       {userId: userId,
+        caseId: caseId,
+        knotTrack: this._knotTrack,
+        variables: this._variables,
+        varTrack: this._varTrack}, true)
   }
 
   inputSummary (topic, message) {
@@ -216,6 +232,7 @@ class Tracker {
       }
       if (message && message.knotid)
         kt.knotid = message.knotid
+      this._knotTrackUpd.push(kt)
       this._knotTrack.push(kt)
       this._trackStore()
       this._publishDetails({knotTrack: kt}, message.userId, message.caseId)
@@ -238,6 +255,7 @@ class Tracker {
     }
     if (message && message.knotid)
       kt.knotid = message.knotid
+    this._knotTrackUpd.push(kt)
     this._knotTrack.push(kt)
     this._trackStore()
     this._publishDetails({knotTrack: kt}, message.userId, message.caseId)
@@ -252,6 +270,7 @@ class Tracker {
     const currentDateTime = new Date()
     const kt = {event: '*** try case halt ***',
                 timeResume: currentDateTime.toJSON()}
+    this._knotTrackUpd.push(kt)
     this._knotTrack.push(kt)
     this._publishDetails({knotTrack: kt}, userId, caseId)
     this._variables['try case halt'] = '*** try case halt ***'
