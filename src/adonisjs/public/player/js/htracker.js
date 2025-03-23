@@ -38,8 +38,10 @@ class Tracker {
 
   initializeTrack () {
     this._variables = {}
+    this._variablesUpd = {}
     this._varUpdated = {}
     this._varTrack = []
+    this._varTrackUpd = []
     // this._varChanged = {} <FUTURE>
     this._mandatoryFilled = {}
     this._groupInput = null
@@ -126,6 +128,7 @@ class Tracker {
     const currentDateTime = new Date()
     const tr = {changed: currentDateTime.toJSON()}
     tr[varid] = message.value
+    this._varTrackUpd.push(tr)
     this._varTrack.push(tr)
 
     this._publishDetails({varTrack: tr}, message.userId, message.caseId)
@@ -175,6 +178,7 @@ class Tracker {
   _updateVariable (variable, value) {
     if (variable != null) {
       this._variables[variable] = value
+      this._variablesUpd[variable] = value
       this._varUpdated[variable] = true
       if (this._mandatoryFilled[variable] !== undefined) {
         this._mandatoryFilled[variable].filled = (value.length > 0) }
@@ -198,8 +202,11 @@ class Tracker {
           {userId: message.userId,
            caseId: message.caseId,
            knotTrack: this._knotTrackUpd,
-           variables: this._variables,
-           varTrack: this._varTrack}, true)
+           variables: this._variablesUpd,
+           varTrack: this._varTrackUpd}, true)
+      this._knotTrackUpd = []
+      this._variablesUpd = {}
+      this._varTrackUpd = []
     }
   }
 
