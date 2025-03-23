@@ -55,6 +55,12 @@ class PlayerManager {
     const decision = await DCCNoticeInput.displayNotice(
       'Control super-powers:',
       'list', 'Select', 'Cancel', options)
+
+    const pPlay = this._state.pendingPlayCheck()
+    if (pPlay != null && pPlay.running)
+      this._tracker.superAction(pPlay.userid, pPlay.caseid, pPlay.running.runningId,
+                                `*** super powers: ${decision} ***`)
+
     switch (decision) {
       case 'next':
         MessageBus.i.publish('flow/navigate/>', null, true)

@@ -6,6 +6,7 @@ class DCCLoggerManager extends DCCLight {
     super()
 
     this._notifyLogger = this._notifyLogger.bind(this)
+    this._subscribe('case/record/#', this._notifyLogger)
     this._subscribe('case/summary/#', this._notifyLogger)
     this._subscribe('case/track/#', this._notifyLogger)
   }
