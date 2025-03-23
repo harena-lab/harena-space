@@ -46,10 +46,22 @@ class PlayerManager {
 
   async onAltCtrlA() {
     console.log('Alt+Ctrl+A was pressed');
+    // const decision = await DCCNoticeInput.displayNotice(
+    //   'Control super-powers. Next screen?', 'message', 'Yes', 'No')
+    const options = [
+      {id: 'next', title: 'next knot'},
+      {id: 'previous', title: 'previous knot'}
+    ]
     const decision = await DCCNoticeInput.displayNotice(
-      'Control super-powers. Next screen?', 'message', 'Yes', 'No')
-    if (decision === 'Yes') {
-      MessageBus.i.publish('flow/navigate/>', null, true)
+      'Control super-powers:',
+      'list', 'Select', 'Cancel', options)
+    switch (decision) {
+      case 'next':
+        MessageBus.i.publish('flow/navigate/>', null, true)
+        break
+      case 'previous':
+        MessageBus.i.publish('knot/navigate/<', null, true)
+        break
     }
   }
 
