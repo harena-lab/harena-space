@@ -108,7 +108,7 @@ class ReportManager {
         for (const ta of toAdd) {
           if (parsed[ta] != null) {
             if (agg.log[ta] == null)
-              agg.log[ta] = [parsed[ta]]
+              agg.log[ta] = parsed[ta]
             else
               agg.log[ta] = agg.log[ta].concat(parsed[ta])
           }
