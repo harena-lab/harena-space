@@ -1,0 +1,510 @@
+[
+  {
+    "knotTrack": [
+      {
+        "knotid": "Introduction",
+        "timeStart": "2025-03-23T19:01:01.909Z"
+      }
+    ],
+    "variables": {},
+    "varTrack": [],
+    "logType": "record"
+  },
+  {
+    "knotTrack": [
+      {
+        "knotid": "Demographics",
+        "timeStart": "2025-03-23T19:02:39.241Z"
+      }
+    ],
+    "variables": {
+      "Demographics.Age": "",
+      "Demographics.other": "",
+      "Demographics.education": "",
+      "Demographics.work_experience_type": ""
+    },
+    "varTrack": [],
+    "logType": "record"
+  },
+  {
+    "knotTrack": [
+      {
+        "knotid": "Task_1",
+        "timeStart": "2025-03-23T19:05:02.525Z"
+      }
+    ],
+    "variables": {
+      "Demographics.Previous_education": "Yes - namely...",
+      "Demographics.Work_experience_healthcare": "Yes - namely ...",
+      "Demographics.Gender": "Male",
+      "Demographics.work_experience_duration": "three years",
+      "Demographics.Language": "Other - namely ...",
+      "Demographics.Age": "32",
+      "Demographics.work_experience_type": "some work",
+      "Demographics.other": "other language",
+      "Demographics.education": "another study",
+      "Task_1.IS1": ""
+    },
+    "varTrack": [
+      {
+        "changed": "2025-03-23T19:04:03.926Z",
+        "Demographics.Age": "32"
+      },
+      {
+        "changed": "2025-03-23T19:04:04.089Z",
+        "Demographics.Gender": "Male"
+      },
+      {
+        "changed": "2025-03-23T19:04:07.649Z",
+        "Demographics.Language": "English"
+      },
+      {
+        "changed": "2025-03-23T19:04:12.010Z",
+        "Demographics.Previous_education": "No - I did not"
+      },
+      {
+        "changed": "2025-03-23T19:04:14.172Z",
+        "Demographics.Work_experience_healthcare": "Yes - namely ..."
+      },
+      {
+        "changed": "2025-03-23T19:04:31.532Z",
+        "Demographics.work_experience_type": "some work"
+      },
+      {
+        "changed": "2025-03-23T19:04:31.688Z",
+        "Demographics.Language": "Other - namely ..."
+      },
+      {
+        "changed": "2025-03-23T19:04:40.268Z",
+        "Demographics.other": "other language"
+      },
+      {
+        "changed": "2025-03-23T19:04:40.400Z",
+        "Demographics.Previous_education": "Yes - namely..."
+      },
+      {
+        "changed": "2025-03-23T19:05:00.541Z",
+        "Demographics.education": "another study"
+      },
+      {
+        "changed": "2025-03-23T19:05:00.682Z",
+        "Demographics.work_experience_duration": "three years"
+      }
+    ],
+    "logType": "record"
+  },
+  {
+    "knotTrack": [
+      {
+        "knotid": "Podcast_explanation_1",
+        "timeStart": "2025-03-23T19:07:33.884Z"
+      }
+    ],
+    "variables": {
+      "Task_1.IS1": "Everything about chest pain."
+    },
+    "varTrack": [
+      {
+        "changed": "2025-03-23T19:07:33.728Z",
+        "Task_1.IS1": "Everything about chest pain."
+      }
+    ],
+    "logType": "record"
+  },
+  {
+    "knotTrack": [
+      {
+        "knotid": "Podcast_1",
+        "timeStart": "2025-03-23T19:08:56.718Z"
+      }
+    ],
+    "variables": {},
+    "varTrack": [],
+    "logType": "record"
+  },
+  {
+    "knotTrack": [
+      {
+        "knotid": "Podcast_explanation_2",
+        "timeStart": "2025-03-23T19:11:14.551Z"
+      }
+    ],
+    "variables": {
+      "Check_1.Activity": "any activity"
+    },
+    "varTrack": [
+      {
+        "changed": "2025-03-23T19:11:14.381Z",
+        "Check_1.Activity": "any activity"
+      }
+    ],
+    "logType": "record"
+  },
+  {
+    "knotTrack": [
+      {
+        "knotid": "Podcast_2",
+        "timeStart": "2025-03-23T19:12:25.016Z"
+      }
+    ],
+    "variables": {},
+    "varTrack": [],
+    "logType": "record"
+  },
+  {
+    "knotTrack": [
+      {
+        "knotid": "Task_2",
+        "timeStart": "2025-03-23T19:13:27.541Z"
+      }
+    ],
+    "variables": {
+      "Check_2.Position": "sitting",
+      "Task_2.IS2": ""
+    },
+    "varTrack": [
+      {
+        "changed": "2025-03-23T19:13:27.353Z",
+        "Check_2.Position": "sitting"
+      }
+    ],
+    "logType": "record"
+  },
+  {
+    "knotTrack": [
+      {
+        "knotid": "End_screen",
+        "timeStart": "2025-03-23T19:14:31.895Z"
+      }
+    ],
+    "variables": {
+      "Task_2.IS2": "Again everything I know."
+    },
+    "varTrack": [
+      {
+        "changed": "2025-03-23T19:14:31.747Z",
+        "Task_2.IS2": "Again everything I know."
+      }
+    ],
+    "logType": "record"
+  },
+  {
+    "knotTrack": [
+      {
+        "knotid": "Introduction",
+        "timeStart": "2025-03-23T19:01:01.909Z"
+      },
+      {
+        "knotid": "Demographics",
+        "timeStart": "2025-03-23T19:02:39.241Z"
+      },
+      {
+        "knotid": "Task_1",
+        "timeStart": "2025-03-23T19:05:02.525Z"
+      },
+      {
+        "knotid": "Podcast_explanation_1",
+        "timeStart": "2025-03-23T19:07:33.884Z"
+      },
+      {
+        "knotid": "Podcast_1",
+        "timeStart": "2025-03-23T19:08:56.718Z"
+      },
+      {
+        "knotid": "Check_1",
+        "timeStart": "2025-03-23T19:09:56.212Z"
+      },
+      {
+        "knotid": "Podcast_explanation_2",
+        "timeStart": "2025-03-23T19:11:14.551Z"
+      },
+      {
+        "knotid": "Podcast_2",
+        "timeStart": "2025-03-23T19:12:25.016Z"
+      },
+      {
+        "knotid": "Check_2",
+        "timeStart": "2025-03-23T19:13:13.634Z"
+      },
+      {
+        "knotid": "Task_2",
+        "timeStart": "2025-03-23T19:13:27.541Z"
+      },
+      {
+        "knotid": "End_screen",
+        "timeStart": "2025-03-23T19:14:31.895Z"
+      },
+      {
+        "event": "case/completed/2025-03-23T19:01:01.859Z-a40f1e20-92d7-bf39-3219-b3ed65b1e8ad",
+        "timeCompleted": "2025-03-23T19:14:31.896Z",
+        "knotid": "End_screen"
+      }
+    ],
+    "variables": {
+      "Demographics.Age": "32",
+      "Demographics.other": "other language",
+      "Demographics.education": "another study",
+      "Demographics.work_experience_type": "some work",
+      "Demographics.Previous_education": "Yes - namely...",
+      "Demographics.Work_experience_healthcare": "Yes - namely ...",
+      "Demographics.Gender": "Male",
+      "Demographics.work_experience_duration": "three years",
+      "Demographics.Language": "Other - namely ...",
+      "Task_1.IS1": "Everything about chest pain.",
+      "Check_1.Activity": "any activity",
+      "Check_2.Position": "sitting",
+      "Task_2.IS2": "Again everything I know."
+    },
+    "varTrack": [
+      {
+        "changed": "2025-03-23T19:04:03.926Z",
+        "Demographics.Age": "32"
+      },
+      {
+        "changed": "2025-03-23T19:04:04.089Z",
+        "Demographics.Gender": "Male"
+      },
+      {
+        "changed": "2025-03-23T19:04:07.649Z",
+        "Demographics.Language": "English"
+      },
+      {
+        "changed": "2025-03-23T19:04:12.010Z",
+        "Demographics.Previous_education": "No - I did not"
+      },
+      {
+        "changed": "2025-03-23T19:04:14.172Z",
+        "Demographics.Work_experience_healthcare": "Yes - namely ..."
+      },
+      {
+        "changed": "2025-03-23T19:04:31.532Z",
+        "Demographics.work_experience_type": "some work"
+      },
+      {
+        "changed": "2025-03-23T19:04:31.688Z",
+        "Demographics.Language": "Other - namely ..."
+      },
+      {
+        "changed": "2025-03-23T19:04:40.268Z",
+        "Demographics.other": "other language"
+      },
+      {
+        "changed": "2025-03-23T19:04:40.400Z",
+        "Demographics.Previous_education": "Yes - namely..."
+      },
+      {
+        "changed": "2025-03-23T19:05:00.541Z",
+        "Demographics.education": "another study"
+      },
+      {
+        "changed": "2025-03-23T19:05:00.682Z",
+        "Demographics.work_experience_duration": "three years"
+      },
+      {
+        "changed": "2025-03-23T19:07:33.728Z",
+        "Task_1.IS1": "Everything about chest pain."
+      },
+      {
+        "changed": "2025-03-23T19:11:14.381Z",
+        "Check_1.Activity": "any activity"
+      },
+      {
+        "changed": "2025-03-23T19:13:27.353Z",
+        "Check_2.Position": "sitting"
+      },
+      {
+        "changed": "2025-03-23T19:14:31.747Z",
+        "Task_2.IS2": "Again everything I know."
+      }
+    ],
+    "logType": "summary"
+  },
+  {
+    "knotTrack": [
+      {
+        "knotid": "Introduction",
+        "timeStart": "2025-03-24T00:07:07.738Z"
+      },
+      {
+        "knotid": "Demographics",
+        "timeStart": "2025-03-24T00:07:43.891Z"
+      },
+      {
+        "knotid": "Task_1",
+        "timeStart": "2025-03-24T00:08:06.319Z"
+      },
+      {
+        "knotid": "Podcast_explanation_1",
+        "timeStart": "2025-03-24T00:08:10.388Z"
+      },
+      {
+        "knotid": "Podcast_1",
+        "timeStart": "2025-03-24T00:08:11.586Z"
+      },
+      {
+        "knotid": "Check_1",
+        "timeStart": "2025-03-24T00:08:18.557Z"
+      },
+      {
+        "knotid": "Podcast_explanation_2",
+        "timeStart": "2025-03-24T00:08:22.626Z"
+      },
+      {
+        "knotid": "Podcast_2",
+        "timeStart": "2025-03-24T00:08:24.173Z"
+      },
+      {
+        "knotid": "Check_2",
+        "timeStart": "2025-03-24T00:08:30.743Z"
+      },
+      {
+        "knotid": "Task_2",
+        "timeStart": "2025-03-24T00:08:33.948Z"
+      },
+      {
+        "knotid": "End_screen",
+        "timeStart": "2025-03-24T00:08:38.289Z"
+      },
+      {
+        "event": "case/completed/2025-03-24T00:07:07.715Z-931faa6e-a2a2-9fa1-a036-69bb0600826c",
+        "timeCompleted": "2025-03-24T00:08:38.290Z",
+        "knotid": "End_screen"
+      }
+    ],
+    "variables": {
+      "videotrack": "pause:422.409419;",
+      "Demographics.Age": "34",
+      "Demographics.other": "",
+      "Demographics.education": "",
+      "Demographics.work_experience_type": "abc",
+      "Demographics.Previous_education": "No - I did not",
+      "Demographics.Work_experience_healthcare": "No",
+      "Demographics.Gender": "Other",
+      "Demographics.work_experience_duration": "two years",
+      "Demographics.Language": "Portuguese",
+      "Task_1.IS1": "aaaa",
+      "Check_1.Activity": "bbb",
+      "Check_2.Position": "zzz",
+      "Task_2.IS2": "dfg"
+    },
+    "varTrack": [
+      {
+        "changed": "2025-03-24T00:07:11.062Z",
+        "videotrack": "play:0;"
+      },
+      {
+        "changed": "2025-03-24T00:07:29.992Z",
+        "videotrack": "pause:17.873004;"
+      },
+      {
+        "changed": "2025-03-24T00:07:31.608Z",
+        "videotrack": "seeked:4.27;"
+      },
+      {
+        "changed": "2025-03-24T00:07:33.582Z",
+        "videotrack": "play:4.27;"
+      },
+      {
+        "changed": "2025-03-24T00:07:38.951Z",
+        "videotrack": "pause:9.605643;"
+      },
+      {
+        "changed": "2025-03-24T00:07:52.297Z",
+        "Demographics.Age": "34"
+      },
+      {
+        "changed": "2025-03-24T00:07:52.428Z",
+        "Demographics.Gender": "Other"
+      },
+      {
+        "changed": "2025-03-24T00:07:54.710Z",
+        "Demographics.Language": "Portuguese"
+      },
+      {
+        "changed": "2025-03-24T00:07:56.790Z",
+        "Demographics.Previous_education": "No - I did not"
+      },
+      {
+        "changed": "2025-03-24T00:07:58.365Z",
+        "Demographics.Work_experience_healthcare": "No"
+      },
+      {
+        "changed": "2025-03-24T00:08:05.120Z",
+        "Demographics.work_experience_type": "abc"
+      },
+      {
+        "changed": "2025-03-24T00:08:05.286Z",
+        "Demographics.work_experience_duration": "two years"
+      },
+      {
+        "changed": "2025-03-24T00:08:10.186Z",
+        "Task_1.IS1": "aaaa"
+      },
+      {
+        "changed": "2025-03-24T00:08:13.375Z",
+        "videotrack": "play:0;"
+      },
+      {
+        "changed": "2025-03-24T00:08:16.012Z",
+        "videotrack": "pause:319.532;"
+      },
+      {
+        "changed": "2025-03-24T00:08:16.158Z",
+        "videotrack": "play:319.532;"
+      },
+      {
+        "changed": "2025-03-24T00:08:16.851Z",
+        "videotrack": "seeked:319.532;"
+      },
+      {
+        "changed": "2025-03-24T00:08:17.533Z",
+        "videotrack": "pause:320.194739;"
+      },
+      {
+        "changed": "2025-03-24T00:08:22.441Z",
+        "Check_1.Activity": "bbb"
+      },
+      {
+        "changed": "2025-03-24T00:08:26.353Z",
+        "videotrack": "play:0;"
+      },
+      {
+        "changed": "2025-03-24T00:08:27.673Z",
+        "videotrack": "pause:205.589;"
+      },
+      {
+        "changed": "2025-03-24T00:08:27.820Z",
+        "videotrack": "play:205.589;"
+      },
+      {
+        "changed": "2025-03-24T00:08:28.035Z",
+        "videotrack": "seeked:205.589;"
+      },
+      {
+        "changed": "2025-03-24T00:08:28.518Z",
+        "videotrack": "pause:422.006;"
+      },
+      {
+        "changed": "2025-03-24T00:08:28.724Z",
+        "videotrack": "play:422.006;"
+      },
+      {
+        "changed": "2025-03-24T00:08:29.353Z",
+        "videotrack": "seeked:422.006;"
+      },
+      {
+        "changed": "2025-03-24T00:08:29.805Z",
+        "videotrack": "pause:422.409419;"
+      },
+      {
+        "changed": "2025-03-24T00:08:33.810Z",
+        "Check_2.Position": "zzz"
+      },
+      {
+        "changed": "2025-03-24T00:08:38.113Z",
+        "Task_2.IS2": "dfg"
+      }
+    ],
+    "logType": "summary"
+  }
+]
