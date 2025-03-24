@@ -28,6 +28,8 @@ class PlayerManager {
     this.sessionRound = this.sessionRound.bind(this)
     MessageBus.i.subscribe('session/round', this.sessionRound)
 
+    this.trackVideo = this.trackVideo.bind(this)
+
     // tracking
     this.trackTyping = this.trackTyping.bind(this)
 
@@ -506,6 +508,17 @@ class PlayerManager {
 
   presentKnot (knot) {
     this._mainPanel.innerHTML = knot
+
+    const videoElements = this._mainPanel.querySelectorAll('video')
+    if (videoElements.length > 0)
+      for (const v of videoElements) {
+        v.addEventListener('play', this.trackVideo)
+        v.addEventListener('pause', this.trackVideo)
+        v.addEventListener('ended', this.trackVideo)
+        v.addEventListener('seeked', this.trackVideo)
+        v.addEventListener('ratechange', this.trackVideo)
+      }
+
     document.querySelector('#main-panel').scrollTo(0, 0)
 
     // <TODO> Local Environment - Future
@@ -517,6 +530,13 @@ class PlayerManager {
     // <TODO> Improve the strategy
     if (this._currentKnot == 'entry') this.startGame()
   }
+
+  trackVideo (event) {
+    if (event != null && event.type != null && event.target && event.target.currentTime != null)
+      MessageBus.i.publish('input/changed/videotrack',
+        {value: `${event.type}:${event.target.currentTime};`}, true)
+  }
+
 
   presentCell (knot) {
     const content = this._compiledCase.layers.Data.content
