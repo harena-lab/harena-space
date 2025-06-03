@@ -1,4 +1,5 @@
-import { Plugin, ButtonView, icons } from 'ckeditor5';
+import { Plugin, ButtonView } from 'ckeditor5';
+import { icons } from '../utils/icons';
 
 export default class HarenaPlugin extends Plugin {
     static get pluginName() {

@@ -308,12 +308,25 @@ class Annotator {
   }
 
   _buildEditor () {
+    window.CustomDecoupledEditor = window.CKEditor5Custom;
     const presentation = document.querySelector('#editor-space')
-    DecoupledEditor.create(presentation,
+
+    // CustomDecoupledEditor.create(document.querySelector('#editor'))
+    //   .then(editor => {
+    //     document.querySelector('#toolbar-container')
+    //       .appendChild(editor.ui.view.toolbar.element);
+    //     console.log('Editor was initialized', editor);
+    //   })
+    //   .catch(error => {
+    //     console.error('Editor initialization failed:', error);
+    //   });
+
+    CustomDecoupledEditor.create(presentation,
       {
+        licenseKey: 'GPL',
         toolbar: {
           items: ['annotatePatho', 'annotateEpi',  'annotateEti', 'annotateHist',
-                  'annotatePhys', 'annotateCompl',   'annotateDiff',
+                  'annotatePhys', 'annotateCompl',   'annotateDiff', 'annotateProgn',
                   'annotateThera', '-', 'annotateSimple', 'annotateEncap',
                   'annotateJar', 'annotateRight', 'annotateWrong', 'annotateTypo',
                   'annotateLock', 'annotateAdd', 'annotateRemove', 'annotateReset'],
@@ -447,7 +460,7 @@ class Annotator {
   _updateSummary (isAnnotations) {
     const catList = ['pathophysiology', 'epidemiology', 'etiology',
                      'history', 'physical', 'exams', 'differential',
-                     'therapeutic']
+                     'prognosis', 'therapeutic']
 
     let ctideas = 0, ctright = 0, ctinfright = 0
     let ctwrong = 0, ctrightencap = 0, ctinfrightencap = 0, ctwrongencap = 0

@@ -1,4 +1,5 @@
-import { Plugin, ButtonView, icons } from 'ckeditor5';
+import { Plugin, ButtonView } from 'ckeditor5';
+import { icons } from '../utils/icons';
 
 // Note: You may need to import your own icon if the marker icon is not available
 // import annotateIcon from './path/to/your/marker-icon.svg';

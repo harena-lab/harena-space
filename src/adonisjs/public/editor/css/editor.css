@@ -26,6 +26,10 @@ annot1[differential], annot2[differential] {
    background-color: #ffaa0078;
 }
 
+annot1[prognosis], annot2[prognosis] {
+   background-color: #6600ff78;
+}
+
 annot1[therapeutic], annot2[therapeutic] {
    background-color: #ffaae778;
 }

@@ -32,7 +32,80 @@ import UploadMediaPlugin from './harena/upload';
 import HarenaAnnotatePlugin from './harena/annotate';
 import HarenaPlugin from './harena/harena';
 
-// Editor configuration
+// Create a custom DecoupledEditor class
+class CustomDecoupledEditor extends DecoupledEditor {
+  static builtinPlugins = [
+    Essentials,
+    Autoformat,
+    Bold,
+    Italic,
+    Image,
+    ImageCaption,
+    ImageResize,
+    ImageStyle,
+    ImageToolbar,
+    ImageUpload,
+    UploadMediaPlugin,  // Harena customization
+    Link,
+    List,
+    MediaEmbed,
+    Paragraph,
+    PasteFromOffice,
+    Table,
+    TableToolbar,
+    TextTransformation,
+    Undo,
+    HarenaTablePlugin,        // Harena customization
+    HarenaAnnotatePlugin,     // Harena customization
+    HarenaPlugin              // Harena customization
+  ];
+
+  static defaultConfig = {
+    toolbar: {
+      items: [
+        'bold',
+        'italic',
+        'link',  // Harena customization (order - after italic)
+        'bulletedList',  // Harena customization (order - before numberedList)
+        'numberedList',
+        '|',
+        'uploadImage',
+        'uploadMedia',  // Harena customization
+        'mediaEmbed',  // Harena customization
+        'insertTable',
+        '|',
+        'undo',
+        'redo',
+        '|',           // Harena customization
+        'confirmEdit', // Harena customization
+        'cancelEdit'   // Harena customization
+      ]
+    },
+    image: {
+      resizeUnit: 'px',
+      styles: [
+        'full',
+        'alignLeft',
+        'alignRight'
+      ],
+      toolbar: [
+        'imageResize',  // Harena customization
+        '|',
+        'toggleImageCaption',
+        'imageTextAlternative'
+      ]
+    },
+    table: {
+      contentToolbar: [
+        'tableColumnHarena',  // Harena customization
+        'tableRowHarena'  // Harena customization
+      ]
+    },
+    language: 'en'
+  };
+}
+
+// Editor configuration (for backward compatibility)
 const editorConfig = {
   plugins: [
     Essentials,
@@ -105,7 +178,7 @@ const editorConfig = {
 // Function to create the editor
 export async function createDecoupledEditor(element) {
   try {
-    const editor = await DecoupledEditor.create(element, editorConfig);
+    const editor = await CustomDecoupledEditor.create(element);
     
     // You need to add the toolbar to the page manually
     // Example: document.querySelector('#toolbar-container').appendChild(editor.ui.view.toolbar.element);
@@ -117,20 +190,32 @@ export async function createDecoupledEditor(element) {
   }
 }
 
-// Alternative: Export the configuration for use with different initialization patterns
+// Export the custom editor class as default
+export default CustomDecoupledEditor;
+
+// Also export the configuration for backward compatibility
 export { editorConfig };
 
 // Usage example:
 /*
-import { createDecoupledEditor } from './your-ckeditor-config.js';
+import CustomDecoupledEditor, { createDecoupledEditor } from './ckeditor-customized.js';
 
-// Initialize the editor
-createDecoupledEditor(document.querySelector('#editor'))
+// Method 1: Using the custom class directly
+CustomDecoupledEditor.create(document.querySelector('#editor'))
   .then(editor => {
-    // Add toolbar to your desired container
     document.querySelector('#toolbar-container')
       .appendChild(editor.ui.view.toolbar.element);
-    
+    console.log('Editor was initialized', editor);
+  })
+  .catch(error => {
+    console.error('Editor initialization failed:', error);
+  });
+
+// Method 2: Using the helper function
+createDecoupledEditor(document.querySelector('#editor'))
+  .then(editor => {
+    document.querySelector('#toolbar-container')
+      .appendChild(editor.ui.view.toolbar.element);
     console.log('Editor was initialized', editor);
   })
   .catch(error => {

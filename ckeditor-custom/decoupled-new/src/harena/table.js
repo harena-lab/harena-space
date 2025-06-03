@@ -4,9 +4,10 @@ import {
     addListToDropdown, 
     createDropdown, 
     Model, 
-    Collection,
-    icons 
+    Collection 
 } from 'ckeditor5';
+
+import { icons } from '../utils/icons';
 
 export default class HarenaTablePlugin extends Plugin {
     static get pluginName() {
