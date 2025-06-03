@@ -1,47 +1,57 @@
-import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
-import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin, ButtonView, icons } from 'ckeditor5';
 
 export default class HarenaPlugin extends Plugin {
-  init() {
-    const editor = this.editor;
+    static get pluginName() {
+        return 'HarenaPlugin';
+    }
 
-    editor.ui.componentFactory.add( 'confirmEdit', locale => {
-      const view = new ButtonView( locale );
+    init() {
+        const editor = this.editor;
 
-      view.set( {
-        label: 'Confirm edit',
-        icon: checkIcon,
-        tooltip: true
-      } );
+        editor.ui.componentFactory.add('confirmEdit', locale => {
+            const view = new ButtonView(locale);
 
-      // Callback executed once the image is clicked.
-      view.on( 'execute', () => {
-        const confirm = editor.config.get('harena.confirm')
-        MessageBus.i.publish(confirm)
-      } );
+            view.set({
+                label: 'Confirm edit',
+                icon: icons.check, // Using built-in check icon from icons object
+                tooltip: true
+            });
 
-      return view;
-    } );
+            // Callback executed once the button is clicked
+            view.on('execute', () => {
+                const confirm = editor.config.get('harena.confirm');
+                // Safety check for MessageBus availability
+                if (typeof MessageBus !== 'undefined' && MessageBus.i) {
+                    MessageBus.i.publish(confirm);
+                } else {
+                    console.warn('MessageBus not available. Confirm action:', confirm);
+                }
+            });
 
-    editor.ui.componentFactory.add( 'cancelEdit', locale => {
-      const view = new ButtonView( locale );
+            return view;
+        });
 
-      view.set( {
-        label: 'Cancel edit',
-        icon: cancelIcon,
-        tooltip: true
-      } );
+        editor.ui.componentFactory.add('cancelEdit', locale => {
+            const view = new ButtonView(locale);
 
-      // Callback executed once the image is clicked.
-      view.on( 'execute', () => {
-        const cancel = editor.config.get('harena.cancel')
-        MessageBus.i.publish(cancel)
-      } );
+            view.set({
+                label: 'Cancel edit',
+                icon: icons.cancel, // Using built-in cancel icon from icons object
+                tooltip: true
+            });
 
-      return view;
-    } );
-  }
+            // Callback executed once the button is clicked
+            view.on('execute', () => {
+                const cancel = editor.config.get('harena.cancel');
+                // Safety check for MessageBus availability
+                if (typeof MessageBus !== 'undefined' && MessageBus.i) {
+                    MessageBus.i.publish(cancel);
+                } else {
+                    console.warn('MessageBus not available. Cancel action:', cancel);
+                }
+            });
+
+            return view;
+        });
+    }
 }

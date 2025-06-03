@@ -1,25 +1,23 @@
 import mediaIcon from './upload-media.svg';
-import FileDialogButtonView from '@ckeditor/ckeditor5-upload/src/ui/filedialogbuttonview';
-import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
-import { insertMedia } from '@ckeditor/ckeditor5-media-embed/src/utils';
-import { insertImage } from '@ckeditor/ckeditor5-image/src/image/utils';
-import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
-
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { 
+  Plugin,
+  FileDialogButtonView,
+  FileRepository,
+  Notification
+} from 'ckeditor5';
 
 export default class UploadMediaPlugin extends Plugin {
   init() {
     const editor = this.editor;
 
     editor.ui.componentFactory.add( 'uploadMedia', locale => {
-      // const view = new ButtonView( locale );
       const view = new FileDialogButtonView( locale );
       const command = editor.commands.get( 'uploadImage' );
-      const mediaTypes = ['audio/mpeg', 'video/mp4', 'video/webm']
+      const mediaTypes = ['audio/mpeg', 'video/mp4', 'video/webm'];
       const mediaRE = new RegExp('^' +
-        mediaTypes.map(type => type.replace(/\//g, '\\/')).join('|') + '$')
-      console.log('=== regular expression')
-      console.log(mediaRE)
+        mediaTypes.map(type => type.replace(/\//g, '\\/')).join('|') + '$');
+      console.log('=== regular expression');
+      console.log(mediaRE);
 
       view.set( {
 				acceptedType: mediaTypes.join(','),
@@ -45,8 +43,8 @@ export default class UploadMediaPlugin extends Plugin {
             let loader = fileRepository.createLoader(file);
 
       			if (loader) {
-              console.log('=== id uploaded media')
-              console.log(loader.id)
+              console.log('=== id uploaded media');
+              console.log(loader.id);
 
               editor.model.change( writer => {
                 const mediaElement = writer.createElement(
@@ -55,7 +53,7 @@ export default class UploadMediaPlugin extends Plugin {
                 console.log('=== triggering read and upload');
                 this._readAndUpload(loader, mediaElement);
 
-              })
+              });
 
               this.on( 'uploadComplete', ( evt, { mediaElement, data } ) => {
           			const urls = data.urls ? data.urls : data;
@@ -68,7 +66,7 @@ export default class UploadMediaPlugin extends Plugin {
                     editor.model.document.selection );
           			} );
 
-                this.off('uploadComplete')
+                this.off('uploadComplete');
           		}, { priority: 'low' } );
 
             }
