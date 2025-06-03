@@ -525,6 +525,6 @@ class ReportManager {
 
   // <TODO> Copy of the same constants in annotator.js
   ReportManager.catList = ['pathophysiology', 'epidemiology', 'etiology',
-    'history', 'physical', 'exams', 'differential',
+    'history', 'physical', 'exams', 'differential', 'prognosis',
     'therapeutic']
 })()
