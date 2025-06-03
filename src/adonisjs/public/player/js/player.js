@@ -41,13 +41,13 @@ class PlayerManager {
   }
 
   handleKeyPress(event) {
-    if (event.altKey && event.ctrlKey && event.key === 'a') {
-      this.onAltCtrlA();
+    if (event.altKey && event.ctrlKey && event.key === 'b') {
+      this.onAltCtrlB();
     }
   }
 
-  async onAltCtrlA() {
-    console.log('Alt+Ctrl+A was pressed');
+  async onAltCtrlB() {
+    console.log('Alt+Ctrl+B was pressed');
     // const decision = await DCCNoticeInput.displayNotice(
     //   'Control super-powers. Next screen?', 'message', 'Yes', 'No')
     const options = [

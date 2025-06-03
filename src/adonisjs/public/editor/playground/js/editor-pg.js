@@ -24,8 +24,8 @@ class EditorPG {
         toolbar: {
           items: DecoupledEditor.defaultConfig.toolbar.items.concat(
                  ['annotatePatho', 'annotateEpi', 'annotateEti', 'annotateCli',
-                  'annotateLab', 'annotateDiff', 'annotateThera', '-', 'annotateEncap',
-                  'annotateJar', 'annotateWrong']),
+                  'annotateLab', 'annotateDiff', 'annotateProgn', 'annotateThera', '-',
+                  'annotateEncap', 'annotateJar', 'annotateWrong']),
           shouldNotGroupWhenFull: true
         },
         extraPlugins: [_harenaCustomUploadAdapterPlugin],

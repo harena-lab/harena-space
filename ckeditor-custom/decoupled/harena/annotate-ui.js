@@ -17,6 +17,7 @@ export default class AnnotateUI extends Plugin {
         ['annotatePhys', 'Physical examination', 'physical'],
         ['annotateCompl', 'Complementary exams', 'exams'],
         ['annotateDiff', 'Differential diagnosis', 'differential'],
+        ['annotateProgn', 'Prognosis', 'prognosis'],
         ['annotateThera', 'Therapeutic plan', 'therapeutic'],
         ['annotateSimple', 'Simple', 'simple'],
         ['annotateEncap', 'Encapsulated', 'encapsulated'],

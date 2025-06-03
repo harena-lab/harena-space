@@ -41,12 +41,11 @@ class ReportManager {
     }
 
     // Parse the JSON if it's a string
-    const data = typeof jsonData === 'string' ? JSON.parse(jsonData) : jsonData;
-    const logs = data.message.logs;
+    const data = typeof jsonData === 'string' ? JSON.parse(jsonData) : jsonData
+    const logs = data.message.logs
     
     // Object to store user information
     const userSummary = {}
-    let recentLog = null
     
     // Process each log entry
     for (const log of logs) {
@@ -93,12 +92,24 @@ class ReportManager {
         }
       }
     }
-    
+
     // Convert the user summary object to an array
-    const userSummaryArray = Object.values(userSummary);
+    const userSummaryArray = Object.values(userSummary)
     
-    // Sort users by username (optional)
-    userSummaryArray.sort((a, b) => a.username.localeCompare(b.username));
+    const order = new URL(document.location).searchParams.get('order') || 'date'
+   
+    // Sort users by mostRecentDate (optional)
+    switch (order) {
+      case 'date':
+        userSummaryArray.sort((a, b) => b.mostRecentDate - a.mostRecentDate)
+        break
+      case 'name':
+        userSummaryArray.sort((a, b) => a.username.localeCompare(b.username))
+        break
+      case 'stage':
+        userSummaryArray.sort((a, b) => a.stage.localeCompare(b.stage))
+        break
+    }
     
     // Generate HTML
     let html = `
@@ -148,6 +159,8 @@ class ReportManager {
         <tbody>
     `;
     
+    html += `<tr><td colspan="5">Total: ${userSummaryArray.length}</td></tr>`
+    
     // Add a row for each user
     for (const user of userSummaryArray) {
       const formattedDate = user.mostRecentDate.toLocaleString();
@@ -161,7 +174,7 @@ class ReportManager {
           </tr>
       `;
     }
-    
+
     // Close the HTML
     html += `
         </tbody>
