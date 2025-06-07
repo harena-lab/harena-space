@@ -1896,7 +1896,13 @@ class Translator {
 
     option.subtype = (matchArray[1] != null) ? matchArray[1].trim() : '_'
 
-    if (matchArray[2] != null) { option.label = matchArray[2].trim() }
+    if (matchArray[2] != null) { 
+      option.label = matchArray[2].trim()
+      if (option.label[0] == "'" || option.label[0] == '"') {
+        option.quotes = option.label[0]
+        option.label = option.label.substring(1, option.label.length-1)
+      }
+    }
     /*
       if (matchArray[3] != null)
          option.rule = matchArray[3].trim();
