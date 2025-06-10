@@ -63,16 +63,12 @@
       <dcc-rest id="harena-create-user" bind="harena-create-user" subscribe="user/create/post"></dcc-rest>
       <dcc-rest id="harena-link-term" bind="harena-link-term" subscribe="user/term/post"></dcc-rest>
       <dcc-rest id="harena-login-event" bind="harena-login-event" subscribe="user/login/post"></dcc-rest>
+			<dcc-rest id="harena-create-ticket" bind="harena-create-ticket" subscribe="ticket/create/post"></dcc-rest>
 
       <div class="d-flex flex-column vh-100 vw-100 hidden-overflow">
 
         <div class="h-100 w-100 create-case-padding scroll-y">
 					<div class="col-md-12 col-lg-6">
-						<div class="home-text">
-	            <p id="template-title">Plataforma Museu</p>
-	          </div>
-
-						<hr>
 						<div id="feedback-message-1" style="font-size:24px;color:red"></div>
 						<hr>
 					</div>
@@ -90,102 +86,105 @@
 										<div id="term-part">
                     <h1 id="termo-de-consentimento-livre-e-esclarecido">TERMO DE CONSENTIMENTO LIVRE E ESCLARECIDO</h1>
 
-										<p align="center">
-											<b>18 anos ou mais</b> <br /> <hr />
-											<b>Plataforma de Aprendizagem Virtual baseada em Simulação e Resolução de
-Problemas</b> <br />
-											<b>Responsável: André Santanchè</b> <br />
-											<b>Número do CAAE: 46635421.5.0000.5404</b><br />
-										</p>
-										<p><br /></p>
+						<p align="center">
+							<b>18 ou mais anos</b> <br>
+						</p><hr>
+						<b>Plataforma de Aprendizagem baseada em Casos</b> <br>
+						<b>Responsável: André Santanchè</b> <br>
+						<b>Número do CAAE: 46635421.5.0000.5404</b><br>
+						<p></p>
 
-										<p>Você está sendo convidado a participar de uma pesquisa. Este documento, chamado Termo de Consentimento Livre e Esclarecido, visa assegurar seus direitos como participante da pesquisa. Você preencherá um campo com seu nome e clicará em concordo, indicando que concorda participar desta pesquisa. Você deve indicar um e-mail para receber uma cópia deste termo acompanhado de um número de chave. Como a pesquisa é anônima, a plataforma requisitará apenas a chave para lhe dar acesso ao sistema e não guardará seus dados pessoais. Caso em qualquer momento você queira que seus dados sejam excluídos da plataforma, bastará nos informar o número da chave.</p>
 
-										<p>Por favor, leia com atenção e calma, aproveitando para esclarecer suas dúvidas. Se houver perguntas antes ou mesmo depois de aceitá-lo, você poderá esclarecê-las com o pesquisador. Se preferir, pode baixar o termo em seu computador e enviá-lo para seus familiares ou outras pessoas a fim de consultá-los antes de decidir participar. Não haverá nenhum tipo de penalização ou prejuízo se você não aceitar participar ou retirar sua autorização em qualquer momento. Cabe ressaltar que, caso aceite participar, é importante fazer o download deste Termo de Consentimento Livre e Esclarecido (TCLE) e guardar uma cópia em seus arquivos.</p>
+						<p>Você está sendo convidado a participar de uma pesquisa. Este documento, chamado Termo de Consentimento Livre e Esclarecido, visa assegurar seus direitos como participante da pesquisa. Você preencherá um  campo com seu nome e clicará em concordo, indicando que concorda participar desta pesquisa. Você deve indicar um e-mail para receber uma cópia deste termo acompanhado de um número de chave. Como a pesquisa é anônima, a plataforma requisitará apenas a chave para lhe dar acesso ao sistema e não guardará seus dados pessoais. Caso em qualquer momento você queira que seus dados sejam excluídos da plataforma, bastará nos informar o número da chave.</p>
 
-										<h2 id="justificativa-e-objetivos">Justificativa e objetivos</h2>
+							<p>Por favor, leia com atenção e calma, aproveitando para esclarecer suas dúvidas. Se houver perguntas antes ou mesmo depois de aceitá-lo, você poderá esclarecê-las com o pesquisador. Se preferir, você pode usar o termo recebido por e-mail para consultar seus familiares ou outras pessoas antes de decidir participar. Não haverá nenhum tipo de penalização ou prejuízo se você não aceitar participar ou retirar sua autorização em qualquer momento. Cabe ressaltar que, caso aceite participar, é importante guardar uma cópia deste Termo de Consentimento Livre e Esclarecido (TCLE) em seus arquivos.
+							</p>
+							
+							<p><strong>Justificativa e objetivos:</strong></p>
+							
+							<p>Este projeto envolve um ambiente na Web para treinar pessoas na resolução de desafios e construção de simulações. Alguns desafios são apresentados na forma de casos que você é convidado a resolver. Queremos testar se ao resolver esses casos você irá adquirir habilidades na resolução de problemas. Também queremos verificar se ao construir simulações você aprenderá algo com elas ou sobre elas.
+							</p>
+							
+							<p><strong>Procedimentos:</strong></p>
+							
+							<p>Participando do estudo você está sendo convidado a: resolver um conjunto de desafios que lhe serão apresentados no ambiente. Coletaremos dados sobre como você se desempenha no desafio e textos que escreveu para verificar a efetividade da plataforma na aprendizagem e na capacidade de criação de cenários. Ao final do desafio, poderemos lhe convidar para realizar uma entrevista voluntária sobre o jogo no mesmo local do desafio. Essa entrevista irá registrar as percepções, expectativas e reflexões dos alunos sobre o desafio e também servirá tanto como registro qualitativo quanto como subsídio para análise posterior da experiência educacional e do engajamento dos participantes. A participação na entrevista é opcional e ela será anônima e em grupo. O áudio desta entrevista será gravado para análise posterior. A gravação não será divulgada, e servirá apenas para subsidiar a coleta de dados. A atividade total terá duração máxima de uma hora e meia, uma hora para a realização do desafio e caso você seja convidado e queira participar, mais trinta minutos para a entrevista.
+							
+							A forma de seleção para a entrevista pode ser por sorteio ou indicação. Em qualquer caso, a participação na entrevista é opcional. Você indicará neste termo se, caso seja selecionado, concorda em participar. Você pode participar da pesquisa mesmo que não queira participar da entrevista.
+							
+							Os dados coletados serão armazenados de forma anônima. Em qualquer tempo você pode escolher excluir todos os seus dados e dados coletados sobre você do sistema.
+							
+							Por ser um ambiente Web, você sempre pode utilizá-lo onde estiver, sem a necessidade de deslocamento. Os dados são armazenados em nosso servidor de forma segura. Os dados serão armazenados por tempo indeterminado ou até que você solicite a sua exclusão. A exclusão pode ser solicitada diretamente no ambiente.
+							</p>
+							
+							<p><strong>Desconfortos e riscos:</strong></p>
+							
+							<p>A pesquisa não apresenta riscos previsíveis, porém, a gravação de áudio e o tempo extra requerido para a entrevista podem causar desconforto. Em qualquer momento, você pode escolher tanto encerrar a entrevista como também apagar o áudio da mesma.
+							Em caso de invasão e/ou quebra do sistema de segurança, os dados dos participantes poderão ser acessados. Em caso de detecção de vazamento, o funcionamento da plataforma será automaticamente suspenso até que o problema seja corrigido.
+							
+							</p>
+							
+							<p><strong>Benefícios:</strong></p>
+							
+							<p>Por ser um ambiente que visa a aprendizagem, a sua participação na pesquisa pode lhe trazer novos conhecimentos e habilidades na resolução de problemas. Você também contribuirá na nossa pesquisa e desenvolvimento do ambiente para a aprendizagem baseada na resolução de problemas. Esse ambiente será usado para o aprimoramento na formação principalmente de crianças, adolescentes e jovens. O ambiente será de acesso livre e gratuito para a comunidade.
+							</p>
+							
+							<p><strong>Acompanhamento e assistência:</strong></p>
+							
+							<p>Você tem o direito à assistência integral e gratuita devido a danos diretos e indiretos, imediatos e tardios, pelo tempo que for necessário. Você também tem direito a suporte, por parte da equipe que está realizando esta pesquisa, no uso do ambiente. Você tem acesso através do próprio ambiente a todos os dados que são coletados sobre você, bem como ao seu desempenho auferido pelo ambiente. Você também terá direito a acesso a todos os resultados decorrentes desta pesquisa.
+							
+							Não são permitivas estratégias para burlar ou modificar o funcionamento normal do sistema. Se forem detectadas estratégias desse tipo, os que estiverem envolvidos serão desligados do ambiente e descontinuados do estudo.
+							</p>
+							
+							<p><strong>Sigilo e privacidade:</strong></p>
+							
+							<p>Você tem a garantia de que sua identidade será mantida em sigilo e nenhuma informação será dada a outras pessoas que não façam parte da equipe de pesquisadores. Na divulgação dos resultados desse estudo, seu nome não será citado.
+							
+							O ambiente permite que você compartilhe, ao seu critério, conteúdo que você produza no ambiente, quando você o estiver usando para criar conteúdo. Você poderá, a qualquer tempo, descontinuar esse compartilhamento.
+							</p>
+							
+							<p><strong>Ressarcimento e Indenização:</strong></p>
+							
+							<p>A participação é voluntária e não serão ressarcidas despesas de transporte, alimentação e de nenhum outro tipo, pois a coleta de dados da pesquisa se dará em locais públicos com participantes voluntários que não se deslocaram para o local especificamente para a pesquisa mas que já se encontram presentes no local de coleta.
+							
+							As despesas serão ressarcidas ao voluntário em caso de coletas feitas em horários e dias fora da rotina do mesmo.
+							
+							Os participantes serão assistidos imediatamente em caso de desconforto e, havendo necessidade, serão acionadas as unidades de emergência públicas disponíveis.
+							
+							Nos termos da resolução N° 466 do Conselho Nacional da Saúde (CNS), de 12 de dezembro de 2012, item V.7, os participantes da pesquisa que vierem a sofrer qualquer tipo de dano resultante de sua participação na pesquisa, previsto ou não no Termo de Consentimento Livre e Esclarecido, têm direito à indenização, por parte do pesquisador, do patrocinador e das instituições envolvidas nas diferentes fases da pesquisa.
 
-										<p>Este projeto envolve um ambiente na Web para treinar pessoas na resolução de desafios e construção de simulações. Alguns desafios são apresentados na forma de casos que você é convidado a resolver. Queremos testar se ao resolver esses casos você irá adquirir habilidades na resolução de problemas. Também queremos verificar se ao construir simulações você aprenderá algo com elas ou sobre elas.</p>
+							Esta pesquisa prevê o armazenamento dos dados coletados em repositório de dados, em local virtual de acesso público, com o objetivo de possível reutilização, verificação e compartilhamento em trabalhos de colaboração científica com outros grupos de pesquisa. Sua identidade não será revelada nesses dados, pois os mesmos serão armazenados de forma anônima (isto é, os dados não terão identificação) utilizando mecanismos que impeçam a possibilidade de associação direta ou indireta com você. Sendo assim, não haverá possibilidade de reversão da anonimização dos dados.
+							</p>
+							
+							<p><strong>Contato:</strong></p>
+							
+							<p>Em caso de dúvidas sobre a pesquisa, você poderá entrar em contato com o pesquisador André Santanchè</p>
+							
+							<p><strong>endereço:</strong> Instituto de Computação - Av. Albert Einstein, 1251, Cidade Universitária, Campinas/SP - Brasil, CEP 13083-852.</p>
+							
+							<p><strong>telefone:</strong> (19) 3521-5854 / (19) 98249-2218</p>
+							
+							<p><strong>e-mail:</strong> santanche@ic.unicamp.br</p>
+							
+							<p>Em caso de denúncias ou reclamações sobre sua participação e sobre 
+							questões éticas do estudo, você poderá entrar em contato com a 
+							secretaria do Comitê de Ética em Pesquisa (CEP) da UNICAMP das 08:00hs 
+							às 11:30hs e das 13:00hs as 17:30hs na Rua: Tessália Vieira de Camargo, 
+							126; CEP 13083-887 Campinas – SP; telefone (19) 3521-8936 ou (19) 
+							3521-7187; e-mail:  <a href="mailto:cep@unicamp.br">cep@unicamp.br</a>.</p>
+							
+							<p><strong>O Comitê de Ética em Pesquisa (CEP).</strong></p>
+							
+							<p>O papel do CEP é avaliar e acompanhar os aspectos éticos de todas as 
+							pesquisas envolvendo seres humanos. A Comissão Nacional de Ética em 
+							Pesquisa (CONEP), tem por objetivo desenvolver a regulamentação sobre 
+							proteção dos seres humanos envolvidos nas pesquisas. Desempenha um papel
+							 coordenador da rede de Comitês de Ética em Pesquisa (CEPs) das 
+							instituições, além de assumir a função de órgão consultor na área de 
+							ética em pesquisas</p>
 
-										<h2 id="procedimentos">Procedimentos</h2>
 
-										<p>Participando do estudo você está sendo convidado a: resolver um conjunto de desafios que lhe serão apresentados no ambiente. Coletaremos dados sobre como você se desempenha no desafio para verificar a efetividade da plataforma na aprendizagem e na capacidade de criação de cenários. A atividade durará no máximo uma hora e meia.</p>
-
-										<p>Os dados coletados serão armazenados de forma anônima. Em qualquer tempo você pode escolher excluir todos os seus dados e dados coletados sobre você do sistema.</p>
-
-										<p>Por ser um ambiente Web, você sempre pode utilizá-lo onde estiver, sem a necessidade de deslocamento. Os dados são armazenados em nosso servidor de forma segura. Os dados serão armazenados por tempo indeterminado ou até que você solicite a sua exclusão. A exclusão pode ser solicitada diretamente no ambiente.</p>
-
-										<h2 id="desconfortos-e-riscos">Desconfortos e riscos</h2>
-
-										<p>Não há riscos previsíveis para esta pesquisa. Todos os equipamentos utilizados neste experimento são seguros e, nas condições de uso previstas, não causam nenhum tipo de dano  à saúde. Para evitar períodos longos sentados e em frente ao computador, cada sessão é projetada para durar entre 30 a 40 minutos, podendo excepcionalmente durar até 1 hora. Em qualquer momento você poderá sinalizar caso sentir algum desconforto e o experimento será interrompido imediatamente.</p>
-
-										<h2 id="benefícios">Benefícios</h2>
-
-										<p>Por ser um ambiente que visa a aprendizagem, a sua participação na pesquisa pode lhe trazer novos conhecimentos e habilidades na resolução de problemas. Você também contribuirá na nossa pesquisa e desenvolvimento do ambiente para a aprendizagem baseada na resolução de problemas. Esse ambiente será usado para o aprimoramento na formação principalmente de crianças, adolescentes e jovens. O ambiente será de acesso livre e gratuito para a comunidade.</p>
-
-										<h2 id="acompanhamento-e-assistência">Acompanhamento e assistência</h2>
-
-										<p>Você tem o direito à assistência integral e gratuita devido a danos diretos e indiretos, imediatos e tardios, pelo tempo que for necessário. Você também tem direito a suporte, por parte da equipe que está realizando esta pesquisa, no uso do ambiente. Você tem acesso através do próprio ambiente a todos os dados que são coletados sobre você, bem como ao seu desempenho auferido pelo ambiente. Você também terá direito a acesso a todos os resultados decorrentes desta pesquisa.</p>
-
-										<p>Não são peparameters.emailrmitidas estratégias para burlar ou modificar o funcionamento normal do sistema. Se forem detectadas estratégias desse tipo, os que estiverem envolvidos serão desligados do ambiente e descontinuados do estudo.</p>
-
-										<h2 id="sigilo-e-privacidade">Sigilo e privacidade</h2>
-
-										<p>Você tem a garantia de que sua identidade será mantida em sigilo e nenhuma informação será dada a outras pessoas que não façam parte da equipe de pesquisadores. Na divulgação dos resultados desse estudo, seu nome não será citado.</p>
-
-										<p>O ambiente permite que você compartilhe, ao seu critério, conteúdo que você produza no ambiente, quando você o estiver usando para criar conteúdo. Você poderá, a qualquer tempo, descontinuar esse compartilhamento.</p>
-
-										<h2 id="ressarcimento-e-indenização">Ressarcimento e Indenização</h2>
-
-										<p>A participação é voluntária e não serão ressarcidas despesas de transporte, alimentação e de nenhum outro tipo, pois a coleta de dados da pesquisa se dará em locais públicos com participantes voluntários que não se deslocaram para o local especificamente para a pesquisa mas que já se encontram presentes no local de coleta.</p>
-
-										<p>As despesas serão ressarcidas ao voluntário em caso de coletas feitas em horários e dias fora da rotina do mesmo.</p>
-
-										<p>Os participantes serão assistidos imediatamente em caso de desconforto e, havendo necessidade, serão acionadas as unidades de emergência públicas disponíveis.</p>
-
-										<p>Nos termos da resolução N° 466 do Conselho Nacional da Saúde (CNS), de 12 de dezembro de 2012, item V.7, os participantes da pesquisa que vierem a sofrer qualquer tipo de dano resultante de sua participação na pesquisa, previsto ou não no Termo de Consentimento Livre e Esclarecido, têm direito à indenização, por parte do pesquisador, do patrocinador e das instituições envolvidas nas diferentes fases da pesquisa.</p>
-
-										<h2 id="contato">Contato</h2>
-
-										<p>Em caso de dúvidas sobre a pesquisa, você poderá entrar em contato com o pesquisador André Santanchè</p>
-
-										<p><strong>endereço:</strong> Instituto de Computação - Av. Albert Einstein, 1251, Cidade Universitária, Campinas/SP - Brasil, CEP 13083-852.</p>
-
-										<p><strong>telefone:</strong> (19) 3521-5854 / (19) 98249-2218</p>
-
-										<p><strong>e-mail:</strong> santanche@ic.unicamp.br</p>
-
-										<p>Em caso de denúncias ou reclamações sobre sua participação e sobre questões éticas do estudo, você poderá entrar em contato com a secretaria do Comitê de Ética em Pesquisa (CEP) da UNICAMP das 08:00hs às 11:30hs e das 13:00hs as 17:30hs na Rua: Tessália Vieira de Camargo, 126; CEP 13083-887 Campinas – SP; telefone (19) 3521-8936 ou (19) 3521-7187; e-mail: <a href="mailto:cep@unicamp.br">cep@unicamp.br</a>.</p>
-
-										<h2 id="o-comitê-de-ética-em-pesquisa-cep">O Comitê de Ética em Pesquisa (CEP)</h2>
-
-										<p>O papel do CEP é avaliar e acompanhar os aspectos éticos de todas as pesquisas envolvendo seres humanos. A Comissão Nacional de Ética em Pesquisa (CONEP), tem por objetivo desenvolver a regulamentação sobre proteção dos seres humanos envolvidos nas pesquisas. Desempenha um papel coordenador da rede de Comitês de Ética em Pesquisa (CEPs) das instituições, além de assumir a função de órgão consultor na área de ética em pesquisas</p>
-
-                    <h2 id="responsabilidade-do-pesquisador">Responsabilidade do Pesquisador</h2>
-
-                    <p>Asseguro ter cumprido as exigências da resolução 466/2012 CNS/MS e complementares na elaboração do protocolo e na obtenção deste Termo de Consentimento Livre e Esclarecido. Asseguro, também, ter explicado e fornecido uma via deste documento ao participante da pesquisa. Informo que o estudo foi aprovado pelo CEP perante o qual o projeto foi apresentado e pela CONEP, quando pertinente. Comprometo-me a utilizar o material e os dados obtidos nesta pesquisa exclusivamente para as finalidades previstas neste documento ou conforme o consentimento dado pelo participante da pesquisa.</p>
-
-                    <div style="text-align:center;">
-                    <a href="/user/signup/terms/tcle-18-mais-anos-eventual.pdf" target="_blank">Download do Termo de Consentimento Livre e Esclarecido (TCLE)</a><br /><br />
-                    </div>
-
-									  </div>
-
-                  </section>
-                  </div>
-									<h2 id="consentimento-livre-e-esclarecido">Consentimento livre e esclarecido</h2>
-
-							<p>Após ter recebido esclarecimentos sobre a natureza da pesquisa, seus objetivos, métodos, benefícios previstos, potenciais riscos e o incômodo que esta possa acarretar, aceito participar:</p>
-
-									<div class="form-group">
-	                  <label for="email">Email do Participante</label>
-	                  <input type="text" class="form-control" id="email" name="email" placeholder="Email do participante"
-										       aria-describedby="emailDesc" onchange="UserSignup.i.update()">
-										<small id="emailDesc" class="form-text text-muted">
-											Escolha um email que você usará para fazer login.
-										</small>
-	                </div>
-									<p>Favor se identificar e concluir este termo, caso concorde em participar:</p>
+								<b>Consentimento livre e esclarecido:</b>
+								<p>Após ter recebido esclarecimentos sobre a natureza da pesquisa, seus objetivos, métodos, benefícios previstos, potenciais riscos e o incômodo que esta possa acarretar:</p>
 
 	                <div class="form-group">
 	                  <label for="username">Nome completo do(a) participante da pesquisa</label>
@@ -196,6 +195,15 @@ Problemas</b> <br />
 										</small>
 	                </div>
 
+									<!-- <div class="form-group">
+	                  <label for="email">Email do Participante</label>
+	                  <input type="text" class="form-control" id="email" name="email" placeholder="Email do participante"
+										       aria-describedby="emailDesc" onchange="UserSignup.i.update()">
+										<small id="emailDesc" class="form-text text-muted">
+											Escolha um email que você usará para fazer login.
+										</small>
+	                </div> -->
+
 									<div class="form-inline">
 										<label for="date_agree_1">Data:&nbsp;</label>
 										<input type="text" class="form-control" id="date_agree_1" name="date_agree_1" readonly>
@@ -204,14 +212,32 @@ Problemas</b> <br />
 									<p><input type="radio" id="agree_radio" name="agree" value="agree" onchange="UserSignup.i.update()"/> Concordo em participar da pesquisa <br>
 									<input type="radio" id="not_agree_radio" name="agree" value="not_agree" onchange="UserSignup.i.update()" /> Não desejo participar da pesquisa</p>
 
+									<p><input type="radio" id="agree_interview_radio" name="interview" value="agree" onchange="UserSignup.i.update()"/> Concordo em participar da entrevista <br>
+									<input type="radio" id="not_agree_interview_radio" name="interview" value="not_agree" onchange="UserSignup.i.update()" /> Não desejo participar da entrevista</p>
+									
 	                <input type="hidden" id="institution" name="institution" value="unicamp">
 	                <input type="hidden" id="grade" name="grade" value="student">
-	                <input type="hidden" id="term" name="term" value="museu_harena_2021">
+	                <input type="hidden" id="term" name="term" value="etica_2025">
 	                <input type="hidden" id="role" name="role" value="adult">
 									<hr>
 									<div id="feedback-message-2" style="font-size:24px;color:red"></div>
 									<hr>
-									<dcc-submit label="Enviar" topic="/user/signup" xstyle="out"></dcc-submit>
+									<dcc-submit label="Registrar" topic="/user/signup" xstyle="out"></dcc-submit>
+
+							<p><strong>Responsabilidade do Pesquisador:</strong></p>
+							
+							<p>Asseguro ter cumprido as exigências da resolução 466/2012 CNS/MS e 
+							complementares na elaboração do protocolo e na obtenção deste Termo de 
+							Consentimento Livre e Esclarecido. Asseguro, também, ter explicado e 
+							fornecido uma via deste documento ao participante da pesquisa. Informo 
+							que o estudo foi aprovado pelo CEP perante o qual o projeto foi 
+							apresentado e pela CONEP, quando pertinente. Comprometo-me a utilizar o 
+							material e os dados obtidos nesta pesquisa exclusivamente para as 
+							finalidades previstas neste documento ou conforme o consentimento dado 
+							pelo participante da pesquisa.</p>
+
+
+						<a href="/user/signup/terms/tcle_18_mais_anos_eventual_v02.pdf">Download do Termo de Consentimento Livre e Esclarecido (TCLE)</a><br /><br />
 								</section>
 								</div>
 							</form>
