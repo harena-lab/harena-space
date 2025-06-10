@@ -22,7 +22,7 @@ class UserSignup {
 
     this.finalMessage =
 `<div style="color:black"><p>Bem-vindo(a)! Você foi convidado(a) a participar de um estudo científico sobre resolução de casos! Agradeço muito por isso.</p>
-<p>Nas próximas telas, você participará de um desafio chamado Zombie Venom.</p>
+<p>Nas próximas telas, você participará do desafio.</p>
 <p><dcc-button topic="control/experiment/start" xstyle="out" label="Iniciar"></dcc-button></p></div>`
     this._startPrognosisISC()
   }
@@ -267,16 +267,27 @@ class UserSignup {
       this._showFeedback('Link de cadastro incompleto.')
     else if (parameters.username.trim().length == 0)
       this._showFeedback('Nome do participante é obrigatório.')
-    else if (parameters.email.length == 0)
-      this._showFeedback('O e-mail do participante é obrigatório.')
     else if (parameters.agree == null || parameters.agree.length == 0)
       this._showFeedback('Você precisa responder se concorda participar da pesquisa.')
+    else if (parameters.interview == null || parameters.interview.length == 0)
+      this._showFeedback('Você precisa informar se concorda ou não em participar da entrevista.')
     else {
+      let ticket = await MessageBus.i.request('ticket/create/post')
+      if (!ticket.message.id) {
+        this._showFeedback('Error creating ticket.')
+        ticket = ''
+      } else {
+        ticket = ticket.message.id
+        console.log('=== ticket')
+        console.log(ticket)
+      }
+      const participant = parameters.username.trim().replace(/ /g, '_').toLowerCase()
+      const login = `${participant}_${ticket}`
+      const email = `${login}@email.com`
       console.log('========== creating user ==========')
-      const login = parameters.email.split('@')[0]
       const userJson = {
         username: parameters.username,
-        email: parameters.email,
+        email: email,
         password: password,
         login: login,
         institution: parameters.institution,
@@ -306,16 +317,15 @@ class UserSignup {
               ? user.message.error.message : '') + '".'
           )
       } else {
-        const agree = (parameters.agree == 'agree')
         const termJson = {
           userId: user.message.id,
           termId: parameters.term,
           nameResponsible: '',
-          emailResponsible: parameters.email,
-          nameParticipant: parameters.username,
+          emailResponsible: email,
+          nameParticipant: participant,
           date: parameters.date_agree_1,
           role: parameters.role,
-          agree: (agree) ? '1' : '0'
+          agree: ((parameters.agree == 'agree') ? 1 : 0) + ((parameters.interview == 'agree') ? 10 : 0)
         }
         console.log('=== term json')
         console.log(termJson)
@@ -476,7 +486,8 @@ class UserSignup {
     let user = await MessageBus.i.request('user/login/post', userLogin)
     // window.location.href = "/player/case/?id=8b969606-ad6b-4772-a8e8-f15ae8033e0e&room=f2ef57a5-7c71-4fd9-9fd5-69448020c981"
     // window.location.href = "/player/case/?id=164e49f9-fee2-49dc-aa16-53bf7cf3ea97&room=2dcc1f39-85e6-4cfe-9539-58145f6cc98b"
-    window.location.href = '/player/env/teacher.html'
+    // window.location.href = '/player/env/teacher.html'
+    window.location.href = 'https://jacinto.harena.org/player/case/?id=ed7675f4-0fde-4c55-bbfb-e37c1f7dcdd9&list=plain'
   }
 
   async _experimentStartSWE () {
