@@ -9,6 +9,8 @@ class Translator {
 
     this._markdownTranslator = new showdown.Converter()
     this._markdownTranslator.setFlavor('github')
+
+    this._themeURL = null
   }
 
   /*
@@ -129,6 +131,16 @@ class Translator {
     if (compiledCase.layers.Flow || compiledCase.slayers.Flow)
       compiledCase.flow = (compiledCase.layers.Flow) ?
         compiledCase.layers.Flow.content : compiledCase.slayers.Flow.content
+
+    if (compiledCase.slayers.Template != null &&
+        compiledCase.slayers.Template.content != null) {
+      for (const c in compiledCase.slayers.Template.content) {
+        if (compiledCase.slayers.Template.content[c].type == 'field') {
+          if (compiledCase.slayers.Template.content[c].field == 'theme')
+            this._themeURL = { url: compiledCase.slayers.Template.content[c].value }
+        }
+      }
+    }
   }
 
   /*
@@ -732,6 +744,11 @@ class Translator {
           compiled[pr].mergeLine =
                   Translator.element[compiled[c].type] &&
                   Translator.isLine.includes(compiled[c].type)
+
+          // temporary to fix a problem
+          if (compiled[pr].type == 'entity' && compiled[c].type == 'image')
+            delete compiled[pr].mergeLine
+
           const shift = c - pr
           compiled.splice(c - shift + 1, shift)
           c -= shift
@@ -1220,7 +1237,8 @@ class Translator {
   async loadTheme (themeName) {
     const themeObj = await MessageBus.i.request(
       'data/theme/' + Basic.service.currentThemeFamily.toLowerCase() +
-            '.' + themeName.toLowerCase() + '/get', null, null, true)
+            '.' + themeName.toLowerCase() + '/get',
+            this._themeURL, null, true)
     return themeObj.message
   }
 
@@ -2128,13 +2146,15 @@ class Translator {
     */
   _divertMdToObj (matchArray) {
     const label = (matchArray[1]) ? matchArray[1].trim() : matchArray[2].trim()
-    const target = (matchArray[4]) ? matchArray[4].trim() : matchArray[5].trim()
-    return {
+    const divert = {
       type: 'divert',
       label: label,
       divert: matchArray[3].trim(),
-      target: target
+      target: (matchArray[4]) ? matchArray[4].trim() : matchArray[5].trim()
     }
+    if (label.startsWith('@') && label.endsWith('_'))
+      divert.location = label.substring(1, label.length - 1).toLowerCase()
+    return divert
   }
 
   /*
@@ -2148,18 +2168,23 @@ class Translator {
       .replace('[target]',
         this._transformNavigationMessage(obj.contextTarget))
       .replace('[display]', obj.label)
+      .replace('[location]', (obj.location) ? obj.location : '#in')
   }
 
   /*
     * Entity Md to Obj
     */
   _entityMdToObj (matchArray) {
+    const label = (matchArray[1] != null) ? matchArray[1].trim()
+        : matchArray[2].trim()
     const entity = {
       type: (this.authoringRender && this._categorySettings &&
                 this._categorySettings.entity == 'flat')
         ? 'mention' : 'entity',
-      entity: (matchArray[1] != null) ? matchArray[1].trim()
-        : matchArray[2].trim()
+      entity: label
+    }
+    if (label.endsWith('_')) {
+      entity.location = label.substring(0, label.length - 1).toLowerCase()
     }
     /*
       if (matchArray[3] != null)
@@ -2200,6 +2225,7 @@ class Translator {
       .replace('[seq]', obj.seq)
       .replace('[author]', this.authorAttr)
       .replace('[entity]', obj.entity)
+      .replace('[location]', (obj.location) ? " location='" + obj.location + "'" : '')
       .replace('[text]', text)
       .replace('[image]', path)
       .replace('[alternative]', alternative)
@@ -2211,6 +2237,10 @@ class Translator {
       .replace('{entity}', obj.entity)
     if (obj.text) { entity += '\n  ' + obj.text }
     if (obj.image) { entity += '\n  ' + this._imageObjToMd(obj.image) }
+    entity += '\n'
+
+    console.log('===== entity')
+    console.log(entity)
 
     return entity
   }

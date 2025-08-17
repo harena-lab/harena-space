@@ -33,11 +33,11 @@
     option:
 '<dcc-button id=\'dcc[seq]\'[author] topic=\'[target]\' label=\'[display]\'[divert][message][image][connect][show]></dcc-button>[compute]',
     divert:
-'<dcc-button id=\'dcc[seq]\'[author] topic=\'[target]\' label=\'[display]\' divert=\'[divert]\' location=\'#in\' inline></dcc-button>',
+'<dcc-button id=\'dcc[seq]\'[author] topic=\'[target]\' label=\'[display]\' divert=\'[divert]\' location=\'[location]\' inline></dcc-button>',
     'divert-script':
 '-&gt; [target][parameter]<br>',
     entity:
-'<dcc-entity id=\'dcc[seq]\'[author] entity=\'[entity]\'[image][alternative][title]>[text]</dcc-entity>',
+'<dcc-entity id=\'dcc[seq]\'[author] entity=\'[entity]\'[location][image][alternative][title]>[text]</dcc-entity>',
     mention:
 '<b>[entity]: </b>',
     input:
