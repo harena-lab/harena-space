@@ -117,10 +117,12 @@ class DCCCommonServer {
     const themeFamily = themeCompleteName.substring(0, separator)
     const themeName = themeCompleteName.substring(separator + 1)
     let caseObj
-    if (HarenaConfig.local) {
+    if (HarenaConfig.local || (message != null && message.url != null)) {
       this._themeScript = document.createElement('script')
-      this._themeScript.src = Basic.service.rootPath + 'themes/' +
-                                 themeFamily + '/local/' + themeName + '.js'
+      this._themeScript.src = (HarenaConfig.local)
+        ? Basic.service.rootPath + 'themes/' +
+          themeFamily + '/local/' + themeName + '.js'
+        : message.url + themeName + '.js'
       document.head.appendChild(this._themeScript)
       // <TODO> adjust topic
       const themeM = await MessageBus.i.waitMessage('control/theme/' +
@@ -137,8 +139,8 @@ class DCCCommonServer {
         }
       }
       const response = await fetch(Basic.service.rootPath + 'themes/' +
-                                      themeFamily + '/' + themeName +
-                                      '.html', header)
+                                   themeFamily + '/' + themeName +
+                                   '.html', header)
       themeObj = await response.text()
     }
     MessageBus.i.publish(MessageBus.buildResponseTopic(topic, message),

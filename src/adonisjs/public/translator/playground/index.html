@@ -108,11 +108,13 @@
     <div class="d-flex flex-column vh-100 hidden-overflow">
       <div class="container-fluid">
         <nav class="navbar navbar-light d-flex">
-          <div class="d-flex col">
+          <div class="d-flex col-2">
              <dcc-button topic="control/translate/example" label="TRANSLATE" xstyle="in">
              </dcc-button>
+             <dcc-button topic="control/clear/console" label="CLEAR" xstyle="in">
+             </dcc-button>
           </div>
-          <div class="d-flex col-10">
+          <div class="d-flex col-6">
              <dcc-input-choice variable="output" exclusive>
                 <b>Versum:</b>
                 <dcc-input-option value="versum-object" checked></dcc-input-option>Object&nbsp;
@@ -122,6 +124,16 @@
                 <dcc-input-option value="object-html"></dcc-input-option>HTML&nbsp;
                 <dcc-input-option value="object-rendered"></dcc-input-option>Rendered
              </dcc-input-choice>
+          </div>
+          <div class="d-flex col-4">
+            <div id="drop-zone" style="border: 5px solid; width: 25%"
+                ondragover="AuthorVersumManager.s.dragOver(event)" ondrop="AuthorVersumManager.s.drop(event)">
+              Upload Theme
+            </div>
+            <div id="drop-status" style="width: 25%"></div>
+            <input type="text" id="theme-name" class="hidden-overflow" style="width: 25%">
+            <dcc-button topic="control/theme/convert" label="CONVERT" xstyle="in">
+             </dcc-button>
           </div>
         </nav>
       </div>
