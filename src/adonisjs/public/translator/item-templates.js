@@ -37,7 +37,7 @@
     'divert-script':
 '-&gt; [target][parameter]<br>',
     entity:
-'<dcc-entity id=\'dcc[seq]\'[author] entity=\'[entity]\'[location][image][alternative][title]>[text]</dcc-entity>',
+'<dcc-entity id=\'dcc[seq]\'[author] entity=\'[entity]\'[location][image][alternative][title][sequence]>[text]</dcc-entity>',
     mention:
 '<b>[entity]: </b>',
     input:

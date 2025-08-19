@@ -2164,9 +2164,11 @@ class Translator {
     return Translator.htmlTemplates.divert
       .replace('[seq]', obj.seq)
       .replace('[author]', this.authorAttr)
-      .replace('[divert]', this.divert)
+      .replace('[divert]', obj.divert)
       .replace('[target]',
-        this._transformNavigationMessage(obj.contextTarget))
+        (obj.divert == '(-)')
+          ? 'action/' + obj.target.replace('_', '/')
+          : this._transformNavigationMessage(obj.contextTarget))
       .replace('[display]', obj.label)
       .replace('[location]', (obj.location) ? obj.location : '#in')
   }
@@ -2230,6 +2232,7 @@ class Translator {
       .replace('[image]', path)
       .replace('[alternative]', alternative)
       .replace('[title]', title)
+      .replace('[sequence]', (obj.sequence) ? " sequence='" + obj.sequence + "' subscribe='action/next/talk'" : '')
   }
 
   _entityObjToMd (obj) {
