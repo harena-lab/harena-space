@@ -4,6 +4,19 @@ class ReportManager {
     MessageBus.i.subscribe('report/bio/#', this._downloadBIO.bind(this))
     MessageBus.i.subscribe('report/full', this._downloadFull.bind(this))
     this._roomId = new URL(document.location).searchParams.get('roomid')
+
+    const prognosisCheckbox = document.querySelector('#consider-prognosis')
+    if (prognosisCheckbox != null) {
+      this._updateCategoryList(prognosisCheckbox.checked)
+      prognosisCheckbox.addEventListener('change', () =>
+        this._updateCategoryList(prognosisCheckbox.checked))
+    }
+  }
+
+  _updateCategoryList (considerPrognosis) {
+    ReportManager.catList = considerPrognosis
+      ? ReportManager.catListWithPrognosis
+      : ReportManager.catListWithoutPrognosis
   }
 
   async _requestCases () {
@@ -524,7 +537,10 @@ class ReportManager {
   }
 
   // <TODO> Copy of the same constants in annotator.js
-  ReportManager.catList = ['pathophysiology', 'epidemiology', 'etiology',
+  ReportManager.catListWithPrognosis = ['pathophysiology', 'epidemiology', 'etiology',
     'history', 'physical', 'exams', 'differential', 'prognosis',
     'therapeutic']
+  ReportManager.catListWithoutPrognosis = ['pathophysiology', 'epidemiology', 'etiology',
+    'history', 'physical', 'exams', 'differential', 'therapeutic']
+  ReportManager.catList = ReportManager.catListWithPrognosis
 })()
