@@ -96,6 +96,12 @@
                   <label for="tprefix">Title prefix (used in the import)</label>
                   <input type="text" id="tprefix" name="tprefix">
               </div>
+              <div class="form-check align-self-end ml-3">
+                  <input class="form-check-input" type="checkbox" id="consider-prognosis" checked>
+                  <label class="form-check-label" for="consider-prognosis">
+                    Consider prognosis category
+                  </label>
+              </div>
             </div>
             <div id="user-boxes" class="draft-scroll-container">
               <dcc-rest id="harena-room-cases" bind="harena-room-cases" subscribe="room/cases/get"></dcc-rest>
